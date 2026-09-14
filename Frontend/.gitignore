@@ -11,22 +11,11 @@ build/
 # Environment variables
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*.local
 
 # Vite cache
 .vite/
 .vite-temp/
-
-# AI / tooling (do not commit)
-.codex/
-.gemini/
-scratch/
-docs/memory/
-
-# Python scripts
-*.py
 
 # OS
 .DS_Store
@@ -35,5 +24,3 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
-*.swp
-*.swo
