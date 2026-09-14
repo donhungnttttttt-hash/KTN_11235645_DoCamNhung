@@ -1,0 +1,255 @@
+/* Japanese Enterprise QA System Styling (CATEST / SHIFT Inc Visual Specification) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Lenis Smooth Scroll Base CSS (Required by Lenis Skill) */
+html.lenis, html.lenis-smooth {
+  height: auto;
+}
+
+html.lenis body {
+  min-height: 100%;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+:root {
+  --color-mint: #20B7A6;
+  --color-mint-active: #1EB7A5;
+  --color-mint-hover: #199c8d;
+  --color-mint-light: #EBF8F6;
+  --color-bg-main: #FFFFFF;
+  --color-bg-sub: #FAFAFA;
+  --color-border: #D9DEDE;
+  --color-border-light: #E5E8E8;
+  --color-text-main: #333333;
+  --color-text-sub: #777777;
+  --color-text-muted: #999999;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #FFFFFF;
+  color: var(--color-text-main);
+  font-size: 12px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Container Centered Layout (Max-width 1240px) */
+.cat-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Compact Japanese Business Inputs & Dropdowns */
+.cat-input, .cat-select {
+  height: 28px;
+  padding: 0 8px;
+  font-size: 11px;
+  color: #333333;
+  background-color: #FFFFFF;
+  border: 1px solid #D7DCDC;
+  border-radius: 2px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.cat-input:focus, .cat-select:focus {
+  border-color: var(--color-mint);
+}
+
+/* Compact Buttons */
+.cat-btn {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 2px;
+  border: 1px solid #D7DCDC;
+  background-color: #FFFFFF;
+  color: #333333;
+  cursor: pointer;
+  display: inline-flex;
+  items-center: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.cat-btn:hover {
+  background-color: #F7F8F8;
+  border-color: #C0C5C5;
+}
+
+.cat-btn-mint {
+  background-color: var(--color-mint);
+  border-color: var(--color-mint);
+  color: #FFFFFF;
+}
+
+.cat-btn-mint:hover {
+  background-color: var(--color-mint-hover);
+  border-color: var(--color-mint-hover);
+}
+
+.cat-btn-outline-mint {
+  border-color: var(--color-mint);
+  color: var(--color-mint);
+  background-color: #FFFFFF;
+}
+
+.cat-btn-outline-mint:hover {
+  background-color: var(--color-mint-light);
+}
+
+/* Dense Data Tables */
+.cat-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  text-align: left;
+}
+
+.cat-table th {
+  background-color: #FAFAFA;
+  color: #555555;
+  font-weight: 600;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border-light);
+  height: 32px;
+  white-space: nowrap;
+}
+
+.cat-table td {
+  padding: 5px 8px;
+  border: 1px solid var(--color-border-light);
+  height: 30px;
+  color: #333333;
+  white-space: nowrap;
+}
+
+.cat-table tr:hover td {
+  background-color: #F8FBFA;
+}
+
+/* Mint Accent Links */
+.cat-link {
+  color: var(--color-mint);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cat-link:hover {
+  text-decoration: underline;
+}
+
+/* Status Colors (Compact Text Label style, NO heavy pills) */
+.cat-status-ok { color: #20B7A6; font-weight: 600; }
+.cat-status-ng { color: #E53935; font-weight: 600; }
+.cat-status-fixed { color: #8E24AA; font-weight: 600; }
+.cat-status-unexec { color: #757575; }
+.cat-status-pending { color: #FB8C00; font-weight: 600; }
+
+/* Custom Scrollbar for Japanese High Density Tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F1F1;
+}
+::-webkit-scrollbar-thumb {
+  background: #C1C1C1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A8A8A8;
+}
+
+/* 6 High-Contrast Colored KPI Blocks (Matching Screenshot 3) */
+.cat-kpi-bar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  width: 100%;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.cat-kpi-block {
+  padding: 12px 8px;
+  text-align: center;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cat-kpi-block-unexec {
+  background-color: #E0F2F1;
+  color: #004D40;
+}
+
+.cat-kpi-block-ng {
+  background-color: #FF0000;
+  color: #FFFFFF;
+}
+
+.cat-kpi-block-pending {
+  background-color: #E6A100;
+  color: #FFFFFF;
+}
+
+.cat-kpi-block-fixed {
+  background-color: #00C853;
+  color: #FFFFFF;
+}
+
+.cat-kpi-block-ok {
+  background-color: #0070F3;
+  color: #FFFFFF;
+}
+
+.cat-kpi-block-na {
+  background-color: #455A64;
+  color: #FFFFFF;
+}
+
+/* Document Handbook Quick Box */
+.cat-handbook-box {
+  background-color: #FFFFFF;
+  border: 1px solid #D9DEDE;
+  border-radius: 2px;
+  padding: 16px;
+  color: #333333;
+}
+
+.cat-handbook-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #444444;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #20B7A6;
+  padding-bottom: 4px;
+}
+
+.cat-handbook-section {
+  font-size: 15px;
+  font-weight: 700;
+  color: #333333;
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
+
