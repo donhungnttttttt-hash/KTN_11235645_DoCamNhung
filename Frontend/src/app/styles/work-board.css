@@ -1,0 +1,368 @@
+/* Dashboard theme for shared work item screens. */
+.dashboard-board.work-items .d-modal .d-new-issue > h1 {
+  display: none;
+}
+.work-items.dashboard-board {
+  --d-green: var(--color-mint, #20b7a6);
+  --d-accent: var(--color-mint, #20b7a6);
+  --d-link: var(--color-mint-hover, #199c8d);
+  --d-border: #d9dede;
+  --d-bg: #f8fafc;
+  --d-sidebar: 0px;
+  width: 100%;
+  max-width: 1240px;
+  height: auto;
+  overflow: visible;
+  margin: 0 auto;
+  padding: 16px 16px 8px;
+  background: transparent;
+  color: #333;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.dashboard-board.work-items .d-board-page {
+  height: calc(100dvh - 222px);
+  min-height: 420px;
+}
+.dashboard-board .wb-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.dashboard-board .wb-heading h1 {
+  font-size: 14px;
+  font-weight: 600;
+}
+.dashboard-board .wb-heading-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  min-width: 0;
+}
+.dashboard-board .wb-heading-summary h1 {
+  width: 100%;
+}
+.dashboard-board .wb-filter-count {
+  font-size: 11px;
+  color: #64748b;
+}
+.dashboard-board.work-items .d-search-top {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dashboard-board.work-items .d-search-collapse {
+  font-size: 11px;
+  margin-right: 4px;
+}
+.dashboard-board.work-items .d-search-collapse svg {
+  width: 16px;
+}
+.dashboard-board.work-items .d-segmented button {
+  min-width: 112px;
+  min-height: 28px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  border-color: #d9dede;
+}
+.dashboard-board.work-items .d-status-filters {
+  gap: 5px 7px;
+  margin: 14px 0;
+  font-size: 10px;
+}
+.dashboard-board.work-items .d-status-filters button {
+  padding: 3px 7px;
+}
+.dashboard-board.work-items .d-simple-fields {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.dashboard-board.work-items .d-simple-fields > .d-field {
+  width: 155px;
+}
+.dashboard-board.work-items .d-simple-fields > .d-field:last-child {
+  flex: 1;
+  min-width: 165px;
+}
+.dashboard-board.work-items .d-simple-fields .d-self-filter {
+  margin-left: 0;
+}
+.dashboard-board.work-items .d-table-toolbar {
+  margin-top: 18px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dashboard-board.work-items .d-table-tools {
+  flex-wrap: wrap;
+}
+.dashboard-board.work-items .d-pagination {
+  font-size: 11px;
+  flex-wrap: wrap;
+}
+.dashboard-board.work-items .d-issue-table-scroll {
+  overflow: auto;
+  max-height: 60dvh;
+  border: 1px solid #d9dede;
+  margin-bottom: 14px;
+}
+.dashboard-board.work-items .d-issue-table {
+  min-width: 1680px;
+}
+.dashboard-board.work-items .d-issue-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 32px;
+  background: #fafafa;
+  border-bottom: 1px solid #d9dede;
+  color: #199c8d;
+  font-weight: 500;
+}
+.dashboard-board.work-items .d-issue-table td {
+  padding: 9px;
+  border-color: #e2e8f0;
+}
+.dashboard-board.work-items .d-issue-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+.dashboard-board.work-items .d-issue-table tbody tr:hover {
+  background: #ebf8f6;
+}
+.dashboard-board.work-items .d-advanced-panel {
+  padding: 14px;
+  border-color: #d9dede;
+}
+.dashboard-board.work-items .d-advanced-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.dashboard-board.work-items .d-filter-description {
+  margin: 12px 0;
+}
+.dashboard-board.work-items .wb-drawer-backdrop {
+  justify-content: flex-end;
+  padding: 0;
+}
+.dashboard-board.work-items .d-modal.wide.wb-drawer {
+  width: min(780px, 88vw);
+  height: 100dvh;
+  max-height: 100dvh;
+  border-radius: 0;
+  border-width: 0 0 0 1px;
+}
+.dashboard-board.work-items .wb-drawer > header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.dashboard-board .wb-detail-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.dashboard-board .wb-full-detail {
+  padding: 16px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 16px;
+}
+@media (max-width: 640px) {
+  .dashboard-board .wb-filter-count {
+    margin-left: 0;
+  }
+  .dashboard-board.work-items .d-simple-fields > .d-field {
+    width: calc(50% - 6px);
+  }
+  .dashboard-board.work-items .d-advanced-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dashboard-board.work-items .d-modal.wide.wb-drawer {
+    width: 100%;
+  }
+  .dashboard-board.work-items .d-search-top > .d-spacer {
+    display: none;
+  }
+}
+.dashboard-board.work-items .d-board-heading {
+  gap: 12px;
+  padding: 0;
+}
+.dashboard-board.work-items .d-board-heading h1 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 4px;
+}
+.dashboard-board.work-items .d-button {
+  height: 28px;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 2px;
+  border-color: #d7dcdc;
+  font-size: 11px;
+  font-weight: 500;
+  color: #475569;
+}
+.dashboard-board.work-items .d-button svg {
+  width: 14px;
+  height: 14px;
+}
+.dashboard-board.work-items .d-button.primary {
+  background: var(--d-accent);
+  border-color: var(--d-accent);
+  color: white;
+}
+.dashboard-board.work-items .d-button.primary:hover {
+  background: #199c8d;
+}
+.dashboard-board.work-items .d-board-filters {
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 14px 0 16px;
+  padding: 0;
+}
+.dashboard-board.work-items .d-board-filters > .d-field {
+  width: 178px;
+}
+.dashboard-board.work-items .d-field {
+  font-size: 11px;
+  color: #64748b;
+}
+.dashboard-board.work-items input,
+.dashboard-board.work-items select,
+.dashboard-board.work-items .d-status-select > button {
+  height: 28px;
+  border-color: #d7dcdc;
+  border-radius: 2px;
+  font-size: 11px;
+}
+.dashboard-board.work-items .d-icon-button.outlined {
+  width: 28px;
+  height: 28px;
+  border-color: #d7dcdc;
+}
+.dashboard-board.work-items .d-board-filters .d-self-filter {
+  margin-left: 0;
+}
+.dashboard-board.work-items .d-kanban {
+  gap: 12px;
+  padding-right: 0;
+}
+.dashboard-board.work-items .d-kanban-column {
+  width: 280px;
+  border: 1px solid #e2e8f0;
+  border-radius: 3px;
+  padding-top: 8px;
+}
+.dashboard-board.work-items .d-kanban-column.drop-target {
+  border-color: var(--d-accent);
+  background: #ebf8f6;
+}
+.dashboard-board.work-items .d-kanban-column > header {
+  gap: 6px;
+  padding: 0 10px 7px;
+}
+.dashboard-board.work-items .d-kanban-column > header > i {
+  width: 10px;
+  height: 10px;
+}
+.dashboard-board.work-items .d-kanban-column h2 {
+  font-size: 12px;
+  font-weight: 600;
+}
+.dashboard-board.work-items .d-column-count {
+  min-width: 24px;
+  padding: 1px 7px;
+  font-size: 10px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+.dashboard-board.work-items .d-column-subheading {
+  font-size: 11px;
+  padding: 0 10px 8px;
+  color: #64748b;
+}
+.dashboard-board.work-items .d-kanban-cards {
+  padding: 0 10px 10px;
+}
+.dashboard-board.work-items .d-kanban-card {
+  border-color: #d9dede;
+  border-radius: 2px;
+  padding: 8px 9px;
+  margin-bottom: 8px;
+}
+.dashboard-board.work-items .d-kanban-card:hover {
+  background: #f3fbfa;
+  border-color: #20b7a6;
+}
+.dashboard-board.work-items .d-card-title {
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 4px 0 8px;
+}
+.dashboard-board.work-items .d-card-meta {
+  font-size: 10px;
+}
+.dashboard-board.work-items .d-modal-backdrop {
+  background: #0f172a66;
+}
+.dashboard-board.work-items .d-modal {
+  border-color: #d9dede;
+  border-radius: 4px;
+}
+.dashboard-board.work-items .d-modal.wide {
+  width: 1040px;
+}
+.dashboard-board.work-items .d-modal > header {
+  background: #fafafa;
+  border-color: #e2e8f0;
+  padding: 10px 16px;
+}
+.dashboard-board.work-items .d-modal-body {
+  padding: 16px;
+}
+.dashboard-board.work-items .d-detail-page > h1 {
+  font-size: 17px;
+}
+.dashboard-board.work-items .d-new-panel {
+  padding: 16px;
+}
+.dashboard-board.work-items .d-toast {
+  left: 50%;
+  bottom: 44px;
+  font-size: 12px;
+  background: #147d72;
+}
+@media (max-width: 640px) {
+  .work-items.dashboard-board {
+    padding: 12px 10px 8px;
+  }
+  .dashboard-board.work-items .d-board-heading {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .dashboard-board.work-items .d-board-heading h1 {
+    width: 100%;
+  }
+  .dashboard-board.work-items .d-board-heading > .d-spacer {
+    display: none;
+  }
+  .dashboard-board.work-items .d-board-filters > .d-field {
+    width: calc(50% - 6px);
+  }
+  .dashboard-board.work-items .d-kanban-column {
+    width: 270px;
+  }
+  .dashboard-board.work-items .d-modal-backdrop {
+    padding: 10px;
+  }
+}

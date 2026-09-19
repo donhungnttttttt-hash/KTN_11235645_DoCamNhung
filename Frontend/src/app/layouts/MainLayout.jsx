@@ -1,25 +1,57 @@
-import React from 'react';
-import { Header } from '../components/Header';
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
+import React, { useEffect, useState } from "react";
+import { Header } from "../components/Header";
+import { Sidebar } from "../components/Sidebar";
+import { Footer } from "../components/Footer";
+import "../styles/app-shell.css";
 
 export function MainLayout({ activeRoute, navigate, children }) {
-  const isRunnerRoute = activeRoute.startsWith('/tests/');
+  const isRunnerRoute = activeRoute.startsWith("/tests/");
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [phase, setPhase] = useState("Chuẩn_iPad Merge Regression");
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [activeRoute]);
+  useEffect(() => {
+    const close = (event) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, []);
+
+  if (isRunnerRoute) return <main id="main-viewport">{children}</main>;
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-slate-50">
-      <div>
-        {/* Ẩn Header & Navbar toàn cục khi đang ở trong file Test Runner chi tiết để tối ưu không gian kiểm thử */}
-        {!isRunnerRoute && <Header navigate={navigate} />}
-        {!isRunnerRoute && <Navbar activeRoute={activeRoute} navigate={navigate} />}
-        
+    <div
+      className={`app-shell ${collapsed ? "sidebar-collapsed" : ""} ${mobileOpen ? "mobile-open" : ""}`}
+    >
+      <Header
+        navigate={navigate}
+        phase={phase}
+        setPhase={setPhase}
+        onOpenMenu={() => setMobileOpen(true)}
+      />
+      <Sidebar
+        activeRoute={activeRoute}
+        navigate={navigate}
+        collapsed={collapsed}
+        onToggle={() => setCollapsed(!collapsed)}
+        onClose={() => setMobileOpen(false)}
+      />
+      {mobileOpen && (
+        <button
+          className="app-sidebar-backdrop"
+          aria-label="Đóng menu dự án"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+      <div className="app-workspace">
         <main id="main-viewport" className="flex-1">
           {children}
         </main>
+        <Footer />
       </div>
-
-      {/* Ẩn Footer toàn cục khi ở trong file Test Runner */}
-      {!isRunnerRoute && <Footer />}
     </div>
   );
 }
