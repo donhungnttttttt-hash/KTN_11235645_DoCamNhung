@@ -5,7 +5,7 @@ import { Footer } from "../components/Footer";
 import "../styles/app-shell.css";
 
 export function MainLayout({ activeRoute, navigate, children }) {
-  const isRunnerRoute = activeRoute.startsWith("/tests/");
+  const documentRoute = /^\/tests\/documents\/[1-9]\d*$/.test(activeRoute);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [phase, setPhase] = useState("Chuẩn_iPad Merge Regression");
@@ -20,17 +20,15 @@ export function MainLayout({ activeRoute, navigate, children }) {
     return () => window.removeEventListener("keydown", close);
   }, []);
 
-  if (isRunnerRoute) return <main id="main-viewport">{children}</main>;
-
   return (
     <div
-      className={`app-shell ${collapsed ? "sidebar-collapsed" : ""} ${mobileOpen ? "mobile-open" : ""}`}
+      className={`app-shell ${documentRoute ? "document-focus" : ""} ${collapsed ? "sidebar-collapsed" : ""} ${mobileOpen ? "mobile-open" : ""}`}
     >
       <Header
         navigate={navigate}
         phase={phase}
         setPhase={setPhase}
-        onOpenMenu={() => setMobileOpen(true)}
+        onOpenMenu={() => setMobileOpen(value => !value)}
       />
       <Sidebar
         activeRoute={activeRoute}

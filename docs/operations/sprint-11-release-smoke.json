@@ -1,0 +1,14 @@
+{
+    "checkedAt":  "2026-09-30T17:16:04.796Z",
+    "origin":  "http://127.0.0.1:8180",
+    "profile":  "release",
+    "ready":  true,
+    "anonymousDenied":  true,
+    "adminAuthenticated":  true,
+    "caseApprovedReadback":  true,
+    "emptyReport":  true,
+    "diagnosticDenied":  true,
+    "artifactVersion":  "s11-verified",
+    "backendSha256":  "cd6e2cd548a80da03b67678577a0870f74174d7a021cfe477b876f94c6820e38",
+    "schemaVersion":  11
+}

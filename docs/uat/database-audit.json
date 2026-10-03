@@ -1,0 +1,236 @@
+{
+  "checkedAt": "2026-09-30T16:54:11.968Z",
+  "database": "local/tms",
+  "access": "tms_app / read-only transaction",
+  "tableCount": 56,
+  "totalRows": 2600,
+  "foreignKeysChecked": 128,
+  "domainChecks": 6,
+  "failures": [],
+  "tables": [
+    {
+      "name": "SPRING_SESSION",
+      "count": 0
+    },
+    {
+      "name": "SPRING_SESSION_ATTRIBUTES",
+      "count": 0
+    },
+    {
+      "name": "application_info",
+      "count": 1
+    },
+    {
+      "name": "bug_closure_decisions",
+      "count": 10
+    },
+    {
+      "name": "bug_coverage_items",
+      "count": 13
+    },
+    {
+      "name": "bug_coverage_revisions",
+      "count": 13
+    },
+    {
+      "name": "bug_details",
+      "count": 34
+    },
+    {
+      "name": "bug_retest_state",
+      "count": 34
+    },
+    {
+      "name": "bug_verification_attempts",
+      "count": 11
+    },
+    {
+      "name": "builds",
+      "count": 4
+    },
+    {
+      "name": "categories",
+      "count": 6
+    },
+    {
+      "name": "cycle_configurations",
+      "count": 9
+    },
+    {
+      "name": "cycle_decisions",
+      "count": 3
+    },
+    {
+      "name": "cycle_statuses",
+      "count": 3
+    },
+    {
+      "name": "devices",
+      "count": 3
+    },
+    {
+      "name": "environments",
+      "count": 4
+    },
+    {
+      "name": "execution_attempts",
+      "count": 188
+    },
+    {
+      "name": "execution_results",
+      "count": 3
+    },
+    {
+      "name": "flyway_schema_history",
+      "count": 11
+    },
+    {
+      "name": "foundation_checks",
+      "count": 1
+    },
+    {
+      "name": "identity_audit",
+      "count": 87
+    },
+    {
+      "name": "identity_login_buckets",
+      "count": 7
+    },
+    {
+      "name": "identity_roles",
+      "count": 3
+    },
+    {
+      "name": "identity_users",
+      "count": 7
+    },
+    {
+      "name": "import_batches",
+      "count": 2
+    },
+    {
+      "name": "import_rows",
+      "count": 2
+    },
+    {
+      "name": "milestones",
+      "count": 3
+    },
+    {
+      "name": "project_audit",
+      "count": 949
+    },
+    {
+      "name": "project_counters",
+      "count": 2
+    },
+    {
+      "name": "project_memberships",
+      "count": 10
+    },
+    {
+      "name": "project_resources",
+      "count": 4
+    },
+    {
+      "name": "projects",
+      "count": 3
+    },
+    {
+      "name": "redmine_bindings",
+      "count": 2
+    },
+    {
+      "name": "redmine_delivery_attempts",
+      "count": 8
+    },
+    {
+      "name": "redmine_outbox",
+      "count": 6
+    },
+    {
+      "name": "resource_revisions",
+      "count": 5
+    },
+    {
+      "name": "retest_request_items",
+      "count": 13
+    },
+    {
+      "name": "retest_requests",
+      "count": 13
+    },
+    {
+      "name": "rule_versions",
+      "count": 2
+    },
+    {
+      "name": "rulesets",
+      "count": 2
+    },
+    {
+      "name": "run_item_assignments",
+      "count": 242
+    },
+    {
+      "name": "run_items",
+      "count": 241
+    },
+    {
+      "name": "run_scope_decisions",
+      "count": 10
+    },
+    {
+      "name": "test_case_revisions",
+      "count": 122
+    },
+    {
+      "name": "test_cases",
+      "count": 121
+    },
+    {
+      "name": "test_cycles",
+      "count": 5
+    },
+    {
+      "name": "test_suites",
+      "count": 8
+    },
+    {
+      "name": "work_item_attachments",
+      "count": 32
+    },
+    {
+      "name": "work_item_clarifications",
+      "count": 0
+    },
+    {
+      "name": "work_item_comments",
+      "count": 33
+    },
+    {
+      "name": "work_item_execution_links",
+      "count": 35
+    },
+    {
+      "name": "work_item_external_references",
+      "count": 0
+    },
+    {
+      "name": "work_item_history",
+      "count": 185
+    },
+    {
+      "name": "work_item_policy_versions",
+      "count": 1
+    },
+    {
+      "name": "work_item_statuses",
+      "count": 10
+    },
+    {
+      "name": "work_items",
+      "count": 74
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { SlidersHorizontal, MessageSquare, Star, Rss } from "lucide-react";
 import { Avatar, Button, IconButton, Modal } from "./components";
 import { statuses, milestones } from "./data";
-export default function HomePage({ issues, activities, navigate, notify }) {
+export default function HomePage({ issues, activities, navigate, notify, statusCounts, milestoneCounts }) {
   const [expanded, setExpanded] = useState([]);
   const [stars, setStars] = useState([]);
   const [settings, setSettings] = useState(false);
@@ -12,13 +12,14 @@ export default function HomePage({ issues, activities, navigate, notify }) {
   const ActivityHeading = "h2";
   const summary = statuses.map((status) => ({
     ...status,
-    count: issues.filter((issue) => issue.status === status.id).length,
+    count: statusCounts ? Number(statusCounts.find(row => row.status === status.id)?.count || 0) : issues.filter((issue) => issue.status === status.id).length,
   }));
-  const completed = issues.filter((issue) => issue.status === "closed").length;
-  const completion = issues.length
-    ? Math.round((completed / issues.length) * 100)
+  const completed = summary.find(status => status.id === 'closed').count;
+  const total = summary.reduce((sum, status) => sum + status.count, 0);
+  const completion = total
+    ? Math.round((completed / total) * 100)
     : 0;
-  const milestoneSummary = [
+  const milestoneSummary = milestoneCounts ? milestoneCounts.map(row => ({...row,percent:row.total?Math.round(Number(row.done)/Number(row.total)*100):0})) : [
     ...new Set([
       ...milestones,
       ...issues.map((issue) => issue.milestone).filter(Boolean),
@@ -41,7 +42,7 @@ export default function HomePage({ issues, activities, navigate, notify }) {
       <section className="d-home-main">
         <div className="d-section-heading">
           <ActivityHeading>
-            {"Cập nhật gần đây"}
+            {"Công việc tạo gần đây"}
             <Rss size={15} />
           </ActivityHeading>
           <div>
@@ -188,7 +189,7 @@ export default function HomePage({ issues, activities, navigate, notify }) {
               ))}
           </div>
           <div className="d-completion">
-            {`${completed}/${issues.length} công việc hoàn thành · ${completion}%`}
+            {`${completed}/${total} công việc hoàn thành · ${completion}%`}
           </div>
           <div className="d-status-summary">
             {summary.map((s) => (

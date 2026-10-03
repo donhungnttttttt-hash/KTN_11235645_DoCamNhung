@@ -1,0 +1,117 @@
+{
+  "source": "../schema.json",
+  "sourceGeneratedAt": "2026-09-30T17:38:33.402Z",
+  "sourceSha256": "e2e17054aef445b241d6cbee47515d36144e421cb27037962a5a8d4048a794cb",
+  "database": "tms",
+  "flywayVersion": "11",
+  "tables": 56,
+  "columns": 514,
+  "foreignKeys": 128,
+  "renderer": {
+    "viz": "3.31.0",
+    "sharp": "0.35.5"
+  },
+  "images": [
+    {
+      "file": "00-toan-bo-56-bang.png",
+      "title": "DATABASE TMS · 56 BẢNG · 514 CỘT · 128 KHÓA NGOẠI",
+      "tables": 56,
+      "columns": 514,
+      "externalTables": 0,
+      "foreignKeys": 128,
+      "width": 8255,
+      "height": 10780,
+      "layoutWarnings": [
+        "Warning: no value for width of non-ASCII character 194. Falling back to width of space character"
+      ]
+    },
+    {
+      "file": "01-danh-tinh-dang-nhap.png",
+      "title": "DANH TÍNH & ĐĂNG NHẬP · 6 BẢNG",
+      "tables": 6,
+      "columns": 31,
+      "externalTables": 1,
+      "foreignKeys": 5,
+      "width": 2552,
+      "height": 2058,
+      "layoutWarnings": []
+    },
+    {
+      "file": "02-du-an-cau-hinh.png",
+      "title": "DỰ ÁN & CẤU HÌNH · 13 BẢNG",
+      "tables": 13,
+      "columns": 113,
+      "externalTables": 1,
+      "foreignKeys": 21,
+      "width": 3082,
+      "height": 7200,
+      "layoutWarnings": []
+    },
+    {
+      "file": "03-thu-vien-test-case-excel.png",
+      "title": "THƯ VIỆN & NHẬP EXCEL · 5 BẢNG",
+      "tables": 5,
+      "columns": 62,
+      "externalTables": 3,
+      "foreignKeys": 14,
+      "width": 3300,
+      "height": 2632,
+      "layoutWarnings": []
+    },
+    {
+      "file": "04-thuc-thi-kiem-thu.png",
+      "title": "THỰC THI KIỂM THỬ · 9 BẢNG",
+      "tables": 9,
+      "columns": 71,
+      "externalTables": 7,
+      "foreignKeys": 26,
+      "width": 4184,
+      "height": 3254,
+      "layoutWarnings": []
+    },
+    {
+      "file": "05-cong-viec-bug.png",
+      "title": "CÔNG VIỆC & BUG · 10 BẢNG",
+      "tables": 10,
+      "columns": 95,
+      "externalTables": 10,
+      "foreignKeys": 30,
+      "width": 3280,
+      "height": 6006,
+      "layoutWarnings": []
+    },
+    {
+      "file": "06-retest-dong-loi.png",
+      "title": "RETEST & ĐÓNG LỖI · 7 BẢNG",
+      "tables": 7,
+      "columns": 70,
+      "externalTables": 8,
+      "foreignKeys": 25,
+      "width": 4172,
+      "height": 3706,
+      "layoutWarnings": []
+    },
+    {
+      "file": "07-tich-hop-redmine.png",
+      "title": "TÍCH HỢP REDMINE · 3 BẢNG",
+      "tables": 3,
+      "columns": 55,
+      "externalTables": 2,
+      "foreignKeys": 7,
+      "width": 3472,
+      "height": 2224,
+      "layoutWarnings": []
+    },
+    {
+      "file": "08-nen-tang-ky-thuat.png",
+      "title": "NỀN TẢNG KỸ THUẬT · 3 BẢNG",
+      "tables": 3,
+      "columns": 17,
+      "externalTables": 0,
+      "foreignKeys": 0,
+      "width": 2300,
+      "height": 1916,
+      "layoutWarnings": []
+    }
+  ]
+}

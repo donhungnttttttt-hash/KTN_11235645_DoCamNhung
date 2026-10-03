@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth } from "../auth/AuthProvider";
 import {
   GitBranch,
   Plus,
@@ -31,6 +32,7 @@ import {
 const initialDescription =
   "## Mô tả vấn đề\nMô tả ngắn gọn hiện tượng xảy ra và chức năng bị ảnh hưởng.\n\n## Các bước tái hiện\n1. Mở ứng dụng và đăng nhập.\n2. Truy cập màn hình cần kiểm tra.\n3. Thực hiện thao tác gây ra lỗi.\n\n## Kết quả thực tế\n\n## Kết quả mong đợi\n\n## Môi trường kiểm thử\nThiết bị:\nHệ điều hành:\nPhiên bản ứng dụng:";
 export function IssueProperties({ form, setForm, detail = false }) {
+  const { user } = useAuth();
   const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
   const [extra, setExtra] = useState(null);
   const [extraValue, setExtraValue] = useState("");
@@ -125,12 +127,12 @@ export function IssueProperties({ form, setForm, detail = false }) {
               {select(
                 "assignee",
                 "Người phụ trách công việc",
-                members.map((m) => m.name),
+                [...new Set([...members.map((m) => m.name), user.displayName])],
               )}
               <Button
                 rounded
                 icon={UserRound}
-                onClick={() => set("assignee", "Đỗ Cẩm Nhung")}
+                onClick={() => set("assignee", user.displayName)}
               >
                 Gán cho tôi
               </Button>
@@ -398,6 +400,7 @@ export function IssueDetailPage({
   notify,
   backLabel = "Danh sách công việc",
 }) {
+  const { user } = useAuth();
   const [form, setForm] = useState({ ...issue });
   const [comment, setComment] = useState("");
   const [preview, setPreview] = useState(false);
@@ -421,7 +424,7 @@ export function IssueDetailPage({
           ? [
               {
                 text: comment.trim(),
-                author: "Đỗ Cẩm Nhung",
+                author: user.displayName,
                 time: new Date().toLocaleString("vi-VN"),
                 recipient,
               },

@@ -1,0 +1,12 @@
+{
+  "backupBytes" : 111321,
+  "backupSha256" : "9a4134986912506dfff33d2404c1ec3920229c3c9160944f3b52c9e8c12c5f90",
+  "tablesCompared" : 54,
+  "evidenceFilesVerified" : 1,
+  "schema" : "V10",
+  "restoresVerified" : 2,
+  "failedMigrationPartialDdlObserved" : true,
+  "sourceUnchanged" : true,
+  "elapsedMs" : 55421,
+  "limits" : "Isolated synthetic MySQL 8.4.8 + evidence byte restore; no app process started on restored DB. Live backup must pause all writers and invalidate sessions before opening recovered service. This is not an RTO/RPO commitment."
+}

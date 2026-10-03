@@ -1,44 +1,71 @@
 import React from 'react';
 import { DashboardPage } from '../pages/DashboardPage';
 import { TestSpecsPage } from '../pages/TestSpecsPage';
+import { TestDocumentsPage } from '../features/test-cases/TestDocumentsPage';
+import { TestDocumentPage } from '../features/test-cases/TestDocumentPage';
 import { TestRunnerGridPage } from '../pages/TestRunnerGridPage';
-import { IssuesPage } from '../pages/IssuesPage';
+import { TestCyclesPage } from '../features/test-execution/TestCyclesPage';
+import { RetestQueuePage } from '../features/retest/RetestQueuePage';
 import { ProgressPage } from '../pages/ProgressPage';
 import { AnalysisPage } from '../pages/AnalysisPage';
 import { WorkBoardPage } from '../pages/WorkBoardPage';
+import { NotFoundPage } from '../pages/NotFoundPage';
+import { ProjectSettingsPage } from '../features/projects/ProjectSettingsPage';
+import { CatalogPage } from '../features/projects/CatalogPage';
+import { routeInfo } from './routeInfo';
 
 export function AppRouter({ activeRoute, project, teamMembers, testSpecs, issues, memberProgress, navigate }) {
-  const isRunnerRoute = activeRoute.startsWith('/tests/');
-  const specId = isRunnerRoute ? activeRoute.replace('/tests/', '') : null;
+  const { path, specId, caseId } = routeInfo(activeRoute);
+  const isRunnerRoute = specId !== null;
 
-  if (activeRoute === '/dashboard' || activeRoute.startsWith('/dashboard/')) {
+  if (path === '/dashboard' || path.startsWith('/dashboard/')) {
     return <DashboardPage project={project} teamMembers={teamMembers} activeRoute={activeRoute} navigate={navigate} />;
   }
 
-  if (activeRoute === '/board' || activeRoute.startsWith('/board/')) {
+  if (path === '/board' || path.startsWith('/board/')) {
     return <WorkBoardPage activeRoute={activeRoute} navigate={navigate} />;
   }
 
-  if (activeRoute === '/tests') {
+  if (path === '/tests') {
+    return <TestDocumentsPage navigate={navigate} />;
+  }
+
+  if (path === '/tests/cases') {
     return <TestSpecsPage testSpecs={testSpecs} navigate={navigate} />;
   }
 
+  const documentRoute = /^\/tests\/documents\/([1-9]\d*)$/.exec(path);
+  if (documentRoute) return <TestDocumentPage documentId={documentRoute[1]} navigate={navigate} />;
+
+  if (path === '/tests/cycles') {
+    return <TestCyclesPage navigate={navigate} />;
+  }
+
   if (isRunnerRoute) {
-    return <TestRunnerGridPage specId={specId} testSpecs={testSpecs} navigate={navigate} />;
+    if (path === '/tests/retests') return <RetestQueuePage navigate={navigate} />;
+    if (!/^\d+$/.test(specId)) return <NotFoundPage navigate={navigate} message="Không tìm thấy đợt kiểm thử này." />;
+    return <TestRunnerGridPage key={specId} specId={specId} navigate={navigate} />;
   }
 
-  if (activeRoute.startsWith('/issues')) {
-    return <IssuesPage issues={issues} />;
+  if (path === '/issues') {
+    return <WorkBoardPage activeRoute={activeRoute} navigate={navigate} />;
   }
 
-  if (activeRoute.startsWith('/progress')) {
+  if (path === '/progress') {
     return <ProgressPage memberProgress={memberProgress} />;
   }
 
-  if (activeRoute === '/analysis') {
+  if (path === '/analysis') {
     return <AnalysisPage />;
   }
 
-  return <DashboardPage project={project} teamMembers={teamMembers} navigate={navigate} />;
-}
+  if (path === '/settings/catalogs') {
+    return <CatalogPage />;
+  }
 
+  if (['/settings', '/settings/members', '/settings/rules', '/settings/handbook'].includes(path)) {
+    return <ProjectSettingsPage activeRoute={activeRoute} />;
+  }
+
+  return <NotFoundPage navigate={navigate} />;
+}

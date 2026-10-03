@@ -1,0 +1,517 @@
+openapi: 3.0.3
+info:
+  title: SY Partners TMS — Sprint 01–10
+  version: 0.10.1
+  description: |
+    Contract foundation S01 và identity nội bộ S02. Cookie session + CSRF cùng origin.
+    /api/v1/system/** chỉ được đăng ký/cho phép ở profile local, backend bind loopback.
+    Quyền tạo tài khoản chỉ cho ADMIN hoặc PM được ADMIN cấp; PM chỉ tạo TESTER.
+servers:
+  - url: http://127.0.0.1:8080
+    description: Backend local (giao diện dùng proxy cùng origin 5173)
+paths:
+  /api/v1/auth/csrf:
+    get:
+      operationId: authCsrf
+      description: Public; lấy token CSRF và cookie session. Sau login/logout lấy token mới.
+      responses:
+        '200':
+          description: Token CSRF, không phải token đăng nhập
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Csrf' }
+        default: { $ref: '#/components/responses/Error' }
+  /api/v1/auth/login:
+    post:
+      operationId: login
+      description: 5 lần/username/phút và 30 lần/IP/phút, gồm thành công; session ID và CSRF được đổi khi đăng nhập.
+      security: [{ sessionCookie: [], csrfHeader: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string, minLength: 1, maxLength: 64 }
+                password: { type: string, minLength: 1, maxLength: 128, writeOnly: true }
+      responses:
+        '200':
+          description: Đã đăng nhập; cookie TMS_SESSION HttpOnly, SameSite Strict, Secure trên HTTPS
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Me' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+        '429':
+          description: Quá nhiều lần thử
+          headers:
+            Retry-After: { schema: { type: integer, example: 60 } }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApiError' }
+        default: { $ref: '#/components/responses/Error' }
+  /api/v1/auth/logout:
+    post:
+      operationId: logout
+      description: Hủy phiên trên server; idempotent khi có CSRF hợp lệ. Không tự retry POST nếu lỗi mạng.
+      security: [{ sessionCookie: [], csrfHeader: [] }]
+      responses:
+        '204': { description: Đã đăng xuất }
+        '403': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+  /api/v1/me:
+    get:
+      operationId: currentUser
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Profile và quyền của tài khoản đang đăng nhập, chưa có membership dự án
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Me' }
+        '401': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+  /api/v1/users:
+    get:
+      operationId: listUsers
+      description: Chỉ ADMIN; sắp createdAt ASC, id ASC.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { in: query, name: page, schema: { type: integer, minimum: 0, default: 0 } }
+        - { in: query, name: size, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+      responses:
+        '200':
+          description: Danh sách tài khoản
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, page, size, totalElements]
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/User' } }
+                  page: { type: integer }
+                  size: { type: integer }
+                  totalElements: { type: integer, format: int64 }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+    post:
+      operationId: createUser
+      description: ADMIN tạo ADMIN/PM/TESTER. PM có users:create chỉ tạo TESTER. TESTER và PM chưa được cấp luôn 403. PM mới mặc định chưa được cấp quyền.
+      security: [{ sessionCookie: [], csrfHeader: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, displayName, password, role]
+              properties:
+                username: { type: string, pattern: '^[A-Za-z0-9][A-Za-z0-9._-]{2,63}$' }
+                displayName: { type: string, minLength: 1, maxLength: 100 }
+                password: { type: string, minLength: 12, maxLength: 128, writeOnly: true }
+                role: { type: string, enum: [ADMIN, PM, TESTER] }
+      responses:
+        '201':
+          description: Đã tạo tài khoản
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+  /api/v1/users/{id}:
+    patch:
+      operationId: updateUser
+      description: Chỉ ADMIN. Cần enabled hoặc canCreateUsers; canCreateUsers chỉ áp dụng với PM. Thay đổi thu hồi mọi phiên của người được cập nhật. Không tự vô hiệu hóa tài khoản; không đổi role/password tại đây.
+      security: [{ sessionCookie: [], csrfHeader: [] }]
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [expectedVersion]
+              properties:
+                enabled: { type: boolean }
+                canCreateUsers: { type: boolean }
+                expectedVersion: { type: integer, format: int64, minimum: 0 }
+      responses:
+        '200':
+          description: Đã cập nhật, version mới trong response
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+  /actuator/health:
+    get:
+      operationId: health
+      responses:
+        '200':
+          $ref: '#/components/responses/Health'
+        '503':
+          $ref: '#/components/responses/Health'
+  /actuator/health/readiness:
+    get:
+      operationId: readiness
+      description: UP khi ứng dụng chấp nhận request và datasource kết nối được MySQL; không trả chi tiết cấu hình.
+      responses:
+        '200':
+          $ref: '#/components/responses/Health'
+        '503':
+          $ref: '#/components/responses/Health'
+  /api/v1/system/status:
+    get:
+      operationId: systemStatus
+      description: Local only; đọc application_info, phiên bản MySQL và lịch sử Flyway thực tế.
+      responses:
+        '200':
+          description: Kết nối thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, application, database, migrationVersion, appliedMigrations, installedAt, checkedAt]
+                properties:
+                  status: { type: string, enum: [UP] }
+                  application: { type: string }
+                  database: { type: string, example: 'MySQL 8.4.8' }
+                  migrationVersion: { type: string, example: '1' }
+                  appliedMigrations: { type: integer, minimum: 1 }
+                  installedAt: { type: string, format: date-time }
+                  checkedAt: { type: string, format: date-time }
+        '401':
+          $ref: '#/components/responses/Error'
+        '500':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+  /api/v1/system/csrf:
+    get:
+      operationId: localCsrf
+      description: Local only; tạo token CSRF và cookie session HttpOnly. Gửi cookie cùng token trong POST tiếp theo.
+      responses:
+        '200':
+          description: Token bảo vệ request; không phải token đăng nhập
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [token, headerName]
+                properties:
+                  token: { type: string }
+                  headerName: { type: string, example: X-CSRF-TOKEN }
+        '401':
+          $ref: '#/components/responses/Error'
+  /api/v1/system/checks:
+    get:
+      operationId: listFoundationChecks
+      description: Local only. Trang cố định 0, tối đa 20 bản ghi mới nhất, sắp createdAt DESC rồi id DESC. Chưa nhận tham số phân trang.
+      responses:
+        '200':
+          description: Danh sách kiểm tra (có thể rỗng)
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, page, size, totalElements]
+                properties:
+                  items:
+                    type: array
+                    maxItems: 20
+                    items: { $ref: '#/components/schemas/Check' }
+                  page: { type: integer, enum: [0] }
+                  size: { type: integer, enum: [20] }
+                  totalElements: { type: integer, format: int64, minimum: 0 }
+        '401':
+          $ref: '#/components/responses/Error'
+        '500':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: createFoundationCheck
+      description: |
+        Local only. Nội dung bắt buộc, tối đa 160 UTF-16 code units trước trim;
+        bỏ khoảng trắng đầu/cuối khi lưu. Giao dịch tạo một bản ghi UUID và thời gian UTC.
+        Chưa có idempotency key: client không tự retry POST; kiểm tra danh sách trước khi gửi lại nếu mất kết nối.
+      parameters:
+        - in: header
+          name: X-CSRF-TOKEN
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message]
+              properties:
+                message: { type: string, minLength: 1, maxLength: 160, example: 'Kiểm tra kết nối từ giao diện' }
+      responses:
+        '201':
+          description: Đã ghi thành công vào MySQL
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Check' }
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '500':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+  /api/v1/projects/{projectId}/test-suites:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-suites'
+  /api/v1/projects/{projectId}/test-suites/{id}:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-suites~1{id}'
+  /api/v1/projects/{projectId}/test-cases:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cases'
+  /api/v1/projects/{projectId}/test-cases/{id}:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cases~1{id}'
+  /api/v1/projects/{projectId}/test-cases/{id}/revisions:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cases~1{id}~1revisions'
+  /api/v1/projects/{projectId}/test-cases/{id}/revisions/{revisionId}:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cases~1{id}~1revisions~1{revisionId}'
+  /api/v1/projects/{projectId}/test-cases/{id}/revisions/{revisionId}/approve:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cases~1{id}~1revisions~1{revisionId}~1approve'
+  /api/v1/projects/{projectId}/test-cases/{id}/archive:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cases~1{id}~1archive'
+  /api/v1/projects/{projectId}/import-previews/template:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1import-previews~1template'
+  /api/v1/projects/{projectId}/import-previews:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1import-previews'
+  /api/v1/projects/{projectId}/import-previews/{id}:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1import-previews~1{id}'
+  /api/v1/projects/{projectId}/import-previews/{id}/commit:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1import-previews~1{id}~1commit'
+  /api/v1/projects/{projectId}/test-cycles:
+    $ref: "./execution.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cycles"
+  /api/v1/projects/{projectId}/test-cycles/{id}:
+    $ref: "./execution.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cycles~1{id}"
+  /api/v1/projects/{projectId}/test-cycles/{id}/configurations:
+    $ref: "./execution.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cycles~1{id}~1configurations"
+  /api/v1/projects/{projectId}/test-cycles/{id}/scope:
+    $ref: "./execution.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cycles~1{id}~1scope"
+  /api/v1/projects/{projectId}/test-cycles/{id}/activate:
+    $ref: "./execution.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cycles~1{id}~1activate"
+  /api/v1/projects/{projectId}/test-cycles/{id}/run-items:
+    $ref: "./execution.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cycles~1{id}~1run-items"
+  /api/v1/projects/{projectId}/run-items/{id}:
+    $ref: "./execution.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1run-items~1{id}"
+  /api/v1/projects/{projectId}/run-items/{id}/assignment:
+    $ref: "./execution.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1run-items~1{id}~1assignment"
+  /api/v1/projects/{projectId}/run-items/{id}/assignments:
+    $ref: "./execution.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1run-items~1{id}~1assignments"
+  /api/v1/projects/{projectId}/run-items/{id}/attempts:
+    $ref: "./execution.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1run-items~1{id}~1attempts"
+  /api/v1/projects/{projectId}/work-items:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items'
+  /api/v1/projects/{projectId}/work-items/metadata:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1metadata'
+  /api/v1/projects/{projectId}/work-items/overview:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1overview'
+  /api/v1/projects/{projectId}/work-items/sources/{attemptId}:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1sources~1{attemptId}'
+  /api/v1/projects/{projectId}/work-items/{id}:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}'
+  /api/v1/projects/{projectId}/work-items/{id}/transitions:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1transitions'
+  /api/v1/projects/{projectId}/work-items/batch-transitions:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1batch-transitions'
+  /api/v1/projects/{projectId}/work-items/{id}/execution-links:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1execution-links'
+  /api/v1/projects/{projectId}/work-items/{id}/history:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1history'
+  /api/v1/projects/{projectId}/work-items/{id}/comments:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1comments'
+  /api/v1/projects/{projectId}/work-items/{id}/external-reference:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1external-reference'
+  /api/v1/projects/{projectId}/work-items/{id}/clarifications:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1clarifications'
+  /api/v1/projects/{projectId}/work-items/{id}/attachments:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1attachments'
+  /api/v1/projects/{projectId}/work-items/{id}/attachments/{attachmentId}/content:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1attachments~1{attachmentId}~1content'
+  /api/v1/projects/{projectId}/work-items/{id}/attachments/{attachmentId}:
+    $ref: './work-items.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1attachments~1{attachmentId}'
+  /api/v1/projects/{projectId}/work-items/{id}/retest:
+    $ref: './retest.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1retest'
+  /api/v1/projects/{projectId}/retest-candidates:
+    $ref: './retest.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1retest-candidates'
+  /api/v1/projects/{projectId}/work-items/{id}/retest-coverage:
+    $ref: './retest.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1retest-coverage'
+  /api/v1/projects/{projectId}/work-items/{id}/retest-requests:
+    $ref: './retest.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1retest-requests'
+  /api/v1/projects/{projectId}/retest-requests:
+    $ref: './retest.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1retest-requests'
+  /api/v1/projects/{projectId}/retest-requests/{id}:
+    $ref: './retest.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1retest-requests~1{id}'
+  /api/v1/projects/{projectId}/retest-requests/{id}/results:
+    $ref: './retest.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1retest-requests~1{id}~1results'
+  /api/v1/projects/{projectId}/work-items/{id}/closure:
+    $ref: './retest.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1closure'
+  /api/v1/projects/{projectId}/work-items/{id}/reopen:
+    $ref: './retest.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1reopen'
+  /api/v1/projects/{projectId}/run-items/{id}/scope-decisions:
+    $ref: './reporting.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1run-items~1{id}~1scope-decisions'
+  /api/v1/projects/{projectId}/test-cycles/{id}/decisions:
+    $ref: './reporting.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-cycles~1{id}~1decisions'
+  /api/v1/projects/{projectId}/reports/summary:
+    $ref: './reporting.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1reports~1summary'
+  /api/v1/projects/{projectId}/reports/export.xlsx:
+    $ref: './reporting.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1reports~1export.xlsx'
+  /api/v1/projects/{projectId}/integrations/redmine:
+    $ref: './redmine.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1integrations~1redmine'
+  /api/v1/projects/{projectId}/work-items/{id}/redmine:
+    $ref: './redmine.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1redmine'
+  /api/v1/projects/{projectId}/work-items/{id}/redmine-deliveries:
+    $ref: './redmine.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1redmine-deliveries'
+  /api/v1/projects/{projectId}/work-items/{id}/redmine-reconciliations:
+    $ref: './redmine.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1work-items~1{id}~1redmine-reconciliations'
+  /api/v1/projects/{projectId}/redmine-deliveries/{id}/retry:
+    $ref: './redmine.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1redmine-deliveries~1{id}~1retry'
+  /api/v1/projects:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects"
+  /api/v1/projects/{projectId}:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}"
+  /api/v1/projects/{projectId}/members:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1members"
+  /api/v1/projects/{projectId}/members/{userId}:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1members~1{userId}"
+  /api/v1/projects/{projectId}/member-candidate:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1member-candidate"
+  /api/v1/projects/{projectId}/catalogs/environments:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1catalogs~1environments"
+  /api/v1/projects/{projectId}/catalogs/environments/{id}:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1catalogs~1environments~1{id}"
+  /api/v1/projects/{projectId}/catalogs/builds:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1catalogs~1builds"
+  /api/v1/projects/{projectId}/catalogs/builds/{id}:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1catalogs~1builds~1{id}"
+  /api/v1/projects/{projectId}/catalogs/devices:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1catalogs~1devices"
+  /api/v1/projects/{projectId}/catalogs/devices/{id}:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1catalogs~1devices~1{id}"
+  /api/v1/projects/{projectId}/catalogs/categories:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1catalogs~1categories"
+  /api/v1/projects/{projectId}/catalogs/categories/{id}:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1catalogs~1categories~1{id}"
+  /api/v1/projects/{projectId}/catalogs/milestones:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1catalogs~1milestones"
+  /api/v1/projects/{projectId}/catalogs/milestones/{id}:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1catalogs~1milestones~1{id}"
+  /api/v1/projects/{projectId}/bug-rule-versions:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1bug-rule-versions"
+  /api/v1/projects/{projectId}/bug-rule-versions/{rulesetId}/versions:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1bug-rule-versions~1{rulesetId}~1versions"
+  /api/v1/projects/{projectId}/bug-rule-versions/{rulesetId}/versions/{versionId}/publish:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1bug-rule-versions~1{rulesetId}~1versions~1{versionId}~1publish"
+  /api/v1/projects/{projectId}/handbook:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1handbook"
+  /api/v1/projects/{projectId}/handbook/{resourceId}:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1handbook~1{resourceId}"
+  /api/v1/projects/{projectId}/handbook/{resourceId}/revisions:
+    $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1handbook~1{resourceId}~1revisions"
+components:
+  securitySchemes:
+    sessionCookie: { type: apiKey, in: cookie, name: TMS_SESSION }
+    csrfHeader: { type: apiKey, in: header, name: X-CSRF-TOKEN }
+  schemas:
+    Csrf:
+      type: object
+      required: [token, headerName]
+      properties:
+        token: { type: string }
+        headerName: { type: string, example: X-CSRF-TOKEN }
+    Me:
+      type: object
+      required: [id, username, displayName, roles, permissions, sessionExpiresAt]
+      properties:
+        id: { type: string, format: uuid }
+        username: { type: string }
+        displayName: { type: string }
+        roles: { type: array, items: { type: string, enum: [ADMIN, PM, TESTER] } }
+        permissions: { type: array, items: { type: string, enum: ['profile:read', 'users:read', 'users:create', 'users:update', 'users:delegate'] } }
+        sessionExpiresAt: { type: string, format: date-time }
+    User:
+      type: object
+      required: [id, username, displayName, role, enabled, canCreateUsers, version, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        username: { type: string }
+        displayName: { type: string }
+        role: { type: string, enum: [ADMIN, PM, TESTER] }
+        enabled: { type: boolean }
+        canCreateUsers: { type: boolean, description: Cờ cấp riêng cho PM; ADMIN có quyền từ role dù cờ này false. }
+        version: { type: integer, format: int64, minimum: 0 }
+        createdAt: { type: string, format: date-time }
+    Check:
+      type: object
+      required: [id, message, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        message: { type: string, maxLength: 160 }
+        createdAt: { type: string, format: date-time }
+    ApiError:
+      type: object
+      required: [code, message, fieldErrors, requestId]
+      properties:
+        code: { type: string, example: VALIDATION_ERROR }
+        message: { type: string, example: 'Vui lòng kiểm tra dữ liệu nhập.' }
+        requestId: { type: string }
+        fieldErrors:
+          type: array
+          items:
+            type: object
+            required: [field, code, message]
+            properties:
+              field: { type: string }
+              code: { type: string }
+              message: { type: string }
+  responses:
+    Health:
+      description: Trạng thái health tối thiểu; đây là payload Actuator, không phải ApiError.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [status]
+            properties:
+              status: { type: string, enum: [UP, DOWN, OUT_OF_SERVICE, UNKNOWN] }
+              groups:
+                type: array
+                items: { type: string }
+    Error:
+      description: |
+        400 INVALID_REQUEST; 401 UNAUTHENTICATED/AUTHENTICATION_FAILED; 403 FORBIDDEN/CSRF_INVALID;
+        404 NOT_FOUND; 409 VERSION_CONFLICT/USERNAME_EXISTS/SELF_DISABLE;
+        422 VALIDATION_ERROR; 429 LOGIN_THROTTLED; 500 INTERNAL_ERROR; 503 DATABASE_UNAVAILABLE.
+        Không trả stack trace, SQL hoặc credentials. API chưa mở trả 401 khi chưa đăng nhập, 403 khi đã đăng nhập.
+        X-Request-ID hợp lệ được truyền lại; giá trị sai hoặc thiếu được thay bằng UUID.
+      headers:
+        X-Request-ID:
+          schema: { type: string }
+          description: Mã đối chiếu request/log; có cả trên response thành công.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiError' }

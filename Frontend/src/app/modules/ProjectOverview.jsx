@@ -1,110 +1,34 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Plus, Maximize2, X } from "lucide-react";
-import HomePage from "../features/work-items/HomePage";
-import { Button, Modal } from "../features/work-items/components";
-import {
-  IssueDetailPage,
-  NewIssuePage,
-} from "../features/work-items/IssueForm";
-import { useProjectData } from "../features/work-items/ProjectData";
-import "../features/work-items/work-items.css";
-import "../styles/work-board.css";
-import "../styles/project-overview.css";
+import React, { useEffect, useState } from 'react';
+import { Plus } from 'lucide-react';
+import HomePage from '../features/work-items/HomePage';
+import { Button } from '../features/work-items/components';
+import { presentItem, useProjectData } from '../features/work-items/ProjectData';
+import { workItemsApi } from '../services/api/workItems';
+import { WorkError } from '../features/work-items/WorkItemForm';
+import '../features/work-items/work-items.css';
+import '../features/work-items/work-items-live.css';
+import '../styles/work-board.css';
+import '../styles/project-overview.css';
 
-export function ProjectOverview({ activeRoute, navigate }) {
-  const { issues, activities, addIssue, updateIssue } = useProjectData();
-  const [toast, setToast] = useState("");
-  const timer = useRef(null);
-  const isNew = activeRoute === "/dashboard/new";
-  const issueId = activeRoute.startsWith("/dashboard/issue/")
-    ? activeRoute.split("/")[3]
-    : null;
-  const issue = issues.find((item) => item.id === issueId);
-  useEffect(() => () => clearTimeout(timer.current), []);
-  function notify(message) {
-    setToast(message);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setToast(""), 4200);
+export function ProjectOverview({ navigate }) {
+  const { projectId, writable } = useProjectData();
+  const [result,setResult]=useState(null),[error,setError]=useState(''),[revision,setRevision]=useState(0),[notice,setNotice]=useState('');
+  useEffect(()=>{
+    let current=true;setResult(null);setError('');
+    if(projectId)workItemsApi.overview(projectId).then(data=>{if(current)setResult(data);}).catch(e=>{if(current)setError(e.message);});
+    return()=>{current=false;};
+  },[projectId,revision]);
+  const items=(result?.items||[]).map(presentItem);
+  const activities=items.map(item=>({id:item.serverId,issueId:item.id,user:item.creator,kind:'created',timestamp:item.createdAt,text:'',status:item.status}));
+  function go(route){
+    if(route.startsWith('/board/issue/')){const item=items.find(i=>i.id===route.split('/')[3]);navigate('/board/issue/'+(item?.serverId||route.split('/')[3]));}
+    else navigate(route);
   }
-  function overviewNavigate(route) {
-    if (route.startsWith("/board/issue/"))
-      navigate(route.replace("/board/issue/", "/dashboard/issue/"));
-    else if (route.startsWith("/board/list?")) navigate(route);
-    else navigate("/dashboard");
-  }
-  return (
-    <div
-      className="work-items dashboard-board project-overview"
-      data-lenis-prevent
-    >
-      <header className="wb-heading">
-        <div>
-          <h1>Tổng quan dự án</h1>
-          <p className="overview-subtitle">
-            Theo dõi hoạt động, công việc và tiến độ phát hành của S+Flutter.
-          </p>
-        </div>
-        <Button primary icon={Plus} onClick={() => navigate("/dashboard/new")}>
-          Thêm công việc
-        </Button>
-      </header>
-      <HomePage
-        issues={issues}
-        activities={activities}
-        navigate={overviewNavigate}
-        notify={notify}
-      />
-      {(isNew || issueId) && (
-        <Modal
-          title={isNew ? "Thêm công việc" : "Chi tiết công việc"}
-          wide
-          drawer={!isNew}
-          onClose={() => navigate("/dashboard")}
-        >
-          {isNew ? (
-            <NewIssuePage
-              issues={issues}
-              navigate={overviewNavigate}
-              addIssue={(values) => {
-                const id = addIssue(values);
-                notify(`Đã tạo ${id}.`);
-                return id;
-              }}
-            />
-          ) : issue ? (
-            <>
-              <div className="wb-detail-actions">
-                <Button
-                  icon={Maximize2}
-                  onClick={() =>
-                    navigate(`/board/issue/${issue.id}?detail=full&view=list`)
-                  }
-                >
-                  Mở trang chi tiết
-                </Button>
-              </div>
-              <IssueDetailPage
-                key={issue.id}
-                issue={issue}
-                updateIssue={updateIssue}
-                navigate={overviewNavigate}
-                notify={notify}
-                backLabel="Quay lại tổng quan"
-              />
-            </>
-          ) : (
-            <p>Không tìm thấy công việc này.</p>
-          )}
-        </Modal>
-      )}
-      {toast && (
-        <div className="d-toast" role="status">
-          {toast}
-          <button aria-label="Đóng thông báo" onClick={() => setToast("")}>
-            <X size={15} />
-          </button>
-        </div>
-      )}
-    </div>
-  );
+  if(!projectId)return <div className="cat-container">Chọn dự án để xem tổng quan.</div>;
+  return <div className="work-items dashboard-board project-overview" data-lenis-prevent>
+    <header className="wb-heading"><div><h1>Tổng quan dự án</h1><p className="overview-subtitle">Theo dõi công việc và mốc phát hành của dự án.</p></div><Button primary icon={Plus} disabled={!writable} onClick={()=>navigate('/board/new')}>Thêm công việc</Button></header>
+    <WorkError error={error} retry={()=>setRevision(v=>v+1)}/>{!result&&!error&&<p>Đang tải tổng quan…</p>}
+    {result&&<HomePage issues={items} activities={activities} statusCounts={result.statuses} milestoneCounts={result.milestones} navigate={go} notify={setNotice}/>}
+    {notice&&<p role="status">{notice}</p>}
+  </div>;
 }

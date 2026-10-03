@@ -1,0 +1,63 @@
+CREATE TABLE identity_roles (
+    code VARCHAR(16) NOT NULL PRIMARY KEY,
+    display_name VARCHAR(80) NOT NULL
+) ENGINE=InnoDB;
+INSERT INTO identity_roles VALUES ('ADMIN', 'Quản trị viên'), ('PM', 'Quản lý dự án'), ('TESTER', 'Kiểm thử viên');
+
+CREATE TABLE identity_users (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    username VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    display_name VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role_code VARCHAR(16) NOT NULL,
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    can_create_users BOOLEAN NOT NULL DEFAULT FALSE,
+    lock_version BIGINT NOT NULL DEFAULT 0,
+    created_at DATETIME(6) NOT NULL,
+    CONSTRAINT uq_identity_username UNIQUE (username),
+    CONSTRAINT fk_identity_role FOREIGN KEY (role_code) REFERENCES identity_roles(code),
+    CONSTRAINT ck_identity_delegation CHECK (role_code = 'PM' OR can_create_users = FALSE),
+    INDEX ix_identity_users_created (created_at, id)
+) ENGINE=InnoDB;
+
+CREATE TABLE identity_audit (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    actor_id VARCHAR(36),
+    subject_id VARCHAR(36),
+    event_code VARCHAR(40) NOT NULL,
+    request_id VARCHAR(64) NOT NULL,
+    occurred_at DATETIME(6) NOT NULL,
+    CONSTRAINT fk_identity_audit_actor FOREIGN KEY (actor_id) REFERENCES identity_users(id),
+    CONSTRAINT fk_identity_audit_subject FOREIGN KEY (subject_id) REFERENCES identity_users(id),
+    INDEX ix_identity_audit_subject (subject_id, occurred_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE identity_login_buckets (
+    bucket_key CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL PRIMARY KEY,
+    attempts INT NOT NULL,
+    expires_at DATETIME(6) NOT NULL,
+    INDEX ix_identity_login_expiry (expires_at)
+) ENGINE=InnoDB;
+
+-- Spring Session JDBC 3.5.7 schema-mysql.sql. Flyway owns initialization.
+CREATE TABLE SPRING_SESSION (
+    PRIMARY_ID CHAR(36) NOT NULL,
+    SESSION_ID CHAR(36) NOT NULL,
+    CREATION_TIME BIGINT NOT NULL,
+    LAST_ACCESS_TIME BIGINT NOT NULL,
+    MAX_INACTIVE_INTERVAL INT NOT NULL,
+    EXPIRY_TIME BIGINT NOT NULL,
+    PRINCIPAL_NAME VARCHAR(100),
+    CONSTRAINT SPRING_SESSION_PK PRIMARY KEY (PRIMARY_ID)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
+CREATE UNIQUE INDEX SPRING_SESSION_IX1 ON SPRING_SESSION (SESSION_ID);
+CREATE INDEX SPRING_SESSION_IX2 ON SPRING_SESSION (EXPIRY_TIME);
+CREATE INDEX SPRING_SESSION_IX3 ON SPRING_SESSION (PRINCIPAL_NAME);
+CREATE TABLE SPRING_SESSION_ATTRIBUTES (
+    SESSION_PRIMARY_ID CHAR(36) NOT NULL,
+    ATTRIBUTE_NAME VARCHAR(200) NOT NULL,
+    ATTRIBUTE_BYTES BLOB NOT NULL,
+    CONSTRAINT SPRING_SESSION_ATTRIBUTES_PK PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
+    CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID)
+      REFERENCES SPRING_SESSION(PRIMARY_ID) ON DELETE CASCADE
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;

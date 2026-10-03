@@ -1,0 +1,72 @@
+import React from 'react';
+import { beforeEach, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { WorkItemDetail } from './WorkItemDetail';
+import { workItemsApi } from '../../services/api/workItems';
+vi.mock('../../services/api/workItems',()=>({workItemsApi:{get:vi.fn(),comments:vi.fn(),history:vi.fn(),comment:vi.fn(),update:vi.fn(),external:vi.fn(),clarify:vi.fn(),attachments:vi.fn(),transition:vi.fn()}}));
+const item={id:7,key:'DEMO-7',type:'BUG',title:'Màn hình trắng',description:'Mô tả',status:'open',priority:'MEDIUM',version:0,steps:'Đăng nhập',expectedResult:'Trang chủ',actualResult:'Trắng',links:[{attemptId:3,attemptNo:1,caseNo:'TC-1'}],externalReferences:[],clarifications:[],creator:'Tester',createdAt:'2026-09-29T05:00:00Z',updatedAt:'2026-09-29T05:00:00Z',allowedTransitions:[{id:'ready',label:'Sẵn sàng xử lý'}],contextSnapshot:JSON.stringify({build:{versionLabel:'1.0'},device:{name:'Máy cũ'},environment:{name:'QA cũ'}})};
+const catalogs={members:[{membershipId:8,displayName:'Tester',username:'tester'}],categories:[{id:9,name:'Đăng nhập'}],milestones:[{id:10,name:'M1'}],builds:[{id:11,platform:'WEB',versionLabel:'1.1'}]};
+const props={projectId:1,id:7,catalogs,canTriage:false,writable:true,membershipId:8,onChanged:vi.fn()};
+beforeEach(()=>{vi.resetAllMocks();workItemsApi.get.mockResolvedValue(item);workItemsApi.comments.mockResolvedValue([]);workItemsApi.history.mockResolvedValue([]);workItemsApi.attachments.mockResolvedValue([]);});
+it('renders the original context and comments as text, retries with the same comment key, hides PM actions',async()=>{
+  const body='<img src=x onerror=alert(1)>';
+  workItemsApi.comment.mockRejectedValueOnce(new Error('Mất kết nối')).mockResolvedValueOnce({id:1});
+  const {container}=render(<React.StrictMode><WorkItemDetail {...props}/></React.StrictMode>);
+  await screen.findByText('Máy cũ');expect(screen.queryByText('Sửa thông tin và phân công')).not.toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText('Nội dung bình luận'),{target:{value:body}});fireEvent.click(screen.getByRole('button',{name:'Đăng bình luận'}));
+  await screen.findByText('Mất kết nối');expect(screen.getByLabelText('Nội dung bình luận')).toHaveValue(body);
+  workItemsApi.comments.mockResolvedValue([{id:1,body,author:'Tester',createdAt:item.createdAt}]);
+  fireEvent.click(screen.getByRole('button',{name:'Đăng bình luận'}));await waitFor(()=>expect(screen.getByLabelText('Nội dung bình luận')).toHaveValue(''));
+  expect(screen.getByText(body)).toBeVisible();expect(container.querySelector('img')).toBeNull();
+  expect(workItemsApi.comment.mock.calls[0][2].requestKey).toBe(workItemsApi.comment.mock.calls[1][2].requestKey);
+  expect(workItemsApi.comment.mock.calls[1][2].visibility).toBe('INTERNAL');
+});
+it('recovers a detail load failure without showing stale mock data',async()=>{
+  workItemsApi.get.mockRejectedValueOnce(new Error('Không tìm thấy công việc')).mockResolvedValueOnce(item);
+  render(<WorkItemDetail {...props}/>);await screen.findByText('Không tìm thấy công việc');
+  expect(screen.queryByText('DEMO-7')).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));
+  await screen.findByText('DEMO-7');
+});
+it('preserves an edit draft on conflict and submits the explicitly reloaded version',async()=>{
+  workItemsApi.update.mockRejectedValueOnce(Object.assign(new Error('Bản ghi đã thay đổi'),{status:409})).mockResolvedValueOnce({...item,version:5});
+  render(<WorkItemDetail {...props} canTriage/>);fireEvent.click(await screen.findByText('Sửa thông tin và phân công'));
+  for(const [label,value] of [['Sửa tiêu đề','Tiêu đề bản nháp'],['Sửa mô tả','Mô tả mới'],['Sửa bước tái hiện','Bước mới'],['Sửa kết quả mong đợi','Đạt'],['Sửa kết quả thực tế','Chưa đạt'],['Lý do sửa','Phân loại lại']])fireEvent.change(screen.getByLabelText(label),{target:{value}});
+  fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'8'}});fireEvent.change(screen.getByLabelText('Danh mục'),{target:{value:'9'}});fireEvent.change(screen.getByLabelText('Mốc phát hành'),{target:{value:'10'}});fireEvent.change(screen.getByLabelText('Độ ưu tiên'),{target:{value:'HIGH'}});
+  fireEvent.click(screen.getByRole('button',{name:'Lưu thông tin'}));await screen.findByText('Bản ghi đã thay đổi');
+  expect(screen.getByRole('button',{name:'Lưu thông tin'})).toBeDisabled();
+  workItemsApi.get.mockResolvedValue({...item,version:4,title:'Người khác sửa'});
+  fireEvent.click(screen.getByRole('button',{name:'Tải bản hiện hành, giữ bản nháp'}));
+  await waitFor(()=>expect(screen.getByRole('button',{name:'Lưu thông tin'})).toBeEnabled());
+  expect(screen.getByLabelText('Sửa tiêu đề')).toHaveValue('Tiêu đề bản nháp');
+  fireEvent.click(screen.getByRole('button',{name:'Lưu thông tin'}));await waitFor(()=>expect(props.onChanged).toHaveBeenCalled());
+  expect(workItemsApi.update).toHaveBeenLastCalledWith(1,7,expect.objectContaining({expectedVersion:4,title:'Tiêu đề bản nháp',categoryId:9,milestoneId:10,assigneeMembershipId:8,priority:'HIGH'}));
+});
+it('saves external references as manual and records source and confirmation time separately',async()=>{
+  workItemsApi.external.mockRejectedValueOnce(new Error('Tham chiếu bị trùng')).mockResolvedValueOnce(item);workItemsApi.clarify.mockResolvedValue(item);
+  render(<WorkItemDetail {...props} canTriage/>);fireEvent.click(await screen.findByText('Tham chiếu tracker và nội dung làm rõ'));
+  fireEvent.change(screen.getByLabelText('Mã bên ngoài'),{target:{value:'123'}});fireEvent.change(screen.getByLabelText('URL bên ngoài'),{target:{value:'https://tracker.example/issues/123'}});
+  fireEvent.click(screen.getByRole('button',{name:'Lưu tham chiếu'}));await screen.findByText('Tham chiếu bị trùng');expect(screen.getByLabelText('Mã bên ngoài')).toHaveValue('123');
+  workItemsApi.get.mockResolvedValue({...item,externalReferences:[{id:1,provider:'REDMINE',externalId:'123',url:'https://tracker.example/issues/123'}]});
+  fireEvent.click(screen.getByRole('button',{name:'Lưu tham chiếu'}));await screen.findByRole('link',{name:'REDMINE #123'});expect(screen.getByText(/Nhập thủ công, chưa đối soát/)).toBeVisible();
+  fireEvent.change(screen.getByLabelText('Nguồn xác nhận'),{target:{value:'BRSE'}});
+  for(const [label,value] of [['Tham chiếu xác nhận','Biên bản 1'],['Người xác nhận','BrSE demo'],['Thời điểm xác nhận','2026-09-28T10:00'],['Nội dung kết luận','Đồng ý bước tái hiện']])fireEvent.change(screen.getByLabelText(label),{target:{value}});
+  fireEvent.click(screen.getByRole('button',{name:'Lưu nội dung làm rõ'}));await waitFor(()=>expect(workItemsApi.clarify).toHaveBeenCalledWith(1,7,expect.objectContaining({sourceKind:'BRSE',confirmedAt:new Date('2026-09-28T10:00').toISOString(),sourceReference:'Biên bản 1'})));
+});
+it('loads older history and comments by cursor, avoids duplicate rows, and shows errors',async()=>{
+  const notes=Array.from({length:50},(_,i)=>({id:100-i,body:'Bình luận '+i,author:'Tester'}));
+  const events=Array.from({length:50},(_,i)=>({id:100-i,actor:'PM',reason:'Lý do '+i,toStatus:'ready'}));
+  workItemsApi.comments.mockResolvedValueOnce(notes).mockResolvedValueOnce([notes[49],{id:50,author:'Tester',body:'Bình luận cũ nhất'}]);
+  workItemsApi.history.mockResolvedValueOnce(events).mockRejectedValueOnce(new Error('Lỗi tải lịch sử'));
+  render(<WorkItemDetail {...props} writable={false}/>);fireEvent.click(await screen.findByRole('button',{name:'Bình luận cũ hơn'}));await screen.findByText('Bình luận cũ nhất');
+  expect(screen.getAllByText('Bình luận 49')).toHaveLength(1);expect(workItemsApi.comments).toHaveBeenLastCalledWith(1,7,51);
+  fireEvent.click(screen.getByRole('button',{name:'Lịch sử cũ hơn'}));await screen.findByText('Lỗi tải lịch sử');
+  expect(screen.queryByLabelText('Nội dung bình luận')).not.toBeInTheDocument();
+});
+it('shows the saved fixed build after PM resolves, without replacing the linked NG',async()=>{
+  workItemsApi.get.mockResolvedValue({...item,allowedTransitions:[{id:'resolved',label:'Đã xử lý'}]});workItemsApi.transition.mockResolvedValue({...item,status:'resolved',fixedBuildId:11});
+  render(<WorkItemDetail {...props} canTriage/>);await screen.findByText('DEMO-7');
+  fireEvent.change(screen.getByLabelText('Chuyển trạng thái'),{target:{value:'resolved'}});fireEvent.click(screen.getByRole('button',{name:'Chuyển trạng thái'}));
+  fireEvent.change(screen.getByLabelText('Build đã sửa'),{target:{value:'11'}});fireEvent.change(screen.getByLabelText('Lý do chuyển trạng thái'),{target:{value:'Dev báo đã sửa'}});
+  workItemsApi.get.mockResolvedValue({...item,status:'resolved',fixedBuildId:11});fireEvent.click(screen.getByRole('button',{name:'Xác nhận chuyển'}));
+  await screen.findByText('WEB 1.1 (—)');expect(screen.getByText(/NG #3/)).toBeVisible();expect(props.onChanged).toHaveBeenCalled();
+});

@@ -1,0 +1,12 @@
+# Diagnostics endpoints are enabled only in this local profile.
+spring:
+  config:
+    # Maven runs from Backend; local secrets stay outside the packaged resources.
+    import: "optional:file:${TMS_LOCAL_CONFIG_FILE:../.env.mysql.local}[.properties]"
+  datasource:
+    url: "${TMS_DB_URL:jdbc:mysql://${TMS_MYSQL_HOST:127.0.0.1}:${TMS_MYSQL_PORT:3307}/${TMS_DB_NAME:tms}?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&allowPublicKeyRetrieval=true&sslMode=DISABLED}"
+  flyway:
+    url: ${spring.datasource.url}
+logging:
+  level:
+    org.hibernate.SQL: WARN

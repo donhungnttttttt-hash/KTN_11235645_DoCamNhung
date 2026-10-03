@@ -1,0 +1,11 @@
+# Migration credentials never enter the running application in this profile.
+spring:
+  flyway:
+    user: ${TMS_DB_USER}
+    password: ${TMS_DB_PASSWORD}
+    ignore-migration-patterns: ""
+server:
+  forward-headers-strategy: none
+tms:
+  bootstrap:
+    enabled: ${TMS_BOOTSTRAP_ENABLED:false}

@@ -9,29 +9,12 @@ export function DashboardPage({
   activeRoute = "/dashboard",
   navigate,
 }) {
-  const testing = activeRoute === "/dashboard/testing";
+  const testing = activeRoute.split("?")[0] === "/dashboard/testing";
   useEffect(() => {
     document.title = `${testing ? "Tổng quan kiểm thử" : "Tổng quan dự án"} · S+Flutter`;
   }, [testing]);
   return (
     <>
-      <nav
-        className="cat-container overview-tabs"
-        aria-label="Chế độ tổng quan"
-      >
-        <button
-          aria-current={!testing ? "page" : undefined}
-          onClick={() => navigate("/dashboard")}
-        >
-          Tổng quan dự án
-        </button>
-        <button
-          aria-current={testing ? "page" : undefined}
-          onClick={() => navigate("/dashboard/testing")}
-        >
-          Tổng quan kiểm thử
-        </button>
-      </nav>
       <div hidden={testing}>
         <ProjectOverview activeRoute={activeRoute} navigate={navigate} />
       </div>

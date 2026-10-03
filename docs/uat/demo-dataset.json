@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-09-30T16:51:27.888Z",
+  "project": {
+    "id": 3,
+    "code": "DEMO-PILOT",
+    "name": "DEMO · Kiểm thử phát hành 1.2"
+  },
+  "synthetic": true,
+  "counts": {
+    "users": 5,
+    "members": 6,
+    "suites": 6,
+    "cases": 120,
+    "cycles": 4,
+    "runItems": 240,
+    "bugs": 32,
+    "workItems": 72
+  },
+  "statusCounts": {
+    "clarify": 9,
+    "recheck": 9,
+    "progress": 13,
+    "open": 11,
+    "planning": 8,
+    "ready": 10,
+    "resolved": 4,
+    "closed": 4,
+    "wontfix": 2,
+    "unreproducible": 2
+  },
+  "metrics": {
+    "total": 200,
+    "na": 8,
+    "applicable": 192,
+    "ok": 132,
+    "ng": 28,
+    "pending": 16,
+    "notRun": 16,
+    "executionPercent": 83.33,
+    "passPercent": 68.75,
+    "bugs": 32,
+    "openBugs": 24,
+    "awaitingVerification": 4
+  }
+}

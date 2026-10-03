@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1150" height="958" viewBox="0 0 1150 958"><rect width="100%" height="100%" fill="white"/>
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(32.4 825.6)">
+<title>ERD</title>
+<polygon fill="white" stroke="none" points="-32.4,32.4 -32.4,-825.6 448.44,-825.6 448.44,32.4 -32.4,32.4"/>
+<text xml:space="preserve" text-anchor="middle" x="208.02" y="-766.7" font-family="Arial" font-size="25.00" fill="#173f62">NỀN TẢNG KỸ THUẬT · 3 BẢNG</text>
+<!-- t2 -->
+<g id="table&#45;application_info" class="node">
+<title>t2</title>
+<polygon fill="#edf6fc" stroke="none" points="59.34,0 59.34,-182.4 356.7,-182.4 356.7,0 59.34,0"/>
+<polygon fill="none" stroke="#c1d6e7" points="59.34,0 59.34,-182.4 356.7,-182.4 356.7,0 59.34,0"/>
+<polygon fill="#c6e3f7" stroke="none" points="60.34,-145.4 60.34,-181.4 355.7,-181.4 355.7,-145.4 60.34,-145.4"/>
+<text xml:space="preserve" text-anchor="start" x="146.68" y="-159.6" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">application_info</text>
+<text xml:space="preserve" text-anchor="start" x="67.34" y="-128.4" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-128.4" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="249.25" y="-128.4" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="67.34" y="-99.4" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-99.4" font-family="Arial" font-size="13.00" fill="#455a70">smallint</text>
+<text xml:space="preserve" text-anchor="start" x="249.25" y="-100.2" font-family="Arial" font-size="11.00" fill="#355f88">PK</text>
+<text xml:space="preserve" text-anchor="start" x="67.34" y="-69.8" font-family="Arial" font-size="13.00" fill="#20374a">system_key</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-69.8" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="249.25" y="-70.6" font-family="Arial" font-size="11.00" fill="#355f88">UQ</text>
+<text xml:space="preserve" text-anchor="start" x="67.34" y="-40.2" font-family="Arial" font-size="13.00" fill="#20374a">display_name</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-40.2" font-family="Arial" font-size="13.00" fill="#455a70">varchar(100)</text>
+<text xml:space="preserve" text-anchor="start" x="249.25" y="-41" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="67.34" y="-10.6" font-family="Arial" font-size="13.00" fill="#20374a">installed_at</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-10.6" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="249.25" y="-11.4" font-family="Arial" font-size="11.00" fill="#355f88">GEN</text>
+</g>
+<!-- t19 -->
+<g id="table&#45;foundation_checks" class="node">
+<title>t19</title>
+<polygon fill="#edf6fc" stroke="none" points="68.73,-212.8 68.73,-365.6 347.31,-365.6 347.31,-212.8 68.73,-212.8"/>
+<polygon fill="none" stroke="#c1d6e7" points="68.73,-212.8 68.73,-365.6 347.31,-365.6 347.31,-212.8 68.73,-212.8"/>
+<polygon fill="#c6e3f7" stroke="none" points="69.73,-328.6 69.73,-364.6 346.31,-364.6 346.31,-328.6 69.73,-328.6"/>
+<text xml:space="preserve" text-anchor="start" x="135.12" y="-342.8" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">foundation_checks</text>
+<text xml:space="preserve" text-anchor="start" x="76.73" y="-311.6" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="152.16" y="-311.6" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="239.86" y="-311.6" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="76.73" y="-282.6" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="152.16" y="-282.6" font-family="Arial" font-size="13.00" fill="#455a70">varchar(36)</text>
+<text xml:space="preserve" text-anchor="start" x="239.86" y="-283.4" font-family="Arial" font-size="11.00" fill="#355f88">PK</text>
+<text xml:space="preserve" text-anchor="start" x="76.73" y="-253" font-family="Arial" font-size="13.00" fill="#20374a">message</text>
+<text xml:space="preserve" text-anchor="start" x="152.16" y="-253" font-family="Arial" font-size="13.00" fill="#455a70">varchar(160)</text>
+<text xml:space="preserve" text-anchor="start" x="239.86" y="-253.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="76.73" y="-223.4" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="152.16" y="-223.4" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="239.86" y="-224.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t18 -->
+<g id="table&#45;flyway_schema_history" class="node">
+<title>t18</title>
+<polygon fill="#edf6fc" stroke="none" points="52.11,-395.2 52.11,-755.2 363.93,-755.2 363.93,-395.2 52.11,-395.2"/>
+<polygon fill="none" stroke="#c1d6e7" points="52.11,-395.2 52.11,-755.2 363.93,-755.2 363.93,-395.2 52.11,-395.2"/>
+<polygon fill="#c6e3f7" stroke="none" points="53.11,-718.2 53.11,-754.2 362.93,-754.2 362.93,-718.2 53.11,-718.2"/>
+<text xml:space="preserve" text-anchor="start" x="118.19" y="-732.4" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">flyway_schema_history</text>
+<text xml:space="preserve" text-anchor="start" x="60.11" y="-701.2" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-701.2" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="256.48" y="-701.2" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="60.11" y="-672.2" font-family="Arial" font-size="13.00" fill="#20374a">installed_rank</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-672.2" font-family="Arial" font-size="13.00" fill="#455a70">int</text>
+<text xml:space="preserve" text-anchor="start" x="256.48" y="-673" font-family="Arial" font-size="11.00" fill="#355f88">PK</text>
+<text xml:space="preserve" text-anchor="start" x="60.11" y="-642.6" font-family="Arial" font-size="13.00" fill="#20374a">version</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-642.6" font-family="Arial" font-size="13.00" fill="#455a70">varchar(50)</text>
+<text xml:space="preserve" text-anchor="start" x="256.48" y="-643.4" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="60.11" y="-613" font-family="Arial" font-size="13.00" fill="#20374a">description</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-613" font-family="Arial" font-size="13.00" fill="#455a70">varchar(200)</text>
+<text xml:space="preserve" text-anchor="start" x="256.48" y="-613.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="60.11" y="-583.4" font-family="Arial" font-size="13.00" fill="#20374a">type</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-583.4" font-family="Arial" font-size="13.00" fill="#455a70">varchar(20)</text>
+<text xml:space="preserve" text-anchor="start" x="256.48" y="-584.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="60.11" y="-553.8" font-family="Arial" font-size="13.00" fill="#20374a">script</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-553.8" font-family="Arial" font-size="13.00" fill="#455a70">varchar(1000)</text>
+<text xml:space="preserve" text-anchor="start" x="256.48" y="-554.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="60.11" y="-524.2" font-family="Arial" font-size="13.00" fill="#20374a">checksum</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-524.2" font-family="Arial" font-size="13.00" fill="#455a70">int</text>
+<text xml:space="preserve" text-anchor="start" x="256.48" y="-525" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="60.11" y="-494.6" font-family="Arial" font-size="13.00" fill="#20374a">installed_by</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-494.6" font-family="Arial" font-size="13.00" fill="#455a70">varchar(100)</text>
+<text xml:space="preserve" text-anchor="start" x="256.48" y="-495.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="60.11" y="-465" font-family="Arial" font-size="13.00" fill="#20374a">installed_on</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-465" font-family="Arial" font-size="13.00" fill="#455a70">timestamp</text>
+<text xml:space="preserve" text-anchor="start" x="256.48" y="-465.8" font-family="Arial" font-size="11.00" fill="#355f88">GEN</text>
+<text xml:space="preserve" text-anchor="start" x="60.11" y="-435.4" font-family="Arial" font-size="13.00" fill="#20374a">execution_time</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-435.4" font-family="Arial" font-size="13.00" fill="#455a70">int</text>
+<text xml:space="preserve" text-anchor="start" x="256.48" y="-436.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="60.11" y="-405.8" font-family="Arial" font-size="13.00" fill="#20374a">success</text>
+<text xml:space="preserve" text-anchor="start" x="161.55" y="-405.8" font-family="Arial" font-size="13.00" fill="#455a70">tinyint(1)</text>
+<text xml:space="preserve" text-anchor="start" x="256.48" y="-406.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+</g>
+<g font-family="Arial" font-size="12" fill="#587087"><text x="32" y="886">PK: khóa chính · FK: khóa ngoại · UQ: unique một cột · NULL: cho phép rỗng · AI: tự tăng · GEN: cột sinh tự động</text><text x="32" y="907">Cột không ghi NULL là NOT NULL. Đường nối: một ràng buộc FK (kể cả khóa ghép); chân quạ: nhiều; vòng tròn: có thể không có.</text><text x="32" y="928">Bảng xanh: đủ cột trong nhóm. Bảng xám: khóa tham chiếu ngoài nhóm. Chỉ vẽ FK đi từ bảng trong nhóm.</text><text x="32" y="949">Nguồn: tms · Flyway V11 · metadata 00:38 1/10/26 (giờ Việt Nam) · Chi tiết khóa ghép: foreign-keys.csv</text></g></svg>

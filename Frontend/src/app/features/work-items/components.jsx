@@ -196,6 +196,8 @@ export function Modal({
     const previous = document.activeElement;
     ref.current?.focus();
     const escape = (e) => {
+      // An expired session retains this draft under a hidden, inert auth boundary.
+      if (ref.current?.closest("[hidden], [inert]")) return;
       const dialogs = document.querySelectorAll(
         '[role="dialog"][aria-modal="true"]',
       );

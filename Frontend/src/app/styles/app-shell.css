@@ -192,6 +192,12 @@
 .app-submenu > button:hover {
   background: #ffffff1c;
 }
+.app-submenu > button svg { flex-shrink: 0; }
+.app-submenu > button span { line-height: 1.5; }
+.app-nav-item:focus-visible, .app-submenu > button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -3px;
+}
 .app-submenu > button[aria-current="page"] {
   background: #e6f5ef;
   color: #168a77;
@@ -248,6 +254,11 @@
 .app-shell .work-items .d-board-page {
   height: calc(100dvh - 154px);
 }
+.app-shell.document-focus .app-workspace { margin-left: 0; }
+.document-focus .app-sidebar { transform: translateX(-100%); visibility: hidden; }
+.app-shell.document-focus .app-mobile-menu { display: inline-flex; }
+.document-focus.mobile-open .app-sidebar { transform: none; visibility: visible; }
+.document-focus .app-sidebar-backdrop { display: block; position: fixed; inset: 48px 0 0; background: #0f172a55; z-index: 49; border: 0; }
 .app-mobile-menu,
 .sidebar-mobile-close,
 .app-sidebar-backdrop {

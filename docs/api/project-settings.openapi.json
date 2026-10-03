@@ -1,0 +1,3358 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Project settings — review S03/S10",
+    "version": "0.10.1"
+  },
+  "paths": {
+    "/api/v1/projects": {
+      "parameters": [],
+      "get": {
+        "operationId": "listProjects",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createProject",
+        "description": "Chỉ ADMIN tạo dự án; tự có membership PM.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProject"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "getProject",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDetail"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateProject",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProject"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/members": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listProjectMembers",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Member"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/members/{userId}": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "maxLength": 36
+          }
+        }
+      ],
+      "put": {
+        "operationId": "setProjectMember",
+        "description": "expectedVersion chỉ null khi chưa từng có membership. Không đổi quyền hệ thống.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetMember"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "removeProjectMember",
+        "description": "Gỡ mềm; chặn PM cuối.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Đã lưu trữ hoặc gỡ thành viên"
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "expectedVersion",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/projects/{projectId}/member-candidate": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "findMemberCandidate",
+        "description": "Chỉ PM hoặc ADMIN là thành viên; tra username chính xác, không cấp danh sách tài khoản.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberCandidate"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/projects/{projectId}/catalogs/environments": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listEnvironments",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Environments"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createEnvironments",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Environments"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnvironments"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/catalogs/environments/{id}": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "patch": {
+        "operationId": "updateEnvironments",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Environments"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEnvironments"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "archiveEnvironments",
+        "description": "Lưu trữ mềm, giữ toàn bộ FK lịch sử.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Đã lưu trữ hoặc gỡ thành viên"
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "expectedVersion",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/projects/{projectId}/catalogs/builds": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listBuilds",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Builds"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createBuilds",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Builds"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBuilds"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/catalogs/builds/{id}": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "patch": {
+        "operationId": "updateBuilds",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Builds"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBuilds"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "archiveBuilds",
+        "description": "Lưu trữ mềm, giữ toàn bộ FK lịch sử.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Đã lưu trữ hoặc gỡ thành viên"
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "expectedVersion",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/projects/{projectId}/catalogs/devices": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listDevices",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Devices"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createDevices",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Devices"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDevices"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/catalogs/devices/{id}": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "patch": {
+        "operationId": "updateDevices",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Devices"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDevices"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "archiveDevices",
+        "description": "Lưu trữ mềm, giữ toàn bộ FK lịch sử.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Đã lưu trữ hoặc gỡ thành viên"
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "expectedVersion",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/projects/{projectId}/catalogs/categories": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listCategories",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Categories"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createCategories",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Categories"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategories"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/catalogs/categories/{id}": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "patch": {
+        "operationId": "updateCategories",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Categories"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategories"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "archiveCategories",
+        "description": "Lưu trữ mềm, giữ toàn bộ FK lịch sử.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Đã lưu trữ hoặc gỡ thành viên"
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "expectedVersion",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/projects/{projectId}/catalogs/milestones": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listMilestones",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Milestones"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createMilestones",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Milestones"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMilestones"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/catalogs/milestones/{id}": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "patch": {
+        "operationId": "updateMilestones",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Milestones"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMilestones"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "archiveMilestones",
+        "description": "Lưu trữ mềm, giữ toàn bộ FK lịch sử.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Đã lưu trữ hoặc gỡ thành viên"
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "expectedVersion",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/projects/{projectId}/bug-rule-versions": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listProjectRulesets",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ruleset"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createProjectRuleset",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ruleset"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRuleset"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/bug-rule-versions/{rulesetId}/versions": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "rulesetId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listProjectRuleVersions",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RuleVersion"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createProjectRuleVersion",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleVersion"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRuleVersion"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/bug-rule-versions/{rulesetId}/versions/{versionId}/publish": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "rulesetId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "versionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "publishProjectRuleVersion",
+        "description": "0 là chưa có version active. Chỉ quy tắc nội bộ DEMO; không thay quy tắc khách hàng.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ruleset"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishRule"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/handbook": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listHandbookResources",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Resource"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createHandbookResource",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateResource"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/handbook/{resourceId}": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "resourceId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "getHandbookResource",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceDetail"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/handbook/{resourceId}/revisions": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "resourceId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "appendHandbookRevision",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "message": {
+                      "type": "string",
+                      "maxLength": 1000
+                    },
+                    "requestId": {
+                      "type": "string",
+                      "maxLength": 80
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateResourceRevision"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "TMS_SESSION"
+      },
+      "csrfHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-TOKEN"
+      }
+    },
+    "schemas": {
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          },
+          "timezone": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "projectRole": {
+            "type": "string",
+            "maxLength": 16
+          }
+        },
+        "required": []
+      },
+      "CreateProject": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 32,
+            "pattern": "[A-Za-z0-9][A-Za-z0-9_-]{1,31}"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          },
+          "timezone": {
+            "type": "string",
+            "maxLength": 50
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "timezone"
+        ]
+      },
+      "UpdateProject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          },
+          "timezone": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "expectedVersion"
+        ]
+      },
+      "Member": {
+        "type": "object",
+        "properties": {
+          "membershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "userId": {
+            "type": "string",
+            "maxLength": 36
+          },
+          "username": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "systemRole": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "projectRole": {
+            "enum": [
+              "PM",
+              "TESTER",
+              "MEMBER"
+            ],
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": []
+      },
+      "SetMember": {
+        "type": "object",
+        "properties": {
+          "projectRole": {
+            "type": "string",
+            "enum": [
+              "PM",
+              "TESTER",
+              "MEMBER"
+            ]
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "nullable": true
+          }
+        },
+        "required": [
+          "projectRole"
+        ]
+      },
+      "MemberCandidate": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "maxLength": 36
+          },
+          "username": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "membershipVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "nullable": true
+          }
+        },
+        "required": []
+      },
+      "RuleVersion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "versionNo": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "contentJson": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "publishedBy": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "nullable": true
+          }
+        },
+        "required": []
+      },
+      "Ruleset": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "activeVersion": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RuleVersion"
+              }
+            ]
+          }
+        },
+        "required": []
+      },
+      "CreateRuleset": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INTERNAL_DEMO"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ]
+      },
+      "CreateRuleVersion": {
+        "type": "object",
+        "properties": {
+          "contentJson": {
+            "type": "string",
+            "maxLength": 4000,
+            "description": "JSON theo InternalRulePolicy; schemaVersion=1, scope=INTERNAL_DEMO; sourceReference, titlePrefix và đủ bảy requiredFields theo ADR-006."
+          }
+        },
+        "required": [
+          "contentJson"
+        ]
+      },
+      "PublishRule": {
+        "type": "object",
+        "properties": {
+          "expectedActiveVersionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "expectedActiveVersionId"
+        ]
+      },
+      "ResourceRevision": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "revisionNo": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "contentHtml": {
+            "type": "string",
+            "maxLength": 10000,
+            "description": "Văn bản thuần; không thực thi HTML."
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "INTERNAL"
+            ]
+          },
+          "editedBy": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": []
+      },
+      "CreateResource": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "resourceType": {
+            "type": "string",
+            "enum": [
+              "GUIDE",
+              "SPEC_REFERENCE",
+              "TEST_ACCOUNT_REFERENCE"
+            ]
+          },
+          "contentHtml": {
+            "type": "string",
+            "maxLength": 10000
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "INTERNAL"
+            ]
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "resourceType",
+          "contentHtml"
+        ]
+      },
+      "CreateResourceRevision": {
+        "type": "object",
+        "properties": {
+          "contentHtml": {
+            "type": "string",
+            "maxLength": 10000
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "INTERNAL"
+            ]
+          },
+          "expectedCurrentRevisionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "contentHtml",
+          "expectedCurrentRevisionId"
+        ]
+      },
+      "Resource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "resourceType": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "currentRevision": {
+            "$ref": "#/components/schemas/ResourceRevision"
+          }
+        },
+        "required": []
+      },
+      "ResourceDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Resource"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "history": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ResourceRevision"
+                }
+              }
+            },
+            "required": []
+          }
+        ]
+      },
+      "Environments": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "required": []
+      },
+      "CreateEnvironments": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ]
+      },
+      "UpdateEnvironments": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "expectedVersion"
+        ]
+      },
+      "Builds": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "platform": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "versionLabel": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "buildNumber": {
+            "type": "string",
+            "maxLength": 50,
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          },
+          "releasedAt": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": []
+      },
+      "CreateBuilds": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "versionLabel": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "buildNumber": {
+            "type": "string",
+            "maxLength": 50,
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          },
+          "releasedAt": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          }
+        },
+        "required": [
+          "platform",
+          "versionLabel"
+        ]
+      },
+      "UpdateBuilds": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "versionLabel": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "buildNumber": {
+            "type": "string",
+            "maxLength": 50,
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          },
+          "releasedAt": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "clearDates": {
+            "type": "array",
+            "maxItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "releasedAt"
+              ]
+            },
+            "description": "Xóa rõ ngày tùy chọn; null/omitted ở trường ngày giữ giá trị hiện có."
+          }
+        },
+        "required": [
+          "expectedVersion"
+        ]
+      },
+      "Devices": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "model": {
+            "type": "string",
+            "maxLength": 100,
+            "nullable": true
+          },
+          "osName": {
+            "type": "string",
+            "maxLength": 50,
+            "nullable": true
+          },
+          "osVersion": {
+            "type": "string",
+            "maxLength": 50,
+            "nullable": true
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "required": []
+      },
+      "CreateDevices": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "model": {
+            "type": "string",
+            "maxLength": 100,
+            "nullable": true
+          },
+          "osName": {
+            "type": "string",
+            "maxLength": 50,
+            "nullable": true
+          },
+          "osVersion": {
+            "type": "string",
+            "maxLength": 50,
+            "nullable": true
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ]
+      },
+      "UpdateDevices": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "model": {
+            "type": "string",
+            "maxLength": 100,
+            "nullable": true
+          },
+          "osName": {
+            "type": "string",
+            "maxLength": 50,
+            "nullable": true
+          },
+          "osVersion": {
+            "type": "string",
+            "maxLength": 50,
+            "nullable": true
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "expectedVersion"
+        ]
+      },
+      "Categories": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "required": []
+      },
+      "CreateCategories": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ]
+      },
+      "UpdateCategories": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "expectedVersion"
+        ]
+      },
+      "Milestones": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "startsOn": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "dueOn": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "archived": {
+            "type": "boolean"
+          }
+        },
+        "required": []
+      },
+      "CreateMilestones": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "startsOn": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "dueOn": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ]
+      },
+      "UpdateMilestones": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "startsOn": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "dueOn": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "clearDates": {
+            "type": "array",
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "enum": [
+                "startsOn",
+                "dueOn"
+              ]
+            },
+            "description": "Xóa rõ ngày tùy chọn; cặp ngày sau sửa vẫn phải hợp lệ."
+          }
+        },
+        "required": [
+          "expectedVersion"
+        ]
+      },
+      "ProjectDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          },
+          "timezone": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "membersCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedBy": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

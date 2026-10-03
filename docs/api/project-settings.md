@@ -1,0 +1,12 @@
+# Cấu hình dự án — contract review 30/09/2026
+
+Phạm vi bổ sung theo yêu cầu review: hoàn thiện S03 trong S10; giữ sáu menu nghiệp vụ. Chỉ thành viên active đọc; chỉ PM dự án hoặc ADMIN là thành viên quản lý cấu hình. Vai trò dự án không cấp quyền tạo tài khoản hệ thống.
+
+- Catalog: GET/POST `/projects/{p}/catalogs/{environments|builds|devices|categories|milestones}`; PATCH `/{id}` cần `expectedVersion`; DELETE `/{id}?expectedVersion=n` lưu trữ mềm. Response có `version`. Mã bất biến; trường giới hạn theo schema; ngày kết thúc không trước ngày bắt đầu. Lưu trữ giữ FK/lịch sử.
+- Thành viên: GET `/members`, PUT `/members/{userId}` với `projectRole`, `expectedVersion` (null chỉ khi chưa từng là thành viên); DELETE cùng đường dẫn cần query `expectedVersion`. GET `/member-candidate?username=...` tra chính xác tài khoản nội bộ enabled để thêm thành viên, chỉ người quản lý cấu hình được dùng. Không mở danh sách toàn bộ tài khoản cho PM.
+- Ruleset: GET/POST `/bug-rule-versions`; GET/POST `/{rulesetId}/versions`; POST `/{rulesetId}/versions/{versionId}/publish` với `expectedActiveVersionId` (0 khi chưa công bố). JSON typed: schemaVersion=1, scope=INTERNAL_DEMO, sourceReference, titlePrefix, requiredFields gồm bộ tối thiểu ADR-006. Không nhận script/regex/trường tùy ý. Chỉ công bố cấu hình nội bộ DEMO; chưa xác nhận rule khách hàng. Phiên bản cũ bất biến, lưu người tạo/người công bố. Rule bổ sung được chụp cùng bug khi tạo; sửa bug dùng phiên bản đã chụp.
+- Sổ tay: GET/POST `/handbook`, GET `/{resourceId}`, POST `/{resourceId}/revisions` cần `expectedCurrentRevisionId`. Chỉ INTERNAL; nội dung văn bản thuần, tên trường `contentHtml` được giữ tương thích lưu trữ nhưng UI tuyệt đối không thực thi HTML. Lịch sử có người sửa/thời điểm. Không tự biến URL thành liên kết hoặc lưu tài khoản/mật khẩu.
+
+PATCH catalog giữ ngày hiện có khi trường ngày null/không gửi. Để xóa ngày tùy chọn, dùng `clearDates: ["releasedAt"]` cho build hoặc `clearDates: ["startsOn", "dueOn"]` cho milestone. Kiểm tra thứ tự ngày trên kết quả cuối cùng; lỗi không tăng version hoặc ghi dữ liệu.
+
+Lỗi: 404 ngoài scope/không tồn tại; 403 thiếu quyền; 422 input sai/thiếu version trong body; 400 thiếu query bắt buộc; 409 version cũ, mã trùng hoặc PM cuối. Mutation khóa theo project, kiểm tra version và audit cùng transaction. V1–V11 đã áp dụng và bất biến; V11 thêm lock_version cho catalog/membership và FK phiên bản quy tắc trên bug.

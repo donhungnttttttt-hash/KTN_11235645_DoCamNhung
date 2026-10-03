@@ -1,0 +1,26 @@
+# Template: replace hostname, certificate paths and root for the approved target.
+# Backend stays on loopback/private network. Browser API is same-origin.
+server {
+    listen 443 ssl;
+    server_name tms.internal.example;
+    ssl_certificate /etc/tms/tls/fullchain.pem;
+    ssl_certificate_key /etc/tms/tls/privkey.pem;
+    root /srv/tms/current/frontend;
+    index index.html;
+    client_max_body_size 21m;
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy same-origin always;
+    add_header X-Frame-Options DENY always;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_read_timeout 65s;
+    }
+    # Health is checked internally, not exposed as a business screen/public API.
+    location /actuator/ { return 404; }
+    location = /index.html { add_header Cache-Control "no-store"; }
+    location /assets/ { try_files $uri =404; expires 1y; }
+    location / { try_files $uri $uri/ /index.html; }
+}

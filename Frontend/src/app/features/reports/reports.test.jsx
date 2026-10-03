@@ -1,0 +1,113 @@
+import React from 'react';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { ReportsPage } from './ReportsPage';
+import { reportsApi } from '../../services/api/reports';
+import { executionApi } from '../../services/api/execution';
+import { projectsApi } from '../../services/api/projects';
+import { TestingOverview } from '../../modules/TestingOverview';
+import { ProgressPage } from '../../pages/ProgressPage';
+import { AnalysisPage } from '../../pages/AnalysisPage';
+import { KpiSummaryBar } from '../../modules/KpiSummaryBar';
+
+const ctx=vi.hoisted(()=>({currentProject:{id:1,name:'Dự án thật',timezone:'Asia/Ho_Chi_Minh',projectRole:'TESTER'}}));
+vi.mock('../projects/ProjectProvider',()=>({useProject:()=>ctx}));
+vi.mock('../../services/api/reports',()=>({reportsApi:{summary:vi.fn(),export:vi.fn()}}));
+vi.mock('../../services/api/execution',()=>({executionApi:{cycles:vi.fn()}}));
+vi.mock('../../services/api/projects',()=>({projectsApi:{listCatalog:vi.fn()}}));
+const snapshot={metricDefinitionVersion:'internal-v1',asOf:'2026-09-29T12:00:00Z',timeZone:'Asia/Ho_Chi_Minh',metrics:{total:6,applicable:5,na:1,ok:2,ng:1,pending:1,notRun:1,executionPercent:60,passPercent:40,bugs:1,openBugs:1,awaitingVerification:1},byCycle:[],byAssignee:[],daily:[],bugs:[],source:{items:[],page:0,totalPages:0,totalItems:0}};
+beforeEach(()=>{vi.resetAllMocks();ctx.currentProject={id:1,name:'Dự án thật',timezone:'Asia/Ho_Chi_Minh',projectRole:'TESTER'};reportsApi.summary.mockResolvedValue(snapshot);executionApi.cycles.mockResolvedValue({items:[{id:3,name:'Đợt 3'}],page:0,totalPages:1});projectsApi.listCatalog.mockResolvedValue([{id:7,versionLabel:'2.0',buildNumber:'18'}]);});
+afterEach(()=>vi.restoreAllMocks());
+it('shows real rates and re-queries with selected cycle/build filters',async()=>{
+  const user=userEvent.setup();render(<ReportsPage mode="overview"/>);
+  expect(await screen.findByText('60%')).toBeVisible();expect(screen.getByText('40%')).toBeVisible();
+  await user.selectOptions(screen.getByLabelText('Đợt kiểm thử'),'3');
+  await user.selectOptions(screen.getByLabelText('Build thực thi'),'7');
+  await waitFor(()=>expect(reportsApi.summary).toHaveBeenLastCalledWith(1,{cycleId:'3',buildId:'7',page:0}));
+  expect(screen.getByText(/Asia\/Ho_Chi_Minh/)).toBeVisible();
+});
+it('renders no applicable scope without fabricating a 0% or 100% success',async()=>{
+  reportsApi.summary.mockResolvedValue({...snapshot,metrics:{...snapshot.metrics,total:0,applicable:0,executionPercent:null,passPercent:null}});
+  render(<ReportsPage mode="progress"/>);
+  expect(await screen.findAllByText('Chưa có phạm vi áp dụng')).not.toHaveLength(0);
+  expect(screen.queryByText('100%')).not.toBeInTheDocument();
+});
+it('retries an API error and does not replace it with prototype metrics',async()=>{
+  reportsApi.summary.mockRejectedValueOnce(new Error('Không tải được báo cáo')).mockResolvedValueOnce(snapshot);
+  render(<ReportsPage mode="quality"/>);
+  expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được báo cáo');
+  expect(screen.queryByText('134')).not.toBeInTheDocument();
+  await userEvent.click(screen.getByRole('button',{name:'Thử lại'}));
+  expect(await screen.findByText('60%')).toBeVisible();
+});
+it('uses the same reporting data in the three actual menu screens',async()=>{
+  const view=render(<TestingOverview/>);expect(await screen.findByText('Tổng quan kiểm thử')).toBeVisible();
+  view.rerender(<ProgressPage/>);expect(await screen.findByText('Lịch sử thực thi trong 14 ngày gần nhất')).toBeVisible();
+  view.rerender(<AnalysisPage/>);expect(await screen.findByText('Lỗi liên quan phạm vi · mọi build')).toBeVisible();
+  expect(reportsApi.summary).toHaveBeenCalledTimes(3);
+});
+it('renders grouped progress, daily attempts and source rows with traceable links',async()=>{
+  const m={...snapshot.metrics,id:3,name:'Đợt 3'}, user=userEvent.setup();
+  const rows=[{id:1,caseNo:'TC-01',cycleId:3,titleVi:'Đăng nhập',cycleName:'Đợt 3',environmentName:'QA',deviceName:'Chrome',assigneeName:'Tester An',resultCode:'NG',attemptId:42,buildLabel:'2.0 (18)',excluded:true,scopeReason:'Không áp dụng'}, {id:2,caseNo:'TC-02',cycleId:3,resultCode:'NOT_RUN',excluded:false}];
+  reportsApi.summary.mockResolvedValue({...snapshot,byCycle:[m],byAssignee:[{...m,id:8,name:'Tester An',executionPercent:null}],daily:[{date:'2026-09-29',name:'Tester An',attempts:4,ok:2,ng:1,pending:1}],source:{items:rows,page:0,totalPages:2,totalItems:51}});
+  render(<ReportsPage mode="progress"/>);
+  expect(await screen.findByRole('link',{name:'TC-01'})).toHaveAttribute('href','#/tests/cycles/3');
+  expect(screen.getByText('Lần chạy #42')).toBeVisible();expect(screen.getByText('2026-09-29')).toBeVisible();
+  expect(screen.getByTitle('Không áp dụng')).toHaveTextContent('NA');
+  await user.click(screen.getByRole('button',{name:'Tiếp'}));
+  await waitFor(()=>expect(reportsApi.summary).toHaveBeenLastCalledWith(1,{cycleId:'',buildId:'',page:1}));
+});
+it('paginates unique related bugs and points to their real detail pages',async()=>{
+  const bugs=Array.from({length:51},(_,i)=>({id:i+1,key:`BUG-${i+1}`,title:`Lỗi số ${i+1}`,statusLabel:'Đang xử lý',priorityLabel:'Cao'}));
+  reportsApi.summary.mockResolvedValue({...snapshot,bugs,metrics:{...snapshot.metrics,bugs:51,openBugs:51}});
+  render(<ReportsPage mode="quality"/>);
+  expect(await screen.findByRole('link',{name:'BUG-1',exact:true})).toHaveAttribute('href','#/board/issue/1');
+  const section=screen.getByRole('heading',{name:'Lỗi liên quan phạm vi · mọi build'}).closest('section');
+  await userEvent.click(within(section).getByRole('button',{name:'Tiếp'}));
+  expect(screen.getByRole('link',{name:'BUG-51'})).toBeVisible();expect(screen.queryByRole('link',{name:'BUG-1',exact:true})).not.toBeInTheDocument();
+});
+it('exports with the selected filters, retries failure, and releases the download URL',async()=>{
+  const user=userEvent.setup(), blob=new Blob(['xlsx']);
+  const create=vi.fn(()=> 'blob:report'), revoke=vi.fn();URL.createObjectURL=create;URL.revokeObjectURL=revoke;
+  const click=vi.spyOn(HTMLAnchorElement.prototype,'click').mockImplementation(()=>{});
+  reportsApi.export.mockRejectedValueOnce(new Error('Không xuất được')).mockResolvedValueOnce(blob);
+  render(<ReportsPage mode="overview"/>);await screen.findByText('60%');
+  await user.selectOptions(screen.getByLabelText('Đợt kiểm thử'),'3');
+  await waitFor(()=>expect(screen.getByRole('button',{name:'Xuất Excel'})).toBeEnabled());
+  await user.click(screen.getByRole('button',{name:'Xuất Excel'}));
+  expect(await screen.findByRole('alert')).toHaveTextContent('Không xuất được');
+  await user.click(screen.getByRole('button',{name:'Xuất Excel'}));
+  await waitFor(()=>expect(create).toHaveBeenCalledWith(blob));expect(click).toHaveBeenCalledOnce();
+  expect(reportsApi.export).toHaveBeenLastCalledWith(1,{cycleId:'3',buildId:''});
+  await waitFor(()=>expect(revoke).toHaveBeenCalledWith('blob:report'),{timeout:2000});
+});
+it('ignores an old response and an unfinished download after switching project',async()=>{
+  let oldSummary,oldDownload;
+  reportsApi.summary.mockReturnValueOnce(new Promise(resolve=>{oldSummary=resolve;})).mockResolvedValue(snapshot);
+  const view=render(<ReportsPage/>);
+  ctx.currentProject={...ctx.currentProject,id:2,name:'Dự án B'};view.rerender(<ReportsPage/>);
+  expect(await screen.findByText('60%')).toBeVisible();
+  await act(async()=>oldSummary({...snapshot,metrics:{...snapshot.metrics,passPercent:99}}));
+  expect(screen.queryByText('99%')).not.toBeInTheDocument();
+  reportsApi.export.mockReturnValueOnce(new Promise(resolve=>{oldDownload=resolve;}));
+  URL.createObjectURL=vi.fn();
+  await userEvent.click(screen.getByRole('button',{name:'Xuất Excel'}));
+  expect(screen.getByRole('button',{name:'Đang xuất…'})).toBeDisabled();view.unmount();
+  await act(async()=>oldDownload(new Blob(['old'])));expect(URL.createObjectURL).not.toHaveBeenCalled();
+});
+it('handles paged cycle options, catalog errors and missing project without fake defaults',async()=>{
+  const user=userEvent.setup();
+  executionApi.cycles.mockResolvedValue({items:[{id:3,name:'Đợt 3'},{id:4,name:'Nháp',statusCode:'DRAFT'}],page:0,totalPages:2});
+  projectsApi.listCatalog.mockRejectedValueOnce(new Error('Không tải được danh mục')).mockResolvedValue([{id:7,versionLabel:'2.0'}]);
+  const view=render(<ReportsPage/>);
+  expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được danh mục');
+  await user.click(screen.getByRole('button',{name:'Thử lại'}));
+  expect(await screen.findByRole('button',{name:'Đợt tiếp'})).toBeEnabled();
+  expect(screen.queryByRole('option',{name:'Nháp'})).not.toBeInTheDocument();
+  await user.click(screen.getByRole('button',{name:'Đợt tiếp'}));await waitFor(()=>expect(executionApi.cycles).toHaveBeenLastCalledWith(1,1));
+  await user.click(screen.getByRole('button',{name:'Đợt trước'}));await waitFor(()=>expect(executionApi.cycles).toHaveBeenLastCalledWith(1,0));
+  ctx.currentProject=null;view.rerender(<ReportsPage/>);
+  expect(screen.getByText('Chọn dự án để xem báo cáo.')).toBeVisible();
+  view.rerender(<KpiSummaryBar/>);expect(screen.queryByRole('region')).not.toBeInTheDocument();
+});

@@ -1,0 +1,1965 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "TMS internal retest S07",
+    "version": "0.7.0",
+    "description": "ADR-007; TMS is authoritative internally. Request results are atomic; BUG_ONLY does not change full-case results."
+  },
+  "paths": {
+    "/api/v1/projects/{projectId}/work-items/{id}/retest": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "getBugRetest",
+        "description": "Current coverage, latest verifications, last 50 requests/decisions, related open bugs. Members only.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Summary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/retest-candidates": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listRetestCandidates",
+        "description": "Candidate runs from active cycles; PM validates final eligibility when saving.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidatePage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 300
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/projects/{projectId}/work-items/{id}/retest-coverage": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "confirmRetestCoverage",
+        "description": "Project PM; resolved bug/current fixed build. Replaces coverage, cancels open requests, invalidates older passes.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Summary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoverageInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/work-items/{id}/retest-requests": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "createRetestRequest",
+        "description": "Project PM; one environment/device/assignee/current build. Idempotency scoped to project, bug, actor and payload.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/retest-requests": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listRetestRequests",
+        "description": "Member queue, 50 rows per page.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "mine",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "",
+                "OPEN",
+                "SUBMITTED",
+                "CANCELLED"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/projects/{projectId}/retest-requests/{id}": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "getRetestRequest",
+        "description": "Member detail; only current assignee can submit.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/retest-requests/{id}/results": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "submitRetestResults",
+        "description": "Assigned active PM/Tester only; exact complete request scope and version checks. FAIL resets bug to progress. Optional closeBug requires PM, reason and complete current bug coverage; failure rolls back the entire submission including FULL_CASE execution.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/work-items/{id}/closure": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "closeBug",
+        "description": "Only project PM. FIXED requires all current coverage PASS; exceptions require evidence from this bug and source reference.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Summary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClosureInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/work-items/{id}/reopen": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "reopenBug",
+        "description": "Only project PM and terminal bug; reason required, clears current fixed build/coverage and cancels open requests.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Summary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "See retest.md for error codes and retry rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReopenInput"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "TMS_SESSION"
+      },
+      "csrfHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-TOKEN"
+      }
+    },
+    "schemas": {
+      "CoverageInput": {
+        "type": "object",
+        "properties": {
+          "runItemIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "minItems": 1,
+            "maxItems": 100,
+            "uniqueItems": true
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "runItemIds",
+          "reason",
+          "expectedVersion"
+        ]
+      },
+      "RequestInput": {
+        "type": "object",
+        "properties": {
+          "coverageRevisionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "coverageItemIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "minItems": 1,
+            "maxItems": 100,
+            "uniqueItems": true
+          },
+          "verificationScope": {
+            "type": "string",
+            "enum": [
+              "BUG_ONLY",
+              "FULL_CASE"
+            ]
+          },
+          "assigneeMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "requestKey": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,64}$"
+          }
+        },
+        "required": [
+          "coverageRevisionId",
+          "coverageItemIds",
+          "verificationScope",
+          "assigneeMembershipId",
+          "reason",
+          "expectedVersion",
+          "requestKey"
+        ]
+      },
+      "ResultInput": {
+        "type": "object",
+        "properties": {
+          "coverageItemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "FAIL"
+            ]
+          },
+          "actualResult": {
+            "type": "string",
+            "maxLength": 8000,
+            "minLength": 1
+          },
+          "evidenceAttachmentId": {
+            "type": "string",
+            "maxLength": 36,
+            "nullable": true
+          },
+          "expectedRunVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "coverageItemId",
+          "verdict",
+          "actualResult",
+          "expectedRunVersion"
+        ]
+      },
+      "SubmitInput": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResultInput"
+            },
+            "minItems": 1,
+            "maxItems": 100
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "expectedBugVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "requestKey": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,64}$"
+          },
+          "closeBug": {
+            "type": "boolean",
+            "default": false
+          },
+          "closureReason": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "results",
+          "expectedVersion",
+          "expectedBugVersion",
+          "requestKey"
+        ]
+      },
+      "ClosureInput": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "FIXED",
+              "UNREPRODUCIBLE",
+              "WONTFIX"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1
+          },
+          "evidenceAttachmentId": {
+            "type": "string",
+            "maxLength": 36,
+            "nullable": true
+          },
+          "sourceReference": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "kind",
+          "reason",
+          "expectedVersion"
+        ]
+      },
+      "ReopenInput": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "reason",
+          "expectedVersion"
+        ]
+      },
+      "CoverageItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "runItemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "cycleId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "runVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "caseNo": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "titleVi": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "stepsVi": {
+            "type": "string",
+            "maxLength": 20000
+          },
+          "expectedVi": {
+            "type": "string",
+            "maxLength": 20000
+          },
+          "environmentId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "deviceId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "assigneeMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "assigneeName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "environmentName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "deviceName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "verdict": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "PASS",
+              "FAIL",
+              null
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "runItemId",
+          "cycleId",
+          "runVersion",
+          "caseNo",
+          "titleVi",
+          "stepsVi",
+          "expectedVi",
+          "environmentId",
+          "deviceId",
+          "assigneeMembershipId",
+          "assigneeName",
+          "environmentName",
+          "deviceName",
+          "verdict"
+        ]
+      },
+      "Coverage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "revisionNo": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "roundNo": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "buildId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "revisionNo",
+          "roundNo",
+          "buildId",
+          "reason",
+          "createdAt"
+        ]
+      },
+      "Verification": {
+        "type": "object",
+        "properties": {
+          "coverageItemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "FAIL"
+            ]
+          },
+          "actualResult": {
+            "type": "string",
+            "maxLength": 8000
+          },
+          "executionAttemptId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "evidenceAttachmentId": {
+            "type": "string",
+            "maxLength": 36,
+            "nullable": true
+          },
+          "verifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "coverageItemId",
+          "verdict",
+          "actualResult",
+          "executionAttemptId",
+          "evidenceAttachmentId",
+          "verifiedAt"
+        ]
+      },
+      "RequestRow": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "bugId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "bugKey": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "bugTitle": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "bugVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "coverageRevisionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "roundNo": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "buildId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "buildLabel": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "buildNumber": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "environmentId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "environmentName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "deviceId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "deviceName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "assigneeMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "assigneeName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "verificationScope": {
+            "type": "string",
+            "enum": [
+              "BUG_ONLY",
+              "FULL_CASE"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "SUBMITTED",
+              "CANCELLED"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1
+          },
+          "contextSnapshot": {
+            "type": "string",
+            "description": "JSON snapshot build/environment/device captured at request creation"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "bugId",
+          "bugKey",
+          "bugTitle",
+          "bugVersion",
+          "coverageRevisionId",
+          "roundNo",
+          "buildId",
+          "buildLabel",
+          "buildNumber",
+          "environmentId",
+          "environmentName",
+          "deviceId",
+          "deviceName",
+          "assigneeMembershipId",
+          "assigneeName",
+          "verificationScope",
+          "status",
+          "version",
+          "reason",
+          "contextSnapshot",
+          "createdAt"
+        ]
+      },
+      "Request": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RequestRow"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CoverageItem"
+                }
+              },
+              "results": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Verification"
+                }
+              },
+              "current": {
+                "type": "boolean"
+              },
+              "canSubmit": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "items",
+              "results",
+              "current",
+              "canSubmit"
+            ]
+          }
+        ]
+      },
+      "Decision": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "FIXED",
+              "UNREPRODUCIBLE",
+              "WONTFIX",
+              "REOPEN"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1
+          },
+          "sourceReference": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "evidenceAttachmentId": {
+            "type": "string",
+            "maxLength": 36,
+            "nullable": true
+          },
+          "actor": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "decidedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "reason",
+          "sourceReference",
+          "evidenceAttachmentId",
+          "actor",
+          "decidedAt"
+        ]
+      },
+      "Summary": {
+        "type": "object",
+        "properties": {
+          "bugId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "bugVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "fixedBuildId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "roundNo": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "coverage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Coverage"
+              }
+            ],
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoverageItem"
+            }
+          },
+          "passedCount": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "canClose": {
+            "type": "boolean",
+            "description": "Coverage readiness; does not grant permission to close"
+          },
+          "requests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestRow"
+            }
+          },
+          "decisions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Decision"
+            }
+          },
+          "otherOpenBugs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": 1
+                },
+                "key": {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                "title": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "status": {
+                  "type": "string",
+                  "maxLength": 32
+                }
+              },
+              "required": [
+                "id",
+                "key",
+                "title",
+                "status"
+              ]
+            }
+          }
+        },
+        "required": [
+          "bugId",
+          "bugVersion",
+          "status",
+          "fixedBuildId",
+          "roundNo",
+          "coverage",
+          "items",
+          "passedCount",
+          "totalCount",
+          "canClose",
+          "requests",
+          "decisions",
+          "otherOpenBugs"
+        ]
+      },
+      "Candidate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "caseNo": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "titleVi": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "cycleName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "environmentName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "deviceName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "assigneeName": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id",
+          "caseNo",
+          "titleVi",
+          "cycleName",
+          "environmentName",
+          "deviceName",
+          "assigneeName"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "fieldErrors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "code": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "message": {
+                  "type": "string",
+                  "maxLength": 1000
+                }
+              },
+              "required": [
+                "field",
+                "code",
+                "message"
+              ]
+            }
+          },
+          "requestId": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "fieldErrors",
+          "requestId"
+        ]
+      },
+      "RequestPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestRow"
+            }
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "items",
+          "totalItems",
+          "page",
+          "pageSize",
+          "totalPages"
+        ]
+      },
+      "CandidatePage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Candidate"
+            }
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "items",
+          "totalItems",
+          "page",
+          "pageSize",
+          "totalPages"
+        ]
+      }
+    }
+  }
+}
