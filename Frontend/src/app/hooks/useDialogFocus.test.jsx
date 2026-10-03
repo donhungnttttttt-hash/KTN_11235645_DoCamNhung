@@ -3,6 +3,7 @@ import { expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useDialogFocus } from './useDialogFocus';
+import { Modal } from '../features/work-items/components';
 
 function Dialog({ onClose, busy=false, empty=false }) {
   const ref=useDialogFocus(onClose,busy);
@@ -17,4 +18,20 @@ it('traps Tab in both directions and returns focus to the opener on Escape',asyn
 });
 it('does not dismiss a busy dialog and focuses an empty dialog',()=>{
   const close=vi.fn();const view=render(<Dialog onClose={close} busy empty/>);fireEvent.keyDown(document,{key:'Escape'});expect(close).not.toHaveBeenCalled();fireEvent.keyDown(document,{key:'Tab'});expect(screen.getByRole('dialog')).toHaveFocus();view.rerender(<Dialog onClose={close} empty/>);fireEvent.keyDown(document,{key:'Escape'});expect(close).toHaveBeenCalledOnce();
+});
+
+it('only closes the topmost dialog when a nested flow is open', async () => {
+  const parentClose = vi.fn(), childClose = vi.fn(), user = userEvent.setup();
+  render(<><Dialog onClose={parentClose}/><Dialog onClose={childClose}/></>);
+  await user.keyboard('{Escape}');
+  expect(childClose).toHaveBeenCalledOnce();
+  expect(parentClose).not.toHaveBeenCalled();
+});
+
+it('does not close the result dialog behind a work-item modal', async () => {
+  const parentClose = vi.fn(), childClose = vi.fn(), user = userEvent.setup();
+  render(<><Dialog onClose={parentClose}/><Modal title="Liên kết bug" onClose={childClose}><button>Lưu liên kết</button></Modal></>);
+  await user.keyboard('{Escape}');
+  expect(childClose).toHaveBeenCalledOnce();
+  expect(parentClose).not.toHaveBeenCalled();
 });

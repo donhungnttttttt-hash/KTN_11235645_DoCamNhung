@@ -25,7 +25,6 @@ export function WorkBoardPage({ activeRoute, navigate }) {
   const statusParam=params.get('status'),keywordParam=params.get('keyword');
   useEffect(()=>{setSelected([]);setTransition(null);},[projectId,query]);
   useEffect(()=>{setQuery(old=>({...old,page:0,type:bugView?'BUG':'',...(statusParam!=null?{status:statusParam}:{}),...(keywordParam!=null?{keyword:keywordParam}:{})}));},[bugView,projectId,statusParam,keywordParam,setQuery]);
-  useEffect(()=>{document.title=(bugView?'Quản lý lỗi':list?'Danh sách công việc':'Bảng Kanban')+' · TMS';},[bugView,list]);
   function change(key,value){setQuery(old=>({...old,[key]:value,page:0}));}
   function go(route){
     if(route==='/board/new'){navigate('/board/new'+suffix);return;}

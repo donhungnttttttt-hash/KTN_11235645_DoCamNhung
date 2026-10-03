@@ -41,7 +41,7 @@ function selectedPage(activeRoute) {
   return path;
 }
 
-export function Sidebar({ activeRoute, navigate, collapsed, onToggle, onClose }) {
+export function Sidebar({ activeRoute, navigate, collapsed, onToggle, onClose, panelRef, overlayOpen = false }) {
   const active = activeRoute.split('?')[0].split('/')[1];
   const [openGroup, setOpenGroup] = useState(active);
   const selected = selectedPage(activeRoute);
@@ -52,13 +52,14 @@ export function Sidebar({ activeRoute, navigate, collapsed, onToggle, onClose })
     onClose();
   }
 
-  return <aside className="app-sidebar" aria-label="Menu dự án" data-lenis-prevent>
+  return <aside ref={panelRef} id="project-navigation" className="app-sidebar" aria-label="Menu dự án"
+    role={overlayOpen ? 'dialog' : undefined} aria-modal={overlayOpen ? 'true' : undefined} tabIndex={overlayOpen ? -1 : undefined}>
     <div className="app-sidebar-toggle">
-      <button className="sidebar-desktop-toggle" onClick={onToggle}
+      {!overlayOpen && <button className="sidebar-desktop-toggle" onClick={onToggle}
         aria-label={collapsed ? 'Mở rộng menu' : 'Thu gọn menu'} aria-expanded={!collapsed}>
         <Menu size={21} />
-      </button>
-      <button className="sidebar-mobile-close" onClick={onClose} aria-label="Đóng menu"><X size={21} /></button>
+      </button>}
+      {overlayOpen && <button className="sidebar-mobile-close" onClick={onClose} aria-label="Đóng menu"><X size={21} /></button>}
     </div>
     <nav aria-label="Điều hướng dự án">
       {navigation.map(({ label, route, icon: Icon, id, children }) => children ? (

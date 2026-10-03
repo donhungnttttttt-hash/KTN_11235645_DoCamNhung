@@ -1,11 +1,15 @@
 import { useDialogFocus } from '../../hooks/useDialogFocus';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, CheckCircle2, Clock, History, Plus, FileText, Check } from 'lucide-react';
 import { testCasesApi } from '../../services/api/testCases';
 import { useAuth } from '../auth/AuthProvider';
 import { useProject } from '../projects/ProjectProvider';
 
 export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
+  return <CaseDetailContent key={`${projectId}:${caseId}`} projectId={projectId} caseId={caseId} onClose={onClose} onUpdated={onUpdated}/>;
+}
+
+function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
   const { hasRole } = useAuth();
   const { currentProject } = useProject() || {};
   const canApprove = currentProject?.id === projectId && currentProject.projectRole === 'PM';
@@ -30,16 +34,20 @@ export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
   });
   const [submitting, setSubmitting] = useState(false);
   const [pendingApprovalId, setPendingApprovalId] = useState(null);
+  const requestSequence = useRef(0);
 
   useEffect(() => {
     loadCase();
+    return () => { requestSequence.current += 1; };
   }, [projectId, caseId]);
 
   const loadCase = async () => {
+    const request = ++requestSequence.current;
     setLoading(true);
     setError('');
     try {
       const data = await testCasesApi.getCase(projectId, caseId);
+      if (request !== requestSequence.current) return;
       setCaseData(data);
       setSelectedRevision(null);
       if (data.currentRevision) {
@@ -56,9 +64,9 @@ export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
         });
       }
     } catch (err) {
-      setError(err.message || 'Không thể tải chi tiết test case');
+      if (request === requestSequence.current) setError(err.message || 'Không thể tải chi tiết test case');
     } finally {
-      setLoading(false);
+      if (request === requestSequence.current) setLoading(false);
     }
   };
 
@@ -78,6 +86,7 @@ export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
 
   const handleAddRevision = async (e) => {
     e.preventDefault();
+    if (submitting) return;
     setSubmitting(true);
     setError('');
     try {
@@ -92,25 +101,17 @@ export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
     }
   };
 
-  const dialogRef = useDialogFocus(onClose, submitting, !loading);
-
-  if (loading) {
-    return (
-      <div className="tc-modal-overlay">
-        <div className="tc-modal-content p-8 text-center text-slate-500">Đang tải chi tiết test case...</div>
-      </div>
-    );
-  }
+  const dialogRef = useDialogFocus(onClose, submitting);
 
   const cur = selectedRevision || caseData?.currentRevision;
 
   return (
     <div className="tc-modal-overlay">
-      <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label="Chi tiết test case" className="tc-modal-content" style={{ maxWidth: '850px' }}>
+      <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label="Chi tiết test case" className="tc-modal-content tc-case-detail" style={{ maxWidth: '850px' }}>
         <div className="tc-modal-header">
-          <div className="flex items-center gap-3">
-            <h3 className="font-bold text-slate-800 font-mono text-base">{caseData?.caseNo}</h3>
-            {cur?.approved ? (
+          <div className="flex flex-wrap items-center gap-3">
+            <h3 className="font-bold text-slate-800 font-mono text-base">{caseData?.caseNo || 'Chi tiết test case'}</h3>
+            {!loading && cur && (cur.approved ? (
               <span className="tc-badge-approved">
                 <CheckCircle2 size={12} /> Đã phê duyệt (Rev {cur.revisionNo})
               </span>
@@ -118,7 +119,7 @@ export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
               <span className="tc-badge-draft">
                 <Clock size={12} /> Dự thảo (Rev {cur?.revisionNo || 1})
               </span>
-            )}
+            ))}
           </div>
           <button aria-label="Đóng" disabled={submitting} onClick={onClose} className="text-slate-400 hover:text-slate-600">
             <X size={20} />
@@ -126,28 +127,32 @@ export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
         </div>
 
         <div className="tc-modal-body space-y-4">
-          {error && <div className="p-3 bg-red-50 text-red-700 text-xs rounded border border-red-200">{error}</div>}
+          {error && <div role="alert" className="p-3 bg-red-50 text-red-700 text-xs rounded border border-red-200">{error}
+            {!loading && !caseData && <button type="button" className="cat-btn ml-2" disabled={submitting} onClick={loadCase}>Thử lại</button>}
+          </div>}
 
-          {!showAddRev ? (
+          {loading ? <p role="status" className="p-4 text-center text-slate-500">Đang tải chi tiết test case...</p> : caseData && (!showAddRev ? (
             <>
               {/* Language switcher & Revision info */}
-              <div className="flex items-center justify-between border-b pb-2">
-                <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 items-center justify-between border-b pb-2">
+                <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => setActiveTab('vi')}
+                    aria-pressed={activeTab === 'vi'}
                     className={`px-3 py-1 rounded text-xs font-medium ${activeTab === 'vi' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'}`}
                   >
                     Bản tiếng Việt
                   </button>
                   <button
                     onClick={() => setActiveTab('jp')}
+                    aria-pressed={activeTab === 'jp'}
                     className={`px-3 py-1 rounded text-xs font-medium ${activeTab === 'jp' ? 'bg-pink-600 text-white' : 'bg-slate-100 text-slate-600'}`}
                   >
                     Bản gốc tiếng Nhật (JP)
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   {canApprove && cur && !cur.approved && (
                     <button
                       onClick={() => setPendingApprovalId(cur.id)}
@@ -160,6 +165,7 @@ export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
                   {canEdit && (
                     <button
                       onClick={() => setShowAddRev(true)}
+                      disabled={submitting}
                       className="px-3 py-1 bg-slate-800 hover:bg-slate-900 text-white rounded text-xs font-medium flex items-center gap-1"
                     >
                       <Plus size={14} /> Thêm phiên bản
@@ -231,14 +237,14 @@ export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
                 </h4>
                 <div className="space-y-1.5">
                   {caseData?.revisions?.map(r => (
-                    <div key={r.id} className="flex items-center justify-between text-xs py-1.5 px-3 bg-white border border-slate-200 rounded">
-                      <div className="flex items-center gap-2">
+                    <div key={r.id} className="flex flex-wrap gap-2 items-center justify-between text-xs py-1.5 px-3 bg-white border border-slate-200 rounded">
+                      <div className="flex flex-wrap min-w-0 items-center gap-2">
                         <button disabled={submitting} className="cat-link font-bold" onClick={async () => {
                           setSubmitting(true); setError('');
                           try { setSelectedRevision(await testCasesApi.getRevision(projectId,caseId,r.id)); }
                           catch (err) { setError(err.message); } finally { setSubmitting(false); }
                         }}>Xem phiên bản {r.revisionNo}</button>
-                        <span className="text-slate-600 truncate max-w-sm">{r.titleVi}</span>
+                        <span title={r.titleVi} className="text-slate-600 break-words">{r.titleVi}</span>
                       </div>
                       <div className="flex items-center gap-3">
                         {r.approved ? (
@@ -258,6 +264,7 @@ export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
           ) : (
             /* Add revision form */
             <form onSubmit={handleAddRevision} className="space-y-3">
+              <fieldset disabled={submitting} className="space-y-3 min-w-0">
               <div className="font-bold text-slate-800 text-sm border-b pb-2">
                 Soạn thảo phiên bản mới (từ phiên bản {caseData?.currentRevision?.revisionNo || 1})
               </div>
@@ -334,8 +341,9 @@ export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
                   {submitting ? 'Đang lưu...' : 'Lưu phiên bản'}
                 </button>
               </div>
+              </fieldset>
             </form>
-          )}
+          ))}
         </div>
 
         <div className="tc-modal-footer">

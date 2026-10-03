@@ -49,6 +49,9 @@
 }
 .app-header-project {
   display: flex;
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
   gap: 12px;
   align-items: center;
   color: #334155;
@@ -113,7 +116,7 @@
   top: var(--header-height);
   bottom: 0;
   width: var(--sidebar-width);
-  background: #43af98;
+  background: #147e75;
   color: white;
   z-index: 50;
   display: flex;
@@ -163,7 +166,7 @@
 }
 .app-nav-item.active {
   background: #f0f2f2;
-  color: #1a9e8b;
+  color: #0f766e;
 }
 .app-nav-chevron {
   margin-left: auto;
@@ -200,9 +203,9 @@
 }
 .app-submenu > button[aria-current="page"] {
   background: #e6f5ef;
-  color: #168a77;
+  color: #0f766e;
   font-weight: 600;
-  border-left: 3px solid #168a77;
+  border-left: 3px solid #0f766e;
   padding-left: 39px;
 }
 @media (min-width: 641px) {
@@ -236,6 +239,19 @@
 .app-workspace > main {
   min-width: 0;
 }
+.app-footer {
+  min-height: 32px;
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+  border-top: 1px solid #dce5ed;
+  background: #f8fafc;
+  color: #526477;
+  font-size: 11px;
+}
 .app-shell.sidebar-collapsed {
   --sidebar-width: 60px;
 }
@@ -264,13 +280,9 @@
 .app-sidebar-backdrop {
   display: none;
 }
+.mobile-open .sidebar-mobile-close { display: flex; }
 @media (max-width: 1450px) {
   .app-user-details {
-    display: none;
-  }
-}
-@media (max-width: 1050px) {
-  .app-header-project {
     display: none;
   }
 }

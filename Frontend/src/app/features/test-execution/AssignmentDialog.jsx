@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { executionApi } from '../../services/api/execution';
 import { ErrorNotice, Field, Select, formatTime } from './components';
+import { useDialogFocus } from '../../hooks/useDialogFocus';
 
 export function AssignmentDialog({ projectId, run, members, timeZone, onClose, onSaved }) {
   const [currentRun, setCurrentRun] = useState(run);
@@ -14,6 +15,7 @@ export function AssignmentDialog({ projectId, run, members, timeZone, onClose, o
   const [historyLoading, setHistoryLoading] = useState(true);
   const [reload, setReload] = useState(0);
   const live = useRef(true);
+  const dialogRef = useDialogFocus(onClose, busy);
 
   useEffect(() => {
     live.current = true;
@@ -68,7 +70,7 @@ export function AssignmentDialog({ projectId, run, members, timeZone, onClose, o
     }
   }
 
-  return <div className="ex-modal"><section className="ex-dialog" role="dialog" aria-modal="true" aria-label="Phân công lượt kiểm thử">
+  return <div className="ex-modal"><section ref={dialogRef} tabIndex={-1} className="ex-dialog" role="dialog" aria-modal="true" aria-label="Phân công lượt kiểm thử">
     <div className="ex-heading"><h3>Phân công · {run.caseNo}</h3><button className="cat-btn" disabled={busy} onClick={onClose}>Đóng</button></div>
     <ErrorNotice error={error} />
     {conflict && <button className="cat-btn" disabled={busy} onClick={refreshVersion}>Tải bản hiện hành, giữ bản nháp</button>}

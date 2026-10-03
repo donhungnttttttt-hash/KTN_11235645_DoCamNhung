@@ -175,6 +175,18 @@ Chrome dùng ứng dụng thật/MySQL native: đăng nhập Admin local, chuy�
 
 ### 03/10/2026 — Khôi phục màn test case, chuyển nhánh system-design
 
+Theo phản ánh ô kết quả chưa thao tác được: thay thanh hướng dẫn đầu bảng bằng dialog khi bấm ô; giữ case qua lựa chọn đợt/cấu hình và báo thiếu phạm vi ngay tại dialog. TDD RED2/GREEN, focused11/11, browser lưu OK→P→reload→OK có lịch sử trên demo PASS. Xem `docs/reviews/2026-10-03-result-cell-dialog.md`; không tự tạo scope/duyệt case hoặc sửa quy tắc quyền.
+
+Theo yêu cầu tiếp theo, đã sửa con lăn chung bằng cách gỡ Lenis bắt wheel ở window và dùng native scroll. RED6/GREEN8, coverage App.jsx100%; browser xác minh bảng hai chiều, modal chi tiết/phiên bản và trang thư viện. Skill tdd-workflow; báo cáo `docs/reviews/2026-10-03-native-wheel-scroll.md`. Giữ nguyên gate IN_REVIEW, không BE/schema/commit/push.
+
 Final regression sau bổ sung kiểm tra lỗi: **238/238 test, 28 file PASS**. Coverage phạm vi sửa và build giữ kết quả bên dưới.
 
 Theo yêu cầu người dùng, tập hợp code và kế hoạch các sprint lên `system-design`; từ nay tiếp tục trên nhánh này. Đã khôi phục menu ba gạch/chi tiết/lịch sử và thao tác ô kết quả nối API. Browser native ghi OK trên bộ demo riêng, lịch sử và reload PASS. FE full232/232 rồi focused32/32/build PASS; coverage phạm vi sửa 91.26 statements /81.56 branches /86.13 functions /93.98 lines. Xem `docs/reviews/2026-10-03-restored-test-grid.md`. Giữ IN_REVIEW cho gate isolated integration/UAT/pilot; không đổi BE/schema, không push/merge/deploy. Skill: đọc prompt-master; áp dụng frontend-patterns, tdd-workflow, verification-loop.
+
+### 04/10/2026 — Review chức năng và cải thiện UI
+
+Theo yêu cầu rà soát và cải tiến, đã sửa ba dialog thực thi (focus/Escape), dialog chồng nhau, tải lại lịch sử giữ bản nháp, khóa input khi lưu, title theo route; chỉnh contrast/sidebar/nút/form kết quả và nhận diện TMS. Full FE256/256 tests30files/build PASS; coverage hai file hành vi 97.14% lines, 85.84% branches. Browser đọc các màn chính và đo 320/768/1024/1440px, cuộn dialog thật, Escape/trả focus PASS. Chi tiết phát hiện, skills và bằng chứng tại [review 04/10](../../reviews/2026-10-04-functionality-ui-review.md). Còn importer từ chối merged cells, yêu thích chỉ lưu trong phiên; chưa kết luận toàn hệ thống đạt chuẩn. S11 giữ IN_REVIEW với gate isolated integration/UAT/pilot; không BE/schema/commit/push.
+
+### 04/10/2026 — Rà soát UI/UX tiếp và bàn giao system-design
+
+Theo yêu cầu tiếp theo, sửa menu/focus/drawer, deep-link tài liệu, modal Tab, tải/retry/đổi case, khóa draft, responsive và nút; bỏ nút yêu thích chưa lưu. Full **271/271 test, 33 file PASS**, build PASS. Coverage 6 file thay đổi: 93,84% statements / 87,66% branches / 90,54% functions / 96% lines. Có RED→GREEN và browser thật 320/390/1440px, dialog chiều cao480px. Xem [báo cáo UI/UX](../../reviews/2026-10-04-ui-ux-audit.md). Người dùng đã yêu cầu commit/push `system-design` cho tác vụ này; không merge/deploy. S11 vẫn IN_REVIEW, còn importer ô gộp và gate integration/UAT/pilot; không chứng nhận toàn hệ thống hết lỗi.

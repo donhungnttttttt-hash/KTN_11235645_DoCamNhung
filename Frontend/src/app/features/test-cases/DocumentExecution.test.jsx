@@ -26,6 +26,28 @@ beforeEach(()=>{
   projectsApi.listCatalog.mockResolvedValue([{id:3,platform:'iOS',versionLabel:'1.0'}]);
 });
 async function openRun(user){await user.click(screen.getByRole('button',{name:'Ô iPad'}));await user.selectOptions(await screen.findByRole('combobox',{name:'Đợt ghi kết quả'}),'8');await screen.findByRole('dialog',{name:'Thực thi TC-1'});}
+it('opens a focused dialog immediately when a source result has no execution context',async()=>{
+  const user=userEvent.setup();render(<Harness/>);await user.click(screen.getByRole('button',{name:'Ô iPad'}));
+  const dialog=await screen.findByRole('dialog',{name:'Ghi kết quả test case 1'});
+  expect(dialog).toContainElement(document.activeElement);
+  expect(dialog).toHaveTextContent('Chọn đợt và cấu hình');
+  await user.keyboard('{Escape}');expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  await user.selectOptions(screen.getByRole('combobox',{name:'Đợt ghi kết quả'}),'8');
+  await waitFor(()=>expect(screen.getByTestId('live-result')).toHaveTextContent('NOT_RUN'));
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+});
+it('keeps a missing-scope explanation in the dialog and opens the run after choosing another cycle',async()=>{
+  executionApi.cycles.mockResolvedValue({items:[{id:8,name:'Wrong',statusCode:'ACTIVE'},{id:9,name:'Right',statusCode:'ACTIVE'}],totalPages:1});
+  executionApi.cycle.mockImplementation((p,id)=>Promise.resolve({id:Number(id),statusCode:'ACTIVE'}));
+  executionApi.runs.mockImplementation((p,id)=>Promise.resolve({items:String(id)==='9'?[run]:[],totalPages:1}));
+  const user=userEvent.setup();render(<Harness/>);await user.click(screen.getByRole('button',{name:'Ô iPad'}));
+  await user.selectOptions(await screen.findByRole('combobox',{name:'Đợt ghi kết quả'}),'8');
+  expect(await screen.findByRole('dialog',{name:'Ghi kết quả test case 1'})).toHaveTextContent('Chọn đợt');
+  await screen.findByText(/chưa thuộc cấu hình này/);
+  await user.selectOptions(screen.getByRole('combobox',{name:'Đợt ghi kết quả'}),'9');
+  expect(await screen.findByRole('dialog',{name:'Thực thi TC-1'})).toBeVisible();
+  await user.click(screen.getByRole('button',{name:'Đóng'}));expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+});
 it('records an actual attempt and reloads the result/history, keeping the selected context after remount',async()=>{
   const user=userEvent.setup();const view=render(<Harness/>);await openRun(user);
   await user.selectOptions(screen.getByLabelText('Kết quả'),'OK');
@@ -63,7 +85,7 @@ it('does not use a late result from a previous cycle',async()=>{
   await user.selectOptions(await screen.findByRole('combobox',{name:'Đợt ghi kết quả'}),'8');
   await user.selectOptions(screen.getByRole('combobox',{name:'Đợt ghi kết quả'}),'');
   await act(async()=>finish({id:8,name:'Old',statusCode:'ACTIVE'}));
-  expect(screen.getByTestId('live-result')).toHaveTextContent('SOURCE');expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  expect(screen.getByTestId('live-result')).toHaveTextContent('SOURCE');expect(screen.queryByRole('dialog',{name:'Thực thi TC-1'})).not.toBeInTheDocument();
 });
 it('keeps the existing result when saving is rejected and allows closing the dialog',async()=>{
   const user=userEvent.setup();render(<Harness/>);await openRun(user);

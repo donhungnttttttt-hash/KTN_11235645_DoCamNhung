@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 
+const openDialogs = [];
+
 /** Keep keyboard navigation in an open modal and return focus to its trigger. */
 export function useDialogFocus(onClose, busy = false, ready = true) {
   const ref = useRef(null);
@@ -9,10 +11,16 @@ export function useDialogFocus(onClose, busy = false, ready = true) {
     const dialog = ref.current;
     if (!ready || !dialog) return;
     const previous = document.activeElement;
+    openDialogs.push(dialog);
     const controls = () => [...dialog.querySelectorAll('button, input, select, textarea, a[href], [tabindex]')]
       .filter(element => element.tabIndex >= 0 && !element.matches(':disabled') && !element.closest('[hidden]'));
     (controls()[0] || dialog).focus();
     function keydown(event) {
+      if (dialog.closest('[hidden], [inert]')) return;
+      // A nested work-item dialog may appear above the execution dialog.
+      const visibleDialogs = [...document.querySelectorAll('[role="dialog"]')]
+        .filter(element => !element.closest('[hidden], [inert]'));
+      if (visibleDialogs.at(-1) !== dialog) return;
       if (event.key === 'Escape') {
         event.preventDefault(); event.stopPropagation();
         if (!latest.current.busy) latest.current.onClose();
@@ -27,7 +35,9 @@ export function useDialogFocus(onClose, busy = false, ready = true) {
     document.addEventListener('keydown', keydown, true);
     return () => {
       document.removeEventListener('keydown', keydown, true);
-      if (previous?.isConnected) previous.focus();
+      const wasTopmost = openDialogs.at(-1) === dialog;
+      openDialogs.splice(openDialogs.indexOf(dialog), 1);
+      if (wasTopmost && previous?.isConnected) previous.focus();
     };
   }, [ready]);
   return ref;

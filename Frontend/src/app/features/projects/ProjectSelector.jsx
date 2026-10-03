@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useId, useRef, useState } from "react";
 import { ChevronDown, Plus } from "lucide-react";
 import { useProject } from "./ProjectProvider";
 import { useAuth } from "../auth/AuthProvider";
@@ -13,6 +13,9 @@ export function ProjectSelector() {
   const { hasRole } = useAuth();
   const [open, setOpen] = useState(false);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const triggerRef = useRef(null);
+  const menuId = useId();
+  function closeMenu() { setOpen(false); triggerRef.current?.focus(); }
 
   const canCreateProject = hasRole?.("ADMIN") || false;
 
@@ -31,12 +34,17 @@ export function ProjectSelector() {
   }
 
   return (
-    <div className="project-selector-container">
+    <div className="project-selector-container"
+      onKeyDown={event => { if (event.key === 'Escape' && open) { event.stopPropagation(); closeMenu(); } }}
+      onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false); }}>
       {projectContext.error && <span role="alert">{projectContext.error} <button onClick={() => projectContext.refreshProjects()}>Thử lại</button></span>}
       <button 
         className="project-selector-btn"
+        ref={triggerRef}
+        title={currentProject?.name || 'Chọn dự án'}
         onClick={() => setOpen(!open)}
         aria-expanded={open}
+        aria-controls={open ? menuId : undefined}
       >
         <span>Dự án: <strong>{currentProject?.name || "Chưa chọn"}</strong></span>
         <ChevronDown size={16} />
@@ -44,8 +52,8 @@ export function ProjectSelector() {
 
       {open && (
         <>
-          <div className="project-selector-backdrop" onClick={() => setOpen(false)} />
-          <div className="project-selector-menu">
+          <div className="project-selector-backdrop" onClick={closeMenu} />
+          <div id={menuId} className="project-selector-menu" role="group" aria-label="Chọn dự án">
             {projects.length === 0 ? (
               <div className="project-selector-empty">Không có dự án nào</div>
             ) : (
@@ -54,9 +62,10 @@ export function ProjectSelector() {
                   <li key={p.id}>
                     <button
                       className={currentProject?.id === p.id ? "active" : ""}
+                      aria-current={currentProject?.id === p.id ? 'true' : undefined}
                       onClick={() => {
                         selectProject(p.id);
-                        setOpen(false);
+                        closeMenu();
                       }}
                     >
                       {p.name}
@@ -71,7 +80,7 @@ export function ProjectSelector() {
                 <button 
                   className="project-selector-create-btn"
                   onClick={() => {
-                    setOpen(false);
+                    closeMenu();
                     setShowCreateDialog(true);
                   }}
                 >

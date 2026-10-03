@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-03",
+  "updatedAt": "2026-10-04",
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
@@ -8,6 +8,12 @@
   "phase": "IN_REVIEW",
   "implementationStarted": true,
   "notes": [
+    "04/10/2026 UI/UX final theo yêu cầu push system-design: sửa dropdown/focus, drawer mobile sau desktop-collapse, document deep-link, modal Tab, tải/retry/stale case, khóa draft khi gửi, responsive form và đồng bộ nút; bỏ yêu thích chưa lưu. Final FE271/271 tests33files/build PASS; coverage6files 93.84 statements/87.66 branches/90.54 functions/96 lines. Browser mobile320/390, dialog320x480, desktop1440 và ô kết quả/history PASS trong phạm vi báo cáo docs/reviews/2026-10-04-ui-ux-audit.md. Người dùng cho phép commit/push riêng tác vụ này, không merge/deploy; không đổi BE/schema. Giữ S11 IN_REVIEW và gate merged-cell import/integration/UAT/pilot.",
+    "04/10/2026 review chức năng/UI trên system-design: sửa focus/Escape/nested modal, retry lịch sử giữ draft, khóa input khi lưu, tiêu đề route, nhận diện TMS và contrast/responsive. FE256/256 tests30files/build PASS; coverage AttemptDialog/useDialogFocus 92.18 statements/85.84 branches/89.65 functions/97.14 lines. Browser đọc các màn tổng quan/công việc/cycle/retest/report/lỗi/thành viên, keyboard/dialog/320–1440px PASS trong phạm vi báo cáo. Còn merged-cell import và yêu thích chỉ lưu phiên; không đổi BE/schema/ghi nghiệp vụ. Xem docs/reviews/2026-10-04-functionality-ui-review.md; S11 IN_REVIEW, giữ gate integration/UAT/pilot.",
+    "Final kiểm chứng sửa ô kết quả (kết thúc 04/10/2026): toàn bộ FE248/248 tests (29files), build và diff-check PASS. Sửa vẫn ở working tree system-design, chưa commit/push.",
+    "03/10/2026 sửa ô kết quả: bấm mở dialog ngay, chọn đợt/cấu hình và thông báo thiếu scope trong dialog; giữ case khi đổi context, hủy pending khi đóng, chặn stale context. RED2→GREEN, focused11/11; coverage DocumentExecution91.37/85/80.55/94.23. Browser doc4 thiếu scope hiện đúng; demo run242 OK→P→reload giữP→OK và lịch sử PASS. Xem docs/reviews/2026-10-03-result-cell-dialog.md. Không đổi quyền/BE/schema, chưa commit/push, S11IN_REVIEW.",
+    "03/10/2026 final wheel-scroll verification: toàn bộ frontend246/246 tests (29files) và build PASS; git diff --check PASS. Thay đổi đang ở working tree system-design, chưa commit/push.",
+    "03/10/2026 sửa cuộn chung trên system-design: gỡ Lenis window chặn wheel của vùng overflow riêng, dùng native scrolling. RED6→GREEN8, coverage App.jsx100%; browser xác minh cuộn dọc/ngang bảng, hai modal và trang thư viện bằng input thật. Xem docs/reviews/2026-10-03-native-wheel-scroll.md. Không đổi BE/database; S11 IN_REVIEW.",
     "03/10/2026 final system-design checkpoint: frontend238/238 tests (28files), focused32/32 và build PASS; coverage4files khôi phục 91.26 statements/81.56 branches/86.13 functions/93.98 lines. Đã kiểm tra native browser lưu/reload/history; giữ gate S11 IN_REVIEW và các việc chưa nghiệm thu trong báo cáo khôi phục.",
     "03/10/2026 khôi phục màn test case từ thiết kế develop: menu ba gạch/chi tiết Trước–Tiếp/lịch sử revision diff/kéo cột; ô kết quả nối API execution theo đợt-cấu hình, giữ dữ liệu Excel nguồn. Browser demo riêng project4/document5/cycle6/run242 ghi OK và lịch sử, reload giữ kết quả. FE232/232/build PASS. Nhánh làm việc từ nay system-design, mang toàn bộ code/tài liệu sprint hiện có. Xem docs/reviews/2026-10-03-restored-test-grid.md. S11 giữ IN_REVIEW; gate isolated integration/UAT/pilot chưa đóng.",
     "03/10/2026 import theo tiêu đề hoàn tất phạm vi hai workbook khách: 128case/0lỗi trên browser native, mapping JSON giữ cột phụ và title kế thừa không đổi ô nguồn; template khách mới. FE225/225/build, BE20parser/export/verify và diagnostics0warning PASS; round-trip128x14 và155x14 PASS. Xem docs/reviews/2026-10-03-header-based-import.md. Ưu tiên hoàn tất import trước rồi tiếp tục yêu cầu khôi phục màn cũ/nút ba gạch/lịch sử/ghi kết quả; chưa thay đổi nghiệp vụ thực thi. Gate isolated integration/UAT giữ mở.",
@@ -747,7 +753,7 @@
   "implementationBaseCommit": "3355cfc",
   "lastCompletedSprint": "S09",
   "nextSuggestedSprint": null,
-  "nextAction": "Import theo tiêu đề đã kiểm chứng trên hai workbook thật; tiếp theo khôi phục thao tác màn test case theo yêu cầu. Giữ gate isolated native integration và UAT/pilot; không chạy destructive fixtures trên tms.",
+  "nextAction": "Màn test case/ô kết quả và đợt sửa UI đã kiểm chứng; tiếp theo xử lý importer từ chối ô gộp bằng test workbook và giữ nguồn/export. Tiếp tục gate isolated native integration, UAT theo vai trò và pilot; không chạy destructive fixtures trên tms.",
   "executionPolicy": {
     "continueSequentially": true,
     "authorizedAt": "2026-09-29",

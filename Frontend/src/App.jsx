@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useLenis } from "./app/hooks/useLenis";
 import { MainLayout } from "./app/layouts/MainLayout";
 import { AppRouter } from "./app/routes/AppRouter";
 import { normalizeRoute } from "./app/routes/legacyRoutes";
+import { pageTitle } from "./app/routes/routeInfo";
 import {
   initialProjectData,
   initialTeamMembers,
@@ -12,9 +12,6 @@ import {
 } from "./mocks/storeData";
 
 export default function App() {
-  // Activate Lenis Smooth Scroll (Complies with Lenis Skill Guidelines)
-  useLenis();
-
   const [activeRoute, setActiveRoute] = useState(
     normalizeRoute(
       window.location.hash ? window.location.hash.substring(1) : "/dashboard",
@@ -26,6 +23,8 @@ export default function App() {
   const [testSpecs] = useState(initialTestSpecs);
   const [issues] = useState(initialIssues);
   const [memberProgress] = useState(initialMemberProgress);
+
+  useEffect(() => { document.title = pageTitle(activeRoute); }, [activeRoute]);
 
   useEffect(() => {
     const handleHashChange = () => {

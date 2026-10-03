@@ -64,7 +64,7 @@
 .td-case-grid .td-result-cell { text-align: center; vertical-align: middle; }
 .td-result { display: inline-flex; justify-content: center; align-items: center; min-height: 44px; width: 100%; max-width: 70px; padding: 3px; border: 1px solid #a4b7c3; background: white; color: #577385; font-size: 20px; font-weight: 600; overflow-wrap: anywhere; }
 .td-result-fixed,.td-result-pending { font-size: 13px; }
-.td-highlight .td-case-grid .td-outcome-ok { background: #bde2dd; }.td-highlight .td-result-ok { border: 2px solid #76ade4; color: #639eda; }
+.td-highlight .td-case-grid .td-outcome-ok { background: #bde2dd; }.td-highlight .td-result-ok { border: 2px solid #76ade4; color: #2466a8; }
 .td-highlight .td-case-grid .td-outcome-ng { background: #f6d4d5; }.td-highlight .td-result-ng { border-color: #d76d76; color: #bd4756; }
 .td-highlight .td-case-grid .td-outcome-fixed { background: #dfdcf1; }.td-highlight .td-case-grid .td-outcome-pending { background: #f8edcc; }
 .td-highlight .td-case-grid .td-outcome-na { background: #e9edf1; }
@@ -108,4 +108,9 @@
 .td-execution-controls p,.td-execution-controls .td-error { width:100%; margin:2px 0; }
 .td-document .ex-modal { z-index:110; }
 .td-document .ex-dialog .ex-heading:first-child { background:#005345; color:white; padding:10px; margin:-4px -4px 14px; }
+.td-document .ex-dialog .ex-heading:first-child h3 { color:white; }
 @media(max-width: 700px) { .td-heading-row { align-items: flex-start; } .td-heading-row .td-actions { width: 100%; } .td-pagination { flex-wrap: wrap; } .td-sheet-title > span,.td-sheet-tabs small { display: none; } .td-document { height: calc(100dvh - 48px); } .td-sheet-toolbar { gap: 5px; } .td-sheet-toolbar > .td-actions:last-child { margin-left: 0; } .td-sheet-title h2 { font-size: 12px; } }
+.td-result-context-dialog { width:min(100%,720px); }
+.td-result-context-dialog .td-execution-controls { margin-top:16px; gap:16px; }
+.td-result-context-dialog .td-execution-controls label { width:100%; }
+.td-result-context-dialog .td-execution-controls select { width:100%; max-width:100%; }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { LogOut, ChevronDown } from "lucide-react";
 import { initials, roleLabels, useAuth } from "./AuthProvider";
 
@@ -7,10 +7,11 @@ export function AccountMenu({ inverted = false }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const triggerRef = useRef(null);
   if (!auth?.user) return null;
   const { user, logout } = auth;
-  return <div className={`account-menu${inverted ? " inverted" : ""}`} onKeyDown={event => { if (event.key === "Escape") setOpen(false); }} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false); }}>
-    <button className="account-trigger" aria-label={`Tài khoản: ${user.displayName}`} aria-expanded={open} onClick={() => setOpen(!open)}>
+  return <div className={`account-menu${inverted ? " inverted" : ""}`} onKeyDown={event => { if (event.key === "Escape" && open) { event.stopPropagation(); setOpen(false); triggerRef.current?.focus(); } }} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false); }}>
+    <button ref={triggerRef} className="account-trigger" aria-label={`Tài khoản: ${user.displayName}`} aria-expanded={open} onClick={() => setOpen(!open)}>
       <span className="app-user-avatar">{initials(user.displayName)}</span>
       <strong>{user.displayName}</strong><ChevronDown size={13}/>
     </button>

@@ -45,7 +45,7 @@ export function AuthBoundary({ children }) {
     {/* Retain drafts for the same user, but make the entire app inaccessible while locked. */}
     {user && <div key={user.id} hidden={!authenticated} inert={!authenticated ? "" : undefined}>{children}</div>}
     {!authenticated && <main className="auth-page">
-      <div className="auth-brand"><span>S+</span><strong>Flutter</strong><small>Quản lý dự án & kiểm thử</small></div>
+      <div className="auth-brand"><span>S+</span><strong>TMS</strong><small>Quản lý dự án & kiểm thử</small></div>
       <section className="auth-card" aria-label="Tài khoản nội bộ">
         {status === "loading" ? <div role="status" className="auth-wait"><LoaderCircle className="auth-spin" size={26}/><p>Đang tải phiên đăng nhập…</p></div>
           : status === "unavailable" ? <>
@@ -54,7 +54,7 @@ export function AuthBoundary({ children }) {
             <button className="auth-submit" disabled={retrying} onClick={async () => { setRetrying(true); try { await retry(); } finally { setRetrying(false); } }}>{retrying ? "Đang kết nối…" : "Thử lại"}</button>
           </> : <LoginForm/>}
       </section>
-      <p className="auth-footer">Không gian làm việc nội bộ · S+Flutter</p>
+      <p className="auth-footer">Không gian làm việc nội bộ · TMS</p>
     </main>}
   </>;
 }

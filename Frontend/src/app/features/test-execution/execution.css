@@ -23,14 +23,34 @@
 .ex-table button.ex-link { color:#0d9488; text-align:left; font-weight:600; }
 .ex-table small { display:block; color:#64748b; margin-top:4px; }
 .ex-modal { position:fixed; inset:0; z-index:1000; background:#0f172a88; display:flex; align-items:center; justify-content:center; padding:18px; }
-.ex-dialog { background:#fff; border-radius:5px; width:min(100%,960px); max-height:92vh; overflow:auto; padding:20px; }
+.ex-dialog { background:#fff; border-radius:8px; width:min(100%,960px); max-height:92dvh; overflow:auto; overscroll-behavior:contain; padding:20px; }
 .ex-dialog h3 { font-size:15px; color:#172b4d; font-weight:650; }
 .ex-detail { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
 .ex-detail article { white-space:pre-wrap; line-height:1.7; background:#f8fafc; border:1px solid #e2e8f0; padding:12px; }
 .ex-detail h4 { color:#0f766e; font-weight:600; margin:10px 0 3px; }
+.ex-detail > * { min-width:0; overflow-wrap:anywhere; }
+.ex-detail > article { align-self:start; }
+.ex-current-result { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:14px 0; padding:10px 12px; background:#f0f8f6; border:1px solid #cde3df; border-radius:4px; }
+.ex-current-result > span:last-child { color:#526477; font-size:12px; }
+.ex-result-form { padding:12px; border:1px solid #cde3df; border-radius:4px; }
+.ex-result-form > h4 { margin:0 0 12px; }
+.ex-result-form fieldset { min-width:0; }
+.ex-result-form .ex-field-hint { color:#7c4a03; margin-top:4px; font-size:12px; }
+.ex-attempt-dialog { font-size:13px; }
+.ex-attempt-dialog .ex-field input,.ex-attempt-dialog .ex-field select { min-height:34px; font-size:13px; }
+.ex-attempt-dialog .ex-field textarea { font-size:13px; }
+.ex-attempt-dialog .cat-btn { min-height:32px; font-size:12px; }
+.ex-attempt-actions { position:sticky; bottom:-20px; padding:10px 0; margin-top:10px; background:#fff; border-top:1px solid #dce5ed; }
 .ex-history { border-top:1px solid #dce5ed; padding:12px 0; white-space:pre-wrap; }
 .ex-history small { color:#64748b; display:block; margin:5px 0; }
 .ex-checks { display:flex; gap:16px; align-items:center; margin:12px 0; }
 .ex-checks label { display:flex; gap:5px; align-items:center; }
 .ex-dialog button:disabled,.ex-page button:disabled { opacity:.5; cursor:not-allowed; }
 @media(max-width:760px) { .ex-detail { grid-template-columns:1fr; } .ex-fields { align-items:stretch; } .ex-heading { flex-wrap:wrap; } }
+@media(max-width:640px) {
+  .ex-modal { padding:10px; }
+  .ex-dialog { padding:14px; max-height:calc(100dvh - 20px); }
+  .ex-attempt-actions { bottom:-14px; }
+  .ex-attempt-dialog .cat-btn,.ex-attempt-dialog .ex-field input,.ex-attempt-dialog .ex-field select { min-height:40px; }
+  .ex-pager { flex-wrap:wrap; }
+}

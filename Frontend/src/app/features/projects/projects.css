@@ -2,9 +2,12 @@
 .project-selector-container {
   position: relative;
   display: inline-block;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .project-selector-btn {
+  max-width: 100%;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -16,6 +19,8 @@
   padding: 4px 8px;
   border-radius: 4px;
 }
+.project-selector-btn > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.project-selector-btn > svg { flex-shrink: 0; }
 
 .project-selector-btn:hover {
   background-color: var(--hover-bg, #f0f0f0);
@@ -32,6 +37,8 @@
   top: 100%;
   left: 0;
   min-width: 200px;
+  width: 340px;
+  max-width: calc(100vw - 24px);
   background: white;
   border: 1px solid var(--border-color, #ddd);
   border-radius: 6px;
@@ -45,7 +52,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 300px;
+  max-height: min(300px, calc(100dvh - 130px));
   overflow-y: auto;
 }
 
@@ -58,6 +65,7 @@
   cursor: pointer;
   font-size: 14px;
   border-bottom: 1px solid var(--border-color, #f0f0f0);
+  overflow-wrap: anywhere;
 }
 
 .project-selector-list button:hover {
@@ -103,6 +111,7 @@
 
 /* Dialog Overlay */
 .dialog-overlay {
+  padding: 12px;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
@@ -117,6 +126,9 @@
   border-radius: 8px;
   width: 100%;
   max-width: 500px;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  overflow-wrap: anywhere;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
@@ -181,7 +193,7 @@
 }
 
 .btn-primary {
-  background: var(--primary-color, #0056b3);
+  background: var(--color-mint, #0f766e);
   color: white;
 }
 
@@ -283,8 +295,8 @@
 .project-settings-page .tabs, .catalog-page .tabs { gap: 4px; overflow-x: auto; }
 .project-settings-page .tab-btn, .catalog-page .tab-btn { white-space: nowrap; font-size: 13px; }
 .project-settings-page .tab-btn.active, .catalog-page .tab-btn.active { color: #078d84; border-color: #13b7a6; }
-.catalog-page .btn-primary { background: #109f93; }
-.project-settings-page .cat-btn.primary, .catalog-page .cat-btn.primary { background: #109f93; border-color: #109f93; color: white; }
+.catalog-page .btn-primary { background: var(--color-mint, #0f766e); }
+.project-settings-page .cat-btn.primary, .catalog-page .cat-btn.primary { background: var(--color-mint, #0f766e); border-color: var(--color-mint, #0f766e); color: white; }
 .project-settings-page button:disabled, .catalog-page button:disabled { cursor: not-allowed; opacity: .55; }
 .settings-heading, .settings-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .settings-heading { justify-content: space-between; }
@@ -303,3 +315,8 @@
 .handbook-text { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.7; margin: 12px 0; }
 .handbook-revision { border-top: 1px solid #dbe5ed; padding: 12px 0; overflow-wrap: anywhere; }
 @media(max-width: 640px) { .project-settings-page,.catalog-page { padding: 16px; } .settings-fields,.handbook-layout { grid-template-columns: 1fr; } .settings-heading { align-items: flex-start; } }
+@media(max-width: 640px) {
+  .project-selector-menu { position: fixed; top: var(--header-height, 48px); left: 12px; right: 12px; width: auto; }
+  .dialog-actions { flex-wrap: wrap; }
+  .dialog-close { min-height: 40px; min-width: 40px; display: grid; place-items: center; }
+}

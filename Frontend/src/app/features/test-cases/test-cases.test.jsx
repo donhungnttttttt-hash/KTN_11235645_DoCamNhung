@@ -11,7 +11,7 @@ import { testCasesApi } from '../../services/api/testCases';
 const context = vi.hoisted(() => ({currentProject:{id:1,name:'Dự án A',projectRole:'PM'},systemRole:'TESTER'}));
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>context}));
 vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>role===context.systemRole})}));
-vi.mock('../../services/api/testCases',()=>({testCasesApi:{createSuite:vi.fn(),createImportPreview:vi.fn(),commitImportPreview:vi.fn(),importTemplate:vi.fn(),getCase:vi.fn(),getRevision:vi.fn(),listCases:vi.fn(),listSuites:vi.fn()}}));
+vi.mock('../../services/api/testCases',()=>({testCasesApi:{createSuite:vi.fn(),createImportPreview:vi.fn(),commitImportPreview:vi.fn(),importTemplate:vi.fn(),getCase:vi.fn(),getRevision:vi.fn(),addRevision:vi.fn(),approveRevision:vi.fn(),listCases:vi.fn(),listSuites:vi.fn()}}));
 
 beforeEach(()=> {
   vi.resetAllMocks(); context.currentProject={id:1,name:'Dự án A',projectRole:'PM'}; context.systemRole='TESTER';
@@ -51,6 +51,94 @@ describe('Excel import workflow',()=> {
   });
 });
 describe('Project-scoped test case library',()=> {
+  it('keeps a failed revision draft, locks pending edits and submits its original revision version',async()=> {
+    const revision={id:4,revisionNo:1,titleVi:'Bản mới',stepsVi:'Các bước',expectedVi:'Mong đợi'};
+    testCasesApi.getCase.mockResolvedValue({caseNo:'TC-1',currentRevisionId:4,currentRevision:revision,revisions:[]});
+    let fail;
+    testCasesApi.addRevision.mockImplementationOnce(()=>new Promise((resolve,reject)=>{fail=reject;})).mockResolvedValueOnce({id:5});
+    const user=userEvent.setup(),onUpdated=vi.fn(),onClose=vi.fn();
+    render(<CaseDetailModal projectId={1} caseId={1} onClose={onClose} onUpdated={onUpdated}/>);
+    await user.click(await screen.findByRole('button',{name:/Thêm phiên bản/}));
+    await user.clear(screen.getByLabelText('Tiêu đề kiểm thử (VI) *'));
+    await user.type(screen.getByLabelText('Tiêu đề kiểm thử (VI) *'),'Sửa bản nháp');
+    await user.type(screen.getByLabelText('Tiền điều kiện (VI)'),'Chuẩn bị');
+    await user.type(screen.getByLabelText('Các bước thực hiện (VI) *'),' mới');
+    await user.type(screen.getByLabelText('Kết quả mong đợi (VI) *'),' mới');
+    await user.type(screen.getByLabelText('Tiêu đề gốc'),'原文');
+    await user.click(screen.getByRole('button',{name:'Lưu phiên bản'}));
+    expect(screen.getByLabelText('Tiêu đề kiểm thử (VI) *')).toBeDisabled();
+    await user.keyboard('{Escape}');expect(onClose).not.toHaveBeenCalled();
+    await act(async()=>fail(new Error('Mạng gián đoạn')));
+    expect(screen.getByRole('alert')).toHaveTextContent('Mạng gián đoạn');
+    expect(screen.getByLabelText('Tiêu đề kiểm thử (VI) *')).toHaveValue('Sửa bản nháp');
+    await user.click(screen.getByRole('button',{name:'Lưu phiên bản'}));
+    await waitFor(()=>expect(onUpdated).toHaveBeenCalledOnce());
+    expect(testCasesApi.addRevision).toHaveBeenLastCalledWith(1,1,expect.objectContaining({titleVi:'Sửa bản nháp',titleJp:'原文',expectedCurrentRevisionId:4}));
+    expect(screen.queryByRole('button',{name:'Lưu phiên bản'})).toBeNull();
+  });
+  it('requires confirmation for PM approval and supports retry after an API failure',async()=> {
+    const revision={id:4,revisionNo:1,titleVi:'Chờ phê duyệt'};
+    testCasesApi.getCase.mockResolvedValueOnce({caseNo:'TC-1',currentRevision:revision,revisions:[]})
+      .mockResolvedValueOnce({caseNo:'TC-1',currentRevision:{...revision,approved:true},revisions:[]});
+    testCasesApi.approveRevision.mockRejectedValueOnce(new Error('Không kết nối')).mockResolvedValueOnce({});
+    const user=userEvent.setup(),onUpdated=vi.fn();
+    render(<CaseDetailModal projectId={1} caseId={1} onClose={vi.fn()} onUpdated={onUpdated}/>);
+    await user.click(await screen.findByRole('button',{name:'Phê duyệt bản này'}));
+    expect(testCasesApi.approveRevision).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button',{name:'Hủy phê duyệt'}));
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+    await user.click(screen.getByRole('button',{name:'Phê duyệt bản này'}));
+    await user.click(screen.getByRole('button',{name:'Xác nhận phê duyệt'}));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Không kết nối');
+    await user.click(screen.getByRole('button',{name:'Xác nhận phê duyệt'}));
+    expect(await screen.findByText('Đã phê duyệt (Rev 1)')).toBeVisible();
+    expect(onUpdated).toHaveBeenCalledOnce();
+    expect(testCasesApi.approveRevision).toHaveBeenLastCalledWith(1,1,4);
+  });
+  it('switches language, cancels revision editing and reports a failed historical read',async()=> {
+    testCasesApi.getCase.mockResolvedValue({caseNo:'TC-1',currentRevision:{titleVi:'Nội dung',titleJp:'原文'},revisions:[{id:3,revisionNo:1,createdAt:'2026-09-01'}]});
+    testCasesApi.getRevision.mockRejectedValue(new Error('Chưa tải được lịch sử'));
+    const user=userEvent.setup(),onClose=vi.fn();
+    render(<CaseDetailModal projectId={1} caseId={1} onClose={onClose}/>);
+    await user.click(await screen.findByRole('button',{name:'Bản gốc tiếng Nhật (JP)'}));
+    expect(screen.getByText('原文')).toBeVisible();
+    await user.click(screen.getByRole('button',{name:'Bản tiếng Việt'}));
+    await user.click(screen.getByRole('button',{name:/Thêm phiên bản/}));
+    await user.click(screen.getByRole('button',{name:'Hủy',exact:true}));
+    expect(testCasesApi.addRevision).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button',{name:'Xem phiên bản 1'}));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Chưa tải được lịch sử');
+    await user.click(screen.getAllByRole('button',{name:'Đóng',exact:true})[0]);
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+  it('keeps the case dialog dismissible while loading', async()=> {
+    testCasesApi.getCase.mockReturnValue(new Promise(()=>{}));
+    const user=userEvent.setup(),onClose=vi.fn();
+    render(<CaseDetailModal projectId={1} caseId={1} onClose={onClose}/>);
+    expect(screen.getByRole('dialog',{name:'Chi tiết test case'})).toBeVisible();
+    expect(screen.getByRole('status')).toHaveTextContent('Đang tải');
+    await user.keyboard('{Escape}'); expect(onClose).toHaveBeenCalledOnce();
+  });
+  it('offers retry without invented revision content after a case load failure',async()=> {
+    testCasesApi.getCase.mockRejectedValueOnce(new Error('Mất kết nối')).mockResolvedValueOnce({caseNo:'TC-1',currentRevision:{titleVi:'Tải lại thành công'},revisions:[]});
+    const user=userEvent.setup();render(<CaseDetailModal projectId={1} caseId={1} onClose={vi.fn()}/>);
+    expect(await screen.findByRole('alert')).toHaveTextContent('Mất kết nối');
+    expect(screen.queryByText(/Dự thảo/)).toBeNull();
+    expect(screen.queryByRole('button',{name:/Thêm phiên bản/})).toBeNull();
+    await user.click(screen.getByRole('button',{name:'Thử lại'}));
+    expect(await screen.findByText('Tải lại thành công')).toBeVisible();
+  });
+  it('ignores an old case response after switching cases',async()=> {
+    let finishOld;
+    testCasesApi.getCase.mockImplementationOnce(()=>new Promise(resolve=>{finishOld=resolve;}))
+      .mockResolvedValueOnce({caseNo:'TC-2',currentRevision:{titleVi:'Case mới'},revisions:[]});
+    const view=render(<CaseDetailModal projectId={1} caseId={1} onClose={vi.fn()}/>);
+    view.rerender(<CaseDetailModal projectId={1} caseId={2} onClose={vi.fn()}/>);
+    await screen.findByText('Case mới');
+    await act(async()=>finishOld({caseNo:'TC-1',currentRevision:{titleVi:'Case cũ'},revisions:[]}));
+    expect(screen.queryByText('Case cũ')).toBeNull();
+    expect(screen.getByText('Case mới')).toBeVisible();
+  });
   it('opens the document returned by an import from the existing case library',async()=> {
     const navigate=vi.fn(),user=userEvent.setup();
     testCasesApi.createImportPreview.mockResolvedValue({id:19,status:'PREVIEW',totalRows:1,validRows:1,errorRows:0,rows:[]});

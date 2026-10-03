@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { SlidersHorizontal, MessageSquare, Star, Rss } from "lucide-react";
+import { SlidersHorizontal, MessageSquare, Rss } from "lucide-react";
 import { Avatar, Button, IconButton, Modal } from "./components";
 import { statuses, milestones } from "./data";
 export default function HomePage({ issues, activities, navigate, notify, statusCounts, milestoneCounts }) {
   const [expanded, setExpanded] = useState([]);
-  const [stars, setStars] = useState([]);
   const [settings, setSettings] = useState(false);
   const [showUpdates, setShowUpdates] = useState(true);
   const [showComments, setShowComments] = useState(true);
@@ -111,7 +110,7 @@ export default function HomePage({ issues, activities, navigate, notify, statusC
                         {a.text}
                       </div>
                     )}
-                    {a.text.length > 90 && (
+                    {(a.text?.length || 0) > 90 && (
                       <button
                         className="d-text-button"
                         onClick={() =>
@@ -137,20 +136,6 @@ export default function HomePage({ issues, activities, navigate, notify, statusC
                           label={`Bình luận ${issue.id}`}
                           onClick={() => navigate(`/board/issue/${issue.id}`)}
                         />
-                        <button
-                          className={`d-star ${stars.includes(a.id) ? "active" : ""}`}
-                          aria-label={`Yêu thích cập nhật ${a.id}`}
-                          onClick={() =>
-                            setStars(
-                              stars.includes(a.id)
-                                ? stars.filter((id) => id !== a.id)
-                                : [...stars, a.id],
-                            )
-                          }
-                        >
-                          <Star size={17} fill="currentColor" />
-                          {stars.includes(a.id) ? 1 : 0}
-                        </button>
                       </div>
                     </div>
                   </div>

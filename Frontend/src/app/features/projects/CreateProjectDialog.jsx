@@ -5,7 +5,7 @@ import { useProject } from "./ProjectProvider";
 import { useDialogFocus } from '../../hooks/useDialogFocus';
 
 export function CreateProjectDialog({ onClose }) {
-  const { refreshProjects, selectProject } = useProject();
+  const { refreshProjects } = useProject();
   const [formData, setFormData] = useState({
     code: "",
     name: "",
@@ -18,6 +18,7 @@ export function CreateProjectDialog({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
     setError("");
 
@@ -46,7 +47,7 @@ export function CreateProjectDialog({ onClose }) {
         </div>
         <form onSubmit={handleSubmit} className="dialog-form">
           {error && <div role="alert" className="dialog-error">{error}</div>}
-          
+          <fieldset disabled={loading} className="min-w-0">
           <div className="form-group">
             <label htmlFor="code">Mã dự án *</label>
             <input 
@@ -105,6 +106,7 @@ export function CreateProjectDialog({ onClose }) {
               {loading ? "Đang xử lý..." : "Tạo dự án"}
             </button>
           </div>
+          </fieldset>
         </form>
       </div>
     </div>

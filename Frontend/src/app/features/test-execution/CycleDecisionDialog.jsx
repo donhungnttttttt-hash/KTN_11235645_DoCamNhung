@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { executionApi } from '../../services/api/execution';
 import { ErrorNotice, Field, Pager, formatTime } from './components';
+import { useDialogFocus } from '../../hooks/useDialogFocus';
 
 export function CycleDecisionDialog({ projectId, cycle, run, onClose, onSaved }) {
   const [current, setCurrent] = useState(run || cycle);
@@ -8,6 +9,7 @@ export function CycleDecisionDialog({ projectId, cycle, run, onClose, onSaved })
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [conflict, setConflict] = useState(false);
   const mode = useRef(run ? (run.excluded ? 'RESTORE' : 'NA') : (cycle.statusCode === 'CLOSED' ? 'REOPEN' : 'CLOSE')).current;
   const live = useRef(true);
+  const dialogRef = useDialogFocus(onClose, busy);
   useEffect(() => { live.current = true; return () => { live.current = false; }; }, []);
   const label = { NA: 'Xác nhận NA', RESTORE: 'Đưa lại vào phạm vi', CLOSE: 'Xác nhận chốt đợt', REOPEN: 'Xác nhận mở lại đợt' }[mode];
   const applicable = run ? Boolean(current.excluded) === (mode === 'RESTORE') : current.statusCode === (mode === 'REOPEN' ? 'CLOSED' : 'ACTIVE');
@@ -28,7 +30,7 @@ export function CycleDecisionDialog({ projectId, cycle, run, onClose, onSaved })
     } catch (e) { if (live.current) { setError(e.message); setConflict(e.status === 409); } }
     finally { if (live.current) setBusy(false); }
   }
-  return <div className="ex-modal"><section className="ex-dialog" role="dialog" aria-modal="true" aria-label={label}>
+  return <div className="ex-modal"><section ref={dialogRef} tabIndex={-1} className="ex-dialog" role="dialog" aria-modal="true" aria-label={label}>
     <div className="ex-heading"><h3>{label}{run && ` · ${run.caseNo}`}</h3><button className="cat-btn" disabled={busy} onClick={onClose}>Đóng</button></div>
     <p className="ex-help">{run ? 'Quyết định phạm vi giữ nguyên lịch sử thực thi. NA loại lượt khỏi mẫu số báo cáo và yêu cầu PM xác nhận lại phạm vi retest liên quan.' : mode === 'CLOSE' ? 'Chốt khi không còn Chưa chạy / Tạm hoãn và các kết quả NG đã liên kết bug. Ghi rõ tồn đọng; đợt đã chốt khóa ghi kết quả và retest.' : 'Mở lại cho phép tiếp tục thực thi, giữ nguyên kết quả và quyết định trước đó.'}</p>
     <ErrorNotice error={error} />{conflict && <button className="cat-btn" disabled={busy} onClick={refresh}>Tải bản hiện hành, giữ bản nháp</button>}
