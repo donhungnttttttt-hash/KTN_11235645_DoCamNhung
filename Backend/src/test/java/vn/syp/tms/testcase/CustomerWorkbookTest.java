@@ -8,6 +8,37 @@ import org.springframework.mock.web.MockMultipartFile;
 
 class CustomerWorkbookTest {
     final TestCaseWorkbook parser = new TestCaseWorkbook();
+    @Test void acceptsPresentationMergeWithoutChangingCaseOrSourceCells() throws Exception {
+        byte[] data=change(b->{
+            var sheet=b.getSheetAt(0);sheet.getRow(1).getCell(12).setBlank();sheet.getRow(1).getCell(13).setBlank();
+            sheet.addMergedRegion(new org.apache.poi.ss.util.CellRangeAddress(1,1,11,13));
+        });
+        var parsed=parser.parse(file(data));
+        assertThat(parsed.rows()).hasSize(1);
+        assertThat(parsed.sourceBytes()).isEqualTo(data);
+        assertThat(parsed.rows().getFirst().sourceCells().get(12)).isEmpty();
+        byte[] exported=DocumentWorkbook.export(data,parsed.sheetName(),CustomerWorkbook.HEADERS,
+            java.util.List.of(new DocumentWorkbook.RowCells(2,parsed.rows().getFirst().sourceCells())));
+        try(var book=new XSSFWorkbook(new ByteArrayInputStream(exported))) {
+            assertThat(book.getSheetAt(0).getMergedRegion(0).formatAsString()).isEqualTo("L2:N2");
+        }
+    }
+    @Test void identifiesAmbiguousMergesByAddressInsteadOfRejectingEveryWorkbook() throws Exception {
+        for(var range:java.util.List.of("A2:B2","D2:E2","L1:N1","L2:L3")) {
+            assertThatThrownBy(()->parser.parse(file(change(b->b.getSheetAt(0).addMergedRegion(
+                org.apache.poi.ss.util.CellRangeAddress.valueOf(range)))))).hasMessageContaining(range);
+        }
+    }
+    @Test void rejectsPresentationMergesThatHideValuesOrNamedColumns() throws Exception {
+        // M/N contain source values in this fixture; merging must not silently hide them.
+        assertThatThrownBy(()->parser.parse(file(change(b->b.getSheetAt(0).addMergedRegion(
+            org.apache.poi.ss.util.CellRangeAddress.valueOf("L2:N2")))))).hasMessageContaining("L2:N2");
+        assertThatThrownBy(()->parser.parse(file(change(b->{
+            var s=b.getSheetAt(0);s.getRow(1).getCell(12).setBlank();s.getRow(1).getCell(13).setBlank();
+            s.getRow(0).getCell(12).setCellValue("Ghi chú riêng");
+            s.addMergedRegion(org.apache.poi.ss.util.CellRangeAddress.valueOf("L2:N2"));
+        })))).hasMessageContaining("L2:N2");
+    }
     MockMultipartFile file(byte[] data) { return new MockMultipartFile("file", "仕様書_VI.xlsx", "application/octet-stream", data); }
     @Test void readsCustomerHeadersNumericIdAndMultilineContentWithoutRenamingSheet() throws Exception {
         var parsed = parser.parse(file(CustomerWorkbookFixture.bytes()));

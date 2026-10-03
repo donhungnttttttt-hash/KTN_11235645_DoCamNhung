@@ -576,7 +576,7 @@
       ],
       "post": {
         "operationId": "previewImport",
-        "description": "Tối đa 5 MiB, 500 dòng, TTL 24 giờ; không hỗ trợ CSV/formula/macro/merged cells.",
+        "description": "Tối đa 5 MiB, 500 dòng, TTL 24 giờ; không hỗ trợ CSV/formula/macro. Mẫu nội bộ không gộp ô; mẫu khách chỉ nhận gộp ngang ở cột trình bày sang cột trống, xem test-documents.md.",
         "security": [
           {
             "sessionCookie": [],

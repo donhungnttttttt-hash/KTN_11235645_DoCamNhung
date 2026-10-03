@@ -50,9 +50,25 @@ public class ApiExceptionHandler {
         return error(413, "FILE_TOO_LARGE", "Tệp vượt giới hạn tải lên. Excel tối đa 5 MiB; chứng cứ tối đa 20 MiB.", request);
     }
 
-    @ExceptionHandler(org.springframework.web.bind.MissingServletRequestParameterException.class)
+    @ExceptionHandler({org.springframework.web.bind.MissingServletRequestParameterException.class,
+            org.springframework.web.multipart.support.MissingServletRequestPartException.class})
     ResponseEntity<ApiError> missingFile(HttpServletRequest request) {
         return error(400, "INVALID_REQUEST", "Thiếu tham số bắt buộc của yêu cầu.", request);
+    }
+
+    @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
+    ResponseEntity<ApiError> wrongMethod(org.springframework.web.HttpRequestMethodNotSupportedException exception,
+            HttpServletRequest request) {
+        var headers = new org.springframework.http.HttpHeaders();
+        var methods = exception.getSupportedHttpMethods();
+        if (methods != null) headers.setAllow(methods);
+        return ResponseEntity.status(405).headers(headers).body(new ApiError(
+                "METHOD_NOT_ALLOWED", "Phương thức yêu cầu không được hỗ trợ.", List.of(), requestId(request)));
+    }
+
+    @ExceptionHandler(org.springframework.web.HttpMediaTypeNotSupportedException.class)
+    ResponseEntity<ApiError> wrongMediaType(HttpServletRequest request) {
+        return error(415, "UNSUPPORTED_MEDIA_TYPE", "Định dạng nội dung yêu cầu không được hỗ trợ.", request);
     }
 
     @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)

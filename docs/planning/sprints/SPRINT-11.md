@@ -190,3 +190,7 @@ Theo yêu cầu rà soát và cải tiến, đã sửa ba dialog thực thi (foc
 ### 04/10/2026 — Rà soát UI/UX tiếp và bàn giao system-design
 
 Theo yêu cầu tiếp theo, sửa menu/focus/drawer, deep-link tài liệu, modal Tab, tải/retry/đổi case, khóa draft, responsive và nút; bỏ nút yêu thích chưa lưu. Full **271/271 test, 33 file PASS**, build PASS. Coverage 6 file thay đổi: 93,84% statements / 87,66% branches / 90,54% functions / 96% lines. Có RED→GREEN và browser thật 320/390/1440px, dialog chiều cao480px. Xem [báo cáo UI/UX](../../reviews/2026-10-04-ui-ux-audit.md). Người dùng đã yêu cầu commit/push `system-design` cho tác vụ này; không merge/deploy. S11 vẫn IN_REVIEW, còn importer ô gộp và gate integration/UAT/pilot; không chứng nhận toàn hệ thống hết lỗi.
+
+### 04/10/2026 — Review code/API và nhập Excel
+
+Đã xử lý merged presentation cells giữ nguồn/export, lỗi HTTP client timeout/JSON/session, mapping HTTP400/405/415, cải thiện preview Excel/focus/lọc lỗi/scroll mobile. FE276/276, BE76/76 database-independent, build/verify và Java diagnostics136source0warning PASS; browser workbook Scale57dòng0lỗi. Backend native đã restart. Xem [báo cáo](../../reviews/2026-10-04-code-api-import-review.md). Người dùng cho phép commit/push system-design; S11 giữ IN_REVIEW cho isolated integration/UAT/pilot, không merge/deploy.

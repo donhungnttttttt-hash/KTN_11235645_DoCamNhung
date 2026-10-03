@@ -80,6 +80,7 @@ final class CustomerWorkbook {
     static List<TestCaseDtos.ImportRowInput> read(Sheet sheet) {
         var headers=headers(sheet);
         var columns=columns(headers);
+        validatePresentationMerges(sheet,headers,columns);
         List<TestCaseDtos.ImportRowInput> rows = new ArrayList<>();
         Set<String> ids = new HashSet<>();
         String previousTitle="";
@@ -101,6 +102,23 @@ final class CustomerWorkbook {
         }
         if (rows.isEmpty()) throw invalid("Tệp không có dòng test case.");
         return List.copyOf(rows);
+    }
+
+    // Only presentation cells that cannot change case identity/revision content may span blank columns.
+    private static void validatePresentationMerges(Sheet sheet,List<String> headers,Map<String,Integer> columns) {
+        var caseColumns=java.util.stream.Stream.of("sourceId","titleVi","preconditionsVi","stepsVi","expectedVi","sourceReference")
+                .map(columns::get).filter(Objects::nonNull).toList();
+        for(var range:sheet.getMergedRegions()) {
+            boolean safe=range.getFirstRow()>0 && range.getFirstRow()==range.getLastRow()
+                    && range.getLastColumn()<headers.size()
+                    && caseColumns.stream().noneMatch(c->c>=range.getFirstColumn() && c<=range.getLastColumn());
+            if(safe) for(int c=range.getFirstColumn()+1;c<=range.getLastColumn();c++) {
+                var row=sheet.getRow(range.getFirstRow());
+                if(!headers.get(c).isBlank() || !value(row==null?null:row.getCell(c),range.getFirstRow()+1).isBlank()) { safe=false;break; }
+            }
+            if(!safe) throw invalid("Vùng ô gộp " + range.formatAsString()
+                    + " chưa được hỗ trợ: chỉ nhận ô gộp ngang ở cột trình bày, sang cột không có tiêu đề và dữ liệu; không gộp ID hoặc nội dung test case.");
+        }
     }
 
     static String value(Cell cell, int row) {

@@ -8,6 +8,7 @@
   "phase": "IN_REVIEW",
   "implementationStarted": true,
   "notes": [
+    "04/10/2026 review code/API/import: hỗ trợ ô gộp trình bày an toàn, giữ export nguồn; sửa HTTP client timeout/JSON/session, mapping400/405/415 và UX preview. FE276/276 tests33files/build, BE76/76 tests16classes/verify, Java136source0warning PASS. Browser native preview Scale57dòng0lỗi, mobile/focus/Escape PASS; backend đã restart. Xem docs/reviews/2026-10-04-code-api-import-review.md. User cho phép commit/push system-design riêng tác vụ; giữ IN_REVIEW integration/UAT/pilot.",
     "04/10/2026 UI/UX final theo yêu cầu push system-design: sửa dropdown/focus, drawer mobile sau desktop-collapse, document deep-link, modal Tab, tải/retry/stale case, khóa draft khi gửi, responsive form và đồng bộ nút; bỏ yêu thích chưa lưu. Final FE271/271 tests33files/build PASS; coverage6files 93.84 statements/87.66 branches/90.54 functions/96 lines. Browser mobile320/390, dialog320x480, desktop1440 và ô kết quả/history PASS trong phạm vi báo cáo docs/reviews/2026-10-04-ui-ux-audit.md. Người dùng cho phép commit/push riêng tác vụ này, không merge/deploy; không đổi BE/schema. Giữ S11 IN_REVIEW và gate merged-cell import/integration/UAT/pilot.",
     "04/10/2026 review chức năng/UI trên system-design: sửa focus/Escape/nested modal, retry lịch sử giữ draft, khóa input khi lưu, tiêu đề route, nhận diện TMS và contrast/responsive. FE256/256 tests30files/build PASS; coverage AttemptDialog/useDialogFocus 92.18 statements/85.84 branches/89.65 functions/97.14 lines. Browser đọc các màn tổng quan/công việc/cycle/retest/report/lỗi/thành viên, keyboard/dialog/320–1440px PASS trong phạm vi báo cáo. Còn merged-cell import và yêu thích chỉ lưu phiên; không đổi BE/schema/ghi nghiệp vụ. Xem docs/reviews/2026-10-04-functionality-ui-review.md; S11 IN_REVIEW, giữ gate integration/UAT/pilot.",
     "Final kiểm chứng sửa ô kết quả (kết thúc 04/10/2026): toàn bộ FE248/248 tests (29files), build và diff-check PASS. Sửa vẫn ở working tree system-design, chưa commit/push.",
@@ -753,7 +754,7 @@
   "implementationBaseCommit": "3355cfc",
   "lastCompletedSprint": "S09",
   "nextSuggestedSprint": null,
-  "nextAction": "Màn test case/ô kết quả và đợt sửa UI đã kiểm chứng; tiếp theo xử lý importer từ chối ô gộp bằng test workbook và giữ nguồn/export. Tiếp tục gate isolated native integration, UAT theo vai trò và pilot; không chạy destructive fixtures trên tms.",
+  "nextAction": "Tiếp tục kiểm chứng integration/fresh-upgrade trên schema native độc lập, UAT PM/Tester và pilot; đo các đường đọc thư viện có truy vấn lặp trước tối ưu. Merged presentation cells đã hỗ trợ; merged ID/nội dung/header/nhiều dòng vẫn chặn có địa chỉ. Không chạy destructive fixtures trên tms.",
   "executionPolicy": {
     "continueSequentially": true,
     "authorizedAt": "2026-09-29",

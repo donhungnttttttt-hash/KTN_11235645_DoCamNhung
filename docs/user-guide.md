@@ -18,7 +18,7 @@ Cấu hình dự án ở `#/settings`: thành viên, danh mục, rule nội bộ
 ## Luồng PM → Tester → PM
 
 1. **PM chuẩn bị:** tạo nhóm case; khai báo môi trường, thiết bị và build trong danh mục. Tạo case hoặc nhập Excel theo mẫu nội bộ.
-2. **Nhập Excel:** tải mẫu `.xlsx`, giữ tên sheet/cột và mã nhóm có sẵn. Chọn file, xem trước và sửa các dòng lỗi rồi mới xác nhận. Không tự ghi đè case trùng; tối đa 500 dòng/5 MiB. Phiên xem trước hết hạn sau 24 giờ. Nhập xong tải lại danh sách để đối chiếu.
+2. **Nhập Excel:** tải mẫu `.xlsx` theo tiêu đề khách hàng hoặc dùng mẫu TestCases nội bộ cũ (giữ mã nhóm có sẵn). Chọn file, xem trước và sửa các dòng lỗi rồi mới xác nhận. Không tự ghi đè case trùng; tối đa 500 dòng/5 MiB. Phiên xem trước hết hạn sau 24 giờ. Nhập xong tải lại danh sách để đối chiếu.
 3. **PM duyệt:** mở revision đúng nội dung và phê duyệt. Bản sửa nội dung tạo revision mới; các lượt đang chạy vẫn giữ revision đã được phân công.
 4. **PM lập đợt:** chọn cấu hình build/môi trường/thiết bị, thêm các revision đã duyệt, phân công Tester, rồi kích hoạt. Phạm vi đã kích hoạt không đổi bằng cách sửa case gốc; cần đợt mới nếu mở rộng.
 5. **Tester thực thi:** mở đúng đợt/lượt của mình, đọc bước và kết quả mong đợi; ghi OK, NG hoặc P. NG cần kết quả thực tế; P cần lý do. Kết quả cũ được giữ lại nếu ghi lần mới.
@@ -35,3 +35,5 @@ Tiến độ thực thi = `(OK + NG) / phạm vi áp dụng`; tỷ lệ đạt =
 Phiên hết hạn: đăng nhập lại. Thiếu quyền hoặc ngoài dự án: kiểm tra membership với PM. Xung đột phiên bản 409: giữ nội dung đang nhập, tải bản mới và đối chiếu trước khi lưu lại; không bấm liên tục để ghi đè. API không phản hồi: xem thông báo lỗi và báo người vận hành; ứng dụng không chuyển sang số liệu giả.
 
 Chứng cứ PNG/JPG/PDF/MP4 tối đa 20 MiB/tệp, chỉ thành viên dự án tải được. Không đưa mật khẩu hoặc dữ liệu cá nhân không cần thiết vào bình luận/tệp. Tệp demo là giả lập, không thay chứng cứ thực tế. Phần Redmine chỉ phản ánh binding/đối soát được cấu hình; demo S11 không tự đẩy 32 bug ra tracker.
+
+Khi xem trước Excel, dùng **Chỉ hiện dòng lỗi** để tìm dòng cần sửa. Ô gộp trình bày ngang sang cột trống được chấp nhận trong mẫu khách; nếu thông báo chỉ ra vùng ô gộp khác, tách vùng đó rồi chọn lại tệp. Bảng preview cuộn riêng và chưa tạo test case cho đến khi xác nhận.

@@ -1,11 +1,27 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createApiClient } from './client';
+import { createApiClient, onUnauthorized } from './client';
 
 const response = (body, status = 200) => new Response(JSON.stringify(body), {
   status, headers: { 'Content-Type': 'application/json', 'X-Request-ID': 'test-request' },
 });
 
 describe('API boundary', () => {
+  it('preserves HTTP status and expires the session even when an error body is malformed', async () => {
+    const expired=vi.fn(),off=onUnauthorized(expired);
+    try {
+      const fetchImpl=vi.fn().mockResolvedValue(new Response('{broken',{status:401,headers:{'Content-Type':'application/json','X-Request-ID':'broken-body'}}));
+      await expect(createApiClient({fetchImpl})('/me')).rejects.toMatchObject({status:401,code:'HTTP_ERROR',requestId:'broken-body'});
+      expect(expired).toHaveBeenCalledOnce();
+    } finally { off(); }
+  });
+  it('reports invalid successful JSON as a response error, not a network outage',async()=> {
+    const fetchImpl=vi.fn().mockResolvedValue(new Response('{broken',{headers:{'Content-Type':'application/json'}}));
+    await expect(createApiClient({fetchImpl})('/me')).rejects.toMatchObject({code:'INVALID_RESPONSE'});
+  });
+  it('keeps the timeout active while downloading a response body',async()=> {
+    const fetchImpl=vi.fn(async(url,{signal})=>({ok:true,status:200,headers:new Headers(),blob:()=>new Promise((resolve,reject)=>signal.addEventListener('abort',()=>reject(new DOMException('aborted','AbortError'))))}));
+    await expect(createApiClient({fetchImpl,timeoutMs:5})('/download',{responseType:'blob'})).rejects.toMatchObject({code:'TIMEOUT'});
+  },1000);
   it('uploads FormData with CSRF without overriding the multipart boundary', async () => {
     const body = new FormData(); body.append('file', new File(['xlsx'], 'cases.xlsx'));
     const fetchImpl = vi.fn().mockResolvedValue(response({id:1}));

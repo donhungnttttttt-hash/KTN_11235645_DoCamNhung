@@ -33,7 +33,6 @@ public class TestCaseWorkbook {
                 if (book.getNumberOfSheets() != 1) throw invalid("Chọn workbook có một sheet dữ liệu theo mẫu đã hỗ trợ.");
                 Sheet sheet = book.getSheetAt(0);
                 for (Row row : sheet) for (Cell cell : row) CustomerWorkbook.checkLink(cell);
-                if (sheet.getNumMergedRegions() != 0) throw invalid("Không hỗ trợ gộp ô trong sheet dữ liệu.");
                 if (sheet.getLastRowNum() > MAX_ROWS) throw invalid("Tệp vượt quá 500 dòng dữ liệu.");
                 Row header = sheet.getRow(0);
                 if (!"TestCases".equals(sheet.getSheetName()) || header == null ||
@@ -41,6 +40,7 @@ public class TestCaseWorkbook {
                     var rows = CustomerWorkbook.read(sheet);
                     return new Parsed(name, sha256(bytes), rows, CUSTOMER, sheet.getSheetName(), bytes);
                 }
+                if (sheet.getNumMergedRegions() != 0) throw invalid("Mẫu TestCases nội bộ không hỗ trợ gộp ô: " + sheet.getMergedRegion(0).formatAsString() + ".");
                 if (header == null || header.getLastCellNum() != HEADERS.size()) throw invalid("Thiếu hoặc thừa cột trong file mẫu.");
                 for (int col=0; col<HEADERS.size(); col++) {
                     if (!HEADERS.get(col).equals(text(header.getCell(col),1))) throw invalid("Tên hoặc thứ tự cột không khớp file mẫu.");

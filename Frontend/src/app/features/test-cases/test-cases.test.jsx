@@ -29,6 +29,25 @@ async function preview(result) {
   return {user,onSuccess,onClose};
 }
 describe('Excel import workflow',()=> {
+  it('focuses preview and filters invalid rows so errors are easy to find',async()=> {
+    const {user}=await preview({id:9,status:'PREVIEW',totalRows:2,validRows:1,errorRows:1,rows:[
+      {rowNumber:2,sourceCaseKey:'GOOD',titleVi:'Dòng đúng',valid:true},
+      {rowNumber:3,sourceCaseKey:'BAD',titleVi:'Dòng cần sửa',valid:false,errorMessage:'Thiếu bước test'}]});
+    expect(screen.getByRole('heading',{name:'Xem trước dữ liệu'})).toHaveFocus();
+    await user.click(screen.getByRole('checkbox',{name:'Chỉ hiện dòng lỗi'}));
+    expect(screen.queryByText('Dòng đúng')).toBeNull();
+    expect(screen.getByText('Thiếu bước test')).toBeVisible();
+    await user.click(screen.getByRole('checkbox',{name:'Chỉ hiện dòng lỗi'}));
+    expect(screen.getByText('Dòng đúng')).toBeVisible();
+  });
+  it('rejects an empty Excel file before sending it to the server',async()=> {
+    const user=userEvent.setup();
+    render(<ImportExcelDialog projectId={1} onClose={vi.fn()} onSuccess={vi.fn()}/>);
+    await user.upload(screen.getByLabelText('Chọn tệp Excel'),new File([],'empty.xlsx'));
+    await user.click(screen.getByRole('button',{name:/Xem trước kết quả/}));
+    expect(await screen.findByRole('alert')).toHaveTextContent('không rỗng');
+    expect(testCasesApi.createImportPreview).not.toHaveBeenCalled();
+  });
   it('blocks the entire commit when even one row is invalid',async()=> {
     await preview({id:9,status:'PREVIEW',totalRows:2,validRows:1,errorRows:1,rows:[{rowNumber:4,sourceCaseKey:'BAD',valid:false,errorMessage:'Thiếu kết quả mong đợi'}]});
     expect(screen.getByText('Thiếu kết quả mong đợi')).toBeVisible();

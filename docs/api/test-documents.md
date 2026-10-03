@@ -10,7 +10,9 @@ Preview thêm `format` (`CUSTOMER_V1` hoặc `INTERNAL_V1`) và `sheetName` cạ
 
 Mẫu khách nhận diện theo tiêu đề, không phụ thuộc vị trí cột. Bắt buộc `ID`, `Đối tượng test`, `Các bước test`, `Kết quả mong đợi`. Chuẩn hóa dấu, hoa/thường, khoảng trắng và ký hiệu; chấp nhận `Điều kiện tiên quyết`/`Điều kiện tiền đề`, `Hạng mục xác nhận`/`Mục xác nhận`. Hai cột trùng nghĩa bị từ chối để tránh lấy nhầm dữ liệu. Cột `No` và các cột không nhận diện vẫn lưu nguyên nguồn, không đưa vào thống kê kết quả. Ô đối tượng test trống kế thừa đối tượng của dòng dữ liệu trước; nếu chưa có đối tượng trước đó thì validation vẫn báo thiếu. Ô nguồn và export giữ trống đến khi revision thực sự thay đổi tiêu đề.
 
-Giới hạn: một sheet, tiêu đề ở hàng đầu, ≤500 dòng, ≤64 cột dữ liệu, ≤5 MiB; không công thức/macro/ô gộp/external workbook links. Hyperlink chỉ HTTP/HTTPS/mailto hoặc nội bộ sheet. Kết quả cũ không tạo execution, NA, bug hoặc tài khoản. Mỗi file tạo nhóm `XLSX-{batchId}`, case `XLSX-{batchId}-{rowNumber}`; ID nguồn giữ riêng. Cùng checksum khách trong cùng dự án không tạo trùng. Mẫu nội bộ TestCases tiếp tục yêu cầu mã nhóm đã có và mã case chưa tồn tại. Mẫu tải xuống mới dùng tiêu đề khách với cột No; tên file `test-cases-template.xlsx`.
+Giới hạn: một sheet, tiêu đề ở hàng đầu, ≤500 dòng, ≤64 cột dữ liệu, ≤5 MiB; không công thức/macro/external workbook links. Hyperlink chỉ HTTP/HTTPS/mailto hoặc nội bộ sheet. Kết quả cũ không tạo execution, NA, bug hoặc tài khoản. Mỗi file tạo nhóm `XLSX-{batchId}`, case `XLSX-{batchId}-{rowNumber}`; ID nguồn giữ riêng. Cùng checksum khách trong cùng dự án không tạo trùng. Mẫu nội bộ TestCases tiếp tục yêu cầu mã nhóm đã có và mã case chưa tồn tại. Mẫu tải xuống mới dùng tiêu đề khách với cột No; tên file `test-cases-template.xlsx`.
+
+Ô gộp (04/10/2026): chỉ nhận gộp ngang một dòng dữ liệu ở cột trình bày, sang cột không có tiêu đề và dữ liệu. Không gộp ID, tiêu đề case, tiền điều kiện, bước test, kết quả mong đợi hoặc tham chiếu nguồn; không gộp header/nhiều dòng. Lỗi nêu địa chỉ vùng ô. Source/export giữ vùng gộp hợp lệ. Mẫu TestCases nội bộ vẫn không hỗ trợ ô gộp.
 
 ## Đọc và xuất
 

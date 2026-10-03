@@ -27,6 +27,8 @@ Nội dung: `titleVi` (bắt buộc, 255), `preconditionsVi?`, `stepsVi` (bắt 
 Preview: `{id,projectId,fileName,status,totalRows,validRows,errorRows,rows}`. Mỗi dòng gồm `rowNumber` (số dòng Excel gốc), `sourceCaseKey`, `suiteCode`, `titleVi`, `valid`, `errorMessage`.
 Commit trả `{id,projectId,fileName,fileChecksum,status,totalRows,validRows,errorRows,stagedExpiresAt,committedAt,createdAt}`. `fileChecksum` là SHA-256 nội dung file; mapping nội bộ v1.0. Cùng file/cùng người nhập/cùng dự án trả lại batch đã commit hoặc preview hợp lệ còn hạn. Không tự tạo nhóm hoặc ghi đè case.
 
-422: workbook/cột/dòng lỗi; 413: file >5 MiB; 410: staging quá 24 giờ; 409: dữ liệu thay đổi, mã xuất hiện sau preview hoặc nhóm đã lưu trữ. Import tối đa 500 dòng, một sheet `TestCases`, không công thức/macro/ô gộp/liên kết ngoài. Dòng trống bỏ qua nhưng giữ số dòng Excel khi báo lỗi.
+422: workbook/cột/dòng lỗi; 413: file >5 MiB; 410: staging quá 24 giờ; 409: dữ liệu thay đổi, mã xuất hiện sau preview hoặc nhóm đã lưu trữ. Với mẫu nội bộ, import tối đa 500 dòng, một sheet `TestCases`, không công thức/macro/ô gộp/liên kết ngoài. Dòng trống bỏ qua nhưng giữ số dòng Excel khi báo lỗi.
 
 Giao dịch ghi được khóa theo dự án; nội dung revision chỉ thêm mới, approval không sửa nội dung; mutation case/revision/import ghi `project_audit` cùng transaction. Cấu hình quyền tạo tài khoản S02 độc lập hoàn toàn với role dự án.
+
+Mẫu khách hàng và quy tắc ô gộp theo [contract tài liệu test](test-documents.md). HTTP transport trả 400 khi thiếu file/part, 405 khi sai method (kèm Allow), 415 khi media type không được hỗ trợ; không biến các lỗi này thành 500.
