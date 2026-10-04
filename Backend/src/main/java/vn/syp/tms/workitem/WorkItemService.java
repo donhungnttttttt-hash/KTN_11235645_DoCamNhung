@@ -55,7 +55,7 @@ public class WorkItemService {
         membership(p,actor);
         return Map.of("items",db.rows(SELECT+" WHERE w.project_id=? ORDER BY w.created_at DESC,w.id DESC LIMIT 30",p),
             "statuses",db.rows("SELECT status_code AS status,COUNT(*) AS count FROM work_items WHERE project_id=? GROUP BY status_code",p),
-            "milestones",db.rows("SELECT m.name,COUNT(w.id) AS total,COALESCE(SUM(w.status_code='closed'),0) AS done FROM milestones m LEFT JOIN work_items w ON w.project_id=m.project_id AND w.milestone_id=m.id WHERE m.project_id=? AND m.archived_at IS NULL GROUP BY m.id,m.name ORDER BY m.id DESC",p));
+            "milestones",db.rows("SELECT m.id,m.name,DATE_FORMAT(m.due_on,'%Y-%m-%d') AS dueOn,COUNT(w.id) AS total,COALESCE(SUM(w.status_code='closed'),0) AS done FROM milestones m LEFT JOIN work_items w ON w.project_id=m.project_id AND w.milestone_id=m.id WHERE m.project_id=? AND m.archived_at IS NULL GROUP BY m.id,m.name,m.due_on ORDER BY m.id DESC",p));
     }
     @Transactional(readOnly=true)
     public Map<String,Object> source(long p,String actor,long attemptId) {

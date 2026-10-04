@@ -13,6 +13,10 @@ vi.mock('../features/auth/AuthProvider',()=>({useAuth:()=>({user:{id:'pm',displa
 vi.mock('../services/api/workItems',()=>({workItemsApi:{transition:vi.fn(),batch:vi.fn(),get:vi.fn(),create:vi.fn()}}));
 vi.mock('../services/api/testCases',()=>({testCasesApi:{listCases:vi.fn().mockResolvedValue({items:[]})}}));
 const issue={id:'DEMO-7',serverId:7,title:'Lỗi đăng nhập',type:'Lỗi',typeCode:'BUG',status:'open',version:0,assignee:'Tester',priority:'Trung bình',created:'2026-09-29',updated:'2026-09-29'};
+it('passes the overview milestone link to backend filters',()=>{
+  render(<WorkBoardPage activeRoute="/board/list?milestone=10" navigate={vi.fn()}/>);
+  expect(shared.queries).toHaveBeenLastCalledWith(expect.objectContaining({milestone:'10',page:0}));
+});
 beforeEach(()=>{vi.clearAllMocks();shared.data={projectId:1,issues:[issue],metadata:{types:[{id:'BUG',label:'Lỗi'},{id:'TASK',label:'Công việc'}],statuses:[{id:'open',label:'Chưa xử lý',color:'#ee8080'},{id:'ready',label:'Sẵn sàng xử lý',color:'#db78a0'},{id:'closed',label:'Hoàn thành',terminal:true}]},catalogs:{members:[{membershipId:8,displayName:'Tester',username:'tester'}],categories:[{id:9,name:'AUTH'}],milestones:[{id:10,name:'M1'}]},canTriage:true,writable:true,loading:false,error:'',refresh:vi.fn(),totalItems:51,totalPages:2,page:0};});
 it('opens the same numeric bug from the list and carries backend filter/pagination state',()=>{
   const navigate=vi.fn();render(<WorkBoardPage activeRoute="/board/list" navigate={navigate}/>);

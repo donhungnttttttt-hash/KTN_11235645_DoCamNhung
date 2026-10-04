@@ -2,7 +2,7 @@ import { useState } from "react";
 import { SlidersHorizontal, MessageSquare, Rss } from "lucide-react";
 import { Avatar, Button, IconButton, Modal } from "./components";
 import { statuses, milestones } from "./data";
-export default function HomePage({ issues, activities, navigate, notify, statusCounts, milestoneCounts }) {
+export default function HomePage({ issues, activities, navigate, notify, statusCounts, milestoneCounts, activitySource='all' }) {
   const [expanded, setExpanded] = useState([]);
   const [settings, setSettings] = useState(false);
   const [showUpdates, setShowUpdates] = useState(true);
@@ -44,7 +44,7 @@ export default function HomePage({ issues, activities, navigate, notify, statusC
             {"Công việc tạo gần đây"}
             <Rss size={15} />
           </ActivityHeading>
-          <div>
+          {activitySource!=='created' && <div>
             <span className="d-muted">
               Bộ lọc: {showUpdates && showComments ? "Tất cả" : "Tùy chỉnh"}
             </span>
@@ -55,11 +55,11 @@ export default function HomePage({ issues, activities, navigate, notify, statusC
             >
               Hiển thị
             </Button>
-          </div>
+          </div>}
         </div>
 
         <div className="d-activity-panel">
-          <h2>{"Hoạt động của dự án"}</h2>
+          <h2>{activitySource==='created'?'30 công việc mới nhất':'Hoạt động của dự án'}</h2>
           <div className="d-activity-list">
             {visibleActivities.slice(0, activityLimit).map((a) => {
               const issue = issues.find((i) => i.id === a.issueId);
@@ -201,10 +201,11 @@ export default function HomePage({ issues, activities, navigate, notify, statusC
         <div className="d-milestone-panel">
           {milestoneSummary.map((milestone) => (
             <button
-              key={milestone.name}
+              key={milestone.id ?? milestone.name}
+              disabled={milestone.id == null}
               onClick={() =>
                 navigate(
-                  `/board/list?milestone=${encodeURIComponent(milestone.name)}`,
+                  `/board/list?milestone=${encodeURIComponent(milestone.id)}`,
                 )
               }
             >
@@ -221,7 +222,7 @@ export default function HomePage({ issues, activities, navigate, notify, statusC
                   }}
                 />
               </div>
-              <small>Chưa đặt hạn phát hành</small>
+              <small>{milestone.dueOn?`Hạn phát hành: ${milestone.dueOn.split('-').reverse().join('/')}`:'Chưa đặt hạn phát hành'}</small>
             </button>
           ))}
         </div>

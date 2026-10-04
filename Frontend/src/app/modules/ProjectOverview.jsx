@@ -28,7 +28,7 @@ export function ProjectOverview({ navigate }) {
   return <div className="work-items dashboard-board project-overview" data-lenis-prevent>
     <header className="wb-heading"><div><h1>Tổng quan dự án</h1><p className="overview-subtitle">Theo dõi công việc và mốc phát hành của dự án.</p></div><Button primary icon={Plus} disabled={!writable} onClick={()=>navigate('/board/new')}>Thêm công việc</Button></header>
     <WorkError error={error} retry={()=>setRevision(v=>v+1)}/>{!result&&!error&&<p>Đang tải tổng quan…</p>}
-    {result&&<HomePage issues={items} activities={activities} statusCounts={result.statuses} milestoneCounts={result.milestones} navigate={go} notify={setNotice}/>}
+    {result&&<HomePage issues={items} activities={activities} activitySource="created" statusCounts={result.statuses} milestoneCounts={result.milestones} navigate={go} notify={setNotice}/>}
     {notice&&<p role="status">{notice}</p>}
   </div>;
 }

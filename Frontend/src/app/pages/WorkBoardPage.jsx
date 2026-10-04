@@ -22,9 +22,9 @@ export function WorkBoardPage({ activeRoute, navigate }) {
   const [transition,setTransition]=useState(null),[notice,setNotice]=useState('');
   const routeId=path.startsWith('/board/issue/')?path.split('/')[3]:null;
   const detailId=routeId&&(/^\d+$/.test(routeId)?Number(routeId):issues.find(item=>item.id===routeId)?.serverId);
-  const statusParam=params.get('status'),keywordParam=params.get('keyword');
+  const statusParam=params.get('status'),keywordParam=params.get('keyword'),milestoneParam=params.get('milestone');
   useEffect(()=>{setSelected([]);setTransition(null);},[projectId,query]);
-  useEffect(()=>{setQuery(old=>({...old,page:0,type:bugView?'BUG':'',...(statusParam!=null?{status:statusParam}:{}),...(keywordParam!=null?{keyword:keywordParam}:{})}));},[bugView,projectId,statusParam,keywordParam,setQuery]);
+  useEffect(()=>{setQuery(old=>({...old,page:0,type:bugView?'BUG':'',...(statusParam!=null?{status:statusParam}:{}),...(keywordParam!=null?{keyword:keywordParam}:{}),...(milestoneParam!=null?{milestone:/^[1-9]\d*$/.test(milestoneParam)?milestoneParam:''}:{})}));},[bugView,projectId,statusParam,keywordParam,milestoneParam,setQuery]);
   function change(key,value){setQuery(old=>({...old,[key]:value,page:0}));}
   function go(route){
     if(route==='/board/new'){navigate('/board/new'+suffix);return;}
