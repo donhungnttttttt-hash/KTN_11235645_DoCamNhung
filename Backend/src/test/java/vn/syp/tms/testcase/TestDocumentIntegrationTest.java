@@ -70,6 +70,29 @@ class TestDocumentIntegrationTest {
         mvc.perform(post(path("/import-previews/"+id+"/commit")).with(actor(pm)).with(csrf())).andExpect(status().isOk());
         return id;
     }
+    @Test void documentResultPersistsExportsAndAuditsWithoutChangingOriginalOrExecution() throws Exception {
+        long id=imported();
+        var first=body(mvc.perform(get(path("/test-documents/"+id)).with(actor(tester))).andExpect(status().isOk()).andReturn());
+        long rowId=first.at("/rows/0/rowId").asLong();String endpoint=path("/test-documents/"+id+"/rows/"+rowId+"/result");
+        assertThat(first.at("/rows/0/resultStatus").asText()).isEqualTo("UNEXECUTED");
+        String payload=Objects.requireNonNull(json.writeValueAsString(Map.of("status","NG","expectedVersion",0,"requestKey",UUID.randomUUID().toString())));
+        for(int attempt=0;attempt<2;attempt++) mvc.perform(put(endpoint).with(actor(tester)).with(csrf()).contentType("application/json").content(payload))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("NG")).andExpect(jsonPath("$.version").value(1));
+        mvc.perform(put(endpoint).with(actor(outsider)).with(csrf()).contentType("application/json").content(payload)).andExpect(status().isNotFound());
+        mvc.perform(put(endpoint).with(actor(tester)).with(csrf()).contentType("application/json").content(Objects.requireNonNull(payload.replace("NG","OK")))).andExpect(status().isConflict());
+        mvc.perform(get(path("/test-documents/"+id)).with(actor(tester))).andExpect(jsonPath("$.rows[0].cells[8]").value("NG"))
+                .andExpect(jsonPath("$.document.resultCounts.NG").value(1));
+        mvc.perform(get(path("/test-documents/"+id+"/rows/"+rowId+"/result-history")).with(actor(tester)))
+                .andExpect(jsonPath("$.length()").value(1)).andExpect(jsonPath("$[0].before").value("UNEXECUTED")).andExpect(jsonPath("$[0].after").value("NG"));
+        byte[] export=mvc.perform(get(path("/test-documents/"+id+"/export")).with(actor(tester))).andReturn().getResponse().getContentAsByteArray();
+        byte[] original=mvc.perform(get(path("/test-documents/"+id+"/export?original=true")).with(actor(tester))).andReturn().getResponse().getContentAsByteArray();
+        try(var current=new XSSFWorkbook(new ByteArrayInputStream(export));var source=new XSSFWorkbook(new ByteArrayInputStream(original))) {
+            assertThat(current.getSheetAt(0).getRow(1).getCell(8).getStringCellValue()).isEqualTo("NG");
+            assertThat(source.getSheetAt(0).getRow(1).getCell(8).getStringCellValue()).isEqualTo("Fixed");
+            assertThat(current.getSheetAt(0).getRow(1).getCell(12).getStringCellValue()).isEqualTo("NG");
+        }
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM execution_attempts WHERE project_id=?",Long.class,project)).isZero();
+    }
     @Test void memberOpensNamedFileAndExportKeepsExtraColumnsAndOriginalBytes() throws Exception {
         byte[] bytes=CustomerWorkbookFixture.bytes();
         var preview=cases.createImportPreview(project,pm.getId(),file(bytes));

@@ -194,3 +194,19 @@ Theo yêu cầu tiếp theo, sửa menu/focus/drawer, deep-link tài liệu, mod
 ### 04/10/2026 — Review code/API và nhập Excel
 
 Đã xử lý merged presentation cells giữ nguồn/export, lỗi HTTP client timeout/JSON/session, mapping HTTP400/405/415, cải thiện preview Excel/focus/lọc lỗi/scroll mobile. FE276/276, BE76/76 database-independent, build/verify và Java diagnostics136source0warning PASS; browser workbook Scale57dòng0lỗi. Backend native đã restart. Xem [báo cáo](../../reviews/2026-10-04-code-api-import-review.md). Người dùng cho phép commit/push system-design; S11 giữ IN_REVIEW cho isolated integration/UAT/pilot, không merge/deploy.
+
+### 04/10/2026 — Đổi trạng thái trực tiếp trên ô
+
+Sau khi người dùng chốt, nối vòng chọn Unexecuted → OK → P → NG → Fixed → NA, ghi dữ liệu ngay dưới dòng và mở lịch sử riêng. Giữ API/quyền P/NG/NA và Fixed qua bug/retest; bảo vệ bản nháp/lưu trùng/conflict. Full FE292/292 tests35files, build PASS; coverage toàn FE75.98% lines, riêng editor95.12% lines. Browser cuối chưa kiểm chứng vì kết nối debugger bị ngắt. Skills frontend-patterns/tdd-workflow/verification-loop, có RED→GREEN. Xem [báo cáo](../../reviews/2026-10-04-result-cycle-investigation.md). Không BE/schema/commit/push; S11 vẫn IN_REVIEW.
+
+### 04/10/2026 — Phản hồi tiếp: bỏ form, đổi trạng thái/màu liên tục
+
+Thay phiên bản inline ngay trên bằng tương tác giống develop theo yêu cầu mới: không form/hàng phụ/Chưa lưu từng ô; state riêng mỗi case, màu chữ/viền/nền OK xanh dương, P vàng, NG đỏ, Fixed xanh lá, NA xám. Ghi rõ lựa chọn giao diện chưa ghi đợt. Full284/284 tests35files/build PASS; coverage hai file97.6% lines/84.07% branches. Browser demo document5 đủ vòng6trạng thái,1dòng/0dialog và màu DOM PASS; ảnh output/playwright/direct-result-cycle.png. Báo cáo cùng file result-cycle-investigation, skills frontend-patterns/tdd-workflow, RED3→GREEN. Không BE/schema/commit/push; S11 IN_REVIEW.
+
+### 04/10/2026 — Chốt tự lưu tài liệu và review kết nối chức năng
+
+Người dùng chọn tự lưu trạng thái tài liệu, không ghi thay execution. V13 trên native3307, 56 bảng; API/queue/history/export/original đã nối và kiểm tra browser+download+hash trên demo. FE290/290 tests36files/build, BE82/82 tests17classes/verify; coverage ba file FE93.18 statements/84.73 branches/88.69 functions/97.56 lines. Sửa milestone ID/deadline, nhãn/bộ lọc tổng quan và backup schemaVersion. Xem [báo cáo kiểm chứng và phạm vi còn lại](../../reviews/2026-10-04-document-results-and-wiring.md). Kết luận này thay phần state chỉ trong UI phía trên; vẫn giữ IN_REVIEW cho schema test riêng/UAT/pilot, không commit/push.
+
+### 05/10/2026 — Sửa Problems và chuẩn bị push
+
+Tái hiện13 warning trên137 Java source bằng Eclipse, sửa null contracts trong service/Mockito/MockMvc; không suppress null-analysis. Kết quả0error0warning,29/29 tests liên quan và Maven verify/package PASS. Người dùng đã yêu cầu push toàn bộ phần sửa đang chờ lên system-design; không merge develop. Xem [báo cáo](../../reviews/2026-10-05-java-diagnostics.md). S11 giữ IN_REVIEW cho gate schema test riêng/UAT/pilot.

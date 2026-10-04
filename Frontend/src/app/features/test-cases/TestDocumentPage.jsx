@@ -6,6 +6,9 @@ import { CaseDetailModal } from './CaseDetailModal';
 import { DocumentCaseDialog } from './DocumentCaseDialog';
 import { CaseHistoryDialog } from './CaseHistoryDialog';
 import { useDocumentExecution, DocumentExecutionControls } from './DocumentExecution';
+import { ResultCycleButton } from './ResultCycleButton';
+import { useDocumentResults } from './useDocumentResults';
+import { DocumentResultHistory } from './DocumentResultHistory';
 import { downloadWorkbook, documentDate } from './documentDownload';
 import './test-cases.css';
 import './test-documents.css';
@@ -49,6 +52,8 @@ function DocumentGrid({ project, documentId, navigate }) {
   const [activeCase, setActiveCase] = useState(null);
   const [caseMenu,setCaseMenu]=useState(null),[detailCase,setDetailCase]=useState(null),[historyCase,setHistoryCase]=useState(null),[message,setMessage]=useState('');
   const [widths,setWidths]=useState({});
+  const [resultHistory,setResultHistory]=useState(null),[lastSaved,setLastSaved]=useState(null);
+  const results=useDocumentResults(project.id,documentId,data,setLastSaved);
   const resize=useRef(null),menuRef=useRef(null);
   const request = useRef(0), mounted = useRef(true);
   const load = useCallback(async () => {
@@ -65,11 +70,10 @@ function DocumentGrid({ project, documentId, navigate }) {
   const resultColumn = columns.result;
   const columnWidth = index => widths[index] || (customer ? (fieldWidths[Object.keys(columns).find(key=>columns[key]===index)] || 140) : index===0?90:210);
   const displayRows=useMemo(()=>(data?.rows || []).map(row=>{
-    if(!execution.choice.cycleId || resultColumn==null)return row;
-    const run=execution.byCase.get(String(row.caseId));
-    const cells=[...row.cells];cells[resultColumn]=run?(run.excluded?'NA':run.resultCode==='NOT_RUN'?'Unexecuted':run.resultCode):'—';
+    if(resultColumn==null)return row;
+    const cells=[...row.cells];cells[resultColumn]=results.overrides[row.rowId] ?? row.resultStatus ?? 'Unexecuted';
     return {...row,cells};
-  }),[data,resultColumn,execution.choice.cycleId,execution.byCase]);
+  }),[data,resultColumn,results.overrides]);
   const rows = useMemo(() => displayRows.filter(row =>
     (!resultFilter || resultKey(row.cells[resultColumn])===resultFilter) &&
     row.cells.some(cell => String(cell).toLocaleLowerCase('vi').includes(search.toLocaleLowerCase('vi')))), [displayRows, search, resultFilter, resultColumn]);
@@ -114,8 +118,8 @@ function DocumentGrid({ project, documentId, navigate }) {
       <h2 title={doc.fileName}><FileSpreadsheet size={18}/>{doc.fileName}</h2>
       <span>{project.name}</span>
     </div>
-    <div className="td-sheet-tabs"><span><Table2 size={14}/>{doc.sheetName}</span><small>{data.rows.length} test case · {doc.updatedBy} · {documentDate(doc.updatedAt,project.timezone)}</small></div>
-    <div className="td-sheet-toolbar">
+    <div className="td-sheet-tabs"><span><Table2 size={14}/>{doc.sheetName}</span><small>{data.rows.length} test case · {lastSaved?.updatedBy || doc.updatedBy} · {documentDate(lastSaved?.updatedAt || doc.updatedAt,project.timezone)}</small></div>
+    <fieldset className="td-sheet-toolbar">
       <div className="td-actions">
         <button className="cat-btn" aria-expanded={execution.open} onClick={()=>execution.setOpen(v=>!v)}>Ghi kết quả</button>
         <button className="cat-btn" aria-expanded={showSummary} onClick={()=>setShowSummary(v=>!v)}><Table2 size={14}/> Tổng quan tài liệu</button>
@@ -125,18 +129,20 @@ function DocumentGrid({ project, documentId, navigate }) {
       <div className="td-actions">
         {customer && resultColumn!=null && <select aria-label="Lọc kết quả" value={resultFilter} onChange={e=>{setResultFilter(e.target.value);setPage(0);}}><option value="">Tất cả kết quả</option>{resultOptions.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select>}
         <button className="cat-btn" onClick={clearFilters}>Xóa bộ lọc</button>
-        <button className="cat-btn cat-btn-mint" disabled={downloading || loading} onClick={() => download(false)}><Download size={14}/> Xuất Excel</button>
+        <button className="cat-btn cat-btn-mint" disabled={downloading || loading || results.pending>0 || !!results.error} onClick={() => download(false)}><Download size={14}/> Xuất Excel</button>
         {doc.hasSourceFile && <button className="cat-btn" disabled={downloading || loading} onClick={() => download(true)}>Tải file gốc</button>}
         <button className="cat-btn" onClick={() => navigate('/tests/cycles')}><ClipboardList size={14}/> Đợt kiểm thử</button>
-        <button className="cat-btn" aria-label="Làm mới bảng case" disabled={loading} onClick={load}><RefreshCw size={14}/></button>
+        <button className="cat-btn" aria-label="Làm mới bảng case" disabled={loading || results.pending>0} onClick={load}><RefreshCw size={14}/></button>
       </div>
-    </div>
-    {showSummary && <section className="td-sheet-summary" aria-label="Tổng quan tài liệu"><strong>{doc.totalRows} dòng · {doc.caseCount} test case</strong><span>Cập nhật: {documentDate(doc.updatedAt,project.timezone)} · {doc.updatedBy}</span>{customer && <div>{resultOptions.map(([key,label])=><span key={key}>{label}: <b>{doc.sourceCounts?.[key==='FIXED'?'Fixed':key==='PENDING'?'Pending':key] ?? 0}</b></span>)}</div>}</section>}
+    </fieldset>
+    {showSummary && <section className="td-sheet-summary" aria-label="Tổng quan tài liệu"><strong>{doc.totalRows} dòng · {doc.caseCount} test case</strong><span>Cập nhật: {documentDate(lastSaved?.updatedAt || doc.updatedAt,project.timezone)} · {lastSaved?.updatedBy || doc.updatedBy}</span>{customer && <div><strong>Kết quả tài liệu:</strong>{resultOptions.map(([key,label])=><span key={key}>{label}: <b>{displayRows.filter(row=>resultKey(row.cells[resultColumn])===key).length}</b></span>)}</div>}</section>}
     {downloadError && <div role="alert" className="td-error">{downloadError}</div>}
+    {results.error && <div role="alert" className="td-error">{results.error} <button className="cat-btn" disabled={results.pending>0} onClick={load}>Tải lại kết quả đã lưu</button></div>}
+    <div role="status" className="td-source-note">{results.pending ? 'Đang lưu kết quả…' : results.error ? 'Chưa xác nhận được kết quả. Hãy tải lại bảng.' : lastSaved ? `Đã lưu · ${lastSaved.updatedBy} · ${documentDate(lastSaved.updatedAt,project.timezone)}` : ''}</div>
     {downloading && <p role="status" className="td-muted">Đang chuẩn bị file Excel...</p>}
     <DocumentExecutionControls execution={execution} project={project} navigate={navigate}/>
     {message && <div role="status" className="td-source-note">{message}</div>}
-    <div className="td-source-note">{execution.choice.cycleId ? 'Kết quả hiển thị theo đợt/cấu hình đã chọn. Các cột nguồn và file Excel gốc được giữ nguyên.' : customer ? 'Đang xem kết quả Excel nguồn. Bấm ô kết quả để ghi lần kiểm thử; bấm nút ba gạch để xem chi tiết và lịch sử.' : 'Nội dung hiển thị theo phiên bản case hiện tại.'}</div>
+    <div className="td-source-note">{customer ? 'Bấm ô để đổi Unexecuted → OK → P → NG → Fixed → NA và tự lưu vào tài liệu. Xuất Excel lấy bản cập nhật; Tải file gốc giữ bản nhập. Kết quả đợt kiểm thử quản lý riêng.' : 'Nội dung hiển thị theo phiên bản case hiện tại.'}</div>
     <div ref={grid} className="td-grid-scroll" role="region" aria-label="Bảng test case của tài liệu" tabIndex={0} aria-busy={loading} data-lenis-prevent>
       <table className="td-case-grid" style={{fontSize:`${fontSize}px`,width:headers.reduce((sum,_,index)=>sum+columnWidth(index),0)}}>
         <colgroup>{headers.map((_,index)=><col key={index} style={{width:columnWidth(index)}}/>)}</colgroup>
@@ -145,29 +151,30 @@ function DocumentGrid({ project, documentId, navigate }) {
           onPointerMove={e=>{if(resize.current?.index===index)setWidths(v=>({...v,[index]:Math.max(48,Math.min(800,resize.current.width+e.clientX-resize.current.x))}));}}
           onPointerUp={()=>{resize.current=null;}} onPointerCancel={()=>{resize.current=null;}}
           onKeyDown={e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();setWidths(v=>({...v,[index]:Math.max(48,Math.min(800,columnWidth(index)+(e.key==='ArrowRight'?20:-20)))}));}}}/></th>)}</tr></thead>
-        <tbody>{visibleRows.map(row => <tr key={row.rowNumber} className={row.archived?'td-archived':''}>
+        <tbody>{visibleRows.map(row => <React.Fragment key={row.rowNumber}><tr className={row.archived?'td-archived':''}>
           {row.cells.map((value,index) => <td key={index} className={index===idColumn?`td-sticky-id ${caseMenu===row.caseId?'td-menu-open':''}`:customer && index===resultColumn?`td-result-cell td-outcome-${resultKey(value).toLowerCase()}`:''}>
             {index===idColumn ? <><button className="td-case-id" aria-label={`Mở test case ${row.sourceId}`} onClick={() => setActiveCase(row.caseId)}>{value || row.sourceId}</button>
               <div className="td-case-menu" ref={caseMenu===row.caseId?menuRef:null}><button className="td-menu-trigger" aria-label={`Tùy chọn test case ${row.sourceId}`} aria-expanded={caseMenu===row.caseId} onClick={()=>setCaseMenu(v=>v===row.caseId?null:row.caseId)}><List size={15}/></button>
                 {caseMenu===row.caseId && <div className="td-menu-items"><button onClick={()=>{setDetailCase(row.caseId);setCaseMenu(null);}}>Hiển thị chi tiết</button><button onClick={()=>{setHistoryCase(row);setCaseMenu(null);}}>Hiển thị lịch sử</button><button onClick={()=>copyCase(row)}>Sao chép URL</button></div>}
               </div><small>{row.archived?'Đã lưu trữ':row.approved?'Đã duyệt':'Dự thảo'}</small></> :
-              customer && index===resultColumn ? <><button disabled={execution.loading} className={`td-result td-result-${resultKey(value).toLowerCase()}`} aria-label={`Kết quả test case ${row.sourceId}`} onClick={()=>execution.show(row)}>{value || '—'}</button>
-                <button className="td-result-history" onClick={()=>execution.show(row)}>Lịch sử / chứng cứ</button>
+              customer && index===resultColumn ? <><ResultCycleButton disabled={loading || downloading || !!results.error || row.rowId==null || row.archived || project.archived} value={value} sourceId={row.sourceId} onChange={resultCode=>results.change(row,resultCode)}/>
+                <button className="td-result-history" disabled={results.pending>0} onClick={()=>setResultHistory(row)}>Lịch sử / chứng cứ</button>
                 {project.projectRole==='PM' && !project.archived && execution.context?.cycle.statusCode==='ACTIVE' && execution.byCase.has(String(row.caseId)) && <button className="td-result-history" onClick={()=>execution.setScope(execution.byCase.get(String(row.caseId)))}>{execution.byCase.get(String(row.caseId)).excluded?'Khôi phục phạm vi':'NA · Ngoài phạm vi'}</button>}
               </> : <CellText value={value}/>}
           </td>)}
-        </tr>)}</tbody>
+        </tr></React.Fragment>)}</tbody>
       </table>
       {!rows.length && <p className="td-empty">Không có dòng phù hợp với từ khóa.</p>}
     </div>
-    <div className="td-sheet-footer">
+    <fieldset className="td-sheet-footer">
       <div className="td-actions"><button className="cat-btn" aria-label="Trang trước" disabled={currentPage===0} onClick={()=>setPage(currentPage-1)}><ChevronLeft size={16}/></button><span>Trang {currentPage+1} / {totalPages}</span><button className="cat-btn" aria-label="Trang sau" disabled={currentPage+1>=totalPages} onClick={()=>setPage(currentPage+1)}><ChevronRight size={16}/></button>
         <label>Hiển thị: <select aria-label="Số dòng mỗi trang" value={pageSize} onChange={e=>{setPageSize(Number(e.target.value));setPage(0);}}>{[20,50,100].map(size=><option key={size}>{size}</option>)}</select></label>
         <label className="td-font-control">Cỡ chữ: <input type="range" aria-label="Cỡ chữ bảng" min="11" max="18" value={fontSize} onChange={e=>setFontSize(Number(e.target.value))}/><span>{fontSize}</span></label>
       </div>
       <span>{rows.length ? currentPage*pageSize+1 : 0}–{Math.min((currentPage+1)*pageSize,rows.length)} / {rows.length} dòng</span>
-    </div>
+    </fieldset>
     {activeCase && <CaseDetailModal key={activeCase} projectId={project.id} caseId={activeCase} onClose={() => setActiveCase(null)} onUpdated={load}/>}
+    {resultHistory && <DocumentResultHistory projectId={project.id} documentId={documentId} row={resultHistory} timeZone={project.timezone} onClose={()=>setResultHistory(null)} onExecution={()=>{execution.show({...resultHistory,historyOnly:true});setResultHistory(null);}}/>}
     {detailCase && displayRows.some(r=>r.caseId===detailCase) && <DocumentCaseDialog row={displayRows.find(r=>r.caseId===detailCase)} headers={headers} onClose={()=>setDetailCase(null)}
       onPrevious={displayRows.findIndex(r=>r.caseId===detailCase)>0?()=>setDetailCase(displayRows[displayRows.findIndex(r=>r.caseId===detailCase)-1].caseId):null}
       onNext={displayRows.findIndex(r=>r.caseId===detailCase)<displayRows.length-1?()=>setDetailCase(displayRows[displayRows.findIndex(r=>r.caseId===detailCase)+1].caseId):null}

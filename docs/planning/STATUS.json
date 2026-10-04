@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-04",
+  "updatedAt": "2026-10-05",
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
@@ -8,6 +8,9 @@
   "phase": "IN_REVIEW",
   "implementationStarted": true,
   "notes": [
+    "05/10/2026 sửa đúng13 null-type-safety warnings tại3 file theo ảnh; Eclipse137source0error0warning,29/29 tests liên quan và verify/package PASS. Người dùng yêu cầu commit/push system-design cùng code tự lưu/xuất Excel chờ từ lượt trước. Không đổi schema/runtime nghiệp vụ; giữ gate isolated integration/UAT. Xem docs/reviews/2026-10-05-java-diagnostics.md.",
+    "04/10/2026 user chốt tự lưu kết quả tài liệu, xuất bản cập nhật và giữ file gốc. V13 đã chạy native3307, vẫn56 bảng; import_rows+project_audit, PUT version/CSRF/idempotency, queue từng dòng và lịch sử. Browser demo đủ vòng/reload, Excel J2=NG, original hash khớp; native409/422/403/404/replay PASS. FE290/290 tests36files/build, BE82/82 tests17classes/verify, backup metadata test PASS. Sửa milestone ID/deadline và bộ lọc tổng quan không có dữ liệu. Xem docs/reviews/2026-10-04-document-results-and-wiring.md. Giữ IN_REVIEW: isolated integration/UAT/pilot; không commit/push.",
+    "04/10/2026 theo phản hồi mới đã bỏ form inline: ô đổi liên tục Unexecuted→OK→P→NG→Fixed→NA giống develop, màu riêng cho chữ/viền/nền. State mỗi case tại giao diện, chưa ghi đợt; không giả báo đã lưu. FE284/284 tests35files/build, browser đủ vòng/màu/không hàng phụ PASS. Xem docs/reviews/2026-10-04-result-cycle-investigation.md. Không BE/schema/commit/push.",
     "04/10/2026 review code/API/import: hỗ trợ ô gộp trình bày an toàn, giữ export nguồn; sửa HTTP client timeout/JSON/session, mapping400/405/415 và UX preview. FE276/276 tests33files/build, BE76/76 tests16classes/verify, Java136source0warning PASS. Browser native preview Scale57dòng0lỗi, mobile/focus/Escape PASS; backend đã restart. Xem docs/reviews/2026-10-04-code-api-import-review.md. User cho phép commit/push system-design riêng tác vụ; giữ IN_REVIEW integration/UAT/pilot.",
     "04/10/2026 UI/UX final theo yêu cầu push system-design: sửa dropdown/focus, drawer mobile sau desktop-collapse, document deep-link, modal Tab, tải/retry/stale case, khóa draft khi gửi, responsive form và đồng bộ nút; bỏ yêu thích chưa lưu. Final FE271/271 tests33files/build PASS; coverage6files 93.84 statements/87.66 branches/90.54 functions/96 lines. Browser mobile320/390, dialog320x480, desktop1440 và ô kết quả/history PASS trong phạm vi báo cáo docs/reviews/2026-10-04-ui-ux-audit.md. Người dùng cho phép commit/push riêng tác vụ này, không merge/deploy; không đổi BE/schema. Giữ S11 IN_REVIEW và gate merged-cell import/integration/UAT/pilot.",
     "04/10/2026 review chức năng/UI trên system-design: sửa focus/Escape/nested modal, retry lịch sử giữ draft, khóa input khi lưu, tiêu đề route, nhận diện TMS và contrast/responsive. FE256/256 tests30files/build PASS; coverage AttemptDialog/useDialogFocus 92.18 statements/85.84 branches/89.65 functions/97.14 lines. Browser đọc các màn tổng quan/công việc/cycle/retest/report/lỗi/thành viên, keyboard/dialog/320–1440px PASS trong phạm vi báo cáo. Còn merged-cell import và yêu thích chỉ lưu phiên; không đổi BE/schema/ghi nghiệp vụ. Xem docs/reviews/2026-10-04-functionality-ui-review.md; S11 IN_REVIEW, giữ gate integration/UAT/pilot.",
@@ -754,7 +757,7 @@
   "implementationBaseCommit": "3355cfc",
   "lastCompletedSprint": "S09",
   "nextSuggestedSprint": null,
-  "nextAction": "Tiếp tục kiểm chứng integration/fresh-upgrade trên schema native độc lập, UAT PM/Tester và pilot; đo các đường đọc thư viện có truy vấn lặp trước tối ưu. Merged presentation cells đã hỗ trợ; merged ID/nội dung/header/nhiều dòng vẫn chặn có địa chỉ. Không chạy destructive fixtures trên tms.",
+  "nextAction": "Kết quả tài liệu đã tự lưu và export bản cập nhật theo quyết định mới; giữ riêng execution/bug/retest. Chạy integration V13 trên schema test riêng khi có quyền, tiếp tục UAT/pilot theo báo cáo 2026-10-04-document-results-and-wiring.md. Không tự suy ra các gate đó đã đạt từ unit tests/browser demo.",
   "executionPolicy": {
     "continueSequentially": true,
     "authorizedAt": "2026-09-29",

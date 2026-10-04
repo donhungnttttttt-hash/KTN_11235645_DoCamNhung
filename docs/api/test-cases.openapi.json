@@ -711,6 +711,371 @@
           }
         }
       }
+    },
+    "/api/v1/projects/{projectId}/test-documents": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listTestDocuments",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000,
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 255,
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentPage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "CSRF invalid"
+          },
+          "404": {
+            "description": "Not found or not a project member"
+          },
+          "409": {
+            "description": "Archived resource, corrupt data or version conflict"
+          },
+          "422": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/test-documents/{id}": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "getTestDocument",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "CSRF invalid"
+          },
+          "404": {
+            "description": "Not found or not a project member"
+          },
+          "409": {
+            "description": "Archived resource, corrupt data or version conflict"
+          },
+          "422": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/test-documents/{id}/export": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "exportTestDocument",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "original",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "CSRF invalid"
+          },
+          "404": {
+            "description": "Not found or not a project member"
+          },
+          "409": {
+            "description": "Archived resource, corrupt data or version conflict"
+          },
+          "422": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/test-documents/{id}/rows/{rowId}/result": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        {
+          "name": "rowId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      ],
+      "put": {
+        "operationId": "updateTestDocumentResult",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentResultUpdate"
+              }
+            }
+          }
+        },
+        "description": "Active project member; CSRF required. Atomic update and audit. expectedVersion conflict returns 409; immediate replay of same requestKey/actor/body is idempotent.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "CSRF invalid"
+          },
+          "404": {
+            "description": "Not found or not a project member"
+          },
+          "409": {
+            "description": "Archived resource, corrupt data or version conflict"
+          },
+          "422": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/test-documents/{id}/rows/{rowId}/result-history": {
+      "parameters": [
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        {
+          "name": "rowId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "testDocumentResultHistory",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0,
+              "default": 0,
+              "description": "Exclusive history ID cursor; newest first, max 50 records."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentResultChange"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "CSRF invalid"
+          },
+          "404": {
+            "description": "Not found or not a project member"
+          },
+          "409": {
+            "description": "Archived resource, corrupt data or version conflict"
+          },
+          "422": {
+            "description": "Invalid input"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1226,6 +1591,344 @@
             "format": "date-time"
           }
         }
+      },
+      "DocumentResultUpdate": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "UNEXECUTED",
+              "OK",
+              "P",
+              "NG",
+              "FIXED",
+              "NA"
+            ]
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "requestKey": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "status",
+          "expectedVersion",
+          "requestKey"
+        ]
+      },
+      "DocumentResult": {
+        "type": "object",
+        "properties": {
+          "rowId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "UNEXECUTED",
+              "OK",
+              "P",
+              "NG",
+              "FIXED",
+              "NA"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedBy": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "rowId",
+          "status",
+          "version",
+          "updatedAt",
+          "updatedBy"
+        ]
+      },
+      "DocumentResultChange": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "before": {
+            "type": "string",
+            "enum": [
+              "UNEXECUTED",
+              "OK",
+              "P",
+              "NG",
+              "FIXED",
+              "NA"
+            ]
+          },
+          "after": {
+            "type": "string",
+            "enum": [
+              "UNEXECUTED",
+              "OK",
+              "P",
+              "NG",
+              "FIXED",
+              "NA"
+            ]
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actor": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "before",
+          "after",
+          "occurredAt",
+          "actor"
+        ]
+      },
+      "DocumentSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "sheetName": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "totalRows": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "caseCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedBy": {
+            "type": "string"
+          },
+          "hasSourceFile": {
+            "type": "boolean"
+          },
+          "sourceCounts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "resultCounts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "projectId",
+          "fileName",
+          "sheetName",
+          "format",
+          "totalRows",
+          "caseCount",
+          "createdAt",
+          "updatedAt",
+          "updatedBy",
+          "hasSourceFile",
+          "sourceCounts",
+          "resultCounts"
+        ]
+      },
+      "DocumentRow": {
+        "type": "object",
+        "properties": {
+          "rowNumber": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "caseNo": {
+            "type": "string"
+          },
+          "revisionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "approved": {
+            "type": "boolean"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "cells": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sourceCells": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rowId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "resultStatus": {
+            "type": "string",
+            "enum": [
+              "UNEXECUTED",
+              "OK",
+              "P",
+              "NG",
+              "FIXED",
+              "NA"
+            ]
+          },
+          "resultVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "resultUpdatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "resultUpdatedBy": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "rowNumber",
+          "sourceId",
+          "caseId",
+          "caseNo",
+          "revisionId",
+          "approved",
+          "archived",
+          "cells",
+          "sourceCells",
+          "rowId",
+          "resultStatus",
+          "resultVersion",
+          "resultUpdatedAt",
+          "resultUpdatedBy"
+        ]
+      },
+      "DocumentDetail": {
+        "type": "object",
+        "properties": {
+          "document": {
+            "$ref": "#/components/schemas/DocumentSummary"
+          },
+          "headers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentRow"
+            }
+          },
+          "columns": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "required": [
+          "document",
+          "headers",
+          "rows",
+          "columns"
+        ]
+      },
+      "DocumentPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentSummary"
+            }
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "items",
+          "totalItems",
+          "page",
+          "pageSize",
+          "totalPages"
+        ]
       }
     }
   }

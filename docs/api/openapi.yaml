@@ -432,6 +432,16 @@ paths:
     $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1handbook~1{resourceId}"
   /api/v1/projects/{projectId}/handbook/{resourceId}/revisions:
     $ref: "./project-settings.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1handbook~1{resourceId}~1revisions"
+  /api/v1/projects/{projectId}/test-documents:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents'
+  /api/v1/projects/{projectId}/test-documents/{id}:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}'
+  /api/v1/projects/{projectId}/test-documents/{id}/export:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}~1export'
+  /api/v1/projects/{projectId}/test-documents/{id}/rows/{rowId}/result:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}~1rows~1{rowId}~1result'
+  /api/v1/projects/{projectId}/test-documents/{id}/rows/{rowId}/result-history:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}~1rows~1{rowId}~1result-history'
 components:
   securitySchemes:
     sessionCookie: { type: apiKey, in: cookie, name: TMS_SESSION }

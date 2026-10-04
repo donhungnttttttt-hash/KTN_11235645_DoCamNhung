@@ -8,7 +8,7 @@ import { documentDate } from './documentDownload';
 import './test-cases.css';
 import './test-documents.css';
 
-const results = [['OK','OK'],['Fixed','Đã sửa'],['NG','NG'],['Pending','Tạm dừng'],['NA','Ngoài phạm vi'],['-','Chưa ghi'],['OTHER','Khác']];
+const results = [['OK','OK'],['FIXED','Đã sửa'],['NG','NG'],['P','Tạm dừng'],['NA','Ngoài phạm vi'],['UNEXECUTED','Chưa chạy']];
 
 export function TestDocumentsPage({ navigate }) {
   const { currentProject } = useProject() || {};
@@ -54,7 +54,7 @@ function DocumentLibrary({ project, navigate }) {
     </div>
     <div className="td-filter-row">
       <label className="td-search"><Search size={15}/><input type="search" aria-label="Tìm tài liệu" placeholder="Tìm theo tên file Excel..." value={keyword} onChange={e => setKeyword(e.target.value)} /></label>
-      <span className="td-muted">Kết quả từ Excel · Theo lần nhập, chưa tính vào tiến độ TMS</span>
+      <span className="td-muted">Kết quả tài liệu đã lưu · Tiến độ đợt kiểm thử quản lý riêng</span>
     </div>
     {error && <div className="td-error" role="alert">{error} <button className="cat-btn" onClick={load}>Thử lại</button></div>}
     {loading && <p role="status" className="td-empty">Đang tải danh sách tài liệu...</p>}
@@ -64,7 +64,7 @@ function DocumentLibrary({ project, navigate }) {
           <thead><tr><th scope="col">No.</th><th scope="col">Tài liệu test</th><th scope="col">Số dòng</th>{results.map(([key,label]) => <th scope="col" key={key}>{label}</th>)}<th scope="col">Cập nhật lúc</th><th scope="col">Người cập nhật</th></tr></thead>
           <tbody>{data?.items?.map(doc => <tr key={doc.id}>
             <td>{doc.id}</td><td><button className="td-file-link" title={doc.fileName} onClick={() => navigate(`/tests/documents/${doc.id}`)}><FileSpreadsheet size={17}/><span>{doc.fileName}</span></button><small className="td-sheet">{doc.sheetName}</small></td>
-            <td>{doc.totalRows}</td>{results.map(([key]) => <td key={key}><span className={(doc.sourceCounts?.[key] || 0) > 0 ? `td-count td-count-${key.toLowerCase()}` : 'td-zero'}>{doc.sourceCounts?.[key] ?? 0}</span></td>)}
+            <td>{doc.totalRows}</td>{results.map(([key]) => <td key={key}><span className={(doc.resultCounts?.[key] || 0) > 0 ? `td-count td-count-${key.toLowerCase()}` : 'td-zero'}>{doc.resultCounts?.[key] ?? 0}</span></td>)}
             <td className="td-nowrap">{documentDate(doc.updatedAt,project.timezone)}</td><td>{doc.updatedBy || '—'}</td>
           </tr>)}</tbody>
         </table>

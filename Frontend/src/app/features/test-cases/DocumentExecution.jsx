@@ -68,12 +68,12 @@ function ResultContextDialog({execution:e,children}){
   </section></div>;
 }
 
-export function DocumentExecutionControls({ execution:e, project, navigate }){
+export function DocumentExecutionControls({ execution:e, project, navigate, disabled=false }){
   const {user}=useAuth();
   const picker=Boolean(e.requested && (!e.selected || !e.context));
-  const controls=<section className="td-execution-controls" aria-label="Ngữ cảnh ghi kết quả">
+  const controls=<fieldset disabled={disabled} className="td-execution-controls" aria-label="Ngữ cảnh ghi kết quả">
       <label>Đợt kiểm thử <select aria-label="Đợt ghi kết quả" value={e.choice.cycleId} onChange={event=>e.choose(event.target.value)}>
-        <option value="">Dữ liệu Excel nguồn</option>
+        <option value="">Chọn đợt kiểm thử</option>
         {e.choice.cycleId && !e.cycles?.items.some(c=>String(c.id)===String(e.choice.cycleId)) && <option value={e.choice.cycleId}>{e.context?.cycle.name || `Đợt #${e.choice.cycleId}`}</option>}
         {e.cycles?.items.map(c=><option key={c.id} value={c.id}>{c.name} · {c.statusCode}</option>)}
       </select></label>
@@ -83,10 +83,10 @@ export function DocumentExecutionControls({ execution:e, project, navigate }){
       {e.loading && <span role="status">Đang tải kết quả…</span>}
       {!picker && e.pending && !e.choice.cycleId && <p role="status">Chọn đợt và cấu hình để ghi kết quả cho case {e.pending.sourceId}. Kết quả Excel gốc được giữ nguyên.</p>}
       {e.notice && <p role="status">{e.notice}</p>}{e.error && <div className="td-error" role="alert">{e.error}</div>}
-    </section>;
+    </fieldset>;
   return <>
     {picker?<ResultContextDialog execution={e}>{controls}</ResultContextDialog>:e.open?controls:null}
-    {e.selected && e.context && <AttemptDialog key={e.selected.id} projectId={project.id} run={e.selected} builds={e.context.builds} active={e.context.cycle.statusCode==='ACTIVE' && !project.archived} currentUserId={user?.id} onClose={e.close} onSaved={e.refresh} timeZone={project.timezone}/>}
+    {e.selected && e.context && <AttemptDialog key={e.selected.id} projectId={project.id} run={e.selected} builds={e.context.builds} active={e.context.cycle.statusCode==='ACTIVE' && !project.archived} readOnly={e.requested?.historyOnly} currentUserId={user?.id} onClose={e.close} onSaved={e.refresh} timeZone={project.timezone}/>}
     {e.scope && <CycleDecisionDialog projectId={project.id} run={e.scope} onClose={()=>e.setScope(null)} onSaved={()=>{e.setScope(null);e.refresh();}}/>}
   </>;
 }

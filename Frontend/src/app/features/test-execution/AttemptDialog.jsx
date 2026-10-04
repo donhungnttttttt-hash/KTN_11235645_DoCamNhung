@@ -6,7 +6,7 @@ import { NgBugActions } from './NgBugActions';
 import { useDialogFocus } from '../../hooks/useDialogFocus';
 import '../work-items/work-items-live.css';
 
-export function AttemptDialog({ projectId, run: initial, builds, active, currentUserId, onClose, onSaved, timeZone = 'UTC' }) {
+export function AttemptDialog({ projectId, run: initial, builds, active, currentUserId, onClose, onSaved, timeZone = 'UTC', readOnly = false }) {
   const [run, setRun] = useState(initial), [history, setHistory] = useState(null), [page, setPage] = useState(0);
   const [error, setError] = useState(''), [busy, setBusy] = useState(false), [success, setSuccess] = useState(''), [conflict, setConflict] = useState(false);
   const [historyError, setHistoryError] = useState(''), [historyReload, setHistoryReload] = useState(0);
@@ -21,7 +21,7 @@ export function AttemptDialog({ projectId, run: initial, builds, active, current
     executionApi.attempts(projectId, run.id, page).then(x => { if (current) setHistory(x); }).catch(e => { if (current) setHistoryError(e.message); });
     return () => { current = false; };
   }, [projectId, run.id, run.version, page, historyReload]);
-  const canRecord = active && !run.excluded && String(run.assigneeUserId) === String(currentUserId);
+  const canRecord = !readOnly && active && !run.excluded && String(run.assigneeUserId) === String(currentUserId);
   function update(key, value) { requestKey.current = crypto.randomUUID(); setForm(prev => ({ ...prev, [key]: value })); setSuccess(''); }
   async function refresh() {
     setBusy(true);
@@ -61,7 +61,7 @@ export function AttemptDialog({ projectId, run: initial, builds, active, current
         <Field label="Tham chiếu chứng cứ"><input className="cat-input" maxLength={1000} value={form.evidenceReference} onChange={e => update('evidenceReference', e.target.value)} placeholder="Tên tệp hoặc đường dẫn chứng cứ" /></Field>
         </fieldset>
         <div className="ex-attempt-actions"><button className="cat-btn cat-btn-mint" disabled={busy || conflict}>{busy ? 'Đang lưu…' : 'Ghi kết quả'}</button></div>
-      </form> : <p className="ex-help">{run.excluded ? 'NA: lượt này đã được PM loại khỏi phạm vi áp dụng.' : active ? 'Chỉ người được phân công được ghi kết quả. Bạn có thể xem nội dung và lịch sử.' : 'Đợt chưa bắt đầu hoặc đã chốt. Bạn có thể xem nội dung và lịch sử.'}</p>}
+      </form> : <p className="ex-help">{readOnly ? 'Lịch sử / chứng cứ. Đóng phần này để chọn và lưu kết quả trực tiếp trên dòng test case.' : run.excluded ? 'NA: lượt này đã được PM loại khỏi phạm vi áp dụng.' : active ? 'Chỉ người được phân công được ghi kết quả. Bạn có thể xem nội dung và lịch sử.' : 'Đợt chưa bắt đầu hoặc đã chốt. Bạn có thể xem nội dung và lịch sử.'}</p>}
     </div>
     <DecisionHistory projectId={projectId} id={run.id} scope timeZone={timeZone} />
     <h3 className="mt-5 mb-3">Lịch sử thực thi</h3>

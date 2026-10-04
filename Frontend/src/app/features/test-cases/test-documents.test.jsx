@@ -16,7 +16,7 @@ vi.mock('./CaseDetailModal',()=>({CaseDetailModal:({caseId,onClose,onUpdated})=>
 const doc={id:9,projectId:1,fileName:'仕様書_VI.xlsx',sheetName:'タブレット',format:'CUSTOMER_V1',totalRows:1,caseCount:1,updatedAt:'2026-10-03T12:00:00Z',updatedBy:'PM dự án',hasSourceFile:true,sourceCounts:{Fixed:1}};
 const headers=['ID','Đối tượng test','Điều kiện tiên quyết','Các bước test','Quan điểm test','Hạng mục xác nhận','Kết quả mong đợi','Ghi chú thiết kế','iPad*','Ghi chú thực thi&','ID redmine','Người test','',''];
 const cells=['1','Đăng nhập','Có tài khoản','Bước 1\nBước 2','Chức năng','Mở trang','Thành công','Ghi chú','Fixed','Build cũ','123','Tester nguồn','NG','Người khác'];
-const detail={document:doc,headers,rows:[{rowNumber:2,sourceId:'1',caseId:21,caseNo:'XLSX-9-2',revisionId:31,cells,sourceCells:cells}]};
+const detail={document:doc,headers,rows:[{rowId:41,resultStatus:'UNEXECUTED',resultVersion:0,rowNumber:2,sourceId:'1',caseId:21,caseNo:'XLSX-9-2',revisionId:31,cells,sourceCells:cells}]};
 beforeEach(()=>{
   sessionStorage.clear(); window.location.hash='';
   vi.resetAllMocks(); state.currentProject={id:1,name:'Dự án A',projectRole:'PM'};
@@ -96,7 +96,7 @@ describe('Test document library',()=>{
     expect(navigate).toHaveBeenCalledWith('/tests/documents/9');
     await user.click(screen.getByRole('button',{name:'Tất cả test case'}));
     expect(navigate).toHaveBeenCalledWith('/tests/cases');
-    expect(screen.getByText(/Kết quả từ Excel/)).toBeVisible();
+    expect(screen.getByText(/Kết quả tài liệu đã lưu/)).toBeVisible();
   });
   it('shows API errors and retries without prototype fallback',async()=>{
     testCasesApi.listDocuments.mockRejectedValueOnce(new Error('Lỗi kết nối'));
@@ -137,13 +137,13 @@ describe('Workbook case grid',()=>{
     testCasesApi.getDocument.mockResolvedValue({...detail,headers:reorderedHeaders,columns:{sourceId:3,result:1,titleVi:2,expectedVi:4},
       rows:[{...detail.rows[0],cells:['extra','OK','Đăng nhập','1','Thành công']},{...detail.rows[0],rowNumber:3,caseId:22,sourceId:'2',cells:['extra','NG','Thoát','2','Đã thoát']}]});
     const user=userEvent.setup();render(<TestDocumentPage documentId="9" navigate={vi.fn()}/>);
-    await user.selectOptions(await screen.findByRole('combobox',{name:'Lọc kết quả'}),'NG');
+    await screen.findByRole('button',{name:'Mở test case 2'});
+    expect(screen.getByRole('button',{name:'Kết quả test case 2'})).toHaveTextContent('Unexecuted');
     expect(screen.getByRole('button',{name:'Mở test case 2'})).toHaveTextContent('2');
-    expect(screen.queryByRole('button',{name:'Mở test case 1'})).not.toBeInTheDocument();
     await user.click(screen.getByRole('button',{name:'Mở test case 2'}));
     expect(screen.getByRole('dialog')).toHaveTextContent('Case 22');
   });
-  it('paginates the sheet and filters only the main result column, preserving raw M/N',async()=>{
+  it('paginates and filters actual results without treating Excel source outcomes as executions',async()=>{
     const rows=Array.from({length:101},(_,i)=>({...detail.rows[0],rowNumber:i+2,sourceId:String(i+1),caseId:i+21,cells:[String(i+1),...cells.slice(1,8),i===100?'NG':'OK',...cells.slice(9)]}));
     testCasesApi.getDocument.mockResolvedValue({...detail,rows});
     const user=userEvent.setup();render(<TestDocumentPage documentId="9" navigate={vi.fn()}/>);
@@ -152,7 +152,8 @@ describe('Workbook case grid',()=>{
     await user.click(screen.getByRole('button',{name:'Trang sau'}));
     expect(screen.getByRole('button',{name:'Mở test case 101'})).toBeVisible();
     await user.selectOptions(screen.getByRole('combobox',{name:'Lọc kết quả'}),'NG');
-    expect(screen.getAllByRole('button',{name:/Mở test case /})).toHaveLength(1);
+    expect(screen.queryAllByRole('button',{name:/Mở test case /})).toHaveLength(0);
+    expect(rows[100].cells[8]).toBe('NG');
     expect(screen.getByText('Trang 1 / 1')).toBeVisible();
     await user.click(screen.getByRole('button',{name:'Xóa bộ lọc'}));
     expect(screen.getAllByRole('button',{name:/Mở test case /})).toHaveLength(100);

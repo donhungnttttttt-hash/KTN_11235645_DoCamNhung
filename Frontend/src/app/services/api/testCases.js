@@ -12,6 +12,8 @@ async function writeWithCsrf(path, body, method = 'POST') {
 export const testCasesApi = {
   listDocuments: (projectId, {page=0,keyword=''}={}) => apiRequest(`/projects/${projectId}/test-documents?${new URLSearchParams({page:String(page),size:'20',keyword})}`),
   getDocument: (projectId,id) => apiRequest(`/projects/${projectId}/test-documents/${id}`),
+  updateDocumentResult: (projectId,id,rowId,data) => writeWithCsrf(`/projects/${projectId}/test-documents/${id}/rows/${rowId}/result`,data,'PUT'),
+  documentResultHistory: (projectId,id,rowId,before=0) => apiRequest(`/projects/${projectId}/test-documents/${id}/rows/${rowId}/result-history?before=${before}`),
   exportDocument: (projectId,id,original=false) => apiRequest(`/projects/${projectId}/test-documents/${id}/export?original=${original}`, {responseType:'blob'}),
   // Suites
   listSuites: (projectId) => apiRequest(`/projects/${projectId}/test-suites`),

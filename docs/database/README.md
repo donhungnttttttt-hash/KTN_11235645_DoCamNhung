@@ -1,5 +1,13 @@
 # Database và migration đang thực thi
 
+## V13 — Kết quả tài liệu được lưu tự động (04/10/2026)
+
+`V13__persist_document_results.sql` bổ sung vào `import_rows`: `result_status` (enum bằng CHECK, mặc định UNEXECUTED), `result_version`, `result_updated_at` (UTC), `result_updated_by` (FK identity_users), `result_request_key` (UUID). Không tạo thêm bảng; native vẫn có **56 bảng**. Lịch sử dùng `project_audit`, entity `TEST_DOCUMENT_ROW`, action `RESULT_{before}_{after}` và index project/entity/id sẵn có.
+
+`raw_data_json` và `import_batches.source_workbook` giữ nguyên. PUT ghi trạng thái và audit cùng transaction; export hiện tại dùng revision + result_status; original download lấy nguyên BLOB. Quyết định người dùng: trạng thái tài liệu riêng, không thay execution/NA/bug/retest. Xem [contract](../api/test-documents.md).
+
+Đã backup native trước khi restart; Flyway V13 success trên 127.0.0.1:3307/tms, V1–V12 không sửa. Kiểm chứng thao tác chỉ trên tài liệu demo project4/document5. Bộ integration tạo dữ liệu trên schema riêng vẫn chờ quyền tạo schema; không chạy nó trên tms.
+
 **Native runtime 03/10/2026:** đã xác thực app trên MySQL Windows 3307, backend startup/readiness PASS; Flyway đã nâng V11→V12 lúc22:47 ngày03/10; audit 56 bảng/128 FK/6 điều kiện domain không vi phạm. [Nguyên nhân lỗi chạy Maven trực tiếp và bằng chứng](../reviews/2026-10-03-native-startup.md). Còn kiểm chứng UI/chứng cứ và full regression 9.7, không coi toàn S11 đã DONE.
 
 **Excel khách 03/10/2026:** code có V12 bổ sung `import_batches.sheet_name`, `source_workbook` và index tài liệu; không thêm bảng. `mapping_version` phân biệt mẫu nguồn. V12 đã áp dụng thành công lên `tms` sau backup theo yêu cầu người dùng; restart validate/up-to-date PASS. Browser nhập155case/xem tài liệu và API export thật PASS. Fresh migration và integration permission/rollback còn chờ schema test riêng. Xem [contract tài liệu](../api/test-documents.md).
