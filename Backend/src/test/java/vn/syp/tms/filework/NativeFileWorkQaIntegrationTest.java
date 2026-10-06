@@ -31,7 +31,7 @@ import vn.syp.tms.retest.*;
 import vn.syp.tms.shared.web.BusinessException;
 import vn.syp.tms.workitem.*;
 
-/** Existing V18 isolated schema only. Every fixture and mutation rolls back with its test. */
+/** Existing V19 isolated schema only. Every fixture and mutation rolls back with its test. */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -41,9 +41,9 @@ class NativeFileWorkQaIntegrationTest {
         NativeFqDatabase.requireMode("integration");
         // This is evaluated before context refresh, not BeforeEach after Flyway has run.
         try(var c=NativeFqDatabase.connect()) {
-            assertThat(NativeFqFixture.scalar(c,"SELECT CAST(version AS UNSIGNED) FROM flyway_schema_history WHERE success=1 ORDER BY installed_rank DESC LIMIT 1")).isEqualTo(18);
+            assertThat(NativeFqFixture.scalar(c,"SELECT CAST(version AS UNSIGNED) FROM flyway_schema_history WHERE success=1 ORDER BY installed_rank DESC LIMIT 1")).isEqualTo(19);
         }
-        NativeFqDatabase.flyway("18").validate();
+        NativeFqDatabase.flyway("19").validate();
         r.add("spring.datasource.url",NativeFqDatabase::url);r.add("spring.datasource.username",NativeFqDatabase::user);r.add("spring.datasource.password",NativeFqDatabase::password);
         r.add("TMS_DB_URL",NativeFqDatabase::url);r.add("TMS_DB_USER",NativeFqDatabase::user);r.add("TMS_DB_PASSWORD",NativeFqDatabase::password);
         r.add("TMS_MIGRATION_USER",NativeFqDatabase::user);r.add("TMS_MIGRATION_PASSWORD",NativeFqDatabase::password);

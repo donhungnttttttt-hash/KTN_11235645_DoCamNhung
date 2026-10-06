@@ -71,6 +71,23 @@ class LocalDatabaseConfigurationTest {
         }
     }
 
+    @Test void localSingleDatabaseAccountCanAlsoRunMigrations() throws Exception {
+        Path file = directory.resolve("single-account.local");
+        Files.writeString(file, """
+            TMS_DB_USER=fixture_owner
+            TMS_DB_PASSWORD=fixture-owner-password
+            TMS_BOOTSTRAP_ENABLED=false
+            """);
+        try (var context = load("local", file)) {
+            var env = context.getEnvironment();
+            assertThat(env.getRequiredProperty("spring.datasource.url"))
+                .startsWith("jdbc:mysql://127.0.0.1:3307/tms?");
+            assertThat(env.getRequiredProperty("spring.flyway.user")).isEqualTo("fixture_owner");
+            assertThat(env.getRequiredProperty("spring.flyway.password")).isEqualTo("fixture-owner-password");
+            assertThat(context.getBeansOfType(javax.sql.DataSource.class)).isEmpty();
+        }
+    }
+
     @Test void releaseDoesNotImportNativeCredentials() throws Exception {
         try (var context = load("release", localConfiguration())) {
             var env = context.getEnvironment();

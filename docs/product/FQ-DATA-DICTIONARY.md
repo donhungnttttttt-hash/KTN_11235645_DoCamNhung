@@ -1,6 +1,17 @@
-# Từ điển mở rộng F/Q — V17/V18 theo mã nguồn
+# Từ điển mở rộng F/Q — V17/V18 và delta V19
 
-Ngày 06/10/2026. Bổ sung cho [từ điển baseline V16](DATA-DICTIONARY.md); đây là schema từ migration source, không phải snapshot database đã chạy. Database native đang dùng vẫn được xác nhận V16; V17/V18 fresh/upgrade/FK/race/preservation chưa kiểm chứng trên schema riêng. Không trộn số bảng dự kiến với số bảng thực tế.
+Ngày 06/10/2026. Bổ sung cho [từ điển baseline V16](DATA-DICTIONARY.md). Native fresh/upgrade V16→V19, FK/preservation và concurrency đã kiểm chứng; `tms` hiện ở V19. Phần V17/V18 dưới giữ DDL gốc để truy vết, hai FK được thay bằng V19 như mô tả tiếp theo. [Bằng chứng runtime](../reviews/2026-10-06-native-completion.md).
+
+## Delta V19 — index độc lập cho con trỏ QA
+
+Nguồn: [V19](../../Backend/src/main/resources/db/migration/V19__separate_qa_answer_pointer_index.sql). Không thêm cột/bảng hoặc sửa dữ liệu nghiệp vụ.
+
+- `qa_answers`: thêm unique `uq_qa_answer_pointer_order(id,project_id,work_item_id,generation)`.
+- `qa_details`: thêm FK `fk_qa_current_answer_exact(current_answer_id,project_id,work_item_id,generation)` → `qa_answers(id,project_id,work_item_id,generation)`, kiểm tra dữ liệu hiện có rồi bỏ `fk_qa_current_answer`.
+- `file_work_groups`: thêm unique `uq_fw_group_pointer_order(id,project_id)`.
+- `qa_details`: thêm FK `fk_qa_group_exact(group_id,project_id)` → `file_work_groups(id,project_id)`, kiểm tra dữ liệu hiện có rồi bỏ `fk_qa_group`.
+
+Thứ tự cột riêng tránh dùng chung index với FK dài chứa thành phần nullable trên MySQL 9.7 được kiểm thử. Pointer khác QA/project bị từ chối; dữ liệu sai làm migration lỗi, không tự sửa/xóa. Tổng số FK không đổi; `fk_qa_current_confirmation` và các FK context đầy đủ giữ nguyên.
 
 ## V17__file_work_groups_and_sessions.sql
 

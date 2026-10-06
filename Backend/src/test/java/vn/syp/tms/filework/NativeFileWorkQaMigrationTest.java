@@ -14,7 +14,7 @@ import vn.syp.tms.testcase.TestCaseWorkbook;
 /** Only explicit fresh mode on an empty, preprovisioned, exclusively owned schema. */
 @EnabledIfEnvironmentVariable(named="TMS_TEST_FQ_MODE",matches="fresh-migration")
 class NativeFileWorkQaMigrationTest {
-    @Test void preservesV16HistoryThenFreshV18EnforcesExactContextAndUniqueDoing() throws Exception {
+    @Test void preservesV16HistoryThenFreshV19EnforcesExactContextAndUniqueDoing() throws Exception {
         NativeFqDatabase.requireMode("fresh-migration");
         try(var c=NativeFqDatabase.connect()) {
             assertThat(NativeFqFixture.scalar(c,"SELECT GET_LOCK(CONCAT('native-fq-',DATABASE()),0)"))
@@ -29,7 +29,7 @@ class NativeFileWorkQaMigrationTest {
                 var historical=NativeFqFixture.seed(c,true);
                 var before=new LinkedHashMap<String,Snapshot>();
                 for(String table:List.of("identity_users","projects","project_memberships","test_case_revisions","import_batches","import_rows","run_items","execution_attempts","work_items","bug_details","work_item_history","work_item_execution_links","project_audit"))before.put(table,snapshot(c,table,null));
-                var latest=NativeFqDatabase.flyway("18");assertThat(latest.migrate().migrationsExecuted).isEqualTo(2);
+                var latest=NativeFqDatabase.flyway("19");assertThat(latest.migrate().migrationsExecuted).isEqualTo(3);
                 latest.validate();assertThat(latest.migrate().migrationsExecuted).isZero();
                 for(var entry:before.entrySet())assertThat(snapshot(c,entry.getKey(),entry.getValue().columns())).as(entry.getKey()).isEqualTo(entry.getValue());
                 assertThat(NativeFqFixture.scalar(c,"SELECT COUNT(*) FROM execution_attempts WHERE file_work_session_id IS NOT NULL")).isZero();
@@ -42,7 +42,7 @@ class NativeFileWorkQaMigrationTest {
                 assertThat(owned).contains("flyway_schema_history","file_work_sessions","qa_details");
                 assertThat(tables(c)).isEqualTo(owned);
                 NativeFqDatabase.cleanOwned(c,owned);
-                assertThat(latest.migrate().migrationsExecuted).isEqualTo(18);
+                assertThat(latest.migrate().migrationsExecuted).isEqualTo(19);
                 latest.validate();assertThat(latest.migrate().migrationsExecuted).isZero();
                 var first=NativeFqFixture.seed(c,false);var other=NativeFqFixture.seed(c,false);
                 long run=first.run(c),group=first.group(c,run),otherRun=other.run(c),otherGroup=other.group(c,otherRun);
@@ -84,15 +84,23 @@ class NativeFileWorkQaMigrationTest {
         reject(c,"UPDATE work_items SET status_code='ready' WHERE id=?",qa);
         reject(c,"UPDATE qa_details SET question=' ' WHERE work_item_id=?",qa);
         reject(c,"UPDATE qa_details SET document_id=? WHERE work_item_id=?",other.document,qa);
+        // Nullable optional document/run must not disable the shorter group FK.
+        long foreignGroup=NativeFqFixture.scalar(c,"SELECT id FROM file_work_groups WHERE project_id=?",other.project);
+        reject(c,"UPDATE qa_details SET group_id=? WHERE work_item_id=?",foreignGroup,qa);
+        long ownGroup=NativeFqFixture.scalar(c,"SELECT id FROM file_work_groups WHERE project_id=?",f.project);
+        NativeFqFixture.update(c,"UPDATE qa_details SET group_id=? WHERE work_item_id=?",ownGroup,qa);
+        assertThat(NativeFqFixture.scalar(c,"SELECT COUNT(*) FROM qa_details WHERE work_item_id=? AND group_id=? AND document_id IS NULL AND run_item_id IS NULL",qa,ownGroup)).isEqualTo(1);
         long a=NativeFqFixture.insert(c,"INSERT INTO qa_answers(project_id,work_item_id,generation,answer_version,body,basis_reference,author_membership_id,answered_at) VALUES(?,?,0,1,'Answer','basis',?,UTC_TIMESTAMP(6))",f.project,qa,f.devMember);
         long b=NativeFqFixture.insert(c,"INSERT INTO qa_answers(project_id,work_item_id,generation,answer_version,body,basis_reference,author_membership_id,answered_at) VALUES(?,?,0,2,'Second','basis',?,UTC_TIMESTAMP(6))",f.project,qa,f.devMember);
         reject(c,"INSERT INTO qa_answers(project_id,work_item_id,generation,answer_version,body,basis_reference,author_membership_id,answered_at) VALUES(?,?,0,2,'Duplicate','basis',?,UTC_TIMESTAMP(6))",f.project,qa,f.devMember);
         reject(c,"UPDATE qa_answers SET author_membership_id=? WHERE id=?",other.devMember,a);
         NativeFqFixture.update(c,"UPDATE qa_details SET current_answer_id=? WHERE work_item_id=?",a,qa);
+        assertThat(NativeFqFixture.scalar(c,"SELECT COUNT(*) FROM qa_details WHERE work_item_id=? AND current_answer_id=? AND current_confirmation_id IS NULL",qa,a)).isEqualTo(1);
         reject(c,"UPDATE qa_details SET current_answer_id=? WHERE work_item_id=?",a,qa2);
         reject(c,"UPDATE qa_details SET generation=1 WHERE work_item_id=?",qa);
         long confirmation=NativeFqFixture.insert(c,"INSERT INTO qa_confirmations(project_id,work_item_id,generation,answer_id,body,confirmed_by,confirmed_at) VALUES(?,?,0,?,'Confirmed',?,UTC_TIMESTAMP(6))",f.project,qa,a,f.testerMember);
         NativeFqFixture.update(c,"UPDATE qa_details SET current_confirmation_id=? WHERE work_item_id=?",confirmation,qa);
+        assertThat(NativeFqFixture.scalar(c,"SELECT current_confirmation_id FROM qa_details WHERE work_item_id=?",qa)).isEqualTo(confirmation);
         reject(c,"UPDATE qa_details SET current_answer_id=? WHERE work_item_id=?",b,qa);
         reject(c,"UPDATE qa_confirmations SET generation=1 WHERE id=?",confirmation);
         reject(c,"UPDATE qa_confirmations SET confirmed_by=? WHERE id=?",other.testerMember,confirmation);

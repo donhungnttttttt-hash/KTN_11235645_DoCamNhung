@@ -74,7 +74,8 @@
     "2026-10-06: Người dùng yêu cầu tạo tài khoản với quyền tương ứng, tự test, bàn giao đầy đủ và push system-design. Quyền commit/push được chốt cho tác vụ này; không mở rộng sang merge/deploy. Native kiểm tra lại: tms V16; migrator chỉ có quyền tms; credential root cấu hình trả 1045. Backup tạo tại var/mysql-native/backups/2026-10-06T01-09-39-750Z-tms.sql.",
     "2026-10-06 bàn giao: 7 null warnings sửa xong, JDT cuối192sources0error0warning; phát hiện/sửa HTTP500 gán thành viên do numeric archived projection (RED/GREEN18test, reviewApproved). Full offline396test/39suitePASS; 4tài khoản handover.admin/pm/tester/dev tạoquaAPI thật; PM/Tester/Dev gánDEMO-PILOT; 47kiểmtraAPI(28role+12read+7negative)PASS. NativeV17/V18/fullFQ vẫn chưa nghiệmthu vì root1045; không đánh dấuS11DONE.",
     "2026-10-06: Commit2a0ace7 tập hợp code ADMIN/FQ, PRD/đặc tả và bản sửa null/projection đã review. Tiến trình kiểm chứng18080/15175 đã dừng; listener8080/5173 của người dùng giữ nguyên. Đang hoàn tất metadata và xác minh push remote, không merge/deploy.",
-    "2026-10-06: Tiếp tục nghiệm thu native theo yêu cầu; được cập nhật backend local 8080 sau gate. Bổ sung 5 test concurrency/transaction native và 2 test guard offline. Java guard 2/2, Node runner 7/7, JDT 194 source 0 lỗi/0 cảnh báo; review source Approved. Native/HTTP vẫn NOT_RUN vì chưa có schema riêng và credential root chưa thay đổi. Xem docs/reviews/2026-10-06-native-completion-preflight.md."
+    "2026-10-06: Tiếp tục nghiệm thu native theo yêu cầu; được cập nhật backend local 8080 sau gate. Bổ sung 5 test concurrency/transaction native và 2 test guard offline. Java guard 2/2, Node runner 7/7, JDT 194 source 0 lỗi/0 cảnh báo; review source Approved. Native/HTTP vẫn NOT_RUN vì chưa có schema riêng và credential root chưa thay đổi. Xem docs/reviews/2026-10-06-native-completion-preflight.md.",
+    "2026-10-06: Người dùng cung cấp credential root native; tạo schema test riêng tại 3307. Phát hiện hai FK QA nullable-prefix bỏ lọt trên MySQL 9.7, thêm V19 giữ V1–V18. Migration 1/1, integration 5/5, concurrency 5/5, local config 5/5, runner 7/7 PASS; JDT 194 source, 0 lỗi/0 cảnh báo. HTTP 37 bước mỗi V18/V19, export POI/source byte PASS. Backup V16 mới, áp V17–V19 trên tms, backend 8080 PID 40628 UP, 23 HTTP bốn vai trò và browser PM PASS. Xem docs/reviews/2026-10-06-native-completion.md."
   ],
   "sprints": [
     {
@@ -772,7 +773,7 @@
   "implementationBaseCommit": "3355cfc",
   "lastCompletedSprint": "S09",
   "nextSuggestedSprint": null,
-  "nextAction": "Hoàn tất gate native: cần schema test được cấp hoặc credential root hợp lệ (hiện1045), rồi kiểm thử fresh/upgrade V18, concurrency và trọn luồng F/Q. Tài khoản, 47 kiểm tra API, browser 4 vai trò và 396 test offline đã bàn giao; code ADMIN/FQ commit trên system-design theo quyền push của người dùng. Chưa nghiệm thu S11, chưa áp V17/V18 hoặc thay backend8080.",
+  "nextAction": "Native F/Q và cập nhật local hoàn tất: migration V16→V19/fresh19, integration/concurrency11 test, HTTP37 bước trên V19, backend8080 UP, tms19 và56 bảng cũ giữ số dòng. Hoàn tất push system-design; S11 tiếp tục IN_REVIEW cho nghiệm thu người dùng/pilot và tiêu chí còn lại, không còn blocker root1045/schema test.",
   "executionPolicy": {
     "continueSequentially": true,
     "authorizedAt": "2026-09-29",
@@ -786,7 +787,8 @@
       "commit": true,
       "pushBranch": "system-design",
       "merge": false,
-      "deploy": false
+      "deploy": false,
+      "localBackendRestart": true
     }
   },
   "confirmedDecisions": {

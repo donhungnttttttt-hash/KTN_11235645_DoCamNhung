@@ -1,5 +1,29 @@
 # Hệ thống quản lý kiểm thử phần mềm — SY Partners
 
+## Chạy sau khi pull code
+
+Dùng JDK 21, Node 24 và MySQL. Backend tự tạo/cập nhật **các bảng bằng Flyway khi khởi động**; không cần import file SQL hoặc tự chạy từng migration. Database/schema phải tồn tại và tài khoản kết nối phải có quyền tạo/sửa bảng trong schema đó. Dữ liệu nghiệp vụ của máy khác không nằm trong Git.
+
+1. Ở thư mục gốc, sao chép `.env.mysql.example` thành `.env.mysql.local` (không ghi đè nếu đã cấu hình).
+2. Điền host, port, tên database, user và password của MySQL trên máy bạn. Máy hiện tại dùng **127.0.0.1:3307/tms**; **3310 chỉ là cổng Docker cũ trong `.env`**, không phải cấu hình Maven local. Có thể dùng một tài khoản có quyền DDL; nếu dùng hai tài khoản, điền thêm `TMS_MIGRATION_USER` và `TMS_MIGRATION_PASSWORD`.
+3. Với database mới: đặt `TMS_BOOTSTRAP_ENABLED=true` và mật khẩu Admin ban đầu ít nhất 12 ký tự trong `TMS_BOOTSTRAP_PASSWORD`; username mặc định `admin.local`. Với database đã có tài khoản: đặt `TMS_BOOTSTRAP_ENABLED=false` và đăng nhập tài khoản hiện có.
+4. Chạy hai terminal:
+
+```powershell
+cd Backend
+mvn spring-boot:run
+```
+
+```powershell
+cd Frontend
+npm ci
+npm run dev
+```
+
+Nếu chưa cài Maven, dùng `./mvnw.cmd spring-boot:run` trên Windows hoặc `./mvnw spring-boot:run` trên Linux/macOS. Mở **http://127.0.0.1:5173/** sau khi backend báo chạy ở 8080. Mỗi lần pull migration mới, khởi động lại backend để Flyway áp dụng tiếp theo thứ tự; lỗi checksum/quyền/kết nối cần xử lý theo log, không dùng `clean`/`repair` để bỏ qua.
+
+Nếu chưa có database/tài khoản, xem [khởi tạo MySQL native](docs/database/mysql-workbench.md). Script khởi tạo có thể tạo tài khoản và sinh cấu hình; Docker, RTK và schema test riêng **không phải điều kiện chạy ứng dụng**. Các phần bên dưới lưu các mốc phát triển; trạng thái mới nhất xem [STATUS](docs/planning/STATUS.json).
+
 **Nhánh làm việc hiện tại: `system-design` (03/10/2026).** Tập hợp code, migration V1–V12 và tài liệu Sprint 00–11 hiện có. Màn tài liệu test case đã khôi phục menu ba gạch, chi tiết, lịch sử và ghi kết quả theo đợt/cấu hình. Xem [bằng chứng kiểm tra và giới hạn](docs/reviews/2026-10-03-restored-test-grid.md). Đây là mốc code local, chưa đồng nghĩa mọi sprint đã nghiệm thu hoặc đã merge vào `develop`.
 
 Frontend React có các màn Tổng quan, Bảng công việc (Kanban/Danh sách), Quản lý kiểm thử, Quản lý lỗi, Quản lý tiến độ và Tổng hợp & Phân tích.

@@ -1,5 +1,11 @@
 # Database và migration đang thực thi
 
+## V19 — Native F/Q đã kiểm chứng (06/10/2026)
+
+`tms` trên MySQL native **127.0.0.1:3307** hiện ở V19, backend 8080 đã cập nhật. V17 tạo công việc theo file/phiên làm việc, V18 bổ sung QA, V19 tách index/FK current-answer và group để xử lý lỗi enforcement nullable-prefix được tái hiện trên MySQL 9.7 tại máy này. V1–V18 không sửa. Hiện có 65 bảng nghiệp vụ, cộng lịch sử Flyway và hai bảng session. [Báo cáo migration, preservation, HTTP và backup](../reviews/2026-10-06-native-completion.md), [runner kiểm thử](file-work-qa-verification.md).
+
+Máy mới chỉ cần cấu hình `.env.mysql.local` kết nối schema đã cấp quyền, đặt bootstrap Admin nếu database mới, rồi `mvn spring-boot:run`; Flyway tự tạo/nâng cấp bảng. Xem [hướng dẫn pull-and-run](../../README.md#chạy-sau-khi-pull-code). Các mốc phía dưới là lịch sử, không phải phiên bản schema hiện tại.
+
 ## V13 — Kết quả tài liệu được lưu tự động (04/10/2026)
 
 `V13__persist_document_results.sql` bổ sung vào `import_rows`: `result_status` (enum bằng CHECK, mặc định UNEXECUTED), `result_version`, `result_updated_at` (UTC), `result_updated_by` (FK identity_users), `result_request_key` (UUID). Không tạo thêm bảng; native vẫn có **56 bảng**. Lịch sử dùng `project_audit`, entity `TEST_DOCUMENT_ROW`, action `RESULT_{before}_{after}` và index project/entity/id sẵn có.

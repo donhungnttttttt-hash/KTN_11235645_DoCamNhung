@@ -29,3 +29,10 @@ Cập nhật hướng dẫn/PRD/đặc tả/STATUS bằng kết quả thực t�
 - Bổ sung 5 kịch bản giao dịch/concurrency native và 2 test guard offline; mở allowlist runner cho đúng suite mới. Không thay đổi mã nghiệp vụ hoặc cơ chế clean migration.
 - Guard Java 2/2 và runner Node 7/7 PASS; JDT 194 source, 0 lỗi/0 cảnh báo. Review độc lập Approved trong phạm vi source; native vẫn NOT_RUN. Chi tiết tại `docs/reviews/2026-10-06-native-completion-preflight.md`.
 - Tiếp theo: cấp schema riêng bằng root hợp lệ, chạy fresh/upgrade V18 và integration/concurrency, chạy HTTP đủ Admin→PM→Tester→Dev→retest/QA/export, backup mới, rồi áp migration/restart 8080 và kiểm tra lại. Không đánh dấu hoàn thành trước khi có bằng chứng runtime.
+
+## Kết quả hoàn tất native — 06/10/2026
+- Credential native người dùng cung cấp đã kết nối root thành công ở 3307. Tạo/cấp schema riêng, không thay đổi mật khẩu hoặc đưa credential lên Git.
+- Native phát hiện hai FK QA dùng chung index với phần nullable bị bỏ lọt trên MySQL 9.7 hiện tại; V19 tách thứ tự/index, thêm FK kiểm tra dữ liệu trước khi bỏ FK cũ. V1–V18 giữ nguyên.
+- Migration 1/1, integration 5/5, concurrency 5/5 PASS; cấu hình local 5/5, guard 2/2, runner 7/7, JDT 194 source 0 lỗi/0 cảnh báo. HTTP 37 bước mỗi bản V18/V19, export đối chiếu nội dung PASS.
+- Backup mới V16 SHA-256 đã kiểm tra; `tms` nâng V19, 56 bảng nghiệp vụ cũ giữ số dòng. Backend 8080 PID 40628 bản mới readiness UP, 23 HTTP kiểm tra 4 vai trò PASS, browser PM tải dashboard/công việc theo file không có lỗi console. Frontend 5173 giữ nguyên.
+- Hướng dẫn pull-and-run và template native đã cập nhật; local có thể dùng một DB account cho app/Flyway hoặc tài khoản migration riêng. Báo cáo `docs/reviews/2026-10-06-native-completion.md`. UAT/pilot do người dùng nghiệm thu riêng.

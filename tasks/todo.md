@@ -9,8 +9,11 @@
 - [x] Task6: QAbackend + genericpermissionguards/evidence; 6A/6B/6C reviews APPROVE sau sửa, final scoped112 tests PASS. Native/HTTP NOT_RUN.
 - [x] Task7: QAUI/PMhandoff; 7A/7B/7C/7C2/7D/7E source reviews spec+quality APPROVE. Native/HTTP/UAT riêng, chưa hoàn tất.
 - [x] Task8 source gate: Fullregression/guarded native fixture source/browser UI-only/finalreview/docs;612 FE/394 offline BE PASS, final scoped review APPROVED. Không phải native nghiệm thu.
-- [ ] Task8 native gate: FreshV18/upgradeV16→18/FK/preservation/SQL thực tế trên schema riêng.
-- [ ] Task8 concurrency/transaction: Viết/chạy ba race identity SHARE, BUG stale-command, exact QA comment; kiểm chứng commit độc lập/rollback command thất bại và Java pre-start guard.
-- [ ] Task8 HTTP/UAT/pilot: Hành trình ADMIN→PM→Tester→Dev→retest→PM, Excel tải thực tế và người dùng nghiệm thu.
+- [x] Task8 native gate: Fresh V19/upgrade V16→V19/FK/preservation trên schema riêng; phát hiện và sửa hai FK QA bằng V19, giữ V1–V18.
+- [x] Task8 concurrency/transaction: 5 test native PASS về identity SHARE, BUG stale version/assignment, exact QA comment, commit độc lập/rollback batch; guard Java 2/2 và runner Node 7/7 PASS.
+- [x] Task8 HTTP: Hành trình ADMIN→PM→Tester→Dev→retest→PM và QA, 37 bước trên V18 rồi 37 bước mới trên V19; Excel nguồn/cập nhật đối chiếu thực tế. Sau backup, `tms` V19 và backend 8080 đã cập nhật; 23 kiểm tra HTTP 4 vai trò PASS.
+- [ ] Task8 UAT/pilot: Người dùng nghiệm thu bộ kịch bản đầy đủ và môi trường pilot; không tự ký từ kết quả kiểm thử tự động.
+
+Kết quả mới nhất, thay thế các nhãn native NOT_RUN tại checkpoint lịch sử phía trên: [nghiệm thu native V19](../docs/reviews/2026-10-06-native-completion.md).
 
 Đã duyệt nghiệp vụ F/Q ngày06/10/2026. Không đánh dấu checklist chỉ vì đã viết tài liệu hoặc thấy source; bằng chứng chạy/review lưu ledger và docs/reviews.

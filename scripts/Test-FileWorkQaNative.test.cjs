@@ -29,6 +29,8 @@ test('fresh refuses existing contents before Maven; integration refuses wrong ve
  const io={readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:['1'],spawn:()=>{spawned=true;}};
  assert.throws(()=>run([schema,'fresh-migration','NativeFileWorkQaMigrationTest'],io));
  assert.throws(()=>run([schema,'integration','NativeFileWorkQaIntegrationTest'],io));
+ io.query=sql=>sql==='SELECT DATABASE();'?[schema]:['18'];
+ assert.throws(()=>run([schema,'integration','NativeFileWorkQaConcurrencyTest'],io));
  assert.equal(spawned,false);
 });
 test('wrong selected database and bad host do not reach Maven',()=>{
@@ -39,7 +41,7 @@ test('wrong selected database and bad host do not reach Maven',()=>{
 });
 test('valid integration launches only selected test with structured secret-free arguments',()=>{
  let call;
- const result=run([schema,'integration','NativeFileWorkQaIntegrationTest'],{readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:['18'],spawn:(command,args,options)=>{call={command,args,options};return {status:0};}});
+ const result=run([schema,'integration','NativeFileWorkQaIntegrationTest'],{readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:['19'],spawn:(command,args,options)=>{call={command,args,options};return {status:0};}});
  assert.equal(result,0);assert.equal(call.command,'rtk');
  assert.ok(call.args.includes('-Dtest=NativeFileWorkQaIntegrationTest'));
  assert.ok(!JSON.stringify(call.args).includes(config.TMS_MIGRATION_PASSWORD));

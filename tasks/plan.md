@@ -89,6 +89,8 @@ Task8 diagnostics follow-ups8C1/8C2/8C3: fulloffline390PASS but currentJDT191sou
 
 ## Verification not yet complete
 
+Cập nhật sau nghiệm thu native ngày 06/10/2026: người dùng cung cấp credential native và yêu cầu tự tạo schema, hoàn tất kiểm thử/cập nhật backend. Native migration 1/1, integration 5/5, concurrency 5/5 và hành trình HTTP 37 bước đã PASS trên V19; V19 bổ sung sửa hai FK QA sau lỗi native được tái hiện. Đã backup và áp V17–V19 trên `tms`, restart 8080, kiểm tra 23 HTTP và browser PM. Phần native/HTTP và quyền commit/push/local restart đã được giải quyết; UAT do người dùng ký/pilot vẫn riêng. Xem `docs/reviews/2026-10-06-native-completion.md`; đoạn checkpoint dưới giữ lịch sử, không còn là blocker hiện tại.
+
 Native test/UAT/pilot/productionNFR remain separate gates. Latest user approval settles business F/Q scope, not proof of workingimplementation or permission to publish/push.
 
 06/10/2026 final source checkpoint: all Task1–7 and Task8 independent source/regression/fixture/UI-preview/docs gates APPROVED after one broad review, one combined fix wave and one scoped re-review. Final612FE/394offlineBE tests PASS; javac/JDT/build/package/contracts PASS. Native acceptance remains open exactly as above, including the three named unwritten races and independent command commit/rollback checks; checklist separates source gate from native/HTTP/UAT/pilot. Do not re-dispatch completed implementation or repeat the broad review from this checkpoint. Next meaningful work is the unresolved isolated native/HTTP/UAT gate once environment rights exist; no runtime or publication operation implied.

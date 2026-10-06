@@ -1,5 +1,7 @@
 # Ma trận truy vết và nghiệm thu TMS
 
+**Kết quả bổ sung sau checkpoint bên dưới:** [nghiệm thu native 06/10](../reviews/2026-10-06-native-completion.md) đã chạy migration V16→V19/fresh V19 (1 test), F/Q integration (5), concurrency/transaction (5), hành trình HTTP đủ Admin→PM→Tester→Dev→retest→PM và QA/export (37 bước mới trên V19). `tms` V19/backend 8080 đã cập nhật, 23 HTTP smoke bốn vai trò và browser PM đạt. Blocker root/schema đã giải quyết. Các nhãn native/HTTP chưa chạy trong baseline dưới được thay thế **chỉ trong phạm vi kịch bản đã ghi ở báo cáo**; không tự đổi mọi dòng UAT/pilot thành PASS.
+
 Ngày chốt: **06/10/2026**. Đi cùng [PRD](PRD.md), [đặc tả](SYSTEM-SPECIFICATION.md) và [review](../reviews/2026-10-06-system-workflow-review.md). Đây là danh sách hành vi cần đạt và bằng chứng hiện tại, **không phải tất cả kịch bản đã PASS**.
 
 ## 1. Cách đọc trạng thái

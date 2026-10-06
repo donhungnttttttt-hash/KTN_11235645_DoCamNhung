@@ -1,5 +1,7 @@
 # Tài liệu sản phẩm TMS
 
+**Nghiệm thu kỹ thuật mới nhất 06/10/2026:** native migration V16→V19/fresh V19, integration/concurrency và hành trình HTTP F/Q đã PASS. Đã backup, cập nhật `tms` V19, restart backend 8080 và kiểm tra bốn vai trò. [Báo cáo đầy đủ](../reviews/2026-10-06-native-completion.md), [cách pull và chạy](../../README.md#chạy-sau-khi-pull-code). Code được commit/push `system-design` theo quyền người dùng; S11 vẫn IN_REVIEW cho UAT/pilot. Các đoạn checkpoint dưới giữ bằng chứng tại thời điểm trước nghiệm thu này.
+
 **Cập nhật 06/10/2026:** người dùng đã duyệt toàn bộ thiết kế F01–F05/Q01–Q03 (“mình duyệt hết”). Implementation có trong working tree theo [kế hoạch F/Q](../../tasks/plan.md) và [danh sách việc](../../tasks/todo.md); [PRD mục16](PRD.md#16-checkpoint-implementation-fq) và [báo cáo triển khai](../reviews/2026-10-06-fq-implementation.md) mô tả checkpoint hiện hành. Số liệu/nhận xét baseline V16 phía dưới giữ làm lịch sử audit; phê duyệt và source không đồng nghĩa đã nghiệm thu native/HTTP/UAT.
 
 **Source gate cuối: APPROVED** sau một wave sửa và scoped re-review;612 frontend/394 offline backend tests PASS, JDT191nguồn0lỗi/0cảnh báo, build/package PASS. [Review cuối](../reviews/2026-10-06-fq-final-review.md) giữ cả findings ban đầu và kết quả xử lý. Native V17/V18/SQL/race/HTTP/UAT/pilot còn mở, S11 giữ IN_REVIEW; không commit/push/merge/deploy trong tác vụ này.
@@ -14,7 +16,7 @@ Bản đối chiếu ngày **06/10/2026**, nhánh `system-design`, source gồm 
 | [Đặc tả hệ thống](SYSTEM-SPECIFICATION.md) | Luồng, quyền, trạng thái, dữ liệu, API, giao dịch, an toàn, vận hành và thiết kế bổ sung cần review |
 | [Truy vết và UAT](TRACEABILITY-UAT.md) | Đối chiếu yêu cầu → code/API/test; kịch bản kiểm tra theo đúng vòng đời dự án, bug và retest |
 | [Từ điển dữ liệu](DATA-DICTIONARY.md) | 59 bảng/560 cột, PK/index/139 FK của schema V16, metadata chỉ đọc, không chứa dữ liệu hoặc credential |
-| [Schema mở rộng F/Q](FQ-DATA-DICTIONARY.md) | 9 bảng mới/98 thuộc tính và 32 FK V17/V18 theo source; chưa phải snapshot native đã áp |
+| [Schema mở rộng F/Q](FQ-DATA-DICTIONARY.md) | 9 bảng mới/98 thuộc tính và 32 FK V17/V18, bổ sung delta V19 đã kiểm chứng native |
 | [Tiến độ triển khai F/Q](../reviews/2026-10-06-fq-implementation.md) | Gate mã nguồn/test/review của thiết kế đã duyệt, và native/HTTP/UAT còn mở |
 | [Hướng dẫn luồng theo file và QA](../file-work-qa-guide.md) | Các bước Admin → PM → Tester → Dev → Tester → PM, cùng cách chọn đúng bản Excel |
 | [Kiểm chứng MySQL/Flyway F/Q](../database/file-work-qa-verification.md) | Schema test riêng, runner guarded và quy trình cập nhật database sử dụng sau kiểm chứng |
