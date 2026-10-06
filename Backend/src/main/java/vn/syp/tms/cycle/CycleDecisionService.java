@@ -21,7 +21,7 @@ public class CycleDecisionService {
     }
     private long pm(long p,String actor) {
         var member=work.writable(p,actor);
-        if(!"PM".equals(member.get("role"))) fail(403,"PROJECT_PM_REQUIRED","Chỉ PM dự án được quyết định NA, chốt hoặc mở lại đợt.");
+        if(WorkItemService.developer(member) || !"PM".equals(member.get("role"))) fail(403,"PROJECT_PM_REQUIRED","Chỉ PM dự án được quyết định NA, chốt hoặc mở lại đợt.");
         return number(member,"id");
     }
     public Map<String,Object> scope(long p,String actor,long id,CycleDecisionDtos.Scope input) {

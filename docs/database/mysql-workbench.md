@@ -2,7 +2,7 @@
 
 Cập nhật 03/10/2026. Hướng chạy mặc định là **MySQL Server cài trực tiếp**, không cần Docker để chạy ứng dụng. Workbench là công cụ kết nối/xem dữ liệu; dữ liệu được lưu trong MySQL Server, không nằm trong Workbench. Schema hiện hành vẫn V11; [đề xuất bổ sung audit](../reviews/2026-10-03-database-audit-fields-relations.md) chưa được triển khai.
 
-**Máy hiện tại đã có `tms` và `.env.mysql.local`.** Ngày 03/10 đã khởi động backend trên 3307, Flyway V11/11 migration và kiểm tra readiness/audit PASS; xem [bằng chứng](../reviews/2026-10-03-native-startup.md). Khi mở lại dự án, dùng bước 4 trở đi; không chạy lại initializer/import. Các bước 1–3 bên dưới dành cho thiết lập lần đầu trên máy/schema chưa khởi tạo.
+**Máy hiện tại đã có `tms` và `.env.mysql.local`.** Quan sát read-only mới nhất lúc2026-10-05T20:49:35Z: Flyway V16; V17/V18 mới chỉ có source. Xem [kiểm chứng/nâng cấp F/Q](file-work-qa-verification.md). Các con số V11 phía dưới là bằng chứng thiết lập ban đầu ngày03/10, không phải yêu cầu hạ database về V11. Khi mở lại dự án, dùng bước4 trở đi sau kiểm chứng/nâng cấp phù hợp; không chạy lại initializer/import. Bước1–3 dành cho thiết lập lần đầu trên máy/schema chưa khởi tạo.
 
 ## Máy hiện tại đã có gì?
 

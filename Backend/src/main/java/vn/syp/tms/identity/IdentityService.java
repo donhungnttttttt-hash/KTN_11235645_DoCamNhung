@@ -41,6 +41,10 @@ public class IdentityService {
     public boolean isAdmin(String userId) {
         return users.findById(java.util.Objects.requireNonNull(userId)).map(u -> "ADMIN".equals(u.getRole())).orElse(false);
     }
+    public IdentityUserRepository.CurrentAccount lockCurrent(String id) {
+        return users.lockAccount(id).filter(account -> account.getEnabled())
+            .orElseThrow(() -> new BusinessException(401,"UNAUTHENTICATED","Phiên đăng nhập đã hết hạn."));
+    }
     public IdentityDtos.Me me(IdentityUser user, int timeoutSeconds) {
         return new IdentityDtos.Me(user.getId(), user.getUsername(), user.getDisplayName(), List.of(user.getRole()),
                 permissions(user), Instant.now().plusSeconds(timeoutSeconds));

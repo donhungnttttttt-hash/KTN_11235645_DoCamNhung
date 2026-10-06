@@ -3,6 +3,7 @@ import { workItemsApi } from '../../services/api/workItems';
 import { testCasesApi } from '../../services/api/testCases';
 import { Button } from './components';
 import { typeLabels } from './ProjectData';
+import { QaForm } from '../qa/QaForm';
 
 export function WorkField({ label, children }) { return <label className="wi-field"><span>{label}</span>{children}</label>; }
 export function WorkSelect({ label, items = [], value, onChange, required = false, disabled = false, describe = item => item.name, id = item => item.id }) {
@@ -12,7 +13,7 @@ export function WorkSelect({ label, items = [], value, onChange, required = fals
 }
 export function WorkError({ error, retry }) { return error ? <div className="wi-error" role="alert">{error}{retry && <Button onClick={retry}>Thử lại</Button>}</div> : null; }
 const empty = { type: 'BUG', title: '', description: '', steps: '', expectedResult: '', actualResult: '', buildId: '', environmentId: '', deviceId: '', revisionId: '', standaloneReason: '' };
-export function NewWorkItemForm({ projectId, catalogs, canTriage = false, titlePrefix = '', attemptId, onCreated }) {
+export function NewWorkItemForm({ projectId, catalogs, canTriage = false, canCreateQa = false, canCreate = true, titlePrefix = '', attemptId, onCreated }) {
   const [form, setForm] = useState(empty), [error, setError] = useState(''), [busy, setBusy] = useState(false);
   const [source, setSource] = useState(null), [sourceError, setSourceError] = useState(''), [retry, setRetry] = useState(0);
   const [cases, setCases] = useState(null), [caseError, setCaseError] = useState(''), [keyword, setKeyword] = useState(''), [page, setPage] = useState(0);
@@ -33,6 +34,7 @@ export function NewWorkItemForm({ projectId, catalogs, canTriage = false, titleP
   function change(key, value) { setForm(old => ({ ...old, [key]: value })); requestKey.current = crypto.randomUUID(); }
   async function submit(event) {
     event.preventDefault(); setError('');
+    if (form.type === 'QA' || canCreate !== true) return;
     if (form.type === 'BUG' && !form.revisionId && !canTriage) { setError('Chọn test case hoặc tạo bug từ một lần chạy NG.'); return; }
     setBusy(true);
     const payload = { ...form, requestKey: requestKey.current };
@@ -43,10 +45,16 @@ export function NewWorkItemForm({ projectId, catalogs, canTriage = false, titleP
     finally { if (live.current) setBusy(false); }
   }
   if (attemptId && !source) return <><WorkError error={sourceError} retry={() => setRetry(v => v + 1)} />{!sourceError && <p>Đang lấy ngữ cảnh lần kiểm thử…</p>}</>;
+  const chooser = <WorkField label="Loại công việc"><select disabled={busy || !!attemptId} value={form.type} onChange={e => {
+    if (e.target.value === 'QA' && (canCreateQa !== true || attemptId)) return;
+    change('type', e.target.value);
+  }}>{Object.entries(typeLabels).filter(([code]) => code !== 'QA' || (!attemptId && (canCreateQa === true || form.type === 'QA'))).map(([code, label]) => <option key={code} value={code}>{label}</option>)}</select></WorkField>;
+  // The typed form owns its own submit; a QA must never enter the generic form.
+  if (form.type === 'QA' && !attemptId) return <>{chooser}<QaForm projectId={projectId} catalogs={catalogs} canCreateQa={canCreateQa} onCreated={fresh => onCreated(fresh.item)} /></>;
   return <form className="wi-form" onSubmit={submit}>
     <WorkError error={error} />
     {source && <p className="wi-note">Tạo từ lần kiểm thử NG #{source.attemptId}. Ngữ cảnh thực thi được giữ nguyên.</p>}
-    <WorkField label="Loại công việc"><select disabled={busy || !!attemptId} value={form.type} onChange={e => change('type', e.target.value)}>{Object.entries(typeLabels).map(([code, label]) => <option key={code} value={code}>{label}</option>)}</select></WorkField>
+    {chooser}
     <WorkField label="Tiêu đề"><input required maxLength={300} value={form.title} onChange={e => change('title', e.target.value)} disabled={busy} /></WorkField>
     {form.type === 'BUG' && titlePrefix && <p className="wi-note">Quy tắc nội bộ hiện hành yêu cầu tiêu đề bắt đầu bằng: <strong>{titlePrefix}</strong></p>}
     <WorkField label="Mô tả"><textarea rows={3} maxLength={20000} value={form.description} onChange={e => change('description', e.target.value)} disabled={busy} /></WorkField>
@@ -67,6 +75,6 @@ export function NewWorkItemForm({ projectId, catalogs, canTriage = false, titleP
         {canTriage && !form.revisionId && <WorkField label="Lý do chưa có test case"><textarea required maxLength={1000} value={form.standaloneReason} onChange={e => change('standaloneReason', e.target.value)} disabled={busy} /></WorkField>}
       </section>}
     </>}
-    <div className="wi-actions"><span className="wi-note">Công việc mới bắt đầu ở trạng thái Chưa xử lý.</span><Button primary type="submit" disabled={busy}>{busy ? 'Đang lưu…' : 'Tạo công việc'}</Button></div>
+    <div className="wi-actions"><span className="wi-note">Công việc mới bắt đầu ở trạng thái Chưa xử lý.</span><Button primary type="submit" disabled={busy || canCreate !== true}>{busy ? 'Đang lưu…' : 'Tạo công việc'}</Button></div>
   </form>;
 }

@@ -65,6 +65,9 @@ export default function HomePage({ issues, activities, navigate, notify, statusC
               const issue = issues.find((i) => i.id === a.issueId);
               if (!issue) return null;
               const isExpanded = expanded.includes(a.id);
+              const activityStatusLabel =
+                (issue.status === a.status && issue.statusLabel) ||
+                statuses.find((s) => s.id === a.status)?.label;
               return (
                 <article className="d-activity" key={a.id}>
                   <Avatar name={a.user} size={32} />
@@ -127,7 +130,7 @@ export default function HomePage({ issues, activities, navigate, notify, statusC
                     <div className="d-activity-bottom">
                       <span>
                         [ Trạng thái:{" "}
-                        {statuses.find((s) => s.id === a.status)?.label} ]
+                        {activityStatusLabel} ]
                       </span>
                       <div>
                         <IconButton

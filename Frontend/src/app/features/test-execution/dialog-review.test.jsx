@@ -73,3 +73,13 @@ it('prevents editing and Escape while a result is saving, then restores controls
   expect(screen.getByLabelText('Kết quả')).toBeEnabled();
   expect(await screen.findByRole('status')).toHaveTextContent('Đã lưu lần chạy #2');
 });
+
+it('keeps read-only history free of bug creation and result editing actions', async () => {
+  executionApi.attempts.mockResolvedValue({ ...empty, totalItems: 1, totalPages: 1,
+    items: [{ id: 88, attemptNo: 1, resultCode: 'NG', actualResult: 'Observed failure' }] });
+  render(<AttemptDialog {...props} readOnly onClose={vi.fn()} />);
+  await screen.findByText('Observed failure');
+  expect(screen.queryByRole('button', { name: /Tạo bug|Gắn vào bug/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: 'Ghi kết quả' })).toBeNull();
+  expect(screen.getByText(/Chế độ chỉ xem/)).toBeVisible();
+});

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.syp.tms.project.ProjectService;
 import vn.syp.tms.project.ProjectAudit;
 import vn.syp.tms.shared.web.BusinessException;
+import vn.syp.tms.filework.FileWorkGuard;
 
 @Service
 @Transactional
@@ -22,15 +23,17 @@ public class ExecutionService {
     private final ProjectService projects;
     private final ProjectAudit audit;
     private final ObjectMapper json;
+    private final FileWorkGuard fileGuard;
 
-    public ExecutionService(JdbcTemplate db, ProjectService projects, ProjectAudit audit, ObjectMapper json) {
-        this.db=db; this.projects=projects; this.audit=audit; this.json=json;
+    public ExecutionService(JdbcTemplate db, ProjectService projects, ProjectAudit audit, ObjectMapper json, FileWorkGuard fileGuard) {
+        this.db=db; this.projects=projects; this.audit=audit; this.json=json; this.fileGuard=Objects.requireNonNull(fileGuard);
     }
 
     private static final String CYCLE="SELECT c.id,c.code,c.name,c.status_code AS statusCode,c.lock_version AS version,c.milestone_id AS milestoneId,c.activated_at AS activatedAt,(SELECT COUNT(*) FROM run_items r WHERE r.project_id=c.project_id AND r.cycle_id=c.id) AS runCount FROM test_cycles c ";
     private static final String RUN="""
         SELECT r.id,r.cycle_id AS cycleId,r.configuration_id AS configurationId,r.test_case_id AS testCaseId,
         r.revision_id AS revisionId,r.assignee_membership_id AS assigneeMembershipId,r.lock_version AS version,
+        (SELECT i.group_id FROM file_work_group_items i WHERE i.project_id=r.project_id AND i.run_item_id=r.id) AS fileWorkGroupId,
         tc.case_no AS caseNo,rv.revision_no AS revisionNo,rv.title_vi AS titleVi,
         rv.preconditions_vi AS preconditionsVi,rv.steps_vi AS stepsVi,rv.expected_vi AS expectedVi,
         u.display_name AS assigneeName,m.user_id AS assigneeUserId,
@@ -52,7 +55,7 @@ public class ExecutionService {
         SELECT a.id,a.run_item_id AS runItemId,a.attempt_no AS attemptNo,a.result_code AS resultCode,
         a.build_id AS buildId,a.executor_membership_id AS executorMembershipId,a.executed_at AS executedAt,
         a.actual_result AS actualResult,a.reason,a.evidence_reference AS evidenceReference,
-        a.context_snapshot AS contextSnapshot,u.display_name AS executorName
+        a.context_snapshot AS contextSnapshot,a.file_work_session_id AS fileWorkSessionId,u.display_name AS executorName
         FROM execution_attempts a JOIN project_memberships m ON m.project_id=a.project_id AND m.id=a.executor_membership_id
         JOIN identity_users u ON u.id=m.user_id
         """;
@@ -168,30 +171,69 @@ public class ExecutionService {
     }
 
     public Map<String,Object> record(long p,String actor,long id,ExecutionDtos.Attempt input) {
+        fileGuard.lockIdentity(actor);
+        return recordCanonical(p,actor,id,input,"LEGACY",null,null);
+    }
+
+    /** File context is validated by the independent guard before canonical reads or request-key replay. */
+    public Map<String,Object> record(long p,String actor,long id,ExecutionDtos.Attempt input,long groupId,long sessionId,Long expectedSessionVersion) {
+        var context=Objects.requireNonNull(fileGuard.fileAttempt(p,actor,groupId,id,sessionId,input.buildId(),expectedSessionVersion));
+        return recordCanonical(p,actor,id,input,"FILE_SESSION",context,
+            List.of(groupId,sessionId,expectedSessionVersion));
+    }
+
+    /** Internal FULL_CASE entry. No HTTP route or public origin field can select this path. */
+    public Map<String,Object> recordRetest(long p,String actor,long id,ExecutionDtos.Attempt input,long requestId,long coverageItemId) {
+        fileGuard.lockIdentity(actor);
+        row("SELECT id,archived_at FROM projects WHERE id=? FOR UPDATE",p);
+        long executor=member(p,actor);
+        row("""
+            SELECT q.id FROM retest_requests q JOIN retest_request_items i ON i.project_id=q.project_id AND i.request_id=q.id
+            JOIN bug_retest_state s ON s.project_id=q.project_id AND s.work_item_id=q.work_item_id
+            JOIN work_items w ON w.project_id=q.project_id AND w.id=q.work_item_id
+            JOIN bug_details b ON b.project_id=w.project_id AND b.work_item_id=w.id
+            WHERE q.project_id=? AND q.id=? AND i.coverage_item_id=? AND i.run_item_id=?
+            AND q.verification_scope='FULL_CASE' AND q.status='OPEN' AND q.assignee_membership_id=? AND q.build_id=?
+            AND s.current_coverage_id=q.coverage_revision_id AND s.round_no=q.round_no
+            AND w.status_code='resolved' AND b.fixed_build_id=q.build_id FOR UPDATE
+            """,p,requestId,coverageItemId,id,executor,input.buildId());
+        return recordCanonical(p,actor,id,input,"RETEST_FULL_CASE",null,List.of(requestId,coverageItemId));
+    }
+
+    private Map<String,Object> recordCanonical(long p,String actor,long id,ExecutionDtos.Attempt input,String origin,FileWorkGuard.Context file,Object provenanceContext) {
         // Lock before any consistent read, also serializing member revocation and catalog changes.
         row("SELECT id,archived_at FROM projects WHERE id=? FOR UPDATE",p);
+        projects.requireNotDev(p,actor);
         projects.requireMembership(p,actor);
         if(row("SELECT archived_at FROM projects WHERE id=?",p).get("archived_at")!=null) fail(409,"ARCHIVED","Dự án đã được lưu trữ.");
-        long executor=member(p,actor); String checksum=checksum(input);
+        long executor=member(p,actor);
+        // Group authority must be checked even for a historical request key.
+        var r=run(p,actor,id);
+        if("LEGACY".equals(origin) && r.get("fileWorkGroupId")!=null) fail(409,"FILE_SESSION_REQUIRED","Run thuộc file cần phiên thực thi đang DOING.");
+        if(num(r,"assigneeMembershipId")!=executor) fail(403,"NOT_ASSIGNED","Chỉ người được phân công mới được ghi kết quả.");
+        eligibleMember(p,executor);
+        if(!"ACTIVE".equals(cycle(p,actor,num(r,"cycleId")).get("statusCode"))) fail(409,"CYCLE_NOT_ACTIVE","Chỉ ghi kết quả trong đợt đang thực hiện.");
+        approved(p,num(r,"revisionId"));
+        if(Boolean.TRUE.equals(r.get("excluded"))) fail(409,"RUN_EXCLUDED","Lượt kiểm thử đã được PM loại khỏi phạm vi (NA).");
+        var snapshot=file==null?context(p,num(r,"environmentId"),num(r,"deviceId"),input.buildId()):new LinkedHashMap<>(file.snapshot());
+        String checksum="LEGACY".equals(origin)?checksum(input):checksum(List.of(origin,p,id,input,provenanceContext));
         var duplicate=db.queryForList("SELECT id,run_item_id,executor_membership_id,request_checksum FROM execution_attempts WHERE project_id=? AND request_key=?",p,input.requestKey());
         if(!duplicate.isEmpty()) {
             var old=duplicate.getFirst();
             if(num(old,"run_item_id")!=id || num(old,"executor_membership_id")!=executor || !checksum.equals(old.get("request_checksum"))) fail(409,"IDEMPOTENCY_CONFLICT","Mã yêu cầu đã được dùng cho nội dung khác.");
             return row(ATTEMPT+" WHERE a.project_id=? AND a.id=?",p,num(old,"id"));
         }
-        var r=run(p,actor,id);
-        if(num(r,"assigneeMembershipId")!=executor) fail(403,"NOT_ASSIGNED","Chỉ người được phân công mới được ghi kết quả.");
-        eligibleMember(p,executor); version(r,input.expectedVersion());
-        if(!"ACTIVE".equals(cycle(p,actor,num(r,"cycleId")).get("statusCode"))) fail(409,"CYCLE_NOT_ACTIVE","Chỉ ghi kết quả trong đợt đang thực hiện.");
-        if(Boolean.TRUE.equals(r.get("excluded"))) fail(409,"RUN_EXCLUDED","Lượt kiểm thử đã được PM loại khỏi phạm vi (NA).");
+        version(r,input.expectedVersion());
         if(!List.of("OK","NG","P").contains(input.resultCode())) fail(422,"INVALID_RESULT","Kết quả không hợp lệ. Fix không phải kết quả kiểm thử.");
         if("NG".equals(input.resultCode()) && blank(input.actualResult())) fail(422,"ACTUAL_REQUIRED","Kết quả NG cần mô tả kết quả thực tế.");
         if("P".equals(input.resultCode()) && blank(input.reason())) fail(422,"REASON_REQUIRED","Tạm hoãn cần ghi lý do.");
-        var snapshot=context(p,num(r,"environmentId"),num(r,"deviceId"),input.buildId());
         snapshot.put("executor",row("SELECT m.id AS membershipId,u.display_name AS displayName,u.username FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.id=?",p,executor));
         snapshot.put("revisionId",r.get("revisionId"));
+        snapshot.put("cycleId",r.get("cycleId"));snapshot.put("configurationId",r.get("configurationId"));snapshot.put("provenance",origin);
+        if(file!=null)snapshot.put("fileWorkSessionId",num(file.session(),"id"));
+        if("RETEST_FULL_CASE".equals(origin))snapshot.put("retest",provenanceContext);
         int next=(int)count("SELECT COALESCE(MAX(attempt_no),0)+1 FROM execution_attempts WHERE project_id=? AND run_item_id=?",p,id);
-        long attempt=insert("INSERT INTO execution_attempts(project_id,run_item_id,attempt_no,result_code,build_id,executor_membership_id,executed_at,actual_result,reason,evidence_reference,context_snapshot,request_key,request_checksum) VALUES(?,?,?,?,?,?,UTC_TIMESTAMP(6),?,?,?,?,?,?)",p,id,next,input.resultCode(),input.buildId(),executor,text(input.actualResult()),text(input.reason()),text(input.evidenceReference()),encode(snapshot),input.requestKey(),checksum);
+        long attempt=insert("INSERT INTO execution_attempts(project_id,run_item_id,attempt_no,result_code,build_id,executor_membership_id,executed_at,actual_result,reason,evidence_reference,context_snapshot,request_key,request_checksum,file_work_session_id) VALUES(?,?,?,?,?,?,UTC_TIMESTAMP(6),?,?,?,?,?,?,?)",p,id,next,input.resultCode(),input.buildId(),executor,text(input.actualResult()),text(input.reason()),text(input.evidenceReference()),encode(snapshot),input.requestKey(),checksum,file==null?null:num(file.session(),"id"));
         db.update("UPDATE run_items SET latest_attempt_id=?,lock_version=lock_version+1 WHERE project_id=? AND id=?",attempt,p,id);
         audit.record(p,actor,"EXECUTION_ATTEMPT",attempt,"CREATE");
         return row(ATTEMPT+" WHERE a.project_id=? AND a.id=?",p,attempt);
@@ -216,7 +258,7 @@ public class ExecutionService {
         return result;
     }
     private void eligibleMember(long p,long id) {
-        row("SELECT m.id FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.id=? AND m.active=TRUE AND u.enabled=TRUE AND m.project_role IN ('PM','TESTER')",p,id);
+        row("SELECT m.id FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.id=? AND m.active=TRUE AND u.enabled=TRUE AND u.role_code<>'DEV' AND m.project_role IN ('PM','TESTER')",p,id);
     }
     private long member(long p,String actor) { return num(row("SELECT id FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE",p,actor),"id"); }
     private void assignmentHistory(long p,long run,Long old,long assignee,long actor,String reason) {

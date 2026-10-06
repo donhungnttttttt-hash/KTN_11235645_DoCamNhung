@@ -57,12 +57,16 @@ export default function BoardPage({
   const isFiltered = sharedFilters
     ? Object.values(sharedFilters).some((value) => value.length > 0)
     : Object.values(filters).some(Boolean);
+  const isQa = issue => issue?.typeCode === "QA" || issue?.type === "QA";
+  const canMove = issue => canTriage === true && !!issue && !isQa(issue);
+  const currentMenu = menu && issues.find(issue => issue.id === menu.id);
   function changeFilter(key, value) {
     if (onFiltersChange)
       onFiltersChange((prev) => ({ ...prev, [key]: value ? [value] : [] }));
     else setFilters((prev) => ({ ...prev, [key]: value }));
   }
   function moveIssue(id, status) {
+    if (!canMove(issues.find(issue => issue.id === id)) || !statuses.some(s => s.id === status && !s.terminal)) return;
     if (onMove) {
       setDragged(null); setDropTarget(null); setMenu(null);
       onMove(id, status);
@@ -164,7 +168,7 @@ export default function BoardPage({
                 aria-label={`Cột ${status.label}`}
                 className={`d-kanban-column ${dropTarget === status.id ? "drop-target" : ""}`}
                 onDragOver={(e) => {
-                  if (!canTriage || status.terminal) return;
+                  if (!canMove(issues.find(issue => issue.id === dragged)) || status.terminal) return;
                   e.preventDefault();
                   e.dataTransfer.dropEffect = "move";
                   setDropTarget(status.id);
@@ -233,8 +237,9 @@ export default function BoardPage({
                     cards.map((issue) => (
                       <article
                         key={issue.id}
-                        draggable={canTriage}
+                        draggable={canMove(issue)}
                         onDragStart={(e) => {
+                          if (!canMove(issue)) { e.preventDefault(); return; }
                           e.dataTransfer.setData("text/plain", issue.id);
                           e.dataTransfer.effectAllowed = "move";
                           setDragged(issue.id);
@@ -256,7 +261,7 @@ export default function BoardPage({
                             {issue.id}
                           </button>
                           <span className="d-spacer" />
-                          {canTriage && <IconButton
+                          {canMove(issue) && <IconButton
                             icon={MoreHorizontal}
                             label={`Tùy chọn ${issue.id}`}
                             onClick={() => {
@@ -271,6 +276,7 @@ export default function BoardPage({
                         >
                           {issue.title}
                         </button>
+                        {isQa(issue) && <span className="d-status-text">{issue.statusLabel || status.label}</span>}
                         <Avatar name={issue.assignee} size={25} />
                       </article>
                     ))
@@ -281,7 +287,7 @@ export default function BoardPage({
           })}
         </div>
       </div>
-      {menu && (
+      {canMove(currentMenu) && (
         <Modal title={menu.id} onClose={() => setMenu(null)}>
           <p className="d-dialog-issue-title">{menu.title}</p>
           <FieldSelect

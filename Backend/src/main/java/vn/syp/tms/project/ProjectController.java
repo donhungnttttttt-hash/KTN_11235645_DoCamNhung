@@ -26,7 +26,8 @@ public class ProjectController {
 
     @PostMapping
     public ProjectDtos.ProjectSummary create(Authentication auth, @Valid @RequestBody ProjectDtos.CreateProject input) {
-        return projectService.create(actorId(auth), input);
+        projectService.requireAdmin(actorId(auth));
+        throw new vn.syp.tms.shared.web.BusinessException(422,"CENTRAL_CREATION_REQUIRED","Tạo dự án tại khu quản trị và chọn PM, thành viên ban đầu.");
     }
 
     @GetMapping("/{projectId}")

@@ -8,7 +8,7 @@ import java.util.List;
 public final class WorkItemDtos {
     private WorkItemDtos() {}
     public record Create(
-        @NotBlank @Pattern(regexp="BUG|REQUEST|TASK|IMPROVEMENT") String type,
+        @NotBlank @Pattern(regexp="BUG|REQUEST|TASK|IMPROVEMENT|QA") String type,
         @NotBlank @Size(max=300) String title, @Size(max=20000) String description,
         @Pattern(regexp="HIGH|MEDIUM|LOW") String priority,
         @Positive Long categoryId, @Positive Long milestoneId, @Positive Long assigneeMembershipId,

@@ -57,7 +57,7 @@
       },
       "post": {
         "operationId": "createProject",
-        "description": "Chỉ ADMIN tạo dự án; tự có membership PM.",
+        "description": "Deprecated public creation: authenticated ADMIN receives 422 CENTRAL_CREATION_REQUIRED. Use POST /api/v1/admin/projects with explicit members. No implicit creator membership.",
         "security": [
           {
             "sessionCookie": [],
@@ -74,6 +74,9 @@
                 }
               }
             }
+          },
+          "422": {
+            "description": "CENTRAL_CREATION_REQUIRED; use the central admin API."
           },
           "default": {
             "description": "401 phiên; 403 quyền; 404 phạm vi; 422 input; 409 version/trùng/PM cuối",
@@ -109,7 +112,8 @@
               }
             }
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/api/v1/projects/{projectId}": {
@@ -313,7 +317,7 @@
       ],
       "put": {
         "operationId": "setProjectMember",
-        "description": "expectedVersion chỉ null khi chưa từng có membership. Không đổi quyền hệ thống.",
+        "description": "ADMIN only, including without project membership. expectedVersion chỉ null khi chưa từng có membership. Không đổi quyền hệ thống.",
         "security": [
           {
             "sessionCookie": [],
@@ -369,7 +373,7 @@
       },
       "delete": {
         "operationId": "removeProjectMember",
-        "description": "Gỡ mềm; chặn PM cuối.",
+        "description": "ADMIN only, including without project membership. Gỡ mềm; chặn PM cuối.",
         "security": [
           {
             "sessionCookie": [],
@@ -434,7 +438,7 @@
       ],
       "get": {
         "operationId": "findMemberCandidate",
-        "description": "Chỉ PM hoặc ADMIN là thành viên; tra username chính xác, không cấp danh sách tài khoản.",
+        "description": "ADMIN only, including without project membership.  tra username chính xác, không cấp danh sách tài khoản.",
         "security": [
           {
             "sessionCookie": []
@@ -2474,7 +2478,8 @@
             "enum": [
               "PM",
               "TESTER",
-              "MEMBER"
+              "MEMBER",
+              "DEV"
             ],
             "type": "string"
           },
@@ -2497,7 +2502,8 @@
             "enum": [
               "PM",
               "TESTER",
-              "MEMBER"
+              "MEMBER",
+              "DEV"
             ]
           },
           "expectedVersion": {

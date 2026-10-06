@@ -1,0 +1,318 @@
+openapi: 3.0.3
+info:
+  title: TMS Admin API (A1–A4)
+  version: 1.1.0
+  description: |
+    Enabled ADMIN only, checked again in service against the current account.
+    No project membership required; no memberships are created by reads.
+    Responses exclude passwords, session records, tokens and infrastructure health.
+    Read overview uses a repeatable-read snapshot. Membership administration is ADMIN-only,
+    including legacy project endpoints. Dashboard scope is system-wide in the UI; filters are page-local.
+servers:
+  - url: /api/v1
+security:
+  - session: []
+paths:
+  /admin/overview:
+    get:
+      operationId: adminOverview
+      summary: Aggregate the full scope, independent of chart/table pages
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: Whole-scope totals; at most 10 projects in byProject and 20 items per attention group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Overview'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /admin/projects:
+    post:
+      operationId: adminCreateProject
+      summary: Atomically create project, explicit PM/Tester/Dev memberships and selected physical allocations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [project, members]
+              properties:
+                project:
+                  type: object
+                  required: [code, name, timezone]
+                  properties:
+                    code: {type: string, pattern: '^[A-Za-z0-9][A-Za-z0-9_-]{1,31}$'}
+                    name: {type: string, minLength: 1, maxLength: 100}
+                    description: {type: string, maxLength: 500}
+                    timezone: {type: string, maxLength: 50, example: Asia/Ho_Chi_Minh}
+                devices:
+                  type: array
+                  maxItems: 1000
+                  description: Optional initial physical machines; distinct asset IDs and recipient selected among members. No resource quotas. Entire creation rolls back if any asset is unavailable.
+                  items:
+                    $ref: './device-inventory.openapi.yaml#/components/schemas/InitialAllocation'
+                members:
+                  type: array
+                  minItems: 1
+                  maxItems: 1000
+                  description: Unique enabled user IDs; at least one PM. DEV identities can only receive DEV membership. Creator is not enrolled unless explicitly selected.
+                  items:
+                    type: object
+                    required: [userId, projectRole]
+                    properties:
+                      userId: {type: string}
+                      projectRole: {type: string, enum: [PM, TESTER, DEV]}
+      responses:
+        '201': {description: 'Created object with id, code, name; project and memberships audited'}
+        '401': {description: Missing or disabled session}
+        '403': {description: Not ADMIN or missing CSRF}
+        '404': {description: Selected user not found or disabled}
+        '409': {description: Duplicate code, stale asset version or unavailable asset}
+        '422': {description: Invalid input, timezone, duplicate membership, missing PM or invalid role}
+    get:
+      operationId: adminProjects
+      summary: Read all projects including archived projects without membership
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+        - name: keyword
+          in: query
+          schema: { type: string, maxLength: 100, default: '' }
+          description: Literal substring of code or name; SQL wildcard characters remain literal
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 0, default: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+      responses:
+        '200':
+          description: Stable id ascending ordering; count uses the same scope and keyword
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, page, size, totalElements]
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/Project' } }
+                  page: { type: integer }
+                  size: { type: integer }
+                  totalElements: { type: integer, format: int64 }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /admin/projects/{id}:
+    patch:
+      operationId: adminUpdateProject
+      parameters: [{$ref: './admin-management.openapi.yaml#/components/parameters/Id'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [expectedVersion]
+              properties:
+                name: {type: string, minLength: 1, maxLength: 100}
+                description: {type: string, maxLength: 500}
+                timezone: {type: string, maxLength: 50}
+                expectedVersion: {type: integer, format: int64}
+      responses:
+        '200': {description: 'Current id/name/description/timezone/version; audited'}
+        '401': {description: Missing or disabled session}
+        '403': {description: Not ADMIN or missing CSRF}
+        '404': {description: Project not found}
+        '409': {description: Version conflict or archived project; reload current version while preserving draft}
+        '422': {description: Invalid input or timezone}
+    get:
+      operationId: adminProject
+      summary: Read project metrics and milestone deadlines
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: Project detail; invalid or missing id is 404
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Project'
+                  - type: object
+                    required: [milestones, verificationBugs]
+                    properties:
+                      milestones: { type: array, items: { $ref: '#/components/schemas/Milestone' } }
+                      verificationBugs:
+                        type: array
+                        maxItems: 20
+                        items: { $ref: '#/components/schemas/VerificationBug' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /admin/users:
+    $ref: './admin-management.openapi.yaml#/paths/~1admin~1users'
+  /admin/projects/{id}/members:
+    $ref: './admin-management.openapi.yaml#/paths/~1admin~1projects~1{id}~1members'
+  /admin/projects/{id}/members/{user}:
+    $ref: './admin-management.openapi.yaml#/paths/~1admin~1projects~1{id}~1members~1{user}'
+components:
+  securitySchemes:
+    session: { type: apiKey, in: cookie, name: TMS_SESSION }
+  parameters:
+    ProjectId:
+      name: projectId
+      in: query
+      schema: { type: integer, format: int64 }
+      description: Omit for all projects; unknown or nonpositive project id is 404
+  responses:
+    Unauthorized:
+      description: Missing, expired, disabled account or invalidated session
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Forbidden:
+      description: Current role is not ADMIN (including delegated PM)
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    NotFound:
+      description: Project does not exist
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Validation:
+      description: Invalid pagination or oversized keyword
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Unavailable:
+      description: Account or database could not be verified; no fabricated zero metrics
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+  schemas:
+    Error:
+      type: object
+      required: [code, message, fieldErrors, requestId]
+      properties:
+        code: { type: string }
+        message: { type: string }
+        fieldErrors: { type: array, items: { type: object } }
+        requestId: { type: string }
+    Metrics:
+      type: object
+      description: |
+        Run items outside DRAFT only. Current scope_decision_id excludes NA;
+        latest_attempt_id determines OK/NG/P. Fixed work items never imply OK.
+        applicable = total - na; executionPercent = (ok + ng) / applicable * 100;
+        passPercent = ok / applicable * 100. Percentages rounded to 2 decimals;
+        denominator zero is null. Across projects sum counts before division.
+      required: [total, na, applicable, ok, ng, pending, notRun, executionPercent, passPercent]
+      properties:
+        total: { type: integer, format: int64 }
+        na: { type: integer, format: int64 }
+        applicable: { type: integer, format: int64 }
+        ok: { type: integer, format: int64 }
+        ng: { type: integer, format: int64 }
+        pending: { type: integer, format: int64 }
+        notRun: { type: integer, format: int64 }
+        executionPercent: { type: number, nullable: true }
+        passPercent: { type: number, nullable: true }
+    Project:
+      type: object
+      required: [id, code, name, timezone, version, activeMembers, activePmCount, metrics, openBugs, awaitingVerification, overdueMilestones, insufficientMilestoneData, heldDevices]
+      properties:
+        id: { type: integer, format: int64 }
+        code: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        timezone: { type: string }
+        archivedAt: { type: string, format: date-time, nullable: true }
+        version: { type: integer, format: int64 }
+        activeMembers: { type: integer, description: Active memberships with enabled accounts; not global unique user count }
+        activePmCount: { type: integer }
+        pmNames: { type: string, nullable: true }
+        metrics: { $ref: '#/components/schemas/Metrics' }
+        openBugs: { type: integer, description: BUG work items with terminal false including unlinked bugs }
+        awaitingVerification: { type: integer, description: BUG work items in resolved status }
+        overdueMilestones: { type: integer }
+        insufficientMilestoneData: { type: integer }
+        heldDevices: { type: integer, description: Active physical allocations; historical returns excluded }
+    Milestone:
+      type: object
+      required: [id, projectId, projectName, timezone, name, scopeCount, unfinished, deadlineStatus]
+      properties:
+        id: { type: integer, format: int64 }
+        projectId: { type: integer, format: int64 }
+        projectName: { type: string }
+        timezone: { type: string }
+        name: { type: string }
+        dueOn: { type: string, format: date, nullable: true }
+        scopeCount: { type: integer }
+        unfinished: { type: boolean }
+        deadlineStatus:
+          type: string
+          enum: [OVERDUE, INSUFFICIENT_DATA, NO_OVERDUE_WARNING]
+          description: |
+            OVERDUE when dueOn precedes today's date in project timezone and nonterminal
+            work or any non-CLOSED cycle remains (including DRAFT). Missing dueOn or
+            no work/cycle scope means INSUFFICIENT_DATA. NO_OVERDUE_WARNING does not
+            claim a project is on schedule. Archived milestones are omitted.
+    Overview:
+      type: object
+      required: [asOf, metricDefinitionVersion, projectId, totalProjects, activeProjects, totalUsers, enabledUsers, openBugs, awaitingVerification, metrics, byRole, byProject, attention, inventory]
+      properties:
+        asOf: { type: string, format: date-time }
+        metricDefinitionVersion: { type: string, enum: [internal-v1] }
+        projectId: { type: integer, format: int64, nullable: true }
+        totalProjects: { type: integer }
+        activeProjects: { type: integer, description: Projects without archivedAt }
+        totalUsers: { type: integer, description: Unique identities; all accounts globally or active memberships within selected project }
+        enabledUsers: { type: integer }
+        openBugs: { type: integer }
+        awaitingVerification: { type: integer }
+        metrics: { $ref: '#/components/schemas/Metrics' }
+        byRole:
+          type: array
+          items:
+            type: object
+            required: [role, total, enabled]
+            properties:
+              role: { type: string, enum: [ADMIN, PM, TESTER, DEV] }
+              total: { type: integer }
+              enabled: { type: integer }
+        byProject: { type: array, maxItems: 10, items: { $ref: '#/components/schemas/Project' } }
+        attention:
+          type: object
+          required: [overdueMilestones, overdueMilestoneCount, withoutPm, withoutPmCount, insufficientMilestoneData, awaitingVerification]
+          properties:
+            overdueMilestones: { type: array, maxItems: 20, items: { $ref: '#/components/schemas/Milestone' } }
+            overdueMilestoneCount: { type: integer }
+            overdueReturnCount: {type: integer}
+            overdueReturns: {type: array, maxItems: 20, items: {type: object}, description: Active allocations past expected return date in project timezone; due today is not overdue}
+            withoutPm: { type: array, maxItems: 20, items: { $ref: '#/components/schemas/Project' } }
+            withoutPmCount: { type: integer }
+            insufficientMilestoneData: { type: integer }
+            awaitingVerification:
+              type: array
+              maxItems: 20
+              items: { $ref: '#/components/schemas/VerificationBug' }
+        inventory:
+          type: object
+          description: Real physical counts in full scope; selected project includes only currently held machines. Retired excluded from stock but separately shown.
+          properties:
+            available: {type: integer}
+            allocated: {type: integer}
+            maintenance: {type: integer}
+            retired: {type: integer}
+            byTypeAndStatus: {type: array, items: {type: object, properties: {type: {type: string}, status: {type: string}, total: {type: integer}}}}
+            overdueReturnCount: {type: integer}
+            overdueReturns: {type: array, maxItems: 20, items: {type: object}}
+    VerificationBug:
+      type: object
+      required: [id, projectId, projectName, itemKey, title]
+      properties:
+        id: { type: integer, format: int64 }
+        projectId: { type: integer, format: int64 }
+        projectName: { type: string }
+        itemKey: { type: string }
+        title: { type: string }

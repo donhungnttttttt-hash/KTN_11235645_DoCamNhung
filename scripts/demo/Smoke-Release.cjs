@@ -1,5 +1,6 @@
 const fs=require('node:fs');
 const path=require('node:path');
+const {createCentralProject}=require('./central-project.cjs');
 const {LocalApi}=require('./local-api.cjs');
 const origin=process.env.TMS_DEMO_ORIGIN || 'http://127.0.0.1:8180';
 const api=new LocalApi(origin);
@@ -11,7 +12,7 @@ const api=new LocalApi(origin);
   await api.write('POST','/auth/login',{username:process.env.TMS_BOOTSTRAP_USERNAME,password:process.env.TMS_BOOTSTRAP_PASSWORD});
   try {
     const me=await api.get('/me');
-    const project=await api.write('POST','/projects',{code:'RELEASE-CHECK',name:'Kiểm tra gói bàn giao',timezone:'Asia/Ho_Chi_Minh'});
+    const project=await createCentralProject(api,{code:'RELEASE-CHECK',name:'Kiểm tra gói bàn giao',timezone:'Asia/Ho_Chi_Minh'},[me]);
     const base=`/projects/${project.id}`;
     const suite=await api.write('POST',base+'/test-suites',{code:'SMOKE',name:'Luồng cơ bản'});
     const item=await api.write('POST',base+'/test-cases',{caseNo:'SMOKE-001',suiteId:suite.id,titleVi:'Đọc lại dữ liệu sau lưu',stepsVi:'Lưu và tải lại.',expectedVi:'Dữ liệu được lưu vào MySQL.'});

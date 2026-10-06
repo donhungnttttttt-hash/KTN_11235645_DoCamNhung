@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.syp.tms.workitem.*;
 import vn.syp.tms.execution.*;
+import vn.syp.tms.filework.FileWorkGuard;
 
 @Service @Transactional
 public class RetestService {
@@ -13,8 +14,9 @@ public class RetestService {
     private final WorkItemService work;
     private final ExecutionService execution;
     private final BugRetestLifecycle lifecycle;
-    public RetestService(WorkItemStore db,WorkItemService work,ExecutionService execution,BugRetestLifecycle lifecycle) {
-        this.db=db; this.work=work; this.execution=execution; this.lifecycle=lifecycle;
+    private final FileWorkGuard guard;
+    public RetestService(WorkItemStore db,WorkItemService work,ExecutionService execution,BugRetestLifecycle lifecycle,FileWorkGuard guard) {
+        this.db=db; this.work=work; this.execution=execution; this.lifecycle=lifecycle; this.guard=Objects.requireNonNull(guard);
     }
     private static final String REQUEST="""
         SELECT q.id,q.work_item_id AS bugId,w.item_key AS bugKey,w.title AS bugTitle,w.lock_version AS bugVersion,
@@ -51,7 +53,7 @@ public class RetestService {
         JOIN identity_users u ON u.id=m.user_id
         """;
     private void pm(Map<String,Object> member) {
-        if(!"PM".equals(member.get("role"))) fail(403,"PROJECT_PM_REQUIRED","Chỉ PM của dự án được xác nhận phạm vi, phân công, đóng hoặc mở lại lỗi.");
+        if(WorkItemService.developer(member) || !"PM".equals(member.get("role"))) fail(403,"PROJECT_PM_REQUIRED","Chỉ PM của dự án được xác nhận phạm vi, phân công, đóng hoặc mở lại lỗi.");
     }
     private Map<String,Object> bug(long p,String actor,long id) {
         var bug=work.get(p,actor,id);
@@ -77,14 +79,14 @@ public class RetestService {
         return run;
     }
     private void eligibleMember(long p,long id) {
-        db.row("SELECT m.id FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.id=? AND m.active=TRUE AND u.enabled=TRUE AND m.project_role IN ('PM','TESTER')",p,id);
+        db.row("SELECT m.id FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.id=? AND m.active=TRUE AND u.enabled=TRUE AND u.role_code<>'DEV' AND m.project_role IN ('PM','TESTER')",p,id);
     }
     private Map<String,Object> context(long p,long build,long env,long device) {
         return Map.of("build",db.row("SELECT id,version_label AS versionLabel,build_number AS buildNumber,platform FROM builds WHERE project_id=? AND id=? AND archived_at IS NULL",p,build),
             "environment",db.row("SELECT id,name FROM environments WHERE project_id=? AND id=? AND active=TRUE",p,env),
             "device",db.row("SELECT id,name,model,os_name AS osName,os_version AS osVersion FROM devices WHERE project_id=? AND id=? AND active=TRUE",p,device));
     }
-    @Transactional(readOnly=true)
+    // Arbitrary IDs may route through locking QA detail before the BUG_REQUIRED guard.
     public Map<String,Object> summary(long p,String actor,long id) {
         var bug=bug(p,actor,id); var state=state(p,id); var result=new LinkedHashMap<String,Object>();
         List<Map<String,Object>> items=List.of(); Object coverage=null;
@@ -172,11 +174,13 @@ public class RetestService {
         request.put("current",current);
         boolean cycleActive=items.stream().allMatch(i->"ACTIVE".equals(i.get("cycleStatus")) && !Boolean.TRUE.equals(i.get("excluded")) && !(i.get("excluded") instanceof Number n && n.intValue()!=0));
         request.put("cycleActive",cycleActive);
-        request.put("canSubmit",current && cycleActive && "OPEN".equals(request.get("status")) && number(request,"assigneeMembershipId")==number(member,"id") && items.stream().allMatch(i->number(i,"assigneeMembershipId")==number(member,"id")));
+        request.put("canSubmit",!WorkItemService.developer(member) && current && cycleActive && "OPEN".equals(request.get("status")) && number(request,"assigneeMembershipId")==number(member,"id") && items.stream().allMatch(i->number(i,"assigneeMembershipId")==number(member,"id")));
         return request;
     }
     public Map<String,Object> submit(long p,String actor,long id,RetestDtos.Submit input) {
+        guard.lockIdentity(actor);
         var member=work.writable(p,actor);long author=number(member,"id");var request=request(p,actor,id);String checksum=db.checksum(input);
+        if(WorkItemService.developer(member))fail(403,"FORBIDDEN","Dev không được ghi kết quả kiểm thử lại.");
         if(request.get("submitRequestKey")!=null) {
             if(!input.requestKey().equals(request.get("submitRequestKey")) || !checksum.equals(request.get("submitChecksum")) || number(request,"submittedBy")!=author) fail(409,"IDEMPOTENCY_CONFLICT","Yêu cầu đã có kết quả; không ghi đè lịch sử.");
             return request;
@@ -198,7 +202,7 @@ public class RetestService {
             String evidence=evidence(p,bugId,result.evidenceAttachmentId(),false);Long attempt=null;
             if("FULL_CASE".equals(request.get("verificationScope"))) {
                 String key=db.checksum(List.of("RETEST",id,result.coverageItemId(),input.requestKey()));
-                attempt=number(execution.record(p,actor,runId,new ExecutionDtos.Attempt("PASS".equals(result.verdict())?"OK":"NG",number(request,"buildId"),text(result.actualResult()),"",evidence==null?"":"attachment:"+evidence,key,result.expectedRunVersion())),"id");
+                attempt=number(execution.recordRetest(p,actor,runId,new ExecutionDtos.Attempt("PASS".equals(result.verdict())?"OK":"NG",number(request,"buildId"),text(result.actualResult()),"",evidence==null?"":"attachment:"+evidence,key,result.expectedRunVersion()),id,result.coverageItemId()),"id");
                 if("FAIL".equals(result.verdict())) db.update("INSERT INTO work_item_execution_links(project_id,work_item_id,run_item_id,attempt_id,linked_by,linked_at) VALUES(?,?,?,?,?,UTC_TIMESTAMP(6))",p,bugId,runId,attempt,author);
             }
             db.insert("INSERT INTO bug_verification_attempts(project_id,work_item_id,request_id,coverage_item_id,run_item_id,verdict,actual_result,evidence_attachment_id,execution_attempt_id,verified_by,verified_at) VALUES(?,?,?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6))",p,bugId,id,result.coverageItemId(),runId,result.verdict(),text(result.actualResult()),evidence,attempt,author);

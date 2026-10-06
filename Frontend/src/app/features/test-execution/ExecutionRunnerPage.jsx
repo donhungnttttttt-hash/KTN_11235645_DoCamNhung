@@ -10,19 +10,22 @@ import { AssignmentDialog } from './AssignmentDialog';
 import { ErrorNotice, Pager, Result } from './components';
 import './execution.css';
 
+const positiveId = value => (typeof value === 'number' || typeof value === 'string') && /^[1-9]\d*$/.test(String(value)) && Number.isSafeInteger(Number(value));
+
 export function ExecutionRunnerPage(props) {
   const { currentProject } = useProject() || {};
   return <Runner key={`${currentProject?.id}/${props.cycleId}`} {...props} project={currentProject} />;
 }
 function Runner({ project, cycleId, navigate }) {
   const { hasRole, user } = useAuth();
-  const manager = project && !project.archived && (project.projectRole === 'PM' || hasRole?.('ADMIN'));
+  const dev = hasRole?.('DEV') || project?.projectRole==='DEV';
+  const manager = !dev && project && !project.archived && (project.projectRole === 'PM' || hasRole?.('ADMIN'));
   const [data, setData] = useState(null), [runs, setRuns] = useState(null), [reload, setReload] = useState(0);
   const [error, setError] = useState(''), [loading, setLoading] = useState(true), [busy, setBusy] = useState(false);
   const [page, setPage] = useState(0), [mine, setMine] = useState(false), [pendingBug, setPendingBug] = useState(false);
   const [selected, setSelected] = useState(null), [assignment, setAssignment] = useState(null), [confirmStart, setConfirmStart] = useState(false);
   const [decision, setDecision] = useState(null);
-  const projectPm = project?.projectRole === 'PM' && !project.archived;
+  const projectPm = !dev && project?.projectRole === 'PM' && !project.archived;
   const live = useRef(true);
   useEffect(() => { live.current = true; return () => { live.current = false; }; }, []);
   useEffect(() => {
@@ -34,6 +37,14 @@ function Runner({ project, cycleId, navigate }) {
     return () => { current = false; };
   }, [project?.id, cycleId, page, mine, pendingBug, reload]);
   const refresh = () => setReload(x => x + 1);
+  function openRun(run) {
+    if (run.fileWorkGroupId != null) {
+      if (positiveId(run.fileWorkGroupId)) navigate(`/tests/file-work/${run.fileWorkGroupId}`);
+      else setError('Không mở được công việc theo file vì mã nhóm không hợp lệ. Tải lại để kiểm tra.');
+      return;
+    }
+    setSelected(run);
+  }
   async function start() {
     setBusy(true); setError('');
     try { await executionApi.activate(project.id, cycleId, data.cycle.version); if (live.current) { setConfirmStart(false); refresh(); } }
@@ -52,10 +63,10 @@ function Runner({ project, cycleId, navigate }) {
       {manager && data.cycle.statusCode === 'DRAFT' && <ScopeSetup projectId={project.id} cycle={data.cycle} configs={data.configs} catalogs={data.catalogs} members={data.members} onSaved={refresh} refreshKey={reload} />}
       <div className="ex-checks"><label><input type="checkbox" checked={mine} onChange={e => { setMine(e.target.checked); setPage(0); }} />Được giao cho tôi</label><label><input type="checkbox" checked={pendingBug} onChange={e => { setPendingBug(e.target.checked); setPage(0); }} />NG chờ liên kết bug</label><button className="cat-btn" onClick={refresh}>Tải lại</button></div>
       {runs && <><div className="ex-table-wrap"><table className="ex-table"><thead><tr><th>Mã case</th><th>Nội dung kiểm thử</th><th>Cấu hình chạy</th><th>Người thực hiện</th><th>Kết quả mới nhất</th><th>Thao tác</th></tr></thead><tbody>
-        {runs.items.map(r => <tr key={r.id}><td><button className="ex-link" onClick={() => setSelected(r)}>{r.caseNo}</button><small>Phiên bản {r.revisionNo}</small></td><td>{r.titleVi}</td><td>{r.environmentName}<small>{r.deviceName}</small></td><td>{r.assigneeName}</td><td><Result value={r.resultCode} />{r.excluded && <small title={r.scopeReason}>NA · Ngoài phạm vi</small>}{!!r.pendingBugLink && <small>Chờ liên kết bug</small>}</td><td><button className="cat-btn" onClick={() => setSelected(r)}>{data.cycle.statusCode === 'ACTIVE' && !r.excluded && r.assigneeUserId === user?.id ? 'Ghi kết quả' : 'Chi tiết / lịch sử'}</button>{manager && data.cycle.statusCode !== 'CLOSED' && <button className="cat-btn ml-1" onClick={() => setAssignment(r)}>Phân công</button>}{projectPm && data.cycle.statusCode === 'ACTIVE' && <button className="cat-btn ml-1" onClick={() => setDecision({ run: r })}>{r.excluded ? 'Khôi phục phạm vi' : 'Đánh dấu NA'}</button>}</td></tr>)}
+        {runs.items.map(r => <tr key={r.id}><td><button className="ex-link" onClick={() => openRun(r)}>{r.caseNo}</button><small>Phiên bản {r.revisionNo}</small></td><td>{r.titleVi}</td><td>{r.environmentName}<small>{r.deviceName}</small></td><td>{r.assigneeName}</td><td><Result value={r.resultCode} />{r.excluded && <small title={r.scopeReason}>NA · Ngoài phạm vi</small>}{!!r.pendingBugLink && <small>Chờ liên kết bug</small>}</td><td><button className="cat-btn" disabled={r.fileWorkGroupId != null && !positiveId(r.fileWorkGroupId)} onClick={() => openRun(r)}>{r.fileWorkGroupId != null ? 'Công việc theo file' : !dev && data.cycle.statusCode === 'ACTIVE' && !r.excluded && r.assigneeUserId === user?.id ? 'Ghi kết quả' : 'Chi tiết / lịch sử'}</button>{manager && data.cycle.statusCode !== 'CLOSED' && <button className="cat-btn ml-1" onClick={() => setAssignment(r)}>Phân công</button>}{projectPm && data.cycle.statusCode === 'ACTIVE' && <button className="cat-btn ml-1" onClick={() => setDecision({ run: r })}>{r.excluded ? 'Khôi phục phạm vi' : 'Đánh dấu NA'}</button>}</td></tr>)}
         {!runs.items.length && <tr><td colSpan={6}>Chưa có lượt kiểm thử phù hợp.</td></tr>}
       </tbody></table></div><Pager data={runs} onChange={setPage} /></>}
-      {selected && <AttemptDialog key={selected.id} projectId={project.id} run={selected} builds={data.catalogs.builds} active={data.cycle.statusCode === 'ACTIVE' && !project.archived} currentUserId={user?.id} onClose={() => setSelected(null)} onSaved={refresh} timeZone={project.timezone} />}
+      {selected && <AttemptDialog key={selected.id} projectId={project.id} run={selected} builds={data.catalogs.builds} active={!dev && data.cycle.statusCode === 'ACTIVE' && !project.archived} currentUserId={user?.id} onClose={() => setSelected(null)} onSaved={refresh} timeZone={project.timezone} />}
     </>}
     {decision && <CycleDecisionDialog projectId={project.id} {...decision} onClose={() => setDecision(null)} onSaved={() => { setDecision(null); refresh(); }} />}
     {assignment && <AssignmentDialog key={assignment.id} projectId={project.id} run={assignment} members={data.members} timeZone={project.timezone} onClose={() => setAssignment(null)} onSaved={() => { setAssignment(null); refresh(); }} />}

@@ -26,6 +26,6 @@ Attempt chứa id/runItemId/attemptNo/resultCode/buildId/executorMembershipId/ex
 
 Request key được giữ khi retry sau lỗi mạng. Cùng project/key/actor/run/nội dung trả attempt cũ, kể cả expectedVersion cũ; khác nội dung trả IDEMPOTENCY_CONFLICT. Khi 409 do stale version, UI giữ bản nháp, tải lại bản hiện hành và yêu cầu người dùng bấm lưu lại sau đối chiếu. Không tự replay một kết quả cũ với version mới.
 
-NG yêu cầu actualResult; P yêu cầu reason. NOT_RUN là chưa có attempt. Fix không phải verdict. NA và đóng đợt phụ thuộc quyết định Q08, chưa có endpoint làm thay đổi phạm vi. pendingBug là các run có kết quả mới nhất NG chưa nối module bug S06; attempt NG cũ vẫn còn lịch sử. evidenceReference chỉ tham chiếu dạng văn bản, chưa upload chứng cứ (S06).
+NG yêu cầu actualResult; P yêu cầu reason. NOT_RUN là chưa có attempt. Fix không phải verdict. NA và chốt/mở lại đợt đã triển khai ở S08 theo ADR-008; xem [API báo cáo và quyết định phạm vi](reporting.md). `pendingBug` là các run có kết quả mới nhất NG chưa liên kết bug; attempt NG cũ vẫn còn lịch sử. `evidenceReference` của execution là tham chiếu dạng văn bản; upload chứng cứ của ticket thuộc [API công việc](work-items.md).
 
 Giới hạn kỹ thuật S05: tối đa 50 cấu hình và 500 run items/cycle. Scope và cấu hình không đổi sau activate; thêm phạm vi bằng cycle mới. Mọi FK cùng project, revision thuộc đúng case, latest attempt thuộc đúng run; phân công lại không đổi executor lịch sử.

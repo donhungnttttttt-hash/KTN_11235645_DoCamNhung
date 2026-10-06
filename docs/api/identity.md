@@ -9,10 +9,10 @@ API base `/api/v1`, cookie session cùng origin qua Vite proxy. POST/PATCH cần
 | POST /auth/logout | Không | 204; hủy phiên và cookie, không chỉ xóa user trên UI |
 | GET /me | Session | 200 Me; 401 nếu không có phiên hợp lệ |
 | GET /users?page=0&size=20 | page >= 0, size 1–100 | ADMIN; 200 `{items,page,size,totalElements}` sắp createdAt/id; 401/403/422 |
-| POST /users | `{username,displayName,password,role}` | ADMIN tạo ADMIN/PM/TESTER; PM có quyền chỉ tạo TESTER; 201 User; 403, 409 trùng tên, 422 validation |
+| POST /users | `{username,displayName,password,role}` | ADMIN tạo ADMIN/PM/TESTER/DEV; PM có quyền chỉ tạo TESTER; 201 User; 403, 409 trùng tên, 422 validation |
 | PATCH /users/{id} | `{enabled?,canCreateUsers?,expectedVersion}` | ADMIN; ít nhất một field cần cập nhật; canCreateUsers chỉ dùng cho PM; 200 User, 404, 409 stale/self-disable; thu hồi phiên khi enabled/quyền thay đổi |
 
-Me: `{id,username,displayName,roles,permissions,sessionExpiresAt}`. ADMIN permissions `profile:read`, `users:read`, `users:create`, `users:update`, `users:delegate`; PM được cấp có `profile:read`, `users:create`; PM chưa cấp và TESTER chỉ `profile:read`. Không có project membership giả. User: `{id,username,displayName,role,enabled,canCreateUsers,version,createdAt}`; không trả hash hoặc session ID. `canCreateUsers` là quyền cấp riêng cho PM, luôn false với ADMIN/TESTER; ADMIN có quyền mặc định từ role.
+Me: `{id,username,displayName,roles,permissions,sessionExpiresAt}`. ADMIN permissions `profile:read`, `users:read`, `users:create`, `users:update`, `users:delegate`; PM được cấp có `profile:read`, `users:create`; PM chưa cấp, TESTER và DEV chỉ `profile:read`. Không có project membership giả. User: `{id,username,displayName,role,enabled,canCreateUsers,version,createdAt}`; không trả hash hoặc session ID. `canCreateUsers` là quyền cấp riêng cho PM, luôn false với ADMIN/TESTER/DEV; ADMIN có quyền mặc định từ role.
 
 Validation: username ASCII theo ADR-002; password 12–128 cho create, login cho phép 1–128; displayName không trống/tối đa 100. expectedVersion không âm. Login trim/lowercase username; create từ chối khoảng trắng trong username rồi chuẩn hóa lowercase. Password giữ nguyên, displayName trim. Pagination sai kiểu trả 400; ID không tồn tại trả 404; dữ liệu vượt giới hạn trả 422. Lỗi DB không được thay bằng dữ liệu mẫu.
 

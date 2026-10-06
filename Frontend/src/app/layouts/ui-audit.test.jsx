@@ -13,9 +13,9 @@ const context = vi.hoisted(() => ({ project: {
 }, auth: { user: { displayName: 'Tester', username: 'tester', roles: ['TESTER'] }, hasRole: () => false } }));
 vi.mock('../features/projects/ProjectProvider', () => ({ useProject: () => context.project }));
 vi.mock('../features/auth/AuthProvider', () => ({ useAuth: () => context.auth, initials: () => 'TE', roleLabels: {TESTER:'Tester'} }));
-beforeEach(() => { vi.clearAllMocks(); context.auth.hasRole = () => false; });
+beforeEach(() => { vi.clearAllMocks(); context.auth.hasRole = () => false; window.location.hash=''; });
 
-it('selects a project and returns focus after opening and closing the create dialog', async () => {
+it('selects a project and routes ADMIN creation to central administration with menu closed', async () => {
   context.auth.hasRole = role => role === 'ADMIN';
   const user=userEvent.setup(); render(<ProjectSelector/>);
   const trigger=screen.getByRole('button',{name:'Dự án: Dự án A'});
@@ -25,10 +25,18 @@ it('selects a project and returns focus after opening and closing the create dia
   expect(trigger).toHaveFocus();
   await user.click(trigger);
   await user.click(screen.getByRole('button',{name:'Tạo dự án',exact:true}));
-  expect(screen.getByRole('dialog',{name:'Tạo dự án mới'})).toBeVisible();
-  await user.keyboard('{Escape}');
+  expect(window.location.hash).toBe('#/admin/projects');
+  expect(screen.queryByRole('group',{name:'Chọn dự án'})).toBeNull();
   expect(screen.queryByRole('dialog')).toBeNull();
   expect(trigger).toHaveFocus();
+});
+
+it('does not offer project creation to PM', async () => {
+  context.auth.hasRole=role=>role==='PM';
+  const user=userEvent.setup();render(<ProjectSelector/>);
+  await user.click(screen.getByRole('button',{name:'Dự án: Dự án A'}));
+  expect(screen.queryByRole('button',{name:'Tạo dự án',exact:true})).toBeNull();
+  expect(window.location.hash).toBe('');
 });
 
 it('closes project choices with Escape and returns focus to the trigger', async () => {

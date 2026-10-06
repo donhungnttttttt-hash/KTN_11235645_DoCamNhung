@@ -61,7 +61,7 @@ export function AttemptDialog({ projectId, run: initial, builds, active, current
         <Field label="Tham chiếu chứng cứ"><input className="cat-input" maxLength={1000} value={form.evidenceReference} onChange={e => update('evidenceReference', e.target.value)} placeholder="Tên tệp hoặc đường dẫn chứng cứ" /></Field>
         </fieldset>
         <div className="ex-attempt-actions"><button className="cat-btn cat-btn-mint" disabled={busy || conflict}>{busy ? 'Đang lưu…' : 'Ghi kết quả'}</button></div>
-      </form> : <p className="ex-help">{readOnly ? 'Lịch sử / chứng cứ. Đóng phần này để chọn và lưu kết quả trực tiếp trên dòng test case.' : run.excluded ? 'NA: lượt này đã được PM loại khỏi phạm vi áp dụng.' : active ? 'Chỉ người được phân công được ghi kết quả. Bạn có thể xem nội dung và lịch sử.' : 'Đợt chưa bắt đầu hoặc đã chốt. Bạn có thể xem nội dung và lịch sử.'}</p>}
+      </form> : <p className="ex-help">{readOnly ? 'Chế độ chỉ xem nội dung, kết quả và lịch sử. Không ghi kết quả từ cửa sổ này.' : run.excluded ? 'NA: lượt này đã được PM loại khỏi phạm vi áp dụng.' : active ? 'Chỉ người được phân công được ghi kết quả. Bạn có thể xem nội dung và lịch sử.' : 'Đợt chưa bắt đầu hoặc đã chốt. Bạn có thể xem nội dung và lịch sử.'}</p>}
     </div>
     <DecisionHistory projectId={projectId} id={run.id} scope timeZone={timeZone} />
     <h3 className="mt-5 mb-3">Lịch sử thực thi</h3>
@@ -70,7 +70,7 @@ export function AttemptDialog({ projectId, run: initial, builds, active, current
     {history?.items.map(a => { const c = context(a); return <article className="ex-history" key={a.id}><Result value={a.resultCode} /> <strong>Lần #{a.attemptNo}</strong>
       <small>{c.executor?.displayName || a.executorName} · {formatTime(a.executedAt, timeZone)} ({timeZone}) · {c.build?.platform} {c.build?.versionLabel} ({c.build?.buildNumber || '—'}) · {c.environment?.name} / {c.device?.name}</small>
       {a.actualResult && <p>{a.actualResult}</p>}{a.reason && <p>Ghi chú: {a.reason}</p>}{a.evidenceReference && <p>Chứng cứ: {a.evidenceReference}</p>}
-      {active && a.resultCode === 'NG' && <NgBugActions projectId={projectId} attempt={a} onLinked={onSaved} />}
+      {!readOnly && active && a.resultCode === 'NG' && <NgBugActions projectId={projectId} attempt={a} onLinked={onSaved} />}
     </article>; })}
     {history && !history.totalItems && <p className="ex-help">Chưa có lần chạy nào.</p>}{history && <Pager data={history} onChange={setPage} />}
   </section></div>;

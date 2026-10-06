@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.syp.tms.project.ProjectAudit;
 import vn.syp.tms.retest.BugRetestLifecycle;
+import vn.syp.tms.qa.QaService;
+import vn.syp.tms.qa.QaDtos;
 
 @Service @Transactional
 public class WorkItemService {
@@ -15,7 +17,8 @@ public class WorkItemService {
     private final ProjectAudit audit;
     private final BugRetestLifecycle retest;
     private final vn.syp.tms.rules.RuleService rules;
-    public WorkItemService(WorkItemStore db,ProjectAudit audit,BugRetestLifecycle retest,vn.syp.tms.rules.RuleService rules) { this.db=db; this.audit=audit; this.retest=retest; this.rules=rules; }
+    private final QaService qa;
+    public WorkItemService(WorkItemStore db,ProjectAudit audit,BugRetestLifecycle retest,vn.syp.tms.rules.RuleService rules,QaService qa) { this.db=db; this.audit=audit; this.retest=retest; this.rules=rules; this.qa=Objects.requireNonNull(qa); }
     private static final String SELECT="""
         SELECT w.id,w.item_key AS `key`,w.item_type AS type,w.title,w.description,w.status_code AS status,
         w.priority_code AS priority,w.category_id AS categoryId,w.milestone_id AS milestoneId,
@@ -40,7 +43,7 @@ public class WorkItemService {
         """;
 
     public Map<String,Object> membership(long p,String actor) {
-        return db.row("SELECT m.id,m.project_role AS role FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.user_id=? AND m.active=TRUE AND u.enabled=TRUE",p,actor);
+        return db.row("SELECT m.id,CASE WHEN u.role_code='DEV' THEN 'DEV' ELSE m.project_role END AS role,u.role_code AS systemRole FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.user_id=? AND m.active=TRUE AND u.enabled=TRUE",p,actor);
     }
     public Map<String,Object> writable(long p,String actor) {
         // Same project lock order as execution and membership changes, before consistent reads.
@@ -49,11 +52,19 @@ public class WorkItemService {
         if(project.get("archived_at")!=null) fail(409,"ARCHIVED","Dự án đã được lưu trữ.");
         return member;
     }
-    private void pm(Map<String,Object> member) { if(!"PM".equals(member.get("role"))) fail(403,"PROJECT_PM_REQUIRED","Chỉ PM dự án được phân công và phân loại công việc."); }
-    @Transactional(readOnly=true)
+    private Map<String,Object> writeMember(long p,String actor) {
+        // Current identity -> project -> membership locks must precede the first consistent read.
+        // Otherwise even type discovery can pin an old REPEATABLE READ snapshot while waiting.
+        qa.authorize(p,actor,true);
+        return writable(p,actor);
+    }
+    public static boolean developer(Map<String,Object> member) {return "DEV".equals(member.get("role")) || "DEV".equals(member.get("systemRole"));}
+    public static boolean ownBug(Map<String,Object> member,Map<String,Object> item) {return "BUG".equals(item.get("type")) && !BugRetestLifecycle.terminal(item.get("status")) && item.get("assigneeMembershipId") instanceof Number assigned && assigned.longValue()==number(member,"id");}
+    private void pm(Map<String,Object> member) { if(developer(member) || !"PM".equals(member.get("role"))) fail(403,"PROJECT_PM_REQUIRED","Chỉ PM dự án được phân công và phân loại công việc."); }
     public Map<String,Object> overview(long p,String actor) {
+        qa.authorize(p,actor,false);
         membership(p,actor);
-        return Map.of("items",db.rows(SELECT+" WHERE w.project_id=? ORDER BY w.created_at DESC,w.id DESC LIMIT 30",p),
+        return Map.of("items",projectQa(p,actor,db.rows(SELECT+" WHERE w.project_id=? ORDER BY w.created_at DESC,w.id DESC LIMIT 30",p)),
             "statuses",db.rows("SELECT status_code AS status,COUNT(*) AS count FROM work_items WHERE project_id=? GROUP BY status_code",p),
             "milestones",db.rows("SELECT m.id,m.name,DATE_FORMAT(m.due_on,'%Y-%m-%d') AS dueOn,COUNT(w.id) AS total,COALESCE(SUM(w.status_code='closed'),0) AS done FROM milestones m LEFT JOIN work_items w ON w.project_id=m.project_id AND w.milestone_id=m.id WHERE m.project_id=? AND m.archived_at IS NULL GROUP BY m.id,m.name,m.due_on ORDER BY m.id DESC",p));
     }
@@ -68,15 +79,18 @@ public class WorkItemService {
         result.put("actualResult",db.row("SELECT actual_result FROM execution_attempts WHERE project_id=? AND id=?",p,attemptId).get("actual_result"));
         return result;
     }
-    @Transactional(readOnly=true)
     public Map<String,Object> metadata(long p,String actor) {
+        var current=qa.authorize(p,actor,false);
         var member=membership(p,actor);
-        return Map.of("statuses",db.rows("SELECT code AS id,label_vi AS label,color,terminal FROM work_item_statuses ORDER BY sort_order"),
-            "types",List.of(Map.of("id","BUG","label","Lỗi"),Map.of("id","REQUEST","label","Yêu cầu"),Map.of("id","TASK","label","Công việc"),Map.of("id","IMPROVEMENT","label","Cải tiến")),
-            "canTriage","PM".equals(member.get("role")),"membershipId",member.get("id"),"policyVersion","INTERNAL_V1","titlePrefix",rules.titlePrefix(p));
+        var statuses=db.rows("SELECT code AS id,label_vi AS label,color,terminal FROM work_item_statuses ORDER BY sort_order");
+        var qaStatuses=List.of("open","progress","clarify","resolved","recheck","closed").stream()
+                .map(code -> Map.<String,Object>of("id",code,"label",QaService.statusLabel(code),"terminal","closed".equals(code))).toList();
+        return Map.of("statuses",statuses,"statusesByType",Map.of("BUG",statuses,"REQUEST",statuses,"TASK",statuses,"IMPROVEMENT",statuses,"QA",qaStatuses),
+            "types",List.of(Map.of("id","BUG","label","Lỗi"),Map.of("id","REQUEST","label","Yêu cầu"),Map.of("id","TASK","label","Công việc"),Map.of("id","IMPROVEMENT","label","Cải tiến"),Map.of("id","QA","label","QA")),
+            "canCreate",!developer(member),"canCreateQa",!current.archived()&&(current.pm()||current.tester()),"canTriage",!developer(member) && "PM".equals(member.get("role")),"membershipId",current.membershipId(),"policyVersion","INTERNAL_V1","titlePrefix",rules.titlePrefix(p));
     }
-    @Transactional(readOnly=true)
     public WorkItemDtos.Page<Map<String,Object>> list(long p,String actor,int page,int size,String type,String status,String keyword,Long assignee,Long category,Long milestone) {
+        qa.authorize(p,actor,false);
         membership(p,actor);
         if(page<0 || size<1 || size>100) fail(422,"INVALID_PAGE","Kích thước trang từ 1 đến 100, trang từ 0.");
         if(text(keyword).length()>200) fail(422,"INVALID_FILTER","Từ khóa tối đa 200 ký tự.");
@@ -89,20 +103,26 @@ public class WorkItemService {
         if(milestone!=null) { where+=" AND w.milestone_id=?"; args.add(milestone); }
         long total=db.count("SELECT COUNT(*) FROM work_items w"+where,args.toArray());
         args.add(size); args.add((long)page*size);
-        return new WorkItemDtos.Page<>(db.rows(SELECT+where+" ORDER BY w.updated_at DESC,w.id DESC LIMIT ? OFFSET ?",args.toArray()),total,page,size,(int)((total+size-1)/size));
+        return new WorkItemDtos.Page<>(projectQa(p,actor,db.rows(SELECT+where+" ORDER BY w.updated_at DESC,w.id DESC LIMIT ? OFFSET ?",args.toArray())),total,page,size,(int)((total+size-1)/size));
     }
-    @Transactional(readOnly=true)
     public Map<String,Object> get(long p,String actor,long id) {
+        // A nonlocking type discovery keeps unchanged BUG callers (including read-only retest summary)
+        // free of QA locking guards. It is never QA ownership/state/context/replay authority.
+        if(isQa(p,id)) return qaProjection(qa.detail(p,actor,id));
         var member=membership(p,actor);
         var item=db.row(SELECT+" WHERE w.project_id=? AND w.id=?",p,id);
-        item.put("allowedTransitions","PM".equals(member.get("role")) && !BugRetestLifecycle.terminal(item.get("status")) ? db.rows("SELECT code AS id,label_vi AS label FROM work_item_statuses WHERE terminal=FALSE AND code<>? ORDER BY sort_order",item.get("status")) : List.of());
+        item.put("allowedTransitions",developer(member) ? (ownBug(member,item) ? db.rows("SELECT code AS id,label_vi AS label FROM work_item_statuses WHERE code IN ('progress','resolved') AND code<>? ORDER BY sort_order",item.get("status")) : List.of()) : "PM".equals(member.get("role")) && !BugRetestLifecycle.terminal(item.get("status")) ? db.rows("SELECT code AS id,label_vi AS label FROM work_item_statuses WHERE terminal=FALSE AND code<>? ORDER BY sort_order",item.get("status")) : List.of());
+        item.put("canComment",!developer(member) || ownBug(member,item));
+        item.put("canAttach",!developer(member) || ownBug(member,item));
         item.put("links",db.rows("SELECT l.attempt_id AS attemptId,l.run_item_id AS runItemId,a.attempt_no AS attemptNo,tc.case_no AS caseNo FROM work_item_execution_links l JOIN execution_attempts a ON a.project_id=l.project_id AND a.run_item_id=l.run_item_id AND a.id=l.attempt_id JOIN run_items r ON r.project_id=l.project_id AND r.id=l.run_item_id JOIN test_cases tc ON tc.project_id=r.project_id AND tc.id=r.test_case_id WHERE l.project_id=? AND l.work_item_id=? ORDER BY l.attempt_id",p,id));
         item.put("externalReferences",db.rows("SELECT id,provider,external_id AS externalId,external_url AS url,reconciliation_status AS reconciliationStatus FROM work_item_external_references WHERE project_id=? AND work_item_id=? ORDER BY id",p,id));
         item.put("clarifications",db.rows("SELECT id,source_kind AS sourceKind,source_reference AS sourceReference,confirmed_by AS confirmedBy,confirmed_at AS confirmedAt,conclusion,recorded_at AS recordedAt FROM work_item_clarifications WHERE project_id=? AND work_item_id=? ORDER BY id DESC",p,id));
         return item;
     }
     public Map<String,Object> create(long p,String actor,WorkItemDtos.Create input) {
-        var member=writable(p,actor); long author=number(member,"id"); String checksum=db.checksum(input);
+        QaService.rejectGenericMutation(input.type());
+        var member=writeMember(p,actor); long author=number(member,"id"); String checksum=db.checksum(input);
+        if(developer(member))fail(403,"FORBIDDEN","Dev chỉ xử lý bug được giao.");
         var duplicate=db.rows("SELECT id,created_by,request_checksum FROM work_items WHERE project_id=? AND request_key=?",p,input.requestKey());
         if(!duplicate.isEmpty()) {
             var old=duplicate.getFirst();
@@ -139,7 +159,9 @@ public class WorkItemService {
         audit.record(p,actor,"WORK_ITEM",id,"CREATE"); return get(p,actor,id);
     }
     public Map<String,Object> update(long p,String actor,long id,WorkItemDtos.Update input) {
-        var member=writable(p,actor); pm(member); var old=get(p,actor,id); version(old,input.expectedVersion());
+        var member=writeMember(p,actor);
+        rejectQa(p,id);
+        pm(member); var old=get(p,actor,id); QaService.rejectGenericMutation((String)old.get("type")); version(old,input.expectedVersion());
         classification(p,input.categoryId(),input.milestoneId(),input.assigneeMembershipId());
         if("BUG".equals(old.get("type"))) {
             rules.validateTitle(p,old.get("ruleVersionId")==null?null:number(old,"ruleVersionId"),input.title());
@@ -153,7 +175,13 @@ public class WorkItemService {
         bump(p,id,number(member,"id")); audit.record(p,actor,"WORK_ITEM",id,"UPDATE"); return get(p,actor,id);
     }
     public Map<String,Object> transition(long p,String actor,long id,WorkItemDtos.Transition input) {
-        var member=writable(p,actor); pm(member); var item=get(p,actor,id); version(item,input.expectedVersion());
+        var member=writeMember(p,actor);
+        rejectQa(p,id);
+        var item=get(p,actor,id); QaService.rejectGenericMutation((String)item.get("type")); version(item,input.expectedVersion());
+        if(developer(member)) {
+            if(!ownBug(member,item) || !List.of("progress","resolved").contains(input.status()))fail(403,"FORBIDDEN","Dev chỉ xử lý bug đang được giao sang Đang xử lý hoặc Đã sửa.");
+            required(input.reason(),"nội dung xử lý bản sửa");
+        } else pm(member);
         var target=db.row("SELECT terminal FROM work_item_statuses WHERE code=?",input.status());
         if(Boolean.TRUE.equals(target.get("terminal"))) fail(422,"CLOSURE_NOT_ENABLED","Dùng thao tác Đóng lỗi trong phần Kiểm thử lại để kiểm tra đủ điều kiện.");
         BugRetestLifecycle.editable(item);
@@ -169,15 +197,22 @@ public class WorkItemService {
         bump(p,id,number(member,"id")); audit.record(p,actor,"WORK_ITEM",id,"TRANSITION"); return get(p,actor,id);
     }
     public List<Map<String,Object>> batch(long p,String actor,WorkItemDtos.Batch input) {
-        pm(writable(p,actor)); var seen=new HashSet<Long>(); var result=new ArrayList<Map<String,Object>>();
+        pm(writeMember(p,actor)); var seen=new HashSet<Long>(); var result=new ArrayList<Map<String,Object>>();
         for(var item:input.items()) {
             if(!seen.add(item.id())) fail(422,"DUPLICATE_ITEM","Không chọn trùng công việc trong cùng yêu cầu.");
+            rejectQa(p,item.id());
+        }
+        for(var item:input.items()) {
             result.add(transition(p,actor,item.id(),new WorkItemDtos.Transition(input.status(),input.reason(),input.fixedBuildId(),item.expectedVersion())));
         }
         return result;
     }
     public Map<String,Object> link(long p,String actor,long id,WorkItemDtos.Link input) {
-        var member=writable(p,actor); var item=get(p,actor,id);
+        var member=writeMember(p,actor);
+        rejectQa(p,id);
+        var item=get(p,actor,id);
+        QaService.rejectGenericMutation((String)item.get("type"));
+        if(developer(member))fail(403,"FORBIDDEN","Dev không sửa liên kết kết quả kiểm thử.");
         if(!"BUG".equals(item.get("type"))) fail(422,"BUG_REQUIRED","Chỉ liên kết lần NG với một bug.");
         var attempt=ng(p,input.attemptId());
         if(db.count("SELECT COUNT(*) FROM work_item_execution_links WHERE project_id=? AND work_item_id=? AND attempt_id=?",p,id,input.attemptId())>0) return item;
@@ -187,28 +222,42 @@ public class WorkItemService {
         history(p,id,number(member,"id"),"LINK_NG",null,null,"Liên kết lần kiểm thử NG",Map.of("attemptId",input.attemptId()));
         bump(p,id,number(member,"id")); return get(p,actor,id);
     }
-    @Transactional(readOnly=true)
     public List<Map<String,Object>> history(long p,String actor,long id,int before) {
         get(p,actor,id);
         return db.rows("SELECT h.id,h.event_type AS eventType,h.from_status AS fromStatus,h.to_status AS toStatus,h.reason,h.details_json AS details,h.occurred_at AS occurredAt,u.display_name AS actor FROM work_item_history h JOIN project_memberships m ON m.project_id=h.project_id AND m.id=h.actor_membership_id JOIN identity_users u ON u.id=m.user_id WHERE h.project_id=? AND h.work_item_id=? AND (?=0 OR h.id<?) ORDER BY h.id DESC LIMIT 50",p,id,before,before);
     }
-    @Transactional(readOnly=true)
     public List<Map<String,Object>> comments(long p,String actor,long id,int before) {
         get(p,actor,id);
         return db.rows("SELECT c.id,c.body,c.visibility,c.created_at AS createdAt,u.display_name AS author FROM work_item_comments c JOIN project_memberships m ON m.project_id=c.project_id AND m.id=c.author_membership_id JOIN identity_users u ON u.id=m.user_id WHERE c.project_id=? AND c.work_item_id=? AND (?=0 OR c.id<?) ORDER BY c.id DESC LIMIT 50",p,id,before,before);
     }
     public Object comment(long p,String actor,long id,WorkItemDtos.Comment input) {
-        var member=writable(p,actor); get(p,actor,id);
-        var old=db.rows("SELECT id,body,author_membership_id FROM work_item_comments WHERE project_id=? AND work_item_id=? AND request_key=?",p,id,input.requestKey());
+        // Keep all type routing after the current identity/project locks; standalone get stays nonlocking.
+        qa.authorize(p,actor,true);
+        long author;
+        if(isQa(p,id)) {
+            // Current identity -> project -> membership -> item -> source, before replay.
+            // The typed helper retains its locks in this outer read/write command transaction.
+            author=qa.authorizeWriter(p,actor,id).actor().membershipId();
+            if(!"INTERNAL".equals(input.visibility()) || text(input.body()).isEmpty() || text(input.body()).length()>20000
+                    || input.requestKey()==null || !input.requestKey().matches("[A-Za-z0-9_-]{8,64}"))
+                fail(422,"INVALID_COMMENT","Nội dung INTERNAL và request key phải hợp lệ.");
+        } else {
+            var member=writable(p,actor); var item=get(p,actor,id);
+            if(developer(member) && !ownBug(member,item))fail(403,"FORBIDDEN","Dev chỉ ghi chú bug đang được giao.");
+            author=number(member,"id");
+        }
+        var old=db.rows("SELECT id,body,author_membership_id FROM work_item_comments WHERE project_id=? AND work_item_id=? AND request_key=? FOR UPDATE",p,id,input.requestKey());
         if(!old.isEmpty()) {
-            if(!text(input.body()).equals(old.getFirst().get("body")) || number(old.getFirst(),"author_membership_id")!=number(member,"id")) fail(409,"IDEMPOTENCY_CONFLICT","Mã yêu cầu bình luận đã được dùng.");
+            if(!text(input.body()).equals(old.getFirst().get("body")) || number(old.getFirst(),"author_membership_id")!=author) fail(409,"IDEMPOTENCY_CONFLICT","Mã yêu cầu bình luận đã được dùng.");
             return Map.of("id",old.getFirst().get("id"));
         }
-        long comment=db.insert("INSERT INTO work_item_comments(project_id,work_item_id,body,visibility,author_membership_id,created_at,request_key) VALUES(?,?,?,'INTERNAL',?,UTC_TIMESTAMP(6),?)",p,id,text(input.body()),number(member,"id"),input.requestKey());
+        long comment=db.insert("INSERT INTO work_item_comments(project_id,work_item_id,body,visibility,author_membership_id,created_at,request_key) VALUES(?,?,?,'INTERNAL',?,UTC_TIMESTAMP(6),?)",p,id,text(input.body()),author,input.requestKey());
         audit.record(p,actor,"WORK_ITEM_COMMENT",comment,"CREATE"); return Map.of("id",comment);
     }
     public Map<String,Object> external(long p,String actor,long id,WorkItemDtos.ExternalReference input) {
-        var member=writable(p,actor); pm(member); var item=get(p,actor,id); version(item,input.expectedVersion());
+        var member=writeMember(p,actor);
+        rejectQa(p,id);
+        pm(member); var item=get(p,actor,id); QaService.rejectGenericMutation((String)item.get("type")); version(item,input.expectedVersion());
         if("REDMINE".equalsIgnoreCase(text(input.provider())) && db.count("SELECT COUNT(*) FROM redmine_bindings WHERE project_id=? AND work_item_id=?",p,id)>0)
             fail(409,"REDMINE_ALREADY_MANAGED","Bug đã có liên kết Redmine được quản lý. Dùng phần Công bố và đối chiếu Redmine.");
         try { var uri=URI.create(input.url()); if(!List.of("https","http").contains(uri.getScheme()) || uri.getHost()==null || uri.getUserInfo()!=null) throw new IllegalArgumentException(); }
@@ -220,10 +269,34 @@ public class WorkItemService {
         bump(p,id,number(member,"id")); return get(p,actor,id);
     }
     public Map<String,Object> clarify(long p,String actor,long id,WorkItemDtos.Clarification input) {
-        var member=writable(p,actor); pm(member); var item=get(p,actor,id); version(item,input.expectedVersion());
+        var member=writeMember(p,actor);
+        rejectQa(p,id);
+        pm(member); var item=get(p,actor,id); QaService.rejectGenericMutation((String)item.get("type")); version(item,input.expectedVersion());
         db.insert("INSERT INTO work_item_clarifications(project_id,work_item_id,source_kind,source_reference,confirmed_by,confirmed_at,conclusion,recorded_by,recorded_at) VALUES(?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6))",p,id,input.sourceKind(),text(input.sourceReference()),text(input.confirmedBy()),Timestamp.from(input.confirmedAt()),text(input.conclusion()),number(member,"id"));
         history(p,id,number(member,"id"),"CLARIFICATION",null,null,"Ghi nhận nội dung làm rõ",input);
         bump(p,id,number(member,"id")); return get(p,actor,id);
+    }
+    private boolean isQa(long p,long id) {
+        return "QA".equals(db.row("SELECT w.item_type AS type FROM work_items w WHERE w.project_id=? AND w.id=?",p,id).get("type"));
+    }
+    private void rejectQa(long p,long id) {if(isQa(p,id))QaService.rejectGenericMutation("QA");}
+    private List<Map<String,Object>> projectQa(long p,String actor,List<Map<String,Object>> rows) {
+        return rows.stream().map(item -> "QA".equals(item.get("type")) ? qaProjection(qa.detail(p,actor,number(item,"id"))) : item).toList();
+    }
+    private Map<String,Object> qaProjection(QaDtos.QaDetail detail) {
+        var q=detail.item();var item=new LinkedHashMap<String,Object>();
+        item.put("id",q.id());item.put("projectId",q.projectId());item.put("itemNo",q.itemNo());item.put("key",q.key());item.put("type",q.type());item.put("typeLabel","QA");
+        item.put("title",q.title());item.put("description",q.question());item.put("question",q.question());item.put("status",q.status());item.put("statusLabel",q.statusLabel());
+        item.put("priority",q.priority());item.put("categoryId",q.categoryId());item.put("milestoneId",q.milestoneId());
+        item.put("assigneeMembershipId",q.assigneeMembershipId());item.put("assigneeName",q.assigneeName());item.put("assignee",q.assigneeName());
+        item.put("createdBy",q.createdBy());item.put("creatorMembershipId",q.createdBy());item.put("creatorName",q.creatorName());item.put("creator",q.creatorName());
+        item.put("createdAt",q.createdAt());item.put("updatedAt",q.updatedAt());item.put("version",q.version());item.put("generation",q.generation());
+        item.put("documentId",q.documentId());item.put("groupId",q.groupId());item.put("runItemId",q.runItemId());item.put("testCaseId",q.testCaseId());item.put("revisionId",q.revisionId());
+        item.put("currentAnswerId",q.currentAnswerId());item.put("currentAnswerVersion",q.currentAnswerVersion());item.put("currentConfirmationId",q.currentConfirmationId());
+        item.put("contextSnapshot",detail.contextSnapshot());item.put("currentAnswer",detail.currentAnswer());item.put("currentConfirmation",detail.currentConfirmation());item.put("capabilities",q.capabilities());
+        item.put("allowedTransitions",List.of());item.put("canComment",q.capabilities().canComment());item.put("canAttach",q.capabilities().canUploadEvidence());
+        item.put("links",List.of());item.put("externalReferences",List.of());item.put("clarifications",List.of());
+        return item;
     }
     private Map<String,Object> ng(long p,long attempt) {
         var row=db.row("SELECT a.run_item_id,a.build_id,a.result_code,r.revision_id,r.test_case_id,c.environment_id,c.device_id FROM execution_attempts a JOIN run_items r ON r.project_id=a.project_id AND r.id=a.run_item_id JOIN cycle_configurations c ON c.project_id=r.project_id AND c.cycle_id=r.cycle_id AND c.id=r.configuration_id WHERE a.project_id=? AND a.id=?",p,attempt);

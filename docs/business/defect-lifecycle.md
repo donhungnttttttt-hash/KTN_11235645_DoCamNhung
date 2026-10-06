@@ -1,5 +1,9 @@
 # Công việc và vòng đời bug nội bộ — Sprint 6
 
+## Cập nhật hiệu lực ngày 06/10/2026
+
+Phần S06 bên dưới là nền ban đầu. S07 đã có retest/closure/reopen theo [chính sách retest](retest-policy.md); S08 đã có quyết định NA/chốt đợt. Theo [quyền hiện hành](permissions.md), DEV được xem trong dự án nhưng chỉ bình luận/chứng cứ và chuyển BUG đang được giao còn chưa terminal sang `progress` hoặc `resolved`, có version/lý do; `resolved` cần build đã sửa. Không dùng mã `in_progress`. PM vẫn phân công, chuẩn bị coverage/request và đóng/mở lại bug. Resolve không tự ghi OK hoặc tạo request retest. QA/câu hỏi riêng, closure non-BUG và phân công theo file chưa được triển khai; xem [đối chiếu luồng](../product/TRACEABILITY-UAT.md).
+
 Quyết định đã xác nhận: [ADR-006](../decisions/ADR-006-internal-work-items.md). Một dòng `work_items` là danh tính duy nhất; `bug_details` là subtype BUG có FK cùng dự án, không có kho bug thứ hai.
 
 ## Quyền

@@ -31,9 +31,11 @@ public class RedmineService {
         if(config.configured(p)){result.put("baseUrl",config.base().toString());result.put("mapping",config.mapping(p));}
         return result;
     }
-    @Transactional(readOnly=true)
     public Map<String,Object> state(long p,String actor,long id) {
         var bug=work.get(p,actor,id);
+        // QA detail requires current locking authorization in this inherited write transaction.
+        // Reject it before any Redmine configuration/binding/outbox projection or replay response.
+        vn.syp.tms.qa.QaService.rejectGenericMutation((String)bug.get("type"));
         var result=new LinkedHashMap<>(configuration(p,actor));result.put("sourceVersion",bug.get("version"));
         var bindings=db.rows("SELECT id,instance_hash,external_issue_id AS externalIssueId,delivered_source_version AS deliveredSourceVersion,delivered_payload AS deliveredPayload,observed_payload AS observedPayload,observed_fingerprint AS observedFingerprint,observed_at AS observedAt FROM redmine_bindings WHERE project_id=? AND work_item_id=?",p,id);
         Map<String,Object> binding=bindings.isEmpty()?null:bindings.getFirst();

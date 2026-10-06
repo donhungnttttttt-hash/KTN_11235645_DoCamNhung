@@ -1,0 +1,114 @@
+openapi: 3.0.3
+info:
+  title: TMS PM status reports and administrative audit
+  version: 1.0.0
+  description: Append-only narratives in V16; session and CSRF apply. No report edits/deletes or metric/deadline mutation.
+servers: [{url: /api/v1}]
+security: [{session: []}]
+paths:
+  /projects/{id}/status-reports:
+    parameters: [{$ref: '#/components/parameters/Id'}]
+    get:
+      operationId: projectStatusReportHistory
+      description: Enabled active project members read; canPost requires current project PM, non-DEV system role and writable project.
+      parameters: [{$ref: '#/components/parameters/Page'}, {$ref: '#/components/parameters/Size'}]
+      responses:
+        '200': {description: Latest first by ID; reports page plus all current milestone warnings and canPost, content: {application/json: {schema: {$ref: '#/components/schemas/History'}}}}
+        '401': {description: Missing or disabled session}
+        '404': {description: No active project membership}
+    post:
+      operationId: appendProjectStatusReport
+      description: |
+        Current enabled project PM only. ADMIN without PM membership, project DEV and system DEV cannot post.
+        Reason and recovery are mandatory when any scoped nonarchived milestone is overdue by its project timezone.
+        Shared deadline query counts work items and all cycles including DRAFT; any nonterminal work or non-CLOSED cycle is unfinished.
+        Missing due date or empty scope means insufficient data, not overdue. Due today is not overdue.
+        requestKey is unique within project and bound to actor plus normalized payload; same replay returns the original report,
+        changed actor/payload returns 409. Authorization is rechecked even for replay; replay does not revalidate changed deadlines.
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/Input'}}}
+      responses:
+        '201': {description: Original/new report, content: {application/json: {schema: {$ref: '#/components/schemas/Report'}}}}
+        '401': {description: Missing session}
+        '403': {description: Not current project PM or missing CSRF}
+        '404': {description: Outside project membership}
+        '409': {description: IDEMPOTENCY_CONFLICT or archived project}
+        '422': {description: Invalid body or required overdue explanation missing}
+  /admin/projects/{id}/status-reports:
+    parameters: [{$ref: '#/components/parameters/Id'}]
+    get:
+      operationId: adminStatusReportHistory
+      description: Current enabled ADMIN reads without membership; canPost is false on this route.
+      parameters: [{$ref: '#/components/parameters/Page'}, {$ref: '#/components/parameters/Size'}]
+      responses:
+        '200': {description: Narrative history and automatic milestone warnings, content: {application/json: {schema: {$ref: '#/components/schemas/History'}}}}
+        '401': {description: Missing session}
+        '403': {description: Not ADMIN}
+        '404': {description: Unknown project}
+  /admin/audit:
+    get:
+      operationId: adminAuditHistory
+      description: |
+        Current enabled ADMIN only. UNION ALL existing identity_audit and project_audit.
+        Exact optional projectId and entity type filter, all records counted independently of page.
+        Null-project global identity/asset events only occur when projectId is omitted.
+        from/through include whole calendar days in timezone (default UTC); server converts boundaries to UTC,
+        with exclusive next-day upper bound, including DST. UI explicitly uses Asia/Ho_Chi_Minh or UTC for filter and display.
+        Only id, projectId, projectName, actorId, actorName, entityType, entityId, action and occurredAt are returned.
+        No metadata, request identifiers, payloads, credentials, sessions or tokens. Stable occurredAt DESC/id DESC.
+      parameters:
+        - {name: projectId, in: query, schema: {type: integer, format: int64}}
+        - {name: type, in: query, schema: {type: string, maxLength: 40}, description: Exact entity type; omit for all including catalog events}
+        - {name: from, in: query, schema: {type: string, format: date}}
+        - {name: through, in: query, schema: {type: string, format: date}}
+        - {name: timezone, in: query, schema: {type: string, default: UTC}}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/Size'}
+      responses:
+        '200': {description: '{items,page,size,totalElements}; UTC occurredAt values with explicit offset'}
+        '401': {description: Missing session}
+        '403': {description: Not ADMIN}
+        '422': {description: Invalid date range, timezone or pagination}
+components:
+  securitySchemes:
+    session: {type: apiKey, in: cookie, name: TMS_SESSION}
+  parameters:
+    Id: {name: id, in: path, required: true, schema: {type: integer, format: int64}}
+    Page: {name: page, in: query, schema: {type: integer, minimum: 0, default: 0}}
+    Size: {name: size, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+  schemas:
+    Input:
+      type: object
+      required: [requestKey, summary]
+      properties:
+        requestKey: {type: string, pattern: '^[A-Za-z0-9_-]{1,64}$'}
+        summary: {type: string, minLength: 1, maxLength: 4000}
+        delayReason: {type: string, maxLength: 4000}
+        recoveryPlan: {type: string, maxLength: 4000}
+        expectedFinishOn: {type: string, format: date, nullable: true}
+    Report:
+      type: object
+      properties:
+        id: {type: integer, format: int64}
+        projectId: {type: integer, format: int64}
+        summary: {type: string}
+        delayReason: {type: string}
+        recoveryPlan: {type: string}
+        expectedFinishOn: {type: string, format: date, nullable: true}
+        createdAt: {type: string, format: date-time}
+        authorId: {type: string}
+        authorName: {type: string}
+    History:
+      type: object
+      required: [reports, milestones, canPost]
+      properties:
+        canPost: {type: boolean}
+        milestones: {type: array, items: {$ref: './admin.openapi.yaml#/components/schemas/Milestone'}}
+        reports:
+          type: object
+          properties:
+            items: {type: array, items: {$ref: '#/components/schemas/Report'}}
+            page: {type: integer}
+            size: {type: integer}
+            totalElements: {type: integer, format: int64}

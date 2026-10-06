@@ -9,6 +9,9 @@ info:
 servers:
   - url: http://127.0.0.1:8080
     description: Backend local (giao diện dùng proxy cùng origin 5173)
+# Central administration contracts:
+# ./admin.openapi.yaml (overview), ./admin-management.openapi.yaml (projects/users),
+# ./device-inventory.openapi.yaml (physical inventory), ./admin-reporting.openapi.yaml (PM reports/audit).
 paths:
   /api/v1/auth/csrf:
     get:
@@ -101,7 +104,7 @@ paths:
         default: { $ref: '#/components/responses/Error' }
     post:
       operationId: createUser
-      description: ADMIN tạo ADMIN/PM/TESTER. PM có users:create chỉ tạo TESTER. TESTER và PM chưa được cấp luôn 403. PM mới mặc định chưa được cấp quyền.
+      description: ADMIN tạo ADMIN/PM/TESTER/DEV. PM có users:create chỉ tạo TESTER. TESTER và PM chưa được cấp luôn 403. PM mới mặc định chưa được cấp quyền.
       security: [{ sessionCookie: [], csrfHeader: [] }]
       requestBody:
         required: true
@@ -114,7 +117,7 @@ paths:
                 username: { type: string, pattern: '^[A-Za-z0-9][A-Za-z0-9._-]{2,63}$' }
                 displayName: { type: string, minLength: 1, maxLength: 100 }
                 password: { type: string, minLength: 12, maxLength: 128, writeOnly: true }
-                role: { type: string, enum: [ADMIN, PM, TESTER] }
+                role: { type: string, enum: [ADMIN, PM, TESTER, DEV] }
       responses:
         '201':
           description: Đã tạo tài khoản
@@ -442,6 +445,76 @@ paths:
     $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}~1rows~1{rowId}~1result'
   /api/v1/projects/{projectId}/test-documents/{id}/rows/{rowId}/result-history:
     $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}~1rows~1{rowId}~1result-history'
+  /api/v1/admin/overview:
+    $ref: './admin.openapi.yaml#/paths/~1admin~1overview'
+  /api/v1/admin/projects:
+    $ref: './admin.openapi.yaml#/paths/~1admin~1projects'
+  /api/v1/admin/projects/{id}:
+    $ref: './admin.openapi.yaml#/paths/~1admin~1projects~1{id}'
+  /api/v1/admin/users:
+    $ref: './admin-management.openapi.yaml#/paths/~1admin~1users'
+  /api/v1/admin/device-assets:
+    $ref: './device-inventory.openapi.yaml#/paths/~1admin~1device-assets'
+  /api/v1/admin/device-allocations:
+    $ref: './device-inventory.openapi.yaml#/paths/~1admin~1device-allocations'
+  /api/v1/admin/audit:
+    $ref: './admin-reporting.openapi.yaml#/paths/~1admin~1audit'
+  /api/v1/admin/projects/{id}/status-reports:
+    $ref: './admin-reporting.openapi.yaml#/paths/~1admin~1projects~1{id}~1status-reports'
+  /api/v1/projects/{id}/status-reports:
+    $ref: './admin-reporting.openapi.yaml#/paths/~1projects~1{id}~1status-reports'
+  /api/v1/projects/{projectId}/file-work-groups/metadata:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-groups~1metadata"
+  /api/v1/projects/{projectId}/file-work-groups/preview:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-groups~1preview"
+  /api/v1/projects/{projectId}/file-work-groups:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-groups"
+  /api/v1/projects/{projectId}/file-work-groups/{groupId}:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-groups~1{groupId}"
+  /api/v1/projects/{projectId}/file-work-groups/{groupId}/assignment:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-groups~1{groupId}~1assignment"
+  /api/v1/projects/{projectId}/file-work-groups/{groupId}/history:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-groups~1{groupId}~1history"
+  /api/v1/projects/{projectId}/file-work-groups/{groupId}/sessions:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-groups~1{groupId}~1sessions"
+  /api/v1/projects/{projectId}/file-work-groups/{groupId}/eligible-allocations:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-groups~1{groupId}~1eligible-allocations"
+  /api/v1/projects/{projectId}/file-work-sessions/{sessionId}/pause:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-sessions~1{sessionId}~1pause"
+  /api/v1/projects/{projectId}/file-work-sessions/{sessionId}/resume:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-sessions~1{sessionId}~1resume"
+  /api/v1/projects/{projectId}/file-work-sessions/{sessionId}/complete:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-sessions~1{sessionId}~1complete"
+  /api/v1/projects/{projectId}/file-work-sessions/{sessionId}/cancel:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-sessions~1{sessionId}~1cancel"
+  /api/v1/projects/{projectId}/file-work-groups/{groupId}/execution:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-groups~1{groupId}~1execution"
+  /api/v1/projects/{projectId}/file-work-groups/{groupId}/run-items/{runItemId}/attempts:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-groups~1{groupId}~1run-items~1{runItemId}~1attempts"
+  /api/v1/projects/{projectId}/file-work-groups/{groupId}/export:
+    $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1file-work-groups~1{groupId}~1export"
+  /api/v1/projects/{projectId}/qa:
+    $ref: "./qa.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1qa"
+  /api/v1/projects/{projectId}/qa/{id}:
+    $ref: "./qa.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1qa~1{id}"
+  /api/v1/projects/{projectId}/qa/{id}/assignment:
+    $ref: "./qa.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1qa~1{id}~1assignment"
+  /api/v1/projects/{projectId}/qa/{id}/start:
+    $ref: "./qa.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1qa~1{id}~1start"
+  /api/v1/projects/{projectId}/qa/{id}/request-info:
+    $ref: "./qa.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1qa~1{id}~1request-info"
+  /api/v1/projects/{projectId}/qa/{id}/provide-info:
+    $ref: "./qa.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1qa~1{id}~1provide-info"
+  /api/v1/projects/{projectId}/qa/{id}/answers:
+    $ref: "./qa.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1qa~1{id}~1answers"
+  /api/v1/projects/{projectId}/qa/{id}/confirmations:
+    $ref: "./qa.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1qa~1{id}~1confirmations"
+  /api/v1/projects/{projectId}/qa/{id}/close:
+    $ref: "./qa.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1qa~1{id}~1close"
+  /api/v1/projects/{projectId}/qa/{id}/reopen:
+    $ref: "./qa.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1qa~1{id}~1reopen"
+  /api/v1/projects/{projectId}/handoff-queue:
+    $ref: "./qa.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1handoff-queue"
 components:
   securitySchemes:
     sessionCookie: { type: apiKey, in: cookie, name: TMS_SESSION }
@@ -460,7 +533,7 @@ components:
         id: { type: string, format: uuid }
         username: { type: string }
         displayName: { type: string }
-        roles: { type: array, items: { type: string, enum: [ADMIN, PM, TESTER] } }
+        roles: { type: array, items: { type: string, enum: [ADMIN, PM, TESTER, DEV] } }
         permissions: { type: array, items: { type: string, enum: ['profile:read', 'users:read', 'users:create', 'users:update', 'users:delegate'] } }
         sessionExpiresAt: { type: string, format: date-time }
     User:
@@ -470,7 +543,7 @@ components:
         id: { type: string, format: uuid }
         username: { type: string }
         displayName: { type: string }
-        role: { type: string, enum: [ADMIN, PM, TESTER] }
+        role: { type: string, enum: [ADMIN, PM, TESTER, DEV] }
         enabled: { type: boolean }
         canCreateUsers: { type: boolean, description: Cờ cấp riêng cho PM; ADMIN có quyền từ role dù cờ này false. }
         version: { type: integer, format: int64, minimum: 0 }

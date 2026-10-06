@@ -27,6 +27,13 @@ beforeEach(()=>{
   vi.spyOn(HTMLAnchorElement.prototype,'click').mockImplementation(()=>{});
 });
 
+it('lets Dev read document results but disables result changes',async()=>{
+  state.currentProject={id:1,name:'Dev project',projectRole:'DEV'};
+  render(<TestDocumentPage documentId="9" navigate={vi.fn()}/>);
+  const result=await screen.findByRole('button',{name:/Kết quả.*1/i});
+  expect(result).toBeDisabled();
+});
+
 it('restores detail navigation, revision management and real history from the row menu',async()=>{
   testCasesApi.getDocument.mockResolvedValue({...detail,rows:[...detail.rows,{...detail.rows[0],rowNumber:3,sourceId:'2',caseId:22,cells:['2',...cells.slice(1)]}]});
   testCasesApi.getCase.mockResolvedValue({currentRevisionId:31,revisions:[{id:31,revisionNo:1}]});

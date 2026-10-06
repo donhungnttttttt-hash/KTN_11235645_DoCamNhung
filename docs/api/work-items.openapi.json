@@ -317,7 +317,8 @@
               }
             }
           }
-        }
+        },
+        "description": "Tạo BUG/REQUEST/TASK/IMPROVEMENT. QA không được tạo qua endpoint này; sử dụng typed QA API. Không có subtype-less QA hoặc generic QA replay."
       }
     },
     "/api/v1/projects/{projectId}/work-items/metadata": {
@@ -399,9 +400,138 @@
                       "type": "string",
                       "maxLength": 60,
                       "description": "Tiền tố rule bổ sung hiện hành cho bug mới."
+                    },
+                    "canCreate": {
+                      "type": "boolean",
+                      "description": "Legacy generic creation affordance; does not grant QA creation. Commands still validate project/archive state."
+                    },
+                    "canCreateQa": {
+                      "type": "boolean",
+                      "description": "Current active PM/TESTER, non-global-DEV, unarchived project. Generic canCreate does not grant QA creation."
+                    },
+                    "statusesByType": {
+                      "type": "object",
+                      "properties": {
+                        "BUG": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "color": {
+                                "type": "string"
+                              },
+                              "terminal": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": []
+                          }
+                        },
+                        "REQUEST": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "color": {
+                                "type": "string"
+                              },
+                              "terminal": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": []
+                          }
+                        },
+                        "TASK": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "color": {
+                                "type": "string"
+                              },
+                              "terminal": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": []
+                          }
+                        },
+                        "IMPROVEMENT": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "color": {
+                                "type": "string"
+                              },
+                              "terminal": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": []
+                          }
+                        },
+                        "QA": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "terminal": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "label",
+                              "terminal"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "BUG",
+                        "REQUEST",
+                        "TASK",
+                        "IMPROVEMENT",
+                        "QA"
+                      ]
                     }
                   },
-                  "required": []
+                  "required": [
+                    "canCreateQa",
+                    "statusesByType"
+                  ]
                 }
               }
             }
@@ -2851,8 +2981,10 @@
               "BUG",
               "REQUEST",
               "TASK",
-              "IMPROVEMENT"
-            ]
+              "IMPROVEMENT",
+              "QA"
+            ],
+            "description": "QA được nhận diện nhưng generic POST trả 409 QA_COMMAND_REQUIRED; tạo QA qua POST /projects/{projectId}/qa."
           },
           "title": {
             "type": "string",
@@ -3244,7 +3376,8 @@
               "BUG",
               "REQUEST",
               "TASK",
-              "IMPROVEMENT"
+              "IMPROVEMENT",
+              "QA"
             ]
           },
           "title": {
@@ -3520,6 +3653,110 @@
             "format": "int64",
             "nullable": true,
             "description": "Snapshot rule INTERNAL_DEMO lúc tạo bug; null cho bug cũ/không có rule bổ sung."
+          },
+          "statusLabel": {
+            "type": "string",
+            "description": "Type-specific canonical status label; QA resolved means answered, not a fixed BUG."
+          },
+          "question": {
+            "type": "string",
+            "maxLength": 20000,
+            "description": "Immutable QA question; QA only."
+          },
+          "generation": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "QA assignment/reopen generation."
+          },
+          "documentId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "groupId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "runItemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "testCaseId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "currentAnswerId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "currentAnswerVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "currentConfirmationId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "canComment": {
+            "type": "boolean",
+            "description": "Current type-specific backend capability."
+          },
+          "canAttach": {
+            "type": "boolean",
+            "description": "Current type-specific backend capability."
+          },
+          "capabilities": {
+            "type": "object",
+            "description": "QA current typed capabilities. Generic allowedTransitions is empty for QA.",
+            "properties": {
+              "canAssign": {
+                "type": "boolean"
+              },
+              "canStart": {
+                "type": "boolean"
+              },
+              "canRequestInfo": {
+                "type": "boolean"
+              },
+              "canProvideInfo": {
+                "type": "boolean"
+              },
+              "canAnswer": {
+                "type": "boolean"
+              },
+              "canConfirm": {
+                "type": "boolean"
+              },
+              "canClose": {
+                "type": "boolean"
+              },
+              "canCloseException": {
+                "type": "boolean"
+              },
+              "canReopen": {
+                "type": "boolean"
+              },
+              "canComment": {
+                "type": "boolean"
+              },
+              "canUploadEvidence": {
+                "type": "boolean"
+              }
+            }
           }
         },
         "required": [

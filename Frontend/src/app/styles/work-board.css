@@ -203,12 +203,13 @@
   margin-right: 4px;
 }
 .dashboard-board.work-items .d-button {
-  height: 28px;
-  min-height: 28px;
-  padding: 0 10px;
+  height: auto;
+  min-height: 34px;
+  padding: 6px 10px;
   border-radius: 2px;
   border-color: #d7dcdc;
-  font-size: 11px;
+  font-size: 12px;
+  line-height: 1.5;
   font-weight: 500;
   color: #475569;
 }
@@ -237,13 +238,17 @@
   font-size: 11px;
   color: #64748b;
 }
-.dashboard-board.work-items input,
+.dashboard-board.work-items input:not([type="checkbox"]):not([type="radio"]),
 .dashboard-board.work-items select,
 .dashboard-board.work-items .d-status-select > button {
-  height: 28px;
+  /* Keep room for text and padding; the old 28px height clipped native selects. */
+  height: auto;
+  min-height: 34px;
+  padding: 6px 10px;
+  line-height: 1.5;
   border-color: #d7dcdc;
   border-radius: 2px;
-  font-size: 11px;
+  font-size: 12px;
 }
 .dashboard-board.work-items .d-icon-button.outlined {
   width: 28px;
@@ -343,6 +348,11 @@
   background: #147d72;
 }
 @media (max-width: 640px) {
+  .dashboard-board.work-items .d-button,
+  .dashboard-board.work-items input:not([type="checkbox"]):not([type="radio"]),
+  .dashboard-board.work-items .wi-field select {
+    min-height: 44px;
+  }
   .work-items.dashboard-board {
     padding: 12px 10px 8px;
   }

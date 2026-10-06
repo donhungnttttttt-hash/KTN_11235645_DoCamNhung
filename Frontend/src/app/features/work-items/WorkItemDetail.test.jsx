@@ -8,6 +8,15 @@ const item={id:7,key:'DEMO-7',type:'BUG',title:'Màn hình trắng',description:
 const catalogs={members:[{membershipId:8,displayName:'Tester',username:'tester'}],categories:[{id:9,name:'Đăng nhập'}],milestones:[{id:10,name:'M1'}],builds:[{id:11,platform:'WEB',versionLabel:'1.1'}]};
 const props={projectId:1,id:7,catalogs,canTriage:false,writable:true,membershipId:8,onChanged:vi.fn()};
 beforeEach(()=>{vi.resetAllMocks();workItemsApi.get.mockResolvedValue(item);workItemsApi.comments.mockResolvedValue([]);workItemsApi.history.mockResolvedValue([]);workItemsApi.attachments.mockResolvedValue([]);});
+it('allows an assigned Dev transition from server permissions without PM editing controls',async()=>{
+  workItemsApi.get.mockResolvedValue({...item,allowedTransitions:[{id:'progress',label:'Đang xử lý'},{id:'resolved',label:'Đã sửa'}],canComment:true});
+  render(<WorkItemDetail {...props}/>);
+  await screen.findByRole('button',{name:'Chuyển trạng thái'});
+  expect(screen.queryByText('Sửa thông tin và phân công')).not.toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText('Chuyển trạng thái'),{target:{value:'resolved'}});
+  fireEvent.click(screen.getByRole('button',{name:'Chuyển trạng thái'}));
+  expect(screen.getByLabelText('Build đã sửa')).toBeRequired();
+});
 it('renders the original context and comments as text, retries with the same comment key, hides PM actions',async()=>{
   const body='<img src=x onerror=alert(1)>';
   workItemsApi.comment.mockRejectedValueOnce(new Error('Mất kết nối')).mockResolvedValueOnce({id:1});

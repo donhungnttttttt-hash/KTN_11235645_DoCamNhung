@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useProject } from './ProjectProvider';
 import { useAuth } from '../auth/AuthProvider';
 import { projectsApi } from '../../services/api/projects';
+import { ProjectDevices } from './ProjectDevices';
+import '../admin/admin.css';
 import { ProjectMembers } from './ProjectMembers';
 import { RulesPanel } from './RulesPanel';
 import { HandbookPanel } from './HandbookPanel';
@@ -12,15 +14,15 @@ export function ProjectSettingsPage({ activeRoute = '/settings' }) {
   const { hasRole } = useAuth();
   if (!currentProject) return <div className="page-container">Vui lòng chọn một dự án.</div>;
   const tab = activeRoute.split('?')[0].split('/')[2] || 'general';
-  return <Settings key={currentProject.id} tab={tab} project={currentProject} refresh={refreshProjects} canEdit={!currentProject.archived && (hasRole('ADMIN') || currentProject.projectRole === 'PM')} />;
+  return <Settings key={currentProject.id} admin={hasRole('ADMIN')} tab={tab} project={currentProject} refresh={refreshProjects} canEdit={!currentProject.archived && (hasRole('ADMIN') || currentProject.projectRole === 'PM')} />;
 }
 
-function Settings({ project, refresh, canEdit, tab }) {
+function Settings({ project, refresh, canEdit, tab, admin }) {
   const title = { general: 'Thông tin chung', members: 'Thành viên', rules: 'Quy tắc báo lỗi', handbook: 'Sổ tay dự án' }[tab];
   return <section className="page-container project-settings-page">
     <h1>{title} <span className="settings-project-name">· {project.name}</span></h1>
     {tab==='general' && <General project={project} refresh={refresh} canEdit={canEdit}/>}
-    {tab==='members' && <ProjectMembers projectId={project.id} canEdit={canEdit} onMembershipChange={refresh}/>}
+    {tab==='members' && <><ProjectMembers projectId={project.id} canEdit={canEdit && admin} onMembershipChange={refresh}/><ProjectDevices key={project.id} projectId={project.id}/></>}
     {tab==='rules' && <RulesPanel projectId={project.id} canEdit={canEdit}/>}
     {tab==='handbook' && <HandbookPanel projectId={project.id} canEdit={canEdit}/>}
   </section>;

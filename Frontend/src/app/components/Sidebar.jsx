@@ -16,6 +16,7 @@ const navigation = [
   ] },
   { label: 'Quản lý kiểm thử', route: '/tests', icon: FlaskConical, id: 'tests', children: [
     { label: 'Thư viện test case', route: '/tests', icon: BookOpen },
+    { label: 'Công việc theo file', route: '/tests/file-work', icon: FileCheck },
     { label: 'Đợt kiểm thử', route: '/tests/cycles', icon: ClipboardList },
     { label: 'Kiểm thử lại', route: '/tests/retests', icon: RotateCcw },
   ] },
@@ -36,6 +37,7 @@ function selectedPage(activeRoute) {
   if (path === '/board' || path.startsWith('/board/')) {
     return path === '/board/list' || new URLSearchParams(query).get('view') === 'list' ? '/board/list' : '/board';
   }
+  if (path === '/tests/file-work' || /^\/tests\/file-work\/[1-9]\d*$/.test(path)) return '/tests/file-work';
   if (/^\/tests\/(?:cycles\/)?\d+$/.test(path)) return '/tests/cycles';
   if (path === '/tests/cases' || path.startsWith('/tests/documents/')) return '/tests';
   return path;

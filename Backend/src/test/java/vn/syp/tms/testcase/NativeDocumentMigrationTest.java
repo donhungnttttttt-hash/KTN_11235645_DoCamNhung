@@ -19,7 +19,7 @@ class NativeDocumentMigrationTest {
             var previous=Flyway.configure().dataSource(url,user,password).target("11").cleanDisabled(true).load();
             assertThat(previous.migrate().migrationsExecuted).isEqualTo(11);
             sql.executeUpdate("INSERT INTO foundation_checks VALUES('document-upgrade','Preserved by V12',UTC_TIMESTAMP(6))");
-            var latest=Flyway.configure().dataSource(url,user,password).cleanDisabled(true).load();
+            var latest=Flyway.configure().dataSource(url,user,password).target("12").cleanDisabled(true).load();
             assertThat(latest.migrate().migrationsExecuted).isEqualTo(1);
             assertThat(scalar(sql,"SELECT COUNT(*) FROM foundation_checks WHERE id='document-upgrade'" )).isEqualTo(1);
             assertThat(scalar(sql,"SELECT COUNT(*) FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name='import_batches' AND column_name IN ('sheet_name','source_workbook')")).isEqualTo(2);

@@ -4,6 +4,14 @@ Contract máy đọc: [work-items.openapi.json](work-items.openapi.json), đư�
 
 Base: `/api/v1/projects/{projectId}/work-items`. Cookie session cùng origin; mọi mutation cần CSRF từ `/api/v1/auth/csrf`. Actor lấy từ session. Global ADMIN không tự có quyền project PM. 404 khi ngoài dự án, 403 khi thiếu quyền thao tác, 409 khi version/request key xung đột, 422 khi rule không hợp lệ. Tất cả datetime trả UTC ISO với `Z`.
 
+## QA riêng — cập nhật 06/10/2026
+
+Generic list/detail/overview nhận loại `QA` cùng work-item identity/counter; nhãn trạng thái được trả theo loại. Metadata bổ sung `canCreateQa` hiện hành và `statusesByType.QA`; không có top-level `qaStatuses`. Quyền generic `canCreate` không cấp quyền tạo QA. Chi tiết QA trả question/generation/source pins/current answer/current confirmation và typed capabilities; `allowedTransitions` luôn rỗng.
+
+Tạo QA qua [typed QA API](qa.md). Generic POST nhận diện QA rồi trả `409 QA_COMMAND_REQUIRED`, không tạo bản ghi thiếu subtype hoặc phát lại generic key. Generic update/transition/batch/execution-link/external-reference/clarification từ chối QA; batch có QA bị chặn trước lần ghi đầu. Redmine không hỗ trợ QA. Bình luận QA vẫn INTERNAL, chỉ PM/Tester tạo câu hỏi/Dev đang được giao trên QA chưa đóng, qua guard hiện hành trước replay. Upload/delete chứng cứ dùng cùng writer policy và quy tắc người tải/PM; đọc và tải theo membership dự án. Bình luận và tệp không thay câu trả lời/xác nhận chính thức.
+
+Source Task6 và scoped regression đã qua review; native/HTTP/UAT chưa được xác nhận. Xem [báo cáo F/Q](../reviews/2026-10-06-fq-implementation.md). Các endpoint dưới đây tiếp tục là contract lịch sử cho BUG/REQUEST/TASK/IMPROVEMENT, không mở lối sửa QA.
+
 | Method/path từ base | Nội dung / kết quả |
 | --- | --- |
 | GET `/` | `items,totalItems,page,size,totalPages`; page từ 0, size 1–100. Filter type/status/keyword/assignee/category/milestone; mã và tiêu đề tìm Unicode |

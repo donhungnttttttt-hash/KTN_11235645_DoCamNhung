@@ -9,6 +9,9 @@
 .wi-fields.three { grid-template-columns: repeat(3,minmax(0,1fr)); }
 .wi-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
 .wi-actions .wi-note { flex: 1; }
+.wi-actions:has(> .wi-field) { align-items: flex-end; }
+.wi-actions > .wi-field { flex: 0 1 320px; max-width: 100%; }
+.wi-field input[type="file"] { min-width: 0; max-width: 100%; }
 .wi-note { color: #64748b; font-size: 12px; line-height: 1.6; }
 .wi-error { padding: 10px 12px; border: 1px solid #fecaca; color: #9f1239; background: #fff1f2; border-radius: 4px; display: flex; align-items: center; gap: 12px; }
 .wi-section { padding-top: 16px; border-top: 1px solid #dbe5ef; display: grid; gap: 12px; }
@@ -22,6 +25,8 @@
 .wi-table tbody tr:hover { background: #fffdeb; }
 .wi-table .wi-title { min-width: 280px; max-width: 420px; line-height: 1.6; }
 .wi-detail { display: grid; gap: 20px; }
+.wi-detail > *, .wi-detail-body > *, .wi-section > * { min-width: 0; }
+.wi-detail .wi-actions > button { max-width: 100%; overflow-wrap: anywhere; white-space: normal; }
 .wi-detail-body { display: grid; grid-template-columns: minmax(0,2fr) minmax(210px,1fr); gap: 24px; }
 .wi-detail h2 { font-size: 17px; line-height: 1.6; margin: 0; }
 .wi-detail h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }

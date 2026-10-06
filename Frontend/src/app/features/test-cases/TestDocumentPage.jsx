@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Download, FileSpreadsheet, Search, ClipboardList, RefreshCw, Table2, Highlighter, ChevronLeft, ChevronRight, List } from 'lucide-react';
 import { useProject } from '../projects/ProjectProvider';
+import { useAuth } from '../auth/AuthProvider';
 import { testCasesApi } from '../../services/api/testCases';
 import { CaseDetailModal } from './CaseDetailModal';
 import { DocumentCaseDialog } from './DocumentCaseDialog';
@@ -35,6 +36,8 @@ export function TestDocumentPage({ documentId, navigate }) {
 }
 
 function DocumentGrid({ project, documentId, navigate }) {
+  const {hasRole}=useAuth();
+  const dev=hasRole?.('DEV') || project.projectRole==='DEV';
   const execution=useDocumentExecution(project,documentId);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -157,9 +160,9 @@ function DocumentGrid({ project, documentId, navigate }) {
               <div className="td-case-menu" ref={caseMenu===row.caseId?menuRef:null}><button className="td-menu-trigger" aria-label={`Tùy chọn test case ${row.sourceId}`} aria-expanded={caseMenu===row.caseId} onClick={()=>setCaseMenu(v=>v===row.caseId?null:row.caseId)}><List size={15}/></button>
                 {caseMenu===row.caseId && <div className="td-menu-items"><button onClick={()=>{setDetailCase(row.caseId);setCaseMenu(null);}}>Hiển thị chi tiết</button><button onClick={()=>{setHistoryCase(row);setCaseMenu(null);}}>Hiển thị lịch sử</button><button onClick={()=>copyCase(row)}>Sao chép URL</button></div>}
               </div><small>{row.archived?'Đã lưu trữ':row.approved?'Đã duyệt':'Dự thảo'}</small></> :
-              customer && index===resultColumn ? <><ResultCycleButton disabled={loading || downloading || !!results.error || row.rowId==null || row.archived || project.archived} value={value} sourceId={row.sourceId} onChange={resultCode=>results.change(row,resultCode)}/>
+              customer && index===resultColumn ? <><ResultCycleButton disabled={dev || loading || downloading || !!results.error || row.rowId==null || row.archived || project.archived} value={value} sourceId={row.sourceId} onChange={resultCode=>results.change(row,resultCode)}/>
                 <button className="td-result-history" disabled={results.pending>0} onClick={()=>setResultHistory(row)}>Lịch sử / chứng cứ</button>
-                {project.projectRole==='PM' && !project.archived && execution.context?.cycle.statusCode==='ACTIVE' && execution.byCase.has(String(row.caseId)) && <button className="td-result-history" onClick={()=>execution.setScope(execution.byCase.get(String(row.caseId)))}>{execution.byCase.get(String(row.caseId)).excluded?'Khôi phục phạm vi':'NA · Ngoài phạm vi'}</button>}
+                {!dev && project.projectRole==='PM' && !project.archived && execution.context?.cycle.statusCode==='ACTIVE' && execution.byCase.has(String(row.caseId)) && <button className="td-result-history" onClick={()=>execution.setScope(execution.byCase.get(String(row.caseId)))}>{execution.byCase.get(String(row.caseId)).excluded?'Khôi phục phạm vi':'NA · Ngoài phạm vi'}</button>}
               </> : <CellText value={value}/>}
           </td>)}
         </tr></React.Fragment>)}</tbody>

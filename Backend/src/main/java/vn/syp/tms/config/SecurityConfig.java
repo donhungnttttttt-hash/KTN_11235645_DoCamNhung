@@ -49,6 +49,7 @@ public class SecurityConfig {
             auth.requestMatchers(HttpMethod.GET, "/api/v1/auth/csrf").permitAll();
             auth.requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/logout").permitAll();
             auth.requestMatchers(HttpMethod.GET, "/api/v1/me").authenticated();
+            auth.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
             auth.requestMatchers(HttpMethod.GET, "/api/v1/users").hasRole("ADMIN");
             auth.requestMatchers(HttpMethod.POST, "/api/v1/users").hasAuthority("users:create");
             auth.requestMatchers(HttpMethod.PATCH, "/api/v1/users/*").hasRole("ADMIN");

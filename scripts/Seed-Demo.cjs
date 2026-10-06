@@ -2,6 +2,7 @@
 // Additive local demo, using real identity/project/workflow APIs. No SQL writes.
 const fs=require('node:fs');
 const path=require('node:path');
+const {createCentralProject,ensureDemoMember,findCentralProject}=require('./demo/central-project.cjs');
 const {randomBytes}=require('node:crypto');
 const {LocalApi,Journal,validateBaseUrl}=require('./demo/local-api.cjs');
 const root=path.resolve(__dirname,'..');
@@ -32,16 +33,16 @@ async function main() {
     const admin=await session({username:env.TMS_BOOTSTRAP_USERNAME,password:env.TMS_BOOTSTRAP_PASSWORD});
     const me=await admin.get('/me');if(!me.roles.includes('ADMIN'))throw Error('Demo setup requires ADMIN.');
     // Refuse adopting an existing unrelated project when the local journal is absent.
-    if(!journal.state.done.project && (await admin.get('/projects')).some(p=>p.code===projectCode))throw Error('DEMO-PILOT already exists without a confirmed journal; reconcile instead of overwriting.');
+    if(!journal.state.done.project && await findCentralProject(admin,projectCode))throw Error('DEMO-PILOT already exists without a confirmed journal; reconcile instead of overwriting.');
     const secretFile=path.join(root,'.env.demo.local');
     if(!fs.existsSync(secretFile))fs.writeFileSync(secretFile,JSON.stringify(Array.from({length:5},(_,i)=>({username:i===0?'demo.pilot.pm':`demo.pilot.tester${i}`,password:randomBytes(24).toString('base64url')})),null,2),{mode:0o600,flag:'wx'});
     const credentials=JSON.parse(fs.readFileSync(secretFile,'utf8'));
     const users=[];
     for(let i=0;i<credentials.length;i++)users.push(await journal.once(`user-${i}`,()=>admin.write('POST','/users',{...credentials[i],displayName:i===0?'DEMO · Quản lý dự án':`DEMO · Tester ${i}`,role:i===0?'PM':'TESTER'})));
-    const project=await journal.once('project',()=>admin.write('POST','/projects',{code:projectCode,name:'DEMO · Kiểm thử phát hành 1.2',description:reason,timezone:'Asia/Ho_Chi_Minh'}));
+    const project=await journal.once('project',()=>createCentralProject(admin,{code:projectCode,name:'DEMO · Kiểm thử phát hành 1.2',description:reason,timezone:'Asia/Ho_Chi_Minh'},users));
     const base=`/projects/${project.id}`;
     const members=[];
-    for(let i=0;i<users.length;i++)members.push(await journal.once(`member-${i}`,()=>admin.write('PUT',`${base}/members/${users[i].id}`,{projectRole:i===0?'PM':'TESTER'})));
+    for(let i=0;i<users.length;i++)members.push(await journal.once(`member-${i}`,()=>ensureDemoMember(admin,project.id,users[i],i===0?'PM':'TESTER')));
     const pm=await session(credentials[0]);const testers=[];
     for(const c of credentials.slice(1))testers.push(await session(c));
     const post=(key,route,data,api=pm)=>journal.once(key,()=>api.write('POST',base+route,data));
@@ -129,7 +130,7 @@ async function main() {
     const summary=await pm.get(base+'/reports/summary');
     const workItems=await pages(pm,base+'/work-items');
     const stateCounts={};for(const w of workItems)stateCounts[w.status]=(stateCounts[w.status]||0)+1;
-    const record={generatedAt:new Date().toISOString(),project:{id:project.id,code:projectCode,name:project.name},synthetic:true,counts:{users:users.length,members:members.length+1,suites:modules.length,cases:(await pages(pm,base+'/test-cases')).length,cycles:cycles.length,runItems:0,bugs:bugs.length,workItems:workItems.length},statusCounts:stateCounts,metrics:summary.metrics};
+    const record={generatedAt:new Date().toISOString(),project:{id:project.id,code:projectCode,name:project.name},synthetic:true,counts:{users:users.length,members:(await admin.get(`/admin/projects/${project.id}/members`)).length,suites:modules.length,cases:(await pages(pm,base+'/test-cases')).length,cycles:cycles.length,runItems:0,bugs:bugs.length,workItems:workItems.length},statusCounts:stateCounts,metrics:summary.metrics};
     for(const cycle of cycles)record.counts.runItems+=(await pm.get(`${base}/test-cycles/${cycle.id}/run-items?size=1`)).totalItems;
     if(record.counts.cases!==120||record.counts.runItems!==240||record.counts.bugs!==32||record.counts.workItems!==72||Object.keys(stateCounts).length!==10)throw Error('Demo verification count mismatch; inspect var/demo and API responses.');
     fs.writeFileSync(path.join(directory,'verification.json'),JSON.stringify(record,null,2)+'\n');

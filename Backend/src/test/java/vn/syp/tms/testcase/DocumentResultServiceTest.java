@@ -61,7 +61,16 @@ class DocumentResultServiceTest {
     @Test void nonMemberIsRejectedBeforeReadingRows() {
         doThrow(new BusinessException(404,"NOT_FOUND","missing")).when(projects).requireMembership(1L,"outsider");
         assertThatThrownBy(()->service.updateResult(1L,"outsider",2L,9L,input(0))).isInstanceOf(BusinessException.class);
-        verifyNoInteractions(jdbc);
+        verify(jdbc,never()).update(Objects.requireNonNull(anyString()),any(Object[].class));
+    }
+    @Test void projectLockPrecedesAuthorizationAndRevocationRejectsReplay() {
+        status="OK";version=1;lastKey=key;actor="tester";
+        doAnswer(inv->{
+            assertThat(mockingDetails(jdbc).getInvocations()).anySatisfy(call->assertThat(call.getArguments()[0].toString()).contains("FROM projects","FOR SHARE"));
+            throw new BusinessException(403,"DEV_READ_ONLY_RESULTS","revoked");
+        }).when(projects).requireNotDev(1L,"tester");
+        assertThatThrownBy(()->service.updateResult(1L,"tester",2L,9L,input(0))).isInstanceOf(BusinessException.class);
+        verify(jdbc,never()).update(Objects.requireNonNull(anyString()),any(Object[].class));
     }
     @Test void otherDocumentOrUncommittedRowIsNotWritable() {
         missing=true;

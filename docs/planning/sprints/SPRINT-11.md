@@ -210,3 +210,49 @@ Người dùng chọn tự lưu trạng thái tài liệu, không ghi thay execu
 ### 05/10/2026 — Sửa Problems và chuẩn bị push
 
 Tái hiện13 warning trên137 Java source bằng Eclipse, sửa null contracts trong service/Mockito/MockMvc; không suppress null-analysis. Kết quả0error0warning,29/29 tests liên quan và Maven verify/package PASS. Người dùng đã yêu cầu push toàn bộ phần sửa đang chờ lên system-design; không merge develop. Xem [báo cáo](../../reviews/2026-10-05-java-diagnostics.md). S11 giữ IN_REVIEW cho gate schema test riêng/UAT/pilot.
+
+### 05/10/2026 — Sửa bố cục biểu mẫu công việc
+
+Sửa chiều cao/padding gây cắt chữ select, căn nút theo ô nhập, co khung chứng cứ và điều khiển mobile 44px. Tái hiện browser trước sửa, kiểm chứng sau sửa tại 1440/390/320px; 290/290 tests frontend và build PASS. Chỉ CSS, không đổi API/BE/database. Xem [báo cáo UI](../../reviews/2026-10-05-work-item-ui.md). Không đo lại coverage; S11 giữ IN_REVIEW, chưa commit/push tác vụ này.
+
+### 05/10/2026 — Khu quản trị ADMIN được duyệt A1–A4
+
+Đã triển khai dashboard tổng, quản lý dự án/tài khoản, chọn PM/Tester/Dev và máy ban đầu, kho từng máy với bàn giao/thu hồi, báo cáo PM và nhật ký quản trị. Không quota, không tự thêm ADMIN làm PM; bộ lọc nằm trong từng tab. Dev chỉ xử lý bug được giao, không ghi kết quả hoặc đóng lỗi. Review từng phần và review tổng thể đã hoàn tất; sửa lỗi snapshot/quyền khi thao tác đồng thời và test hồi quy tương ứng.
+
+Native MySQL áp dụng V14–V16 sau backup; 13 bảng nghiệp vụ cũ giữ nguyên số dòng, không tạo fixture trên tms. Full FE341/341 PASS, BE chọn lọc133/133 PASS theo XML Surefire, build/package PASS, Eclipse167 nguồn0lỗi0cảnh báo. Browser dashboard/audit/project/PM report và responsive1440→320 PASS cho các thao tác đọc/mở form. Native integration/fresh migration/concurrency chưa chạy do migrator thiếu quyền tạo schema riêng; coverage toàn hệ thống chưa đo lại. S11 vẫn IN_REVIEW cho các gate đó và UAT/pilot. Chi tiết tại [báo cáo](../../reviews/2026-10-05-admin-implementation.md), thao tác tại [hướng dẫn ADMIN](../../admin-guide.md). Không commit/push; dừng riêng preview18080/15173, giữ tiến trình người dùng8080/5173.
+
+### 06/10/2026 — Review luồng nghiệp vụ và baseline PRD/đặc tả
+
+Mở rộng theo yêu cầu người dùng: đối chiếu ADMIN tạo dự án/PM/user → PM nhập/giao file → Tester dùng máy/DOING/kết quả/ticket → Dev xử lý → retest → PM theo dõi. Hai audit độc lập chỉ đọc xác nhận gap file/session/máy thật/QA và ba nguồn kết quả hiện đang tách theo duyệt trước. Sửa defect DEV dùng in_progress thay progress, nút overview không kiểm canCreate và bug actions/copy trong read-only history; test hành vi RED→GREEN. Cập nhật docs S05/S06 bị lỗi thời về NA/closure/DEV.
+
+FullFE344/344 tests44files, BE scoped26/26 tests6suites, FEbuild/BEpackage PASS, JDT167sources0error0warning, Check-Contracts109operations PASS. SELECT metadata native V16:59tables560cols139FK269indexes; không fixture/DBwrites/migration/runtime restart. [PRD/đặc tả/từ điển/UAT](../../product/README.md) hoàn tất phần baseline và đề xuất F/Q cần duyệt; 57 kịch bản phân biệt source/PASS/gap/native pending. [Review](../../reviews/2026-10-06-system-workflow-review.md) ghi bằng chứng/giới hạn. Skills prompt-master/brainstorming/product-capability/spec-driven-development/API/security/TDD/verification; dispatching-parallel-agents cho audit chỉ đọc. Coverage toàn hệ thống chưa đo, schema test native/UAT vẫn pending. S11 IN_REVIEW, không commit/push/merge/deploy; giữ working tree ADMIN và listener8080/5173 của người dùng.
+
+### 06/10/2026 — Duyệt và triển khai F/Q
+
+Người dùng duyệt toàn bộ thiết kế F01–F05/Q01–Q03 (“mình duyệt hết”). Triển khai theo [kế hoạch F/Q](../../../tasks/plan.md) và [checklist](../../../tasks/todo.md), review từng phần. Dùng planning-and-task-breakdown, subagent-driven-development, incremental-implementation, api-design và TDD; không tự commit từ hướng dẫn skill.
+
+Task 1: V17/V18 và contract file-work/QA qua review spec/quality, không có source blocker. Kiểm tra tĩnh khóa/FK/type/identifier PASS; native migration, concurrency và preservation vẫn NOT_RUN. Đã thử tạo schema test bằng migrator cấu hình một lần nhưng không provision/access được; không fixture trên `tms`.
+
+Task 2: API giao file/My work qua review spec/quality; 34 test giao file và 48 test hồi quy liên quan PASS. Có RED→GREEN cho replay và quyền; coverage service 100% lines/69,14% branches, không suy toàn backend đạt 80%. Task 3: phiên dùng máy đã triển khai, clean javac và 65 test session/group PASS, đang review độc lập; coverage chưa đo. API chưa được kiểm chứng trên database native hoặc backend đang chạy. Phê duyệt thiết kế không thay gate nghiệm thu; S11 giữ IN_REVIEW, không restart listener người dùng hoặc push/deploy.
+
+### 06/10/2026 — F/Q checkpoint mã nguồn
+
+Task1–4 đã qua review spec/quality; phiên historical canAssign đã sửa, canonical attempt/session/FULL_CASE retest và Excel pinned build giữ nguồn riêng. Clean99 test + các lượt execution18/group43 riêng PASS; fresh javac122main/59test PASS. Task5 UI đang làm. Native fresh/upgrade/SQL/race/HTTP/UAT NOT_RUN, V17/V18 chưa áp trên tms. Xem [báo cáo F/Q](../../reviews/2026-10-06-fq-implementation.md). S11 IN_REVIEW, không commit/push/deploy.
+
+### 06/10/2026 — F/Q Task5 source gate
+
+5A core,5B router/sidebar/raw Excel transport,5C contextual library và grouped legacy đều review specification/quality APPROVE. Các lượt scoped test riêng66/165/158 PASS, build PASS; không cộng thành một full suite. Giữ annotation/file gốc, grouped normal execution chuyển đúng group, historyOnly read-only, ungrouped writes và PM controls giữ. Core V8 ba file90,51/86,68/89,44/98,75; browser/native/UAT chưa chạy. Cảnh báo chunk500,45kB được ghi P3. Tiếp Task6 typed QA; không commit/push, S11 IN_REVIEW. Xem [báo cáo F/Q](../../reviews/2026-10-06-fq-implementation.md) và [kịch bản UAT](../../uat/file-work-qa.md).
+
+### 06/10/2026 — F/Q Task6/7 và kiểm chứng cuối đang thực hiện
+
+Task6A/B/C và7A/B/C/C2/D/E/F đều qua review source; typed QA/canonical status, generic bypass/current permissions, shared evidence/comment capabilities, PM handoff, route/hash và nhãn QA đã nối. Có RED→GREEN cho bản nháp/conflict/recovery, quyền và nhãn hoạt động; các lượt scoped/coverage không cộng thành full suite. Full frontend sau sửa7F **598/598 test49file PASS**, build1696 module PASS/chunk530,01kB warning. Backend độc lập chọn rõ38 suite **390/390 PASS**,0errors/failures/skips; không gồm native/Testcontainers.
+
+Task8A runner6/6 và fresh javac127main/64test PASS, review Approved với các giới hạn transaction/guard-test; native fresh/upgrade/FK/preservation chưa chạy. Ba race identity SHARE/projectwait, BUG stale-command và exact QA comment overlap chưa viết/chưa chạy, không thay bằng session unique-key race. Task8B contract17file-work+14QA/handoff/50schemas đã review; sửa nullable composition với RED6fail→GREEN20/20, giữ109legacy operation checks/52doc checks. Diagnostics8C và review toàn nhánh tiếp tục; S11 IN_REVIEW, database native vẫn quan sát V16, chưa ápV17/V18 hoặc restart listener người dùng. [PRD/đặc tả](../../product/README.md), [hướng dẫn theo vai trò](../../file-work-qa-guide.md), [kiểm chứng MySQL](../../database/file-work-qa-verification.md) và [báo cáo](../../reviews/2026-10-06-fq-implementation.md) cập nhật theo gate. Không commit/push/merge/deploy.
+
+### 06/10/2026 — Final source gate F/Q APPROVED
+
+Diagnostics8C1/2/3 và review tổng pending ADMIN/F/Q đã hoàn tất; một wave sửa duy nhất và scoped re-review xử lý I1–I3/M1–M2, không phát hiện breakage mới. Form QA focus đúng field, giữ hash/draft; historical build đọc/xuất được với guards ghi giữ và PM recovery độc lập; bộ lọc Tester/đợt/build và rate/start/activity/mốc hạn có đủ. Enum nullable và cookie/CSRF contract đã đồng bộ. [Review cuối](../../reviews/2026-10-06-fq-final-review.md) giữ findings và verdict.
+
+Final FE612/61249files PASS sau retry riêng của một test cũ timeout ở lượt chạy song song; timeout5000ms giữ nguyên. BE394/39438suite offline/no failures/errors/skips; fresh javac127main/64test, JDT191nguồn0lỗi/0cảnh báo, build1696modules/package và JAR5class/18migration source-byte audit PASS. Contract27focused tests,109legacy+17F+14Q/50schemas/52docs PASS. Browser fixture320px không tràn trang, QA click/Enter giữ route/draft/focus, PM mở cancel khi workbook503; không gửi command hoặc lưu DB. Coverage toàn hệ thống chưa đo; warning chunk533,63kB/Mockito runtime và chi phí query giữ P3.
+
+Task8 source gate đóng; native fresh/upgrade/FK/preservation/SQL/HTTP/UAT/pilot vẫn mở, ba race chưa viết/chưa chạy và transaction độc lập chưa kiểm chứng. Schema riêng thiếu quyền provision/access, không fixture lên `tms`. Không migration/startup/restart user8080/5173/commit/push/merge/deploy. Workspace evidence được giữ vì chưa có commit/history thay thế và native release gate chưa đóng. S11 **IN_REVIEW**, không đổi thành DONE từ source approval.

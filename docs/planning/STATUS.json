@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-05",
+  "updatedAt": "2026-10-06T01:21:03.177Z",
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
@@ -8,6 +8,11 @@
   "phase": "IN_REVIEW",
   "implementationStarted": true,
   "notes": [
+    "06/10/2026 audit luồng ADMIN→PM→Tester→Dev→retest: sửa canonical DEV progress và 2 lỗi UI permission/read-only bằng RED→GREEN. FullFE344/344(44files), BE scoped26/26(6suites), builds PASS, JDT167sources0error0warning, contract structural checker PASS. SELECT native V16, metadata59tables/560cols/139FK; không ghi DB/fixture/migration hoặc restart8080/5173. Viết docs/product PRD/SRS/DATA-DICTIONARY/TRACEABILITY-UAT; gap phân công file/session/máy thật/file execution export và QA chờ duyệt, không gọi đã triển khai. Review docs/reviews/2026-10-06-system-workflow-review.md. S11 giữ IN_REVIEW; không commit/push.",
+    "05/10/2026 ADMIN A1–A4 đã triển khai, review từng phần và tổng thể đã duyệt sau sửa2 lỗi đồng thời. Flyway native V16 sau backup; fullFE341/341 PASS, BE133/133 theo XML của30suite chọn lọc, packagePASS, Eclipse167sources0errors0warnings. Browser đọc/form/responsive1440→320 PASS. Native fixture/fresh/concurrency chưa chạy do thiếu quyền1044; S11 giữ IN_REVIEW. Preview18080/15173 đã dừng, không đụng8080/5173. Không commit/push. Guide docs/admin-guide.md và báo cáo docs/reviews/2026-10-05-admin-implementation.md.",
+    "05/10/2026 người dùng duyệt toàn bộ thiết kế ADMIN, triển khai A1–A4 trên system-design. Đã bắt đầu A1; native MySQL V13, schema test riêng chưa có. Theo yêu cầu tự tạo đã thử CREATE DATABASE bằng migrator nhưng MySQL trả1044 (thiếu quyền). Không chạy fixture trên tms. Theo dõi tại docs/reviews/2026-10-05-admin-implementation.md; không commit/push trong tác vụ mới.",
+    "05/10/2026 yêu cầu mới: khu ADMIN riêng theo role, dashboard tất cả/một dự án, quản lý dự án/user/kho thiết bị. D1 chốt từng máy/một dự án mỗi thời điểm; D2 dùng hạn thực tế kết hợp PM ghi lý do/báo cáo. Đã khảo sát và lập đề xuất docs/planning/proposals/2026-10-05-admin-portal.md, chờ review thiết kế tổng thể theo brainstorming trước implementation; chưa sửa runtime/migration. Giữ S11 IN_REVIEW và phần CSS chưa commit.",
+    "05/10/2026 sửa UI cắt chữ select do height28px/padding16px và căn hàng trạng thái/chứng cứ trong 2 CSS chung. Browser native1440/390/320px, FE290/290 tests36files/build PASS; không đổi nghiệp vụ/BE/database. Xem docs/reviews/2026-10-05-work-item-ui.md; S11 giữ IN_REVIEW, chưa commit/push tác vụ này.",
     "05/10/2026 sửa đúng13 null-type-safety warnings tại3 file theo ảnh; Eclipse137source0error0warning,29/29 tests liên quan và verify/package PASS. Người dùng yêu cầu commit/push system-design cùng code tự lưu/xuất Excel chờ từ lượt trước. Không đổi schema/runtime nghiệp vụ; giữ gate isolated integration/UAT. Xem docs/reviews/2026-10-05-java-diagnostics.md.",
     "04/10/2026 user chốt tự lưu kết quả tài liệu, xuất bản cập nhật và giữ file gốc. V13 đã chạy native3307, vẫn56 bảng; import_rows+project_audit, PUT version/CSRF/idempotency, queue từng dòng và lịch sử. Browser demo đủ vòng/reload, Excel J2=NG, original hash khớp; native409/422/403/404/replay PASS. FE290/290 tests36files/build, BE82/82 tests17classes/verify, backup metadata test PASS. Sửa milestone ID/deadline và bộ lọc tổng quan không có dữ liệu. Xem docs/reviews/2026-10-04-document-results-and-wiring.md. Giữ IN_REVIEW: isolated integration/UAT/pilot; không commit/push.",
     "04/10/2026 theo phản hồi mới đã bỏ form inline: ô đổi liên tục Unexecuted→OK→P→NG→Fixed→NA giống develop, màu riêng cho chữ/viền/nền. State mỗi case tại giao diện, chưa ghi đợt; không giả báo đã lưu. FE284/284 tests35files/build, browser đủ vòng/màu/không hàng phụ PASS. Xem docs/reviews/2026-10-04-result-cycle-investigation.md. Không BE/schema/commit/push.",
@@ -59,7 +64,15 @@
     "01/10/2026 yêu cầu mới: tự review độ phức tạp database, vẽ ERD và ưu tiên MySQL native/Workbench, không yêu cầu Docker cho runtime. Metadata 56 bảng/514 cột/128 FK; giữ dữ liệu nguồn, chưa cutover server 3307 khi thiếu root credential.",
     "01/10/2026: theo yêu cầu mới, xuất ảnh ERD tĩnh giống mẫu: 9 PNG/SVG (1 tổng thể + 8 nhóm), đủ 56 bảng/514 cột/128 FK; xem docs/database/erd/images/README.md. Không xây thêm web, không sửa schema hoặc thay đổi trạng thái nghiệm thu sprint.",
     "03/10/2026: user yêu cầu review/cải tiến database. Đối chiếu 56 bảng với code/FK/index; đính chính application_info dùng khóa bootstrap Admin. Sửa JSON history UPDATE chỉ giữ trường có thể sửa và giá trị chuẩn hóa, bảo toàn lịch sử cũ. 3 WorkItemHistoryTest và Maven verify/package PASS; coverage helper mới 100%, không phải toàn module. Schema V11 không đổi; native chưa có credential/config, chưa integration/E2E mới. Review tại docs/reviews/2026-10-03-database-complexity.md; S11 vẫn IN_REVIEW, không commit/push/deploy.",
-    "03/10/2026: yêu cầu brainstorming bổ sung audit fields/chuẩn hóa N-M và hướng dẫn native MySQL. Đã rà đủ 56 bảng và 128 FK, xác nhận các quan hệ N-M chính có bảng trung gian; phát hiện actor/time thiếu và writer NA chưa cập nhật updated_by. Đề xuất Architectural tại docs/reviews/2026-10-03-database-audit-fields-relations.md đang chờ xem thiết kế, chưa là spec/plan được duyệt; chưa tạo V12 hoặc sửa backend. Guide Workbench bổ sung đường dùng backup SQL sẵn có không bật Docker. MySQL97/3307 Running, PlanOnly PASS, checksum backup khớp; chưa xác thực/import/cutover. Skill brainstorming/using-superpowers; S11 vẫn IN_REVIEW, không commit/push/deploy."
+    "03/10/2026: yêu cầu brainstorming bổ sung audit fields/chuẩn hóa N-M và hướng dẫn native MySQL. Đã rà đủ 56 bảng và 128 FK, xác nhận các quan hệ N-M chính có bảng trung gian; phát hiện actor/time thiếu và writer NA chưa cập nhật updated_by. Đề xuất Architectural tại docs/reviews/2026-10-03-database-audit-fields-relations.md đang chờ xem thiết kế, chưa là spec/plan được duyệt; chưa tạo V12 hoặc sửa backend. Guide Workbench bổ sung đường dùng backup SQL sẵn có không bật Docker. MySQL97/3307 Running, PlanOnly PASS, checksum backup khớp; chưa xác thực/import/cutover. Skill brainstorming/using-superpowers; S11 vẫn IN_REVIEW, không commit/push/deploy.",
+    "06/10/2026: người dùng duyệt toàn bộ F01–F05/Q01–Q03 (mình duyệt hết). Đang triển khai nhóm giao file, phiên/máy vật lý, execution/export theo lượt, QA và handoff theo tasks/plan.md; phê duyệt không là nghiệm thu. Giữ S11 IN_REVIEW, native test/UAT/pilot là gate riêng; không commit/push/deploy hoặc fixture trên tms.",
+    "06/10/2026 F/Q: Task1–5 source reviews PASS; coreUI, router/rawExcel và library/groupedlegacy nối xong, scoped tests/build PASS (không cộng overlapping suites). Task6A QA đang triển khai;6B/C,7,8 còn gate. docs/reviews/2026-10-06-fq-implementation.md; native V17/V18 fresh/upgrade/HTTP/UAT NOT_RUN, S11 IN_REVIEW giữ nguyên.",
+    "06/10/2026 F/Q: source Task1–6 reviewed PASS; QA core/boundary/evidence final scoped112 tests and fresh javac125 main/61 test PASS. These runs are not unique/full-suite/native acceptance. Task7/8 continue; MySQL V16, isolated schema privilege unavailable, native/FK/race/HTTP/UAT NOT_RUN.",
+    "06/10/2026 F/Q: Task1–7,8A/8B/8C source gates reviewed; FE598/598, current isolated offline BE390/390, fresh javac127main/64test and JDT191source0errors0warnings PASS. Contract109legacy+17file-work+14QA/handoff operations,50schemas,20focused tests PASS. Native V17/V18/fresh/upgrade/FK/HTTP/UAT remain NOT_RUN; three named races NOT_WRITTEN. Final wholebranch review still pending; no migration/runtime restart/commit/push/merge/deploy, S11 IN_REVIEW.",
+    "06/10/2026 final broad ADMIN/F/Q review: With fixes, no Critical; I1 QA error hash navigation, I2 archived build history/PM cancel recovery, I3 PM filters/rates/start/activity/milestone context. M1 nullable enums and M2 ADMIN auth contract names. One combined fix wave underway, no second broad review. Existing regression evidence preserved; native/HTTP/UAT/pilot remain separate. See docs/reviews/2026-10-06-fq-final-review.md.",
+    "06/10/2026 F/Q final source APPROVED: one broad ADMIN/F/Q review, one combined fix wave and one scoped re-review; I1–I3/M1–M2 addressed/no new breakage. Final612/612FE49files,394/394offlineBE38suites, freshjavac127main/64test/JDT1910errors0warnings, build/package/JAR18source-matched migrations/contracts PASS. FirstparallelFE611pass/1old-test-timeout preserved; serialretry passes with original timeout. UI-only fixture proof and cleanup recorded. Native V17/V18/SQL/fresh/upgrade/FK/preservation/HTTP/UAT/pilot remain NOT_RUN, three races NOT_WRITTEN and independent commit/rollback/Java guard regression open. No migration/user restart/commit/push/merge/deploy. See docs/reviews/2026-10-06-fq-implementation.md and fq-final-review.md; S11 IN_REVIEW.",
+    "2026-10-06: Người dùng yêu cầu tạo tài khoản với quyền tương ứng, tự test, bàn giao đầy đủ và push system-design. Quyền commit/push được chốt cho tác vụ này; không mở rộng sang merge/deploy. Native kiểm tra lại: tms V16; migrator chỉ có quyền tms; credential root cấu hình trả 1045. Backup tạo tại var/mysql-native/backups/2026-10-06T01-09-39-750Z-tms.sql.",
+    "2026-10-06 bàn giao: 7 null warnings sửa xong, JDT cuối192sources0error0warning; phát hiện/sửa HTTP500 gán thành viên do numeric archived projection (RED/GREEN18test, reviewApproved). Full offline396test/39suitePASS; 4tài khoản handover.admin/pm/tester/dev tạoquaAPI thật; PM/Tester/Dev gánDEMO-PILOT; 47kiểmtraAPI(28role+12read+7negative)PASS. NativeV17/V18/fullFQ vẫn chưa nghiệmthu vì root1045; không đánh dấuS11DONE."
   ],
   "sprints": [
     {
@@ -757,13 +770,22 @@
   "implementationBaseCommit": "3355cfc",
   "lastCompletedSprint": "S09",
   "nextSuggestedSprint": null,
-  "nextAction": "Kết quả tài liệu đã tự lưu và export bản cập nhật theo quyết định mới; giữ riêng execution/bug/retest. Chạy integration V13 trên schema test riêng khi có quyền, tiếp tục UAT/pilot theo báo cáo 2026-10-04-document-results-and-wiring.md. Không tự suy ra các gate đó đã đạt từ unit tests/browser demo.",
+  "nextAction": "Đã bàn giao tài khoản với 47 kiểm tra API và 396 test offline đạt; commit/push system-design được phép trong tác vụ 06/10. Còn cấp schema native hoặc credential root hợp lệ (1045), rồi kiểm thử fresh/upgrade V18 và trọn luồng F/Q. Chưa nghiệm thu S11, chưa áp V17/V18 hoặc thay listener ứng dụng.",
   "executionPolicy": {
     "continueSequentially": true,
     "authorizedAt": "2026-09-29",
     "userInstruction": "bắt đầu đi, và hãy luôn làm tiếp các sprint sau đó nhé",
     "perSprintVerificationRequired": true,
-    "commitPushMergeDeployAuthorized": false
+    "commitPushMergeDeployAuthorized": false,
+    "handoverAuthorization": {
+      "authorizedAt": "2026-10-06",
+      "accounts": true,
+      "selfTest": true,
+      "commit": true,
+      "pushBranch": "system-design",
+      "merge": false,
+      "deploy": false
+    }
   },
   "confirmedDecisions": {
     "S07": "ADR-007: full PM coverage, assigned tester, PM close/reopen, TMS authoritative internally",

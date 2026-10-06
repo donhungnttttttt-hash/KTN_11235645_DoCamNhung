@@ -1,0 +1,169 @@
+openapi: 3.0.3
+info:
+  title: TMS central management A2
+  version: 1.0.0
+  description: |
+    Enabled ADMIN session, rechecked in services. All writes require the token from /auth/csrf using its returned headerName (X-CSRF-TOKEN).
+    Identity creation/disable/delegation reuses POST/PATCH /users; role now includes DEV.
+    Delegated PM can still create TESTER only. No self-disable or password changes.
+    Public POST /projects now returns CENTRAL_CREATION_REQUIRED to ADMIN; use the central transaction.
+    Existing project records are preserved. No quotas; selected initial people are memberships.
+servers: [{url: /api/v1}]
+security: [{session: []}]
+paths:
+  /admin/projects:
+    post:
+      operationId: adminCreateProject
+      summary: Atomically create project, explicit PM/Tester/Dev memberships and selected physical allocations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [project, members]
+              properties:
+                project:
+                  type: object
+                  required: [code, name, timezone]
+                  properties:
+                    code: {type: string, pattern: '^[A-Za-z0-9][A-Za-z0-9_-]{1,31}$'}
+                    name: {type: string, minLength: 1, maxLength: 100}
+                    description: {type: string, maxLength: 500}
+                    timezone: {type: string, maxLength: 50, example: Asia/Ho_Chi_Minh}
+                devices:
+                  type: array
+                  maxItems: 1000
+                  description: Optional initial physical machines; distinct asset IDs and recipient selected among members. No resource quotas. Entire creation rolls back if any asset is unavailable.
+                  items:
+                    $ref: './device-inventory.openapi.yaml#/components/schemas/InitialAllocation'
+                members:
+                  type: array
+                  minItems: 1
+                  maxItems: 1000
+                  description: Unique enabled user IDs; at least one PM. DEV identities can only receive DEV membership. Creator is not enrolled unless explicitly selected.
+                  items:
+                    type: object
+                    required: [userId, projectRole]
+                    properties:
+                      userId: {type: string}
+                      projectRole: {type: string, enum: [PM, TESTER, DEV]}
+      responses:
+        '201': {description: 'Created object with id, code, name; project and memberships audited'}
+        '401': {description: Missing or disabled session}
+        '403': {description: Not ADMIN or missing CSRF}
+        '404': {description: Selected user not found or disabled}
+        '409': {description: Duplicate code, stale asset version or unavailable asset}
+        '422': {description: Invalid input, timezone, duplicate membership, missing PM or invalid role}
+  /admin/projects/{id}:
+    patch:
+      operationId: adminUpdateProject
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [expectedVersion]
+              properties:
+                name: {type: string, minLength: 1, maxLength: 100}
+                description: {type: string, maxLength: 500}
+                timezone: {type: string, maxLength: 50}
+                expectedVersion: {type: integer, format: int64}
+      responses:
+        '200': {description: 'Current id/name/description/timezone/version; audited'}
+        '401': {description: Missing or disabled session}
+        '403': {description: Not ADMIN or missing CSRF}
+        '404': {description: Project not found}
+        '409': {description: Version conflict or archived project; reload current version while preserving draft}
+        '422': {description: Invalid input or timezone}
+  /admin/users:
+    get:
+      operationId: adminUsers
+      description: One identity per row, including identities without projects. Project filtering uses EXISTS active membership. Includes public identity fields and active memberships; never secrets.
+      parameters:
+        - {name: projectId, in: query, schema: {type: integer, format: int64}}
+        - {name: keyword, in: query, schema: {type: string, maxLength: 100}}
+        - {name: role, in: query, schema: {type: string, enum: [ADMIN, PM, TESTER, DEV]}}
+        - {name: enabled, in: query, schema: {type: boolean}}
+        - {name: page, in: query, schema: {type: integer, minimum: 0, default: 0}}
+        - {name: size, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+      responses:
+        '200':
+          description: Stable created_at/id ordering, same count filters
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, page, size, totalElements]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: {type: string}
+                        username: {type: string}
+                        displayName: {type: string}
+                        role: {type: string, enum: [ADMIN, PM, TESTER, DEV]}
+                        enabled: {type: boolean}
+                        canCreateUsers: {type: boolean}
+                        version: {type: integer, format: int64}
+                        createdAt: {type: string, format: date-time}
+                        memberships: {type: array, items: {type: object, description: 'projectId, code, name, projectRole, version'}}
+                  page: {type: integer}
+                  size: {type: integer}
+                  totalElements: {type: integer, format: int64}
+        '401': {description: Missing or disabled session}
+        '403': {description: Not ADMIN}
+        '404': {description: Project filter not found}
+        '422': {description: Invalid filters}
+  /admin/projects/{id}/members:
+    get:
+      operationId: adminProjectMembers
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '200': {description: 'Active members: membershipId, userId, username, displayName, systemRole, projectRole, active, version'}
+        '401': {description: Missing session}
+        '403': {description: Not ADMIN}
+        '404': {description: Missing project}
+  /admin/projects/{id}/members/{user}:
+    parameters:
+      - {$ref: '#/components/parameters/Id'}
+      - {name: user, in: path, required: true, schema: {type: string}}
+    put:
+      operationId: adminSetMember
+      description: Legacy PUT /projects/{id}/members/{userId} has the same ADMIN service guard. Candidate lookup supplies version for inactive memberships so restore is versioned.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [projectRole]
+              properties:
+                projectRole: {type: string, enum: [PM, TESTER, DEV, MEMBER]}
+                expectedVersion: {type: integer, minimum: 0, nullable: true, description: Required for existing active or inactive membership; null for new}
+      responses:
+        '200': {description: Current MemberInfo with new version; audited}
+        '401': {description: Missing session}
+        '403': {description: Not ADMIN or CSRF missing}
+        '404': {description: Missing project}
+        '409': {description: Archived project, stale version or last PM}
+        '422': {description: Invalid role or disabled/missing user}
+    delete:
+      operationId: adminRemoveMember
+      parameters:
+        - {name: expectedVersion, in: query, required: true, schema: {type: integer, minimum: 0}}
+      responses:
+        '204': {description: Membership inactive; historical results preserved and action audited}
+        '401': {description: Missing session}
+        '403': {description: Not ADMIN or CSRF missing}
+        '404': {description: Missing project}
+        '409': {description: Archived project, stale version or last PM}
+components:
+  securitySchemes:
+    session: {type: apiKey, in: cookie, name: TMS_SESSION}
+  parameters:
+    Id: {name: id, in: path, required: true, schema: {type: integer, format: int64}}

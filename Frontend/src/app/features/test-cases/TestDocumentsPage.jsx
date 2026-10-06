@@ -9,6 +9,7 @@ import './test-cases.css';
 import './test-documents.css';
 
 const results = [['OK','OK'],['FIXED','Đã sửa'],['NG','NG'],['P','Tạm dừng'],['NA','Ngoài phạm vi'],['UNEXECUTED','Chưa chạy']];
+const positiveId = value => (typeof value === 'number' || typeof value === 'string') && /^[1-9]\d*$/.test(String(value)) && Number.isSafeInteger(Number(value));
 
 export function TestDocumentsPage({ navigate }) {
   const { currentProject } = useProject() || {};
@@ -47,6 +48,7 @@ function DocumentLibrary({ project, navigate }) {
     <div className="td-heading-row">
       <div><h2 className="text-sm font-bold text-slate-900">Thư viện test case</h2><p className="td-muted">Danh sách tài liệu Excel · {project.name}</p></div>
       <div className="td-actions">
+        <button className="cat-btn" onClick={() => navigate('/tests/file-work')}>Công việc theo file</button>
         {canImport && <button className="cat-btn cat-btn-mint" onClick={() => setShowImport(true)}><Upload size={14} /> Nhập Excel</button>}
         <button className="cat-btn" onClick={() => navigate('/tests/cases')}><ListChecks size={14} /> Tất cả test case</button>
         <button className="cat-btn" aria-label="Làm mới tài liệu" disabled={loading} onClick={load}><RefreshCw size={14}/></button>
@@ -63,7 +65,7 @@ function DocumentLibrary({ project, navigate }) {
         <table className="td-file-table">
           <thead><tr><th scope="col">No.</th><th scope="col">Tài liệu test</th><th scope="col">Số dòng</th>{results.map(([key,label]) => <th scope="col" key={key}>{label}</th>)}<th scope="col">Cập nhật lúc</th><th scope="col">Người cập nhật</th></tr></thead>
           <tbody>{data?.items?.map(doc => <tr key={doc.id}>
-            <td>{doc.id}</td><td><button className="td-file-link" title={doc.fileName} onClick={() => navigate(`/tests/documents/${doc.id}`)}><FileSpreadsheet size={17}/><span>{doc.fileName}</span></button><small className="td-sheet">{doc.sheetName}</small></td>
+            <td>{doc.id}</td><td><button className="td-file-link" title={doc.fileName} onClick={() => navigate(`/tests/documents/${doc.id}`)}><FileSpreadsheet size={17}/><span>{doc.fileName}</span></button><small className="td-sheet">{doc.sheetName}</small>{positiveId(doc.id) && <button className="cat-btn" aria-label={`Công việc theo file của ${doc.fileName}`} onClick={() => navigate(`/tests/file-work?documentId=${doc.id}`)}>Công việc theo file</button>}</td>
             <td>{doc.totalRows}</td>{results.map(([key]) => <td key={key}><span className={(doc.resultCounts?.[key] || 0) > 0 ? `td-count td-count-${key.toLowerCase()}` : 'td-zero'}>{doc.resultCounts?.[key] ?? 0}</span></td>)}
             <td className="td-nowrap">{documentDate(doc.updatedAt,project.timezone)}</td><td>{doc.updatedBy || '—'}</td>
           </tr>)}</tbody>

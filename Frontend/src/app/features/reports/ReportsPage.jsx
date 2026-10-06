@@ -7,6 +7,7 @@ import { KpiSummaryBar } from '../../modules/KpiSummaryBar';
 import { ErrorNotice, Field, Pager, Result, formatTime } from '../test-execution/components';
 import '../test-execution/execution.css';
 import './reports.css';
+import {ProjectStatusReports} from '../admin/ProjectStatusReports';
 
 export function ReportsPage({ mode = 'overview' }) {
   const { currentProject } = useProject() || {};
@@ -52,6 +53,7 @@ function Report({ project, mode }) {
       {cycles?.totalPages > 1 && <div className="ex-checks"><button className="cat-btn" disabled={!cyclePage} onClick={() => { setCyclePage(x => x - 1); setCycle(''); setPage(0); }}>Đợt trước</button><button className="cat-btn" disabled={cyclePage + 1 >= cycles.totalPages} onClick={() => { setCyclePage(x => x + 1); setCycle(''); setPage(0); }}>Đợt tiếp</button></div>}
       <Field label="Build thực thi"><select className="cat-select" value={buildId} onChange={e => { setBuild(e.target.value); setPage(0); }}><option value="">Mới nhất trên mọi build</option>{builds.map(b => <option key={b.id} value={b.id}>{b.versionLabel} ({b.buildNumber || '—'})</option>)}</select></Field>
     </section>
+    {mode==='progress'&&<ProjectStatusReports projectId={project.id}/>}
     <ErrorNotice error={filterError} retry={refresh} /><ErrorNotice error={error} retry={refresh} /><ErrorNotice error={exportError} />
     {!data && !error && <p role="status">Đang tải số liệu…</p>}
     {data && <>

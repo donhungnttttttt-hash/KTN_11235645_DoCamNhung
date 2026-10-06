@@ -68,9 +68,23 @@ function ResultContextDialog({execution:e,children}){
   </section></div>;
 }
 
+function FileWorkContextDialog({ execution:e, navigate, disabled }) {
+  const ref=useDialogFocus(e.close);
+  const groupId=e.selected.fileWorkGroupId;
+  const valid=(typeof groupId === 'number' || typeof groupId === 'string') && /^[1-9]\d*$/.test(String(groupId)) && Number.isSafeInteger(Number(groupId));
+  return <div className="ex-modal"><section ref={ref} tabIndex={-1} className="ex-dialog" role="dialog" aria-modal="true" aria-label={`Công việc theo file · ${e.selected.caseNo}`}>
+    <div className="ex-heading"><h3>Công việc theo file · {e.selected.caseNo}</h3><button className="cat-btn" onClick={e.close}>Đóng</button></div>
+    <p>Lượt kiểm thử này thuộc công việc theo file. Mở công việc để xem ngữ cảnh phiên và ghi kết quả.</p>
+    {!valid && <p role="alert">Không mở được công việc theo file vì mã nhóm không hợp lệ. Tải lại kết quả để kiểm tra.</p>}
+    <button className="cat-btn" disabled={disabled || !valid} onClick={()=>{navigate(`/tests/file-work/${groupId}`);e.close();}}>Công việc theo file</button>
+  </section></div>;
+}
+
 export function DocumentExecutionControls({ execution:e, project, navigate, disabled=false }){
-  const {user}=useAuth();
+  const {user,hasRole}=useAuth();
+  const dev=hasRole?.('DEV') || project?.projectRole==='DEV';
   const picker=Boolean(e.requested && (!e.selected || !e.context));
+  const grouped=e.selected?.fileWorkGroupId != null && !e.requested?.historyOnly;
   const controls=<fieldset disabled={disabled} className="td-execution-controls" aria-label="Ngữ cảnh ghi kết quả">
       <label>Đợt kiểm thử <select aria-label="Đợt ghi kết quả" value={e.choice.cycleId} onChange={event=>e.choose(event.target.value)}>
         <option value="">Chọn đợt kiểm thử</option>
@@ -86,7 +100,9 @@ export function DocumentExecutionControls({ execution:e, project, navigate, disa
     </fieldset>;
   return <>
     {picker?<ResultContextDialog execution={e}>{controls}</ResultContextDialog>:e.open?controls:null}
-    {e.selected && e.context && <AttemptDialog key={e.selected.id} projectId={project.id} run={e.selected} builds={e.context.builds} active={e.context.cycle.statusCode==='ACTIVE' && !project.archived} readOnly={e.requested?.historyOnly} currentUserId={user?.id} onClose={e.close} onSaved={e.refresh} timeZone={project.timezone}/>}
+    {e.selected && e.context && (grouped
+      ? <FileWorkContextDialog execution={e} navigate={navigate} disabled={disabled}/>
+      : <AttemptDialog key={e.selected.id} projectId={project.id} run={e.selected} builds={e.context.builds} active={e.context.cycle.statusCode==='ACTIVE' && !project.archived} readOnly={dev || e.requested?.historyOnly} currentUserId={user?.id} onClose={e.close} onSaved={e.refresh} timeZone={project.timezone}/>)}
     {e.scope && <CycleDecisionDialog projectId={project.id} run={e.scope} onClose={()=>e.setScope(null)} onSaved={()=>{e.setScope(null);e.refresh();}}/>}
   </>;
 }

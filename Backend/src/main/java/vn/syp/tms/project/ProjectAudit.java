@@ -11,7 +11,7 @@ public class ProjectAudit {
     public ProjectAudit(JdbcTemplate jdbc) { this.jdbc = jdbc; }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public void record(Long projectId, String actor, String entity, Long id, String action) {
+    public void record(@org.springframework.lang.Nullable Long projectId, String actor, String entity, Long id, String action) {
         jdbc.update("INSERT INTO project_audit (project_id,actor_id,entity_type,entity_id,action,occurred_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))",
                 projectId, actor, entity, id, action);
     }

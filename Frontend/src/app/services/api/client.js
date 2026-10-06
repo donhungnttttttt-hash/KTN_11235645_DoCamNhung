@@ -26,12 +26,13 @@ export function createApiClient({ baseUrl = "/api/v1", fetchImpl = (...args) => 
         ...options,
         credentials: "same-origin",
         signal: controller.signal,
-        headers: { Accept: responseType === 'blob' ? '*/*' : 'application/json', ...(options.body && !(options.body instanceof FormData) ? { "Content-Type": "application/json" } : {}), ...headers },
+        headers: { Accept: responseType === 'blob' || responseType === 'response' ? '*/*' : 'application/json', ...(options.body && !(options.body instanceof FormData) ? { "Content-Type": "application/json" } : {}), ...headers },
       });
       if (response.status === 401 && path !== "/auth/login") {
         unauthorizedListeners.forEach(listener => listener());
       }
       if (response.status === 204) return null;
+      if (response.ok && responseType === 'response') return response;
       if (response.ok && responseType === 'blob') return await response.blob();
       const isJson = response.headers.get("content-type")?.includes("application/json");
       let payload = null;

@@ -40,7 +40,9 @@ class ReleaseMigrationTest {
         assertThatThrownBy(()->ReleaseDatabaseConfig.validateReady(full)).isInstanceOf(RuntimeException.class);
         MigrationCommand.configuration(settings).target("10").load().migrate();
         assertThatThrownBy(()->ReleaseDatabaseConfig.validateReady(full)).isInstanceOf(RuntimeException.class);
-        assertThat(MigrationCommand.migrate(settings)).isEqualTo(1);
+        int pending=full.info().pending().length;
+        assertThat(pending).isPositive();
+        assertThat(MigrationCommand.migrate(settings)).isEqualTo(pending);
         assertThat(MigrationCommand.migrate(settings)).isZero();
         try(var connection=DriverManager.getConnection(mysql.getJdbcUrl(),"root",mysql.getPassword());var sql=connection.createStatement()) {
             sql.execute("CREATE USER 'runtime'@'%' IDENTIFIED BY 'isolated-runtime-only'");

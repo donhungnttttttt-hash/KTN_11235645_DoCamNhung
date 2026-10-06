@@ -2,7 +2,7 @@ import React, { useId, useRef, useState } from "react";
 import { ChevronDown, Plus } from "lucide-react";
 import { useProject } from "./ProjectProvider";
 import { useAuth } from "../auth/AuthProvider";
-import { CreateProjectDialog } from "./CreateProjectDialog";
+
 
 export function ProjectSelector() {
   const projectContext = useProject();
@@ -12,7 +12,7 @@ export function ProjectSelector() {
   const loading = projectContext?.loading || false;
   const { hasRole } = useAuth();
   const [open, setOpen] = useState(false);
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
+
   const triggerRef = useRef(null);
   const menuId = useId();
   function closeMenu() { setOpen(false); triggerRef.current?.focus(); }
@@ -81,7 +81,7 @@ export function ProjectSelector() {
                   className="project-selector-create-btn"
                   onClick={() => {
                     closeMenu();
-                    setShowCreateDialog(true);
+                    window.location.hash='/admin/projects';
                   }}
                 >
                   <Plus size={16} />
@@ -91,10 +91,6 @@ export function ProjectSelector() {
             )}
           </div>
         </>
-      )}
-
-      {showCreateDialog && (
-        <CreateProjectDialog onClose={() => setShowCreateDialog(false)} />
       )}
     </div>
   );

@@ -78,42 +78,56 @@ public class ProjectService {
     }
 
     public ProjectDtos.MemberInfo addOrUpdateMember(Long projectId, String actorId, String targetUserId, ProjectDtos.SetMember input) {
-        lockWritableProject(projectId, actorId);
-        if (!List.of("PM", "TESTER", "MEMBER").contains(input.projectRole())) {
+        requireAdmin(actorId);
+        var targetUser = lockMemberAccount(targetUserId);
+        lockAdminProject(projectId, actorId);
+        if (!List.of("PM", "TESTER", "DEV", "MEMBER").contains(input.projectRole())) {
             throw new BusinessException(422, "INVALID_ROLE", "Vai trò dự án không hợp lệ.");
         }
         
-        IdentityUser targetUser = users.findById(java.util.Objects.requireNonNull(targetUserId)).filter(account -> account.isEnabled()).orElseThrow(() -> new BusinessException(422,"INVALID_MEMBER","Tài khoản không tồn tại hoặc đã bị khóa."));
+        if("DEV".equals(targetUser.getRole()) && !"DEV".equals(input.projectRole()))
+            throw new BusinessException(422,"INVALID_ROLE","Tài khoản Dev chỉ được giao vai trò Dev.");
         
-        ProjectMembership m = membershipRepository.findByProjectIdAndUserId(projectId, targetUserId);
-        if (m == null) {
+        var current = membershipRepository.lockMember(projectId,targetUserId);
+        Long memberId;
+        long version;
+        if (current == null) {
             if(input.expectedVersion()!=null) throw new BusinessException(409,"VERSION_CONFLICT","Thành viên chưa tồn tại.");
-            m = new ProjectMembership(projectId, targetUserId, input.projectRole());
+            var member=membershipRepository.saveAndFlush(new ProjectMembership(projectId,targetUserId,input.projectRole()));
+            memberId=member.getId();version=member.getVersion();
         } else {
-            SettingsVersion.require(m.getVersion(),input.expectedVersion());
-            if (!"PM".equals(input.projectRole())) protectLastPm(projectId, m);
-            m.setProjectRole(input.projectRole());
-            m.setActive(true);
+            SettingsVersion.require(current.getVersion(),input.expectedVersion());
+            if (!"PM".equals(input.projectRole())) protectLastPm(projectId,current);
+            updateMember(current,input.projectRole(),true);
+            memberId=current.getId();version=current.getVersion()+1;
         }
-        membershipRepository.saveAndFlush(m);
-        audit.record(projectId,actorId,"MEMBERSHIP",m.getId(),"SET_ROLE");
-        return new ProjectDtos.MemberInfo(m.getId(), m.getUserId(), targetUser.getUsername(), targetUser.getDisplayName(), targetUser.getRole(), m.getProjectRole(), true, m.getVersion());
+        audit.record(projectId,actorId,"MEMBERSHIP",memberId,"SET_ROLE");
+        return new ProjectDtos.MemberInfo(memberId,targetUserId,targetUser.getUsername(),targetUser.getDisplayName(),targetUser.getRole(),input.projectRole(),true,version);
     }
 
     public void removeMember(Long projectId, String actorId, String targetUserId, Long expectedVersion) {
-        lockWritableProject(projectId, actorId);
-        ProjectMembership m = membershipRepository.findByProjectIdAndUserId(projectId, targetUserId);
-        if (m != null) {
-            SettingsVersion.require(m.getVersion(),expectedVersion);
-            protectLastPm(projectId, m);
-            m.setActive(false);
-            membershipRepository.saveAndFlush(m);
-            audit.record(projectId,actorId,"MEMBERSHIP",m.getId(),"REMOVE");
+        lockAdminProject(projectId, actorId);
+        var member=membershipRepository.lockMember(projectId,targetUserId);
+        if (member != null) {
+            SettingsVersion.require(member.getVersion(),expectedVersion);
+            protectLastPm(projectId,member);
+            updateMember(member,member.getProjectRole(),false);
+            audit.record(projectId,actorId,"MEMBERSHIP",member.getId(),"REMOVE");
         }
     }
 
+    private void updateMember(MembershipRepository.CurrentMember member,String role,boolean active) {
+        if(membershipRepository.updateCurrent(member.getId(),role,active,member.getVersion())!=1)
+            throw new BusinessException(409,"VERSION_CONFLICT","Thành viên đã thay đổi.");
+    }
+
+    public vn.syp.tms.identity.IdentityUserRepository.CurrentAccount lockMemberAccount(String userId) {
+        return users.lockAccount(userId).filter(account -> account.getEnabled())
+            .orElseThrow(() -> new BusinessException(422,"INVALID_MEMBER","Tài khoản không tồn tại hoặc đã bị khóa."));
+    }
+
     public List<ProjectDtos.MemberInfo> listMembers(Long projectId, String userId) {
-        requireMembership(projectId, userId);
+        if (!identityService.isAdmin(userId)) requireMembership(projectId, userId);
         return membershipRepository.findByProjectIdAndActiveTrue(projectId).stream()
             .map(m -> {
                 try {
@@ -134,6 +148,7 @@ public class ProjectService {
     }
 
     public void requirePmOrAdmin(Long projectId, String userId) {
+        requireNotDev(projectId,userId);
         requireMembership(projectId, userId);
         ProjectMembership m = membershipRepository.findByProjectIdAndUserId(projectId, userId);
         boolean isPm = m != null && m.isActive() && "PM".equals(m.getProjectRole());
@@ -151,14 +166,16 @@ public class ProjectService {
         requirePmOrAdmin(projectId, userId);
     }
 
-    private void protectLastPm(Long projectId, ProjectMembership member) {
-        if (member.isActive() && "PM".equals(member.getProjectRole()) &&
-                membershipRepository.findByProjectIdAndActiveTrue(projectId).stream().filter(m -> "PM".equals(m.getProjectRole())).count() <= 1) {
-            throw new BusinessException(409, "LAST_PM", "Dự án cần ít nhất một PM đang hoạt động.");
+    private void protectLastPm(Long projectId,MembershipRepository.CurrentMember member) {
+        if(member.getActive() && "PM".equals(member.getProjectRole())) {
+            var enabled=membershipRepository.lockEnabledPmUsers(projectId);
+            if(enabled.contains(member.getUserId()) && enabled.size()<=1)
+                throw new BusinessException(409,"LAST_PM","Dự án cần ít nhất một PM đang hoạt động.");
         }
     }
 
     public void requireProjectPm(Long projectId, String userId) {
+        requireNotDev(projectId,userId);
         requireMembership(projectId, userId);
         if (!"PM".equals(membershipRepository.findByProjectIdAndUserId(projectId, userId).getProjectRole())) {
             throw new BusinessException(403, "PROJECT_PM_REQUIRED", "Chỉ PM của dự án được phê duyệt phiên bản test case.");
@@ -166,11 +183,26 @@ public class ProjectService {
     }
 
     public ProjectDtos.MemberCandidate candidate(Long projectId,String actorId,String username) {
-        requirePmOrAdmin(projectId,actorId);
+        lockAdminProject(projectId,actorId);
         if(username==null || !username.matches("[A-Za-z0-9._-]{3,64}")) throw new BusinessException(422,"INVALID_USERNAME","Nhập chính xác tên đăng nhập.");
         var user=users.findByUsername(IdentityService.normalize(username)).filter(account -> account.isEnabled())
             .orElseThrow(()->new BusinessException(404,"NOT_FOUND","Không tìm thấy tài khoản đang hoạt động."));
         var member=membershipRepository.findByProjectIdAndUserId(projectId,user.getId());
         return new ProjectDtos.MemberCandidate(user.getId(),user.getUsername(),user.getDisplayName(),member==null?null:member.getVersion());
+    }
+
+    public void requireNotDev(Long projectId,String actor) {
+        var member=membershipRepository.findByProjectIdAndUserId(projectId,actor);
+        if ("DEV".equals(identityService.current(actor).getRole()) || member!=null && "DEV".equals(member.getProjectRole()))
+            throw new BusinessException(403,"DEV_READ_ONLY_RESULTS","Dev không được ghi kết quả kiểm thử.");
+    }
+    public void lockAdminProject(Long projectId,String actor) {
+        requireAdmin(actor);
+        var project=projectRepository.lockAdminState(projectId).orElseThrow(()->new BusinessException(404,"NOT_FOUND","Không tìm thấy dự án."));
+        if(project.getArchived()) throw new BusinessException(409,"ARCHIVED","Dự án đã được lưu trữ.");
+    }
+    public void requireAdmin(String actor) {
+        if (!"ADMIN".equals(identityService.lockCurrent(actor).getRole()))
+            throw new BusinessException(403,"ADMIN_REQUIRED","Chỉ ADMIN được quản lý thành viên dự án.");
     }
 }

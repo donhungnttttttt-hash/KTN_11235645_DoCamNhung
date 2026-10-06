@@ -1,0 +1,4186 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "File work — implemented F01–F05",
+    "version": "1.0.0",
+    "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. Effective global DEV can only read. No client actor/time, provenance switch, session-detail GET or DB-health routes. See markdown contract for transactional lifecycle policy. Bean Validation constraints return 422 VALIDATION_ERROR; malformed JSON and parameter type binding return 400 INVALID_REQUEST."
+  },
+  "paths": {
+    "/api/v1/projects/{projectId}/file-work-groups/metadata": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        }
+      ],
+      "get": {
+        "operationId": "fileWorkMetadata",
+        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Current PM canCreate; TESTER canViewMine; scope hints independent.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Metadata"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-groups/preview": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        }
+      ],
+      "post": {
+        "operationId": "previewFileWorkScope",
+        "description": "Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. No database write. Source COMMITTED; DRAFT cycle; pinned approved distinct revisions; errors returned inside 200 Preview.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Scope"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Preview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-groups": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        }
+      ],
+      "post": {
+        "operationId": "createFileWorkGroup",
+        "description": "Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. Creates scope in chunks <=100 in one transaction; max500 runs and50 configurations per cycle. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupDetail"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Created resource URI: /api/v1/projects/{projectId}/file-work-groups/{id}. Exact successful replay also returns 201."
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listFileWorkGroups",
+        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Group ID descending. mine requires consistent assignment to current actor; mismatched mine+assignee returns no rows. build filters session/attempt presence.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "in": "query",
+            "name": "mine",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "in": "query",
+            "name": "documentId",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "cycleId",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "assigneeMembershipId",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "buildId",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "READY",
+                "DOING",
+                "PAUSED",
+                "COMPLETED",
+                "CANCELLED"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "keyword",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 255
+            },
+            "description": "Literal filename search."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-groups/{groupId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "groupId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "getFileWorkGroup",
+        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Sessions latest100 descending. Selected build: latest session build, otherwise default.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-groups/{groupId}/assignment": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "groupId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "put": {
+        "operationId": "assignFileWorkGroup",
+        "description": "Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. Requires no DOING/PAUSED session, non-CLOSED cycle, all canonical run versions. MIXED assignment is repaired only by whole-group assignment. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Assignment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-groups/{groupId}/history": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "groupId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "fileWorkHistory",
+        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. ID-desc cursor; 50 per page; before=0 is latest, nextBefore null when exhausted.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "before",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/History"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-groups/{groupId}/sessions": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "groupId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listFileWorkSessions",
+        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Session ID descending.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "startFileWorkSession",
+        "description": "Current project TESTER, global role not DEV, consistently assigned every group run; session executor and current usable project/cycle/source/build/allocation/asset required. Cycle ACTIVE; no open group session; start new session after COMPLETED/CANCELLED allowed. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Start"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Created resource URI: /api/v1/projects/{projectId}/file-work-sessions/{id}. Exact successful replay also returns 201."
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-groups/{groupId}/eligible-allocations": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "groupId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "eligibleFileWorkAllocations",
+        "description": "Current project TESTER, global role not DEV, consistently assigned every group run; session executor and current usable project/cycle/source/build/allocation/asset required. Current own allocations, AVAILABLE compatible physical machine, no DOING session on asset; default build; ordered asset ID/allocation ID.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EligibleAllocations"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-sessions/{sessionId}/pause": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "sessionId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "pauseFileWorkSession",
+        "description": "Current project TESTER, global role not DEV, consistently assigned every group run; session executor and current usable project/cycle/source/build/allocation/asset required. DOING -> PAUSED, reason required. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PauseCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-sessions/{sessionId}/resume": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "sessionId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "resumeFileWorkSession",
+        "description": "Current project TESTER, global role not DEV, consistently assigned every group run; session executor and current usable project/cycle/source/build/allocation/asset required. PAUSED -> DOING, asset available. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-sessions/{sessionId}/complete": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "sessionId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "completeFileWorkSession",
+        "description": "Current project TESTER, global role not DEV, consistently assigned every group run; session executor and current usable project/cycle/source/build/allocation/asset required. DOING -> COMPLETED; selected build all applicable runs OK/NG, no P/NOT_RUN, every current NG linked to BUG. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-sessions/{sessionId}/cancel": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "sessionId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "cancelFileWorkSession",
+        "description": "Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. DOING/PAUSED -> CANCELLED; reason required; PM may cancel after underlying assignment/allocation revocation. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-groups/{groupId}/execution": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "groupId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "fileWorkExecutionView",
+        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Pinned immutable revisions, canonical build results and workbook cells. Default selected build is latest session or configuration default. NA derives scope decision. Other source rows are out of scope.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "buildId",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-groups/{groupId}/run-items/{runItemId}/attempts": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "groupId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        {
+          "in": "path",
+          "name": "runItemId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "post": {
+        "operationId": "recordFileWorkAttempt",
+        "description": "Current project TESTER, global role not DEV, consistently assigned every group run; session executor and current usable project/cycle/source/build/allocation/asset required. Calls canonical execution authority. Checks DOING/executor/group/run/build/session version before canonical attempt replay. Location points to canonical run-item attempts collection.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileAttempt"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attempt"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Created resource URI: /api/v1/projects/{projectId}/run-items/{runItemId}/attempts. Exact successful replay also returns 201."
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/file-work-groups/{groupId}/export": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        },
+        {
+          "in": "path",
+          "name": "groupId",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        }
+      ],
+      "get": {
+        "operationId": "exportFileWorkExecution",
+        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Consistent selected-build pinned snapshot; authorization precedes BLOB. SourceMode EXECUTION, preserves safe Unicode/style/unmapped cells, removes unsafe formulas/links, marks other rows OUT_OF_SCOPE.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "buildId",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Execution XLSX binary",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "private, no-store"
+                  ]
+                }
+              },
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "attachment; UTF-8 filename encoded by Spring ContentDisposition."
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "projectId": {
+        "in": "path",
+        "name": "projectId",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1
+        }
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string"
+          },
+          "fieldErrors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "field",
+                "code",
+                "message"
+              ]
+            }
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "requestId",
+          "fieldErrors"
+        ]
+      },
+      "Scope": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "cycleId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "configurationId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "revisionIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "minItems": 1,
+            "maxItems": 500,
+            "description": "Selected source revisions; preview reports duplicate IDs/cases as errors, create rejects them. Max500 distinct revisions, cycle max500 runs/max50 configurations."
+          },
+          "assigneeMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "expectedCycleVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "documentId",
+          "cycleId",
+          "configurationId",
+          "revisionIds",
+          "assigneeMembershipId",
+          "expectedCycleVersion"
+        ]
+      },
+      "Create": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "cycleId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "configurationId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "revisionIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "minItems": 1,
+            "maxItems": 500
+          },
+          "assigneeMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "expectedCycleVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "requestKey": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{8,64}$",
+            "minLength": 8,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "documentId",
+          "cycleId",
+          "configurationId",
+          "revisionIds",
+          "assigneeMembershipId",
+          "expectedCycleVersion",
+          "requestKey"
+        ]
+      },
+      "RunVersion": {
+        "type": "object",
+        "properties": {
+          "runItemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "runItemId",
+          "expectedVersion"
+        ]
+      },
+      "Assignment": {
+        "type": "object",
+        "properties": {
+          "assigneeMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "runVersions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RunVersion"
+            },
+            "minItems": 1,
+            "maxItems": 500
+          },
+          "requestKey": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{8,64}$",
+            "minLength": 8,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "assigneeMembershipId",
+          "reason",
+          "expectedVersion",
+          "runVersions",
+          "requestKey"
+        ]
+      },
+      "Start": {
+        "type": "object",
+        "properties": {
+          "allocationId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "buildId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "requestKey": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{8,64}$",
+            "minLength": 8,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "allocationId",
+          "buildId",
+          "expectedVersion",
+          "requestKey"
+        ]
+      },
+      "SessionCommand": {
+        "type": "object",
+        "properties": {
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "expectedGroupVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "nullable": true
+          },
+          "requestKey": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{8,64}$",
+            "minLength": 8,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "expectedVersion",
+          "expectedGroupVersion",
+          "requestKey"
+        ]
+      },
+      "PauseCommand": {
+        "type": "object",
+        "properties": {
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "expectedGroupVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1
+          },
+          "requestKey": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{8,64}$",
+            "minLength": 8,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "expectedVersion",
+          "expectedGroupVersion",
+          "requestKey",
+          "reason"
+        ],
+        "description": "Nonblank trimmed reason enforced by service (422 REASON_REQUIRED); DTO permits nullable reason for resume/complete."
+      },
+      "CancelCommand": {
+        "type": "object",
+        "properties": {
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "expectedGroupVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1
+          },
+          "requestKey": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{8,64}$",
+            "minLength": 8,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "expectedVersion",
+          "expectedGroupVersion",
+          "requestKey",
+          "reason"
+        ],
+        "description": "Nonblank trimmed reason enforced by service (422 REASON_REQUIRED); DTO permits nullable reason for resume/complete."
+      },
+      "FileAttempt": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "expectedSessionVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "resultCode": {
+            "type": "string",
+            "enum": [
+              "OK",
+              "NG",
+              "P"
+            ]
+          },
+          "buildId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "actualResult": {
+            "type": "string",
+            "maxLength": 8000,
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "nullable": true
+          },
+          "evidenceReference": {
+            "type": "string",
+            "maxLength": 1000,
+            "nullable": true
+          },
+          "requestKey": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{8,64}$",
+            "minLength": 8,
+            "maxLength": 64
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "sessionId",
+          "expectedSessionVersion",
+          "resultCode",
+          "buildId",
+          "requestKey",
+          "expectedVersion"
+        ],
+        "description": "NG requires nonblank actualResult; P requires reason, service 422. Session must remain DOING and usable even on exact attempt replay. No client-selected retest/provenance origin."
+      },
+      "Metadata": {
+        "type": "object",
+        "properties": {
+          "canCreate": {
+            "type": "boolean"
+          },
+          "canViewMine": {
+            "type": "boolean"
+          },
+          "canReadAll": {
+            "type": "boolean"
+          },
+          "membershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "archived": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "canCreate",
+          "canViewMine",
+          "canReadAll",
+          "membershipId",
+          "archived"
+        ]
+      },
+      "Capabilities": {
+        "type": "object",
+        "properties": {
+          "canAssign": {
+            "type": "boolean"
+          },
+          "canStart": {
+            "type": "boolean"
+          },
+          "canPause": {
+            "type": "boolean"
+          },
+          "canResume": {
+            "type": "boolean"
+          },
+          "canComplete": {
+            "type": "boolean"
+          },
+          "canCancel": {
+            "type": "boolean"
+          },
+          "canRecord": {
+            "type": "boolean"
+          },
+          "canExport": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "canAssign",
+          "canStart",
+          "canPause",
+          "canResume",
+          "canComplete",
+          "canCancel",
+          "canRecord",
+          "canExport"
+        ]
+      },
+      "Counts": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "notRun": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "ok": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "ng": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "na": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "p": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "executionRate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "nullable": true
+          },
+          "passRate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "nullable": true
+          }
+        },
+        "required": [
+          "total",
+          "notRun",
+          "ok",
+          "ng",
+          "na",
+          "p",
+          "executionRate",
+          "passRate"
+        ]
+      },
+      "GroupSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "documentId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "cycleId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "cycleName": {
+            "type": "string"
+          },
+          "cycleVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "configurationId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "environmentId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "deviceId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "defaultBuildId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Group metadata update only."
+          },
+          "selectedBuildId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "READY",
+              "DOING",
+              "PAUSED",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "currentSessionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "assetId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "assetCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "assignmentState": {
+            "type": "string",
+            "enum": [
+              "CONSISTENT",
+              "MIXED"
+            ]
+          },
+          "assigneeMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "assigneeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "caseCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "counts": {
+            "$ref": "#/components/schemas/Counts"
+          },
+          "openBugCount": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "pendingRetestCount": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/Capabilities"
+          },
+          "milestoneId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "milestoneName": {
+            "type": "string",
+            "nullable": true
+          },
+          "milestoneDueOn": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Cycle milestone calendar date; no UTC/timezone conversion."
+          },
+          "latestActivityAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Latest saved group update, canonical attempt on any build, or session transition. Read snapshot, not realtime."
+          }
+        },
+        "required": [
+          "id",
+          "projectId",
+          "documentId",
+          "fileName",
+          "cycleId",
+          "cycleName",
+          "cycleVersion",
+          "configurationId",
+          "environmentId",
+          "deviceId",
+          "defaultBuildId",
+          "version",
+          "updatedAt",
+          "selectedBuildId",
+          "state",
+          "currentSessionId",
+          "assetId",
+          "assetCode",
+          "startedAt",
+          "assignmentState",
+          "assigneeMembershipId",
+          "assigneeName",
+          "caseCount",
+          "counts",
+          "openBugCount",
+          "pendingRetestCount",
+          "capabilities",
+          "milestoneId",
+          "milestoneName",
+          "milestoneDueOn",
+          "latestActivityAt"
+        ]
+      },
+      "GroupItem": {
+        "type": "object",
+        "properties": {
+          "importRowId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "rowNumber": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "runItemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "testCaseId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "revisionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "caseNo": {
+            "type": "string"
+          },
+          "runVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "assigneeMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "assigneeName": {
+            "type": "string"
+          },
+          "excluded": {
+            "type": "boolean"
+          },
+          "scopeReason": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "importRowId",
+          "rowNumber",
+          "runItemId",
+          "testCaseId",
+          "revisionId",
+          "caseNo",
+          "runVersion",
+          "assigneeMembershipId",
+          "assigneeName",
+          "excluded",
+          "scopeReason"
+        ]
+      },
+      "PreviewItem": {
+        "type": "object",
+        "properties": {
+          "importRowId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "rowNumber": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "testCaseId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "revisionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "caseNo": {
+            "type": "string"
+          },
+          "approved": {
+            "type": "boolean"
+          },
+          "existingRunItemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "existingRunVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "nullable": true
+          }
+        },
+        "required": [
+          "importRowId",
+          "rowNumber",
+          "testCaseId",
+          "revisionId",
+          "caseNo",
+          "approved",
+          "existingRunItemId",
+          "existingRunVersion"
+        ]
+      },
+      "ScopeError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "importRowId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "revisionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "Preview": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "cycleId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "configurationId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "cycleVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "valid": {
+            "type": "boolean"
+          },
+          "selectedCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreviewItem"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScopeError"
+            }
+          }
+        },
+        "required": [
+          "documentId",
+          "cycleId",
+          "configurationId",
+          "cycleVersion",
+          "valid",
+          "selectedCount",
+          "items",
+          "errors"
+        ]
+      },
+      "PhysicalAsset": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "serial": {
+            "type": "string",
+            "nullable": true
+          },
+          "osName": {
+            "type": "string"
+          },
+          "osVersion": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "assetCode",
+          "type",
+          "model",
+          "serial",
+          "osName",
+          "osVersion"
+        ]
+      },
+      "SessionContext": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "documentId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "cycleId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "configurationId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "revisionIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          },
+          "environment": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 1
+              },
+              "code": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "required": [
+              "id",
+              "code",
+              "name",
+              "description"
+            ]
+          },
+          "device": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 1
+              },
+              "code": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "model": {
+                "type": "string",
+                "nullable": true
+              },
+              "osName": {
+                "type": "string"
+              },
+              "osVersion": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "required": [
+              "id",
+              "code",
+              "name",
+              "model",
+              "osName",
+              "osVersion"
+            ]
+          },
+          "build": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 1
+              },
+              "versionLabel": {
+                "type": "string"
+              },
+              "buildNumber": {
+                "type": "string",
+                "nullable": true
+              },
+              "platform": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "versionLabel",
+              "buildNumber",
+              "platform"
+            ]
+          },
+          "executor": {
+            "type": "object",
+            "properties": {
+              "membershipId": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 1
+              },
+              "displayName": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "membershipId",
+              "displayName",
+              "username"
+            ]
+          },
+          "physicalAsset": {
+            "$ref": "#/components/schemas/PhysicalAsset"
+          },
+          "allocation": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 1
+              },
+              "recipientMembershipId": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 1
+              },
+              "assignedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "id",
+              "recipientMembershipId",
+              "assignedAt"
+            ]
+          }
+        },
+        "required": [
+          "groupId",
+          "documentId",
+          "cycleId",
+          "configurationId",
+          "revisionIds",
+          "environment",
+          "device",
+          "build",
+          "executor",
+          "physicalAsset",
+          "allocation"
+        ]
+      },
+      "Session": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "groupId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "executorMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "executorName": {
+            "type": "string"
+          },
+          "allocationId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "assetId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "buildId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "DOING",
+              "PAUSED",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "groupVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "contextSnapshot": {
+            "$ref": "#/components/schemas/SessionContext"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastTransitionAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/Capabilities"
+          }
+        },
+        "required": [
+          "id",
+          "projectId",
+          "groupId",
+          "executorMembershipId",
+          "executorName",
+          "allocationId",
+          "assetId",
+          "assetCode",
+          "buildId",
+          "state",
+          "version",
+          "groupVersion",
+          "contextSnapshot",
+          "startedAt",
+          "lastTransitionAt",
+          "endedAt",
+          "capabilities"
+        ]
+      },
+      "GroupDetail": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/GroupSummary"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GroupItem"
+            }
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Session"
+            },
+            "maxItems": 100
+          }
+        },
+        "required": [
+          "group",
+          "items",
+          "sessions"
+        ]
+      },
+      "GroupPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GroupSummary"
+            }
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "items",
+          "totalItems",
+          "page",
+          "pageSize",
+          "totalPages"
+        ]
+      },
+      "SessionPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Session"
+            }
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "items",
+          "totalItems",
+          "page",
+          "pageSize",
+          "totalPages"
+        ]
+      },
+      "HistoryEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "groupId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "sessionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "CREATE",
+              "ASSIGN",
+              "START",
+              "PAUSE",
+              "RESUME",
+              "COMPLETE",
+              "CANCEL"
+            ]
+          },
+          "fromState": {
+            "type": "string",
+            "enum": [
+              "READY",
+              "DOING",
+              "PAUSED",
+              "COMPLETED",
+              "CANCELLED",
+              null
+            ],
+            "nullable": true
+          },
+          "toState": {
+            "type": "string",
+            "enum": [
+              "DOING",
+              "PAUSED",
+              "COMPLETED",
+              "CANCELLED",
+              null
+            ],
+            "nullable": true
+          },
+          "groupVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "sessionVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "nullable": true
+          },
+          "reason": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Action-specific immutable JSON: CREATE revisionIds; ASSIGN assigneeMembershipId/runVersions; START SessionContext; transitions buildId/assetId."
+          },
+          "actorMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "actorName": {
+            "type": "string"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "groupId",
+          "sessionId",
+          "action",
+          "fromState",
+          "toState",
+          "groupVersion",
+          "sessionVersion",
+          "reason",
+          "details",
+          "actorMembershipId",
+          "actorName",
+          "occurredAt"
+        ]
+      },
+      "History": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryEvent"
+            },
+            "maxItems": 50
+          },
+          "nextBefore": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          }
+        },
+        "required": [
+          "items",
+          "nextBefore"
+        ]
+      },
+      "EligibleAllocation": {
+        "type": "object",
+        "properties": {
+          "allocationId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "allocationVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "assetId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "osName": {
+            "type": "string"
+          },
+          "osVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "recipientMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "expectedReturnOn": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          }
+        },
+        "required": [
+          "allocationId",
+          "allocationVersion",
+          "assetId",
+          "assetCode",
+          "type",
+          "model",
+          "osName",
+          "osVersion",
+          "recipientMembershipId",
+          "expectedReturnOn"
+        ]
+      },
+      "EligibleAllocations": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/EligibleAllocation"
+        }
+      },
+      "Attempt": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "runItemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "attemptNo": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "resultCode": {
+            "type": "string",
+            "enum": [
+              "OK",
+              "NG",
+              "P"
+            ]
+          },
+          "buildId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "executorMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "executorName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "executedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actualResult": {
+            "type": "string",
+            "maxLength": 8000
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "evidenceReference": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "contextSnapshot": {
+            "type": "string",
+            "description": "Immutable JSON encoded as a string; build/environment/device/executor/revisionId."
+          },
+          "fileWorkSessionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "runItemId",
+          "attemptNo",
+          "resultCode",
+          "buildId",
+          "executorMembershipId",
+          "executorName",
+          "executedAt",
+          "actualResult",
+          "reason",
+          "evidenceReference",
+          "contextSnapshot",
+          "fileWorkSessionId"
+        ]
+      },
+      "ExecutionRow": {
+        "type": "object",
+        "properties": {
+          "importRowId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "rowNumber": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "runItemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "testCaseId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "revisionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "caseNo": {
+            "type": "string"
+          },
+          "runVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "assigneeMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "assigneeName": {
+            "type": "string"
+          },
+          "excluded": {
+            "type": "boolean"
+          },
+          "scopeReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceId": {
+            "type": "string",
+            "nullable": true
+          },
+          "revisionNo": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "titleVi": {
+            "type": "string"
+          },
+          "preconditionsVi": {
+            "type": "string",
+            "nullable": true
+          },
+          "stepsVi": {
+            "type": "string"
+          },
+          "expectedVi": {
+            "type": "string"
+          },
+          "titleJp": {
+            "type": "string",
+            "nullable": true
+          },
+          "preconditionsJp": {
+            "type": "string",
+            "nullable": true
+          },
+          "stepsJp": {
+            "type": "string",
+            "nullable": true
+          },
+          "expectedJp": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "resultCode": {
+            "type": "string",
+            "enum": [
+              "OK",
+              "NG",
+              "P",
+              "NA",
+              "NOT_RUN"
+            ]
+          },
+          "latestAttemptId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "attemptVersion": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "nullable": true
+          },
+          "executorMembershipId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "executorName": {
+            "type": "string",
+            "nullable": true
+          },
+          "executedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fileWorkSessionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true
+          },
+          "pendingBugLink": {
+            "type": "boolean"
+          },
+          "provenance": {
+            "type": "string",
+            "enum": [
+              "FILE_SESSION",
+              "RETEST_FULL_CASE",
+              "LEGACY",
+              "NONE"
+            ]
+          },
+          "physicalAsset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PhysicalAsset"
+              },
+              {
+                "type": "object",
+                "nullable": true,
+                "enum": [
+                  null
+                ]
+              }
+            ]
+          },
+          "sourceCells": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cells": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "importRowId",
+          "rowNumber",
+          "runItemId",
+          "testCaseId",
+          "revisionId",
+          "caseNo",
+          "runVersion",
+          "assigneeMembershipId",
+          "assigneeName",
+          "excluded",
+          "scopeReason",
+          "sourceId",
+          "revisionNo",
+          "titleVi",
+          "preconditionsVi",
+          "stepsVi",
+          "expectedVi",
+          "titleJp",
+          "preconditionsJp",
+          "stepsJp",
+          "expectedJp",
+          "sourceReference",
+          "resultCode",
+          "latestAttemptId",
+          "attemptVersion",
+          "executorMembershipId",
+          "executorName",
+          "executedAt",
+          "fileWorkSessionId",
+          "pendingBugLink",
+          "provenance",
+          "physicalAsset",
+          "sourceCells",
+          "cells"
+        ]
+      },
+      "ExecutionView": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/GroupSummary"
+          },
+          "buildId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "asOf": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "headers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "columns": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Actual workbook mapped semantic field/header to zero-based column index."
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExecutionRow"
+            }
+          }
+        },
+        "required": [
+          "group",
+          "buildId",
+          "asOf",
+          "headers",
+          "columns",
+          "rows"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "TMS_SESSION"
+      },
+      "csrfHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-TOKEN"
+      }
+    }
+  },
+  "x-error-codes": {
+    "403": [
+      "FORBIDDEN",
+      "NOT_ASSIGNED",
+      "NOT_SESSION_EXECUTOR"
+    ],
+    "409": [
+      "VERSION_CONFLICT",
+      "IDEMPOTENCY_CONFLICT",
+      "DUPLICATE_SCOPE",
+      "FILE_GROUP_EXISTS",
+      "ASSIGNMENT_MIXED",
+      "SESSION_OPEN",
+      "SESSION_NOT_DOING",
+      "INVALID_SESSION_STATE",
+      "ASSET_BUSY",
+      "ALLOCATION_INACTIVE",
+      "CYCLE_NOT_ACTIVE",
+      "RUN_EXCLUDED",
+      "ARCHIVED",
+      "FILE_SESSION_REQUIRED",
+      "SESSION_CONTEXT_MISMATCH",
+      "COMPLETION_BLOCKED"
+    ],
+    "422": [
+      "VALIDATION_ERROR",
+      "SCOPE_LIMIT",
+      "REVISION_NOT_APPROVED",
+      "INVALID_SCOPE",
+      "INVALID_PAGE",
+      "DEVICE_COMPATIBILITY_UNKNOWN",
+      "DEVICE_INCOMPATIBLE",
+      "INVALID_RESULT",
+      "ACTUAL_REQUIRED",
+      "REASON_REQUIRED"
+    ]
+  }
+}

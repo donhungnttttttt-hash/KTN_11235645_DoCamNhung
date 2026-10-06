@@ -49,7 +49,7 @@ class MigrationTest {
         assertThatThrownBy(flyway::clean).isInstanceOf(FlywayException.class);
         flyway.validate(); // Only the temporary copy changed; the real V1 remains valid.
         var upgrade = Flyway.configure().dataSource(mysql.getJdbcUrl(), mysql.getUsername(), mysql.getPassword())
-                .locations("classpath:db/migration").cleanDisabled(true).load();
+                .locations("classpath:db/migration").target("12").cleanDisabled(true).load();
         assertThat(upgrade.migrate().migrationsExecuted).isEqualTo(11);
         assertThat(upgrade.migrate().migrationsExecuted).isZero();
         try (var connection = DriverManager.getConnection(mysql.getJdbcUrl(), mysql.getUsername(), mysql.getPassword());
@@ -120,7 +120,7 @@ class MigrationTest {
                 sql.executeUpdate("INSERT INTO run_scope_decisions(id,project_id,run_item_id,excluded,reason,decided_by,decided_at) VALUES(1,1,1,TRUE,'Giữ quyết định cũ',1,UTC_TIMESTAMP(6))");
                 sql.executeUpdate("UPDATE run_items SET scope_decision_id=1 WHERE id=1");
             }
-            var latest=Flyway.configure().dataSource(previous.getJdbcUrl(),previous.getUsername(),previous.getPassword()).locations("classpath:db/migration").cleanDisabled(true).load();
+            var latest=Flyway.configure().dataSource(previous.getJdbcUrl(),previous.getUsername(),previous.getPassword()).locations("classpath:db/migration").target("12").cleanDisabled(true).load();
             assertThat(latest.migrate().migrationsExecuted).isEqualTo(3);
             assertThat(latest.migrate().migrationsExecuted).isZero(); latest.validate();
             try(var connection=DriverManager.getConnection(previous.getJdbcUrl(),previous.getUsername(),previous.getPassword());var sql=connection.createStatement()) {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { projectsApi } from '../../services/api/projects';
 
-const roles={PM:'Quản lý dự án (PM)',TESTER:'Kiểm thử viên',MEMBER:'Thành viên'};
+const roles={PM:'Quản lý dự án (PM)',TESTER:'Kiểm thử viên',DEV:'Lập trình viên',MEMBER:'Thành viên'};
 export function ProjectMembers({projectId,canEdit,onMembershipChange=()=>{}}) {
   const [members,setMembers]=useState(null);
   const [error,setError]=useState('');
