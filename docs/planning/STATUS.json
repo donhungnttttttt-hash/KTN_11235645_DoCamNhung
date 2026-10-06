@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-06T01:21:03.177Z",
+  "updatedAt": "2026-10-06T01:22:21.678Z",
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
@@ -72,7 +72,8 @@
     "06/10/2026 final broad ADMIN/F/Q review: With fixes, no Critical; I1 QA error hash navigation, I2 archived build history/PM cancel recovery, I3 PM filters/rates/start/activity/milestone context. M1 nullable enums and M2 ADMIN auth contract names. One combined fix wave underway, no second broad review. Existing regression evidence preserved; native/HTTP/UAT/pilot remain separate. See docs/reviews/2026-10-06-fq-final-review.md.",
     "06/10/2026 F/Q final source APPROVED: one broad ADMIN/F/Q review, one combined fix wave and one scoped re-review; I1–I3/M1–M2 addressed/no new breakage. Final612/612FE49files,394/394offlineBE38suites, freshjavac127main/64test/JDT1910errors0warnings, build/package/JAR18source-matched migrations/contracts PASS. FirstparallelFE611pass/1old-test-timeout preserved; serialretry passes with original timeout. UI-only fixture proof and cleanup recorded. Native V17/V18/SQL/fresh/upgrade/FK/preservation/HTTP/UAT/pilot remain NOT_RUN, three races NOT_WRITTEN and independent commit/rollback/Java guard regression open. No migration/user restart/commit/push/merge/deploy. See docs/reviews/2026-10-06-fq-implementation.md and fq-final-review.md; S11 IN_REVIEW.",
     "2026-10-06: Người dùng yêu cầu tạo tài khoản với quyền tương ứng, tự test, bàn giao đầy đủ và push system-design. Quyền commit/push được chốt cho tác vụ này; không mở rộng sang merge/deploy. Native kiểm tra lại: tms V16; migrator chỉ có quyền tms; credential root cấu hình trả 1045. Backup tạo tại var/mysql-native/backups/2026-10-06T01-09-39-750Z-tms.sql.",
-    "2026-10-06 bàn giao: 7 null warnings sửa xong, JDT cuối192sources0error0warning; phát hiện/sửa HTTP500 gán thành viên do numeric archived projection (RED/GREEN18test, reviewApproved). Full offline396test/39suitePASS; 4tài khoản handover.admin/pm/tester/dev tạoquaAPI thật; PM/Tester/Dev gánDEMO-PILOT; 47kiểmtraAPI(28role+12read+7negative)PASS. NativeV17/V18/fullFQ vẫn chưa nghiệmthu vì root1045; không đánh dấuS11DONE."
+    "2026-10-06 bàn giao: 7 null warnings sửa xong, JDT cuối192sources0error0warning; phát hiện/sửa HTTP500 gán thành viên do numeric archived projection (RED/GREEN18test, reviewApproved). Full offline396test/39suitePASS; 4tài khoản handover.admin/pm/tester/dev tạoquaAPI thật; PM/Tester/Dev gánDEMO-PILOT; 47kiểmtraAPI(28role+12read+7negative)PASS. NativeV17/V18/fullFQ vẫn chưa nghiệmthu vì root1045; không đánh dấuS11DONE.",
+    "2026-10-06: Commit2a0ace7 tập hợp code ADMIN/FQ, PRD/đặc tả và bản sửa null/projection đã review. Tiến trình kiểm chứng18080/15175 đã dừng; listener8080/5173 của người dùng giữ nguyên. Đang hoàn tất metadata và xác minh push remote, không merge/deploy."
   ],
   "sprints": [
     {
@@ -770,7 +771,7 @@
   "implementationBaseCommit": "3355cfc",
   "lastCompletedSprint": "S09",
   "nextSuggestedSprint": null,
-  "nextAction": "Đã bàn giao tài khoản với 47 kiểm tra API và 396 test offline đạt; commit/push system-design được phép trong tác vụ 06/10. Còn cấp schema native hoặc credential root hợp lệ (1045), rồi kiểm thử fresh/upgrade V18 và trọn luồng F/Q. Chưa nghiệm thu S11, chưa áp V17/V18 hoặc thay listener ứng dụng.",
+  "nextAction": "Hoàn tất gate native: cần schema test được cấp hoặc credential root hợp lệ (hiện1045), rồi kiểm thử fresh/upgrade V18, concurrency và trọn luồng F/Q. Tài khoản, 47 kiểm tra API, browser 4 vai trò và 396 test offline đã bàn giao; code ADMIN/FQ commit trên system-design theo quyền push của người dùng. Chưa nghiệm thu S11, chưa áp V17/V18 hoặc thay backend8080.",
   "executionPolicy": {
     "continueSequentially": true,
     "authorizedAt": "2026-09-29",

@@ -49,7 +49,7 @@ public class AdminOverviewService {
         """;
     private Map<String,Object> enrich(Map<String,Object> row) {
         row.put("metrics",ReportMetrics.counts(number(row,"total"),number(row,"na"),number(row,"ok"),number(row,"ng"),number(row,"pending")));
-        
+
         for(String key:List.of("total","na","ok","ng","pending")) row.remove(key);
         return row;
     }

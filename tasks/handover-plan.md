@@ -21,4 +21,4 @@ Cập nhật hướng dẫn/PRD/đặc tả/STATUS bằng kết quả thực t�
 - Task 1 hoàn tất, review Approved: 7 cảnh báo sửa xong; JDT cuối 192 source / 0 lỗi / 0 cảnh báo.
 - Task 2 tài khoản và kiểm tra quyền hoàn tất: 4 tài khoản, PM/Tester/Dev vào DEMO-PILOT, 47 kiểm tra HTTP, browser đăng nhập đủ 4 vai trò. Phát hiện/sửa thêm lỗi 500 khi gán thành viên do projection MySQL; regression RED/GREEN, review Approved; 396 test offline PASS.
 - Task 2 migration/full F/Q còn chặn bởi quyền MySQL: root cấu hình trả 1045, chưa có schema riêng. Đã backup; không chạy fixture phá dữ liệu trên tms hoặc ghi PASS không có bằng chứng.
-- Task 3 tài liệu/kiểm tra chuẩn bị push; báo cáo đầy đủ tại docs/reviews/2026-10-06-role-handover.md. Native UAT không vì push mà tự chuyển DONE.
+- Task 3 bộ tài liệu/kiểm tra đã hoàn thiện, code tập hợp tại commit `2a0ace7`; báo cáo đầy đủ tại docs/reviews/2026-10-06-role-handover.md. Trạng thái push được đối chiếu remote trong bước bàn giao cuối. Native UAT không vì push mà tự chuyển DONE.

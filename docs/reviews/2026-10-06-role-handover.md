@@ -65,4 +65,4 @@ Truy cập sau khi backend mới chạy trên cổng ứng dụng: `http://127.0
 
 Đã đăng xuất và dừng các tiến trình xác minh riêng 18080/15175. Listener người dùng 8080/5173 vẫn giữ nguyên; **backend 8080 chưa được thay bằng bản mới**. Không để tiến trình tạm với Flyway tắt tiếp tục phục vụ như bản chính.
 
-Commit/push `system-design` được thực hiện theo yêu cầu của người dùng, gồm phần ADMIN/FQ đã review và hai bản sửa trong báo cáo này; không merge vào `develop`, không force-push. Kết quả remote SHA được xác minh và báo trực tiếp sau push. Các giới hạn native nêu trên vẫn là việc cần hoàn tất để nghiệm thu, không được xóa khỏi bàn giao vì đã push code.
+Commit `2a0ace7` trên `system-design` tập hợp phần ADMIN/FQ đã review và hai bản sửa trong báo cáo này. Push được thực hiện theo yêu cầu của người dùng; không merge vào `develop`, không force-push. Kết quả remote SHA được xác minh và báo trực tiếp sau push. Các giới hạn native nêu trên vẫn là việc cần hoàn tất để nghiệm thu, không được xóa khỏi bàn giao vì đã push code.
