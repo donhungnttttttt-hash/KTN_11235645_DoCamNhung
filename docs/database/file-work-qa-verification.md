@@ -32,13 +32,14 @@ Sau run, schema có dữ liệu phục vụ kiểm chứng. Lần fresh thứ ha
 
 ## 4. Chạy workflow trên schema riêng đã ở V18
 
-Một schema riêng khác phải được chuẩn bị V18 hợp lệ trước khi gọi integration; runner không tự nâng cấp schema V16 ở chế độ này:
+Schema kiểm thử phải ở V18 hợp lệ trước khi gọi integration; có thể dùng schema đã chạy migration ở bước 3. Runner không tự nâng cấp schema V16 ở chế độ này:
 
 ```powershell
-rtk proxy node scripts/Test-FileWorkQaNative.cjs tms_docstest_202610060002 integration NativeFileWorkQaIntegrationTest
+rtk proxy node scripts/Test-FileWorkQaNative.cjs tms_docstest_202610060001 integration NativeFileWorkQaIntegrationTest
+rtk proxy node scripts/Test-FileWorkQaNative.cjs tms_docstest_202610060001 integration NativeFileWorkQaConcurrencyTest
 ```
 
-Source có workflow dịch vụ file/BUG/retest/QA và một số MockMvc checks, dùng rollback fixture của từng test. Chưa có kết quả chạy native. Outer transaction chưa chứng minh commit độc lập/isolation của command thất bại; ba lịch chạy đồng thời riêng được liệt kê trong [báo cáo](../reviews/2026-10-06-fq-implementation.md) còn chưa viết. Không coi một lần integration PASS là toàn bộ concurrency/HTTP/UAT đã PASS.
+Suite integration có workflow dịch vụ file/BUG/retest/QA và một số MockMvc checks, dùng rollback fixture của từng test. Suite concurrency bổ sung 5 kịch bản giao dịch thật, commit độc lập, rollback khi batch lỗi, và cập nhật đồng thời; fixture mang mã riêng được giữ lại trong schema test. Cả hai suite vẫn chưa có kết quả chạy native. Xem phạm vi và giới hạn tại [báo cáo bổ sung](../reviews/2026-10-06-native-completion-preflight.md). Không coi một lần integration PASS là toàn bộ concurrency/HTTP/UAT đã PASS.
 
 ## 5. Cập nhật database sử dụng sau kiểm chứng
 

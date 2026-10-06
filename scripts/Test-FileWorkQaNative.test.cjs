@@ -46,3 +46,5 @@ test('valid integration launches only selected test with structured secret-free 
  assert.equal(call.options.shell,false);assert.equal(call.options.env.TMS_TEST_FQ_MODE,'integration');
  assert.equal(call.options.env.TMS_TEST_FRESH_MIGRATION,'false');
 });
+
+test('concurrency selector is explicitly allowlisted only in integration mode',()=>{assert.equal(testPlan('integration','NativeFileWorkQaConcurrencyTest').selector,'NativeFileWorkQaConcurrencyTest');assert.throws(()=>testPlan('fresh-migration','NativeFileWorkQaConcurrencyTest'));});

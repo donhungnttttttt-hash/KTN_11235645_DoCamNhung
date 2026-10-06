@@ -6,8 +6,8 @@ const {parseConfig,query}=require('./database/mysql-client.cjs');
 const schemaPattern=/^tms_docstest_[a-f0-9]{12}$/;
 function requireSchema(schema){if(typeof schema!=='string'||!schemaPattern.test(schema)||schema.length!==25)throw Error('Dedicated tms_docstest_<12 lowercase hex> schema required.');}
 function testPlan(mode,selector){
- const allowed={'fresh-migration':'NativeFileWorkQaMigrationTest',integration:'NativeFileWorkQaIntegrationTest'};
- if(!Object.hasOwn(allowed,mode)||allowed[mode]!==selector)throw Error('Explicit mode and matching exact F/Q selector required.');
+ const allowed={'fresh-migration':['NativeFileWorkQaMigrationTest'],integration:['NativeFileWorkQaIntegrationTest','NativeFileWorkQaConcurrencyTest']};
+ if(!Object.hasOwn(allowed,mode)||!allowed[mode].includes(selector))throw Error('Explicit mode and matching exact F/Q selector required.');
  return {selector,environment:{TMS_TEST_FQ_MODE:mode,TMS_TEST_FRESH_MIGRATION:'false'}};
 }
 function testConfiguration(config,schema){

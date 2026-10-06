@@ -126,9 +126,11 @@ class NativeFileWorkQaMigrationTest {
 /** Shared in this source file so every native entry point validates before opening a connection. */
 final class NativeFqDatabase {
     private static final String OPTIONS="?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&allowPublicKeyRetrieval=true&sslMode=DISABLED";
-    static void requireMode(String mode){if(!mode.equals(System.getenv("TMS_TEST_FQ_MODE")))throw new IllegalStateException("Explicit native F/Q mode required");url();credentials();}
-    static String url(){
-        String value=System.getenv("TMS_TEST_DB_URL");
+    static void requireMode(String mode){requireMode(mode,System.getenv());}
+    static void requireMode(String mode,Map<String,String> env){if(!Set.of("integration","fresh-migration").contains(mode)||!mode.equals(env.get("TMS_TEST_FQ_MODE")))throw new IllegalStateException("Explicit native F/Q mode required");url(env);credentials(env);}
+    static String url(){return url(System.getenv());}
+    static String url(Map<String,String> env){
+        String value=env.get("TMS_TEST_DB_URL");
         if(value==null||!value.matches("jdbc:mysql://(?:127\\.0\\.0\\.1|localhost):[0-9]{1,5}/tms_docstest_[a-f0-9]{12}"+java.util.regex.Pattern.quote(OPTIONS)))throw new IllegalStateException("Exact isolated loopback URL required");
         int port=Integer.parseInt(value.substring(value.indexOf(':',13)+1,value.indexOf('/',13)));
         if(port<1||port>65535)throw new IllegalStateException("Invalid native port");return value;
@@ -136,11 +138,17 @@ final class NativeFqDatabase {
     static String schema(){String url=url();return url.substring(url.lastIndexOf('/')+1,url.indexOf('?'));}
     static String user(){credentials();return System.getenv("TMS_TEST_DB_USER");}
     static String password(){credentials();return System.getenv("TMS_TEST_DB_PASSWORD");}
-    private static void credentials(){if(System.getenv("TMS_TEST_DB_USER")==null||System.getenv("TMS_TEST_DB_USER").isBlank()||System.getenv("TMS_TEST_DB_PASSWORD")==null||System.getenv("TMS_TEST_DB_PASSWORD").isEmpty())throw new IllegalStateException("Native credentials required");}
+    private static void credentials(){credentials(System.getenv());}
+    private static void credentials(Map<String,String> env){if(env.get("TMS_TEST_DB_USER")==null||env.get("TMS_TEST_DB_USER").isBlank()||env.get("TMS_TEST_DB_PASSWORD")==null||env.get("TMS_TEST_DB_PASSWORD").isEmpty())throw new IllegalStateException("Native credentials required");}
     static Connection connect()throws SQLException {
-        String safe=url();credentials();var properties=new Properties();properties.setProperty("user",user());properties.setProperty("password",password());properties.setProperty("connectTimeout","3000");properties.setProperty("socketTimeout","10000");
+        return connect(Objects.toString(System.getenv("TMS_TEST_FQ_MODE"),""),System.getenv());
+    }
+    static Connection connect(String mode,Map<String,String> env)throws SQLException {
+        requireMode(mode,env);
+        String safe=url(env);var properties=new Properties();properties.setProperty("user",env.get("TMS_TEST_DB_USER"));properties.setProperty("password",env.get("TMS_TEST_DB_PASSWORD"));properties.setProperty("connectTimeout","3000");properties.setProperty("socketTimeout","10000");
         var c=DriverManager.getConnection(safe,properties);
-        try(var s=c.createStatement();var r=s.executeQuery("SELECT DATABASE()")){if(!r.next()||!schema().equals(r.getString(1))){c.close();throw new IllegalStateException("Selected native schema mismatch");}}
+        String expected=safe.substring(safe.lastIndexOf('/')+1,safe.indexOf('?'));
+        try(var s=c.createStatement();var r=s.executeQuery("SELECT DATABASE()")){if(!r.next()||!expected.equals(r.getString(1))){c.close();throw new IllegalStateException("Selected native schema mismatch");}}
         return c;
     }
     static Flyway flyway(String target){return Flyway.configure().dataSource(url(),user(),password()).target(target).cleanDisabled(true).load();}
