@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, test, expect, vi } from 'vitest';
 import { RoleApp } from '../../../AppEntry';
 import { AdminApp } from './AdminApp';
+import { AdminLayout } from './AdminLayout';
 
 const mocks=vi.hoisted(()=>({id:'a',role:'ADMIN',projectProvider:vi.fn(),projects:vi.fn(),overview:vi.fn(),project:vi.fn(),logout:vi.fn()}));
 vi.mock('../auth/AuthProvider',()=>({AuthProvider:({children})=>children,useAuth:()=>({user:{id:mocks.id,username:'admin.local',displayName:'Admin'},hasRole:role=>mocks.role===role,logout:mocks.logout})}));
@@ -14,6 +15,14 @@ vi.mock('../../services/api/admin',()=>({adminApi:{projects:mocks.projects,overv
 const empty={asOf:'2026-10-05T00:00:00Z',totalProjects:0,activeProjects:0,totalUsers:0,enabledUsers:0,openBugs:0,awaitingVerification:0,metrics:{total:0,na:0,applicable:0,ok:0,ng:0,pending:0,notRun:0,executionPercent:null,passPercent:null},byRole:[],byProject:[],attention:{overdueMilestones:[],withoutPm:[],awaitingVerification:[]}};
 afterEach(()=>{window.history.replaceState(null,'','#');mocks.projectProvider.mockClear();mocks.role='ADMIN';mocks.id='a';});
 describe('admin route boundary',()=>{
+ test('project scope keeps the named selection when browsing another page of projects',async()=>{
+  const api={projects:vi.fn(({page})=>Promise.resolve({items:page?[{id:2,code:'P2',name:'Second'}]:[{id:1,code:'P1',name:'First'}],totalElements:101})),project:vi.fn().mockResolvedValue({id:1,code:'P1',name:'First'})};
+  render(<AdminLayout path="/admin/projects/1" projectId="1" navigate={vi.fn()} api={api}/>);
+  await screen.findByRole('option',{name:'P1 · First'});
+  await userEvent.setup().click(screen.getByRole('button',{name:/^Dự án (tiếp|sau trong bộ chọn)$/}));
+  await screen.findByRole('option',{name:'P2 · Second'});
+  await waitFor(()=>expect(screen.getByLabelText('Phạm vi dự án').selectedOptions[0].textContent).toBe('P1 · First'));
+ });
  test('different identity remount cannot inherit a retained explicit workspace query',async()=>{
   const workspaceIdentity={current:null};window.history.replaceState(null,'','#/dashboard?workspace=1');
   const first=render(<RoleApp workspaceIdentity={workspaceIdentity}/>);expect(screen.getByText('Project workspace')).toBeInTheDocument();first.unmount();

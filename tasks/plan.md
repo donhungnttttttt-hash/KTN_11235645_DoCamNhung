@@ -106,3 +106,10 @@ Native test/UAT/pilot/productionNFR remain separate gates. Latest user approval 
 - [x] Frontend 614/614, file-work 91/91, build và diff check PASS; coverage chưa đo. Không chạy lại BE vì không đổi API/schema.
 - [x] Cập nhật PRD/spec hiện hành V20; ghi đánh giá khách hàng và backlog có acceptance tại `docs/reviews/2026-10-07-responsive-product-review.md`.
 - [ ] UAT/pilot có người dùng ký, Safari/Firefox/thiết bị thật và NFR vận hành vẫn là phần tiếp theo; không suy ra hoàn tất từ kiểm tra bố cục.
+
+### Follow-up cùng ngày: Phạm vi dự án và thao tác khách hàng
+
+- [x] Tái hiện nhãn lệch đáy; thay bộ chọn riêng bằng bộ chọn dùng chung, label trên/select44px/tên đầy đủ; rà cả các control cạnh nhau.
+- [x] RED→GREEN cho tên dự án khi phân trang, đổi ID lúc lookup chờ và Xóa bộ lọc (PM/Tester) giữ document/My work.
+- [x] Admin/File-work141/141, frontend618/618, build PASS; Chrome23 trạng thái bộ chọn + 4 viewport file-work; không có mutation dữ liệu nghiệp vụ.
+- [x] Báo cáo khách hàng và backlog có tiêu chí: `docs/reviews/2026-10-07-project-scope-customer-followup.md`. Không suy đã làm notification/checklist/closure mới từ yêu cầu đánh giá.

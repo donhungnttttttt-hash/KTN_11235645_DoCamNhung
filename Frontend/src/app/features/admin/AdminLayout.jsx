@@ -1,16 +1,13 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { Home, FolderKanban, Users, TabletSmartphone, ScrollText, PanelsTopLeft } from 'lucide-react';
 import { useAuth } from '../auth/AuthProvider';
 import { adminApi } from '../../services/api/admin';
-import { useAdminRead, ReadState } from './shared';
+import { AdminUserProjectFilter } from './AdminUserProjectFilter';
 
 export function AdminLayout({path,projectId,navigate,children,api=adminApi}) {
   const {user,logout}=useAuth();
   const [logoutError,setLogoutError]=useState('');const [busy,setBusy]=useState(false);
-  const [pickerPage,setPickerPage]=useState(0);
   const projectsPage=path.startsWith('/admin/projects');
-  const load=useCallback(signal=>projectsPage ? api.projects({page:pickerPage,size:100},{signal}) : Promise.resolve({items:[],totalElements:0}),[api,pickerPage,projectsPage]);
-  const picker=useAdminRead(`picker:${projectsPage}:${pickerPage}`,load);
   async function signOut() {setBusy(true);setLogoutError('');try{await logout();}catch(error){setLogoutError(error.message);}finally{setBusy(false);}}
   return <div className="admin-shell">
     <a className="admin-skip" href="#admin-main" onClick={event=>{event.preventDefault();document.getElementById('admin-main')?.focus();}}>Đến nội dung</a>
@@ -35,8 +32,7 @@ export function AdminLayout({path,projectId,navigate,children,api=adminApi}) {
     <main id="admin-main" className="admin-main" tabIndex={-1}>
       {logoutError && <p role="alert">{logoutError}</p>}
       {projectsPage && <section className="admin-project-filter" aria-label="Lọc dự án">
-        <div className="admin-scope"><label htmlFor="admin-project-scope">Phạm vi dự án</label><select id="admin-project-scope" value={projectId || ''} onChange={e=>navigate(path,e.target.value)}><option value="">Tất cả dự án</option>{projectId && !picker.data?.items.some(p=>String(p.id)===String(projectId)) && <option value={projectId}>Dự án #{projectId}</option>}{picker.data?.items.map(p=><option key={p.id} value={p.id}>{p.code} · {p.name}</option>)}</select>{picker.data?.totalElements>100 && <div className="admin-picker-pages"><button disabled={!pickerPage} onClick={()=>setPickerPage(pickerPage-1)} aria-label="Dự án trước trong bộ chọn">‹</button><span>{pickerPage+1}</span><button disabled={(pickerPage+1)*100>=picker.data.totalElements} onClick={()=>setPickerPage(pickerPage+1)} aria-label="Dự án sau trong bộ chọn">›</button></div>}</div>
-        {picker.error && <ReadState {...picker}/>}
+        <AdminUserProjectFilter api={api} label="Phạm vi dự án" value={projectId || ''} onChange={id=>navigate(path,id)}/>
       </section>}
       {children}
     </main>

@@ -26,6 +26,29 @@ function detail(g=group,s=session,r=row) { fileWorkApi.detail.mockResolvedValue(
 beforeEach(() => {vi.resetAllMocks(); context.currentProject={id:1,projectRole:'PM',name:'Project'};fileWorkApi.metadata.mockResolvedValue({canCreate:false,canViewMine:true,canReadAll:true,archived:false});workItemsApi.metadata.mockResolvedValue({canCreate:true,canCreateQa:true,membershipId:2});workItemsApi.list.mockResolvedValue(page([]));fileWorkApi.list.mockResolvedValue(page([]));detail();projectsApi.listCatalog.mockResolvedValue([{id:6,versionLabel:'B6'},{id:13,versionLabel:'B13'}]);projectsApi.listMembers.mockResolvedValue([]);fileWorkApi.eligibleAllocations.mockResolvedValue([]);fileWorkApi.history.mockResolvedValue({items:[],nextBefore:0});fileWorkApi.sessions.mockResolvedValue(page([session]));executionApi.attempts.mockResolvedValue(page([]));});
 afterEach(cleanup);
 describe('customer-facing file workflow', () => {
+ it.each([false,true])('clears search filters without changing document scope or My work (%s)', async mine => {
+   fileWorkApi.metadata.mockResolvedValue({canCreate:!mine,canViewMine:mine,canReadAll:true});
+   projectsApi.listMembers.mockResolvedValue([{membershipId:21,displayName:'Lan',projectRole:'TESTER'}]);
+   executionApi.cycles.mockResolvedValue(page([{id:5,name:'Cycle'}]));
+   fileWorkApi.list.mockImplementation(async (_project,filters)=>page(filters.keyword || filters.state?[]:[group]));
+   render(<FileWorkPage navigate={vi.fn()} documentId={4}/>);
+   await screen.findByRole('button',{name:'test.xlsx'});
+   await screen.findByRole('option',{name:'Lan'});
+   fireEvent.change(screen.getByLabelText('Đợt theo dõi'),{target:{value:'5'}});
+   fireEvent.change(screen.getByLabelText('Build theo dõi'),{target:{value:'13'}});
+   if(!mine)fireEvent.change(screen.getByLabelText('Tester theo dõi'),{target:{value:'21'}});
+   fireEvent.change(screen.getByLabelText('Tìm tên file'),{target:{value:'does-not-exist'}});
+   fireEvent.change(screen.getByLabelText('Trạng thái'),{target:{value:'COMPLETED'}});
+   await screen.findByText('Không có file khớp với bộ lọc hiện tại.');
+   expect(screen.queryByText(/Nhập và duyệt test case/)).toBeNull();
+   fireEvent.click(screen.getByRole('button',{name:'Xóa bộ lọc'}));
+   await screen.findByRole('button',{name:'test.xlsx'});
+   expect(screen.getByLabelText('Tìm tên file')).toHaveValue('');
+   expect(screen.getByLabelText('Tìm tên file')).toHaveFocus();
+   expect(screen.getByLabelText('Trạng thái')).toHaveValue('');
+   expect(fileWorkApi.list).toHaveBeenLastCalledWith(1,expect.objectContaining({keyword:'',state:'',page:0,mine,documentId:4,assigneeMembershipId:undefined,cycleId:undefined,buildId:undefined}),expect.anything());
+   if(mine)expect(screen.getByLabelText('Được giao cho tôi')).toBeChecked();
+ });
  it('shows readable state labels but sends the canonical state to filtering', async () => {
    render(<FileWorkPage navigate={vi.fn()}/>);
    await screen.findByRole('option',{name:'Đang thực hiện'});

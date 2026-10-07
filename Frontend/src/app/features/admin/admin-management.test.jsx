@@ -139,3 +139,18 @@ it('discards selected additions and role drafts when navigating to another proje
  expect(screen.getByRole('button',{name:'Lưu thành viên đã chọn'})).toBeDisabled();
  expect(screen.getByRole('button',{name:'Lưu vai trò Manager'})).toBeDisabled();
 });
+
+it('never labels a newly selected project with the previous project name while its lookup is pending',async()=>{
+ let resolveSecond;
+ const api={projects:vi.fn().mockResolvedValue({items:[],totalElements:0}),project:vi.fn(id=>String(id)==='1'?Promise.resolve({id:1,code:'AA',name:'Alpha'}):new Promise(resolve=>{resolveSecond=resolve;}))};
+ const view=render(<AdminUserProjectFilter api={api} value="1" onChange={()=>{}}/>);
+ await screen.findByRole('option',{name:'AA · Alpha'});
+ view.rerender(<AdminUserProjectFilter api={api} value="2" onChange={()=>{}}/>);
+ const select=screen.getByLabelText('Dự án của người dùng');
+ expect(select).toHaveValue('2');
+ expect(select.selectedOptions[0].textContent).toBe('Dự án #2');
+ await waitFor(()=>expect(resolveSecond).toBeTypeOf('function'));
+ resolveSecond({id:2,code:'BB',name:'Beta'});
+ await screen.findByRole('option',{name:'BB · Beta'});
+ expect(select.selectedOptions[0].textContent).toBe('BB · Beta');
+});
