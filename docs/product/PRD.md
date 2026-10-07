@@ -1,6 +1,6 @@
 # PRD — Hệ thống quản lý dự án và kiểm thử TMS
 
-Phiên bản tài liệu: **1.2 — 06/10/2026**. Chủ sản phẩm: người dùng/đơn vị vận hành. F01–F05/Q01–Q03 đã được người dùng duyệt toàn bộ và có implementation trong working tree theo [kế hoạch](../../tasks/plan.md). Nhánh `system-design`; native được quan sát ở V16, chưa áp V17/V18. Phần hiện trạng ban đầu bên dưới giữ làm baseline; mục16 mô tả checkpoint source hiện hành. Đây không phải biên bản nghiệm thu.
+Phiên bản tài liệu: **1.3 — 07/10/2026**. Chủ sản phẩm: người dùng/đơn vị vận hành. Nhánh `system-design`; F01–F05/Q01–Q03 đã triển khai, native đã áp V17–V20. Mục 1–15 giữ baseline trước F/Q, mục 16 giữ checkpoint source, **mục 17 là trạng thái hiện hành**, thay các ghi chú native/HTTP còn mở ở checkpoint cũ. [Kế hoạch](../../tasks/plan.md). Đây không phải biên bản khách hàng ký nghiệm thu.
 
 ## 1. Bài toán và kết quả mong muốn
 
@@ -25,7 +25,7 @@ flowchart LR
   H -. Theo dõi .-> J
 ```
 
-Sơ đồ là **luồng mục tiêu**. Giao file/phiên làm việc/máy thực tế/QA chưa đủ implementation. PM hiện điều phối bug và retest thủ công theo quyền đã duyệt.
+Sơ đồ là luồng mục tiêu đã có implementation F/Q và bằng chứng native/HTTP tại mục 17. PM điều phối bug và retest theo quyền đã duyệt; không có tự động gửi thông báo cho Dev/Tester.
 
 ## 2. Người dùng, phạm vi và quyền sở hữu
 
@@ -285,3 +285,15 @@ Không mở thêm notification/customer login/closure TASK–REQUEST–IMPROVEME
 Definition of Done sản phẩm vẫn bao gồm native migration/preservation/concurrency, HTTP journey và UAT/pilot có người thực hành. Source gate, unit/mock tests, build và UI-only preview là các bằng chứng riêng; S11 giữ IN_REVIEW đến khi đủ các gate đó.
 
 Review source cuối đã APPROVED sau một wave sửa và scoped re-review: form QA giữ route/draft khi chọn lỗi, lịch sử build lưu trữ vẫn đọc/xuất được với guards ghi giữ, PM có đường hủy phiên độc lập khi projection lỗi, màn file đủ bộ lọc/context đã duyệt. Bằng chứng cuối:612 FE/394 offline BE PASS, JDT191nguồn0errors/0warnings; chi tiết và giới hạn tại [báo cáo triển khai](../reviews/2026-10-06-fq-implementation.md) và [review cuối](../reviews/2026-10-06-fq-final-review.md). Chưa dùng các kết quả này để đổi UAT/native thành PASS.
+
+## 17. Checkpoint hiện hành: native V20 và trải nghiệm đa kích thước
+
+Các điều kiện “native/HTTP chưa chạy” trong mục 16 đã được xử lý bằng bằng chứng riêng, không phải suy từ source tests:
+
+- [Native V19](../reviews/2026-10-06-native-completion.md): migration 1/1, integration 5/5, concurrency 5/5, HTTP 37 bước; V19 sửa hai FK QA phát hiện trên MySQL. Backend local đã cập nhật và có 23 kiểm tra HTTP theo vai trò sau cập nhật.
+- [V20 demo](../reviews/2026-10-07-demo-v20.md): fresh/upgrade/rollback/preservation kiểm chứng; tài khoản ADMIN/PM/TESTER/DEV, dự án, membership và thiết bị demo. Hai workbook hiện có được nhập riêng, không nhúng dữ liệu file test case vào migration hoặc Git.
+- [Responsive và sản phẩm](../reviews/2026-10-07-responsive-product-review.md): 21 route dự án và 6 route Admin ở sáu viewport chính; sửa control/spacing, form, chiều cao bảng Excel mobile, hủy giao file, nhãn và hướng dẫn thực thi. Frontend 614/614 tests PASS; build PASS. Đây là kiểm tra UI có phạm vi cụ thể, không thay cho full business UAT.
+
+Luồng cốt lõi phù hợp quyết định đã duyệt: Admin giao dự án/người/máy → PM nhập và phân file → Tester chọn máy/build và ghi kết quả → BUG/QA tới Dev → Tester retest → PM theo dõi/chốt theo quyền. Dashboard hiện là snapshot khi tải/tải lại. Bản gốc Excel, annotation tài liệu và kết quả thực thi đúng build là ba nguồn riêng theo lựa chọn của người dùng.
+
+Ưu tiên tiếp: UAT/pilot có người thực hành; thiết kế nhắc việc/bàn giao trong ứng dụng; chốt closure cho REQUEST/TASK/IMPROVEMENT. Các hướng lưu trữ dự án, tên ngữ cảnh dễ đọc, tải trang và vận hành có tiêu chí tại báo cáo responsive; chưa coi là chức năng đã làm hoặc rule mặc định. S11 vẫn IN_REVIEW; browser ngoài Chrome, thiết bị cảm ứng thật và NFR production chưa được nghiệm thu.

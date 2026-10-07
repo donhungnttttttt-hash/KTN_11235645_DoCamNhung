@@ -46,6 +46,15 @@
 .ex-checks { display:flex; gap:16px; align-items:center; margin:12px 0; }
 .ex-checks label { display:flex; gap:5px; align-items:center; }
 .ex-dialog button:disabled,.ex-page button:disabled { opacity:.5; cursor:not-allowed; }
+.ex-checks,.ex-pager { flex-wrap:wrap; }
+.ex-heading > *,.ex-field { min-width:0; max-width:100%; }
+.ex-fields > .ex-field { flex:1 1 180px; }
+.ex-table-wrap { min-width:0; max-width:100%; }
+.ex-checks label { flex-wrap:wrap; }
+.ex-dialog input,.ex-dialog select { min-width:0; max-width:100%; }
+.ex-tabs { overflow-x:auto; }
+.ex-tabs > button { flex-shrink:0; }
+.ex-row-actions { min-width:160px; margin:0; }
 @media(max-width:760px) { .ex-detail { grid-template-columns:1fr; } .ex-fields { align-items:stretch; } .ex-heading { flex-wrap:wrap; } }
 @media(max-width:640px) {
   .ex-modal { padding:10px; }

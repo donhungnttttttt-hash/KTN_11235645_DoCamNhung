@@ -1,5 +1,7 @@
 # Implementation Plan: F/Q — công việc theo file và QA
 
+> Checkpoint hiện hành 07/10/2026: native V19/V20 và quyền commit/push `system-design` đã được người dùng cho phép, hoàn tất theo các báo cáo native/V20. Các giới hạn và ghi chú thiếu native trong phần kế hoạch gốc bên dưới là lịch sử. Công việc responsive mở rộng theo yêu cầu mới được ghi ở cuối tài liệu; UAT/pilot vẫn riêng.
+
 Spec: `docs/product/SYSTEM-SPECIFICATION.md` mục14, `docs/product/PRD.md` F01–F05/Q01–Q03. Người dùng duyệt toàn bộ ngày06/10/2026: “mình duyệt hết”. Nhánh `system-design`. Task list `tasks/todo.md`; ledger riêng `.superpowers/sdd/plan/progress.md`. Các phần ADMIN/UI đang chờ commit giữ nguyên.
 
 ## Global Constraints
@@ -94,3 +96,13 @@ Cập nhật sau nghiệm thu native ngày 06/10/2026: người dùng cung cấp
 Native test/UAT/pilot/productionNFR remain separate gates. Latest user approval settles business F/Q scope, not proof of workingimplementation or permission to publish/push.
 
 06/10/2026 final source checkpoint: all Task1–7 and Task8 independent source/regression/fixture/UI-preview/docs gates APPROVED after one broad review, one combined fix wave and one scoped re-review. Final612FE/394offlineBE tests PASS; javac/JDT/build/package/contracts PASS. Native acceptance remains open exactly as above, including the three named unwritten races and independent command commit/rollback checks; checklist separates source gate from native/HTTP/UAT/pilot. Do not re-dispatch completed implementation or repeat the broad review from this checkpoint. Next meaningful work is the unresolved isolated native/HTTP/UAT gate once environment rights exist; no runtime or publication operation implied.
+
+## Mở rộng theo yêu cầu 07/10/2026 — responsive và đánh giá khách hàng
+
+- [x] Đối chiếu ảnh, code UI chung/module, PRD và luồng Admin → PM → Tester → Dev; đọc skill liên quan trước khi áp dụng.
+- [x] Sửa khoảng cách/control/form/phân trang, bộ lọc nhiều chiều rộng và vùng đọc tài liệu trên mobile. Giữ các quy tắc dữ liệu/quyền đang dùng.
+- [x] Cải thiện nhãn trạng thái, hướng dẫn nguồn dữ liệu/bắt đầu phiên và Hủy giao file; hai test hành vi RED trước sửa → PASS.
+- [x] Kiểm tra 21 route dự án + 6 route Admin trên sáu viewport; thêm form và các vai trò, lưu số đo/ảnh.
+- [x] Frontend 614/614, file-work 91/91, build và diff check PASS; coverage chưa đo. Không chạy lại BE vì không đổi API/schema.
+- [x] Cập nhật PRD/spec hiện hành V20; ghi đánh giá khách hàng và backlog có acceptance tại `docs/reviews/2026-10-07-responsive-product-review.md`.
+- [ ] UAT/pilot có người dùng ký, Safari/Firefox/thiết bị thật và NFR vận hành vẫn là phần tiếp theo; không suy ra hoàn tất từ kiểm tra bố cục.

@@ -44,9 +44,13 @@ body {
 
 /* Compact Japanese Business Inputs & Dropdowns */
 .cat-input, .cat-select {
-  height: 28px;
-  padding: 0 8px;
-  font-size: 11px;
+  height: auto;
+  min-height: 36px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 8px;
+  font-size: 12px;
+  line-height: 1.5;
   color: #333333;
   background-color: #FFFFFF;
   border: 1px solid #D7DCDC;
@@ -66,9 +70,12 @@ body {
 
 /* Compact Buttons */
 .cat-btn {
-  height: 28px;
-  padding: 0 10px;
-  font-size: 11px;
+  height: auto;
+  min-height: 36px;
+  max-width: 100%;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1.5;
   font-weight: 500;
   border-radius: 2px;
   border: 1px solid #D7DCDC;
@@ -79,7 +86,8 @@ body {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   transition: all 0.15s ease;
 }
 
@@ -102,8 +110,14 @@ body {
 .cat-btn:disabled { cursor: not-allowed; opacity: .55; }
 
 @media (max-width: 640px) {
-  .cat-btn, .cat-input, .cat-select { min-height: 40px; font-size: 13px; }
+  .cat-btn, .cat-input, .cat-select { min-height: 44px; font-size: 13px; }
 }
+
+/* Shared form layouts also apply when a picker is embedded outside a form. */
+.ui-field { display: grid; gap: 6px; min-width: 0; }
+.ui-field > input, .ui-field > select, .ui-field > textarea { width: 100%; min-width: 0; max-width: 100%; }
+.ui-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 12px 0; min-width: 0; }
+.ui-actions > button { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 
 /* Dense Data Tables */
 .cat-table {

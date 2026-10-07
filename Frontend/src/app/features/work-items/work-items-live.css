@@ -36,4 +36,9 @@
 .wi-history-item { border-bottom: 1px solid #e2e8f0; padding: 12px 0; }.wi-history-item small { color: #64748b; }
 .wi-batch { background: #e8f7f5; padding: 10px; display: flex; align-items: center; gap: 12px; }
 .wi-batch select { padding: 6px; border: 1px solid #cbd5e1; }
+.wi-batch,.wi-error { flex-wrap:wrap; }
+.wi-field input,.wi-field select { min-height:36px; line-height:1.5; min-width:0; max-width:100%; }
+.wi-toolbar > .wi-field { min-width:min(160px,100%); }
+.wi-table-scroll { max-width:100%; min-width:0; }
+@media(max-width:640px) { .wi-field input,.wi-field select { min-height:44px; } .wi-toolbar > .wi-field { flex-basis:100%; } }
 @media(max-width:760px) { .wi-fields,.wi-fields.three,.wi-detail-body { grid-template-columns: 1fr; }.wi-toolbar .wi-field { min-width: 160px; } }

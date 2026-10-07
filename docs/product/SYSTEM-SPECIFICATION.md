@@ -1,6 +1,6 @@
 # Đặc tả chức năng và hệ thống TMS
 
-Phiên bản **1.2 — 06/10/2026**, nhánh `system-design`. Phần 1–13 giữ baseline implementation trước F/Q, gồm ADMIN A1–A4; phần14 đặc tả F/Q đã duyệt và có source V17/V18. Trạng thái gate hiện hành ở [báo cáo triển khai](../reviews/2026-10-06-fq-implementation.md). Native vẫn được quan sát ở V16; không coi source hoặc compile là nghiệm thu end-to-end.
+Phiên bản **1.3 — 07/10/2026**, nhánh `system-design`. Phần 1–13 giữ baseline trước F/Q, gồm ADMIN A1–A4; phần 14 đặc tả F/Q và checkpoint trước nghiệm thu native. **Phần 16 cập nhật trạng thái hiện hành V20**, thay các ghi chú native/HTTP chưa thực hiện ở checkpoint cũ. Không coi source hoặc compile là nghiệm thu end-to-end.
 
 Tài liệu sản phẩm: [PRD](PRD.md). Test/traceability: [UAT](TRACEABILITY-UAT.md). Cấu trúc đầy đủ 59 bảng/560 cột/139 FK/269 indexes: [DATA-DICTIONARY](DATA-DICTIONARY.md). Bằng chứng baseline: [review](../reviews/2026-10-06-system-workflow-review.md). Schema mở rộng theo mã nguồn: [FQ-DATA-DICTIONARY](FQ-DATA-DICTIONARY.md).
 
@@ -28,7 +28,7 @@ flowchart TB
   UI[React JavaScript / Vite: ADMIN và workspace dự án] -->|same-origin /api/v1 + cookie + CSRF| API[Spring Boot Java 21]
   API --> AUTH[Identity / Project policy]
   API --> APP[Application services: Import, Execution, Ticket, Retest, Reports]
-  APP --> DB[(MySQL native / Flyway V16)]
+  APP --> DB[(MySQL native / Flyway V20 local)]
   APP --> FILES[Workbook nguồn trong DB / evidence filesystem]
   APP --> OUT[Redmine outbox + worker]
   OUT --> RM[Redmine được cấu hình]
@@ -496,3 +496,11 @@ Gate trước implementation: người dùng review phần F/Q/D-F*/D-Q* → mod
 Baseline hiện hữu đã đối chiếu source/contracts/metadata. Người dùng đã duyệt D-F1…D-Q3, gồm nguồn/chế độ file, QA riêng, group/Tester/máy/session/finish và handoff; implementation theo kế hoạch F/Q đã được phép. Phải giữ native migration/HTTP/UAT/pilot là gate độc lập. Quy mô/SLA/retention/RPO/RTO cần chủ vận hành quyết định riêng trước production.
 
 PRD/đặc tả này là đầu vào review cụ thể. F/Q đã duyệt và các source gate được ghi riêng; native fixture/fresh/race/new journey và UAT còn thiếu. Chỉ khi criteria/test matrix đạt đầy đủ mới kết luận hệ thống đáp ứng trọn luồng ADMIN → PM → Tester → Dev → retest → PM trên môi trường vận hành.
+
+## 16. Trạng thái xác minh hiện hành — 07/10/2026
+
+Đoạn kết phần 15 và điều kiện native ở 14.6 là checkpoint lịch sử. Hiện native MySQL 3307 đã áp V17–V20. V19 bổ sung sửa composite FK QA sau kiểm thử thật; [native completion](../reviews/2026-10-06-native-completion.md) ghi migration, integration, concurrency và hành trình HTTP 37 bước đạt. [V20](../reviews/2026-10-07-demo-v20.md) bổ sung fixture demo local theo vai trò, có kiểm tra fresh/upgrade/preservation. Workbook được nhập bằng luồng riêng, không chứa trong migration seed.
+
+Đợt responsive không thay contract API, quyền hoặc persistence. Control dùng chiều cao tối thiểu thay chiều cao cố định, nhóm thao tác có wrap/gap, bảng nhiều cột cuộn trong container; bảng tài liệu mobile có viewport đọc riêng. File work hiển thị nhãn dễ hiểu nhưng gửi mã trạng thái gốc; Hủy giao file chỉ đóng draft, không gọi create. Ba chế độ original/annotation/execution export giữ authority hiện có.
+
+Bằng chứng mới: frontend 614 tests PASS, build PASS, 27 route × 6 viewport và kiểm tra form theo bốn vai trò; chi tiết/giới hạn ở [báo cáo responsive](../reviews/2026-10-07-responsive-product-review.md). Không chạy lại native writes trong đợt UI. UAT khách hàng/pilot, browser ngoài Chrome và NFR production vẫn riêng; notification, closure các loại ticket khác và archive command chưa tự mở rộng nghiệp vụ.

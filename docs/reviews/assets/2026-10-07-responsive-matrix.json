@@ -1,0 +1,1684 @@
+{
+  "date": "2026-10-07",
+  "browser": "Chrome / Windows",
+  "method": "Rendered DOM geometry. Wide content within intentional scroll containers is excluded from outside-viewport failures. Not full business UAT.",
+  "projectRoutes": [
+    {
+      "label": "loaded/PM/dashboard",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/dashboard/testing",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/board",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/board/list",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/board/new",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/tests",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 320,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/tests/cases",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 320,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/tests/documents/9",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/tests/cycles",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 320,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/tests/cycles/8",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/tests/file-work",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/tests/file-work/2",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/tests/retests",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 320,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/issues",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/progress",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/analysis",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/settings",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 320,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/settings/members",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/settings/catalogs",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 320,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/settings/rules",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 320,
+      "width": 320
+    },
+    {
+      "label": "loaded/PM/settings/handbook",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 320,
+      "width": 320
+    },
+    {
+      "label": "PM/dashboard",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "PM/dashboard/testing",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "PM/board",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "PM/board/list",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/board/new",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "PM/tests",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/tests/cases",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/tests/documents/9",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/tests/cycles",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/tests/cycles/8",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "PM/tests/file-work",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/tests/file-work/2",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/tests/retests",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/issues",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/progress",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "PM/analysis",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "PM/settings",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/settings/members",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/settings/catalogs",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/settings/rules",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/settings/handbook",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 768,
+      "width": 768
+    },
+    {
+      "label": "PM/dashboard",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "PM/dashboard/testing",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "PM/board",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "PM/board/list",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1024,
+      "width": 1024
+    },
+    {
+      "label": "PM/board/new",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "PM/tests",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1024,
+      "width": 1024
+    },
+    {
+      "label": "PM/tests/cases",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1024,
+      "width": 1024
+    },
+    {
+      "label": "PM/tests/documents/9",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1024,
+      "width": 1024
+    },
+    {
+      "label": "PM/tests/cycles",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1024,
+      "width": 1024
+    },
+    {
+      "label": "PM/tests/cycles/8",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "PM/tests/file-work",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "PM/tests/file-work/2",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "PM/tests/retests",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1024,
+      "width": 1024
+    },
+    {
+      "label": "PM/issues",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1024,
+      "width": 1024
+    },
+    {
+      "label": "PM/progress",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "PM/analysis",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "PM/settings",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1024,
+      "width": 1024
+    },
+    {
+      "label": "PM/settings/members",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "PM/settings/catalogs",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1024,
+      "width": 1024
+    },
+    {
+      "label": "PM/settings/rules",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1024,
+      "width": 1024
+    },
+    {
+      "label": "PM/settings/handbook",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1024,
+      "width": 1024
+    },
+    {
+      "label": "loaded/PM/dashboard",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/dashboard/testing",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/board",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/board/list",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1366,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/board/new",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/tests",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1366,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/tests/cases",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/tests/documents/9",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1366,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/tests/cycles",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1366,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/tests/cycles/8",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/tests/file-work",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1366,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/tests/file-work/2",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/tests/retests",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1366,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/issues",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1366,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/progress",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/analysis",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/settings",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1366,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/settings/members",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/settings/catalogs",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1366,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/settings/rules",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1366,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/settings/handbook",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1366,
+      "width": 1366
+    },
+    {
+      "label": "loaded/PM/dashboard",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/dashboard/testing",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1914,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/board",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1914,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/board/list",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/board/new",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1914,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/tests",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/tests/cases",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/tests/documents/9",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/tests/cycles",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/tests/cycles/8",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1914,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/tests/file-work",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/tests/file-work/2",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/tests/retests",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/issues",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/progress",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1914,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/analysis",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1914,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/settings",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/settings/members",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/settings/catalogs",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/settings/rules",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/settings/handbook",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "loaded/PM/dashboard",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/dashboard/testing",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/board",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/board/list",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/board/new",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/tests",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/tests/cases",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 667,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/tests/documents/9",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/tests/cycles",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 667,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/tests/cycles/8",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/tests/file-work",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/tests/file-work/2",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/tests/retests",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 667,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/issues",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/progress",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/analysis",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/settings",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/settings/members",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/settings/catalogs",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/settings/rules",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 667,
+      "width": 667
+    },
+    {
+      "label": "loaded/PM/settings/handbook",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 667,
+      "width": 667
+    }
+  ],
+  "adminRoutes": [
+    {
+      "label": "Admin/admin",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Admin/admin/projects",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Admin/admin/projects/6",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Admin/admin/users",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Admin/admin/devices",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Admin/admin/audit",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Admin/admin",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "Admin/admin/projects",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "Admin/admin/projects/6",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "Admin/admin/users",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "Admin/admin/devices",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "Admin/admin/audit",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "Admin/admin",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "Admin/admin/projects",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "Admin/admin/projects/6",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "Admin/admin/users",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "Admin/admin/devices",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "Admin/admin/audit",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1018,
+      "width": 1024
+    },
+    {
+      "label": "Admin/admin",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "Admin/admin/projects",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "Admin/admin/projects/6",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "Admin/admin/users",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "Admin/admin/devices",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "Admin/admin/audit",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "Admin/admin",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1914,
+      "width": 1920
+    },
+    {
+      "label": "Admin/admin/projects",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "Admin/admin/projects/6",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1914,
+      "width": 1920
+    },
+    {
+      "label": "Admin/admin/users",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1914,
+      "width": 1920
+    },
+    {
+      "label": "Admin/admin/devices",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1920,
+      "width": 1920
+    },
+    {
+      "label": "Admin/admin/audit",
+      "alerts": [],
+      "height": 1080,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1914,
+      "width": 1920
+    },
+    {
+      "label": "Admin/admin",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "Admin/admin/projects",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "Admin/admin/projects/6",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "Admin/admin/users",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "Admin/admin/devices",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "Admin/admin/audit",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    }
+  ],
+  "rolesAndForms": [
+    {
+      "label": "Tester/file-1",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Tester/file-1",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "Tester/file-1",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "Tester/file-1",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "Tester/QA-create",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Dev/bug-detail-read",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Dev/bug-detail-read",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "Dev/bug-detail-read",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366
+    },
+    {
+      "label": "Dev/bug-detail-read",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "Admin/edit-project",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Admin/edit-project",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "Admin/edit-project",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    },
+    {
+      "label": "Admin/device-allocation-form",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Admin/device-allocation-form",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768
+    },
+    {
+      "label": "Admin/device-allocation-form",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667
+    }
+  ],
+  "bugModal": [
+    {
+      "label": "pilot/PM/bug-detail",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320,
+      "spacing": []
+    },
+    {
+      "label": "pilot/PM/bug-detail",
+      "alerts": [],
+      "height": 1024,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 762,
+      "width": 768,
+      "spacing": []
+    },
+    {
+      "label": "pilot/PM/bug-detail",
+      "alerts": [],
+      "height": 768,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 1361,
+      "width": 1366,
+      "spacing": []
+    },
+    {
+      "label": "pilot/PM/bug-detail",
+      "alerts": [],
+      "height": 375,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 662,
+      "width": 667,
+      "spacing": []
+    }
+  ],
+  "supplementary": [
+    {
+      "label": "after/PM/document320",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "after/PM/assign-form320",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "after/PM/assignment-dialog320",
+      "alerts": [],
+      "height": 640,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 314,
+      "width": 320
+    },
+    {
+      "label": "Admin/mobile-final",
+      "alerts": [],
+      "height": 812,
+      "outside": [],
+      "overflow": false,
+      "pageWidth": 370,
+      "width": 375
+    }
+  ]
+}

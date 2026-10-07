@@ -16,6 +16,13 @@
 @media(max-width:768px){.admin-form input:not([type=checkbox]),.admin-form select,.admin-filters input:not([type=checkbox]),.admin-filters select{min-height:44px}.admin-project-link{min-height:44px;display:inline-flex;align-items:center}.admin-filters{grid-template-columns:repeat(auto-fit,minmax(min(160px,100%),1fr))}}
 
 /* Keep related controls together without relying on whitespace between JSX nodes. */
+.admin-member-picker { display:grid; gap:12px; margin:16px 0; min-width:0; }
+.admin-shell { font-size:14px; }
+.admin-member-picker > .ui-field { width:min(100%,480px); }
+.admin-member-picker > .ui-field input { width:100%; }
+.admin-project-filter .admin-scope { align-items:flex-end; }
+.admin-project-filter .admin-scope select { flex:1 1 280px; width:auto; max-width:640px; }
+.admin-picker-pages { flex-wrap:wrap; }
 .admin-actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; min-width:0; }
 .admin-actions > button { flex:0 1 auto; overflow-wrap:anywhere; }
 .admin-shell td > .admin-actions { min-width:180px; }

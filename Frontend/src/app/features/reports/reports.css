@@ -9,3 +9,6 @@
 .rp-page .cat-kpi-block-pending{background:#fff8eb;border-left-color:#e6a344}.rp-page .cat-kpi-block-ok{background:#eaf7f3;border-left-color:#36aa90}
 .rp-page .cat-kpi-block-na{background:#f1f3f5;border-left-color:#78909c}.rp-page .cat-kpi-block-fixed{background:#edf5fc;border-left-color:#5185bc}
 @media(max-width:850px){.rp-rates{grid-template-columns:1fr}.rp-page .cat-kpi-bar{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.rp-page,.rp-rates > * { min-width:0; overflow-wrap:anywhere; }
+.rp-filters .ex-field { min-width:min(230px,100%); flex:1 1 230px; }
+@media(max-width:480px){.rp-page .cat-kpi-bar{grid-template-columns:repeat(2,minmax(0,1fr))}}
