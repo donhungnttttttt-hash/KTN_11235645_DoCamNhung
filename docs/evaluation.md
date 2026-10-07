@@ -1,8 +1,8 @@
 # Đánh giá hiện trạng và kế hoạch đo pilot
 
-Phạm vi hiện tại là TMS nội bộ React/Java/MySQL, dữ liệu tổng hợp. Sprint 11 đã chuẩn bị gói chạy, demo và hướng dẫn; chưa có baseline thời gian người dùng hoặc buổi UAT được ký. Không kết luận tiết kiệm thời gian hay hiệu quả với khách hàng chỉ từ số test tự động.
+Phạm vi hiện tại là TMS nội bộ React/Java/MySQL. Sprint 11 đã chuẩn bị gói chạy, demo và hướng dẫn; chưa có baseline thời gian người dùng hoặc buổi UAT được ký. Không kết luận tiết kiệm thời gian hay hiệu quả với khách hàng chỉ từ số test tự động. Trạng thái kỹ thuật hiện hành ngày 08/10/2026 là V21, theo [đánh giá lần hai](reviews/2026-10-08-customer-reassessment.md); các số liệu demo V11 phía dưới là bằng chứng lịch sử, không phải snapshot hiện tại.
 
-## Những gì có thể tái lập
+## Bằng chứng demo S11 tại thời điểm V11
 
 - Bộ demo 120 case/240 lượt/72 công việc được tạo qua API, có actor, revision, context, audit và retest. [Nguồn số liệu](uat/demo-dataset.json).
 - Database V11, 55 bảng ứng dụng cộng Flyway. [Audit số lượng và FK](uat/database-audit.json); bảng vận hành phát sinh theo thao tác thật, không nạp giả để tăng hàng.
@@ -23,4 +23,6 @@ Ghi tối thiểu người thực hiện, thời điểm, artifact/schema, tập
 
 ## Việc còn lại trước bàn giao sử dụng thật
 
-Hoàn tất browser Excel/keyboard/mobile, PM/Tester UAT, môi trường/TLS/backup ngoài máy, retention và mapping/quyền tracker khách. Toàn-app coverage frontend còn dưới 80%, cần kế hoạch bù các màn legacy và provider; các gate module đã đo không đại diện toàn bộ frontend. Không phát hành production hoặc mở quyền khách hàng chỉ vì gói local chạy thành công.
+Hoàn tất nghiệm thu trọn luồng browser Excel/keyboard/mobile với bốn vai trò, môi trường/TLS/backup ngoài máy, retention và mapping/quyền tracker khách. Các kiểm tra local đã có không thay nghiệm thu môi trường thật. Coverage frontend gần nhất: 85,04% statements, 82,20% branches, 78,56% functions, 83,28% lines; số đo và giới hạn thời điểm có tại báo cáo 08/10. Không dùng coverage thay bằng chứng thao tác, đối chiếu dữ liệu hoặc khả năng phục hồi.
+
+Áp dụng [tiêu chí nghiệm thu từ góc nhìn khách hàng](reviews/2026-10-08-customer-quality-gates.md). Kết luận hiện tại: chưa đủ bằng chứng để ký nghiệm thu toàn sản phẩm sử dụng thật; những phần đã kiểm chứng vẫn được ghi nhận đúng phạm vi.
