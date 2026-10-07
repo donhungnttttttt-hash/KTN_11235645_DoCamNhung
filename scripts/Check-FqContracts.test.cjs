@@ -7,7 +7,7 @@ const { checkFq, acceptsSchemaInstance } = require('./Check-Contracts.cjs');
 const root = path.resolve(__dirname, '..');
 const java = 'backend/src/main/java/vn/syp/tms/';
 const controllerFiles = {
-  'file-work': ['filework/FileWorkController.java', 'filework/FileWorkSessionController.java', 'filework/FileWorkExecutionController.java'],
+  'file-work': ['filework/FileWorkController.java', 'filework/FileWorkSessionController.java', 'filework/FileWorkExecutionController.java', 'filework/ActionInboxController.java'],
   qa: ['qa/QaController.java', 'qa/HandoffController.java'],
 };
 const fixtureFiles = ['docs/api/openapi.yaml', 'docs/api/file-work.openapi.json', 'docs/api/qa.openapi.json', 'docs/api/work-items.openapi.json',
@@ -118,8 +118,8 @@ test('JSON schemas parse and operation inventory equals actual controllers, incl
     for (const schema of Object.values(spec.components.schemas)) assert.ok(schema.type || schema.allOf, 'each named schema has an actual shape');
   }
   const result = checkFq(root);
-  assert.deepEqual(result.operations, { 'file-work': 17, qa: 14 });
-  assert.deepEqual(result.schemas, { 'file-work': 31, qa: 19 });
+  assert.deepEqual(result.operations, { 'file-work': 19, qa: 14 });
+  assert.deepEqual(result.schemas, { 'file-work': 34, qa: 19 });
 });
 test('fixture removal of a controller operation fails', t => {
   const directory = fixture(t);

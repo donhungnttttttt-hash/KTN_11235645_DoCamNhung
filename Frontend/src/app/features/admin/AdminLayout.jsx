@@ -32,7 +32,7 @@ export function AdminLayout({path,projectId,navigate,children,api=adminApi}) {
     <main id="admin-main" className="admin-main" tabIndex={-1}>
       {logoutError && <p role="alert">{logoutError}</p>}
       {projectsPage && <section className="admin-project-filter" aria-label="Lọc dự án">
-        <AdminUserProjectFilter api={api} label="Phạm vi dự án" value={projectId || ''} onChange={id=>navigate(path,id)}/>
+        <AdminUserProjectFilter key={path==='/admin/projects'?'list':'detail'} searchable={path!=='/admin/projects'} api={api} label="Phạm vi dự án" value={projectId || ''} onChange={id=>navigate(path,id)}/>
       </section>}
       {children}
     </main>

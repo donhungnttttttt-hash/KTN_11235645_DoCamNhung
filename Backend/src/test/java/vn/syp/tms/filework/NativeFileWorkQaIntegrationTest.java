@@ -101,14 +101,21 @@ class NativeFileWorkQaIntegrationTest {
         assertExport(group,run,ngId);
         bug=work.update(f.project,f.pm,bugId,new WorkItemDtos.Update("Observed native bug","Description","MEDIUM",null,null,f.devMember,"Steps","Expected","Observed","Assign own fix",number(bug,"version")));
         bug=work.transition(f.project,f.dev,bugId,new WorkItemDtos.Transition("progress","Investigating",null,number(bug,"version")));
+        String inbox="/api/v1/projects/"+f.project+"/action-inbox";
+        mvc.perform(get(inbox).param("kind","BUG").with(actor(f.dev,"DEV"))).andExpect(status().isOk()).andExpect(jsonPath("$.items[0].id").value(bugId));
         bug=work.transition(f.project,f.dev,bugId,new WorkItemDtos.Transition("resolved","Fixed on selected build",f.otherBuild,number(bug,"version")));
+        mvc.perform(get(inbox).param("kind","BUG").with(actor(f.dev,"DEV"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
         var coverage=retest.coverage(f.project,f.pm,bugId,new RetestDtos.Coverage(List.of(run),"Verify affected case",number(bug,"version")));
         long coverageId=number(map(coverage,"coverage"),"id"),coverageItem=number(items(coverage).getFirst(),"id");
         var request=retest.createRequest(f.project,f.pm,bugId,new RetestDtos.Request(coverageId,List.of(coverageItem),verificationScope,f.testerMember,"Verify fix",number(coverage,"bugVersion"),"native-retest-01"));
         long requestId=number(request,"id");
+        mvc.perform(get(inbox).param("kind","RETEST").with(actor(f.tester,"TESTER"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.totalItems").value(1)).andExpect(jsonPath("$.items[0].id").value(requestId)).andExpect(jsonPath("$.items[0].targetId").value(bugId));
+        mvc.perform(get(inbox).param("kind","RETEST").with(actor(f.dev,"DEV"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
         long before=countAttempts(run);
         var submitted=retest.submit(f.project,f.tester,requestId,new RetestDtos.Submit(List.of(new RetestDtos.Result(coverageItem,"PASS","Verified fixed",null,version("run_items",run))),number(request,"version"),version("work_items",bugId),"native-submit-01",false,null));
         assertThat(submitted).containsEntry("status","SUBMITTED");
+        mvc.perform(get(inbox).param("kind","RETEST").with(actor(f.tester,"TESTER"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
         if(verificationScope.equals("FULL_CASE")) {
             assertThat(countAttempts(run)).isEqualTo(before+1);
             assertThat(jdbc.queryForObject("SELECT result_code FROM execution_attempts WHERE project_id=? AND run_item_id=? AND build_id=?",String.class,f.project,run,f.otherBuild)).isEqualTo("OK");
@@ -165,6 +172,56 @@ class NativeFileWorkQaIntegrationTest {
         jdbc.update("UPDATE project_memberships SET project_role='DEV' WHERE id=?",f.testerMember);
         mvc.perform(post(endpoint).with(actor(f.tester,"TESTER")).with(Objects.requireNonNull(csrf())).contentType("application/json").content(body)).andExpect(status().isForbidden());
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM qa_details WHERE project_id=?",Long.class,f.project)).isEqualTo(1);
+    }
+    @Test void preparationUsesCurrentProjectDataAndRequiresPm() throws Exception {
+        String endpoint="/api/v1/projects/"+f.project+"/file-work-groups/preparation";
+        mvc.perform(get(endpoint)).andExpect(status().isUnauthorized());
+        mvc.perform(get(endpoint).with(actor(f.tester,"TESTER"))).andExpect(status().isForbidden());
+        mvc.perform(get(endpoint).with(actor(f.pm,"PM"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.counts.documents").value(1)).andExpect(jsonPath("$.counts.approvedCases").value(1))
+            .andExpect(jsonPath("$.counts.testers").value(1)).andExpect(jsonPath("$.counts.configuredDraftCycles").value(1))
+            .andExpect(jsonPath("$.counts.assignedGroups").value(0)).andExpect(jsonPath("$.asOf").exists());
+        jdbc.update("UPDATE builds SET archived_at=UTC_TIMESTAMP(6) WHERE id=?",f.build);
+        jdbc.update("UPDATE test_case_revisions SET approved_at=NULL,approved_by=NULL WHERE id=?",f.revision);
+        mvc.perform(get(endpoint).with(actor(f.pm,"PM"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.counts.approvedCases").value(0)).andExpect(jsonPath("$.counts.configuredDraftCycles").value(0));
+        jdbc.update("UPDATE project_memberships SET active=FALSE WHERE id=?",f.pmMember);
+        mvc.perform(get(endpoint).with(actor(f.pm,"PM"))).andExpect(status().isNotFound());
+    }
+    @Test void actionInboxFollowsQaHandoffsAndNeverShowsAnotherDevAssignment() throws Exception {
+        var created=qa.create(f.project,f.tester,new QaDtos.Create("Inbox question","Expected?","MEDIUM",null,null,null,null,null,null,"inbox-qa-create"));
+        long id=created.item().id();
+        var assigned=qa.assign(f.project,f.pm,id,new QaDtos.Assign(f.devMember,"Answer",created.item().version(),"inbox-qa-assign"));
+        String endpoint="/api/v1/projects/"+f.project+"/action-inbox";
+        mvc.perform(get(endpoint).with(actor(f.dev,"DEV"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(1)).andExpect(jsonPath("$.items[0].kind").value("QA"));
+        mvc.perform(get(endpoint).with(actor(f.dev2,"DEV"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
+        qa.answer(f.project,f.dev,id,new QaDtos.Answer("Confirmed answer","basis",assigned.item().version(),"inbox-qa-answer"));
+        mvc.perform(get(endpoint).with(actor(f.tester,"TESTER"))).andExpect(status().isOk()).andExpect(jsonPath("$.items[0].id").value(id));
+        mvc.perform(get(endpoint).with(actor(f.dev,"DEV"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
+        mvc.perform(get(endpoint).param("page","-1").with(actor(f.pm,"PM"))).andExpect(status().isUnprocessableEntity());
+        jdbc.update("UPDATE project_memberships SET active=FALSE WHERE id=?",f.testerMember);
+        mvc.perform(get(endpoint).with(actor(f.tester,"TESTER"))).andExpect(status().isNotFound());
+    }
+    @Test void actionInboxPaginatesProjectWorkAndChecksCurrentRoles() throws Exception {
+        groups.create(f.project,f.pm,new FileWorkDtos.Create(f.document,f.cycle,f.configuration,List.of(f.revision),f.testerMember,0L,"inbox-file-create"));
+        qa.create(f.project,f.tester,new QaDtos.Create("Question 1","Expected?","MEDIUM",null,null,null,null,null,null,"inbox-question01"));
+        qa.create(f.project,f.tester,new QaDtos.Create("Question 2","Expected?","MEDIUM",null,null,null,null,null,null,"inbox-question02"));
+        String endpoint="/api/v1/projects/"+f.project+"/action-inbox";
+        mvc.perform(get(endpoint).param("size","1").param("page","2").with(actor(f.pm,"PM"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.totalItems").value(3)).andExpect(jsonPath("$.items.length()").value(1)).andExpect(jsonPath("$.projectWide").value(true));
+        mvc.perform(get(endpoint).param("kind","FILE").with(actor(f.tester,"TESTER"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(1));
+        mvc.perform(get(endpoint).param("kind","FILE").with(actor(f.dev,"DEV"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
+        jdbc.update("UPDATE identity_users SET role_code='DEV' WHERE id=?",f.tester);
+        mvc.perform(get(endpoint).param("kind","FILE").with(actor(f.tester,"TESTER"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
+        jdbc.update("UPDATE projects SET archived_at=UTC_TIMESTAMP(6) WHERE id=?",f.project);
+        mvc.perform(get(endpoint).with(actor(f.pm,"PM"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0)).andExpect(jsonPath("$.archived").value(true));
+    }
+    @Test void fileGroupShowsNamesForSelectedBuildWithoutChangingExecutionAuthority() {
+        var detail=groups.create(f.project,f.pm,new FileWorkDtos.Create(f.document,f.cycle,f.configuration,List.of(f.revision),f.testerMember,0L,"readable-group-01"));
+        long group=number(map(detail,"group"),"id");
+        assertThat(map(detail,"group")).containsEntry("environmentName","QA").containsEntry("deviceName","iPad").containsEntry("selectedBuildLabel","1");
+        assertThat(groups.executionSummary(f.project,f.tester,group,f.otherBuild)).containsEntry("selectedBuildLabel","2");
+        assertSourceUnchanged();
     }
     private Map<String,Object> attempt(long group,long run,long session,long sv,String result,String key){return files.record(f.project,f.tester,group,run,new FileWorkExecutionService.FileAttempt(session,sv,result,f.build,"Observed","Pending dependency","native-evidence",key,version("run_items",run)));}
     private FileWorkDtos.SessionCommand sessionCommand(Map<String,Object> session,String key){return new FileWorkDtos.SessionCommand(number(session,"version"),number(session,"groupVersion"),"Native transition",key);}

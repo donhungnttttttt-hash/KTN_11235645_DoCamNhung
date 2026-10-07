@@ -59,6 +59,34 @@ public class FileWorkService {
         return inspect(p,input,cycle);
     }
 
+    /** Overview only: the existing preview remains authoritative for a selected scope. */
+    public Map<String,Object> preparation(long p,String actor) {
+        var caller=guard(p,actor,false);
+        if(!caller.pm())fail(403,"FORBIDDEN","Chỉ PM của dự án được xem chuẩn bị giao việc.");
+        var counts=new LinkedHashMap<String,Object>();
+        counts.put("documents",db.count("SELECT COUNT(*) FROM import_batches WHERE project_id=? AND status='COMMITTED'",p));
+        counts.put("approvedCases",db.count("""
+            SELECT COUNT(DISTINCT c.id) FROM test_cases c
+            JOIN test_suites s ON s.project_id=c.project_id AND s.id=c.suite_id AND s.archived_at IS NULL
+            WHERE c.project_id=? AND c.archived_at IS NULL
+            AND EXISTS(SELECT 1 FROM test_case_revisions rv WHERE rv.project_id=c.project_id AND rv.test_case_id=c.id AND rv.approved_at IS NOT NULL)
+            AND EXISTS(SELECT 1 FROM import_rows ir JOIN import_batches ib ON ib.project_id=ir.project_id AND ib.id=ir.batch_id
+                WHERE ir.project_id=c.project_id AND ir.target_case_id=c.id AND ir.is_valid=TRUE AND ib.status='COMMITTED')
+            """,p));
+        counts.put("testers",db.count("SELECT COUNT(*) FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.active=TRUE AND m.project_role='TESTER' AND u.enabled=TRUE AND u.role_code<>'DEV'",p));
+        counts.put("configuredDraftCycles",db.count("""
+            SELECT COUNT(*) FROM test_cycles c WHERE c.project_id=? AND c.status_code='DRAFT'
+            AND EXISTS(SELECT 1 FROM cycle_configurations cf
+                JOIN environments e ON e.project_id=cf.project_id AND e.id=cf.environment_id AND e.active=TRUE
+                JOIN devices d ON d.project_id=cf.project_id AND d.id=cf.device_id AND d.active=TRUE
+                JOIN builds b ON b.project_id=cf.project_id AND b.id=cf.default_build_id AND b.archived_at IS NULL
+                WHERE cf.project_id=c.project_id AND cf.cycle_id=c.id)
+            """,p));
+        counts.put("allocatedDevices",db.count("SELECT COUNT(*) FROM device_allocations WHERE project_id=? AND returned_at IS NULL",p));
+        counts.put("assignedGroups",db.count("SELECT COUNT(*) FROM file_work_groups WHERE project_id=?",p));
+        return Map.of("asOf",java.time.Instant.now(),"archived",caller.archived(),"counts",counts);
+    }
+
     public Map<String,Object> create(long p,String actor,FileWorkDtos.Create input) {
         var caller=guard(p,actor,true); key(input.requestKey());
         var cycle=scopeContext(p,input.scope());
@@ -171,6 +199,7 @@ public class FileWorkService {
             SELECT g.id,g.project_id AS projectId,g.document_id AS documentId,ib.file_name AS fileName,g.cycle_id AS cycleId,
             c.name AS cycleName,c.lock_version AS cycleVersion,c.status_code AS cycleStatus,g.configuration_id AS configurationId,
             cf.environment_id AS environmentId,cf.device_id AS deviceId,cf.default_build_id AS defaultBuildId,
+            e.name AS environmentName,d.name AS deviceName,
             g.lock_version AS version,g.updated_at AS updatedAt,
             ms.id AS milestoneId,ms.name AS milestoneName,DATE_FORMAT(ms.due_on,'%Y-%m-%d') AS milestoneDueOn,
             GREATEST(g.updated_at,
@@ -183,6 +212,8 @@ public class FileWorkService {
             JOIN test_cycles c ON c.project_id=g.project_id AND c.id=g.cycle_id
             LEFT JOIN milestones ms ON ms.project_id=c.project_id AND ms.id=c.milestone_id
             JOIN cycle_configurations cf ON cf.project_id=g.project_id AND cf.cycle_id=g.cycle_id AND cf.id=g.configuration_id
+            JOIN environments e ON e.project_id=cf.project_id AND e.id=cf.environment_id
+            JOIN devices d ON d.project_id=cf.project_id AND d.id=cf.device_id
             WHERE g.project_id=? AND g.id=?
             """+(lock?" FOR UPDATE":""),p,id);
     }
@@ -225,6 +256,7 @@ public class FileWorkService {
         var sessionValues=sessionRows(p,number(group,"id"),caller,group);var latest=sessionValues.isEmpty()?null:sessionValues.getFirst();
         long build=selectedBuild!=null?selectedBuild:latest==null?number(group,"defaultBuildId"):number(latest,"buildId");
         value.put("selectedBuildId",build);value.put("state",latest==null?"READY":latest.get("state"));
+        value.put("selectedBuildLabel",db.row("SELECT version_label AS label FROM builds WHERE project_id=? AND id=?",p,build).get("label"));
         for(String field:List.of("currentSessionId","assetId","assetCode","startedAt")) value.put(field,latest==null?null:latest.get("currentSessionId".equals(field)?"id":field));
         var assignees=items.stream().map(i->number(i,"assigneeMembershipId")).distinct().toList();boolean consistent=assignees.size()==1;
         value.put("assignmentState",consistent?"CONSISTENT":"MIXED");value.put("assigneeMembershipId",consistent?assignees.getFirst():null);value.put("assigneeName",consistent?items.getFirst().get("assigneeName"):null);

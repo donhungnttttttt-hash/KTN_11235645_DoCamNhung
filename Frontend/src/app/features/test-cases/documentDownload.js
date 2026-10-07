@@ -1,3 +1,8 @@
+export function documentExportName(fileName, original=false) {
+  const name=fileName || 'test-cases.xlsx';
+  return original ? name : `${name.replace(/\.xlsx$/i,'')}-cap-nhat.xlsx`;
+}
+
 export function downloadWorkbook(blob, fileName) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');

@@ -7,6 +7,7 @@ import { Sidebar } from '../components/Sidebar';
 import { AppRouter } from './AppRouter';
 import { createApiClient, ApiError, onUnauthorized } from '../services/api/client';
 import { fileWorkApi, executionDownload } from '../services/api/fileWork';
+it('gives the action inbox its own page title',()=>expect(pageTitle('/dashboard/actions')).toBe('Việc cần xử lý · TMS'));
 
 vi.mock('../features/file-work/FileWorkPage', () => ({
   FileWorkPage: ({ documentId, navigate }) => <button onClick={() => navigate('/tests/file-work/27')}>File list: {documentId ?? 'all'}</button>,

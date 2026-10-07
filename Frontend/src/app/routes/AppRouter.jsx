@@ -8,6 +8,7 @@ import { TestCyclesPage } from '../features/test-execution/TestCyclesPage';
 import { RetestQueuePage } from '../features/retest/RetestQueuePage';
 import { FileWorkPage } from '../features/file-work/FileWorkPage';
 import { FileWorkDetail } from '../features/file-work/FileWorkDetail';
+import { ActionInbox } from '../features/file-work/ActionInbox';
 import { ProgressPage } from '../pages/ProgressPage';
 import { AnalysisPage } from '../pages/AnalysisPage';
 import { WorkBoardPage } from '../pages/WorkBoardPage';
@@ -19,6 +20,7 @@ import { routeInfo } from './routeInfo';
 export function AppRouter({ activeRoute, project, teamMembers, testSpecs, issues, memberProgress, navigate }) {
   const { path, specId, isFileWork, groupId, documentId, invalidFileWorkContext } = routeInfo(activeRoute);
   const isRunnerRoute = specId !== null;
+  if (path === '/dashboard/actions') return <ActionInbox navigate={navigate}/>;
 
   if (path === '/dashboard' || path.startsWith('/dashboard/')) {
     return <DashboardPage project={project} teamMembers={teamMembers} activeRoute={activeRoute} navigate={navigate} />;

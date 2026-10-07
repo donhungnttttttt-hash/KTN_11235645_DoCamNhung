@@ -12,7 +12,7 @@ import { workItemsApi } from '../../services/api/workItems';
 import { documentDate } from '../test-cases/documentDownload';
 const context = vi.hoisted(() => ({ currentProject: { id: 1, projectRole: 'PM', name: 'Project' } }));
 vi.mock('../projects/ProjectProvider', () => ({ useProject: () => context }));
-vi.mock('../../services/api/fileWork', async importOriginal => ({ ...await importOriginal(),fileWorkApi: Object.fromEntries(['metadata','list','detail','execution','eligibleAllocations','start','pause','resume','complete','cancel','assign','record','export','preview','create','history','sessions'].map(k => [k,vi.fn()])) }));
+vi.mock('../../services/api/fileWork', async importOriginal => ({ ...await importOriginal(),fileWorkApi: Object.fromEntries(['preparation','metadata','list','detail','execution','eligibleAllocations','start','pause','resume','complete','cancel','assign','record','export','preview','create','history','sessions'].map(k => [k,vi.fn()])) }));
 vi.mock('../../services/api/execution', () => ({ executionApi: Object.fromEntries(['cycles','cycle','configurations','attempts'].map(k => [k,vi.fn()])) }));
 vi.mock('../../services/api/projects', () => ({ projectsApi: {listCatalog:vi.fn(),listMembers:vi.fn()} }));
 vi.mock('../../services/api/workItems', () => ({ workItemsApi:{metadata:vi.fn(),list:vi.fn(),link:vi.fn()} }));
@@ -26,6 +26,39 @@ function detail(g=group,s=session,r=row) { fileWorkApi.detail.mockResolvedValue(
 beforeEach(() => {vi.resetAllMocks(); context.currentProject={id:1,projectRole:'PM',name:'Project'};fileWorkApi.metadata.mockResolvedValue({canCreate:false,canViewMine:true,canReadAll:true,archived:false});workItemsApi.metadata.mockResolvedValue({canCreate:true,canCreateQa:true,membershipId:2});workItemsApi.list.mockResolvedValue(page([]));fileWorkApi.list.mockResolvedValue(page([]));detail();projectsApi.listCatalog.mockResolvedValue([{id:6,versionLabel:'B6'},{id:13,versionLabel:'B13'}]);projectsApi.listMembers.mockResolvedValue([]);fileWorkApi.eligibleAllocations.mockResolvedValue([]);fileWorkApi.history.mockResolvedValue({items:[],nextBefore:0});fileWorkApi.sessions.mockResolvedValue(page([session]));executionApi.attempts.mockResolvedValue(page([]));});
 afterEach(cleanup);
 describe('customer-facing file workflow', () => {
+ it('shows server preparation counts to PM with links to missing steps',async()=>{
+   fileWorkApi.metadata.mockResolvedValue({canCreate:true,canReadAll:true});
+   fileWorkApi.preparation.mockResolvedValue({asOf:'2026-10-08T00:00:00Z',counts:{documents:0,approvedCases:0,testers:1,configuredDraftCycles:0,allocatedDevices:0,assignedGroups:0}});
+   const navigate=vi.fn();render(<FileWorkPage navigate={navigate}/>);
+   await screen.findByRole('heading',{name:'Chuẩn bị giao việc'});
+   expect(await screen.findByText('Chưa có tài liệu được nhập')).toBeInTheDocument();
+   fireEvent.click(screen.getByRole('button',{name:'Nhập và duyệt test case'}));expect(navigate).toHaveBeenCalledWith('/tests');
+ });
+ it('provides a single-case view using the same save and history actions',async()=>{
+   detail({...group,environmentName:'QA staging',deviceName:'iPad Pro',selectedBuildLabel:'Release 1.2'},session,row);
+   render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);
+   await screen.findByText(/QA staging/);
+   fireEvent.click(screen.getByRole('button',{name:'Xem từng case'}));
+   const card=await screen.findByRole('region',{name:'Case đang xem'});
+   expect(card).toHaveTextContent('Pinned title');
+   expect(screen.queryByRole('region',{name:'Case thực thi chính thức'})).toBeNull();
+   fireEvent.click(screen.getByRole('button',{name:'OK · TC-01'}));
+   await waitFor(()=>expect(fileWorkApi.record).toHaveBeenCalledWith(1,3,10,expect.objectContaining({resultCode:'OK',sessionId:9,buildId:6})));
+ });
+ it('keeps the selected case and layout after saving or refreshing the server projection',async()=>{
+   const second={...row,runItemId:11,caseNo:'TC-02',titleVi:'Second case',cells:['Second case','extra']};
+   fileWorkApi.execution.mockResolvedValue({group,buildId:6,asOf:'2026-10-06T00:00:00Z',headers:['Title','Extra'],rows:[row,second]});
+   render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);
+   fireEvent.click(await screen.findByRole('button',{name:'Xem từng case'}));
+   fireEvent.click(screen.getByRole('button',{name:'Case tiếp'}));
+   fireEvent.click(screen.getByRole('button',{name:'OK · TC-02'}));
+   await waitFor(()=>expect(fileWorkApi.execution).toHaveBeenCalledTimes(2));
+   expect(await screen.findByLabelText('Chọn case')).toHaveValue('11');
+   fireEvent.click(screen.getByRole('button',{name:'Làm mới'}));
+   await waitFor(()=>expect(fileWorkApi.execution).toHaveBeenCalledTimes(3));
+   expect(await screen.findByLabelText('Chọn case')).toHaveValue('11');
+   expect(screen.queryByRole('region',{name:'Case thực thi chính thức'})).toBeNull();
+ });
  it.each([false,true])('clears search filters without changing document scope or My work (%s)', async mine => {
    fileWorkApi.metadata.mockResolvedValue({canCreate:!mine,canViewMine:mine,canReadAll:true});
    projectsApi.listMembers.mockResolvedValue([{membershipId:21,displayName:'Lan',projectRole:'TESTER'}]);
@@ -119,7 +152,7 @@ describe('final review file monitoring', () => {
    expect(screen.getByText('Bắt đầu phiên: '+documentDate('2026-10-06T01:00:00Z','America/Los_Angeles'))).toBeTruthy();
    expect(screen.getByText('Cập nhật nhóm: '+documentDate('2026-10-06T00:00:00Z','America/Los_Angeles'))).toBeTruthy();
    expect(screen.getByText('Hoạt động đã lưu: '+documentDate('2026-10-06T03:00:00Z','America/Los_Angeles'))).toBeTruthy();
-   expect(screen.getByText('Cấu hình #7 · Build #13')).toBeTruthy();
+   expect(screen.getByText('Môi trường chưa có tên · Thiết bị chưa có tên · Build 13')).toBeTruthy();
  });
  it('ignores old build-filter results and preserves server-current My work restriction',async()=>{
    let oldResolve;fileWorkApi.list.mockImplementation(async (p,f)=>f.buildId===6?new Promise(resolve=>{oldResolve=resolve;}):page([{...group,fileName:f.buildId===13?'current.xlsx':'initial.xlsx'}]));
@@ -173,7 +206,7 @@ describe('current file-work authority and canonical execution', () => {
  it('keeps source annotation separate and creates QA/BUG context only for pinned authoritative IDs', async()=>{const navigate=vi.fn();detail(group,session,{...row,resultCode:'NG',latestAttemptId:32,pendingBugLink:true});render(<FileWorkDetail groupId={3} navigate={navigate}/>);fireEvent.click(await screen.findByRole('button',{name:'Tạo QA · TC-01'}));expect(navigate).toHaveBeenLastCalledWith('/board/list?create=QA&documentId=4&groupId=3&runItemId=10&revisionId=12');fireEvent.click(screen.getByRole('button',{name:'Tạo BUG · TC-01'}));expect(navigate).toHaveBeenLastCalledWith('/board/new?attempt=32&documentId=4&groupId=3&runItemId=10&revisionId=12');fireEvent.click(screen.getByRole('button',{name:'Tài liệu và kết quả tham khảo'}));expect(navigate).toHaveBeenLastCalledWith('/tests/documents/4');fireEvent.click(screen.getByLabelText('Xem dữ liệu Excel gốc (chỉ đọc)'));expect(screen.getByText('Source title')).toBeTruthy();expect(screen.getByRole('button',{name:'OK · TC-01'}).disabled).toBe(true);expect(qaContextUrl(4,3,0,12)).toBeNull();});
  it('hides writes on excluded scope and shows official NA reason', async()=>{detail(group,session,{...row,excluded:true,resultCode:'NA',scopeReason:'Customer excludes'});render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);expect((await screen.findByRole('button',{name:'NG · TC-01'})).disabled).toBe(true);expect(screen.getByText('NA · Customer excludes')).toBeTruthy();});
  it('does not allow stale group responses to leak across project change', async()=>{let resolve;fileWorkApi.detail.mockImplementationOnce(()=>new Promise(r=>{resolve=r;}));const view=render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);await waitFor(()=>expect(fileWorkApi.detail).toHaveBeenCalled());context.currentProject={id:2,name:'Other'};fileWorkApi.detail.mockResolvedValue({group:{...group,fileName:'other.xlsx'},items:[row],sessions:[session]});view.rerender(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);await screen.findByText('other.xlsx');resolve({group:{...group,fileName:'old.xlsx'},items:[row],sessions:[session]});await waitFor(()=>expect(screen.queryByText('old.xlsx')).toBeNull());});
- it('completes with current version and refreshes without treating response as current state',async()=>{fileWorkApi.complete.mockResolvedValue({id:9,state:'COMPLETED',version:1});render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);fireEvent.click(await screen.findByRole('button',{name:'Hoàn thành phiên'}));fireEvent.click(screen.getByRole('button',{name:'Xác nhận thao tác'}));await waitFor(()=>expect(fileWorkApi.complete).toHaveBeenCalledWith(1,9,expect.objectContaining({expectedVersion:2,expectedGroupVersion:8})));await waitFor(()=>expect(fileWorkApi.execution.mock.calls.length).toBeGreaterThan(1));expect(await screen.findByText(/Phiên #9 · Đang thực hiện/)).toBeTruthy();expect(screen.queryByText(/Phiên #9 · Đã hoàn thành/)).toBeNull();});
+ it('completes with current version and refreshes without treating response as current state',async()=>{fileWorkApi.complete.mockResolvedValue({id:9,state:'COMPLETED',version:1});render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);fireEvent.click(await screen.findByRole('button',{name:'Hoàn thành phiên'}));fireEvent.click(screen.getByRole('button',{name:'Xác nhận thao tác'}));await waitFor(()=>expect(fileWorkApi.complete).toHaveBeenCalledWith(1,9,expect.objectContaining({expectedVersion:2,expectedGroupVersion:8})));await waitFor(()=>expect(fileWorkApi.execution.mock.calls.length).toBeGreaterThan(1));expect(await screen.findByText(/Đang thực hiện · Lan · máy IPAD-01/)).toBeTruthy();expect(screen.queryByText(/Đã hoàn thành · Lan · máy IPAD-01/)).toBeNull();});
  it('shows retryable group read errors and forbids recording until current projection loads',async()=>{fileWorkApi.execution.mockRejectedValueOnce(new Error('Read failed'));render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);await screen.findByText('Read failed');expect(screen.queryByRole('button',{name:'OK · TC-01'})).toBeNull();fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));await screen.findByRole('button',{name:'OK · TC-01'});});
  it('reads older group/session history with server cursors/pages',async()=>{fileWorkApi.history.mockResolvedValue({items:[{id:80,action:'PAUSE',actorName:'Lan',reason:'Break'}],nextBefore:80});fileWorkApi.sessions.mockResolvedValue({...page([session]),totalItems:21,totalPages:2});render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);fireEvent.click(await screen.findByRole('button',{name:'Lịch sử nhóm / phiên'}));await screen.findByText(/PAUSE · Lan · Break/);fireEvent.click(screen.getByRole('button',{name:'Sự kiện cũ hơn'}));await waitFor(()=>expect(fileWorkApi.history).toHaveBeenLastCalledWith(1,3,80));fireEvent.click(screen.getByRole('button',{name:'Trang sau phiên'}));await waitFor(()=>expect(fileWorkApi.sessions).toHaveBeenLastCalledWith(1,3,1));fireEvent.click(screen.getByRole('button',{name:'Sự kiện mới nhất'}));await waitFor(()=>expect(fileWorkApi.history).toHaveBeenLastCalledWith(1,3,0));});
  it('keeps attempt history read-only and retryable with immutable executor/machine snapshots',async()=>{executionApi.attempts.mockRejectedValueOnce(new Error('History failed')).mockResolvedValue({...page([{id:32,attemptNo:3,resultCode:'NG',buildId:6,actualResult:'Crash',fileWorkSessionId:9,executorName:'Renamed actor',contextSnapshot:JSON.stringify({executor:{displayName:'Historical actor'},physicalAsset:{assetCode:'PINNED-IPAD'},provenance:'FILE_SESSION'})}]),totalPages:2,totalItems:21});render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);fireEvent.click(await screen.findByRole('button',{name:'Lịch sử · TC-01'}));await screen.findByText('History failed');fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));await screen.findByText(/Lần #3 · NG/);expect(screen.getByText(/Crash · Historical actor/)).toBeTruthy();expect(screen.getByText(/PINNED-IPAD · FILE_SESSION/)).toBeTruthy();expect(screen.queryByLabelText('Kết quả thực tế')).toBeNull();fireEvent.click(screen.getByRole('button',{name:'Trang sau lần chạy'}));await waitFor(()=>expect(executionApi.attempts).toHaveBeenLastCalledWith(1,10,1));fireEvent.click(screen.getByRole('button',{name:'Đóng case'}));expect(fileWorkApi.record).not.toHaveBeenCalled();});
@@ -238,7 +271,7 @@ function setupPm() {
  fileWorkApi.preview.mockResolvedValue({valid:true,cycleVersion:2,selectedCount:1,errors:[]});fileWorkApi.create.mockResolvedValue({group});
 }
 async function selectScope() {
- fireEvent.click(await screen.findByRole('button',{name:'Giao file'}));await screen.findByRole('option',{name:'source.xlsx'});fireEvent.change(screen.getByLabelText('Tài liệu đã nhập'),{target:{value:'4'}});await screen.findByLabelText('Chọn TC-01 revision 12');fireEvent.click(screen.getByLabelText('Chọn TC-01 revision 12'));fireEvent.change(screen.getByLabelText('Đợt bản nháp'),{target:{value:'5'}});await screen.findByRole('option',{name:/#7/});fireEvent.change(screen.getByLabelText('Cấu hình'),{target:{value:'7'}});fireEvent.change(screen.getByLabelText('Tester nhận file'),{target:{value:'21'}});
+ fireEvent.click(await screen.findByRole('button',{name:'Giao file'}));await screen.findByRole('option',{name:'source.xlsx'});fireEvent.change(screen.getByLabelText('Tài liệu đã nhập'),{target:{value:'4'}});await screen.findByLabelText('Chọn TC-01 revision 12');fireEvent.click(screen.getByLabelText('Chọn TC-01 revision 12'));fireEvent.change(screen.getByLabelText('Đợt bản nháp'),{target:{value:'5'}});await screen.findByRole('option',{name:/Môi trường #1/});fireEvent.change(screen.getByLabelText('Cấu hình'),{target:{value:'7'}});fireEvent.change(screen.getByLabelText('Tester nhận file'),{target:{value:'21'}});
 }
 describe('current contextual QA authority',()=>{
  it.each(['PM','TESTER'])('allows granted %s QA navigation independently of session, record, assignment, BUG or NG',async role=>{

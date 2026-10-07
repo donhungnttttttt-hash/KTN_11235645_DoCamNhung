@@ -9,6 +9,18 @@ vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({user:{id:'admin'}})}));
 vi.mock('./AdminProjects',()=>({AdminProjectDetail:()=> <h1>Project summary</h1>}));
 
 describe('central project creation',()=>{
+ it('searches projects on the server while retaining the selected project',async()=>{
+  const selected={id:301,code:'SEL',name:'Selected project'};
+  const api={projects:vi.fn().mockImplementation(async filters=>({items:filters.keyword?[{id:302,code:'MATCH',name:'Search match'}]:[selected],totalElements:1}))};
+  render(<AdminUserProjectFilter api={api} value="301" onChange={vi.fn()}/>);
+  await screen.findByRole('option',{name:'SEL · Selected project'});
+  fireEvent.change(screen.getByLabelText('Tìm dự án theo tên hoặc mã'),{target:{value:'Search'}});
+  fireEvent.click(screen.getByRole('button',{name:'Tìm dự án'}));
+  await screen.findByRole('option',{name:'MATCH · Search match'});
+  expect(api.projects).toHaveBeenLastCalledWith({page:0,size:100,keyword:'Search'},expect.anything());
+  expect(screen.getByLabelText('Dự án của người dùng')).toHaveValue('301');
+  expect(screen.getByRole('option',{name:'SEL · Selected project'})).toBeInTheDocument();
+ });
  it('requires explicit PM and retains draft when create fails',async()=>{
   const api={projects:vi.fn().mockResolvedValue({items:[{id:1,code:"AA",name:"Project Alpha"}],totalElements:1}),users:vi.fn().mockResolvedValue({items:[{id:'pm',displayName:'Manager',role:'PM'}],totalElements:1}),createProject:vi.fn().mockRejectedValue(new Error('Mã đã tồn tại'))};
   render(<AdminProjectForm api={api} onSaved={()=>{}}/>);

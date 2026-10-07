@@ -2254,6 +2254,259 @@
           }
         }
       }
+    },
+    "/api/v1/projects/{projectId}/file-work-groups/preparation": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        }
+      ],
+      "get": {
+        "operationId": "fileWorkPreparation",
+        "description": "Current PM only; project preparation counts. Overview, not authorization to create scope or start a session.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Preparation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/api/v1/projects/{projectId}/action-inbox": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/projectId"
+        }
+      ],
+      "get": {
+        "operationId": "actionInbox",
+        "description": "Live role-scoped queue; no write, read receipt or implicit completion. Archived project returns empty. Stable updatedAt DESC/kind/id DESC paging.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionInboxPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_REQUEST: malformed JSON or parameter binding.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHENTICATED: current enabled session required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN/CSRF_INVALID or ownership policy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: scoped resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Current version/state/archive/idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_ERROR for Bean Validation; semantic business validation uses domain code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "INTERNAL_ERROR: safe generic message; no SQL, stack or credential content.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "DATABASE_UNAVAILABLE: database unavailable; safe envelope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "",
+                "FILE",
+                "QA",
+                "BUG",
+                "RETEST"
+              ],
+              "default": ""
+            }
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -2951,6 +3204,15 @@
             "type": "string",
             "format": "date-time",
             "description": "Latest saved group update, canonical attempt on any build, or session transition. Read snapshot, not realtime."
+          },
+          "environmentName": {
+            "type": "string"
+          },
+          "deviceName": {
+            "type": "string"
+          },
+          "selectedBuildLabel": {
+            "type": "string"
           }
         },
         "required": [
@@ -2984,7 +3246,10 @@
           "milestoneId",
           "milestoneName",
           "milestoneDueOn",
-          "latestActivityAt"
+          "latestActivityAt",
+          "environmentName",
+          "deviceName",
+          "selectedBuildLabel"
         ]
       },
       "GroupItem": {
@@ -4130,6 +4395,165 @@
           "headers",
           "columns",
           "rows"
+        ]
+      },
+      "Preparation": {
+        "type": "object",
+        "properties": {
+          "asOf": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "documents": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              },
+              "approvedCases": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              },
+              "testers": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              },
+              "configuredDraftCycles": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              },
+              "allocatedDevices": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              },
+              "assignedGroups": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "documents",
+              "approvedCases",
+              "testers",
+              "configuredDraftCycles",
+              "allocatedDevices",
+              "assignedGroups"
+            ]
+          }
+        },
+        "required": [
+          "asOf",
+          "archived",
+          "counts"
+        ]
+      },
+      "ActionInboxItem": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "FILE",
+              "QA",
+              "BUG",
+              "RETEST"
+            ]
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ownerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "targetId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "kind",
+          "id",
+          "title",
+          "status",
+          "updatedAt",
+          "ownerName",
+          "targetId"
+        ]
+      },
+      "ActionInboxPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/ActionInboxItem"
+            }
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "asOf": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "projectWide": {
+            "type": "boolean"
+          },
+          "archived": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items",
+          "totalItems",
+          "page",
+          "pageSize",
+          "totalPages",
+          "asOf",
+          "projectWide",
+          "archived"
         ]
       }
     },

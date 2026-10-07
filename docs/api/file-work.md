@@ -22,6 +22,8 @@ ID >0; version ≥0; `requestKey` là `[A-Za-z0-9_-]{8,64}`. Không nhận actor
 | POST `/file-work-groups` | `Create` → 201 `GroupDetail`, Location tới group | PM |
 | GET `/file-work-groups` | Query dưới đây → `Page<GroupSummary>` | Member |
 | GET `/file-work-groups/metadata` | `{canCreate,canViewMine,canReadAll,membershipId,archived}` | Member |
+| GET `/file-work-groups/preparation` | `Preparation`: số lượng điều kiện chuẩn bị, `asOf`, `archived` | PM |
+| GET `/action-inbox?page=0&size=20&kind=` | `ActionInboxPage`: hàng đợi việc còn chờ theo vai trò | Member |
 | GET `/file-work-groups/{groupId}` | `GroupDetail` | Member |
 | PUT `/file-work-groups/{groupId}/assignment` | `Assignment` → `GroupDetail` | PM |
 | GET `/file-work-groups/{groupId}/history?before=0` | `{items,nextBefore}`; ≤50 events, ID giảm dần | Member |
@@ -57,6 +59,23 @@ Assignment gửi **đủ và duy nhất** tất cả runVersions của group; ta
 Start `expectedVersion` là group version. `SessionCommand.expectedVersion` là session version; `expectedGroupVersion` là group version. Mọi transition bump cả session và group một lần. Assignment bump group một lần. Attempt `expectedVersion` là run version; `expectedSessionVersion` là session version, attempt không bump session/group. `buildId` phải bằng build pin của session. Field actual ≤8000, reason/evidenceReference ≤1000, NG cần actual, P cần reason, result chỉ OK/NG/P; NA dùng command PM hiện có.
 
 ## Read models
+
+Bổ sung 08/10/2026: `GroupSummary.environmentName`, `deviceName`, `selectedBuildLabel` dùng tên hiện hành của cấu hình/build hiển thị; snapshot lịch sử vẫn bất biến. Không thay ID, quyền ghi, source hoặc cách tính kết quả.
+
+`Preparation.counts` gồm `documents` (import COMMITTED), `approvedCases` (case nguồn còn hoạt động có revision APPROVED), `testers` (membership TESTER/account enabled, loại global DEV), `configuredDraftCycles` (đợt DRAFT có ít nhất một cấu hình môi trường/thiết bị active, build chưa archive), `allocatedDevices` (allocation chưa thu hồi), `assignedGroups`. Đây là tổng quan chuẩn bị, **không phải** xác nhận mọi revision/cấu hình/máy đã tương thích; preview/create/start vẫn kiểm lại phạm vi cụ thể. Không đọc workbook blob hoặc tự cấp quyền/duyệt case.
+
+`ActionInboxPage` gồm `items,totalItems,page,pageSize,totalPages,asOf,projectWide,archived`. Mỗi item gồm `kind,id,title,status,updatedAt,ownerName,targetId`. Page ≥0, size 1–100, kind rỗng hoặc FILE/QA/BUG/RETEST; sai filter trả 422. SQL bind tham số, phân trang theo `updatedAt DESC,kind,id DESC`. `id` đi cùng `kind` là khóa hiển thị; `targetId` của RETEST trỏ tới BUG để mở đúng màn xử lý.
+
+| Loại | PM | Tester | Dev |
+| --- | --- | --- | --- |
+| FILE | Nhóm thuộc đợt chưa đóng, phiên mới nhất chưa COMPLETED | Chỉ nhóm có đầy đủ run cùng giao cho mình | Không trả file thực thi |
+| QA | open/progress/clarify/resolved/recheck | Câu hỏi mình tạo đang clarify/resolved | Được giao cho mình, open/progress |
+| BUG | Bug chưa ở trạng thái terminal | Xem qua luồng bug/retest hiện có | Bug mình được giao, loại resolved/recheck |
+| RETEST | Request OPEN thuộc coverage/round hiện hành | Request đó giao cho mình | Không trả request thực thi |
+
+Queue kiểm current account/session/membership/effective role qua QA guard; global DEV không nhận quyền Tester từ membership cũ. Dự án archived trả queue rỗng. Đây là danh sách đọc trực tiếp, không phải hệ thống thông báo có lưu sự kiện/chưa đọc. Mở mục không xác nhận hay hoàn thành việc; không tự tạo retest, gửi email hoặc công bố Redmine. UI cập nhật mỗi 60 giây khi tab đang hiển thị và khi quay lại tab; các màn đích tiếp tục kiểm quyền hiện hành. Phiên nhóm, QA/BUG và retest là các việc khác nhau nên không dùng tổng queue làm số bug hoặc số case.
+
+Frontend cung cấp chế độ bảng/từng case dùng chung command và capabilities, mặc định từng case khi mở ở viewport ≤900px. Giữ lựa chọn case/chế độ khi lưu, đổi build hoặc tải lại dữ liệu; đổi project/group bắt đầu ngữ cảnh mới. Bản xuất tài liệu dùng hậu tố `-cap-nhat.xlsx`, còn file gốc giữ tên gốc. Bộ lọc lưới không giới hạn số dòng của bản xuất tài liệu.
 
 List query: `page=0`, `size=20` (1–100), `mine=false`, `documentId?`, `cycleId?`, `assigneeMembershipId?`, `buildId?`, `state?` (READY/DOING/PAUSED/COMPLETED/CANCELLED), `keyword?` (≤255; file name literal). `mine=true` lấy actor từ server và chỉ group CONSISTENT giao actor; không nhận userId thay actor. Sort ID giảm dần. `buildId` lọc group có phiên/attempt trên build đó; summary counts phải cùng selected build (không pha latest build khác). Khi không chọn build, summary uses latest session build hoặc config default build nếu chưa có session. Page `{items,totalItems,page,pageSize,totalPages}`.
 

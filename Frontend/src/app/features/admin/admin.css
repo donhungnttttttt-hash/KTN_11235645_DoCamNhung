@@ -39,3 +39,11 @@
 .admin-selected-members span { min-width:0; overflow-wrap:anywhere; flex:1; }
 .admin-header > div { min-width:0; overflow-wrap:anywhere; }
 @media(max-width:390px) { .admin-kpis { grid-template-columns:minmax(0,1fr); } }
+
+.admin-picker-search{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-top:8px}.admin-picker-search .ui-field{flex:1 1 170px;min-width:0}.admin-picker-search input{width:100%;min-height:44px}.admin-picker-search button{min-height:44px}.admin-picker-search .ui-field{font-size:12px}
+.admin-filters:has(>.admin-project-picker){grid-template-columns:repeat(3,minmax(0,1fr))}
+.admin-filters>.admin-project-picker{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px;align-items:start}
+.admin-filters>.admin-project-picker>.admin-picker-search{margin-top:0}
+.admin-filters>.admin-project-picker>p,.admin-filters>.admin-project-picker>.admin-picker-pages{grid-column:1/-1}
+@media(max-width:900px){.admin-filters:has(>.admin-project-picker){grid-template-columns:repeat(2,minmax(0,1fr))}.admin-filters>.admin-project-picker{grid-template-columns:1fr}}
+@media(max-width:600px){.admin-filters:has(>.admin-project-picker){grid-template-columns:1fr}}

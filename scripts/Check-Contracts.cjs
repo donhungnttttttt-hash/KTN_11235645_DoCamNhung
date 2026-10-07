@@ -5,7 +5,7 @@ const METHODS = ['get', 'post', 'put', 'patch', 'delete'];
 const LEGACY = ['project-settings', 'test-cases', 'execution', 'work-items', 'retest', 'reporting', 'redmine'];
 const JAVA = 'backend/src/main/java/vn/syp/tms/';
 const CONTROLLERS = {
- 'file-work': ['filework/FileWorkController.java', 'filework/FileWorkSessionController.java', 'filework/FileWorkExecutionController.java'],
+ 'file-work': ['filework/FileWorkController.java', 'filework/FileWorkSessionController.java', 'filework/FileWorkExecutionController.java', 'filework/ActionInboxController.java'],
  qa: ['qa/QaController.java', 'qa/HandoffController.java'],
 };
 const fail = message => { throw Error(message); };
@@ -171,7 +171,7 @@ function checkFq(root) {
    if (!operation.responses?.[status]?.content) fail('Success response missing: ' + expected.route);
    const suffix = expected.route.split('/projects/{projectId}')[1];
    const responseName = group === 'qa' ? suffix === '/handoff-queue' ? 'HandoffPage' : suffix === '/qa' && expected.method === 'get' ? 'QaPage' : expected.method === 'get' && suffix.endsWith('/answers') ? 'AnswerPage' : expected.method === 'get' && suffix.endsWith('/confirmations') ? 'ConfirmationPage' : 'QaDetail'
-    : suffix.endsWith('/metadata') ? 'Metadata' : suffix.endsWith('/preview') ? 'Preview' : suffix.endsWith('/history') ? 'History' : suffix.endsWith('/eligible-allocations') ? 'EligibleAllocations' : suffix.endsWith('/execution') ? 'ExecutionView' : suffix.endsWith('/attempts') ? 'Attempt' : suffix.endsWith('/sessions') ? expected.method === 'get' ? 'SessionPage' : 'Session' : suffix.startsWith('/file-work-sessions/') ? 'Session' : suffix === '/file-work-groups' && expected.method === 'get' ? 'GroupPage' : 'GroupDetail';
+    : suffix.endsWith('/preparation') ? 'Preparation' : suffix==='/action-inbox' ? 'ActionInboxPage' : suffix.endsWith('/metadata') ? 'Metadata' : suffix.endsWith('/preview') ? 'Preview' : suffix.endsWith('/history') ? 'History' : suffix.endsWith('/eligible-allocations') ? 'EligibleAllocations' : suffix.endsWith('/execution') ? 'ExecutionView' : suffix.endsWith('/attempts') ? 'Attempt' : suffix.endsWith('/sessions') ? expected.method === 'get' ? 'SessionPage' : 'Session' : suffix.startsWith('/file-work-sessions/') ? 'Session' : suffix === '/file-work-groups' && expected.method === 'get' ? 'GroupPage' : 'GroupDetail';
    if (!suffix.endsWith('/export') && operation.responses[status].content['application/json']?.schema.$ref !== '#/components/schemas/' + responseName) fail('Response schema mismatch: ' + expected.route);
    if (status === '201' && !operation.responses[status].headers?.Location) fail('Location header missing: ' + expected.route);
    for (const code of ['400', '401', '403', '404', '409', '422']) if (!operation.responses[code]?.content?.['application/json']?.schema?.$ref) fail('Error schema missing: ' + expected.route + '/' + code);

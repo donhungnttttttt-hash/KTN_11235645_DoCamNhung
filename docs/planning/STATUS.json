@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-07",
+  "updatedAt": "2026-10-08",
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
@@ -8,6 +8,7 @@
   "phase": "IN_REVIEW",
   "implementationStarted": true,
   "notes": [
+    "08/10/2026 cải tiến khách hàng trên system-design: preparation checklist PM, tên context, single-case responsive giữ lựa chọn sau lưu, Admin project search, action inbox FILE/QA/BUG/RETEST phân quyền, tên Excel cập nhật. FullFE632/632, Admin final49/49; BE scoped108/108, native isolated9/9, JDT197sources0error0warning, contract27/27/build PASS. Backend8080 đã restart/native3307/tmsV20; không migration mới. Báo cáo docs/reviews/2026-10-08-customer-improvements.md. Archive policy còn chờ trả lời; S11 giữ IN_REVIEW UAT/pilot/NFR production.",
     "06/10/2026 audit luồng ADMIN→PM→Tester→Dev→retest: sửa canonical DEV progress và 2 lỗi UI permission/read-only bằng RED→GREEN. FullFE344/344(44files), BE scoped26/26(6suites), builds PASS, JDT167sources0error0warning, contract structural checker PASS. SELECT native V16, metadata59tables/560cols/139FK; không ghi DB/fixture/migration hoặc restart8080/5173. Viết docs/product PRD/SRS/DATA-DICTIONARY/TRACEABILITY-UAT; gap phân công file/session/máy thật/file execution export và QA chờ duyệt, không gọi đã triển khai. Review docs/reviews/2026-10-06-system-workflow-review.md. S11 giữ IN_REVIEW; không commit/push.",
     "05/10/2026 ADMIN A1–A4 đã triển khai, review từng phần và tổng thể đã duyệt sau sửa2 lỗi đồng thời. Flyway native V16 sau backup; fullFE341/341 PASS, BE133/133 theo XML của30suite chọn lọc, packagePASS, Eclipse167sources0errors0warnings. Browser đọc/form/responsive1440→320 PASS. Native fixture/fresh/concurrency chưa chạy do thiếu quyền1044; S11 giữ IN_REVIEW. Preview18080/15173 đã dừng, không đụng8080/5173. Không commit/push. Guide docs/admin-guide.md và báo cáo docs/reviews/2026-10-05-admin-implementation.md.",
     "05/10/2026 người dùng duyệt toàn bộ thiết kế ADMIN, triển khai A1–A4 trên system-design. Đã bắt đầu A1; native MySQL V13, schema test riêng chưa có. Theo yêu cầu tự tạo đã thử CREATE DATABASE bằng migrator nhưng MySQL trả1044 (thiếu quyền). Không chạy fixture trên tms. Theo dõi tại docs/reviews/2026-10-05-admin-implementation.md; không commit/push trong tác vụ mới.",
@@ -777,7 +778,7 @@
   "implementationBaseCommit": "3355cfc",
   "lastCompletedSprint": "S09",
   "nextSuggestedSprint": null,
-  "nextAction": "Người dùng đăng nhập syp.demo.* và nghiệm thu luồng V20 đã bàn giao. S11 vẫn IN_REVIEW cho UAT/pilot; hướng dẫn docs/database/demo-v20.md. Database tms V20/8080 UP; hai file/88 case chưa thực thi sẵn cho Tester.",
+  "nextAction": "Nghiệm thu checklist/inbox/single-case/search tại docs/reviews/2026-10-08-customer-improvements.md; chốt điều kiện archive dự án đang hỏi. UAT/pilot/cảm ứng và NFR production còn mở, S11 IN_REVIEW.",
   "executionPolicy": {
     "continueSequentially": true,
     "authorizedAt": "2026-09-29",

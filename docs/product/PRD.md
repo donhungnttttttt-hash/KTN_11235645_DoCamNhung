@@ -299,3 +299,15 @@ Luồng cốt lõi phù hợp quyết định đã duyệt: Admin giao dự án/
 Ưu tiên tiếp: UAT/pilot có người thực hành; thiết kế nhắc việc/bàn giao trong ứng dụng; chốt closure cho REQUEST/TASK/IMPROVEMENT. Các hướng lưu trữ dự án, tên ngữ cảnh dễ đọc, tải trang và vận hành có tiêu chí tại báo cáo responsive; chưa coi là chức năng đã làm hoặc rule mặc định. S11 vẫn IN_REVIEW; browser ngoài Chrome, thiết bị cảm ứng thật và NFR production chưa được nghiệm thu.
 
 Bổ sung review khách hàng 07/10: [bộ chọn dự án và thao tác tìm file](../reviews/2026-10-07-project-scope-customer-followup.md). Đã sửa căn nhãn/control, tên dự án dài, giữ đúng danh tính dự án khi phân trang/lookup và xóa bộ lọc mà giữ My work/document scope. 618 FE tests PASS. Đánh giá tiếp tục chỉ ra nhu cầu checklist chuẩn bị giao file và nhắc việc; đây là hướng cải tiến, chưa thay thành rule hoặc implementation mới.
+
+## 18. Cải tiến sau đánh giá khách hàng 08/10/2026
+
+Người dùng đã yêu cầu triển khai các phần rõ nghiệp vụ của [đánh giá khách hàng khó tính](../reviews/2026-10-08-demanding-customer-assessment.md). Checkpoint này bổ sung mục 17:
+
+- PM có checklist chuẩn bị giao file dựa trên số liệu server và liên kết tới màn xử lý. Khi đã có nhóm file, checklist thu gọn để ưu tiên danh sách đang vận hành; preview vẫn là bước kiểm tra phạm vi cụ thể.
+- Người thực thi thấy tên môi trường/thiết bị/build và snapshot phiên bằng nhãn nghiệp vụ. Có bảng desktop và chế độ từng case cho màn nhỏ; giữ case đang xem qua lưu/làm mới.
+- Mục **Tổng quan → Việc cần xử lý** tổng hợp FILE/QA/BUG/RETEST theo current role/assignment. PM theo dõi toàn dự án; Tester/Dev nhận đúng hàng đợi cá nhân. Tự tải lại mỗi phút khi màn đang hiển thị, chưa có thông báo lưu sự kiện/chưa đọc hoặc đẩy bên ngoài.
+- Bộ chọn phạm vi Admin tìm dự án theo tên/mã trên server, giữ lựa chọn ngoài kết quả tìm kiếm và phân trang. Màn danh sách dự án tiếp tục dùng ô tìm danh sách đã có để tránh hai ô tìm trùng mục đích.
+- Bản Excel tài liệu cập nhật có tên phân biệt với bản gốc; tooltip nêu phạm vi toàn tài liệu, dữ liệu phải lưu xong trước khi xuất. Execution export tiếp tục đúng group/build và authority đã duyệt.
+
+Tiêu chí kỹ thuật và bằng chứng mới xem [báo cáo triển khai](../reviews/2026-10-08-customer-improvements.md), [contract](../api/file-work.md). Không bổ sung schema/Flyway mới vì chỉ dùng dữ liệu đã có. S11 vẫn IN_REVIEW: archive/closure dự án cần chốt blocker/ngoại lệ; UAT có người dùng thật, cảm ứng/bàn phím ảo, quy mô pilot và NFR production còn mở. Không dùng test PASS để suy ra các gate này hoàn tất.

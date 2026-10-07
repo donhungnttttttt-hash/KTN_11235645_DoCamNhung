@@ -19,6 +19,7 @@ export function routeInfo(route = "/dashboard") {
 }
 
 const pageNames = {
+  '/dashboard/actions': 'Việc cần xử lý',
   '/dashboard': 'Tổng quan dự án', '/dashboard/testing': 'Tổng quan kiểm thử',
   '/board': 'Bảng Kanban', '/board/list': 'Danh sách công việc', '/board/new': 'Thêm công việc',
   '/tests': 'Thư viện test case', '/tests/cases': 'Tất cả test case',

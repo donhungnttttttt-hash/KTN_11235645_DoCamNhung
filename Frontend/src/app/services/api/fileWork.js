@@ -7,6 +7,8 @@ async function write(path, body, method = 'POST') {
   return apiRequest(path, {method,headers:{[csrf.headerName]:csrf.token},body:JSON.stringify(body)});
 }
 export const fileWorkApi = {
+  inbox: (p,filters={},options={}) => apiRequest(`${root(p)}/action-inbox?${query({page:0,size:20,...filters})}`,options),
+  preparation: (p, options={}) => apiRequest(`${groups(p)}/preparation`, options),
   metadata: (p, options={}) => apiRequest(`${groups(p)}/metadata`, options),
   list: (p, filters={}, options={}) => apiRequest(`${groups(p)}?${query({page:0,size:20,...filters})}`, options),
   detail: (p,id,options={}) => apiRequest(`${groups(p)}/${id}`,options),

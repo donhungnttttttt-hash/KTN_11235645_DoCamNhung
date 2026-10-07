@@ -15,6 +15,8 @@ public class FileWorkController {
     private String actor(Authentication auth){return ((SessionPrincipal)auth.getPrincipal()).id();}
     @GetMapping("/metadata")
     public Object metadata(Authentication auth,@PathVariable long projectId){return service.metadata(projectId,actor(auth));}
+    @GetMapping("/preparation")
+    public Object preparation(Authentication auth,@PathVariable long projectId){return service.preparation(projectId,actor(auth));}
     @PostMapping("/preview")
     public Object preview(Authentication auth,@PathVariable long projectId,@Valid @RequestBody FileWorkDtos.Scope input){return service.preview(projectId,actor(auth),input);}
     @PostMapping

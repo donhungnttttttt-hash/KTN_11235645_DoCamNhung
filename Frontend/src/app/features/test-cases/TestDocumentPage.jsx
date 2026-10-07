@@ -10,7 +10,7 @@ import { useDocumentExecution, DocumentExecutionControls } from './DocumentExecu
 import { ResultCycleButton } from './ResultCycleButton';
 import { useDocumentResults } from './useDocumentResults';
 import { DocumentResultHistory } from './DocumentResultHistory';
-import { downloadWorkbook, documentDate } from './documentDownload';
+import { downloadWorkbook, documentDate, documentExportName } from './documentDownload';
 import './test-cases.css';
 import './test-documents.css';
 
@@ -108,7 +108,7 @@ function DocumentGrid({ project, documentId, navigate }) {
     setDownloading(true); setDownloadError('');
     try {
       const blob = await testCasesApi.exportDocument(project.id, documentId, original);
-      if (mounted.current) downloadWorkbook(blob,data.document.fileName);
+      if (mounted.current) downloadWorkbook(blob,documentExportName(data.document.fileName,original));
     } catch (err) { if (mounted.current) setDownloadError(err.message || 'Không xuất được Excel.'); }
     finally { if (mounted.current) setDownloading(false); }
   }
@@ -132,7 +132,7 @@ function DocumentGrid({ project, documentId, navigate }) {
       <div className="td-actions">
         {customer && resultColumn!=null && <select aria-label="Lọc kết quả" value={resultFilter} onChange={e=>{setResultFilter(e.target.value);setPage(0);}}><option value="">Tất cả kết quả</option>{resultOptions.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select>}
         <button className="cat-btn" onClick={clearFilters}>Xóa bộ lọc</button>
-        <button className="cat-btn cat-btn-mint" disabled={downloading || loading || results.pending>0 || !!results.error} onClick={() => download(false)}><Download size={14}/> Xuất Excel</button>
+        <button className="cat-btn cat-btn-mint" title="Xuất toàn bộ tài liệu với các thay đổi đã lưu; bộ lọc màn hình không giới hạn file xuất" disabled={downloading || loading || results.pending>0 || !!results.error} onClick={() => download(false)}><Download size={14}/> Xuất Excel</button>
         {doc.hasSourceFile && <button className="cat-btn" disabled={downloading || loading} onClick={() => download(true)}>Tải file gốc</button>}
         <button className="cat-btn" onClick={() => navigate('/tests/cycles')}><ClipboardList size={14}/> Đợt kiểm thử</button>
         <button className="cat-btn" aria-label="Làm mới bảng case" disabled={loading || results.pending>0} onClick={load}><RefreshCw size={14}/></button>

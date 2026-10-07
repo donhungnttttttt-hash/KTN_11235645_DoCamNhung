@@ -7,6 +7,7 @@ import {
 
 const navigation = [
   { label: 'Tổng quan', route: '/dashboard', icon: Home, id: 'dashboard', children: [
+    { label: 'Việc cần xử lý', route: '/dashboard/actions', icon: ClipboardList },
     { label: 'Tổng quan dự án', route: '/dashboard', icon: LayoutDashboard },
     { label: 'Tổng quan kiểm thử', route: '/dashboard/testing', icon: ChartNoAxesCombined },
   ] },

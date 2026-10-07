@@ -87,9 +87,15 @@ function run() {
   const preferences = path.join(output, 'compiler.properties');
   fs.writeFileSync(preferences, Object.entries(properties).map(([key, value]) => `org.eclipse.jdt.core.compiler.${key}=${value}`).join('\n'));
   const sources = ['main', 'test'].flatMap(kind => sourceFiles(path.join(root, `Backend/src/${kind}/java`)));
-  const result = cp.spawnSync(java, ['-jar', compiler, '-21', '-encoding', 'UTF-8', '-parameters',
+  const compilerArgs = ['-jar', compiler, '-21', '-encoding', 'UTF-8', '-parameters',
     '-classpath', fs.readFileSync(classpathFile, 'utf8').trim(), '-properties', preferences,
-    '-d', path.join(output, 'classes'), '-log', path.join(output, 'diagnostics.xml'), ...sources],
+    '-d', path.join(output, 'classes'), '-log', path.join(output, 'diagnostics.xml'), ...sources];
+  // Source paths plus the test classpath exceed Windows' command-line limit as the project grows.
+  // Java's argument-file parser supports quoted values and escaped backslashes; no shell is involved.
+  const argumentFile = path.join(output, 'compiler.args');
+  const quote = value => '"' + value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('\n', '\\n').replaceAll('\r', '\\r') + '"';
+  fs.writeFileSync(argumentFile, compilerArgs.map(quote).join('\n'), 'utf8');
+  const result = cp.spawnSync(java, ['@' + argumentFile],
     { env, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
   if (result.error) throw new Error(`Cannot start Java compiler: ${result.error.message}`);
   const log = (result.stdout || '') + (result.stderr || '');
