@@ -26,6 +26,38 @@ function detail(g=group,s=session,r=row) { fileWorkApi.detail.mockResolvedValue(
 beforeEach(() => {vi.resetAllMocks(); context.currentProject={id:1,projectRole:'PM',name:'Project'};fileWorkApi.metadata.mockResolvedValue({canCreate:false,canViewMine:true,canReadAll:true,archived:false});workItemsApi.metadata.mockResolvedValue({canCreate:true,canCreateQa:true,membershipId:2});workItemsApi.list.mockResolvedValue(page([]));fileWorkApi.list.mockResolvedValue(page([]));detail();projectsApi.listCatalog.mockResolvedValue([{id:6,versionLabel:'B6'},{id:13,versionLabel:'B13'}]);projectsApi.listMembers.mockResolvedValue([]);fileWorkApi.eligibleAllocations.mockResolvedValue([]);fileWorkApi.history.mockResolvedValue({items:[],nextBefore:0});fileWorkApi.sessions.mockResolvedValue(page([session]));executionApi.attempts.mockResolvedValue(page([]));});
 afterEach(cleanup);
 describe('customer-facing file workflow', () => {
+ it('does not steal focus from history opened while the saved projection is refreshing',async()=>{
+   let refresh;render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);
+   const button=await screen.findByRole('button',{name:'OK · TC-01'});button.focus();
+   fileWorkApi.execution.mockImplementationOnce(()=>new Promise(resolve=>{refresh=resolve;}));fireEvent.click(button);
+   await waitFor(()=>expect(refresh).toBeTypeOf('function'));
+   await waitFor(()=>expect(screen.getByRole('button',{name:'Lịch sử · TC-01'})).toBeEnabled());
+   fireEvent.click(screen.getByRole('button',{name:'Lịch sử · TC-01'}));
+   const panel=screen.getByRole('region',{name:'Case TC-01'});expect(panel).toHaveFocus();
+   refresh({group,buildId:6,headers:['Title','Extra'],rows:[{...row,resultCode:'OK'}]});
+   await waitFor(()=>expect(screen.getByRole('button',{name:'OK · TC-01'})).toBeEnabled());expect(panel).toHaveFocus();
+ });
+ it('keeps the last case readable but blocks writes when refreshed authority fails',async()=>{
+   render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);await screen.findByRole('button',{name:'OK · TC-01'});
+   fileWorkApi.detail.mockRejectedValue(new Error('Không tải được quyền hiện hành'));fireEvent.click(screen.getByRole('button',{name:'Làm mới'}));
+   await screen.findByText('Không tải được quyền hiện hành');expect(screen.getByText('Pinned title')).toBeInTheDocument();
+   expect(screen.getByRole('button',{name:'OK · TC-01'})).toBeDisabled();expect(screen.queryByRole('button',{name:'Tạo QA · TC-01'})).toBeNull();
+   expect(fileWorkApi.record).not.toHaveBeenCalled();
+ });
+ it('keeps the current case mounted and keyboard focus stable while OK saves and refreshes',async()=>{
+   let save,refresh;fileWorkApi.record.mockImplementation(()=>new Promise(resolve=>{save=resolve;}));
+   render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);
+   const button=await screen.findByRole('button',{name:'OK · TC-01'});button.focus();fireEvent.click(button);
+   await waitFor(()=>expect(save).toBeTypeOf('function'));
+   expect(document.activeElement.closest('.fw-attempt')).toBeNull();
+   fileWorkApi.execution.mockImplementationOnce(()=>new Promise(resolve=>{refresh=resolve;}));save({});
+   await waitFor(()=>expect(refresh).toBeTypeOf('function'));
+   expect(screen.getByText('Pinned title')).toBeInTheDocument();
+   expect(screen.getByRole('button',{name:'OK · TC-01'})).toBeDisabled();
+   refresh({group,buildId:6,headers:['Title','Extra'],rows:[{...row,resultCode:'OK'}]});
+   await waitFor(()=>expect(screen.getByRole('button',{name:'OK · TC-01'})).toBeEnabled());
+   expect(screen.getByRole('button',{name:'OK · TC-01'})).toHaveFocus();
+ });
  it('shows server preparation counts to PM with links to missing steps',async()=>{
    fileWorkApi.metadata.mockResolvedValue({canCreate:true,canReadAll:true});
    fileWorkApi.preparation.mockResolvedValue({asOf:'2026-10-08T00:00:00Z',counts:{documents:0,approvedCases:0,testers:1,configuredDraftCycles:0,allocatedDevices:0,assignedGroups:0}});

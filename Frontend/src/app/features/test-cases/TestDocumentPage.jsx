@@ -132,12 +132,13 @@ function DocumentGrid({ project, documentId, navigate }) {
       <div className="td-actions">
         {customer && resultColumn!=null && <select aria-label="Lọc kết quả" value={resultFilter} onChange={e=>{setResultFilter(e.target.value);setPage(0);}}><option value="">Tất cả kết quả</option>{resultOptions.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select>}
         <button className="cat-btn" onClick={clearFilters}>Xóa bộ lọc</button>
-        <button className="cat-btn cat-btn-mint" title="Xuất toàn bộ tài liệu với các thay đổi đã lưu; bộ lọc màn hình không giới hạn file xuất" disabled={downloading || loading || results.pending>0 || !!results.error} onClick={() => download(false)}><Download size={14}/> Xuất Excel</button>
-        {doc.hasSourceFile && <button className="cat-btn" disabled={downloading || loading} onClick={() => download(true)}>Tải file gốc</button>}
+        <button className="cat-btn cat-btn-mint" aria-describedby="td-export-scope" disabled={downloading || loading || results.pending>0 || !!results.error} onClick={() => download(false)}><Download size={14}/> Xuất Excel</button>
+        {doc.hasSourceFile && <button className="cat-btn" aria-describedby="td-original-scope" disabled={downloading || loading} onClick={() => download(true)}>Tải file gốc</button>}
         <button className="cat-btn" onClick={() => navigate('/tests/cycles')}><ClipboardList size={14}/> Đợt kiểm thử</button>
         <button className="cat-btn" aria-label="Làm mới bảng case" disabled={loading || results.pending>0} onClick={load}><RefreshCw size={14}/></button>
       </div>
     </fieldset>
+    <p className="td-export-help"><span id="td-export-scope">Xuất Excel lấy toàn bộ tài liệu đã lưu, kể cả các dòng bị ẩn bởi bộ lọc hoặc phân trang.</span>{doc.hasSourceFile&&<> <span id="td-original-scope">File gốc giữ nguyên bản đã nhập.</span></>}{customer&&<> Kết quả thực thi theo đợt/build được xuất riêng tại Công việc theo file.</>}</p>
     {showSummary && <section className="td-sheet-summary" aria-label="Tổng quan tài liệu"><strong>{doc.totalRows} dòng · {doc.caseCount} test case</strong><span>Cập nhật: {documentDate(lastSaved?.updatedAt || doc.updatedAt,project.timezone)} · {lastSaved?.updatedBy || doc.updatedBy}</span>{customer && <div><strong>Kết quả tài liệu:</strong>{resultOptions.map(([key,label])=><span key={key}>{label}: <b>{displayRows.filter(row=>resultKey(row.cells[resultColumn])===key).length}</b></span>)}</div>}</section>}
     {downloadError && <div role="alert" className="td-error">{downloadError}</div>}
     {results.error && <div role="alert" className="td-error">{results.error} <button className="cat-btn" disabled={results.pending>0} onClick={load}>Tải lại kết quả đã lưu</button></div>}
@@ -145,7 +146,7 @@ function DocumentGrid({ project, documentId, navigate }) {
     {downloading && <p role="status" className="td-muted">Đang chuẩn bị file Excel...</p>}
     <DocumentExecutionControls execution={execution} project={project} navigate={navigate}/>
     {message && <div role="status" className="td-source-note">{message}</div>}
-    <div className="td-source-note">{customer ? 'Bấm ô để đổi Unexecuted → OK → P → NG → Fixed → NA và tự lưu vào tài liệu. Xuất Excel lấy bản cập nhật; Tải file gốc giữ bản nhập. Kết quả đợt kiểm thử quản lý riêng.' : 'Nội dung hiển thị theo phiên bản case hiện tại.'}</div>
+    <div className="td-source-note">{customer ? 'Bấm ô để đổi Unexecuted → OK → P → NG → Fixed → NA và tự lưu vào tài liệu.' : 'Nội dung hiển thị theo phiên bản case hiện tại.'}</div>
     <div ref={grid} className="td-grid-scroll" role="region" aria-label="Bảng test case của tài liệu" tabIndex={0} aria-busy={loading} data-lenis-prevent>
       <table className="td-case-grid" style={{fontSize:`${fontSize}px`,width:headers.reduce((sum,_,index)=>sum+columnWidth(index),0)}}>
         <colgroup>{headers.map((_,index)=><col key={index} style={{width:columnWidth(index)}}/>)}</colgroup>

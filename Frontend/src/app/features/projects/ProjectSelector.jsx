@@ -46,7 +46,7 @@ export function ProjectSelector() {
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
       >
-        <span>Dự án: <strong>{currentProject?.name || "Chưa chọn"}</strong></span>
+        <span>Dự án: <strong>{currentProject?.name || "Chưa chọn"}{currentProject?.archived ? ' · Đã lưu trữ' : ''}</strong></span>
         <ChevronDown size={16} />
       </button>
 
@@ -68,7 +68,7 @@ export function ProjectSelector() {
                         closeMenu();
                       }}
                     >
-                      {p.name}
+                      {p.name}{p.archived ? ' · Đã lưu trữ' : ''}
                     </button>
                   </li>
                 ))}

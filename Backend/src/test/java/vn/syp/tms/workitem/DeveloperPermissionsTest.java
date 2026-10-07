@@ -78,6 +78,8 @@ class DeveloperPermissionsTest {
             when(qa.authorize(1,"dev",false)).thenReturn(current);
             var metadata=service.metadata(1,"dev");
             assertFalse(metadata.containsKey("qaStatuses"));
+            assertEquals(!current.archived(),metadata.get("canCreate"));
+            assertEquals(!current.archived(),metadata.get("canTriage"));
             assertEquals(!current.archived()&&(current.pm()||current.tester()),metadata.get("canCreateQa"));
             assertTrue(((List<?>)metadata.get("types")).stream().anyMatch(type->((Map<?,?>)type).get("id").equals("QA")));
             var byType=(Map<?,?>)metadata.get("statusesByType");

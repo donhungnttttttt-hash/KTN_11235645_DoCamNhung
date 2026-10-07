@@ -85,3 +85,13 @@ Phần này cập nhật source hiện hành; các mô tả S02–S05 ở trên 
 | Bình luận/chứng cứ QA | Policy typed hiện hành cho PM, TESTER tạo hoặc DEV được giao; QA đã đóng không có quyền ghi |
 
 QA không dùng generic transition/batch/update để bỏ qua typed lifecycle, không vào BUG retest/closure/Redmine. UI dùng capability từ server và đóng quyền trong loading/error/scope hoặc version không phù hợp. Quyền vẫn được backend kiểm lại trước replay; bản nháp hoặc response thành công cũ không cấp quyền mới. ADMIN ngoài dự án không tự được xem hoặc ghi resource nghiệp vụ dự án.
+
+## Lưu trữ dự án và kết thúc công việc thường — 08/10/2026
+
+Theo ủy quyền lựa chọn quy tắc của người dùng: chỉ ADMIN tổng được archive/reopen dự án; lý do bắt buộc, version hiện hành và requestKey được kiểm lại ở backend. Không cần tự thêm ADMIN vào membership để quản trị vòng đời. Quyền đọc tài liệu/case/xuất của workspace vẫn yêu cầu membership hiện hành; quyền quản trị tổng không trở thành quyền nghiệp vụ dự án.
+
+Archive bị chặn bởi phiên DOING/PAUSED, máy chưa thu hồi, ticket chưa terminal, đợt ACTIVE hoặc DRAFT có run, retest OPEN và outbox Redmine QUEUED/RETRY_WAIT/RUNNING. Không có quyền bỏ qua blocker. Mở lại không tự mở ticket hoặc bàn giao lại máy. Lý do/người/thời điểm lưu trong project_lifecycle_decisions V21 và sự kiện trong project_audit.
+
+PM dự án được kết thúc TASK/REQUEST/IMPROVEMENT thành closed hoặc wontfix với lý do và version, rồi mở lại chỉ về open. TESTER/DEV không được kết thúc hoặc mở lại. BUG giữ coverage/retest/closure; QA giữ xác nhận câu trả lời và PM closure. Công việc thường không nhận trạng thái unreproducible hoặc fixed build.
+
+Vai trò DEV phải khớp hai chiều: tài khoản hệ thống DEV chỉ nhận membership DEV; tài khoản không phải DEV không được gán membership DEV. Thay đổi không tự sửa dữ liệu cũ; Admin dùng màn quản lý thành viên để điều chỉnh trường hợp cũ không tương thích.

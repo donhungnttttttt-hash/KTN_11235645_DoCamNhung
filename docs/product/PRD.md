@@ -311,3 +311,13 @@ Người dùng đã yêu cầu triển khai các phần rõ nghiệp vụ của 
 - Bản Excel tài liệu cập nhật có tên phân biệt với bản gốc; tooltip nêu phạm vi toàn tài liệu, dữ liệu phải lưu xong trước khi xuất. Execution export tiếp tục đúng group/build và authority đã duyệt.
 
 Tiêu chí kỹ thuật và bằng chứng mới xem [báo cáo triển khai](../reviews/2026-10-08-customer-improvements.md), [contract](../api/file-work.md). Không bổ sung schema/Flyway mới vì chỉ dùng dữ liệu đã có. S11 vẫn IN_REVIEW: archive/closure dự án cần chốt blocker/ngoại lệ; UAT có người dùng thật, cảm ứng/bàn phím ảo, quy mô pilot và NFR production còn mở. Không dùng test PASS để suy ra các gate này hoàn tất.
+
+## 19. Lưu trữ dự án và đánh giá khách hàng lần hai — 08/10/2026
+
+Người dùng duyệt để lựa chọn quy tắc tốt nhất cho khách hàng, triển khai và đánh giá lại. Phần này thay trạng thái “chờ chốt archive” ở checkpoint 18; bản thiết kế tại [quy tắc vòng đời](../planning/project-lifecycle-2026-10-08.md).
+
+ADMIN kiểm tra điều kiện, nhập lý do rồi lưu trữ; chỉ đọc dữ liệu và xuất vẫn hoạt động theo membership. Không xóa hoặc âm thầm kết thúc việc. Sáu nhóm blocker: phiên đang làm/tạm dừng, máy chưa thu hồi, ticket chưa terminal, đợt ACTIVE/DRAFT có run, retest OPEN, outbox Redmine đang chờ/gửi. Mở lại có lý do/version, không tự tạo việc hoặc cấp lại thiết bị. V21 bổ sung quyết định vòng đời có replay/audit. PM hoàn tất hoặc không xử lý TASK/REQUEST/IMPROVEMENT bằng lý do/version; từ terminal chỉ mở lại về open. BUG/QA giữ quy trình riêng.
+
+Đánh giá lại phát hiện cần giữ vị trí/focus khi Tester lưu, tránh unmount hộp việc khi polling, chặn gán nhầm vai trò Dev và loại bỏ lựa chọn chuyển trạng thái đã hết hiệu lực. Các sửa này có regression test; thông báo nền không giành focus. Không dùng dữ liệu đọc cũ để cấp quyền ghi khi refresh thất bại.
+
+Tiêu chí nghiệm thu: lời nhắc chỉ rõ người xử lý blocker; mất mạng thử lại không tạo quyết định trùng; thay đổi đồng thời không tạo hoạt động mới trong dự án đã lưu trữ; người dùng có thể đọc hồ sơ, mở lại theo quyền; PM hoàn tất được công việc thường để không rơi vào đường cụt. Bằng chứng và đánh giá lại tại [báo cáo](../reviews/2026-10-08-customer-reassessment.md). UAT người dùng thật, cảm ứng và NFR production vẫn là gate riêng.

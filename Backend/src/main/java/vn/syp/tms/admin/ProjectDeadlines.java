@@ -19,7 +19,7 @@ public class ProjectDeadlines {
  }
  public List<Map<String,Object>> milestones(Long projectId,Instant asOf) {
   var rows=db.rows("""
-   SELECT ms.id,ms.project_id AS projectId,p.name AS projectName,p.timezone,ms.name,ms.due_on AS dueOn,
+   SELECT ms.id,ms.project_id AS projectId,p.name AS projectName,p.archived_at AS projectArchivedAt,p.timezone,ms.name,ms.due_on AS dueOn,
    (SELECT COUNT(*) FROM work_items w WHERE w.project_id=ms.project_id AND w.milestone_id=ms.id) +
    (SELECT COUNT(*) FROM test_cycles c WHERE c.project_id=ms.project_id AND c.milestone_id=ms.id) AS scopeCount,
    EXISTS(SELECT 1 FROM work_items w JOIN work_item_statuses s ON s.code=w.status_code WHERE w.project_id=ms.project_id AND w.milestone_id=ms.id AND NOT s.terminal) OR
@@ -29,7 +29,7 @@ public class ProjectDeadlines {
   rows.forEach(row->{
    Object raw=row.get("dueOn");LocalDate due=raw==null?null:raw instanceof Date date?date.toLocalDate():LocalDate.parse(raw.toString());
    boolean unfinished=ReportMetrics.excluded(row.get("unfinished"));
-   row.put("unfinished",unfinished);row.put("dueOn",due);
+   row.put("unfinished",unfinished);row.put("dueOn",due);row.put("projectArchived",row.get("projectArchivedAt")!=null);
    row.put("deadlineStatus",status(due,number(row,"scopeCount"),unfinished,row.get("timezone").toString(),asOf));
   });return rows;
  }

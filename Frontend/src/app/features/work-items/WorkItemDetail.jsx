@@ -23,7 +23,7 @@ export function WorkItemDetail({ projectId, id, catalogs, canTriage, writable, m
     try { const [latest, notes, events] = await Promise.all([workItemsApi.get(projectId, id), workItemsApi.comments(projectId, id), workItemsApi.history(projectId, id)]);
       if (generation !== request.current || !live.current || currentScope.current !== targetScope) return;
       if (latest.id !== id || (latest.projectId != null && latest.projectId !== projectId)) throw new Error('Chi tiết công việc không khớp ngữ cảnh hiện tại.');
-      setItem(latest); setLoadedScope(targetScope); setComments(notes); setHistory(events); setError(''); return latest;
+      setItem(latest); setLoadedScope(targetScope); setComments(notes); setHistory(events); setTarget(previous=>latest.allowedTransitions?.some(option=>option.id===previous)?previous:''); setError(''); return latest;
     } catch (e) { if (generation === request.current && live.current && currentScope.current === targetScope) setError(e.message); }
     finally { if (generation === request.current && live.current && currentScope.current === targetScope) setLoading(false); }
   }, [projectId, id]);
@@ -78,7 +78,7 @@ export function WorkItemDetail({ projectId, id, catalogs, canTriage, writable, m
       {Object.entries({'Người phụ trách':item.assignee||'Chưa phân công','Độ ưu tiên':priorityLabels[item.priority],'Danh mục':item.category||'—','Mốc phát hành':item.milestone||'—','Build phát sinh':snapshot.build?.versionLabel||item.buildLabel||'—','Build đã sửa':fixedBuild?`${fixedBuild.platform} ${fixedBuild.versionLabel} (${fixedBuild.buildNumber||'—'})`:item.fixedBuildId?`Build #${item.fixedBuildId}`:'Chưa ghi nhận','Môi trường':snapshot.environment?.name||item.environmentName||'—','Thiết bị':snapshot.device?.name||item.deviceName||'—','Người tạo':item.creator,'Ngày tạo':time(item.createdAt),'Cập nhật':time(item.updatedAt)}).map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
       {item.type==='BUG'&&<div><dt>Quy tắc bổ sung khi tạo</dt><dd>{item.ruleVersionId?`Mã phiên bản #${item.ruleVersionId} (nội bộ)`:'Không áp dụng'}</dd></div>}
     </dl></div>}
-    {!isQa && writable && item.allowedTransitions?.length>0 && <div className="wi-actions"><WorkSelect label="Chuyển trạng thái" items={item.allowedTransitions} describe={s=>s.label} value={target} onChange={setTarget}/><Button disabled={!target} onClick={()=>setMove(true)}>Chuyển trạng thái</Button></div>}
+    {!isQa && writable && item.allowedTransitions?.length>0 && <div className="wi-actions"><WorkSelect label="Chuyển trạng thái" items={item.allowedTransitions} describe={s=>s.label} value={target} onChange={setTarget} disabled={loading || !!error}/><Button disabled={loading || !!error || !item.allowedTransitions.some(option=>option.id===target)} onClick={()=>setMove(true)}>Chuyển trạng thái</Button></div>}
     {!isQa && canTriage&&!['closed','unreproducible','wontfix'].includes(item.status)&&<>
       <details className="wi-section"><summary>Sửa thông tin và phân công</summary><WorkItemEdit item={item} catalogs={catalogs} projectId={projectId} reload={load} onSaved={changed}/></details>
       <details className="wi-section"><summary>Tham chiếu tracker và nội dung làm rõ</summary><ReferenceForms item={item} projectId={projectId} onSaved={changed}/></details></>}

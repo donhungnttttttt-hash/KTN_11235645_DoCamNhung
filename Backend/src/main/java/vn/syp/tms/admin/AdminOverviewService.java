@@ -85,11 +85,13 @@ public class AdminOverviewService {
         var milestones=milestones(projectId,asOf);
         addDeadlineCounts(projects,milestones);
         var attention=new LinkedHashMap<String,Object>();
-        var overdue=milestones.stream().filter(m->"OVERDUE".equals(m.get("deadlineStatus"))).toList();
+        // Archived milestones remain in historical project details, but no longer request action.
+        var actionableMilestones=milestones.stream().filter(m->!Boolean.TRUE.equals(m.get("projectArchived"))).toList();
+        var overdue=actionableMilestones.stream().filter(m->"OVERDUE".equals(m.get("deadlineStatus"))).toList();
         attention.put("overdueMilestones",overdue.stream().limit(20).toList());attention.put("overdueMilestoneCount",overdue.size());
         var withoutPm=projects.stream().filter(p->p.get("archivedAt")==null && number(p,"activePmCount")==0).toList();
         attention.put("withoutPm",withoutPm.stream().limit(20).toList());attention.put("withoutPmCount",withoutPm.size());
-        attention.put("insufficientMilestoneData",milestones.stream().filter(m->"INSUFFICIENT_DATA".equals(m.get("deadlineStatus"))).count());
+        attention.put("insufficientMilestoneData",actionableMilestones.stream().filter(m->"INSUFFICIENT_DATA".equals(m.get("deadlineStatus"))).count());
         var awaiting=awaitingBugs(projectId);
         attention.put("awaitingVerification",awaiting);
         var inventory=inventory(projectId,asOf);

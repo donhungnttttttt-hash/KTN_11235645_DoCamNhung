@@ -108,3 +108,15 @@ npm run dev
 ```
 
 Sau khi backend khởi động thành công, tải lại trang và đăng nhập bằng tài khoản ADMIN hiện có. Mã frontend mới không thể bổ sung API cho tiến trình backend cũ nếu chưa khởi động lại.
+
+## Lưu trữ và mở lại dự án
+
+Vào **Dự án → chi tiết dự án → Vòng đời dự án → Kiểm tra lưu trữ**. Checklist nêu số phiên, máy, ticket, đợt kiểm thử, retest hoặc yêu cầu Redmine còn tồn. Admin thu hồi máy; PM điều phối kết thúc việc qua các màn nguồn. Không có nút tự đóng toàn bộ hoặc bỏ qua kiểm tra.
+
+Khi đủ điều kiện, nhập lý do rồi xác nhận lưu trữ. Dữ liệu vẫn được giữ để thành viên tra cứu và xuất theo quyền. Phần Vòng đời dự án có lịch sử người, lý do, thời gian. Mở lại cũng yêu cầu lý do; không tự cấp máy, mở ticket hoặc tạo phiên mới.
+
+Nếu mất kết nối sau xác nhận, dùng **Thử lưu lại** để gửi đúng yêu cầu cũ. Khi báo xung đột, dùng **Kiểm tra lại, giữ lý do**, đọc dữ liệu mới rồi xác nhận. Không coi việc bấm nút là đã lưu thành công.
+
+PM kết thúc TASK/REQUEST/IMPROVEMENT bằng **Chuyển trạng thái → Hoàn thành / Không xử lý**, nhập lý do. Để mở lại công việc đã kết thúc, chọn **Chưa xử lý** và ghi lý do. BUG và QA tiếp tục đi qua luồng kiểm chứng riêng.
+
+Quản lý thành viên tập trung ở Admin; màn cài đặt dự án cũ có liên kết tới đây. Chỉ tài khoản hệ thống DEV được gán vai trò dự án DEV. Tài khoản không tương thích cần Admin điều chỉnh, không coi nhãn Dev là đã đủ quyền xử lý QA.

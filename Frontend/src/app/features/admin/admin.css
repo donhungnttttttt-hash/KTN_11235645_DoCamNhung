@@ -47,3 +47,19 @@
 .admin-filters>.admin-project-picker>p,.admin-filters>.admin-project-picker>.admin-picker-pages{grid-column:1/-1}
 @media(max-width:900px){.admin-filters:has(>.admin-project-picker){grid-template-columns:repeat(2,minmax(0,1fr))}.admin-filters>.admin-project-picker{grid-template-columns:1fr}}
 @media(max-width:600px){.admin-filters:has(>.admin-project-picker){grid-template-columns:1fr}}
+
+.admin-lifecycle .admin-page-heading{margin-bottom:12px}.admin-lifecycle .admin-page-heading h2{margin:0}
+.admin-lifecycle-state{padding:5px 10px;border-radius:5px;background:#e1f3ec;color:#145e49;font-weight:600;font-size:13px}
+.admin-lifecycle-state.is-archived{background:#edf0f4;color:#44536b}
+.admin-lifecycle-decision{border-left:3px solid #b8cec6;padding:8px 12px;margin:12px 0;overflow-wrap:anywhere}
+.admin-lifecycle-decision p{white-space:pre-wrap}.admin-lifecycle .admin-actions a{display:inline-flex;align-items:center;min-height:44px}
+.admin-lifecycle-history{margin-top:16px}.admin-lifecycle-decisions{list-style:none;padding:0;margin:12px 0;display:grid;gap:12px}.admin-lifecycle-decisions li{border-left:3px solid #b8cec6;padding:8px 12px;overflow-wrap:anywhere}.admin-lifecycle-decisions p{white-space:pre-wrap}
+.admin-lifecycle-overlay{position:fixed;inset:0;background:#102a2e80;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;overscroll-behavior:contain}
+.admin-lifecycle-dialog{background:#fff;border:1px solid #dce6e2;border-radius:12px;box-shadow:0 12px 44px #102a2e40;padding:24px;width:min(100%,720px);max-height:calc(100dvh - 48px);overflow-y:auto;overscroll-behavior:contain;min-width:0}
+.admin-lifecycle-dialog .admin-form{max-width:none}.admin-lifecycle-dialog .admin-page-heading{align-items:start;margin-bottom:12px}
+.admin-lifecycle-dialog p,.admin-lifecycle-dialog strong{overflow-wrap:anywhere}.admin-lifecycle-dialog .admin-page-heading button{flex:0 0 auto}
+.admin-lifecycle-blockers{padding:0;margin:16px 0;list-style:none;display:grid;gap:10px}.admin-lifecycle-blockers li{border:1px solid #e6cdb6;background:#fffaf3;padding:12px;border-radius:8px}
+.admin-lifecycle-blockers li>div{display:flex;justify-content:space-between;align-items:start;gap:16px}.admin-lifecycle-blockers li>div>span{font-weight:700;flex:0 0 auto}
+.admin-lifecycle-blockers li p{margin:6px 0 0;font-size:13px}.admin-lifecycle-blockers li a{display:inline-flex;align-items:center;min-height:44px}
+.admin-lifecycle-warnings{margin:12px 0;padding:12px;border:1px solid #e7d69e;border-radius:8px;background:#fffbeb}.admin-lifecycle-warnings h3{margin:0 0 8px}.admin-lifecycle-warnings ul{padding-left:18px;margin:0}.admin-lifecycle-warnings p{font-size:13px;margin:6px 0 0}
+@media(max-width:600px){.admin-lifecycle-overlay{padding:12px}.admin-lifecycle-dialog{padding:16px;max-height:calc(100dvh - 24px)}.admin-lifecycle-dialog .admin-actions{align-items:stretch}.admin-lifecycle-dialog .admin-actions button{flex:1 1 160px}}

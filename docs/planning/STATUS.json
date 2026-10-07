@@ -8,6 +8,7 @@
   "phase": "IN_REVIEW",
   "implementationStarted": true,
   "notes": [
+    "08/10/2026 người dùng duyệt chọn quy tắc tốt nhất và đánh giá lại: triển khai Admin archive/reopen có sáu blocker, lý do/version/idempotency/history V21; PM đóng/mở lại TASK/REQUEST/IMPROVEMENT; sửa DEV membership, focus case, inbox refresh, phạm vi Excel và dashboard archived. FullFE659/659 với coverage đo, final scoped44/44; BE lifecycle/quyền41/41, dashboard13/13, native migration1/lifecycle7/concurrency6/FQ9 PASS, contract36/36/build PASS; JDT203sources0error0warning. Backup rồi restart8080/MySQL3307/tmsV21; 65 bảng/5304 hàng và8 workbook nguồn giữ nguyên. Browser1366/768/375 PASS trong phạm vi mới, không ghi fixture vào tms. Báo cáo docs/reviews/2026-10-08-customer-reassessment.md; S11 IN_REVIEW cho UAT/pilot/NFR production.",
     "08/10/2026 cải tiến khách hàng trên system-design: preparation checklist PM, tên context, single-case responsive giữ lựa chọn sau lưu, Admin project search, action inbox FILE/QA/BUG/RETEST phân quyền, tên Excel cập nhật. FullFE632/632, Admin final49/49; BE scoped108/108, native isolated9/9, JDT197sources0error0warning, contract27/27/build PASS. Backend8080 đã restart/native3307/tmsV20; không migration mới. Báo cáo docs/reviews/2026-10-08-customer-improvements.md. Archive policy còn chờ trả lời; S11 giữ IN_REVIEW UAT/pilot/NFR production.",
     "06/10/2026 audit luồng ADMIN→PM→Tester→Dev→retest: sửa canonical DEV progress và 2 lỗi UI permission/read-only bằng RED→GREEN. FullFE344/344(44files), BE scoped26/26(6suites), builds PASS, JDT167sources0error0warning, contract structural checker PASS. SELECT native V16, metadata59tables/560cols/139FK; không ghi DB/fixture/migration hoặc restart8080/5173. Viết docs/product PRD/SRS/DATA-DICTIONARY/TRACEABILITY-UAT; gap phân công file/session/máy thật/file execution export và QA chờ duyệt, không gọi đã triển khai. Review docs/reviews/2026-10-06-system-workflow-review.md. S11 giữ IN_REVIEW; không commit/push.",
     "05/10/2026 ADMIN A1–A4 đã triển khai, review từng phần và tổng thể đã duyệt sau sửa2 lỗi đồng thời. Flyway native V16 sau backup; fullFE341/341 PASS, BE133/133 theo XML của30suite chọn lọc, packagePASS, Eclipse167sources0errors0warnings. Browser đọc/form/responsive1440→320 PASS. Native fixture/fresh/concurrency chưa chạy do thiếu quyền1044; S11 giữ IN_REVIEW. Preview18080/15173 đã dừng, không đụng8080/5173. Không commit/push. Guide docs/admin-guide.md và báo cáo docs/reviews/2026-10-05-admin-implementation.md.",
@@ -778,7 +779,7 @@
   "implementationBaseCommit": "3355cfc",
   "lastCompletedSprint": "S09",
   "nextSuggestedSprint": null,
-  "nextAction": "Nghiệm thu checklist/inbox/single-case/search tại docs/reviews/2026-10-08-customer-improvements.md; chốt điều kiện archive dự án đang hỏi. UAT/pilot/cảm ứng và NFR production còn mở, S11 IN_REVIEW.",
+  "nextAction": "UAT/pilot theo bốn vai trò và bộ mẫu Excel khách hàng; đo cảm ứng/thiết bị thật, Safari, tải và phục hồi production. Xem docs/reviews/2026-10-08-customer-reassessment.md; vòng đời dự án đã triển khai/kiểm chứng V21, không còn chờ quyết định archive. S11 giữ IN_REVIEW đến khi đạt DoD.",
   "executionPolicy": {
     "continueSequentially": true,
     "authorizedAt": "2026-09-29",
@@ -799,6 +800,7 @@
   "confirmedDecisions": {
     "S07": "ADR-007: full PM coverage, assigned tester, PM close/reopen, TMS authoritative internally",
     "S08": "ADR-008: run-item metrics, PM NA/cycle closure/reopen, internal XLSX approved 2026-09-29",
-    "S09": "ADR-009: user chọn Redmine và giao chọn phương án tốt nhất; sandbox local/mapping nội bộ, TMS authoritative, chỉ PM công bố; không gửi tracker khách."
+    "S09": "ADR-009: user chọn Redmine và giao chọn phương án tốt nhất; sandbox local/mapping nội bộ, TMS authoritative, chỉ PM công bố; không gửi tracker khách.",
+    "projectLifecycle": "08/10/2026 người dùng giao chọn quy tắc tốt nhất: chỉ Admin lưu trữ/mở lại, lý do/version/idempotency/lịch sử; sáu nhóm việc tồn chặn archive, không tự đóng/thu hồi; PM kết thúc công việc thường, BUG/QA giữ luồng chuyên biệt. Xem docs/planning/project-lifecycle-2026-10-08.md."
   }
 }

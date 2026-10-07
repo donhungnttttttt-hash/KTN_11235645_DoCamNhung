@@ -55,3 +55,7 @@ rtk proxy node scripts/Check-Contracts.cjs
 - S11 giữ **IN_REVIEW**. Không merge `develop` hoặc deploy production.
 
 Skills đã áp dụng: `api-design`, `security-review`, `frontend-patterns`, `ui-ux-pro-max`, `tdd-workflow`, `verification-loop`, `ponytail`. Đã đọc `prompt-master`; dùng yêu cầu triển khai trực tiếp, không thay bằng prompt. Python CLI của UI skill không có trong PATH nên áp dụng hướng dẫn responsive/touch/accessibility trong skill làm fallback.
+
+## Cập nhật sau khi người dùng duyệt quy tắc
+
+Phần archive chờ quyết định phía trên là trạng thái tại lần bàn giao đầu. Người dùng sau đó đã giao lựa chọn quy tắc tốt nhất và đánh giá lại: vòng đời dự án, V21, đóng/mở lại công việc thường và các sửa lỗi tìm thấy đã được triển khai, kiểm chứng và cập nhật backend. Xem [báo cáo đánh giá lần hai](2026-10-08-customer-reassessment.md) để biết trạng thái hiện hành và giới hạn nghiệm thu còn lại.

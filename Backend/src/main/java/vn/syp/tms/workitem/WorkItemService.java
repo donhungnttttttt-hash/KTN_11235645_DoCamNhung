@@ -60,6 +60,19 @@ public class WorkItemService {
     }
     public static boolean developer(Map<String,Object> member) {return "DEV".equals(member.get("role")) || "DEV".equals(member.get("systemRole"));}
     public static boolean ownBug(Map<String,Object> member,Map<String,Object> item) {return "BUG".equals(item.get("type")) && !BugRetestLifecycle.terminal(item.get("status")) && item.get("assigneeMembershipId") instanceof Number assigned && assigned.longValue()==number(member,"id");}
+    private static boolean ordinaryWork(Map<String,Object> item) {return Set.of("TASK","REQUEST","IMPROVEMENT").contains(item.get("type"));}
+    private List<Map<String,Object>> allowedTransitions(Map<String,Object> member,Map<String,Object> item) {
+        if(developer(member)) return ownBug(member,item)
+            ? db.rows("SELECT code AS id,label_vi AS label FROM work_item_statuses WHERE code IN ('progress','resolved') AND code<>? ORDER BY sort_order",item.get("status")) : List.of();
+        if(!"PM".equals(member.get("role"))) return List.of();
+        if(ordinaryWork(item)) {
+            if(BugRetestLifecycle.terminal(item.get("status")))
+                return db.rows("SELECT code AS id,label_vi AS label FROM work_item_statuses WHERE code='open'");
+            return db.rows("SELECT code AS id,label_vi AS label FROM work_item_statuses WHERE (terminal=FALSE OR code IN ('closed','wontfix')) AND code<>? ORDER BY sort_order",item.get("status"));
+        }
+        return BugRetestLifecycle.terminal(item.get("status")) ? List.of()
+            : db.rows("SELECT code AS id,label_vi AS label FROM work_item_statuses WHERE terminal=FALSE AND code<>? ORDER BY sort_order",item.get("status"));
+    }
     private void pm(Map<String,Object> member) { if(developer(member) || !"PM".equals(member.get("role"))) fail(403,"PROJECT_PM_REQUIRED","Chỉ PM dự án được phân công và phân loại công việc."); }
     public Map<String,Object> overview(long p,String actor) {
         qa.authorize(p,actor,false);
@@ -87,7 +100,7 @@ public class WorkItemService {
                 .map(code -> Map.<String,Object>of("id",code,"label",QaService.statusLabel(code),"terminal","closed".equals(code))).toList();
         return Map.of("statuses",statuses,"statusesByType",Map.of("BUG",statuses,"REQUEST",statuses,"TASK",statuses,"IMPROVEMENT",statuses,"QA",qaStatuses),
             "types",List.of(Map.of("id","BUG","label","Lỗi"),Map.of("id","REQUEST","label","Yêu cầu"),Map.of("id","TASK","label","Công việc"),Map.of("id","IMPROVEMENT","label","Cải tiến"),Map.of("id","QA","label","QA")),
-            "canCreate",!developer(member),"canCreateQa",!current.archived()&&(current.pm()||current.tester()),"canTriage",!developer(member) && "PM".equals(member.get("role")),"membershipId",current.membershipId(),"policyVersion","INTERNAL_V1","titlePrefix",rules.titlePrefix(p));
+            "canCreate",!current.archived()&&!developer(member),"canCreateQa",!current.archived()&&(current.pm()||current.tester()),"canTriage",!current.archived()&&!developer(member) && "PM".equals(member.get("role")),"membershipId",current.membershipId(),"policyVersion","INTERNAL_V1","titlePrefix",rules.titlePrefix(p));
     }
     public WorkItemDtos.Page<Map<String,Object>> list(long p,String actor,int page,int size,String type,String status,String keyword,Long assignee,Long category,Long milestone) {
         qa.authorize(p,actor,false);
@@ -111,7 +124,7 @@ public class WorkItemService {
         if(isQa(p,id)) return qaProjection(qa.detail(p,actor,id));
         var member=membership(p,actor);
         var item=db.row(SELECT+" WHERE w.project_id=? AND w.id=?",p,id);
-        item.put("allowedTransitions",developer(member) ? (ownBug(member,item) ? db.rows("SELECT code AS id,label_vi AS label FROM work_item_statuses WHERE code IN ('progress','resolved') AND code<>? ORDER BY sort_order",item.get("status")) : List.of()) : "PM".equals(member.get("role")) && !BugRetestLifecycle.terminal(item.get("status")) ? db.rows("SELECT code AS id,label_vi AS label FROM work_item_statuses WHERE terminal=FALSE AND code<>? ORDER BY sort_order",item.get("status")) : List.of());
+        item.put("allowedTransitions",allowedTransitions(member,item));
         item.put("canComment",!developer(member) || ownBug(member,item));
         item.put("canAttach",!developer(member) || ownBug(member,item));
         item.put("links",db.rows("SELECT l.attempt_id AS attemptId,l.run_item_id AS runItemId,a.attempt_no AS attemptNo,tc.case_no AS caseNo FROM work_item_execution_links l JOIN execution_attempts a ON a.project_id=l.project_id AND a.run_item_id=l.run_item_id AND a.id=l.attempt_id JOIN run_items r ON r.project_id=l.project_id AND r.id=l.run_item_id JOIN test_cases tc ON tc.project_id=r.project_id AND tc.id=r.test_case_id WHERE l.project_id=? AND l.work_item_id=? ORDER BY l.attempt_id",p,id));
@@ -162,6 +175,8 @@ public class WorkItemService {
         var member=writeMember(p,actor);
         rejectQa(p,id);
         pm(member); var old=get(p,actor,id); QaService.rejectGenericMutation((String)old.get("type")); version(old,input.expectedVersion());
+        if(ordinaryWork(old) && BugRetestLifecycle.terminal(old.get("status")))
+            fail(422,"REOPEN_REQUIRED","PM cần mở lại công việc với lý do trước khi sửa nội dung hoặc phân công.");
         classification(p,input.categoryId(),input.milestoneId(),input.assigneeMembershipId());
         if("BUG".equals(old.get("type"))) {
             rules.validateTitle(p,old.get("ruleVersionId")==null?null:number(old,"ruleVersionId"),input.title());
@@ -183,8 +198,16 @@ public class WorkItemService {
             required(input.reason(),"nội dung xử lý bản sửa");
         } else pm(member);
         var target=db.row("SELECT terminal FROM work_item_statuses WHERE code=?",input.status());
-        if(Boolean.TRUE.equals(target.get("terminal"))) fail(422,"CLOSURE_NOT_ENABLED","Dùng thao tác Đóng lỗi trong phần Kiểm thử lại để kiểm tra đủ điều kiện.");
-        BugRetestLifecycle.editable(item);
+        if(ordinaryWork(item)) {
+            required(input.reason(),"lý do chuyển trạng thái công việc");
+            if(input.fixedBuildId()!=null || (Boolean.TRUE.equals(target.get("terminal")) && !Set.of("closed","wontfix").contains(input.status())))
+                fail(422,"INVALID_TRANSITION","Công việc chỉ kết thúc bằng Hoàn thành hoặc Không xử lý; không dùng build sửa lỗi.");
+            if(BugRetestLifecycle.terminal(item.get("status")) && !"open".equals(input.status()))
+                fail(422,"REOPEN_REQUIRED","PM cần mở lại công việc về Chưa xử lý với lý do trước khi tiếp tục.");
+        } else {
+            if(Boolean.TRUE.equals(target.get("terminal"))) fail(422,"CLOSURE_NOT_ENABLED","Dùng thao tác Đóng lỗi trong phần Kiểm thử lại để kiểm tra đủ điều kiện.");
+            BugRetestLifecycle.editable(item);
+        }
         if(input.status().equals(item.get("status"))) return item;
         if("BUG".equals(item.get("type")) && ("resolved".equals(input.status()) || "resolved".equals(item.get("status")))) retest.invalidate(p,id,!"resolved".equals(input.status()));
         if("resolved".equals(input.status()) && "BUG".equals(item.get("type"))) {

@@ -7,16 +7,17 @@ import { HandbookPanel } from './HandbookPanel';
 import { RulesPanel } from './RulesPanel';
 import { projectsApi } from '../../services/api/projects';
 let project;
+let admin=false;
 const refresh=vi.fn();
 vi.mock('./ProjectProvider',()=>({useProject:()=>({currentProject:project,refreshProjects:refresh})}));
-vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:()=>false})}));
+vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>admin&&role==='ADMIN'})}));
 vi.mock('../../services/api/projects',()=>({projectsApi:{get:vi.fn(),update:vi.fn(),listMembers:vi.fn(),memberCandidate:vi.fn(),addMember:vi.fn(),removeMember:vi.fn(),listHandbook:vi.fn(),getHandbook:vi.fn(),createHandbook:vi.fn(),addRevision:vi.fn(),listRules:vi.fn(),listRuleVersions:vi.fn(),createRuleset:vi.fn(),createRuleVersion:vi.fn(),publishRule:vi.fn()}}));
 const member={userId:'tester',displayName:'Lan',username:'lan',projectRole:'TESTER',version:4};
 const revision={id:7,revisionNo:1,contentHtml:'<img src=x onerror=alert(1)>',createdAt:'2026-09-30T00:00:00Z',editedBy:1};
 const document={id:1,code:'GUIDE',name:'Hướng dẫn A',currentRevision:revision,history:[revision]};
 const version={id:11,versionNo:1,contentJson:JSON.stringify({sourceReference:'ADR-006',titlePrefix:'[QA]'}),createdAt:'2026-09-30T00:00:00Z',createdBy:1};
 beforeEach(()=>{
-  vi.resetAllMocks();project={id:1,code:'A',name:'Dự án A',projectRole:'PM'};
+  vi.resetAllMocks();admin=false;project={id:1,code:'A',name:'Dự án A',projectRole:'PM'};
   projectsApi.get.mockResolvedValue({...project,timezone:'Asia/Ho_Chi_Minh',version:3});projectsApi.listMembers.mockResolvedValue([member]);
   projectsApi.listHandbook.mockResolvedValue([document]);projectsApi.getHandbook.mockResolvedValue(document);
   projectsApi.listRules.mockResolvedValue([{id:1,code:'INTERNAL_DEMO',activeVersion:null}]);projectsApi.listRuleVersions.mockResolvedValue([version]);
@@ -35,6 +36,19 @@ it('hides write actions from a tester and handles an empty project',async()=>{
   project={...project,projectRole:'TESTER'};const view=render(<ProjectSettingsPage/>);expect(await screen.findByLabelText('Tên dự án')).toBeDisabled();expect(screen.queryByText('Lưu thay đổi')).toBeNull();
   view.rerender(<ProjectSettingsPage activeRoute='/settings/members'/>);await screen.findByText('Lan');expect(screen.queryByText('Thêm thành viên')).toBeNull();
   project=null;view.rerender(<ProjectSettingsPage/>);expect(screen.getByText('Vui lòng chọn một dự án.')).toBeVisible();
+});
+it('sends Admin to centralized membership management and keeps the project list read-only',async()=>{
+  admin=true;render(<ProjectSettingsPage activeRoute='/settings/members'/>);
+  await screen.findByText('Lan');
+  expect(screen.getByRole('link',{name:'Quản lý thành viên tại khu Admin'})).toHaveAttribute('href','#/admin/projects/1');
+  expect(screen.queryByRole('button',{name:'Thêm thành viên'})).not.toBeInTheDocument();
+  expect(screen.queryByRole('button',{name:'Sửa vai trò Lan'})).not.toBeInTheDocument();
+});
+it('keeps PM membership settings read-only without an Admin management link',async()=>{
+  render(<ProjectSettingsPage activeRoute='/settings/members'/>);
+  await screen.findByText('Lan');
+  expect(screen.queryByRole('link',{name:'Quản lý thành viên tại khu Admin'})).not.toBeInTheDocument();
+  expect(screen.queryByRole('button',{name:'Thêm thành viên'})).not.toBeInTheDocument();
 });
 it('remounts settings when changing project and ignores the previous response',async()=>{
   let resolve;projectsApi.get.mockReturnValueOnce(new Promise(r=>{resolve=r;}));const view=render(<ProjectSettingsPage/>);

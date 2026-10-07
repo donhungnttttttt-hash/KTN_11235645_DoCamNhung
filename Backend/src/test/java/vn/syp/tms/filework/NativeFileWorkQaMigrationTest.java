@@ -135,7 +135,7 @@ class NativeFileWorkQaMigrationTest {
 final class NativeFqDatabase {
     private static final String OPTIONS="?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&allowPublicKeyRetrieval=true&sslMode=DISABLED";
     static void requireMode(String mode){requireMode(mode,System.getenv());}
-    static void requireMode(String mode,Map<String,String> env){if(!Set.of("integration","fresh-migration").contains(mode)||!mode.equals(env.get("TMS_TEST_FQ_MODE")))throw new IllegalStateException("Explicit native F/Q mode required");url(env);credentials(env);}
+    static void requireMode(String mode,Map<String,String> env){if(!Set.of("integration","fresh-migration","lifecycle-integration").contains(mode)||!mode.equals(env.get("TMS_TEST_FQ_MODE")))throw new IllegalStateException("Explicit native F/Q mode required");url(env);credentials(env);}
     static String url(){return url(System.getenv());}
     static String url(Map<String,String> env){
         String value=env.get("TMS_TEST_DB_URL");

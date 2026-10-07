@@ -48,6 +48,7 @@
 .td-sheet-summary { padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 10px 20px; border-bottom: 1px solid #d7e3df; background: #f1faf7; }
 .td-sheet-summary > div { display: flex; flex-wrap: wrap; gap: 16px; }
 .td-source-note { margin: 0; padding: 4px 10px; background: #f5faf8; color: #52766f; font-size: 10px; border-bottom: 1px solid #d5dfe6; }
+.td-export-help { flex-shrink:0; margin:0; padding:6px 10px; color:#405c66; background:#f8fbfc; font-size:12px; line-height:1.5; overflow-wrap:anywhere; border-bottom:1px solid #d5dfe6; }
 .td-grid-scroll { flex: 1; min-height: 0; overflow: auto; background: #fff; overscroll-behavior: contain; }
 .td-case-grid { border-collapse: separate; border-spacing: 0; min-width: 100%; table-layout: fixed; }
 .td-case-grid th { position: sticky; top: 0; z-index: 2; background: #f0f2f3; color: #4e626d; font-weight: 600; padding: 5px 6px; text-align: left; line-height: 1.3; }

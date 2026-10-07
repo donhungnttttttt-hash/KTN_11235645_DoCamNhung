@@ -1776,3 +1776,22 @@ Engine: InnoDB; collation: utf8mb4_0900_ai_ci.
 | fk_work_milestone | project_id, milestone_id | milestones | project_id, id |
 | fk_work_project | project_id | projects | id |
 | fk_work_status | status_code | work_item_statuses | code |
+
+## Bổ sung V21 — quyết định vòng đời dự án
+
+Bảng project_lifecycle_decisions (không thay projects.archived_at):
+
+| Cột | Ý nghĩa / ràng buộc |
+| --- | --- |
+| id | BIGINT tự tăng, khóa chính |
+| project_id | FK projects.id; phạm vi lệnh và lịch sử |
+| action | ASCII phân biệt hoa thường, ARCHIVE hoặc REOPEN |
+| reason | VARCHAR(2000), không trống sau trim; lý do người thực hiện |
+| expected_version | Phiên bản dự án khi xác nhận, không âm |
+| result_version | expected_version + 1; unique cùng project_id |
+| request_key | ASCII VARCHAR(100), unique cùng project_id; service kiểm tra 8–100 ký tự chữ/số/gạch dưới/gạch ngang |
+| payload_hash | SHA-256 của action/version/lý do chuẩn hóa; kiểm tra retry |
+| actor_id | FK identity_users.id; tài khoản ADMIN hiện hành lúc lệnh được nhận |
+| decided_at | DATETIME(6) UTC, thời điểm quyết định |
+
+Chỉ thêm bản ghi; không endpoint sửa/xóa quyết định. GET history không trả request_key hoặc payload_hash. Dự án tăng lock_version và ghi project_audit trong cùng transaction. Lệnh lặp cùng actor/payload trả trạng thái hiện hành; lệnh khác dùng lại key bị 409. Archive không xóa dòng ở bảng nghiệp vụ con.

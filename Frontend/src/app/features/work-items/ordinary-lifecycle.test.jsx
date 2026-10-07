@@ -1,0 +1,27 @@
+import React from 'react';
+import {beforeEach,it,expect,vi} from 'vitest';
+import {render,screen,fireEvent,waitFor} from '@testing-library/react';
+import {WorkItemDetail} from './WorkItemDetail';
+import {workItemsApi} from '../../services/api/workItems';
+vi.mock('../../services/api/workItems',()=>({workItemsApi:{get:vi.fn(),comments:vi.fn(),history:vi.fn(),transition:vi.fn()}}));
+vi.mock('./EvidencePanel',()=>({EvidencePanel:()=>null}));
+vi.mock('../integrations/RedminePanel',()=>({RedminePanel:()=>null}));
+vi.mock('../retest/RetestPanel',()=>({RetestPanel:()=> <p>Bug retest</p>}));
+const catalogs={builds:[],environments:[],devices:[],members:[],categories:[],milestones:[],statuses:[]};
+beforeEach(()=>{vi.resetAllMocks();workItemsApi.comments.mockResolvedValue([]);workItemsApi.history.mockResolvedValue([]);workItemsApi.transition.mockResolvedValue({});});
+it.each(['TASK','REQUEST','IMPROVEMENT'])('lets PM finish and reopen %s through current server actions with reason and version',async type=>{
+ const item={id:9,projectId:1,key:'PROJECT-9',type,links:[],externalReferences:[],clarifications:[],status:'progress',title:'Bàn giao hồ sơ',version:3,allowedTransitions:[{id:'closed',label:'Hoàn thành'},{id:'wontfix',label:'Không xử lý'}]};
+ workItemsApi.get.mockResolvedValue(item);const changed=vi.fn();
+ render(<WorkItemDetail projectId={1} id={9} catalogs={catalogs} canTriage writable membershipId={2} onChanged={changed}/>);
+ const select=await screen.findByLabelText('Chuyển trạng thái');fireEvent.change(select,{target:{value:'closed'}});fireEvent.click(screen.getByRole('button',{name:'Chuyển trạng thái',exact:true}));
+ const reason=screen.getByLabelText('Lý do chuyển trạng thái');expect(reason).toBeRequired();fireEvent.change(reason,{target:{value:'Đã đối chiếu hồ sơ bàn giao'}});
+ workItemsApi.get.mockResolvedValue({...item,status:'closed',version:4,allowedTransitions:[{id:'open',label:'Chưa xử lý'}]});
+ fireEvent.click(screen.getByRole('button',{name:'Xác nhận chuyển'}));
+ await waitFor(()=>expect(workItemsApi.transition).toHaveBeenCalledWith(1,9,{status:'closed',reason:'Đã đối chiếu hồ sơ bàn giao',expectedVersion:3,fixedBuildId:null}));
+ await waitFor(()=>expect(changed).toHaveBeenCalledTimes(1));
+ expect(screen.getByRole('button',{name:'Chuyển trạng thái',exact:true})).toBeDisabled();
+ fireEvent.change(screen.getByLabelText('Chuyển trạng thái'),{target:{value:'open'}});fireEvent.click(screen.getByRole('button',{name:'Chuyển trạng thái',exact:true}));
+ fireEvent.change(screen.getByLabelText('Lý do chuyển trạng thái'),{target:{value:'Khách hàng yêu cầu bổ sung'}});fireEvent.click(screen.getByRole('button',{name:'Xác nhận chuyển'}));
+ await waitFor(()=>expect(workItemsApi.transition).toHaveBeenLastCalledWith(1,9,{status:'open',reason:'Khách hàng yêu cầu bổ sung',expectedVersion:4,fixedBuildId:null}));
+ expect(screen.queryByText('Bug retest')).toBeNull();
+});

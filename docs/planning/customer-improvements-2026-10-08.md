@@ -10,8 +10,8 @@ Người dùng yêu cầu triển khai sau [đánh giá khách hàng](../reviews
 4. IMPLEMENTED_VERIFIED — Tìm dự án theo từ khóa server, giữ đúng lựa chọn khi phân trang/tìm kiếm.
 5. IMPLEMENTED_VERIFIED — Hộp việc FILE/QA/BUG/RETEST và tổng hợp cho PM, đọc live/polling. Chưa là thông báo có lịch sử sự kiện/đã đọc; không gửi ra ngoài.
 6. IMPLEMENTED_VERIFIED — Rà lại phạm vi xuất Excel, tên bản cập nhật, tình huống lưu lỗi/xung đột và hồi quy trên DB riêng.
-7. WAITING_BUSINESS_DECISION — Kết thúc dự án: đã hỏi quy tắc xử lý việc tồn; không tự suy luật closure cho REQUEST/TASK/IMPROVEMENT.
-8. VERIFIED_WITH_LIMITS — Kiểm chứng kỹ thuật và bàn giao ở [báo cáo](../reviews/2026-10-08-customer-improvements.md); UAT khách hàng/thiết bị thật và NFR production vẫn riêng, không tự ký nghiệm thu.
+7. IMPLEMENTED_VERIFIED — Người dùng duyệt lựa chọn quy tắc tốt nhất: Admin lưu trữ/mở lại có lý do, lịch sử, phiên bản và kiểm tra sáu nhóm việc tồn; PM đóng/mở lại TASK/REQUEST/IMPROVEMENT theo [quy tắc đã thực hiện](project-lifecycle-2026-10-08.md). V21 đã kiểm thử trên schema riêng và áp dụng lên runtime sau backup.
+8. VERIFIED_WITH_LIMITS — [Đánh giá khách hàng lần hai và bằng chứng cuối](../reviews/2026-10-08-customer-reassessment.md) bổ sung cho [báo cáo lần đầu](../reviews/2026-10-08-customer-improvements.md); UAT khách hàng/thiết bị thật và NFR production vẫn riêng, không tự ký nghiệm thu.
 
 ## Contract bổ sung
 

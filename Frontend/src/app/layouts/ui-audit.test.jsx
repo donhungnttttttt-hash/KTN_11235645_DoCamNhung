@@ -13,7 +13,17 @@ const context = vi.hoisted(() => ({ project: {
 }, auth: { user: { displayName: 'Tester', username: 'tester', roles: ['TESTER'] }, hasRole: () => false } }));
 vi.mock('../features/projects/ProjectProvider', () => ({ useProject: () => context.project }));
 vi.mock('../features/auth/AuthProvider', () => ({ useAuth: () => context.auth, initials: () => 'TE', roleLabels: {TESTER:'Tester'} }));
-beforeEach(() => { vi.clearAllMocks(); context.auth.hasRole = () => false; window.location.hash=''; });
+beforeEach(() => { vi.clearAllMocks(); context.auth.hasRole = () => false; context.project.currentProject={id:1,name:'Dự án A'}; context.project.projects=[{id:1,name:'Dự án A'},{id:2,name:'Dự án B'}]; window.location.hash=''; });
+
+it('labels archived projects and explains their read-only workspace while keeping history accessible',async()=>{
+ context.project.currentProject={id:1,name:'Dự án A',archived:true};context.project.projects=[context.project.currentProject];
+ const user=userEvent.setup();render(<MainLayout activeRoute="/tests" navigate={vi.fn()}><button>Xem lịch sử</button></MainLayout>);
+ expect(screen.getByRole('status')).toHaveTextContent('Dự án đã lưu trữ');
+ expect(screen.getByRole('status')).toHaveTextContent('Admin');
+ expect(screen.getByRole('button',{name:'Xem lịch sử'})).toBeEnabled();
+ await user.click(screen.getByRole('button',{name:/Dự án: Dự án A.*Đã lưu trữ/}));
+ expect(screen.getByRole('button',{name:'Dự án A · Đã lưu trữ'})).toBeInTheDocument();
+});
 
 it('selects a project and routes ADMIN creation to central administration with menu closed', async () => {
   context.auth.hasRole = role => role === 'ADMIN';

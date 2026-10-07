@@ -3,7 +3,7 @@ import {adminApi} from '../../services/api/admin';
 import {useAdminRead,ReadState} from './shared';
 import {AdminUserProjectFilter} from './AdminUserProjectFilter';
 
-const labels={IDENTITY:'Tài khoản',PROJECT:'Dự án',MEMBERSHIP:'Thành viên',DEVICE_ASSET:'Máy vật lý',DEVICE_ALLOCATION:'Bàn giao máy',STATUS_REPORT:'Báo cáo PM',CREATE:'Tạo mới',UPDATE:'Cập nhật',ASSIGN:'Bàn giao',RETURN:'Thu hồi',SET_ROLE:'Gán vai trò',REMOVE:'Gỡ thành viên',USER_CREATED:'Tạo tài khoản',USER_UPDATED:'Cập nhật tài khoản',USER_ENABLED:'Mở khóa tài khoản',USER_DISABLED:'Khóa tài khoản',CREATE_USERS_GRANTED:'Cấp quyền tạo Tester',CREATE_USERS_REVOKED:'Thu hồi quyền tạo Tester',ADMIN_BOOTSTRAPPED:'Khởi tạo quản trị viên',LOGIN_SUCCEEDED:'Đăng nhập',LOGIN_FAILED:'Đăng nhập thất bại',LOGOUT:'Đăng xuất'};
+const labels={IDENTITY:'Tài khoản',PROJECT:'Dự án',MEMBERSHIP:'Thành viên',DEVICE_ASSET:'Máy vật lý',DEVICE_ALLOCATION:'Bàn giao máy',STATUS_REPORT:'Báo cáo PM',CREATE:'Tạo mới',UPDATE:'Cập nhật',ARCHIVE:'Lưu trữ',REOPEN:'Mở lại',ASSIGN:'Bàn giao',RETURN:'Thu hồi',SET_ROLE:'Gán vai trò',REMOVE:'Gỡ thành viên',USER_CREATED:'Tạo tài khoản',USER_UPDATED:'Cập nhật tài khoản',USER_ENABLED:'Mở khóa tài khoản',USER_DISABLED:'Khóa tài khoản',CREATE_USERS_GRANTED:'Cấp quyền tạo Tester',CREATE_USERS_REVOKED:'Thu hồi quyền tạo Tester',ADMIN_BOOTSTRAPPED:'Khởi tạo quản trị viên',LOGIN_SUCCEEDED:'Đăng nhập',LOGIN_FAILED:'Đăng nhập thất bại',LOGOUT:'Đăng xuất'};
 export function AdminAudit({api=adminApi,initialProjectId=''}) {
  const [filters,setFilters]=useState({projectId:initialProjectId,type:'',from:'',through:'',timezone:'Asia/Ho_Chi_Minh',page:0,size:20});
  const change=(key,value)=>setFilters(old=>({...old,[key]:value,page:0}));

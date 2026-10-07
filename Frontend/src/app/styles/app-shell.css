@@ -357,3 +357,14 @@
     flex-wrap: wrap;
   }
 }
+.app-archived-project {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 12px 16px;
+  color: #334155;
+  background: #fff8e6;
+  border-bottom: 1px solid #e2cf94;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}

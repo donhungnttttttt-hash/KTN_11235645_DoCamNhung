@@ -20,3 +20,15 @@ test('management writes obtain CSRF and preserve expected versions',async()=>{
  await adminApi.updateUser('person',{enabled:false,expectedVersion:2});
  expect(apiRequest).toHaveBeenLastCalledWith('/users/person',expect.objectContaining({method:'PATCH',body:JSON.stringify({enabled:false,expectedVersion:2})}));
 });
+test('project lifecycle writes use CSRF and preserve reason, version and replay key',async()=>{
+ apiRequest.mockResolvedValue({headerName:'X-CSRF',token:'csrf'});
+ adminApi.archiveReadiness(7,{signal:'signal'});
+ expect(apiRequest).toHaveBeenLastCalledWith('/admin/projects/7/archive-readiness',{signal:'signal'});
+ adminApi.lifecycleDecisions(7,{page:1,size:20},{signal:'signal'});
+ expect(apiRequest).toHaveBeenLastCalledWith('/admin/projects/7/lifecycle-decisions?page=1&size=20',{signal:'signal'});
+ const input={expectedVersion:3,reason:'Đã bàn giao',requestKey:'request-001'};
+ await adminApi.archiveProject(7,input);
+ expect(apiRequest).toHaveBeenLastCalledWith('/admin/projects/7/archive',expect.objectContaining({method:'POST',headers:{'X-CSRF':'csrf'},body:JSON.stringify(input)}));
+ await adminApi.reopenProject(7,input);
+ expect(apiRequest).toHaveBeenLastCalledWith('/admin/projects/7/reopen',expect.objectContaining({method:'POST',headers:{'X-CSRF':'csrf'},body:JSON.stringify(input)}));
+});

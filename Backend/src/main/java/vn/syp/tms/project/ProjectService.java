@@ -87,6 +87,8 @@ public class ProjectService {
         
         if("DEV".equals(targetUser.getRole()) && !"DEV".equals(input.projectRole()))
             throw new BusinessException(422,"INVALID_ROLE","Tài khoản Dev chỉ được giao vai trò Dev.");
+        if(!"DEV".equals(targetUser.getRole()) && "DEV".equals(input.projectRole()))
+            throw new BusinessException(422,"INVALID_ROLE","Vai trò Dev cần tài khoản có quyền Dev để nhận và xử lý bug/QA.");
         
         var current = membershipRepository.lockMember(projectId,targetUserId);
         Long memberId;
@@ -148,6 +150,13 @@ public class ProjectService {
     }
 
     public void requirePmOrAdmin(Long projectId, String userId) {
+        requirePmOrAdminRole(projectId,userId);
+        if (projectRepository.findById(java.util.Objects.requireNonNull(projectId)).orElseThrow().getArchivedAt() != null) {
+            throw new BusinessException(409, "ARCHIVED", "Dự án đã được lưu trữ.");
+        }
+    }
+
+    private void requirePmOrAdminRole(Long projectId,String userId) {
         requireNotDev(projectId,userId);
         requireMembership(projectId, userId);
         ProjectMembership m = membershipRepository.findByProjectIdAndUserId(projectId, userId);
@@ -156,14 +165,14 @@ public class ProjectService {
         if (!isPm && !isAdmin) {
             throw new BusinessException(403, "FORBIDDEN", "Cần quyền Quản lý dự án hoặc Quản trị viên");
         }
-        if (projectRepository.findById(java.util.Objects.requireNonNull(projectId)).orElseThrow().getArchivedAt() != null) {
-            throw new BusinessException(409, "ARCHIVED", "Dự án đã được lưu trữ.");
-        }
     }
 
     public void lockWritableProject(Long projectId, String userId) {
-        projectRepository.lockById(projectId).orElseThrow(() -> new BusinessException(404, "NOT_FOUND", "Không tìm thấy dự án."));
-        requirePmOrAdmin(projectId, userId);
+        // Locking an already managed JPA entity may retain stale archive state or raise an
+        // unrelated optimistic conflict. Read the current scalar state before checking rights.
+        var current=projectRepository.lockAdminState(projectId).orElseThrow(() -> new BusinessException(404, "NOT_FOUND", "Không tìm thấy dự án."));
+        requirePmOrAdminRole(projectId,userId);
+        if(current.getArchived()) throw new BusinessException(409,"ARCHIVED","Dự án đã được lưu trữ.");
     }
 
     private void protectLastPm(Long projectId,MembershipRepository.CurrentMember member) {

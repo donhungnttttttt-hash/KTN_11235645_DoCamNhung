@@ -504,3 +504,13 @@ PRD/đặc tả này là đầu vào review cụ thể. F/Q đã duyệt và cá
 Đợt responsive không thay contract API, quyền hoặc persistence. Control dùng chiều cao tối thiểu thay chiều cao cố định, nhóm thao tác có wrap/gap, bảng nhiều cột cuộn trong container; bảng tài liệu mobile có viewport đọc riêng. File work hiển thị nhãn dễ hiểu nhưng gửi mã trạng thái gốc; Hủy giao file chỉ đóng draft, không gọi create. Ba chế độ original/annotation/execution export giữ authority hiện có.
 
 Bằng chứng mới: frontend 614 tests PASS, build PASS, 27 route × 6 viewport và kiểm tra form theo bốn vai trò; chi tiết/giới hạn ở [báo cáo responsive](../reviews/2026-10-07-responsive-product-review.md). Không chạy lại native writes trong đợt UI. UAT khách hàng/pilot, browser ngoài Chrome và NFR production vẫn riêng; notification, closure các loại ticket khác và archive command chưa tự mở rộng nghiệp vụ.
+
+## 17. Vòng đời dự án và quyền công việc thường — 08/10/2026
+
+Được người dùng duyệt sau checkpoint 16: archive/reopen ADMIN với readiness, version, lý do và requestKey. V21 thêm project_lifecycle_decisions, không sửa migration cũ hoặc seed thêm tài liệu. API quản trị kiểm tra tài khoản hiện hành và khóa dự án trong cùng transaction; lưu audit và quyết định nguyên tử, replay cùng actor/payload trả trạng thái hiện hành, không đảo ngược quyết định đến sau.
+
+Blocker, quyền và hướng xử lý tại [quyết định vòng đời](../planning/project-lifecycle-2026-10-08.md). PM đóng công việc thường allowlist TASK/REQUEST/IMPROVEMENT thành closed/wontfix; mở lại terminal chỉ open, có lý do/version/history. Không nới BUG/QA typed guards hoặc quyền TESTER/DEV. DEV role khớp cả hệ thống và dự án.
+
+Read projection trên màn case và inbox giữ DOM khi làm mới cùng phạm vi để không mất vị trí. Đổi project/filter/build phải đổi scope; phản hồi cũ bị bỏ qua. 401/403/404 xóa bản đọc cũ. Trạng thái đang tải/lỗi authority khóa ghi kết quả; lỗi mạng inbox giữ lần đọc gần nhất kèm cảnh báo và retry. Thông báo thành công không tự kéo trang; sau lưu case phục hồi focus bằng preventScroll. Workspace lưu trữ hiển thị banner chỉ đọc.
+
+Kiểm chứng kỹ thuật, regression responsive và đánh giá mô phỏng khách hàng ghi tại [báo cáo](../reviews/2026-10-08-customer-reassessment.md); không thay UAT thực tế.

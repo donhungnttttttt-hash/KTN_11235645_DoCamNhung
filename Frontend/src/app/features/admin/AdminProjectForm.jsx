@@ -2,6 +2,7 @@ import React,{useCallback,useState} from 'react';
 import {InitialDevicePicker} from './InitialDevicePicker';
 import {adminApi} from '../../services/api/admin';
 import {useAdminRead,ReadState} from './shared';
+import {ProjectRoleSelect} from './ProjectRoleSelect';
 
 export function MemberPicker({value,onChange,api=adminApi}) {
  const [keyword,setKeyword]=useState('');const [page,setPage]=useState(0);
@@ -9,7 +10,7 @@ export function MemberPicker({value,onChange,api=adminApi}) {
  const state=useAdminRead(`people:${keyword}:${page}`,load);
  return <section className="admin-member-picker"><label className="ui-field">Tìm tài khoản đang hoạt động<input type="search" value={keyword} onChange={e=>{setKeyword(e.target.value);setPage(0);}}/></label><ReadState {...state}/>
  <p>Đã chọn {value.length} người · {value.filter(m=>m.projectRole==='PM').length} PM</p>
- {state.data?.items.map(u=>{const selected=value.find(m=>m.userId===u.id);return <div className="admin-member-option" key={u.id}><label><input type="checkbox" aria-label={`Chọn ${u.displayName}`} checked={!!selected} onChange={e=>onChange(e.target.checked?[...value,{userId:u.id,projectRole:u.role==='PM'?'PM':u.role==='DEV'?'DEV':'TESTER',displayName:u.displayName,username:u.username}]:value.filter(m=>m.userId!==u.id))}/>{u.displayName} · {u.username} ({u.role})</label>{selected && <select aria-label={`Vai trò ${u.displayName}`} value={selected.projectRole} onChange={e=>onChange(value.map(m=>m.userId===u.id?{...m,projectRole:e.target.value}:m))}>{(u.role==='DEV'?['DEV']:['PM','TESTER','DEV']).map(r=><option key={r}>{r}</option>)}</select>}</div>;})}
+ {state.data?.items.map(u=>{const selected=value.find(m=>m.userId===u.id);return <div className="admin-member-option" key={u.id}><label><input type="checkbox" aria-label={`Chọn ${u.displayName}`} checked={!!selected} onChange={e=>onChange(e.target.checked?[...value,{userId:u.id,projectRole:u.role==='PM'?'PM':u.role==='DEV'?'DEV':'TESTER',displayName:u.displayName,username:u.username}]:value.filter(m=>m.userId!==u.id))}/>{u.displayName} · {u.username} ({u.role})</label>{selected && <ProjectRoleSelect systemRole={u.role} label={`Vai trò ${u.displayName}`} value={selected.projectRole} onChange={e=>onChange(value.map(m=>m.userId===u.id?{...m,projectRole:e.target.value}:m))}/>}</div>;})}
  {state.data && <div className="admin-pagination"><button type="button" disabled={!page} onClick={()=>setPage(page-1)}>Người trước</button><button type="button" disabled={(page+1)*20>=state.data.totalElements} onClick={()=>setPage(page+1)}>Người sau</button></div>}
  {value.length>0 && <ul className="admin-selected-members">{value.map(m=><li key={m.userId}><span>{m.displayName || m.userId} · {m.projectRole}</span> <button type="button" onClick={()=>onChange(value.filter(v=>v.userId!==m.userId))}>Bỏ chọn</button></li>)}</ul>}
  </section>;

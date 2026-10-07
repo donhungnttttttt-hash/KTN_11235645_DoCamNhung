@@ -21,7 +21,7 @@ Source Task6 và scoped regression đã qua review; native/HTTP/UAT chưa đư�
 | POST `/` | Tạo; 201 WorkItem; type/title/requestKey, thêm các trường bắt buộc của BUG. Mã server sinh, trạng thái open. Retry cùng payload/actor trả cùng ID |
 | GET `/{id}` | Chi tiết cùng canonical ID, allowedTransitions, execution links, externalReferences, clarifications |
 | PUT `/{id}` | PM sửa nội dung/phân loại/phân công; reason + expectedVersion. Không ghi status qua endpoint này |
-| POST `/{id}/transitions` | PM; status/reason/expectedVersion; resolved BUG cần fixedBuildId. Ba trạng thái kết thúc bị khóa |
+| POST `/{id}/transitions` | PM; status/reason/expectedVersion. TASK/REQUEST/IMPROVEMENT có thể kết thúc `closed`/`wontfix`, mở lại về `open`. BUG resolved cần fixedBuildId; kết thúc BUG vẫn qua retest |
 | POST `/batch-transitions` | PM; items{id,expectedVersion}, status/reason/fixedBuildId; tối đa100, không trùng ID, rollback toàn bộ nếu có lỗi |
 | POST `/{id}/execution-links` | attemptId NG + expectedVersion. Cặp trùng trả hiện trạng, không tạo link/history trùng |
 | GET `/{id}/history?before=0` | 50 event mới nhất; dùng ID cuối làm before để lấy cũ hơn |
@@ -52,3 +52,16 @@ Event/actor/time/reason và phân trang giữ nguyên. Payload lưu trong `detai
 - Không sao chép links, externalReferences, clarifications, contextSnapshot, allowedTransitions hoặc field hiển thị mới vào mỗi event. Các dữ liệu đó có bản ghi/luồng history riêng; reason đã nằm ở event.
 
 Payload cũ không có formatVersion vẫn được trả nguyên trạng; không backfill hoặc xóa lịch sử cũ. Những loại event khác (TRANSITION, CLARIFICATION, RETEST...) giữ định dạng hiện có. Đây là định dạng nội dung audit có version, không đổi input PUT hay nội dung WorkItem trả về.
+
+## Kết thúc công việc thường — 08/10/2026
+
+Áp dụng đúng ba loại `TASK`, `REQUEST`, `IMPROVEMENT`, theo quyết định người dùng giao lựa chọn quy tắc tốt nhất cho khách hàng. Chỉ PM hiện hành của chính dự án được kết thúc hoặc mở lại; ADMIN ngoài membership, Tester và Dev không được dùng quyền này. Dự án đã lưu trữ không nhận lệnh ghi.
+
+- Từ trạng thái chưa kết thúc, PM được chuyển sang `closed` (Hoàn thành) hoặc `wontfix` (Không xử lý). Không tự hoàn tất theo phần trăm, không dùng `unreproducible` và không nhận `fixedBuildId` cho ba loại này.
+- Khi đã kết thúc, chỉ chuyển về `open` (Chưa xử lý) để mở lại. Cần mở lại trước khi PUT sửa nội dung, phân loại hoặc phân công. Không đổi trực tiếp từ trạng thái đã kết thúc sang trạng thái trung gian/kết thúc khác.
+- Mọi lệnh cần `expectedVersion` hiện hành và `reason` không trắng, tối đa 1000 ký tự. Lệnh ghi dưới khóa dự án, tăng version và ghi audit. Thiếu quyền trả 403; version cũ 409; chuyển không hợp lệ hoặc truyền build sửa lỗi trả 422 `INVALID_TRANSITION`; cần mở lại trả 422 `REOPEN_REQUIRED`.
+- `GET /{id}.allowedTransitions` trả các lựa chọn hợp lệ theo loại/vai trò/trạng thái; công việc thường đã kết thúc chỉ có `open` cho PM. Giao diện vẫn kiểm lại trạng thái khi tải lại; backend kiểm quyền và version trước ghi.
+- Batch dùng cùng rule cho từng mục và transaction chung: chỉ một mục sai cũng rollback cả batch. Không kết thúc một batch lẫn BUG bằng rule công việc thường; QA tiếp tục bị từ chối trước lần ghi đầu.
+- Lịch sử giữ event `TRANSITION`, `fromStatus`, `toStatus`, lý do đã trim, actor và thời điểm; audit `WORK_ITEM/TRANSITION`. Không tạo event giả hay tự sửa kết quả test/retest.
+
+BUG giữ luồng sửa → retest → PM đóng/mở lại qua [retest API](retest.md); generic terminal vẫn trả `CLOSURE_NOT_ENABLED`. QA giữ các lệnh typed và `QA_COMMAND_REQUIRED`. Không áp dụng kết thúc công việc thường để vượt kiểm chứng BUG hoặc xác nhận QA.

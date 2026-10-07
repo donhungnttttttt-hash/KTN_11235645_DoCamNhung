@@ -16,9 +16,9 @@ export function Field({label,children,errors=[]}) {
   const id=useId(),name=fieldNames[label],error=errors.find(e=>e.field===name)?.message;
   return <div className="fw-field"><label htmlFor={id}>{label}</label>{React.cloneElement(children,{id,...(name?{name}:{}),...(error?{'aria-invalid':true,'aria-describedby':`${id}-error`}:{})})}{error && <small id={`${id}-error`} className="fw-field-error">{error}</small>}</div>;
 }
-export function WorkError({error,retry}) {
+export function WorkError({error,retry,focusOnError=true}) {
   const ref=useRef(null);
-  useEffect(()=>{if(error)ref.current?.focus();},[error]);
+  useEffect(()=>{if(error && focusOnError)ref.current?.focus();},[error,focusOnError]);
   return error ? <div ref={ref} tabIndex={-1} role="alert" className="fw-error">{error.message || error}{error.fieldErrors?.length>0 && <ul>{error.fieldErrors.map((e,i)=><li key={i}><button type="button" onClick={()=>Array.from(ref.current.parentElement.querySelectorAll('input,textarea,select')).find(input=>input.name===e.field)?.focus()}>{e.field}: {e.message}</button></li>)}</ul>}{error.status===403 && <p>Quyền hiện hành không cho phép thao tác này.</p>}{error.status===409 && <p>Dữ liệu đã thay đổi; bản nhập được giữ. Kiểm tra dữ liệu mới trước khi gửi lệnh mới.</p>}{retry && <button type="button" onClick={retry}>Thử lại</button>}</div> : null;
 }
 export function Pager({data,onChange,label='công việc'}) { return data ? <div className="fw-pager"><span>{data.totalItems} {label} · Trang {data.page+1}/{Math.max(1,data.totalPages)}</span><button type="button" aria-label={`Trang trước ${label}`} disabled={data.page===0} onClick={()=>onChange(data.page-1)}>Trước</button><button type="button" aria-label={`Trang sau ${label}`} disabled={data.page+1>=data.totalPages} onClick={()=>onChange(data.page+1)}>Sau</button></div> : null; }

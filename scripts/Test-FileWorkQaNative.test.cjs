@@ -59,3 +59,15 @@ test('demo migration requires an initially empty isolated schema',()=>{
   readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:['68'],spawn:()=>{spawned=true;}
  }));assert.equal(spawned,false);
 });
+
+test('lifecycle migration and integration require exact selectors and V21',()=>{
+ assert.equal(testPlan('fresh-migration','NativeProjectLifecycleMigrationTest').selector,'NativeProjectLifecycleMigrationTest');
+ assert.equal(testPlan('lifecycle-integration','NativeProjectLifecycleIntegrationTest').selector,'NativeProjectLifecycleIntegrationTest');
+ assert.throws(()=>testPlan('integration','NativeProjectLifecycleIntegrationTest'));
+ assert.throws(()=>testPlan('lifecycle-integration','NativeFileWorkQaIntegrationTest'));
+ let spawned=false;
+ const io={readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:['19'],spawn:()=>{spawned=true;return{status:0};}};
+ assert.throws(()=>run([schema,'lifecycle-integration','NativeProjectLifecycleIntegrationTest'],io));assert.equal(spawned,false);
+ io.query=sql=>sql==='SELECT DATABASE();'?[schema]:['21'];
+ assert.equal(run([schema,'lifecycle-integration','NativeProjectLifecycleIntegrationTest'],io),0);assert.equal(spawned,true);
+});

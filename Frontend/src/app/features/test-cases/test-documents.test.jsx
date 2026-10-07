@@ -203,12 +203,15 @@ describe('Workbook case grid',()=>{
     await user.click(screen.getByRole('button',{name:'Mở test case 1'}));
     expect(screen.getByRole('dialog')).toHaveTextContent('Case 21');
     await user.click(screen.getByRole('button',{name:'Đóng chi tiết'}));
+    await user.type(screen.getByRole('searchbox',{name:'Tìm trong tài liệu'}),'Không khớp');
+    expect(screen.getByText(/Không có dòng phù hợp/)).toBeVisible();
+    expect(screen.getByRole('button',{name:'Xuất Excel'})).toHaveAccessibleDescription('Xuất Excel lấy toàn bộ tài liệu đã lưu, kể cả các dòng bị ẩn bởi bộ lọc hoặc phân trang.');
+    expect(screen.getByText('Xuất Excel lấy toàn bộ tài liệu đã lưu, kể cả các dòng bị ẩn bởi bộ lọc hoặc phân trang.')).toBeVisible();
+    expect(screen.getByRole('button',{name:'Tải file gốc'})).toHaveAccessibleDescription('File gốc giữ nguyên bản đã nhập.');
     await user.click(screen.getByRole('button',{name:'Xuất Excel'}));
     await waitFor(()=>expect(testCasesApi.exportDocument).toHaveBeenCalledWith(1,'9',false));
     await user.click(screen.getByRole('button',{name:'Tải file gốc'}));
     await waitFor(()=>expect(testCasesApi.exportDocument).toHaveBeenCalledWith(1,'9',true));
-    await user.type(screen.getByRole('searchbox',{name:'Tìm trong tài liệu'}),'Không khớp');
-    expect(screen.getByText(/Không có dòng phù hợp/)).toBeVisible();
   });
   it('does not reuse a stale document after project change or 404',async()=>{
     const view=render(<TestDocumentPage documentId="9" navigate={vi.fn()}/>);

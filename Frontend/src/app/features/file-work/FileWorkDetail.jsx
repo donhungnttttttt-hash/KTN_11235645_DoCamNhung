@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useProject } from '../projects/ProjectProvider';
 import { fileWorkApi, executionDownload } from '../../services/api/fileWork';
 import { executionApi } from '../../services/api/execution';
@@ -8,6 +8,7 @@ import { downloadWorkbook, documentDate } from '../test-cases/documentDownload';
 import { ExistingBugLink } from '../test-execution/NgBugActions';
 import { Field, Pager, WorkError, requestKey, testerMembers, useResource, fileStateLabels } from './FileWorkPage';
 import './file-work.css';
+import { useRefreshingResource } from '../../hooks/useRefreshingResource';
 import { FileCaseView, SessionContext, useCaseViewState } from './FileCaseView';
 
 const positive = id => Number.isSafeInteger(Number(id)) && Number(id)>0;
@@ -31,11 +32,11 @@ function Detail({project,groupId,navigate}) {
   const caseViewState=useCaseViewState();
   const [reload,refresh]=useState(0),[selectedBuild,setSelectedBuild]=useState(''),[allocation,setAllocation]=useState(''),[startBuild,setStartBuild]=useState(''),[reason,setReason]=useState(''),[assignee,setAssignee]=useState(''),[form,setForm]=useState(null),[commandError,setCommandError]=useState(null),[commandBusy,setBusy]=useState(false),[attemptBusy,setAttemptBusy]=useState(false),[notice,setNotice]=useState(''),[attempt,setAttempt]=useState(null),[showHistory,setShowHistory]=useState(false),[linkAttempt,setLinkAttempt]=useState(null),[raw,setRaw]=useState(false);
   const busy=commandBusy || attemptBusy;
-  const lock=useRef(false),pending=useRef(null),live=useRef(true),noticeRef=useRef(null);
-  const readScope=JSON.stringify([project.id,groupId,selectedBuild,reload]);
+  const lock=useRef(false),pending=useRef(null),live=useRef(true),caseButtons=useRef(new Map()),savedFocus=useRef(null);
+  const readScope=JSON.stringify([project.id,groupId,selectedBuild]);
   useEffect(()=>{live.current=true;return()=>{live.current=false;};},[]);
-  const resource=useResource(async options=>({scope:readScope,detail:await fileWorkApi.detail(project.id,groupId,options)}),[project.id,groupId,selectedBuild,reload]);
-  const projection=useResource(async options=>({scope:readScope,view:await fileWorkApi.execution(project.id,groupId,selectedBuild?Number(selectedBuild):undefined,options)}),[project.id,groupId,selectedBuild,reload]);
+  const resource=useRefreshingResource(async options=>({scope:readScope,detail:await fileWorkApi.detail(project.id,groupId,options)}),readScope,reload);
+  const projection=useRefreshingResource(async options=>({scope:readScope,view:await fileWorkApi.execution(project.id,groupId,selectedBuild?Number(selectedBuild):undefined,options)}),readScope,reload);
   const catalogs=useResource(()=>projectsApi.listCatalog(project.id,'builds'),[project.id,reload]);
   const allocations=useResource(options=>resource.data?.scope===readScope && resource.data.detail.group.capabilities?.canStart?fileWorkApi.eligibleAllocations(project.id,groupId,options):[],[resource.data,readScope]);
   const members=useResource(()=>resource.data?.scope===readScope && resource.data.detail.group.capabilities?.canAssign?projectsApi.listMembers(project.id):[],[resource.data,readScope]);
@@ -48,11 +49,19 @@ function Detail({project,groupId,navigate}) {
   const displayBuild=selectedBuild || String(v?.buildId ?? g?.selectedBuildId ?? '');
   const startBuildId=startBuild || (data?.builds.some(b=>!b.archived && String(b.id)===displayBuild)?displayBuild:'');
   const session=data?.detail.sessions.find(s=>s.id===g.currentSessionId);
-  const caps=g?.capabilities || {},scaps=session?.capabilities || {};
-  const canRecord=!!(!resource.loading && v?.group.capabilities?.canRecord && session?.state==='DOING' && Number(v.buildId)===Number(session.buildId) && (!selectedBuild || Number(selectedBuild)===Number(session.buildId)));
-  const canManageBug=!!(!raw && !resource.loading && !bugAuthority.loading && bugAuthority.data?.work.canCreate===true && bugAuthority.data.currentProject.archived===false);
+  const staleAuthority=resource.loading || !!resource.error;
+  const stale=staleAuthority || projection.loading || !!projection.error;
+  const caps=staleAuthority?{}:g?.capabilities || {},scaps=staleAuthority?{}:session?.capabilities || {};
+  const canRecord=!!(!stale && v?.group.capabilities?.canRecord && session?.state==='DOING' && Number(v.buildId)===Number(session.buildId) && (!selectedBuild || Number(selectedBuild)===Number(session.buildId)));
+  const canManageBug=!!(!raw && !staleAuthority && !bugAuthority.loading && !bugAuthority.error && bugAuthority.data?.work.canCreate===true && bugAuthority.data.currentProject.archived===false);
   const canCreateQa=!!(!raw && !resource.loading && !resource.error && data?.scope===readScope && !bugAuthority.loading && !bugAuthority.error && bugAuthority.data?.scope===readScope && bugAuthority.data.work.canCreateQa===true && bugAuthority.data.currentProject.archived===false);
-  useEffect(()=>{if(notice)noticeRef.current?.focus();},[notice]);
+  useLayoutEffect(()=>{
+    if(savedFocus.current && !stale && !busy){
+      const button=caseButtons.current.get(savedFocus.current),active=document.activeElement;
+      if(!attempt && (active===document.body || active===button))button?.focus({preventScroll:true});
+      savedFocus.current=null;
+    }
+  },[stale,busy,v,attempt]);
   const clearCommand=()=>{pending.current=null;setCommandError(null);};
   async function send(command) {
     if(lock.current)return;lock.current=true;setBusy(true);setCommandError(null);setNotice('');
@@ -79,11 +88,11 @@ function Detail({project,groupId,navigate}) {
   }
   function newAttempt(row,result) {setAttempt({row,result,pin:draftPin(session)});}
   const resultContext=r=><><strong className={`fw-result fw-result-${r.resultCode}`}>{r.resultCode==='NOT_RUN'?'Chưa chạy':r.resultCode}</strong><small>{r.caseNo} · Phiên bản {r.revisionNo}</small><small>{r.executorName || 'Chưa có người ghi kết quả'} · {documentDate(r.executedAt,project.timezone)}</small><small>{r.physicalAsset?.assetCode || 'Chưa có máy trong kết quả'}</small>{r.excluded && <small>NA · {r.scopeReason}</small>}{r.pendingBugLink && <small>NG chờ BUG</small>}</>;
-  const caseActions=r=><div className="fw-case-actions">{['OK','NG','P'].map(code=><button key={code} className={`fw-result-${code}`} aria-label={`${code} · ${r.caseNo}`} disabled={busy || !canRecord || r.excluded || raw} onClick={()=>newAttempt(r,code)}>{code}</button>)}<button onClick={()=>setAttempt({row:r,historyOnly:true})}>Lịch sử · {r.caseNo}</button>{canCreateQa && qaContextUrl(g.documentId,g.id,r.runItemId,r.revisionId) && <button onClick={()=>navigate(qaContextUrl(g.documentId,g.id,r.runItemId,r.revisionId))}>Tạo QA · {r.caseNo}</button>}{canManageBug && r.resultCode==='NG' && positive(r.latestAttemptId) && <><button onClick={()=>navigate(`/board/new?${new URLSearchParams({attempt:r.latestAttemptId,documentId:g.documentId,groupId:g.id,runItemId:r.runItemId,revisionId:r.revisionId})}`)}>Tạo BUG · {r.caseNo}</button><button onClick={()=>setLinkAttempt(r.latestAttemptId)}>Gắn BUG · {r.caseNo}</button></>}</div>;
+  const caseActions=r=><div className="fw-case-actions">{['OK','NG','P'].map(code=><button key={code} ref={node=>{const key=`${r.runItemId}/${code}`;if(node)caseButtons.current.set(key,node);else caseButtons.current.delete(key);}} className={`fw-result-${code}`} aria-label={`${code} · ${r.caseNo}`} disabled={busy || !canRecord || r.excluded || raw} onClick={()=>newAttempt(r,code)}>{code}</button>)}<button onClick={()=>setAttempt({row:r,historyOnly:true})}>Lịch sử · {r.caseNo}</button>{canCreateQa && qaContextUrl(g.documentId,g.id,r.runItemId,r.revisionId) && <button onClick={()=>navigate(qaContextUrl(g.documentId,g.id,r.runItemId,r.revisionId))}>Tạo QA · {r.caseNo}</button>}{canManageBug && r.resultCode==='NG' && positive(r.latestAttemptId) && <><button onClick={()=>navigate(`/board/new?${new URLSearchParams({attempt:r.latestAttemptId,documentId:g.documentId,groupId:g.id,runItemId:r.runItemId,revisionId:r.revisionId})}`)}>Tạo BUG · {r.caseNo}</button><button onClick={()=>setLinkAttempt(r.latestAttemptId)}>Gắn BUG · {r.caseNo}</button></>}</div>;
   return <div className="fw-page"><header className="fw-heading"><h2>{g?.fileName || 'Thực thi theo file'}</h2><button onClick={()=>navigate('/tests/file-work')}>Danh sách công việc</button><button disabled={busy} onClick={()=>refresh(x=>x+1)}>Làm mới</button></header>
     <WorkError error={projection.error || catalogs.error || allocations.error || members.error} retry={()=>refresh(x=>x+1)}/><WorkError error={resource.error} retry={()=>refresh(x=>x+1)}/><WorkError error={bugAuthority.error} retry={()=>refresh(x=>x+1)}/><WorkError error={commandError}/>{pending.current && commandError && <button disabled={busy || resource.loading} onClick={()=>send(pending.current)}>Thử lại nguyên lệnh</button>}
-    {(resource.loading || projection.loading) && <p role="status">Đang tải…</p>}{notice && <p tabIndex={-1} ref={noticeRef} role="status">{notice}</p>}
-    {data && <fieldset disabled={busy}><section className="fw-panel"><p>{g.cycleName} · {g.environmentName || `Môi trường #${g.environmentId}`} · {g.deviceName || `Thiết bị #${g.deviceId}`}</p><p>{g.assignmentState==='MIXED'?'Phân công chưa đồng nhất · PM cần giao lại toàn nhóm':`Tester: ${g.assigneeName || '—'}`} · {fileStateLabels[g.state] || g.state}</p>
+    {(resource.loading || projection.loading) && <p role="status">Đang tải…</p>}{notice && <p role="status">{notice}</p>}
+    {data && <fieldset disabled={busy || staleAuthority} aria-busy={resource.loading || projection.loading}><section className="fw-panel"><p>{g.cycleName} · {g.environmentName || `Môi trường #${g.environmentId}`} · {g.deviceName || `Thiết bị #${g.deviceId}`}</p><p>{g.assignmentState==='MIXED'?'Phân công chưa đồng nhất · PM cần giao lại toàn nhóm':`Tester: ${g.assigneeName || '—'}`} · {fileStateLabels[g.state] || g.state}</p>
       <div className="fw-actions"><button onClick={()=>navigate(`/tests/documents/${g.documentId}`)}>Tài liệu và kết quả tham khảo</button><button onClick={()=>navigate(`/tests/cycles/${g.cycleId}`)}>Chuẩn bị / kích hoạt đợt · quyết định phạm vi NA</button></div>
       <p>Kết quả dưới đây là thực thi chính thức. NA chỉ có từ quyết định phạm vi của PM.</p>
       {!session && <p className="fw-guidance">{caps.canStart ? 'Chọn máy được cấp và build, rồi bấm Bắt đầu phiên để ghi kết quả.' : 'Tester được phân công cần chọn máy và bắt đầu phiên trước khi ghi kết quả. PM theo dõi và điều phối tại đây.'}</p>}
@@ -100,14 +109,14 @@ function Detail({project,groupId,navigate}) {
     </section>
     {v && <FileCaseView view={v} raw={raw} viewState={caseViewState} renderResult={resultContext} renderActions={caseActions}/>}
     {v && !v.rows.length && <p>Nhóm chưa có case.</p>}<button onClick={()=>setShowHistory(s=>!s)}>Lịch sử nhóm / phiên</button>{showHistory && <GroupHistory projectId={project.id} groupId={groupId} reload={reload} timeZone={project.timezone}/>}</fieldset>}
-    {attempt && <AttemptForm key={`${attempt.row.runItemId}/${attempt.result || 'history'}`} projectId={project.id} groupId={groupId} selected={attempt} currentRow={v?.rows.find(r=>r.runItemId===attempt.row.runItemId)} session={session} canRecord={canRecord && !raw} onBusy={setAttemptBusy} onClose={()=>setAttempt(null)} onConflict={()=>refresh(x=>x+1)} onSaved={()=>{setAttempt(null);setNotice('Đã lưu kết quả; đang cập nhật bảng.');refresh(x=>x+1);}}/>}
+    {attempt && <AttemptForm key={`${attempt.row.runItemId}/${attempt.result || 'history'}`} projectId={project.id} groupId={groupId} selected={attempt} currentRow={v?.rows.find(r=>r.runItemId===attempt.row.runItemId)} session={session} canRecord={canRecord && !raw} onBusy={setAttemptBusy} onClose={()=>setAttempt(null)} onConflict={()=>refresh(x=>x+1)} onSaved={()=>{savedFocus.current=`${attempt.row.runItemId}/${attempt.result}`;setAttempt(null);setAttemptBusy(false);setNotice('Đã lưu kết quả; đang cập nhật bảng.');refresh(x=>x+1);}}/>}
     {linkAttempt && canManageBug && v?.rows.some(r=>r.resultCode==='NG' && r.latestAttemptId===linkAttempt) && <ExistingBugLink projectId={project.id} attemptId={linkAttempt} onClose={()=>setLinkAttempt(null)} onSaved={()=>{setLinkAttempt(null);refresh(x=>x+1);}}/>}
   </div>;
 }
 function AttemptForm({projectId,groupId,selected,currentRow,session,canRecord,onBusy,onClose,onConflict,onSaved}) {
   const [actual,setActual]=useState(''),[reason,setReason]=useState(''),[evidence,setEvidence]=useState(''),[error,setError]=useState(null),[busy,setBusy]=useState(false),[historyPage,setHistoryPage]=useState(0),[historyReload,reloadHistory]=useState(0),[pin,setPin]=useState(selected.pin);
   const pending=useRef(null),lock=useRef(false),live=useRef(true),focus=useRef(null),previous=useRef(null);
-  useEffect(()=>{live.current=true;previous.current=document.activeElement;focus.current?.focus();return()=>{live.current=false;previous.current?.focus();};},[]);
+  useEffect(()=>{live.current=true;previous.current=document.activeElement;if(selected.result!=='OK')focus.current?.focus();return()=>{live.current=false;previous.current?.focus({preventScroll:true});};},[]);
   const history=useResource(()=>executionApi.attempts(projectId,selected.row.runItemId,historyPage),[projectId,selected.row.runItemId,historyPage,historyReload]);
   const change=(setter,value)=>{setter(value);pending.current=null;setError(null);};
   const pinMatches=matchesDraftPin(pin,session);

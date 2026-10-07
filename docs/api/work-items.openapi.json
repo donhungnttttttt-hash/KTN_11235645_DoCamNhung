@@ -3,7 +3,7 @@
   "info": {
     "title": "TMS internal work items S06",
     "version": "0.6.0",
-    "description": "ADR-006; internal policy, no terminal transitions/retest/provider sync."
+    "description": "ADR-006 and 2026-10-08 ordinary-work closure: PM can finish TASK/REQUEST/IMPROVEMENT as closed/wontfix and explicitly reopen to open. BUG closure/reopen and QA commands remain in their typed APIs."
   },
   "paths": {
     "/api/v1/projects/{projectId}/work-items": {
@@ -1249,6 +1249,7 @@
       ],
       "post": {
         "operationId": "transitionWorkItem",
+        "description": "Current project PM may finish TASK/REQUEST/IMPROVEMENT as closed or wontfix, or reopen a terminal ordinary item only to open. Required nonblank reason and expectedVersion; fixedBuildId is forbidden for ordinary work. Terminal content edits require reopen. BUG generic terminal transitions remain forbidden; assigned Dev can only progress/resolve their BUG. QA requires typed commands. Archived projects reject writes.",
         "security": [
           {
             "sessionCookie": [],
@@ -1384,6 +1385,7 @@
       ],
       "post": {
         "operationId": "batchTransitionWorkItems",
+        "description": "PM only; every item obeys the same type-specific transition rules. One invalid item rolls back the whole batch. QA is rejected before any write. Ordinary closure never bypasses BUG retest closure.",
         "security": [
           {
             "sessionCookie": [],
@@ -3150,6 +3152,7 @@
       },
       "Transition": {
         "type": "object",
+        "description": "Status destinations are further constrained by current role, item type and state. Only TASK/REQUEST/IMPROVEMENT accept closed/wontfix here; terminal ordinary work can only reopen to open. BUG closure and QA use typed APIs.",
         "properties": {
           "status": {
             "type": "string",
@@ -3161,7 +3164,9 @@
               "clarify",
               "ready",
               "planning",
-              "resolved"
+              "resolved",
+              "closed",
+              "wontfix"
             ]
           },
           "reason": {
@@ -3189,6 +3194,7 @@
       },
       "BatchTransition": {
         "type": "object",
+        "description": "All items apply Transition type-specific rules in one atomic transaction. fixedBuildId is not accepted when a TASK/REQUEST/IMPROVEMENT is included.",
         "properties": {
           "items": {
             "type": "array",
@@ -3224,7 +3230,9 @@
               "clarify",
               "ready",
               "planning",
-              "resolved"
+              "resolved",
+              "closed",
+              "wontfix"
             ]
           },
           "reason": {

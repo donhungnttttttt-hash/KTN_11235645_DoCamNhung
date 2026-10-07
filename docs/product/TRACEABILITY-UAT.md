@@ -179,3 +179,20 @@ Checkpoint cuối sau một wave sửa/scoped re-review: source **APPROVED**,612
 | Lịch sử/thiết bị/FK/upgrade — E09 | [V17](../../Backend/src/main/resources/db/migration/V17__file_work_groups_and_sessions.sql), [V18](../../Backend/src/main/resources/db/migration/V18__qa_work_items.sql), [từ điển F/Q](FQ-DATA-DICTIONARY.md), [native fixture](../../Backend/src/test/java/vn/syp/tms/filework/NativeFileWorkQaMigrationTest.java) | Static DDL và guarded fixture source review; compile PASS, native V16→18/fresh/preservation/checksum chưa chạy |
 
 [Bộ UAT F/Q](../uat/file-work-qa.md) có 38 kịch bản F20/B8/Q10, trạng thái thực hành mặc định NOT_RUN. [Hướng dẫn thao tác](../file-work-qa-guide.md) nêu các bước Admin/PM/Tester/Dev và ba kiểu Excel. [Báo cáo triển khai](../reviews/2026-10-06-fq-implementation.md) ghi lượt chạy cụ thể; không cộng các lượt scoped thành một full-suite giả.
+
+## Bổ sung nghiệm thu vòng đời dự án — V21
+
+| Mã | Kịch bản khách hàng | Kết quả mong đợi |
+| --- | --- | --- |
+| L21-01 | PM/Tester/Dev gọi trực tiếp archive/reopen | 403; Admin bị vô hiệu hóa không dùng quyền từ phiên cũ |
+| L21-02 | Admin kiểm tra dự án còn phiên/máy/ticket/đợt có việc/retest/outbox chờ | Số blocker đúng, hướng xử lý rõ, không xác nhận được; server kiểm lại cả khi UI checklist đã cũ |
+| L21-03 | PM hoàn tất hoặc không xử lý TASK/REQUEST/IMPROVEMENT | Có lý do/version/history; Tester/Dev bị chặn; BUG/QA không đi tắt |
+| L21-04 | Admin lưu trữ dự án đủ điều kiện | Một quyết định và audit; dự án chỉ đọc; đọc/xuất hồ sơ còn hoạt động theo quyền |
+| L21-05 | Timeout sau ghi, thử lại cùng lệnh; Admin khác mở lại giữa hai lần | Không nhân đôi quyết định; replay không đảo ngược trạng thái mới hơn |
+| L21-06 | Tạo đợt/cấp máy/ghi nghiệp vụ cạnh tranh với archive | Khóa hiện hành giải quyết thứ tự; không ghi nghiệp vụ mới khi đã archive |
+| L21-07 | Mở lại dự án có lý do | Cho làm việc theo quyền hiện hành; không cấp máy hoặc tự mở lại ticket |
+| L21-08 | Redmine failed/uncertain/conflict trước archive | Có cảnh báo không chặn; hiểu rằng cần mở lại trước khi đối chiếu/thử lại |
+| L21-09 | Tester lưu rồi mở lịch sử trong lúc phản hồi chậm; inbox polling/mất mạng | Giữ case/focus phù hợp; không giành focus từ thao tác mới; quyền bị thu hồi xóa bản đọc cũ |
+| L21-10 | Modal ở 375/768/1366 và tên dự án dài, chưa lưu form thành viên | Không tràn toàn trang; control dễ bấm; nháp không mất khi chuyển vòng đời |
+
+Kết quả kiểm thử kỹ thuật và giới hạn ghi tại [đánh giá lần hai](../reviews/2026-10-08-customer-reassessment.md). Các dòng này là kịch bản để khách hàng thực hành; không tự đánh dấu đã được người dùng thật nghiệm thu.
