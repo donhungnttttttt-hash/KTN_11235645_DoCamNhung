@@ -8,6 +8,11 @@
 /* Use native scrolling so wheel/touch input reaches each page, table and dialog. */
 
 :root {
+  --color-sidebar-bg: #147e75;
+  --color-sidebar-text: #ffffff;
+  --color-sidebar-hover: #ffffff1c;
+  --color-sidebar-active-bg: #f0f2f2;
+  --color-sidebar-active-text: #0f766e;
   --color-mint: #0f766e;
   --color-mint-active: #0f766e;
   --color-mint-hover: #115e59;

@@ -6,7 +6,7 @@ export function InitialDevicePicker({value,onChange,members,api}) {
  const state=useAdminRead(`initial-assets:${keyword}:${page}`,load);
  const change=(id,key,next)=>onChange(value.map(a=>a.assetId===id?{...a,[key]:next}:a));
  return <section><h3>Máy bàn giao ban đầu</h3><p>Đã chọn {value.length} máy. Không giới hạn hạn mức tài nguyên.</p><label>Tìm máy sẵn sàng<input type="search" value={keyword} onChange={e=>{setKeyword(e.target.value);setPage(0);}}/></label><ReadState {...state}/>
- {state.data?.items.map(a=><label key={a.id}><input type="checkbox" checked={value.some(s=>s.assetId===a.id)} onChange={e=>onChange(e.target.checked?[...value,{assetId:a.id,assetCode:a.assetCode,model:a.model,expectedVersion:a.version,recipientUserId:'',expectedReturnOn:'',handoverNote:''}]:value.filter(s=>s.assetId!==a.id))}/>{a.assetCode} · {a.model}</label>)}
+ {state.data?.items.map(a=><label className="admin-check" key={a.id}><input type="checkbox" checked={value.some(s=>s.assetId===a.id)} onChange={e=>onChange(e.target.checked?[...value,{assetId:a.id,assetCode:a.assetCode,model:a.model,expectedVersion:a.version,recipientUserId:'',expectedReturnOn:'',handoverNote:''}]:value.filter(s=>s.assetId!==a.id))}/>{a.assetCode} · {a.model}</label>)}
  <button type="button" onClick={state.retry}>Tải lại máy sẵn sàng</button><p>Nếu máy đã thay đổi, bỏ chọn rồi chọn lại máy từ danh sách mới.</p>
  {state.data&&!state.data.items.length&&<p>Không có máy sẵn sàng phù hợp.</p>}
  {state.data&&<div className="admin-pagination"><button type="button" disabled={!page} onClick={()=>setPage(page-1)}>Máy trước</button><button type="button" disabled={(page+1)*20>=state.data.totalElements} onClick={()=>setPage(page+1)}>Máy sau</button></div>}

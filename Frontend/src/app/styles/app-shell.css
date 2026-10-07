@@ -116,8 +116,8 @@
   top: var(--header-height);
   bottom: 0;
   width: var(--sidebar-width);
-  background: #147e75;
-  color: white;
+  background: var(--color-sidebar-bg);
+  color: var(--color-sidebar-text);
   z-index: 50;
   display: flex;
   flex-direction: column;
@@ -162,11 +162,11 @@
   line-height: 1.45;
 }
 .app-nav-item:hover {
-  background: #ffffff1c;
+  background: var(--color-sidebar-hover);
 }
 .app-nav-item.active {
-  background: #f0f2f2;
-  color: #0f766e;
+  background: var(--color-sidebar-active-bg);
+  color: var(--color-sidebar-active-text);
 }
 .app-nav-chevron {
   margin-left: auto;

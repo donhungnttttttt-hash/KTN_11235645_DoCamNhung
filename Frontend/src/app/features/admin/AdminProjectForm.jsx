@@ -11,7 +11,7 @@ export function MemberPicker({value,onChange,api=adminApi}) {
  <p>Đã chọn {value.length} người · {value.filter(m=>m.projectRole==='PM').length} PM</p>
  {state.data?.items.map(u=>{const selected=value.find(m=>m.userId===u.id);return <div className="admin-member-option" key={u.id}><label><input type="checkbox" aria-label={`Chọn ${u.displayName}`} checked={!!selected} onChange={e=>onChange(e.target.checked?[...value,{userId:u.id,projectRole:u.role==='PM'?'PM':u.role==='DEV'?'DEV':'TESTER',displayName:u.displayName,username:u.username}]:value.filter(m=>m.userId!==u.id))}/>{u.displayName} · {u.username} ({u.role})</label>{selected && <select aria-label={`Vai trò ${u.displayName}`} value={selected.projectRole} onChange={e=>onChange(value.map(m=>m.userId===u.id?{...m,projectRole:e.target.value}:m))}>{(u.role==='DEV'?['DEV']:['PM','TESTER','DEV']).map(r=><option key={r}>{r}</option>)}</select>}</div>;})}
  {state.data && <div className="admin-pagination"><button type="button" disabled={!page} onClick={()=>setPage(page-1)}>Người trước</button><button type="button" disabled={(page+1)*20>=state.data.totalElements} onClick={()=>setPage(page+1)}>Người sau</button></div>}
- {value.length>0 && <ul>{value.map(m=><li key={m.userId}>{m.displayName || m.userId} · {m.projectRole} <button type="button" onClick={()=>onChange(value.filter(v=>v.userId!==m.userId))}>Bỏ chọn</button></li>)}</ul>}
+ {value.length>0 && <ul className="admin-selected-members">{value.map(m=><li key={m.userId}><span>{m.displayName || m.userId} · {m.projectRole}</span> <button type="button" onClick={()=>onChange(value.filter(v=>v.userId!==m.userId))}>Bỏ chọn</button></li>)}</ul>}
  </section>;
 }
 export function AdminProjectForm({project,onSaved,onCancel,api=adminApi}) {
@@ -27,6 +27,6 @@ export function AdminProjectForm({project,onSaved,onCancel,api=adminApi}) {
  <label>Mô tả<textarea maxLength={500} value={draft.description} onChange={e=>setDraft({...draft,description:e.target.value})}/></label>
  <label>Múi giờ<input required maxLength={50} value={draft.timezone} onChange={e=>setDraft({...draft,timezone:e.target.value})}/></label>
  {!project&&<><MemberPicker value={members} onChange={changeMembers} api={api}/>{api.assets&&<InitialDevicePicker value={devices} onChange={setDevices} members={members} api={api}/>}</>}
- <button type="submit">{busy?'Đang lưu…':project?'Lưu dự án':'Tạo dự án'}</button>{onCancel&&<button type="button" onClick={onCancel}>Hủy</button>}{project&&error&&<button type="button" onClick={reloadVersion}>Tải version hiện hành, giữ bản nháp</button>}
- </fieldset></form>;
+ <div className="admin-actions"><button type="submit">{busy?'Đang lưu…':project?'Lưu dự án':'Tạo dự án'}</button>{onCancel&&<button type="button" onClick={onCancel}>Hủy</button>}{project&&error&&<button type="button" onClick={reloadVersion}>Tải version hiện hành, giữ bản nháp</button>}
+ </div></fieldset></form>;
 }

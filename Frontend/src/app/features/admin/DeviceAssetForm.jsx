@@ -11,5 +11,5 @@ export function DeviceAssetForm({asset,onSaved,onCancel,api=adminApi}) {
  <label>Loại máy<select value={draft.type} onChange={e=>setDraft({...draft,type:e.target.value})}>{Object.entries({IPAD:'iPad',IPHONE:'iPhone',ANDROID:'Android',OTHER:'Khác'}).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
  <label>Tình trạng máy<select value={draft.conditionCode} onChange={e=>setDraft({...draft,conditionCode:e.target.value})}>{Object.entries(assetStatuses).filter(([key])=>key!=='ALLOCATED').map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
  <label>Ghi chú<textarea maxLength={1000} value={draft.notes} onChange={e=>setDraft({...draft,notes:e.target.value})}/></label>
- <button type="submit">{busy?'Đang lưu…':'Lưu máy'}</button><button type="button" onClick={onCancel}>Hủy</button>{asset&&error&&<button type="button" onClick={reload}>Tải phiên bản hiện hành, giữ bản nháp</button>}</fieldset></form>;
+ <div className="admin-actions"><button type="submit">{busy?'Đang lưu…':'Lưu máy'}</button><button type="button" onClick={onCancel}>Hủy</button>{asset&&error&&<button type="button" onClick={reload}>Tải phiên bản hiện hành, giữ bản nháp</button>}</div></fieldset></form>;
 }
