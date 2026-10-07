@@ -53,6 +53,8 @@ class LocalDatabaseConfigurationTest {
             assertThat(url).startsWith("jdbc:mysql://127.0.0.1:3312/fixturedb?")
                 .contains("connectionTimeZone=UTC", "forceConnectionTimeZoneToSession=true");
             assertThat(env.getRequiredProperty("spring.flyway.url")).isEqualTo(url);
+            assertThat(env.getRequiredProperty("spring.flyway.locations"))
+                .isEqualTo("classpath:db/migration,classpath:db/demo");
             assertThat(env.getRequiredProperty("spring.datasource.username")).isEqualTo("fixture_app");
             assertThat(env.getRequiredProperty("spring.datasource.password")).isEqualTo("fixture-only!#=password");
             assertThat(env.getRequiredProperty("spring.flyway.user")).isEqualTo("fixture_migrator");
@@ -95,6 +97,7 @@ class LocalDatabaseConfigurationTest {
             assertThatThrownBy(() -> env.getRequiredProperty("spring.datasource.url"))
                 .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("TMS_DB_URL");
             assertThat(env.getActiveProfiles()).containsExactly("release");
+            assertThat(env.getRequiredProperty("spring.flyway.locations")).isEqualTo("classpath:db/migration");
         }
     }
 

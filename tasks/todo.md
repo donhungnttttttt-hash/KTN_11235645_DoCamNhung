@@ -1,5 +1,16 @@
 # F/Q task list — plan tasks/plan.md
 
+## Mở rộng V20 — 07/10/2026
+
+- [x] Dữ liệu demo local: 5 user theo quyền, 2 dự án, membership/catalog/cycle/device/allocation; không seed case/file/result trong SQL.
+- [x] Fresh + V19 upgrade, giữ dữ liệu cũ, no-reset, collision rollback; config release isolation, HTTP các quyền và Tester session/Dev denial trên schema riêng.
+- [x] Backup, áp dụng V20 trên tms, restart8080; fingerprint 4379 dòng cũ/64 bảng nguyên vẹn.
+- [x] Nhập riêng hai file sẵn có, duyệt/phân công 87+1 case và kích hoạt đợt demo; để chưa thực thi trên database bàn giao.
+- [x] Hướng dẫn tài khoản và bằng chứng: docs/database/demo-v20.md, docs/reviews/2026-10-07-demo-v20.md.
+- V20 tiếp tục theo ủy quyền commit/push `system-design`; không merge `develop`.
+
+## F/Q trước V20
+
 - [x] Task1: Contract/schema nền; review spec/quality APPROVE; native validation gate NOT_RUN riêng.
 - [x] Task2: Giao file/My work API; 34 tests + 48 related regression PASS; review spec/quality APPROVE. Native/HTTP gate riêng.
 - [x] Task3: Phiên/máy thật; clean65 PASS + fix33 session tests PASS; review spec+quality PASS. Native/HTTP NOT_RUN.

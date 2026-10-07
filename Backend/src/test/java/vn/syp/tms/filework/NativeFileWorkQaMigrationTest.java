@@ -121,8 +121,8 @@ class NativeFileWorkQaMigrationTest {
         var names=new TreeSet<String>();try(var s=c.createStatement();var r=s.executeQuery("SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE()")){while(r.next())names.add(r.getString(1));}return names;
     }
     private static void reject(Connection c,String sql,Object...args){assertThatThrownBy(()->NativeFqFixture.update(c,sql,args)).isInstanceOf(SQLException.class).satisfies(e->assertThat(((SQLException)e).getErrorCode()).isIn(1062,1451,1452,3819));}
-    private record Snapshot(List<String> columns,List<List<String>> rows){}
-    private Snapshot snapshot(Connection c,String table,List<String> selected)throws SQLException {
+    record Snapshot(List<String> columns,List<List<String>> rows){}
+    static Snapshot snapshot(Connection c,String table,List<String> selected)throws SQLException {
         var columns=new ArrayList<String>();var rows=new ArrayList<List<String>>();
         try(var s=c.createStatement();var r=s.executeQuery("SELECT "+(selected==null?"*":String.join(",",selected))+" FROM "+table+" ORDER BY 1,2")){
             for(int n=1;n<=r.getMetaData().getColumnCount();n++)columns.add(r.getMetaData().getColumnName(n));

@@ -50,3 +50,12 @@ test('valid integration launches only selected test with structured secret-free 
 });
 
 test('concurrency selector is explicitly allowlisted only in integration mode',()=>{assert.equal(testPlan('integration','NativeFileWorkQaConcurrencyTest').selector,'NativeFileWorkQaConcurrencyTest');assert.throws(()=>testPlan('fresh-migration','NativeFileWorkQaConcurrencyTest'));});
+
+test('demo migration requires an initially empty isolated schema',()=>{
+ assert.equal(testPlan('fresh-migration','NativeDemoDataMigrationTest').selector,'NativeDemoDataMigrationTest');
+ assert.throws(()=>testPlan('integration','NativeDemoDataMigrationTest'));
+ let spawned=false;
+ assert.throws(()=>run([schema,'fresh-migration','NativeDemoDataMigrationTest'],{
+  readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:['68'],spawn:()=>{spawned=true;}
+ }));assert.equal(spawned,false);
+});
