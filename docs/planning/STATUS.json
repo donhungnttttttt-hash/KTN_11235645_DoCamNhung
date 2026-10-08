@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-08",
+  "updatedAt": "2026-10-09",
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
@@ -8,6 +8,7 @@
   "phase": "IN_REVIEW",
   "implementationStarted": true,
   "notes": [
+    "09/10/2026 kiểm nghiệm và dữ liệu V22 trên system-design: 100 user mới (3 PM, 20 DEV, 77 TESTER), 120 máy (30 mỗi nhóm iPad/iPhone/tablet Android/smartphone Android), 3 dự án và 24 bàn giao; chỉ db/demo local, không seed case/kết quả. Sửa focus form kho máy RED→GREEN. Final fullFE665/665, coverage85.13/82.30/78.75/83.42; Admin68/68, nativeFQ9/9/concurrency5/5/migration1/1, HTTPpreview6kịch bản, runner10/10, JDT204sources0error0warning và build/verifyPASS. Backup rồi restart8080/native3307/tmsV22; hash65bảng/5303hàngcũ và8workbookgiữnguyên; mainHTTP role/scope/count và browser120máyPASS. Preview18080/15173 đã dừng. Bàn giao docs/database/demo-v22.md, review docs/reviews/2026-10-09-verification-demo-v22.md; S11 IN_REVIEW UAT/thiết bị thật/NFR production.",
     "08/10/2026 khách hàng yêu cầu tiêu chuẩn sản phẩm nghiêm túc: chốt tiêu chí tại docs/reviews/2026-10-08-customer-quality-gates.md; phân biệt lỗi, thiếu chức năng và thiếu bằng chứng. Đối chiếu source inbox/export với review V21; sửa docs/evaluation.md đang dùng V11/coverage cũ như hiện trạng. Chỉ cập nhật tài liệu, không đổi runtime hoặc chạy lại test; S11 IN_REVIEW, chưa nghiệm thu toàn sản phẩm.",
     "08/10/2026 người dùng duyệt chọn quy tắc tốt nhất và đánh giá lại: triển khai Admin archive/reopen có sáu blocker, lý do/version/idempotency/history V21; PM đóng/mở lại TASK/REQUEST/IMPROVEMENT; sửa DEV membership, focus case, inbox refresh, phạm vi Excel và dashboard archived. FullFE659/659 với coverage đo, final scoped44/44; BE lifecycle/quyền41/41, dashboard13/13, native migration1/lifecycle7/concurrency6/FQ9 PASS, contract36/36/build PASS; JDT203sources0error0warning. Backup rồi restart8080/MySQL3307/tmsV21; 65 bảng/5304 hàng và8 workbook nguồn giữ nguyên. Browser1366/768/375 PASS trong phạm vi mới, không ghi fixture vào tms. Báo cáo docs/reviews/2026-10-08-customer-reassessment.md; S11 IN_REVIEW cho UAT/pilot/NFR production.",
     "08/10/2026 cải tiến khách hàng trên system-design: preparation checklist PM, tên context, single-case responsive giữ lựa chọn sau lưu, Admin project search, action inbox FILE/QA/BUG/RETEST phân quyền, tên Excel cập nhật. FullFE632/632, Admin final49/49; BE scoped108/108, native isolated9/9, JDT197sources0error0warning, contract27/27/build PASS. Backend8080 đã restart/native3307/tmsV20; không migration mới. Báo cáo docs/reviews/2026-10-08-customer-improvements.md. Archive policy còn chờ trả lời; S11 giữ IN_REVIEW UAT/pilot/NFR production.",

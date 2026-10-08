@@ -1,0 +1,28 @@
+{
+  "results": [
+    {
+      "name": "NativeFileWorkQaIntegrationTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 27.509
+    },
+    {
+      "name": "NativeFileWorkQaConcurrencyTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 38.821
+    },
+    {
+      "name": "NativeScaleDemoMigrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 86.184
+    }
+  ]
+}

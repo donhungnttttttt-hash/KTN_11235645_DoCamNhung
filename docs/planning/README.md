@@ -1,5 +1,7 @@
 # Kế hoạch phát triển theo sprint
 
+Bàn giao ngày 09/10: [kiểm nghiệm và V22](../reviews/2026-10-09-verification-demo-v22.md), thêm [100 user/120 thiết bị](../database/demo-v22.md), sửa focus form kho máy. Local đã lên V22; giữ S11 IN_REVIEW cho các gate UAT/môi trường thật.
+
 Bàn giao ngày 06/10: [tài khoản theo vai trò, sửa cảnh báo và kiểm thử thực tế](../reviews/2026-10-06-role-handover.md). Người dùng đã cho phép tạo tài khoản, kiểm thử và commit/push `system-design`; xem phạm vi trong `executionPolicy.handoverAuthorization`.
 
 Baseline sản phẩm ngày 06/10/2026: [PRD và đặc tả TMS](../product/README.md), có ma trận source/test/UAT và từ điển V16. Người dùng đã duyệt toàn bộ phần F/Q mở rộng luồng công việc theo file/QA; đang triển khai theo [kế hoạch F/Q](../../tasks/plan.md) và [checklist](../../tasks/todo.md). Các gate database native/UAT vẫn theo dõi riêng, chưa phải sprint DONE. Phần kế hoạch nền phía dưới giữ lịch sử lập ngày 22/09; trạng thái hiện tại xem STATUS.json.

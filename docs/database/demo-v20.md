@@ -1,5 +1,7 @@
 # Dữ liệu demo V20 — 07/10/2026
 
+Bổ sung ngày 09/10: [V22 thêm 100 user, 120 máy và 3 dự án](demo-v22.md). V20 bên dưới giữ nguyên, không sửa migration đã chạy. Core hiện tại V21, local đến V22; migration mới dùng V23 trở lên.
+
 V20 được nạp tự động khi chạy `mvn spring-boot:run` (profile local). Chỉ cần cấu hình database/schema đã tồn tại và tài khoản có quyền migration trong `.env.mysql.local`; xem [hướng dẫn chạy](../../README.md). Đặt `TMS_BOOTSTRAP_ENABLED=false` khi dùng bộ demo này.
 
 ## Tài khoản
@@ -48,7 +50,7 @@ Cả hai thuộc `SYP-DEMO-20`, đợt `DEMO-C1`, cấu hình QA/iPad/build DEMO
 
 ## Migration và kiểm thử
 
-Migration nằm ở `Backend/src/main/resources/db/demo/V20__local_role_demo_data.sql`; local bổ sung location `db/demo` bên cạnh `db/migration`. Release dùng core migration V1–V19, không tự cài tài khoản demo. Dành số V20 riêng cho demo; migration core tiếp theo dùng V21. Không dùng chung database demo với release hoặc xóa lịch sử V20 để chuyển profile.
+Migration nằm ở `Backend/src/main/resources/db/demo/V20__local_role_demo_data.sql`; local bổ sung location `db/demo` bên cạnh `db/migration`. Tại thời điểm V20, core đến V19; hiện core đã có V21 và local bổ sung V22. Release không tự cài tài khoản demo. Dành số V20/V22 riêng cho demo; migration tiếp theo dùng V23 trở lên. Không dùng chung database demo với release hoặc xóa lịch sử demo để chuyển profile.
 
 Script chỉ INSERT, không UPDATE/DELETE dữ liệu cũ. Trùng namespace demo sẽ báo lỗi và rollback toàn bộ dữ liệu của V20. Cần giải quyết xung đột và kiểm tra lịch sử Flyway có người giám sát; không tự `clean`, `repair`, sửa checksum hay reset database đang dùng.
 

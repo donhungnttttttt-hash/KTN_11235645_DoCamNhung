@@ -3,6 +3,13 @@ const assert=require('node:assert/strict');
 const {testPlan,testConfiguration,run}=require('./Test-FileWorkQaNative.cjs');
 const schema='tms_docstest_012345abcdef';
 const config={TMS_MYSQL_HOST:'127.0.0.1',TMS_MYSQL_PORT:'3307',TMS_MIGRATION_USER:'fixture',TMS_MIGRATION_PASSWORD:'never-log-this'};
+test('scale demo selector is allowed only for an empty isolated schema',()=>{
+ assert.equal(testPlan('fresh-migration','NativeScaleDemoMigrationTest').selector,'NativeScaleDemoMigrationTest');
+ assert.throws(()=>testPlan('integration','NativeScaleDemoMigrationTest'));
+ let spawned=false;
+ assert.throws(()=>run([schema,'fresh-migration','NativeScaleDemoMigrationTest'],{readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:['68'],spawn:()=>{spawned=true;}}));
+ assert.equal(spawned,false);
+});
 test('only explicit matching modes and exact selectors are accepted',()=>{
  for(const [mode,selector] of [['fresh-migration','NativeFileWorkQaMigrationTest'],['integration','NativeFileWorkQaIntegrationTest']]) {
   assert.equal(testPlan(mode,selector).selector,selector);

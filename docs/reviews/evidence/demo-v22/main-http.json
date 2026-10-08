@@ -1,0 +1,20 @@
+{
+  "backend": "http://127.0.0.1:8080",
+  "schema": "tms",
+  "version": 22,
+  "users": 100,
+  "roles": {
+    "PM": 3,
+    "DEV": 20,
+    "TESTER": 77
+  },
+  "assets": 120,
+  "projects": 3,
+  "roleLoginsVerified": [
+    "PM",
+    "DEV",
+    "TESTER"
+  ],
+  "projectBoundaryVerified": true,
+  "businessMutations": false
+}

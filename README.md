@@ -6,7 +6,7 @@ Dùng JDK 21, Node 24 và MySQL. Backend tự tạo/cập nhật **các bảng b
 
 1. Ở thư mục gốc, sao chép `.env.mysql.example` thành `.env.mysql.local` (không ghi đè nếu đã cấu hình).
 2. Điền host, port, tên database, user và password của MySQL trên máy bạn. Máy hiện tại dùng **127.0.0.1:3307/tms**; **3310 chỉ là cổng Docker cũ trong `.env`**, không phải cấu hình Maven local. Có thể dùng một tài khoản có quyền DDL; nếu dùng hai tài khoản, điền thêm `TMS_MIGRATION_USER` và `TMS_MIGRATION_PASSWORD`.
-3. Đặt `TMS_BOOTSTRAP_ENABLED=false`. Profile local tự nạp V20 với tài khoản `syp.demo.admin`, `syp.demo.pm`, `syp.demo.tester01`, `syp.demo.tester02`, `syp.demo.dev`; mật khẩu chung **`@test1234`**. Tài khoản hiện có giữ nguyên. Xem [dữ liệu demo và hướng dẫn từng quyền](docs/database/demo-v20.md). Profile release không nạp V20 demo; bootstrap Admin riêng cho release vẫn cần mật khẩu ít nhất 12 ký tự.
+3. Đặt `TMS_BOOTSTRAP_ENABLED=false`. Profile local tự nạp V20 với tài khoản `syp.demo.admin`, `syp.demo.pm`, `syp.demo.tester01`, `syp.demo.tester02`, `syp.demo.dev`; V22 bổ sung **100 user (3 PM, 20 Dev, 77 Tester), 120 máy và 3 dự án**. Mật khẩu demo chung **`@test1234`**; tài khoản hiện có giữ nguyên. Xem [bộ demo V20](docs/database/demo-v20.md) và [tài khoản/thiết bị V22](docs/database/demo-v22.md). Profile release không nạp các migration demo; bootstrap Admin riêng cho release vẫn cần mật khẩu ít nhất 12 ký tự.
 4. Chạy hai terminal:
 
 ```powershell
