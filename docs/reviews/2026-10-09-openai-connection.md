@@ -2,6 +2,8 @@
 
 Phạm vi mở rộng từ kết nối OpenAI sang sáu tác vụ cho Admin/PM/Tester/Dev theo yêu cầu người dùng. Nhánh `system-design`; API, UI và lưu tạm đã triển khai. Sinh nội dung bằng model thật còn chặn bởi số dư API, không coi mock test là nghiệm thu chất lượng AI.
 
+Implementation commit `c9f1b7d` đã push `origin/system-design`; [PR #2](https://github.com/donhungnttttttt-hash/KTN_11235645_DoCamNhung/pull/2) mở vào `develop`. Không merge hoặc deploy.
+
 ## Kết quả triển khai
 
 - Admin rà soát dự án; PM soạn báo cáo tiến độ và gợi ý Tester cho file; Tester tổng hợp công việc cá nhân và hoàn thiện bug; Dev rà soát BUG/QA được giao và tìm ticket liên quan trong cùng dự án.
