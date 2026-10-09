@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, FolderKanban, Users, TabletSmartphone, ScrollText, PanelsTopLeft } from 'lucide-react';
+import { Home, FolderKanban, Users, TabletSmartphone, ScrollText, PanelsTopLeft, Sparkles } from 'lucide-react';
 import { useAuth } from '../auth/AuthProvider';
 import { adminApi } from '../../services/api/admin';
 import { AdminUserProjectFilter } from './AdminUserProjectFilter';
@@ -20,6 +20,7 @@ export function AdminLayout({path,projectId,navigate,children,api=adminApi}) {
           ['/admin/users', 'Người dùng', Users, path === '/admin/users'],
           ['/admin/devices', 'Thiết bị', TabletSmartphone, path === '/admin/devices'],
           ['/admin/audit', 'Nhật ký quản trị', ScrollText, path === '/admin/audit'],
+          ['/admin/ai', 'Trợ lý AI', Sparkles, path === '/admin/ai'],
           ['/dashboard?workspace=1', 'Không gian dự án', PanelsTopLeft, false],
         ].map(([href, label, Icon, active]) => (
           <a key={href} href={`#${href}`} aria-current={active ? 'page' : undefined}>

@@ -1,5 +1,7 @@
 # Đặc tả chức năng và hệ thống TMS
 
+**Phụ lục AI 10/10/2026:** [AI-ASSISTANCE](AI-ASSISTANCE.md) đặc tả sáu tác vụ theo vai trò, MySQL/Flyway V23, owner-only/TTL/idempotency/optimistic edit. [OpenAPI](../api/ai-assistance.openapi.json) và [contract](../api/ai-assistance.md) là giao diện module. Các phần lịch sử dưới giữ nguyên checkpoint, không bao gồm nghiệm thu model live mới.
+
 Phiên bản **1.3 — 07/10/2026**, nhánh `system-design`. Phần 1–13 giữ baseline trước F/Q, gồm ADMIN A1–A4; phần 14 đặc tả F/Q và checkpoint trước nghiệm thu native. **Phần 16 cập nhật trạng thái hiện hành V20**, thay các ghi chú native/HTTP chưa thực hiện ở checkpoint cũ. Không coi source hoặc compile là nghiệm thu end-to-end.
 
 Tài liệu sản phẩm: [PRD](PRD.md). Test/traceability: [UAT](TRACEABILITY-UAT.md). Cấu trúc đầy đủ 59 bảng/560 cột/139 FK/269 indexes: [DATA-DICTIONARY](DATA-DICTIONARY.md). Bằng chứng baseline: [review](../reviews/2026-10-06-system-workflow-review.md). Schema mở rộng theo mã nguồn: [FQ-DATA-DICTIONARY](FQ-DATA-DICTIONARY.md).

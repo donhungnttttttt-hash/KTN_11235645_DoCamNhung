@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from "./app/features/auth/AuthProvider";
 import { AuthBoundary } from "./app/features/auth/AuthBoundary";
 import { ProjectProvider } from "./app/features/projects/ProjectProvider";
 import { AdminApp } from "./app/features/admin/AdminApp";
+import { AiEditBuffer } from "./app/features/ai/AiEditBuffer";
 
 const explicitWorkspace = route => new URLSearchParams(route.split('?')[1]).get('workspace') === '1';
 
@@ -39,7 +40,7 @@ function AuthenticatedShell() {
   // Remains mounted across AuthBoundary's identity-keyed app remounts, so a
   // previous account's workspace opt-in cannot become the next account's default.
   const workspaceIdentity=useRef(null);
-  return <AuthBoundary><RoleApp workspaceIdentity={workspaceIdentity}/></AuthBoundary>;
+  return <AuthBoundary><AiEditBuffer><RoleApp workspaceIdentity={workspaceIdentity}/></AiEditBuffer></AuthBoundary>;
 }
 
 export default function AppEntry() {

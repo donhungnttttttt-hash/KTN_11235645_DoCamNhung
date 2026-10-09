@@ -7,6 +7,7 @@ import { AdminProjectDetail } from './AdminProjectDetail';
 import { AdminDevices } from './AdminDevices';
 import { AdminUsers } from './AdminUsers';
 import {AdminAudit} from './AdminAudit';
+import {AdminAiPage} from '../ai/AiAssistantPage';
 import './admin.css';
 
 export function AdminApp({route}) {
@@ -20,5 +21,5 @@ export function AdminApp({route}) {
     const destination=detail ? (scope ? `/admin/projects/${scope}` : '/admin/projects') : next;
     window.location.hash=destination+(scope ? `?projectId=${encodeURIComponent(scope)}` : '');
   };
-  return <AdminLayout path={path} projectId={projectId} navigate={navigate}>{path==='/admin' ? <AdminDashboard projectId={projectId}/> : path==='/admin/devices' ? <AdminDevices key={query} initialProjectId={new URLSearchParams(query).get('projectId')||''}/> : path==='/admin/audit' ? <AdminAudit key={query} initialProjectId={new URLSearchParams(query).get('projectId')||''}/> : path==='/admin/users' ? <AdminUsers/> : path==='/admin/projects' ? <AdminProjects key={projectId || 'all'} projectId={projectId}/> : detail ? <AdminProjectDetail id={detail[1]}/> : <section><h1>Không tìm thấy trang quản trị</h1><a href={`#/admin${projectId ? `?projectId=${projectId}` : ''}`}>Về tổng quan</a></section>}</AdminLayout>;
+  return <AdminLayout path={path} projectId={projectId} navigate={navigate}>{path==='/admin' ? <AdminDashboard projectId={projectId}/> : path==='/admin/ai' ? <AdminAiPage/> : path==='/admin/devices' ? <AdminDevices key={query} initialProjectId={new URLSearchParams(query).get('projectId')||''}/> : path==='/admin/audit' ? <AdminAudit key={query} initialProjectId={new URLSearchParams(query).get('projectId')||''}/> : path==='/admin/users' ? <AdminUsers/> : path==='/admin/projects' ? <AdminProjects key={projectId || 'all'} projectId={projectId}/> : detail ? <AdminProjectDetail id={detail[1]}/> : <section><h1>Không tìm thấy trang quản trị</h1><a href={`#/admin${projectId ? `?projectId=${projectId}` : ''}`}>Về tổng quan</a></section>}</AdminLayout>;
 }

@@ -1,5 +1,7 @@
 # PRD — Hệ thống quản lý dự án và kiểm thử TMS
 
+**Mở rộng 10/10/2026 — AI theo vai trò:** [Đặc tả và tiêu chí sử dụng](AI-ASSISTANCE.md). Admin rà soát dự án; PM soạn báo cáo/gợi ý phân công; Tester tổng hợp công việc/hoàn thiện bug; Dev rà soát ticket được giao. Kết quả là bản nháp có nguồn, owner, thời hạn lưu và phiên bản chỉnh sửa. AI không tự thực hiện nghiệp vụ. Kiểm thử live còn phụ thuộc số dư API OpenAI; phạm vi này không thay các gate UAT hiện có.
+
 Phiên bản tài liệu: **1.3 — 07/10/2026**. Chủ sản phẩm: người dùng/đơn vị vận hành. Nhánh `system-design`; F01–F05/Q01–Q03 đã triển khai, native đã áp V17–V20. Mục 1–15 giữ baseline trước F/Q, mục 16 giữ checkpoint source, **mục 17 là trạng thái hiện hành**, thay các ghi chú native/HTTP còn mở ở checkpoint cũ. [Kế hoạch](../../tasks/plan.md). Đây không phải biên bản khách hàng ký nghiệm thu.
 
 ## 1. Bài toán và kết quả mong muốn

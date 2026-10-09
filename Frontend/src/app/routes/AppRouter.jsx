@@ -16,10 +16,12 @@ import { NotFoundPage } from '../pages/NotFoundPage';
 import { ProjectSettingsPage } from '../features/projects/ProjectSettingsPage';
 import { CatalogPage } from '../features/projects/CatalogPage';
 import { routeInfo } from './routeInfo';
+import { AiAssistantPage } from '../features/ai/AiAssistantPage';
 
 export function AppRouter({ activeRoute, project, teamMembers, testSpecs, issues, memberProgress, navigate }) {
   const { path, specId, isFileWork, groupId, documentId, invalidFileWorkContext } = routeInfo(activeRoute);
   const isRunnerRoute = specId !== null;
+  if (path === '/ai') return <AiAssistantPage/>;
   if (path === '/dashboard/actions') return <ActionInbox navigate={navigate}/>;
 
   if (path === '/dashboard' || path.startsWith('/dashboard/')) {

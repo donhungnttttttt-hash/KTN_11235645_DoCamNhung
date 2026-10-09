@@ -37,3 +37,6 @@ Quyết định mới đã duyệt của người dùng và ADR có hiệu lực
 ## Baseline trước triển khai F/Q
 
 Hệ thống đã có ADMIN tạo dự án/nhân sự/kho máy, PM nhập và duyệt case, phân công lượt case, Tester ghi execution, quản lý bug, Dev xử lý bug được giao, retest, báo cáo và lịch sử. Luồng **quản lý công việc theo file** còn thiếu nhóm phân công, danh sách file của tôi, phiên đang làm và máy vật lý thực tế. QA hỏi/đáp riêng và xuất file theo một ngữ cảnh execution cũng chưa có. Những phần đó được đặc tả riêng, không gọi là hoàn thành.
+# Phần mở rộng AI ngày 10/10/2026
+
+[Trợ lý AI theo vai trò](AI-ASSISTANCE.md) bổ sung sáu tác vụ cho Admin, PM, Tester, Dev; bản nháp lưu tạm MySQL V23, có nguồn đối chiếu và text chỉnh sửa riêng. Xem [API](../api/ai-assistance.md). Live AI còn gate số dư OpenAI; không coi test provider giả định là nghiệm thu chất lượng model.

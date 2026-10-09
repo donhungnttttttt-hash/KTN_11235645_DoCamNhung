@@ -3,6 +3,13 @@ const assert=require('node:assert/strict');
 const {testPlan,testConfiguration,run}=require('./Test-FileWorkQaNative.cjs');
 const schema='tms_docstest_012345abcdef';
 const config={TMS_MYSQL_HOST:'127.0.0.1',TMS_MYSQL_PORT:'3307',TMS_MIGRATION_USER:'fixture',TMS_MIGRATION_PASSWORD:'never-log-this'};
+test('AI draft migration only runs on an empty isolated schema',()=>{
+ assert.equal(testPlan('fresh-migration','NativeAiDraftTest').selector,'NativeAiDraftTest');
+ assert.throws(()=>testPlan('integration','NativeAiDraftTest'));
+ let spawned=false;
+ assert.throws(()=>run([schema,'fresh-migration','NativeAiDraftTest'],{readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:['1'],spawn:()=>{spawned=true;}}));
+ assert.equal(spawned,false);
+});
 test('scale demo selector is allowed only for an empty isolated schema',()=>{
  assert.equal(testPlan('fresh-migration','NativeScaleDemoMigrationTest').selector,'NativeScaleDemoMigrationTest');
  assert.throws(()=>testPlan('integration','NativeScaleDemoMigrationTest'));

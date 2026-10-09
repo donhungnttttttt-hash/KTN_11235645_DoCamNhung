@@ -1,5 +1,7 @@
 # Kế hoạch phát triển theo sprint
 
+Phần mở rộng AI ngày 10/10: [kế hoạch](../superpowers/plans/2026-10-09-role-ai.md), [đặc tả theo vai trò](../product/AI-ASSISTANCE.md). Không gộp trạng thái nghiệm thu model live vào S11; gate số dư API và đánh giá chất lượng người dùng được ghi riêng.
+
 Bàn giao ngày 09/10: [kiểm nghiệm và V22](../reviews/2026-10-09-verification-demo-v22.md), thêm [100 user/120 thiết bị](../database/demo-v22.md), sửa focus form kho máy. Local đã lên V22; giữ S11 IN_REVIEW cho các gate UAT/môi trường thật.
 
 Bàn giao ngày 06/10: [tài khoản theo vai trò, sửa cảnh báo và kiểm thử thực tế](../reviews/2026-10-06-role-handover.md). Người dùng đã cho phép tạo tài khoản, kiểm thử và commit/push `system-design`; xem phạm vi trong `executionPolicy.handoverAuthorization`.

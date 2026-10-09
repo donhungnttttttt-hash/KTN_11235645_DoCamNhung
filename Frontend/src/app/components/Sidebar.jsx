@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Home, Columns3, FlaskConical, Bug, ChartGantt, ChartNoAxesCombined,
   Menu, X, ChevronDown, List, Settings, LayoutDashboard, BookOpen,
-  ClipboardList, RotateCcw, Users, SlidersHorizontal, Layers, FileCheck,
+  ClipboardList, RotateCcw, Users, SlidersHorizontal, Layers, FileCheck, Sparkles,
 } from 'lucide-react';
 
 const navigation = [
@@ -24,6 +24,7 @@ const navigation = [
   { label: 'Quản lý lỗi', route: '/issues', icon: Bug, id: 'issues' },
   { label: 'Quản lý tiến độ', route: '/progress', icon: ChartGantt, id: 'progress' },
   { label: 'Tổng hợp & Phân tích', route: '/analysis', icon: ChartNoAxesCombined, id: 'analysis' },
+  { label: 'Trợ lý AI', route: '/ai', icon: Sparkles, id: 'ai' },
   { label: 'Cài đặt dự án', route: '/settings', icon: Settings, id: 'settings', children: [
     { label: 'Thông tin chung', route: '/settings', icon: SlidersHorizontal },
     { label: 'Thành viên', route: '/settings/members', icon: Users },

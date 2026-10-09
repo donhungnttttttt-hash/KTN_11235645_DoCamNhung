@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-09",
+  "updatedAt": "2026-10-10",
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
@@ -804,5 +804,42 @@
     "S08": "ADR-008: run-item metrics, PM NA/cycle closure/reopen, internal XLSX approved 2026-09-29",
     "S09": "ADR-009: user chọn Redmine và giao chọn phương án tốt nhất; sandbox local/mapping nội bộ, TMS authoritative, chỉ PM công bố; không gửi tracker khách.",
     "projectLifecycle": "08/10/2026 người dùng giao chọn quy tắc tốt nhất: chỉ Admin lưu trữ/mở lại, lý do/version/idempotency/lịch sử; sáu nhóm việc tồn chặn archive, không tự đóng/thu hồi; PM kết thúc công việc thường, BUG/QA giữ luồng chuyên biệt. Xem docs/planning/project-lifecycle-2026-10-08.md."
+  },
+  "aiAssistance": {
+    "status": "IN_REVIEW",
+    "implementation": "COMPLETE_LOCAL",
+    "branch": "system-design",
+    "migration": 23,
+    "purposes": [
+      "ADMIN_PROJECT_REVIEW",
+      "PM_PROGRESS_REPORT",
+      "PM_ASSIGNMENT_SUGGESTION",
+      "TESTER_WORK_REPORT",
+      "TESTER_BUG_DRAFT",
+      "DEV_TICKET_REVIEW"
+    ],
+    "evidence": [
+      "docs/reviews/2026-10-09-openai-connection.md",
+      "docs/product/AI-ASSISTANCE.md",
+      "docs/api/ai-assistance.openapi.json"
+    ],
+    "checks": {
+      "backendUnit": 48,
+      "nativeIntegration": 18,
+      "frontend": 678,
+      "nativeRunner": 11,
+      "javaErrors": 0,
+      "javaWarnings": 0
+    },
+    "blockers": [
+      "OpenAI live probe returned 429 credit_balance_exhausted / insufficient_quota; awaiting API credit before real-model UAT."
+    ],
+    "nextAction": "Sau khi API có số dư, kiểm thử tác vụ demo theo bốn vai trò và đối chiếu chất lượng/citation cùng người dùng. Không coi mock tests là nghiệm thu AI live.",
+    "delivery": {
+      "target": "origin/system-design",
+      "pullRequest": 2,
+      "base": "develop",
+      "mergeAuthorized": false
+    }
   }
 }
