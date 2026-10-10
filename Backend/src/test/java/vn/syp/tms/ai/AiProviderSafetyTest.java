@@ -32,4 +32,14 @@ class AiProviderSafetyTest {
         })).isEqualTo("ok");
         assertThat(ProviderHttp.inference("actor",()->"next")).isEqualTo("next");
     }
+    @Test void planUsageFailureKeepsItsMeaningBeforeAndAfterStreamStarts() {
+        String error="{\"code\":\"subscription_sharing_usage_limit_exceeded\",\"message\":\"secret\"}";
+        assertThat(ProviderHttp.errorCode(429,("{\"error\":"+error+"}").getBytes(),json)).isEqualTo("AI_QUOTA_EXHAUSTED");
+        String stream="data: {\"type\":\"response.output_text.delta\",\"delta\":\"partial\"}\n\ndata: {\"type\":\"response.failed\",\"response\":{\"error\":"+error+"}}\n\n";
+        assertThatThrownBy(()->new ChatGptSse(json).parse(stream.getBytes())).hasMessage("AI_QUOTA_EXHAUSTED");
+    }
+    @Test void temporaryUsageServiceFailureIsNotIncompleteOrQuota() {
+        String stream="data: {\"type\":\"response.failed\",\"response\":{\"error\":{\"code\":\"subscription_sharing_usage_unavailable\",\"message\":\"secret\"}}}\n\n";
+        assertThatThrownBy(()->new ChatGptSse(json).parse(stream.getBytes())).hasMessage("AI_UNAVAILABLE");
+    }
 }

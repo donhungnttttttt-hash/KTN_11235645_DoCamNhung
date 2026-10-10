@@ -53,13 +53,28 @@ public class AiProviderGateway {
     public boolean enabled(String actor){return config.enabled()&&config.configured()||local.ollamaEnabled||local.chatgptEnabled&&local.owner.equals(actor);}
     public Metadata metadata(String actor) {
         access.current(actor);boolean apiReady=config.enabled()&&config.configured();ChatGptConnectionService.Connection connection=null;String reason="AI_LOCAL_ONLY";
-        try{connection=connections.connection(actor);reason="VERIFIED".equals(connection.state())?null:"AI_CONNECT_REQUIRED";}catch(RuntimeException ignored){}
+        try {
+            connection = connections.connection(actor);
+            reason = "VERIFIED".equals(connection.state()) ? connection.failureCode() :
+                    "MISSING_PERMISSION".equals(connection.state()) ? "AI_PERMISSION_DENIED" :
+                    "RECONNECT_REQUIRED".equals(connection.state()) ? "AI_RECONNECT_REQUIRED" : "AI_CONNECT_REQUIRED";
+        } catch (OpenAiResponsesClient.Failure e) {
+            reason = e.code();
+        } catch (vn.syp.tms.shared.web.BusinessException ignored) { }
         return new Metadata(List.of(new Provider("OPENAI_API","API của hệ thống",config.enabled(),apiReady,apiReady?null:"AI_NOT_CONFIGURED",List.of(new Model(config.model(),config.model())),null),
                 new Provider("CHATGPT","ChatGPT cá nhân",local.chatgptEnabled,connection!=null&&"VERIFIED".equals(connection.state()),reason,List.of(),connection),
                 new Provider("OLLAMA","Ollama local",local.ollamaEnabled,local.ollamaEnabled,local.ollamaEnabled?null:"AI_DISABLED",List.of(),null)),"OPENAI_API",30);
     }
     public List<Model> models(String actor,String provider,String connectionId) {
-        access.current(actor);return switch(provider){case "OPENAI_API"->List.of(new Model(config.model(),config.model()));case "OLLAMA"->ollama.models();case "CHATGPT"->connections.models(actor,connectionId);default->throw new OpenAiResponsesClient.Failure("AI_INVALID_PROVIDER");};
+        return ProviderHttp.bounded(5, () -> {
+            access.current(actor);
+            return switch (provider) {
+                case "OPENAI_API" -> List.of(new Model(config.model(), config.model()));
+                case "OLLAMA" -> ollama.models();
+                case "CHATGPT" -> connections.models(actor, connectionId);
+                default -> throw new OpenAiResponsesClient.Failure("AI_INVALID_PROVIDER");
+            };
+        });
     }
     static void validateModel(String model){if(model==null||!model.matches("[A-Za-z0-9][A-Za-z0-9._:/-]{0,99}")||model.contains("..")||model.contains("//"))throw new OpenAiResponsesClient.Failure("AI_INVALID_MODEL");}
 }

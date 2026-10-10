@@ -17,7 +17,10 @@ public class ChatGptOAuthClient {
     ChatGptOAuthClient(ObjectMapper json,URI issuer){http=new ProviderHttp(json);this.issuer=issuer;}
     JsonNode exchange(String clientId,String code,String verifier,String redirect){return token(Map.of("grant_type","authorization_code","client_id",clientId,"code",code,"code_verifier",verifier,"redirect_uri",redirect,"resource",RESOURCE));}
     JsonNode refresh(String clientId,String refresh){return token(Map.of("grant_type","refresh_token","client_id",clientId,"refresh_token",refresh,"resource",RESOURCE));}
-    private JsonNode token(Map<String,String> body){return http.read(http.request(issuer.resolve("/api/accounts/oauth/token"),"POST",null,"application/x-www-form-urlencoded",form(body).getBytes(StandardCharsets.UTF_8),65536));}
+    private JsonNode token(Map<String,String> body) {
+        return http.read(http.oauthRequest(issuer.resolve("/api/accounts/oauth/token"),
+                form(body).getBytes(StandardCharsets.UTF_8)));
+    }
     JsonNode validate(JsonNode tokens,String clientId,String nonce,String subject) {
         var discovery=http.read(http.request(issuer.resolve("/.well-known/openid-configuration"),"GET",null,null,null,65536));
         if(!"https://auth.openai.com".equals(discovery.path("issuer").asText()))throw new OpenAiResponsesClient.Failure("AI_AUTH_FAILED");

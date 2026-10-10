@@ -33,4 +33,16 @@ class AiProviderIntegrationTest {
     @Test void oversizedResponseFailsWithoutLeakingBody(){response("/api/tags",200,"secret".repeat(12000));assertThatThrownBy(()->new OllamaClient(config(),json).models()).hasMessage("AI_UNAVAILABLE");}
     @Test void redirectsNeverForwardTokens(){response("/responses",302,"secret-token");assertThatThrownBy(()->new ChatGptPlanClient(json,URI.create(base+"/")).generate("test-token","test","facts",json.createObjectNode(),"schema",json.createObjectNode())).hasMessage("AI_REQUEST_REJECTED");}
     @Test void missingUsageCannotBecomeFabricatedZero(){response("/api/chat",200,"{\"model\":\"qwen3:8b\",\"done\":true,\"message\":{\"role\":\"assistant\",\"content\":\"{}\"}}");assertThatThrownBy(()->new OllamaClient(config(),json).generate("qwen3:8b","facts",json.createObjectNode(),json.createObjectNode())).hasMessage("AI_INVALID_RESPONSE");}
+    @Test void publicOllamaCatalogHasFiveSecondBoundInsteadOfIndependentTwentySeconds() throws Exception {
+        var release=new java.util.concurrent.CountDownLatch(1);
+        server.createContext("/api/tags",exchange->{try{release.await(7,java.util.concurrent.TimeUnit.SECONDS);}catch(InterruptedException e){Thread.currentThread().interrupt();}finally{exchange.close();}});
+        var gateway=new AiProviderGateway(new OpenAiConfiguration(false,"","api-model",20,100,10),config(),
+                org.mockito.Mockito.mock(LocalAiAccess.class),org.mockito.Mockito.mock(OpenAiResponsesClient.class),new OllamaClient(config(),json),
+                org.mockito.Mockito.mock(ChatGptConnectionService.class),org.mockito.Mockito.mock(ChatGptPlanClient.class));
+        long start=System.nanoTime();
+        try {
+            assertThatThrownBy(()->gateway.models("owner","OLLAMA",null)).hasMessage("AI_UNAVAILABLE");
+            assertThat(java.time.Duration.ofNanos(System.nanoTime()-start)).isLessThan(java.time.Duration.ofSeconds(6));
+        }finally{release.countDown();}
+    }
 }

@@ -13,11 +13,14 @@ import vn.syp.tms.shared.web.BusinessException;
 public class AiProviderController {
     private final AiProviderGateway gateway;private final ChatGptConnectionService connections;
     public AiProviderController(AiProviderGateway gateway,ChatGptConnectionService connections){this.gateway=gateway;this.connections=connections;}
-    public record Connect(boolean newAccount) {}
+    public record Connect(boolean newAccount, boolean enablePlanPermission) {}
     public record ProbeRequest(@NotBlank @Size(max=100) String model,@NotBlank @Pattern(regexp="[A-Za-z0-9_-]{8,64}") String requestKey) {}
     @GetMapping public AiProviderGateway.Metadata metadata(Authentication auth){return gateway.metadata(actor(auth));}
     @GetMapping("/{provider}/models") public List<AiProviderGateway.Model> models(Authentication auth,@PathVariable String provider,@RequestParam(required=false) String connectionId){return gateway.models(actor(auth),provider,connectionId);}
-    @PostMapping("/CHATGPT/authorizations") public ChatGptConnectionService.Authorization connect(Authentication auth,@RequestBody(required=false) Connect body){return connections.start(actor(auth),body!=null&&body.newAccount());}
+    @PostMapping("/CHATGPT/authorizations")
+    public ChatGptConnectionService.Authorization connect(Authentication auth, @RequestBody(required=false) Connect body) {
+        return connections.start(actor(auth), body != null && body.newAccount(), body != null && body.enablePlanPermission());
+    }
     @GetMapping("/CHATGPT/authorizations/{id}") public ChatGptConnectionService.AttemptView attempt(Authentication auth,@PathVariable String id){return connections.attempt(actor(auth),id);}
     @DeleteMapping("/CHATGPT/authorizations/{id}") public void cancel(Authentication auth,@PathVariable String id){connections.cancel(actor(auth),id);}
     @PostMapping("/CHATGPT/connections/{id}/probes") public ChatGptConnectionService.Probe probe(Authentication auth,@PathVariable String id,@Valid @RequestBody ProbeRequest body){return connections.probe(actor(auth),id,body.model(),body.requestKey());}
