@@ -5,21 +5,11 @@ import {adminApi} from '../../services/api/admin';
 import {useProject} from '../projects/ProjectProvider';
 import {AdminUserProjectFilter} from '../admin/AdminUserProjectFilter';
 import {useAiEditBuffer} from './AiEditBuffer';
+import {useAuth} from '../auth/AuthProvider';
+import {AiSourceSelector,useAiProviders} from './AiConnections';
+import {aiError} from './aiErrors';
 import './ai.css';
 
-const errors={
- AI_QUOTA_EXHAUSTED:'Dịch vụ AI đã hết số dư API. Liên hệ quản trị viên để bổ sung trước khi tạo lại.',
- AI_RATE_LIMITED:'Dịch vụ AI đang giới hạn tốc độ. Vui lòng tạo yêu cầu mới sau ít phút.',
- AI_DAILY_LIMIT:'Dự án đã đạt giới hạn yêu cầu AI hôm nay. Bạn vẫn có thể đọc các bản đã lưu.',
- AI_DISABLED:'AI chưa được bật cho hệ thống.',
- AI_AUTH_FAILED:'Cấu hình kết nối AI chưa hợp lệ. Liên hệ quản trị viên.',
- AI_UNAVAILABLE:'Dịch vụ AI chưa phản hồi. Yêu cầu này không có nội dung được tạo thành công.',
- AI_INCOMPLETE_RESPONSE:'AI trả về nội dung chưa hoàn chỉnh. Hệ thống chưa lưu nội dung này.',
- AI_REFUSED:'AI không thể xử lý nội dung này. Kiểm tra lại thông tin nguồn.',
- AI_INVALID_RESPONSE:'Kết quả AI không đáp ứng cấu trúc hoặc nguồn đối chiếu. Hệ thống đã từ chối nội dung này.',
- AI_REQUEST_LIMIT:'Đã đạt giới hạn kết nối AI trong phút này. Bạn có thể tạo yêu cầu mới sau một phút hoặc đọc bản nháp đã lưu.',
- AI_INTERRUPTED:'Yêu cầu AI đã bị gián đoạn. Chưa có nội dung hoàn chỉnh được lưu; bạn có thể tạo yêu cầu mới.',
-};
 const descriptions={
  ADMIN_PROJECT_REVIEW:'Nhìn lại tiến độ, nguồn lực và các mốc cần chú ý của dự án.',
  PM_PROGRESS_REPORT:'Soạn báo cáo từ kết quả thực thi, công việc và mốc dự án hiện có.',
@@ -49,6 +39,7 @@ export function AdminAiPage() {
   <AiWorkspace projectId={projectId}/></div>;
 }
 export function AiWorkspace({projectId,projectName,api=aiApi}) {
+ const auth=useAuth();
  const localEdits=useRef(new Map());
  const sharedEdits=useAiEditBuffer();
  const edits=sharedEdits||localEdits.current;
@@ -57,10 +48,12 @@ export function AiWorkspace({projectId,projectName,api=aiApi}) {
   const warn=event=>{if(edits.size){event.preventDefault();event.returnValue='';}};
   window.addEventListener('beforeunload',warn);return()=>window.removeEventListener('beforeunload',warn);
  },[edits,sharedEdits]);
- if(!projectId)return <section className="ai-page ai-empty"><Sparkles aria-hidden="true"/><h1>Trợ lý AI</h1><p>Chọn một dự án để xem các tác vụ AI phù hợp với vai trò của bạn.</p></section>;
- return <Workspace key={projectId} projectId={projectId} projectName={projectName} api={api} edits={edits}/>;
+ if(auth&&auth.status!=='authenticated')return null;
+ if(!projectId)return <section className="ai-page"><div className="ai-empty"><Sparkles aria-hidden="true"/><h1>Trợ lý AI</h1><p>Chọn một dự án để xem các tác vụ AI phù hợp với vai trò của bạn.</p></div><AiSourceSelector connectionsOnly/></section>;
+ return <Workspace key={`${auth?.user?.id||''}:${projectId}`} projectId={projectId} projectName={projectName} api={api} edits={edits}/>;
 }
 function Workspace({projectId,projectName,api,edits}) {
+ const providers=useAiProviders();
  const [metadata,setMetadata]=useState(null),[history,setHistory]=useState([]),[purpose,setPurpose]=useState('');
  const [targets,setTargets]=useState(null),[target,setTarget]=useState(''),[search,setSearch]=useState(''),[query,setQuery]=useState('');
  const [draft,setDraft]=useState(null),[text,setText]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState('');
@@ -96,34 +89,35 @@ function Workspace({projectId,projectName,api,edits}) {
   if(value===draftText(draft))edits.delete(editKey(draft.id));
   else edits.set(editKey(draft.id),{text:value,version:edits.get(editKey(draft.id))?.version??draft.version});
  }
- async function perform(fn) {
+ async function perform(fn,source=draft?.provider||providers?.selection.provider) {
   if(actionBusy.current)return;
   actionBusy.current=true;setBusy(true);setError('');setNotice('');
   const signal=lifetime.current.signal;
-  try{await fn(signal);}catch(e){if(!signal.aborted){setError(errors[e.code]||e.message);if([401,403,404].includes(e.status)){setDraft(null);setText('');setHistory([]);setPending(null);}}}
+  try{await fn(signal);}catch(e){if(!signal.aborted){setError(e.code?.startsWith('AI_')||['TIMEOUT','NETWORK_ERROR'].includes(e.code)?aiError(e.code,source):e.message);if([401,403,404].includes(e.status)){setDraft(null);setText('');setHistory([]);setPending(null);}}}
   finally{if(!signal.aborted){actionBusy.current=false;setBusy(false);}}
  }
  async function generate(retry=false) {
   await perform(async signal=>{
-   const body=retry?request.current:{purpose,targetId:selected.target==='NONE'?null:Number(target),requestKey:crypto.randomUUID()};
+   const body=retry?request.current:{purpose,targetId:selected.target==='NONE'?null:Number(target),requestKey:crypto.randomUUID(),...(providers?{provider:providers.selection.provider,model:providers.selection.model}:{})};
    if(!body)return;request.current=body;setPending(body);
    try{const result=await api.generate(projectId,body,{signal});if(signal.aborted)return;show(result);if(result.state!=='GENERATING'){setPending(null);request.current=null;}}
    catch(e){if(!['TIMEOUT','NETWORK_ERROR'].includes(e.code)){setPending(null);request.current=null;}throw e;}
-  });
+  },retry?request.current?.provider:providers?.selection.provider);
  }
  async function open(id) {await perform(async signal=>{const value=await api.get(projectId,id,{signal});if(!signal.aborted)show(value);});}
  const changed=draft?.state==='READY'&&text!==draftText(draft);
- const canGenerate=metadata?.enabled&&!metadata.archived&&selected&&!targetLoading&&(selected.target==='NONE'||target)&&!busy&&!loading&&!pending;
+ const canGenerate=(providers?providers.ready:metadata?.enabled)&&!metadata?.archived&&selected&&!targetLoading&&(selected.target==='NONE'||target)&&!busy&&!loading&&!pending;
  return <section className="ai-page">
   <header className="ai-heading"><div><div className="ai-eyebrow"><Sparkles size={17} aria-hidden="true"/>TRỢ LÝ CÔNG VIỆC</div><h1>Trợ lý AI {metadata&&<span>{roleNames[metadata.role]||metadata.role}</span>}</h1><p>{projectName||'Theo dự án đã chọn'} · Bản nháp để bạn kiểm tra và sử dụng.</p></div>
    <button type="button" className="ai-button" disabled={busy||loading} onClick={()=>setRevision(v=>v+1)}><RefreshCw size={16} aria-hidden="true"/>Cập nhật danh sách</button></header>
   {error&&<div className="ai-error" role="alert">{error} <button className="ai-button" disabled={busy} onClick={()=>setRevision(v=>v+1)}>Tải lại danh sách</button></div>}
   {loading&&<p role="status">Đang tải trợ lý AI…</p>}
   {metadata&&<>
-   {!metadata.enabled&&<p className="ai-notice">AI chưa được bật cho hệ thống. Bạn vẫn có thể xem và chỉnh sửa các bản nháp đã lưu.</p>}
+   {!metadata.enabled&&!providers&&<p className="ai-notice">AI chưa được bật cho hệ thống. Bạn vẫn có thể xem và chỉnh sửa các bản nháp đã lưu.</p>}
    {metadata.archived&&<p className="ai-notice">Dự án đã lưu trữ. Chỉ xem các bản nháp còn hạn.</p>}
    <div className="ai-layout"><div className="ai-main">
     <section className="ai-card"><h2>Bạn cần hỗ trợ việc gì?</h2>
+     <AiSourceSelector disabled={busy||!!pending}/>
      <label className="ai-field">Tác vụ AI<select value={purpose} disabled={busy||!!pending} onChange={e=>{setPurpose(e.target.value);setQuery('');setSearch('');}}>{metadata.purposes.map(p=><option key={p.code} value={p.code}>{p.label}</option>)}</select></label>
      <p className="ai-description">{descriptions[purpose]}</p>
      {selected?.target!=='NONE'&&selected&&<div className="ai-target">
@@ -134,7 +128,7 @@ function Workspace({projectId,projectName,api,edits}) {
       {targets&&!targets.items.length&&<p>Chưa có file hoặc ticket phù hợp. Kiểm tra phân công hoặc đổi từ khóa tìm kiếm.</p>}
       {targets?.hasMore&&<p>Đang hiển thị 50 mục. Tìm theo tên để thu hẹp danh sách.</p>}
      </div>}
-     <p className="ai-privacy">OpenAI sẽ nhận phần dữ liệu cần thiết của tác vụ. Bản nháp lưu {metadata.retentionDays} ngày, chỉ bạn được xem. Hãy đối chiếu nguồn trước khi dùng.</p>
+     <p className="ai-privacy">Nguồn AI đã chọn sẽ nhận phần dữ liệu cần thiết của tác vụ. Bản nháp lưu {metadata.retentionDays} ngày, chỉ bạn được xem. Hãy đối chiếu nguồn trước khi dùng.</p>
      <div className="ai-actions"><button className="ai-button ai-primary" disabled={!canGenerate} onClick={()=>generate()}><Sparkles size={16} aria-hidden="true"/>{busy?'Đang xử lý…':'Phân tích'}</button>
       {pending&&<button className="ai-button" disabled={busy} onClick={()=>generate(true)}>Kiểm tra lại yêu cầu</button>}</div>
      {pending&&!busy&&<p role="status">Yêu cầu có thể đang được xử lý. Kiểm tra lại sẽ dùng cùng mã yêu cầu.</p>}
@@ -142,7 +136,7 @@ function Workspace({projectId,projectName,api,edits}) {
     {draft&&<section className="ai-card ai-output" aria-label="Bản nháp AI">
      <div className="ai-output-heading"><h2>{draft.content?.answer?.title||'Yêu cầu AI'}</h2><span className={`ai-state ai-state-${draft.state.toLowerCase()}`}>{stateNames[draft.state]}</span></div>
      <p className="ai-caption">Tạo {date(draft.createdAt)} · Hết hạn {date(draft.expiresAt)}</p>
-     {draft.state==='FAILED'&&<p role="alert" className="ai-error">{errors[draft.failureCode]||'Chưa tạo được bản nháp AI. Bạn có thể thử tạo yêu cầu mới.'}</p>}
+     {draft.state==='FAILED'&&<p role="alert" className="ai-error">{aiError(draft.failureCode,draft.provider)}{draft.provider==='CHATGPT'&&draft.failureCode==='AI_QUOTA_EXHAUSTED'&&<> <a href="https://chatgpt.com/#settings" target="_blank" rel="noopener noreferrer">ChatGPT Usage</a></>}</p>}
      {draft.state==='GENERATING'&&<><p role="status">Chưa có kết quả đã lưu. Vui lòng kiểm tra lại sau.</p><button className="ai-button" disabled={busy} onClick={()=>open(draft.id)}>Kiểm tra bản nháp</button></>}
      {draft.state==='READY'&&<>
       <label className="ai-field">Nội dung để sử dụng<textarea ref={editor} value={text} maxLength={12000} rows={15} disabled={busy||metadata.archived} onChange={e=>changeText(e.target.value)}/></label>

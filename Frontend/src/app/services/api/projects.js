@@ -19,7 +19,7 @@ async function projectUpdate(path, body, method = 'PATCH') {
 }
 
 export const projectsApi = {
-  list: () => apiRequest('/projects'),
+  list: (options) => apiRequest('/projects', options),
   get: (id) => apiRequest(`/projects/${id}`),
   create: (data) => projectWrite('/projects', data),
   update: (id, data) => projectUpdate(`/projects/${id}`, data),
