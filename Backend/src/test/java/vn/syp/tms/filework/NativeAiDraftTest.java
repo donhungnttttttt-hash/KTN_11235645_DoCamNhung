@@ -77,6 +77,7 @@ class NativeAiDraftTest {
     @Autowired AiContextService contexts;
     @Autowired ObjectMapper json;
     @Autowired MockMvc mvc;
+    @Autowired org.springframework.session.SessionRepository<? extends org.springframework.session.Session> sessions;
     @MockitoBean OpenAiResponsesClient provider;
     NativeFqFixture f;
 
@@ -152,7 +153,15 @@ class NativeAiDraftTest {
         assertThat(jdbc.queryForObject("SELECT content_json FROM ai_generated_drafts WHERE project_id=?",String.class,f.project)).isNull();
     }
     @org.springframework.lang.NonNull RequestPostProcessor actor(String id,String role) {
-        return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(id,0),null,List.of(new SimpleGrantedAuthority("ROLE_"+role)))));
+        var context=org.springframework.security.core.context.SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(id,0),null,List.of(new SimpleGrantedAuthority("ROLE_"+role))));
+        String sessionId=NativeAiSessions.create(sessions,context);
+        return request->{
+            var captured=new org.springframework.mock.web.MockHttpSession(null,sessionId);
+            captured.setAttribute("SPRING_SECURITY_CONTEXT",context);request.setSession(captured);
+            request.setCookies(new jakarta.servlet.http.Cookie("TMS_SESSION",sessionId));
+            return authentication(context.getAuthentication()).postProcessRequest(request);
+        };
     }
     OpenAiResponsesClient.Output output(String summary) {
         var answer=json.createObjectNode().put("title","Bản nháp").put("summary",summary);

@@ -92,6 +92,67 @@ class ChatGptConnectionServiceTest {
                 .put("scopes",ChatGptOAuthClient.SCOPES).put("verifiedModel","test").put("verifiedAt",Instant.now().toString());
         when(vault.read()).thenReturn(prior);service.close();service=new ChatGptConnectionService(config,access,vault,oauth,client,json);
     }
+    @Test void validationOutageAfterRotatingRefreshDurablyRequiresReconnectWithoutTokenReuse() throws Exception {
+        loadVerifiedExpired();
+        when(oauth.refresh("oaiapp_test", "old-refresh")).thenReturn(tokens());
+        when(oauth.validate(any(), anyString(), isNull(), anyString()))
+                .thenThrow(new OpenAiResponsesClient.Failure("AI_UNAVAILABLE"));
+        assertThatThrownBy(() -> service.models("owner", "conn")).hasMessage("AI_RECONNECT_REQUIRED");
+        assertThat(service.connection("owner").state()).isEqualTo("RECONNECT_REQUIRED");
+        var capture = org.mockito.ArgumentCaptor.forClass(JsonNode.class);
+        verify(vault).write(capture.capture());
+        assertThat(capture.getValue().hasNonNull("refreshToken")).isFalse();
+        when(vault.read()).thenReturn(capture.getValue().deepCopy());
+        service.close(); service = new ChatGptConnectionService(config, access, vault, oauth, client, json);
+        assertThatThrownBy(() -> service.models("owner", "conn")).hasMessage("AI_RECONNECT_REQUIRED");
+        verify(oauth, times(1)).refresh("oaiapp_test", "old-refresh");
+        verifyNoInteractions(client);
+    }
+    @Test void validationFailureSettlementRetriesLocallyAndRespectsDisconnectFence() throws Exception {
+        loadVerifiedExpired();when(oauth.refresh(anyString(),anyString())).thenReturn(tokens());
+        when(oauth.validate(any(),anyString(),isNull(),anyString())).thenThrow(new OpenAiResponsesClient.Failure("AI_UNAVAILABLE"));
+        doThrow(new OpenAiResponsesClient.Failure("AI_CREDENTIAL_STORE_FAILED")).doNothing().when(vault).write(any());
+        assertThatThrownBy(()->service.models("owner","conn")).hasMessage("AI_CREDENTIAL_STORE_FAILED");
+        assertThatThrownBy(()->service.models("owner","conn")).hasMessage("AI_BUSY");
+        awaitSettled();assertThat(service.connection("owner").state()).isEqualTo("RECONNECT_REQUIRED");
+        verify(oauth,times(1)).refresh(anyString(),anyString());
+        loadVerifiedExpired();
+        doAnswer(call->{
+            service.disconnect("owner","conn",1);throw new OpenAiResponsesClient.Failure("AI_UNAVAILABLE");
+        }).when(oauth).validate(any(),anyString(),isNull(),anyString());
+        assertThatThrownBy(()->service.models("owner","conn")).hasMessage("AI_RECONNECT_REQUIRED");
+        assertThat(service.connection("owner").state()).isEqualTo("DISCONNECTED");
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(booleans={true,false})
+    void tokenExpiryStaysAtReceiptTimeAcrossValidationAndPersistenceRetry(boolean refreshing) throws Exception {
+        if(refreshing)loadVerifiedExpired();
+        var receipt=Instant.parse("2026-10-10T00:00:00Z");
+        var clock=mock(java.time.Clock.class);var now=new java.util.concurrent.atomic.AtomicReference<>(receipt);
+        when(clock.instant()).thenAnswer(call->now.get());
+        service.close();service=new ChatGptConnectionService(config,access,vault,oauth,client,json,clock);
+        Map<String,String> params=refreshing?null:authorize();
+        when(oauth.refresh(anyString(),anyString())).thenReturn(tokens());
+        when(oauth.validate(any(),anyString(),any(),any())).thenAnswer(call->{
+            now.set(receipt.plusSeconds(120));return json.createObjectNode().put("sub","subject");
+        });
+        var expiries=new java.util.concurrent.CopyOnWriteArrayList<Long>();
+        doAnswer(call->{
+            JsonNode next=call.getArgument(0);
+            if(next.hasNonNull("accessToken")) {
+                expiries.add(next.path("expiresAt").asLong());
+                if(expiries.size()==1){now.set(receipt.plusSeconds(7200));throw new OpenAiResponsesClient.Failure("AI_CREDENTIAL_STORE_FAILED");}
+            }
+            return null;
+        }).when(vault).write(any());
+        assertThatThrownBy(()->{
+            if(refreshing)service.models("owner","conn");else service.completeCallback(params.get("attemptId"),params);
+        }).hasMessage("AI_CREDENTIAL_STORE_FAILED");
+        awaitSettled();
+        assertThat(expiries).containsExactly(receipt.plusSeconds(3600).getEpochSecond(),receipt.plusSeconds(3600).getEpochSecond());
+        if(refreshing)verify(oauth,times(1)).refresh(anyString(),anyString());
+        else verify(oauth,times(1)).exchange(anyString(),anyString(),anyString(),anyString());
+    }
     @Test void explicitPlanPermissionUsesSavedClientAndConsentButNormalReconnectDoesNot() {
         var p=authorize();var identityOnly=(com.fasterxml.jackson.databind.node.ObjectNode)tokens();identityOnly.put("scope","openid profile email offline_access");
         when(oauth.exchange(anyString(),anyString(),anyString(),anyString())).thenReturn(identityOnly);service.completeCallback(p.get("attemptId"),p);

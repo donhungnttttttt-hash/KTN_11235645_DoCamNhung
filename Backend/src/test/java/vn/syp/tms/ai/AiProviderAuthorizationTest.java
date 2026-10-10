@@ -41,4 +41,24 @@ class AiProviderAuthorizationTest {
         var access=new LocalAiAccess(config,identity,repository);access.verifySession(captured,principal);repository.deleteById(persisted.getId());
         assertThatThrownBy(()->access.verifySession(captured,principal)).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);
     }
+    @Test void generationCapturesImmutableSessionIdentityAndRejectsRotationOrDifferentPrincipal() {
+        var config=new LocalAiConfiguration(false,"","","","","",false,"http://127.0.0.1:11434");
+        var identity=mock(IdentityService.class);var user=mock(IdentityUser.class);
+        when(identity.current("owner")).thenReturn(user);when(user.getVersion()).thenReturn(1L);
+        var repository=new org.springframework.session.MapSessionRepository(new java.util.concurrent.ConcurrentHashMap<>());
+        var persisted=repository.createSession();var principal=new SessionPrincipal("owner",1);
+        var context=SecurityContextHolder.createEmptyContext();context.setAuthentication(new UsernamePasswordAuthenticationToken(principal,null,java.util.List.of()));
+        SecurityContextHolder.setContext(context);persisted.setAttribute("SPRING_SECURITY_CONTEXT",context);repository.save(persisted);
+        var wrapper=new org.springframework.mock.web.MockHttpSession(null,persisted.getId());
+        var request=new MockHttpServletRequest();request.setSession(wrapper);RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+        var access=new LocalAiAccess(config,identity,repository);
+        var captured=access.captureSession("owner");access.verifySession(captured);
+        String old=persisted.getId();repository.deleteById(old);persisted.changeSessionId();repository.save(persisted);wrapper.changeSessionId();
+        assertThat(captured.id()).isEqualTo(old);
+        assertThatThrownBy(()->access.verifySession(captured)).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);
+        assertThatThrownBy(()->access.captureSession("owner")).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);
+        var replacement=SecurityContextHolder.createEmptyContext();replacement.setAuthentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal("other",1),null,java.util.List.of()));
+        persisted.setAttribute("SPRING_SECURITY_CONTEXT",replacement);repository.save(persisted);
+        assertThatThrownBy(()->access.verifySession(new LocalAiAccess.SessionIdentity(persisted.getId(),principal))).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);
+    }
 }

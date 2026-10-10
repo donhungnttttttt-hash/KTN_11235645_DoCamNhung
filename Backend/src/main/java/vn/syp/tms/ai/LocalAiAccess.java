@@ -9,6 +9,7 @@ import vn.syp.tms.shared.web.BusinessException;
 
 @Component
 public class LocalAiAccess {
+    public record SessionIdentity(String id, SessionPrincipal principal) {}
     private final LocalAiConfiguration config;
     private final IdentityService identity;
     private final org.springframework.session.SessionRepository<? extends org.springframework.session.Session> sessions;
@@ -25,6 +26,17 @@ public class LocalAiAccess {
         var user=identity.current(principal.id());
         if(user.getVersion()!=principal.version())throw denied();
     }
+    public SessionIdentity captureSession(String actor) {
+        var principal=current(actor);
+        if(!(RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attributes))throw denied();
+        var session=attributes.getRequest().getSession(false);
+        if(session==null)throw denied();
+        try {
+            // Freeze the original ID: an HttpSession wrapper can change ID or outlive logout.
+            var captured=new SessionIdentity(session.getId(),principal);
+            verifySession(captured);return captured;
+        } catch(IllegalStateException e){throw denied();}
+    }
     public HttpSession requireLocal(String actor) {
         current(actor);
         if(!config.chatgptEnabled||!config.owner.equals(actor))throw new BusinessException(403,"AI_LOCAL_ONLY","ChatGPT is available only to the configured local owner.");
@@ -34,10 +46,16 @@ public class LocalAiAccess {
         var session=request.getSession(false);if(session==null)throw denied();return session;
     }
     public void verifySession(HttpSession session,SessionPrincipal expected) {
+        try {verifySession(new SessionIdentity(session.getId(),expected));}
+        catch(IllegalStateException e){throw denied();}
+    }
+    public void verifySession(SessionIdentity captured) {
         try {
             // Re-read the shared repository: a captured HttpSession wrapper can retain stale
             // attributes after another request logs out or rotates the session ID.
-            var stored=sessions==null?null:sessions.findById(session.getId());
+            if(captured==null)throw denied();
+            var expected=captured.principal();
+            var stored=sessions==null?null:sessions.findById(captured.id());
             if(stored==null||stored.isExpired())throw denied();
             Object value=stored.getAttribute("SPRING_SECURITY_CONTEXT");
             if(!(value instanceof SecurityContext context)||context.getAuthentication()==null||!expected.equals(context.getAuthentication().getPrincipal()))throw denied();

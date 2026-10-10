@@ -62,11 +62,13 @@ class ChatGptOAuthClientTest {
         assertThat(oauth.validate(refreshed,"oaiapp_test",null,"subject").path("sub").asText()).isEqualTo("subject");
     }
     private String encode(byte[] value){return Base64.getUrlEncoder().withoutPadding().encodeToString(value);}
-    @Test void refreshAndDiscoveryShareOuterCatalogDeadlineAndTransientTimeoutRetainsVerification() throws Exception {
+    @Test void refreshAndDiscoveryShareOuterCatalogDeadlineAndValidationTimeoutRequiresReconnect() throws Exception {
+        var refreshCalls=new java.util.concurrent.atomic.AtomicInteger();
         String tokens=json.createObjectNode().put("access_token","replacement").put("refresh_token","rotated").put("id_token","fixture")
                 .put("token_type","Bearer").put("expires_in",3600).put("scope",ChatGptOAuthClient.SCOPES).toString();
         for(String path:List.of("/api/accounts/oauth/token","/.well-known/openid-configuration")) {
             server.createContext(path,exchange->{
+                if(path.endsWith("/token"))refreshCalls.incrementAndGet();
                 try {new java.util.concurrent.CountDownLatch(1).await(600,java.util.concurrent.TimeUnit.MILLISECONDS);}catch(InterruptedException e){Thread.currentThread().interrupt();}
                 byte[] bytes=(path.endsWith("token")?tokens:json.createObjectNode().put("issuer","https://auth.openai.com").put("jwks_uri",base+"/jwks").toString()).getBytes(StandardCharsets.UTF_8);
                 try {exchange.sendResponseHeaders(200,bytes.length);try(var out=exchange.getResponseBody()){out.write(bytes);}}catch(java.io.IOException ignored){}
@@ -93,7 +95,9 @@ class ChatGptOAuthClientTest {
                     Thread.sleep(5);
                 }
             }
-            assertThat(connection.state()).isEqualTo("VERIFIED");org.mockito.Mockito.verifyNoInteractions(client);
+            assertThat(connection.state()).isEqualTo("RECONNECT_REQUIRED");
+            assertThatThrownBy(()->service.models("owner","conn")).hasMessage("AI_RECONNECT_REQUIRED");
+            assertThat(refreshCalls.get()).isEqualTo(1);org.mockito.Mockito.verifyNoInteractions(client);
         }finally{service.close();}
     }
 }

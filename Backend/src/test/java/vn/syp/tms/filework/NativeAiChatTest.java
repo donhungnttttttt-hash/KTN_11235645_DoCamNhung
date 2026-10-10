@@ -64,6 +64,7 @@ class NativeAiChatTest {
     @Autowired ObjectMapper json;
     @Autowired MockMvc mvc;
     @Autowired AiChatStore store;
+    @Autowired org.springframework.session.SessionRepository<? extends org.springframework.session.Session> sessions;
     @MockitoBean OpenAiResponsesClient provider;
     NativeFqFixture f;
     @BeforeEach void fixture() throws Exception {
@@ -75,7 +76,47 @@ class NativeAiChatTest {
     }
     @AfterEach void clear(){SecurityContextHolder.clearContext();}
     @org.springframework.lang.NonNull RequestPostProcessor actor(String id) {
-        return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(id,0),null,List.of(new SimpleGrantedAuthority("ROLE_PM")))));
+        var context=SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(id,0),null,List.of(new SimpleGrantedAuthority("ROLE_PM"))));
+        String sessionId=NativeAiSessions.create(sessions,context);
+        return request->{
+            var captured=new org.springframework.mock.web.MockHttpSession(null,sessionId);
+            captured.setAttribute("SPRING_SECURITY_CONTEXT",context);request.setSession(captured);
+            request.setCookies(new jakarta.servlet.http.Cookie("TMS_SESSION",sessionId));
+            return authentication(context.getAuthentication()).postProcessRequest(request);
+        };
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({"CHAT,DELETE","CHAT,ROTATE","DRAFT,DELETE","DRAFT,ROTATE"})
+    void persistedSessionInvalidationDuringInferenceRejectsContentWithoutAccountVersionChange(String kind,String invalidation) throws Exception {
+        long thread=kind.equals("CHAT")?create(f.pm,null,null,null):0;
+        var entered=new java.util.concurrent.CountDownLatch(1);var release=new java.util.concurrent.CountDownLatch(1);
+        var captured=new java.util.concurrent.atomic.AtomicReference<String>();
+        when(provider.generate(anyString(),any(),anyString(),any())).thenAnswer(call->{
+            var request=((org.springframework.web.context.request.ServletRequestAttributes)org.springframework.web.context.request.RequestContextHolder.currentRequestAttributes()).getRequest();
+            captured.set(request.getSession(false).getId());entered.countDown();assertThat(release.await(12,java.util.concurrent.TimeUnit.SECONDS)).isTrue();
+            if(kind.equals("CHAT"))return output("Must not persist");
+            var answer=json.createObjectNode().put("title","Draft").put("summary","Must not persist");
+            answer.putArray("observations");answer.putArray("suggestedActions");answer.putArray("missingInformation");
+            return new OpenAiResponsesClient.Output(answer,"resp_test","gpt-4.1-mini",1,1);
+        });
+        try(var pool=java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var result=pool.submit(()->kind.equals("CHAT")?send(f.pm,thread,"Question","actual-session-chat").andReturn():
+                mvc.perform(post("/api/v1/projects/"+f.project+"/ai-drafts").with(actor(f.pm)).with(Objects.requireNonNull(csrf())).contentType("application/json")
+                    .content("{\"purpose\":\"PM_PROGRESS_REPORT\",\"requestKey\":\"actual-session-draft\"}")).andReturn());
+            try {
+                assertThat(entered.await(10,java.util.concurrent.TimeUnit.SECONDS)).isTrue();
+                var stored=sessions.findById(captured.get());assertThat(stored).isNotNull();
+                if(invalidation.equals("DELETE"))sessions.deleteById(captured.get());
+                else NativeAiSessions.rotate(sessions,captured.get());
+                assertThat(sessions.findById(captured.get())).isNull();
+                assertThat(jdbc.queryForObject("SELECT lock_version FROM identity_users WHERE id=?",Long.class,f.pm)).isZero();
+            } finally {release.countDown();}
+            assertThat(result.get(15,java.util.concurrent.TimeUnit.SECONDS).getResponse().getStatus()).isEqualTo(401);
+        }
+        String table=kind.equals("CHAT")?"ai_chat_turns":"ai_generated_drafts";
+        assertThat(jdbc.queryForObject("SELECT state FROM "+table+" WHERE created_by=?",String.class,f.pm)).isEqualTo("FAILED");
+        assertThat(jdbc.queryForObject("SELECT content_json FROM "+table+" WHERE created_by=?",String.class,f.pm)).isNull();
     }
     void directActor(String id) {SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(id,0),null,List.of()));}
     OpenAiResponsesClient.Output output(String text){return new OpenAiResponsesClient.Output(json.createObjectNode().put("text",text),"resp_test","gpt-4.1-mini",10,5);}

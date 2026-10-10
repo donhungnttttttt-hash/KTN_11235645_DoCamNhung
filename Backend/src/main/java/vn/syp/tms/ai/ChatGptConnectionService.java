@@ -35,6 +35,7 @@ public class ChatGptConnectionService {
     private final ChatGptOAuthClient oauth;
     private final ChatGptPlanClient client;
     private final ObjectMapper json;
+    private final Clock clock;
     private final ReentrantLock stateLock = new ReentrantLock();
     private final ReentrantLock refreshLock = new ReentrantLock();
     private final AtomicInteger pendingSettlements = new AtomicInteger();
@@ -57,14 +58,21 @@ public class ChatGptConnectionService {
         SessionPrincipal principal;
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
     public ChatGptConnectionService(LocalAiConfiguration config, LocalAiAccess access, ChatGptCredentialVault vault,
             ChatGptOAuthClient oauth, ChatGptPlanClient client, ObjectMapper json) {
+        this(config, access, vault, oauth, client, json, Clock.systemUTC());
+    }
+
+    ChatGptConnectionService(LocalAiConfiguration config, LocalAiAccess access, ChatGptCredentialVault vault,
+            ChatGptOAuthClient oauth, ChatGptPlanClient client, ObjectMapper json, Clock clock) {
         this.config = config;
         this.access = access;
         this.vault = vault;
         this.oauth = oauth;
         this.client = client;
         this.json = json;
+        this.clock = clock;
         JsonNode prior = config.chatgptEnabled ? vault.read() : null;
         saved = prior == null ? json.createObjectNode() : (ObjectNode) prior;
         boolean dirty = false;
@@ -256,6 +264,7 @@ public class ChatGptConnectionService {
                     return null;
                 });
                 JsonNode tokens = oauth.exchange(issued, code, attempt.verifier, attempt.redirect);
+                long expiresAt = clock.instant().getEpochSecond() + tokens.path("expires_in").asLong();
                 JsonNode claims = oauth.validate(tokens, issued, attempt.nonce, attempt.subject);
                 access.verifySession(attempt.session, attempt.principal);
                 handedOff = true;
@@ -268,7 +277,7 @@ public class ChatGptConnectionService {
                                 .put("clientId", issued).put("subject", claims.path("sub").asText());
                         String email = claims.path("email").asText("");
                         next.put("accountLabel", email.contains("@") ? email.substring(0, 1) + "***" + email.substring(email.indexOf('@')) : "ChatGPT account");
-                        updateTokens(next, tokens, false);
+                        updateTokens(next, tokens, false, expiresAt);
                         next.remove(List.of("verifiedModel", "verifiedAt", "failureCode", "reconnectRequired", "pendingRegistration"));
                         persist(next);
                         clearCatalog();
@@ -400,18 +409,25 @@ public class ChatGptConnectionService {
                 JsonNode tokens;
                 try {
                     tokens = oauth.refresh(snapshot.path("clientId").asText(), snapshot.path("refreshToken").asText());
-                    if (tokens.hasNonNull("id_token")) oauth.validate(tokens, snapshot.path("clientId").asText(), null, snapshot.path("subject").asText());
-                    // Validate the complete replacement before handing it to durable settlement.
-                    updateTokens(snapshot.deepCopy(), tokens, true);
                 } catch (OpenAiResponsesClient.Failure e) {
                     boolean terminal = "AI_OAUTH_INVALID_GRANT".equals(e.code()) || "AI_AUTH_FAILED".equals(e.code());
                     recordRefreshFailure(selection, e.code(), terminal);
                     throw failure(terminal ? "AI_RECONNECT_REQUIRED" : e.code());
                 }
+                // The successful response may have consumed a rotating refresh token already.
+                // Any subsequent validation failure must durably close admission to that token.
+                long expiresAt = clock.instant().getEpochSecond() + tokens.path("expires_in").asLong();
+                try {
+                    if (tokens.hasNonNull("id_token")) oauth.validate(tokens, snapshot.path("clientId").asText(), null, snapshot.path("subject").asText());
+                    updateTokens(snapshot.deepCopy(), tokens, true, expiresAt);
+                } catch (RuntimeException e) {
+                    recordRefreshFailure(selection, "AI_RECONNECT_REQUIRED", true);
+                    throw failure("AI_RECONNECT_REQUIRED");
+                }
                 return settle(() -> {
                         requireCurrent(selection); // Disconnect/reconnect may have happened during network I/O.
                         ObjectNode next = saved.deepCopy();
-                        updateTokens(next, tokens, true);
+                        updateTokens(next, tokens, true, expiresAt);
                         next.remove("failureCode");
                         persist(next);
                         requireConnected();
@@ -436,11 +452,11 @@ public class ChatGptConnectionService {
         });
     }
 
-    private void updateTokens(ObjectNode target, JsonNode tokens, boolean refreshing) {
+    private void updateTokens(ObjectNode target, JsonNode tokens, boolean refreshing, long expiresAt) {
         if (!"Bearer".equalsIgnoreCase(tokens.path("token_type").asText()) || !secret(tokens.path("access_token").asText())
                 || !tokens.path("expires_in").isIntegralNumber() || tokens.path("expires_in").asLong() < 1
                 || tokens.path("expires_in").asLong() > 604800 || (!refreshing && !secret(tokens.path("refresh_token").asText()))) throw failure("AI_AUTH_FAILED");
-        target.put("accessToken", tokens.path("access_token").asText()).put("expiresAt", Instant.now().getEpochSecond() + tokens.path("expires_in").asLong());
+        target.put("accessToken", tokens.path("access_token").asText()).put("expiresAt", expiresAt);
         if (tokens.hasNonNull("refresh_token")) {
             if (!secret(tokens.path("refresh_token").asText())) throw failure("AI_AUTH_FAILED");
             target.put("refreshToken", tokens.path("refresh_token").asText());

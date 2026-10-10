@@ -62,6 +62,21 @@ class AiDraftServiceTest {
         assertThat(routed.generate(1,"pm",selected).state()).isEqualTo("FAILED");
         verify(store).markFailed(1,"pm",9,"AI_CONNECTION_CHANGED");verify(store,never()).complete(anyLong(),anyString(),anyLong(),any());verifyNoInteractions(client);
     }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings={"OPENAI_API","CHATGPT","OLLAMA"})
+    void sessionInvalidatedBeforeProviderAdmissionSettlesReservedDraft(String provider) {
+        var gateway=mock(AiProviderGateway.class);var routed=new AiDraftService(store,client,json,gateway);
+        var selected=task.withSelection(new AiProviderGateway.ResolvedSelection(provider,"test",null,0));
+        var captured=new LocalAiAccess.SessionIdentity("original",new vn.syp.tms.identity.SessionPrincipal("pm",1));
+        when(gateway.captureSession("pm")).thenReturn(captured);
+        when(store.reserve(1,"pm",selected)).thenReturn(new AiDraftStore.Reservation(9,true));
+        doThrow(new vn.syp.tms.shared.web.BusinessException(401,"UNAUTHENTICATED","Expired")).when(gateway).verifySession(captured);
+        assertThatThrownBy(()->routed.generate(1,"pm",selected)).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);
+        verify(store).markFailed(1,"pm",9,"AI_CONTEXT_CHANGED");
+        verify(store,never()).complete(anyLong(),anyString(),anyLong(),any());
+        verify(gateway,never()).generate(anyString(),any(),anyString(),any(),anyString(),any());
+        verifyNoInteractions(client);
+    }
 
     private AiDraftStore.Draft draft(String state) {
         return new AiDraftStore.Draft(9, 1, "pm", "TESTER_SUGGESTION", "file:7", "v1", state,

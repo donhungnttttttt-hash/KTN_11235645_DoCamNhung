@@ -34,6 +34,7 @@ public class AiChatService {
         AiDraftService.Task snapshot=thread.projectId()==null?null:
                 contexts.prepare(thread.projectId(),actor,AiPurpose.parse(thread.purpose()),thread.targetId(),key);
         var prompt=prompt(thread.model(),text,snapshot,store.history(actor,threadId));
+        var session=gateway.captureSession(actor);
         AiProviderGateway.ResolvedSelection selection;
         try {selection=gateway.resolve(actor,new AiProviderGateway.Selection(thread.provider(),thread.model()));}
         catch(OpenAiResponsesClient.Failure failure) {
@@ -44,9 +45,13 @@ public class AiChatService {
         var reserved=store.reserve(actor,threadId,text,key,selection,prompt.sources(),prompt.truncated());
         if(!reserved.created())return store.turn(actor,threadId,reserved.id());
         try {
+            gateway.verifySession(session);
             var output=gateway.generate(actor,selection,INSTRUCTIONS,prompt.data(),"tms_chat",schema(json));
             validateOutput(output);
-            return gateway.withCurrent(actor,selection,()->store.complete(actor,reserved.id(),output));
+            return gateway.withCurrent(actor,selection,()->{
+                gateway.verifySession(session);
+                return store.complete(actor,reserved.id(),output);
+            });
         } catch(OpenAiResponsesClient.Failure failure) {
             store.markFailed(actor,reserved.id(),failure.code());
             return store.turn(actor,threadId,reserved.id());

@@ -46,6 +46,8 @@ public class AiProviderGateway {
         });
     }
     public void assertCurrent(String actor,ResolvedSelection selection){access.current(actor);if("CHATGPT".equals(selection.provider()))connections.assertCurrent(actor,selection);}
+    public LocalAiAccess.SessionIdentity captureSession(String actor){return access.captureSession(actor);}
+    public void verifySession(LocalAiAccess.SessionIdentity session){access.verifySession(session);}
     /** Holds the connection monitor across the short database transaction, closing reconnect/save race. */
     public <T> T withCurrent(String actor,ResolvedSelection selection,Supplier<T> save) {
         access.current(actor);return "CHATGPT".equals(selection.provider())?connections.withCurrent(actor,selection,save):save.get();

@@ -39,10 +39,12 @@ public class AiDraftService {
     // Reserve/save use their own short transactions; no database locks during the paid API request.
     @Transactional(propagation = Propagation.NEVER)
     public AiDraftStore.Draft generate(long projectId, String actor, Task task) {
+        var session=task.selection()==null?null:gateway.captureSession(actor);
         var reserved = store.reserve(projectId, actor, task);
         if (!reserved.created()) return store.get(projectId, actor, reserved.id());
         OpenAiResponsesClient.Output output;
         try {
+            if(task.selection()!=null)gateway.verifySession(session);
             output = task.selection()==null?client.generate(task.instructions(), task.data(), "tms_draft", task.schema()):
                     gateway.generate(actor,task.selection(),task.instructions(),task.data(),"tms_draft",task.schema());
             output = new OpenAiResponsesClient.Output(AiDraftContent.validateAndWrap(output.value(), task.sources(), json),
@@ -50,11 +52,17 @@ public class AiDraftService {
         } catch (OpenAiResponsesClient.Failure failure) {
             store.markFailed(projectId, actor, reserved.id(), failure.code());
             return store.get(projectId, actor, reserved.id());
+        } catch (BusinessException permissionOrSessionChanged) {
+            store.markFailed(projectId, actor, reserved.id(), "AI_CONTEXT_CHANGED");
+            throw permissionOrSessionChanged;
         }
         try {
             final var completed=output;
             return task.selection()==null?store.complete(projectId, actor, reserved.id(), output):
-                    gateway.withCurrent(actor,task.selection(),()->store.complete(projectId,actor,reserved.id(),completed));
+                    gateway.withCurrent(actor,task.selection(),()->{
+                        gateway.verifySession(session);
+                        return store.complete(projectId,actor,reserved.id(),completed);
+                    });
         } catch (OpenAiResponsesClient.Failure connectionChanged) {
             store.markFailed(projectId,actor,reserved.id(),connectionChanged.code());
             return store.get(projectId,actor,reserved.id());

@@ -3,10 +3,36 @@ import {render,screen,fireEvent,waitFor,act} from '@testing-library/react';
 import {it,expect,vi,beforeEach} from 'vitest';
 import {AiWorkspace} from './AiAssistantPage';
 import {AiEditBuffer} from './AiEditBuffer';
+import {AiProviderProvider} from './AiConnections';
 
 const purposes=[{code:'TESTER_WORK_REPORT',label:'Tổng hợp công việc của tôi',target:'NONE'},{code:'TESTER_BUG_DRAFT',label:'Hoàn thiện mô tả bug',target:'TICKET'}];
 const draft={id:4,projectId:1,purpose:'TESTER_WORK_REPORT',state:'READY',version:0,createdAt:'2026-10-10T00:00:00Z',expiresAt:'2026-10-17T00:00:00Z',content:{answer:{title:'Báo cáo của tôi',summary:'Đã thực hiện 3 lượt test.',observations:[{text:'Có một lỗi cần kiểm tra.',sourceRefs:['my-work']}],suggestedActions:[],missingInformation:['Chưa có bằng chứng video.']},sources:[{ref:'my-work',label:'Công việc của tôi',path:'/dashboard/actions',version:null}]}};
 let api;
+it('keeps persisted provider and actual model on mixed saved results across selection changes and reload',async()=>{
+ const ollama={...draft,provider:'OLLAMA',model:'qwen-actual',requestedModel:'qwen-alias'};
+ const legacy={...draft,id:5,model:'api-actual',content:{...draft.content,answer:{...draft.content.answer,title:'Legacy'}}};
+ api.list.mockResolvedValue([ollama,legacy]);api.get.mockImplementation(async(_project,id)=>id===4?ollama:legacy);
+ const providersApi={providers:vi.fn().mockResolvedValue({providers:[
+  {code:'OPENAI_API',enabled:true,available:true,models:[{id:'api-selected',label:'API'}]},
+  {code:'CHATGPT',enabled:true,available:false,models:[],connection:null}
+ ]})};
+ const view=render(<AiProviderProvider api={providersApi}><AiWorkspace projectId={1} api={api}/></AiProviderProvider>);
+ fireEvent.click(await screen.findByRole('button',{name:'Mở bản nháp Báo cáo của tôi'}));
+ await screen.findByRole('heading',{name:'Báo cáo của tôi'});
+ expect(screen.getAllByText('Ollama local · qwen-actual')).toHaveLength(2);
+ expect(screen.getByText('API của hệ thống · api-actual')).toBeInTheDocument();
+ fireEvent.change(screen.getByLabelText('Nguồn AI'),{target:{value:'CHATGPT'}});
+ expect(screen.getAllByText('Ollama local · qwen-actual')).toHaveLength(2);
+ fireEvent.click(screen.getByRole('button',{name:'Cập nhật danh sách'}));
+ await waitFor(()=>expect(api.list).toHaveBeenCalledTimes(2));
+ fireEvent.click(screen.getByRole('button',{name:'Mở bản nháp Legacy'}));
+ await screen.findByRole('heading',{name:'Legacy'});
+ expect(screen.getAllByText('API của hệ thống · api-actual')).toHaveLength(2);
+ fireEvent.click(screen.getByRole('button',{name:'Mở bản nháp Báo cáo của tôi'}));
+ await screen.findByRole('heading',{name:'Báo cáo của tôi'});
+ expect(screen.getAllByText('Ollama local · qwen-actual')).toHaveLength(2);
+ view.unmount();
+});
 beforeEach(()=>{api={metadata:vi.fn().mockResolvedValue({enabled:true,role:'TESTER',retentionDays:7,purposes}),list:vi.fn().mockResolvedValue([]),targets:vi.fn().mockResolvedValue({items:[],hasMore:false}),generate:vi.fn().mockResolvedValue(draft),get:vi.fn().mockResolvedValue(draft),edit:vi.fn().mockResolvedValue({...draft,editedText:'Đã đối chiếu',version:1})};});
 it('requires a project and does not call APIs without one',()=>{
  render(<AiWorkspace projectId={null} api={api}/>);expect(screen.getByText(/Chọn một dự án/)).toBeInTheDocument();expect(api.metadata).not.toHaveBeenCalled();

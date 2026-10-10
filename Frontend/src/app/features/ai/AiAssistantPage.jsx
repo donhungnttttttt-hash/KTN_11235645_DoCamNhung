@@ -20,6 +20,8 @@ const descriptions={
 };
 const roleNames={ADMIN:'Admin',PM:'PM',TESTER:'Tester',DEV:'Dev'};
 const stateNames={READY:'Đã lưu',GENERATING:'Đang xử lý',FAILED:'Chưa tạo được'};
+const providerNames={OPENAI_API:'API của hệ thống',CHATGPT:'ChatGPT cá nhân',OLLAMA:'Ollama local'};
+const provenance=draft=>`${providerNames[draft.provider||'OPENAI_API']||draft.provider} · ${draft.model||'Chưa có model trả về'}`;
 const date=value=>value?new Date(value).toLocaleString('vi-VN'):'';
 function draftText(draft) {
  if(draft.editedText!=null)return draft.editedText;
@@ -136,6 +138,7 @@ function Workspace({projectId,projectName,api,edits}) {
     {draft&&<section className="ai-card ai-output" aria-label="Bản nháp AI">
      <div className="ai-output-heading"><h2>{draft.content?.answer?.title||'Yêu cầu AI'}</h2><span className={`ai-state ai-state-${draft.state.toLowerCase()}`}>{stateNames[draft.state]}</span></div>
      <p className="ai-caption">Tạo {date(draft.createdAt)} · Hết hạn {date(draft.expiresAt)}</p>
+     <p className="ai-caption">{provenance(draft)}</p>
      {draft.state==='FAILED'&&<p role="alert" className="ai-error">{aiError(draft.failureCode,draft.provider)}{draft.provider==='CHATGPT'&&draft.failureCode==='AI_QUOTA_EXHAUSTED'&&<> <a href="https://chatgpt.com/#settings" target="_blank" rel="noopener noreferrer">ChatGPT Usage</a></>}</p>}
      {draft.state==='GENERATING'&&<><p role="status">Chưa có kết quả đã lưu. Vui lòng kiểm tra lại sau.</p><button className="ai-button" disabled={busy} onClick={()=>open(draft.id)}>Kiểm tra bản nháp</button></>}
      {draft.state==='READY'&&<>
@@ -152,7 +155,7 @@ function Workspace({projectId,projectName,api,edits}) {
     {notice&&<p role="status" className="ai-notice">{notice}</p>}
    </div><aside className="ai-card ai-history" aria-label="Lịch sử bản nháp"><h2><FileText size={18} aria-hidden="true"/>Bản nháp của bạn</h2><p>Các yêu cầu còn trong thời hạn lưu.</p>
     {!history.length&&<div className="ai-empty"><FileText size={28} aria-hidden="true"/><p>Chưa có bản nháp. Chọn tác vụ để bắt đầu.</p></div>}
-    <ul>{history.map(item=><li key={item.id}><button className="ai-history-item" disabled={busy} aria-label={`Mở bản nháp ${item.content?.answer?.title||'#'+item.id}`} aria-current={item.id===draft?.id?'true':undefined} onClick={()=>open(item.id)}><strong>{item.content?.answer?.title||metadata.purposes.find(p=>p.code===item.purpose)?.label||'Yêu cầu AI'}</strong><span>{date(item.createdAt)}</span><small>{edits.has(editKey(item.id))?'Có chỉnh sửa chưa lưu':stateNames[item.state]}</small></button></li>)}</ul>
+    <ul>{history.map(item=><li key={item.id}><button className="ai-history-item" disabled={busy} aria-label={`Mở bản nháp ${item.content?.answer?.title||'#'+item.id}`} aria-current={item.id===draft?.id?'true':undefined} onClick={()=>open(item.id)}><strong>{item.content?.answer?.title||metadata.purposes.find(p=>p.code===item.purpose)?.label||'Yêu cầu AI'}</strong><span>{date(item.createdAt)}</span><span>{provenance(item)}</span><small>{edits.has(editKey(item.id))?'Có chỉnh sửa chưa lưu':stateNames[item.state]}</small></button></li>)}</ul>
     {more&&<button className="ai-button" disabled={busy} onClick={()=>perform(async signal=>{const rows=await api.list(projectId,history.at(-1).id,{signal});if(!signal.aborted){setHistory(old=>[...old,...rows.filter(x=>!old.some(y=>y.id===x.id))]);setMore(rows.length===50);}})}>Xem bản cũ hơn</button>}
    </aside></div>
   </>}

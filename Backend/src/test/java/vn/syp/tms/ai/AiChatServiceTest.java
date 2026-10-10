@@ -42,6 +42,15 @@ class AiChatServiceTest {
         verify(store).markFailed("owner",2,"AI_INTERRUPTED");
         verify(store,never()).complete(anyString(),anyLong(),any());
     }
+    @Test void sessionInvalidatedBeforeAdmissionSettlesReservedTurnWithoutInference() {
+        var captured=new LocalAiAccess.SessionIdentity("original",new vn.syp.tms.identity.SessionPrincipal("owner",1));
+        when(gateway.captureSession("owner")).thenReturn(captured);
+        doThrow(new BusinessException(401,"UNAUTHENTICATED","Expired")).when(gateway).verifySession(captured);
+        assertThatThrownBy(()->service.send("owner",1,"Hello","same-key-001")).isInstanceOf(BusinessException.class);
+        verify(store).markFailed("owner",2,"AI_CONTEXT_CHANGED");
+        verify(store,never()).complete(anyString(),anyLong(),any());
+        verify(gateway,never()).generate(anyString(),any(),anyString(),any(),anyString(),any());
+    }
     @Test void changedConnectionIsFencedBeforeSave() {
         when(gateway.withCurrent(anyString(),any(),any())).thenThrow(new OpenAiResponsesClient.Failure("AI_RECONNECT_REQUIRED"));
         service.send("owner",1,"Hello","same-key-001");
