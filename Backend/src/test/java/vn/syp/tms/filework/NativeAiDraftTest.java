@@ -52,9 +52,11 @@ class NativeAiDraftTest {
                 assertThat(NativeFqFixture.bytes(c,"SELECT source_workbook FROM import_batches WHERE id=?",fixture.document)).isEqualTo(fixture.source);
                 assertThat(NativeFqFixture.scalar(c,"SELECT COUNT(*) FROM ai_generated_drafts")).isZero();
                 assertThat(flyway("23").migrate().migrationsExecuted).isZero();
+                assertThat(flyway("24").migrate().migrationsExecuted).isEqualTo(1);
+                assertThat(flyway("24").migrate().migrationsExecuted).isZero();
                 NativeFqDatabase.cleanOwned(c,NativeFileWorkQaMigrationTest.tables(c));
-                assertThat(flyway("23").migrate().migrationsExecuted).isEqualTo(23);
-                flyway("23").validate();
+                assertThat(flyway("24").migrate().migrationsExecuted).isEqualTo(24);
+                flyway("24").validate();
             } finally { NativeFqFixture.scalar(c,"SELECT RELEASE_LOCK(CONCAT('native-fq-',DATABASE()))"); }
         }
         r.add("spring.datasource.url",NativeFqDatabase::url);r.add("spring.datasource.username",NativeFqDatabase::user);r.add("spring.datasource.password",NativeFqDatabase::password);

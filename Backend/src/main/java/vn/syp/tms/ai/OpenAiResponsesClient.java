@@ -129,6 +129,9 @@ public class OpenAiResponsesClient {
     }
 
     private Output output(JsonNode root) {
+        return parseOutput(root,json);
+    }
+    static Output parseOutput(JsonNode root,ObjectMapper json) {
         if ("incomplete".equals(root.path("status").asText())) throw failure("AI_INCOMPLETE_RESPONSE");
         if (!"completed".equals(root.path("status").asText()) || !root.path("output").isArray())
             throw failure("AI_INVALID_RESPONSE");
@@ -150,7 +153,7 @@ public class OpenAiResponsesClient {
                 || !usage.path("output_tokens").isIntegralNumber() || !usage.path("output_tokens").canConvertToInt()
                 || usage.path("input_tokens").asInt() < 0 || usage.path("output_tokens").asInt() < 0)
             throw failure("AI_INVALID_RESPONSE");
-        return new Output(read(text.getBytes(java.nio.charset.StandardCharsets.UTF_8)), root.path("id").asText(),
+        return new Output(new ProviderHttp(json).read(text.getBytes(java.nio.charset.StandardCharsets.UTF_8)), root.path("id").asText(),
                 root.path("model").asText(), usage.path("input_tokens").asInt(), usage.path("output_tokens").asInt());
     }
 

@@ -50,6 +50,18 @@ class AiDraftServiceTest {
         assertThatThrownBy(() -> service.generate(1, "pm", task)).hasMessage("Forbidden");
         verifyNoInteractions(client);
     }
+    @Test void reconnectDuringInferenceNeverCommitsStaleOutput() {
+        var gateway=mock(AiProviderGateway.class);var routed=new AiDraftService(store,client,json,gateway);
+        var selection=new AiProviderGateway.ResolvedSelection("CHATGPT","test","connection",1);
+        var selected=task.withSelection(selection);var answer=json.createObjectNode().put("title","Draft").put("summary","Draft");
+        answer.putArray("observations");answer.putArray("suggestedActions");answer.putArray("missingInformation");
+        when(store.reserve(1,"pm",selected)).thenReturn(new AiDraftStore.Reservation(9,true));
+        when(gateway.generate(anyString(),any(),anyString(),any(),anyString(),any())).thenReturn(new OpenAiResponsesClient.Output(answer,"resp_test","test",1,1));
+        when(gateway.withCurrent(eq("pm"),eq(selection),any())).thenThrow(new OpenAiResponsesClient.Failure("AI_CONNECTION_CHANGED"));
+        when(store.get(1,"pm",9)).thenReturn(draft("FAILED"));
+        assertThat(routed.generate(1,"pm",selected).state()).isEqualTo("FAILED");
+        verify(store).markFailed(1,"pm",9,"AI_CONNECTION_CHANGED");verify(store,never()).complete(anyLong(),anyString(),anyLong(),any());verifyNoInteractions(client);
+    }
 
     private AiDraftStore.Draft draft(String state) {
         return new AiDraftStore.Draft(9, 1, "pm", "TESTER_SUGGESTION", "file:7", "v1", state,

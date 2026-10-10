@@ -18,7 +18,8 @@ public class AiDraftController {
         this.drafts=drafts;this.contexts=contexts;this.assistance=assistance;
     }
     public record Generate(@NotBlank @Size(max=64) String purpose,Long targetId,
-                           @NotBlank @Pattern(regexp="[A-Za-z0-9_-]{8,64}") String requestKey) {}
+                           @NotBlank @Pattern(regexp="[A-Za-z0-9_-]{8,64}") String requestKey,
+                           @Size(max=20) String provider,@Size(max=100) String model) {}
     public record Edit(@NotNull @Size(max=12000) String text,@NotNull @PositiveOrZero Long expectedVersion) {}
 
     @GetMapping("/metadata")
@@ -31,7 +32,7 @@ public class AiDraftController {
     }
     @PostMapping
     public AiDraftStore.Draft generate(Authentication auth,@PathVariable long projectId,@Valid @RequestBody Generate body) {
-        return assistance.generate(projectId,((SessionPrincipal)auth.getPrincipal()).id(),body.purpose(),body.targetId(),body.requestKey());
+        return assistance.generate(projectId,((SessionPrincipal)auth.getPrincipal()).id(),body.purpose(),body.targetId(),body.requestKey(),new AiProviderGateway.Selection(body.provider(),body.model()));
     }
     @PutMapping("/{draftId}/text")
     public AiDraftStore.Draft edit(Authentication auth,@PathVariable long projectId,@PathVariable long draftId,@Valid @RequestBody Edit body) {

@@ -23,6 +23,8 @@ public class AiContextService {
     private final OpenAiConfiguration config;
     private final AiDraftStore drafts;
     private final ProjectDeadlines deadlines;
+    @org.springframework.beans.factory.annotation.Autowired(required=false)
+    private AiProviderGateway providers;
 
     public AiContextService(WorkItemStore db,AiAccess access,ObjectMapper json,OpenAiConfiguration config,
                             AiDraftStore drafts,ProjectDeadlines deadlines) {
@@ -30,7 +32,7 @@ public class AiContextService {
     }
     public Metadata metadata(long p,String actor) {
         var caller=access.authorize(p,actor,false);
-        return new Metadata(caller.role(),config.enabled()&&config.configured(),caller.archived(),drafts.retentionDays(),
+        return new Metadata(caller.role(),providers==null?config.enabled()&&config.configured():providers.enabled(actor),caller.archived(),drafts.retentionDays(),
                 AiPurpose.forRole(caller.role()).stream().map(x->new PurposeView(x.name(),x.label(),x.target())).toList());
     }
     public Targets targets(long p,String actor,AiPurpose purpose,String query) {

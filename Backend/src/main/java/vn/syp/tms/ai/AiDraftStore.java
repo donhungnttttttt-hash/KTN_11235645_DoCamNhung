@@ -16,7 +16,12 @@ public class AiDraftStore {
     public record Reservation(long id, boolean created) {}
     public record Draft(long id, long projectId, String createdBy, String purpose, String sourceReference,
                         String promptVersion, String state, String model, JsonNode content, String failureCode,
-                        Instant createdAt, Instant expiresAt, String editedText, long version) {}
+                        Instant createdAt, Instant expiresAt, String editedText, long version,
+                        String provider,String connectionId,long connectionVersion,String requestedModel) {
+        public Draft(long id,long projectId,String createdBy,String purpose,String sourceReference,String promptVersion,String state,String model,JsonNode content,String failureCode,Instant createdAt,Instant expiresAt,String editedText,long version) {
+            this(id,projectId,createdBy,purpose,sourceReference,promptVersion,state,model,content,failureCode,createdAt,expiresAt,editedText,version,"OPENAI_API",null,0,model);
+        }
+    }
     private final WorkItemStore db;
     private final AiAccess access;
     private final ObjectMapper json;
@@ -26,7 +31,8 @@ public class AiDraftStore {
     private static final String SELECT = """
         SELECT id,project_id AS projectId,created_by AS createdBy,purpose,source_reference AS sourceReference,
         prompt_version AS promptVersion,state,model,content_json AS content,failure_code AS failureCode,
-        created_at AS createdAt,expires_at AS expiresAt,edited_text AS editedText,lock_version AS version FROM ai_generated_drafts
+        created_at AS createdAt,expires_at AS expiresAt,edited_text AS editedText,lock_version AS version,
+        provider,connection_id AS connectionId,connection_version AS connectionVersion,requested_model AS requestedModel FROM ai_generated_drafts
         """;
 
     public AiDraftStore(WorkItemStore db, AiAccess access, ObjectMapper json, OpenAiConfiguration config,
@@ -46,7 +52,9 @@ public class AiDraftStore {
         var caller = access.authorize(projectId, actor, true);
         validate(task);
         access.requireSource(projectId,caller,AiPurpose.parse(task.purpose()),task.sourceReference());
-        String hash = db.checksum(List.of(task.purpose(),task.sourceReference()));
+        var selection=task.selection();
+        String hash = selection==null?db.checksum(List.of(task.purpose(),task.sourceReference())):
+                db.checksum(Arrays.asList(task.purpose(),task.sourceReference(),selection.provider(),selection.model(),selection.connectionId(),selection.connectionVersion()));
         var prior = db.rows("""
             SELECT id,request_hash AS requestHash,expires_at>UTC_TIMESTAMP(6) AS unexpired
             FROM ai_generated_drafts WHERE project_id=? AND created_by=? AND request_key=? FOR UPDATE
@@ -63,9 +71,10 @@ public class AiDraftStore {
             fail(429, "AI_DAILY_LIMIT", "Dự án đã đạt giới hạn yêu cầu AI hôm nay.");
         long id = db.insert("""
             INSERT INTO ai_generated_drafts(project_id,created_by,purpose,source_reference,prompt_version,
-            request_key,request_hash,model,created_at,expires_at)
-            VALUES(?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6),TIMESTAMPADD(DAY,?,UTC_TIMESTAMP(6)))
-            """, projectId, actor, task.purpose(), task.sourceReference(), task.promptVersion(), task.requestKey(), hash, config.model(), retentionDays);
+            request_key,request_hash,model,provider,connection_id,connection_version,requested_model,created_at,expires_at)
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6),TIMESTAMPADD(DAY,?,UTC_TIMESTAMP(6)))
+            """, projectId, actor, task.purpose(), task.sourceReference(), task.promptVersion(), task.requestKey(), hash,
+                selection==null?config.model():selection.model(),selection==null?"OPENAI_API":selection.provider(),selection==null?null:selection.connectionId(),selection==null?0:selection.connectionVersion(),selection==null?config.model():selection.model(),retentionDays);
         return new Reservation(id, true);
     }
 
@@ -75,7 +84,7 @@ public class AiDraftStore {
         access.requireSource(projectId,caller,AiPurpose.parse((String)prior.get("purpose")),(String)prior.get("sourceReference"));
         if (output == null || output.value() == null || !output.value().isObject()
                 || output.responseId() == null || !output.responseId().matches("[A-Za-z0-9_-]{1,100}")
-                || output.model() == null || !output.model().matches("[A-Za-z0-9._-]{1,100}")
+                || output.model() == null || !output.model().matches("[A-Za-z0-9][A-Za-z0-9._:/-]{0,99}")
                 || output.inputTokens() < 0 || output.outputTokens() < 0) throw new vn.syp.tms.shared.web.BusinessException(422, "AI_INVALID_RESPONSE", "Kết quả AI không hợp lệ.");
         String content = db.encode(output.value());
         if (content.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 65536)
@@ -117,6 +126,16 @@ public class AiDraftStore {
         if(!prior.purpose().equals(purpose.name())||!prior.sourceReference().equals(source))
             fail(409,"AI_REQUEST_CONFLICT","Mã yêu cầu đã được dùng cho nội dung khác.");
         if(!prior.expiresAt().isAfter(Instant.now()))fail(410,"AI_DRAFT_EXPIRED","Bản nháp AI đã hết hạn.");
+        return prior;
+    }
+    public Draft findRequest(long projectId,String actor,AiPurpose purpose,String source,String key,AiProviderGateway.Selection selection) {
+        return findRequest(projectId,actor,purpose,source,key,selection,false);
+    }
+    public Draft findRequest(long projectId,String actor,AiPurpose purpose,String source,String key,AiProviderGateway.Selection selection,boolean defaultModel) {
+        var prior=findRequest(projectId,actor,purpose,source,key);
+        boolean legacyDefault=prior!=null&&prior.requestedModel()==null&&defaultModel&&"OPENAI_API".equals(selection.provider());
+        if(prior!=null&&(!selection.provider().equals(prior.provider())||!legacyDefault&&!selection.model().equals(prior.requestedModel()==null?prior.model():prior.requestedModel())))
+            fail(409,"AI_REQUEST_CONFLICT","Request key has already been used with another provider or model.");
         return prior;
     }
 
@@ -178,7 +197,8 @@ public class AiDraftStore {
         return new Draft(number(row, "id"), number(row, "projectId"), (String) row.get("createdBy"),
                 (String) row.get("purpose"), (String) row.get("sourceReference"), (String) row.get("promptVersion"),
                 (String) row.get("state"), (String) row.get("model"), content, (String) row.get("failureCode"),
-                (Instant) row.get("createdAt"), (Instant) row.get("expiresAt"),(String)row.get("editedText"),number(row,"version"));
+                (Instant) row.get("createdAt"), (Instant) row.get("expiresAt"),(String)row.get("editedText"),number(row,"version"),
+                (String)row.getOrDefault("provider","OPENAI_API"),(String)row.get("connectionId"),row.get("connectionVersion")==null?0:number(row,"connectionVersion"),(String)row.getOrDefault("requestedModel",row.get("model")));
     }
 
     private static void validate(AiDraftService.Task task) {
