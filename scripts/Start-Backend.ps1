@@ -8,6 +8,10 @@ $taskRoot = Split-Path -Parent $PSScriptRoot
 $envFile = Join-Path $taskRoot '.env.mysql.local'
 if($LegacyDocker){$envFile=Join-Path $taskRoot '.env'}
 if (!(Test-Path -LiteralPath $envFile)) { throw 'Native configuration missing. Run scripts/Initialize-NativeMySql.ps1; use -LegacyDocker only for the previous container database.' }
+. (Join-Path $PSScriptRoot 'local-ai/LocalAi.ps1')
+# Includes existing API settings in the selected file; never prints or persists secrets.
+Import-TmsLocalAiEnvironment -ConfigFile $envFile
+if ($env:TMS_CHATGPT_LOCAL_ENABLED -eq 'true') { Assert-TmsAiLoopbackSettings }
 $env:TMS_MYSQL_HOST='127.0.0.1';$env:TMS_DB_NAME='tms'
 $env:TMS_DB_USER='tms_app';$env:TMS_MIGRATION_USER='tms_migrator'
 $env:TMS_REDMINE_ENABLED='false'

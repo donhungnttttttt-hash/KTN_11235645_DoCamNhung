@@ -11,7 +11,7 @@ TMS_OLLAMA_ENABLED=false
 TMS_OLLAMA_URL=http://127.0.0.1:11434
 TMS_CHATGPT_LOCAL_ENABLED=false
 # Required when ChatGPT is enabled: bind the application directly to loopback.
-SERVER_ADDRESS=127.0.0.1
+TMS_BIND_ADDRESS=127.0.0.1
 # Exact identity_users.id, NOT username. One TMS owner per local installation.
 TMS_CHATGPT_OWNER_ID=
 # Persist this installation UUID across runs, e.g. urn:uuid:<random UUID>.
@@ -23,6 +23,8 @@ TMS_CHATGPT_VAULT_KEY=
 ```
 
 The vault enforces owner-only Windows ACL/POSIX permissions, AES-256-GCM authenticated encryption, atomic replacement and a process lock. Keep the encryption key outside the vault/DB backups. Startup fails closed on invalid vault configuration. It contains credentials, verified registration metadata and durable probe history; MySQL contains only draft provenance. Only the configured TMS ID, using a direct `127.0.0.1` request without forwarding headers, can connect/probe/use ChatGPT. A second TMS user cannot share the registration, including an Admin. Disconnect keeps the issued client/subject mapping for reauthorization and removes tokens. `newAccount:true` explicitly starts a new registration.
+
+Windows setup is reproducible through [Configure-LocalAi / backend startup](../operations/local-ai.md). It resolves an exact enabled username to its immutable TMS ID with a read-only native lookup, preserves existing owner/host/vault/key and refuses conflicting values. It persists only app-specific `TMS_BIND_ADDRESS`, never generic `SERVER_ADDRESS`; existing conflicting Spring bindings fail closed. `Start-Backend.ps1` loads an explicit AI allowlist with **Process > Windows User > selected local config file** precedence. This includes the preexisting server API key/settings without printing them or copying API credentials into the User registry. OAuth and inference are always separate explicit actions.
 
 Install Ollama natively and install a model through its official tools before enabling. TMS does not download models or create a server. Only literal `http://127.0.0.1:<port>` is accepted; credentials, arbitrary paths, queries, redirects, DNS hosts and browser-provided URLs are rejected.
 

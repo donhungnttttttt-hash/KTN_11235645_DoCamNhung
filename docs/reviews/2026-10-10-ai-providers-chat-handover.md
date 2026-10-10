@@ -1,0 +1,55 @@
+# Bàn giao nguồn AI và hội thoại riêng — 10/10/2026
+
+Code nguồn/API/chat/UI đã triển khai trên `system-design`. Task4 bổ sung helper thiết lập local và nạp cấu hình AI khi backend khởi động, giữ cấu hình API đang có. Tài liệu này phân biệt kiểm thử tổng hợp, kiểm tra browser của controller và nghiệm thu model thật. Whole-change review cuối, cấu hình User thật, restart8080, commit/push cuối do controller thực hiện; chưa gọi là liveAI PASS.
+
+## Phạm vi và các sửa lỗi đã kiểm chứng
+
+Provider gateway giữ API mặc định; ChatGPT dùng chủ sở hữu local duy nhất, vault AES-GCM ngoài repo, official OAuth/PKCE và kiểm chứng đúng model/version. Ollama chỉ nhận địa chỉ loopback đã cấu hình, không nhận URL browser. Credentials không vào MySQL/browser/API/log. Không tự retry billable hoặc chuyển provider. Private chat pin owner/provider/model/scope và TTL bảy ngày; recheck session/project/ticket/source trên đọc/reserve/final save, inference ngoài transaction, READY chỉ sau output hợp lệ và connection fence.
+
+Các review trước đã sửa stale reconnect completion, partial SSE rồi failed, refresh/settlement contention, scope/history sau cycle closure và frontend delayed read/owner/project races. Settlement chỉ retry local persistence; output đang chờ commit vẫn trong memory, abrupt process termination có thể cần reconnect. Giới hạn này đã ghi ở [provider contract](../api/ai-providers.md).
+
+Task4 helper [Configure-LocalAi.ps1](../../scripts/Configure-LocalAi.ps1) resolve owner chỉ đọc native DB; không đổi credential đã có, không paid probe/download/start server. Dùng `TMS_BIND_ADDRESS`, không persist generic Spring bind. [Start-Backend.ps1](../../scripts/Start-Backend.ps1) nạp whitelist AI theo **Process > User > selected local file**, giữ API key/enablement/model từ file hiện có và không chép API key vào User. Hướng dẫn vận hành ở [local-ai.md](../operations/local-ai.md).
+
+## Automated evidence được kế thừa, không chạy lại suite đã PASS
+
+| Phần | Bằng chứng đã chạy | Coverage thực đo và giới hạn |
+| --- | --- | --- |
+| Provider fix round2 `a4332b5` | Targeted Maven verify96 tests,0failure/error/skip; compile/package PASS. Root native provider18/18 trên schema riêng...0009, freshV24 và V22→V23→V24 upgrade. | AI package852/1215 lines70.1%,612/1206 branches50.7%; dưới80%, không phải whole-system. [review](2026-10-10-ai-providers-task-1-fixes-round-2.md) |
+| Chat initial `2515d62` | Native chat17/17 trên...0008; native draft18/18 trên...0010; AI unit/provider109 rồi focused27 gồm14 case mới,123 unique cases. FreshV25/upgradeV24→V25 và legacy provenance PASS. | Bốn `AiChat*.java`: lines171/186=91.94%, branches118/142=83.10%, instructions94.32%, methods98.04%. [contract/evidence](../api/ai-chat.md) |
+| Closed-cycle fix `0475b6f` | Behavioral native RED saved history404, GREEN18/18 trên owned...0008; completion-after-close denied, list/detail/same-key đọc được theo quyền. | Changed Store native-only: lines88/95=92.63%, branches44/56=78.57%; không thay coverage kết hợp bốn file ban đầu. |
+| Frontend `d391b1c` | Initial scope39tests; full64files/713tests and production build PASS. | Historical whole tree statements85.10%, branches82.36%, functions79.45%, lines84.42%; functions dưới80%. |
+| Frontend delayed read fix `7c4ec0` | Seven behavioral RED race cases; final scope5files/46tests and build PASS. Earlier full713 suite không chạy lại trong fix. | Current scoped statements83.45%, branches82.68%, functions82.60%, lines90.93%; changed AiChat90.43/85.20/87.80/92.79. Không tuyên bố coverage hiện tại toàn frontend. |
+
+Backend test schemas là native loopback3307 có tên `tms_docstest_202610100008`, ...0009, ...0010, tách biệt schema đang sử dụng. Những schema test đã chứa dữ liệu test; không tự reset/reuse. MySQL9.7 vượt phiên bản8.1 Flyway hiện công bố đã test; các migration thực tế trên máy PASS không thay tuyên bố compatibility chính thức. Mockito future-JDK warning và Vite >500kB chunk advisory còn được ghi nhận; lint/typecheck frontend riêng NOT_CONFIGURED.
+
+## Controller HTTP/browser fixture acceptance
+
+Controller chạy fixture đã migrateV25 trên `tms_docstest_202610100011`: backend8081, Vite5174 proxy cùng origin và fake Ollama11435. Browser fixture dùng `localhost` để tách host cookie khỏi runtime chính `127.0.0.1`. Kết quả là output tổng hợp, không phải Ollama native hoặc live AI.
+
+- HTTP với bốn role đăng nhập thật của fixture: provider metadata, private persisted chat, replay/intent conflict, CSRF, provider failure và legacy analysis chọn OLLAMA PASS.
+- Browser: selector nguồn phía trên Tác vụ; chat chung và chat dự án lưu/reload history; sources/nhãn tác vụ, copy, minimize/Escape focus, unsent text/navigation PASS. Post-fix delayed send/minimize/reopen giữ READY mới PASS.
+- Actual measured CSS374×812,374×500 short viewport,1024×768 và1366×800 phù hợp, composer16px trên mobile; screenshots được controller xem. Giới hạn1366/CDPtimeout ban đầu trong report frontend đã được thay bằng kiểm tra thành công này và viewport đã reset.
+- Controller xác nhận kết thúc: **10 synthetic provider calls**, **7 READY + 2 FAILED chat turns**, maximum serialized provider request **2961 bytes**. Đây là mẫu acceptance có phạm vi, không chứng minh mọi request/performance hoặc model quality.
+- Controller đã stop các owned fixture listeners8081/5174/11435 và đóng fixture tab. Không khởi tạo/reset fixture lần nữa. Runtime chính8080/5173 còn nguyên tại thời điểm kiểm tra này.
+
+## Task4 helper RED→GREEN và self review
+
+Test feature đầu tiên thất bại vì helper/module chưa tồn tại; đây là missing-module RED, không phải behavior assertion. Regression chạy actual configuration prefix của Start-Backend tại base `7c4ec082f0b7b29fc370f7e73836843096d8b059` trong directory tổng hợp tái hiện **native file API credentials bị bỏ qua**: 1behavior test FAIL. Cùng test với source mới PASS; không launch Maven/backend/DB/provider hoặc ghi registry. Regression native-file app binding cũng FAIL trước sửa vì helper che `0.0.0.0` bằng User setting; sau sửa từ chối trước mutation.
+
+```text
+rtk proxy node scripts/local-ai/start-loader.test.cjs --legacy 7c4ec082f0b7b29fc370f7e73836843096d8b059  # expected behavioral FAIL
+rtk proxy powershell -NoProfile -File scripts/Configure-LocalAi.test.ps1                       # 27 PASS
+rtk proxy node --test scripts/local-ai/start-loader.test.cjs scripts/local-ai/resolve-owner.test.cjs  # 4 PASS
+```
+
+27 PowerShell cases mock User/Process/Machine writes/owner lookup; actual path/ACL checks chỉ dùng disposable synthetic temp directory, ciphertext tổng hợp được giữ nguyên. Chúng kiểm tra precedence, no-secret output, native-file/API preservation, immutable owner/host/path/key, PlanOnly, invalid/incomplete existing settings, rollback, conflicting generic/app/JSON bind, case-insensitive repo boundary, absolute local path, owner-only creation và refusal của permissive existing vault. Node4cases kiểm tra actual startup prefix và SELECT-only hex-encoded exact username, missing/disabled/ambiguous/malformed results, invalid input. Coverage helper **NOT_MEASURED**, không suy80% từ31case PASS. Một test ACL setup dùng Set-Acl phát sinh SeSecurityPrivilege trên directory đã có; test đã chuyển sang .NET Directory.SetAccessControl, final26 rồi27case PASS, không né assertion.
+
+Skills: `tdd-workflow` cho RED/GREEN; `security-review` cho env/vault/SQL/bind/secret review; `verification-loop` cho check và báo giới hạn. Đây là self review của worker trong phạm vi helper/tài liệu; không thay whole-change review cuối của controller. Không thay migration, backend provider/business behavior hoặc frontend trong Task4.
+
+Recovery trước commit giữ nguyên implementation và xác nhận lại 27 PowerShell + 4 Node PASS; actual startup prefix tại base vẫn có một behavioral FAIL như dự kiến. `rtk proxy node scripts/Check-Contracts.cjs` PASS (structural contracts/routes/DTO constraints và 52 tài liệu local links; không phải full OpenAPI/HTTP), `rtk git diff --check` PASS. Không chạy lại các suite backend/frontend đã có bằng chứng ở trên. Coverage helper vẫn NOT_MEASURED.
+
+## Gate vận hành còn lại
+
+Controller phải review diff/helper rồi chạy `-PlanOnly` và cấu hình owner `admin.local`, bảo toàn key/config/API settings; kiểm tra bản ghi gốc trước/sau migrate bằng script preservation chỉ in counts, xác minh PID/classpath rồi restart đúng backend8080. Kiểm tra metadata và action **Kết nối ChatGPT** bằng owner riêng tại runtime chính. Worker chưa thực hiện các bước này và chưa gọi chúng PASS.
+
+User phải hoàn tất official authorization/consent, chọn catalog model và chủ động probe trước khi dùng ChatGPT; entitlement/plan allowance/live inference/schema/quality còn riêng. Ollama chưa cài binary/server/model; không tự download. API insufficient_quota ngày09/10 là lịch sử, không được tự gọi lại hay suy balance hiện tại. Whole-change independent review, planning state, final commit/push do controller làm; không merge. Các gate UAT/pilot/đích triển khai thật của S11 không được đóng bởi test fixture này.

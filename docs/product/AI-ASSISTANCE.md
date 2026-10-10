@@ -17,7 +17,7 @@ Gợi ý nhân sự không phải xếp hạng năng lực. Dữ liệu hiện c
 
 1. Đăng nhập, chọn dự án, vào **Trợ lý AI**. Admin mở **Dự án cần hỗ trợ** và gõ tên hoặc mã ngay trong dropdown để tìm, rồi chọn kết quả; không cần nút tìm riêng. Gõ từ khóa hoặc đóng dropdown chưa làm thay đổi dự án đang chọn. Backend trả các tác vụ của vai trò hiện tại.
 2. Chọn tác vụ; chọn file/ticket nếu cần. Tìm theo từ khóa nếu danh sách dài.
-3. Chọn **Phân tích**. Backend dựng snapshot tối thiểu, giữ mã yêu cầu rồi gọi OpenAI ngoài transaction database; kết quả được lưu thành bản nháp để đối chiếu.
+3. Chọn nguồn/model ở phía trên **Tác vụ AI**, rồi chọn **Phân tích**. Backend dựng snapshot tối thiểu, giữ mã yêu cầu và gọi nguồn đã chọn ngoài transaction database; kết quả được lưu thành bản nháp để đối chiếu.
 4. Chỉ hiển thị thành công sau khi lưu kết quả hợp lệ. Lỗi provider được lưu bằng mã cố định, không lưu raw error hoặc khóa. Timeout dùng **Kiểm tra lại yêu cầu**, không tự phát sinh lần gọi mới.
 5. Đối chiếu nguồn, chỉnh nội dung, chọn **Lưu chỉnh sửa** hoặc **Sao chép** để đưa vào báo cáo/ticket qua luồng nghiệp vụ hiện có. Bản AI ban đầu vẫn được giữ để so sánh.
 6. Đọc lại ở **Bản nháp của bạn**. Một bản nháp chỉ chủ sở hữu được đọc; mất quyền dự án hoặc bị chuyển ticket sẽ chặn truy cập tương ứng.
@@ -38,6 +38,10 @@ Gợi ý nhân sự không phải xếp hạng năng lực. Dữ liệu hiện c
 
 Khóa chỉ nằm ở backend `OPENAI_API_KEY`; tên hiển thị của khóa trên OpenAI (ví dụ `project`) không phải tên biến cấu hình. Bật `TMS_OPENAI_ENABLED=true` trong cấu hình server rồi khởi động lại. Không dùng biến `VITE_*` cho khóa. Mẫu cấu hình ở [env example](../../.env.mysql.example).
 
-Kết quả gọi live kiểm tra ngày 09/10: **429 insufficient_quota / credit_balance_exhausted**. Chưa xác nhận chất lượng nội dung model thật và chưa gửi dữ liệu dự án trong kiểm thử live. Chỉ thử lại sau khi tài khoản API có số dư. Kiểm thử tự động dùng provider giả định và MySQL riêng, không thay thế nghiệm thu chất lượng AI với người dùng.
+Kết quả gọi API live kiểm tra ngày 09/10: **429 insufficient_quota / credit_balance_exhausted**. Chưa xác nhận chất lượng nội dung model thật và chưa gửi dữ liệu dự án trong kiểm thử live. Giữ nguyên cấu hình/API key hiện có; không tự gọi lại hoặc mua credit. Kiểm thử tự động dùng provider giả định và MySQL riêng, không thay thế nghiệm thu chất lượng AI với người dùng.
+
+Mở rộng ngày 10/10 có ba nguồn **API của hệ thống**, **ChatGPT cá nhân**, **Ollama local** và một panel **Chat AI** dùng trên các trang đã đăng nhập. Chat chung không gửi snapshot dự án; chat theo công việc chỉ dùng dự án/tác vụ/file/ticket đã được server cho phép. Hội thoại giữ cố định nguồn/model/phạm vi, lưu riêng theo tài khoản trong MySQL bảy ngày; đọc lại vẫn kiểm tra quyền hiện tại. Chat và bản nháp không tự sửa dữ liệu nghiệp vụ. Cách dùng: [giao diện AI](../ai-assistance-ui.md), [provider contract](../api/ai-providers.md), [chat contract](../api/ai-chat.md).
+
+ChatGPT cá nhân chỉ dành cho đúng TMS owner đã cấu hình trên máy loopback. Owner bàn giao local dự kiến là **admin.local**, không phải tài khoản demo dùng chung; người dùng phải tự hoàn tất đăng nhập/consent chính thức rồi chủ động kiểm chứng model. Gói ChatGPT, quyền ứng dụng và thanh toán API có trạng thái riêng; chưa có bằng chứng live nào cho ChatGPT trong bàn giao này. Ollama chưa được cài và chưa có model local. Xem [thiết lập và bàn giao](../operations/local-ai.md) cùng [bằng chứng kiểm chứng](../reviews/2026-10-10-ai-providers-chat-handover.md).
 
 API chi tiết: [contract](../api/ai-assistance.md), [OpenAPI](../api/ai-assistance.openapi.json). Thiết kế: [spec](../superpowers/specs/2026-10-09-role-ai-design.md). Kế hoạch: [implementation](../superpowers/plans/2026-10-09-role-ai.md).
