@@ -83,7 +83,17 @@ class ChatGptOAuthClientTest {
         try {
             assertThatThrownBy(()->ProviderHttp.bounded(1,()->service.models("owner","conn"))).hasMessage("AI_UNAVAILABLE");
             assertThat(java.time.Duration.ofNanos(System.nanoTime()-started)).isLessThan(java.time.Duration.ofSeconds(2));
-            assertThat(service.connection("owner").state()).isEqualTo("VERIFIED");org.mockito.Mockito.verifyNoInteractions(client);
+            // Expired callers return before retained local failure settlement; admission stays closed until it finishes.
+            long settlementDeadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(1);
+            ChatGptConnectionService.Connection connection;
+            while (true) {
+                try { connection = service.connection("owner"); break; }
+                catch (OpenAiResponsesClient.Failure e) {
+                    if (!"AI_BUSY".equals(e.code()) || System.nanoTime() >= settlementDeadline) throw e;
+                    Thread.sleep(5);
+                }
+            }
+            assertThat(connection.state()).isEqualTo("VERIFIED");org.mockito.Mockito.verifyNoInteractions(client);
         }finally{service.close();}
     }
 }

@@ -139,4 +139,187 @@ class ChatGptConnectionServiceTest {
             release.countDown();assertThat(saving.get(1,java.util.concurrent.TimeUnit.SECONDS)).isEqualTo("saved");
         }finally{release.countDown();}
     }
+    private java.util.concurrent.locks.ReentrantLock stateFence() throws Exception {
+        var field = ChatGptConnectionService.class.getDeclaredField("stateLock");
+        field.setAccessible(true);
+        return (java.util.concurrent.locks.ReentrantLock) field.get(service);
+    }
+    private void await(java.util.concurrent.CountDownLatch latch) throws InterruptedException {
+        assertThat(latch.await(3, java.util.concurrent.TimeUnit.SECONDS)).isTrue();
+    }
+    @Test void terminalRefreshSettlesDespiteContentionAndSurvivesRestart() throws Exception {
+        loadVerifiedExpired();
+        var entered = new java.util.concurrent.CountDownLatch(1);
+        var returned = new java.util.concurrent.CountDownLatch(1);
+        when(oauth.refresh(anyString(), anyString())).thenAnswer(call -> {
+            entered.countDown(); await(returned);
+            throw new OpenAiResponsesClient.Failure("AI_OAUTH_INVALID_GRANT");
+        });
+        try (var threads = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var result = threads.submit(() -> catchThrowable(() -> service.models("owner", "conn")));
+            await(entered);
+            var fence = stateFence(); fence.lock();
+            try { returned.countDown(); Thread.sleep(150); assertThat(result.isDone()).isFalse(); }
+            finally { fence.unlock(); }
+            assertThat(result.get(2, java.util.concurrent.TimeUnit.SECONDS)).hasMessage("AI_RECONNECT_REQUIRED");
+        }
+        var capture = org.mockito.ArgumentCaptor.forClass(JsonNode.class);
+        verify(vault, atLeastOnce()).write(capture.capture());
+        assertThat(capture.getValue().hasNonNull("refreshToken")).isFalse();
+        when(vault.read()).thenReturn(capture.getValue().deepCopy());
+        service.close(); service = new ChatGptConnectionService(config, access, vault, oauth, client, json);
+        assertThat(service.connection("owner").state()).isEqualTo("RECONNECT_REQUIRED");
+        assertThatThrownBy(() -> service.models("owner", "conn")).hasMessage("AI_RECONNECT_REQUIRED");
+        verify(oauth, times(1)).refresh(anyString(), anyString());
+    }
+    @Test void rotatingRefreshWaitsForSettlementWithoutReusingConsumedToken() throws Exception {
+        loadVerifiedExpired();
+        var entered = new java.util.concurrent.CountDownLatch(1);
+        var returned = new java.util.concurrent.CountDownLatch(1);
+        when(oauth.refresh(anyString(), anyString())).thenAnswer(call -> {
+            entered.countDown(); await(returned); return tokens();
+        });
+        when(client.models("secret-access")).thenReturn(List.of(new AiProviderGateway.Model("test", "Test")));
+        try (var threads = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var result = threads.submit(() -> service.models("owner", "conn"));
+            await(entered);
+            var fence = stateFence(); fence.lock();
+            try { returned.countDown(); Thread.sleep(150); assertThat(result.isDone()).isFalse(); }
+            finally { fence.unlock(); }
+            assertThat(result.get(2, java.util.concurrent.TimeUnit.SECONDS)).hasSize(1);
+        }
+        assertThat(service.models("owner", "conn")).hasSize(1);
+        verify(oauth, times(1)).refresh("oaiapp_test", "old-refresh");
+        var capture = org.mockito.ArgumentCaptor.forClass(JsonNode.class);
+        verify(vault, atLeastOnce()).write(capture.capture());
+        assertThat(capture.getValue().path("refreshToken").asText()).isEqualTo("secret-refresh");
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(booleans = {true, false})
+    void completedProbeSettlesOnceAfterFenceContention(boolean success) throws Exception {
+        var params = authorize(); service.completeCallback(params.get("attemptId"), params);
+        String id = service.connection("owner").id();
+        when(client.models(anyString())).thenReturn(List.of(new AiProviderGateway.Model("test", "Test")));
+        service.models("owner", id);
+        var entered = new java.util.concurrent.CountDownLatch(1);
+        var returned = new java.util.concurrent.CountDownLatch(1);
+        when(client.generate(anyString(), anyString(), anyString(), any(), anyString(), any())).thenAnswer(call -> {
+            entered.countDown(); await(returned);
+            if (!success) throw new OpenAiResponsesClient.Failure("AI_UNAVAILABLE");
+            var value = json.createObjectNode().put("title", "Test").put("summary", "Connected");
+            value.putArray("observations"); value.putArray("suggestedActions"); value.putArray("missingInformation");
+            return new OpenAiResponsesClient.Output(value, "resp_test", "test", 1, 1);
+        });
+        try (var threads = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var result = threads.submit(() -> service.probe("owner", id, "test", "probe-settlement"));
+            await(entered);
+            var fence = stateFence(); fence.lock();
+            try { returned.countDown(); Thread.sleep(150); assertThat(result.isDone()).isFalse(); }
+            finally { fence.unlock(); }
+            assertThat(result.get(2, java.util.concurrent.TimeUnit.SECONDS).state()).isEqualTo(success ? "READY" : "FAILED");
+        }
+        assertThat(service.probe("owner", id, "test", "probe-settlement").state()).isEqualTo(success ? "READY" : "FAILED");
+        assertThat(service.connection("owner").state()).isEqualTo(success ? "VERIFIED" : "UNVERIFIED");
+        verify(client, times(1)).generate(anyString(), anyString(), anyString(), any(), anyString(), any());
+        var capture = org.mockito.ArgumentCaptor.forClass(JsonNode.class);
+        verify(vault, atLeastOnce()).write(capture.capture());
+        assertThat(capture.getValue().path("probes")).hasSize(1);
+    }
+    @Test void failedCallbackSettlesAttemptAfterFenceContention() throws Exception {
+        var params = authorize();
+        var entered = new java.util.concurrent.CountDownLatch(1);
+        var returned = new java.util.concurrent.CountDownLatch(1);
+        when(oauth.exchange(anyString(), anyString(), anyString(), anyString())).thenAnswer(call -> {
+            entered.countDown(); await(returned); throw new OpenAiResponsesClient.Failure("AI_OAUTH_INVALID_GRANT");
+        });
+        try (var threads = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var result = threads.submit(() -> catchThrowable(() -> service.completeCallback(params.get("attemptId"), params)));
+            await(entered);
+            var fence = stateFence(); fence.lock();
+            try { returned.countDown(); Thread.sleep(150); assertThat(result.isDone()).isFalse(); }
+            finally { fence.unlock(); }
+            assertThat(result.get(2, java.util.concurrent.TimeUnit.SECONDS)).hasMessage("AI_OAUTH_INVALID_GRANT");
+        }
+        assertThat(service.attempt("owner", params.get("attemptId")).state()).isEqualTo("FAILED");
+    }
+    private void awaitSettled() throws Exception {
+        var field = ChatGptConnectionService.class.getDeclaredField("pendingSettlements");
+        field.setAccessible(true);
+        var pending = (java.util.concurrent.atomic.AtomicInteger) field.get(service);
+        long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(3);
+        while (pending.get() != 0 && System.nanoTime() < deadline) Thread.sleep(5);
+        assertThat(pending.get()).isZero();
+    }
+    @Test void rotatingOutcomeSurvivesCallerDeadlineAndBlocksAdmissionUntilPersisted() throws Exception {
+        loadVerifiedExpired();
+        var entered = new java.util.concurrent.CountDownLatch(1);
+        var returned = new java.util.concurrent.CountDownLatch(1);
+        when(oauth.refresh(anyString(), anyString())).thenAnswer(call -> {
+            entered.countDown(); await(returned); return tokens();
+        });
+        when(client.models("secret-access")).thenReturn(List.of(new AiProviderGateway.Model("test", "Test")));
+        try (var threads = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var result = threads.submit(() -> catchThrowable(() -> ProviderHttp.bounded(1, () -> service.models("owner", "conn"))));
+            await(entered);
+            var fence = stateFence(); fence.lock();
+            try {
+                returned.countDown();
+                assertThat(result.get(2, java.util.concurrent.TimeUnit.SECONDS)).hasMessage("AI_UNAVAILABLE");
+                assertThatThrownBy(() -> service.models("owner", "conn")).hasMessage("AI_BUSY");
+                verify(oauth, times(1)).refresh(anyString(), anyString());
+            } finally { fence.unlock(); }
+        }
+        awaitSettled();
+        assertThat(service.models("owner", "conn")).hasSize(1);
+        verify(oauth, times(1)).refresh("oaiapp_test", "old-refresh");
+        var capture = org.mockito.ArgumentCaptor.forClass(JsonNode.class);
+        verify(vault, atLeastOnce()).write(capture.capture());
+        assertThat(capture.getValue().path("refreshToken").asText()).isEqualTo("secret-refresh");
+    }
+    @Test void localVaultFailureRetainsRotatedOutcomeAndRetriesOnlyPersistence() throws Exception {
+        loadVerifiedExpired();
+        when(oauth.refresh(anyString(), anyString())).thenReturn(tokens());
+        when(client.models("secret-access")).thenReturn(List.of(new AiProviderGateway.Model("test", "Test")));
+        doThrow(new OpenAiResponsesClient.Failure("AI_CREDENTIAL_STORE_FAILED")).doNothing().when(vault).write(any());
+        assertThatThrownBy(() -> service.models("owner", "conn")).hasMessage("AI_CREDENTIAL_STORE_FAILED");
+        assertThatThrownBy(() -> service.models("owner", "conn")).hasMessage("AI_BUSY");
+        awaitSettled();
+        assertThat(service.models("owner", "conn")).hasSize(1);
+        verify(oauth, times(1)).refresh("oaiapp_test", "old-refresh");
+        verify(vault, times(2)).write(any());
+    }
+    @Test void successfulCallbackChecksSessionAgainWhenContendedSettlementRuns() throws Exception {
+        var params = authorize();
+        var entered = new java.util.concurrent.CountDownLatch(1);
+        var returned = new java.util.concurrent.CountDownLatch(1);
+        when(oauth.validate(any(), anyString(), anyString(), isNull())).thenAnswer(call -> {
+            entered.countDown(); await(returned); return json.createObjectNode().put("sub", "subject");
+        });
+        try (var threads = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var result = threads.submit(() -> catchThrowable(() -> service.completeCallback(params.get("attemptId"), params)));
+            await(entered);
+            var fence = stateFence(); fence.lock();
+            try {
+                returned.countDown(); Thread.sleep(150);
+                assertThat(result.isDone()).isFalse();
+                doThrow(new IllegalStateException("signed out")).when(access).verifySession(any(), any());
+            } finally { fence.unlock(); }
+            assertThat(result.get(2, java.util.concurrent.TimeUnit.SECONDS)).hasMessage("AI_AUTH_FAILED");
+        }
+        doNothing().when(access).verifySession(any(), any());
+        assertThat(service.attempt("owner", params.get("attemptId")).state()).isEqualTo("FAILED");
+        assertThat(service.connection("owner").state()).isEqualTo("DISCONNECTED");
+    }
+    @Test void callbackPersistenceRetryDoesNotPrematurelyFailItsAttempt() throws Exception {
+        var params = authorize();
+        doNothing().doThrow(new OpenAiResponsesClient.Failure("AI_CREDENTIAL_STORE_FAILED")).doNothing()
+                .when(vault).write(any());
+        assertThatThrownBy(() -> service.completeCallback(params.get("attemptId"), params))
+                .hasMessage("AI_CREDENTIAL_STORE_FAILED");
+        awaitSettled();
+        assertThat(service.attempt("owner", params.get("attemptId")).state()).isEqualTo("AUTHORIZED");
+        assertThat(service.connection("owner").state()).isEqualTo("UNVERIFIED");
+        verify(oauth, times(1)).exchange(anyString(), anyString(), anyString(), anyString());
+        verify(vault, times(3)).write(any());
+    }
 }

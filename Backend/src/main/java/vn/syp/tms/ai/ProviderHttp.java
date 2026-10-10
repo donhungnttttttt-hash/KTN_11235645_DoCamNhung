@@ -39,6 +39,10 @@ class ProviderHttp {
         if (DEADLINE.get() != null && System.nanoTime() >= DEADLINE.get())
             throw new OpenAiResponsesClient.Failure("AI_UNAVAILABLE");
     }
+    static long remainingNanos() {
+        Long deadline = DEADLINE.get();
+        return deadline == null ? TimeUnit.SECONDS.toNanos(25) : Math.max(0, deadline - System.nanoTime());
+    }
     final ObjectMapper json;
     final HttpClient client;
     ProviderHttp(ObjectMapper json) { this(json,HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(3)).followRedirects(HttpClient.Redirect.NEVER).build()); }

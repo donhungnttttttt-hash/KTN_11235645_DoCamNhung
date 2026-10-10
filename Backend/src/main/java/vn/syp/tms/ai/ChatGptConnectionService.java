@@ -10,6 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.time.*;
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -35,6 +37,12 @@ public class ChatGptConnectionService {
     private final ObjectMapper json;
     private final ReentrantLock stateLock = new ReentrantLock();
     private final ReentrantLock refreshLock = new ReentrantLock();
+    private final AtomicInteger pendingSettlements = new AtomicInteger();
+    private final ScheduledExecutorService settlements = Executors.newSingleThreadScheduledExecutor(task -> {
+        Thread worker = new Thread(task, "chatgpt-local-settlement");
+        worker.setDaemon(true);
+        return worker;
+    });
     private ObjectNode saved;
     private final Map<String, Attempt> attempts = new LinkedHashMap<>();
     private List<AiProviderGateway.Model> catalog = List.of();
@@ -72,9 +80,56 @@ public class ChatGptConnectionService {
     /** No wait queue, and provider I/O never owns this short state/completion fence. */
     private <T> T locked(Supplier<T> action) {
         ProviderHttp.requireTimeRemaining();
-        if (!stateLock.tryLock()) throw failure("AI_BUSY");
-        try { ProviderHttp.requireTimeRemaining(); return action.get(); }
+        if (pendingSettlements.get() != 0 || !stateLock.tryLock()) throw failure("AI_BUSY");
+        try {
+            if (pendingSettlements.get() != 0) throw failure("AI_BUSY");
+            ProviderHttp.requireTimeRemaining();
+            return action.get();
+        }
         finally { stateLock.unlock(); }
+    }
+
+    /** Retain consumed provider outcomes independently of the caller's remaining wait budget.
+     * New work cannot pass admission until all outcomes have been applied or version-fenced.
+     * Only local state/session/vault work runs here; never provider network I/O. */
+    private <T> T settle(Supplier<T> action) {
+        var result = new CompletableFuture<T>();
+        pendingSettlements.incrementAndGet();
+        settlements.execute(() -> applySettlement(action, result));
+        try {
+            return result.get(ProviderHttp.remainingNanos(), TimeUnit.NANOSECONDS);
+        } catch (TimeoutException e) {
+            // Do not cancel the retained outcome when its originating request times out.
+            throw failure("AI_UNAVAILABLE");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw failure("AI_INTERRUPTED");
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof RuntimeException cause) throw cause;
+            throw failure("AI_UNAVAILABLE");
+        }
+    }
+
+    private <T> void applySettlement(Supplier<T> action, CompletableFuture<T> result) {
+        T value = null;
+        RuntimeException error = null;
+        boolean retry = false;
+        stateLock.lock(); // Background settlement may wait; the originating request never waits beyond its deadline.
+        try {
+            value = action.get();
+        } catch (RuntimeException e) {
+            error = e;
+            retry = e instanceof OpenAiResponsesClient.Failure f && "AI_CREDENTIAL_STORE_FAILED".equals(f.code());
+        } finally {
+            if (!retry) pendingSettlements.decrementAndGet();
+            stateLock.unlock();
+        }
+        if (retry) {
+            // Keep admission closed and retain the outcome across transient local persistence failures.
+            settlements.schedule(() -> applySettlement(action, result), 1, TimeUnit.SECONDS);
+            result.completeExceptionally(error);
+        } else if (error != null) result.completeExceptionally(error);
+        else result.complete(value);
     }
 
     public Connection connection(String actor) {
@@ -180,6 +235,7 @@ public class ChatGptConnectionService {
                 pending.status = "PROCESSING";
                 return pending;
             });
+            boolean handedOff = false;
             try {
                 access.verifySession(attempt.session, attempt.principal);
                 if (query.containsKey("error")) throw failure("AI_AUTH_DENIED");
@@ -202,23 +258,32 @@ public class ChatGptConnectionService {
                 JsonNode tokens = oauth.exchange(issued, code, attempt.verifier, attempt.redirect);
                 JsonNode claims = oauth.validate(tokens, issued, attempt.nonce, attempt.subject);
                 access.verifySession(attempt.session, attempt.principal);
-                return locked(() -> {
-                    requireProcessing(attempt);
-                    ObjectNode next = saved.deepCopy();
-                    next.put("id", UUID.randomUUID().toString()).put("version", saved.path("version").asLong() + 1)
-                            .put("clientId", issued).put("subject", claims.path("sub").asText());
-                    String email = claims.path("email").asText("");
-                    next.put("accountLabel", email.contains("@") ? email.substring(0, 1) + "***" + email.substring(email.indexOf('@')) : "ChatGPT account");
-                    updateTokens(next, tokens, false);
-                    next.remove(List.of("verifiedModel", "verifiedAt", "failureCode", "reconnectRequired", "pendingRegistration"));
-                    persist(next);
-                    clearCatalog();
-                    attempt.status = "AUTHORIZED";
-                    return null;
+                handedOff = true;
+                return settle(() -> {
+                    try {
+                        requireProcessing(attempt);
+                        access.verifySession(attempt.session, attempt.principal);
+                        ObjectNode next = saved.deepCopy();
+                        next.put("id", UUID.randomUUID().toString()).put("version", saved.path("version").asLong() + 1)
+                                .put("clientId", issued).put("subject", claims.path("sub").asText());
+                        String email = claims.path("email").asText("");
+                        next.put("accountLabel", email.contains("@") ? email.substring(0, 1) + "***" + email.substring(email.indexOf('@')) : "ChatGPT account");
+                        updateTokens(next, tokens, false);
+                        next.remove(List.of("verifiedModel", "verifiedAt", "failureCode", "reconnectRequired", "pendingRegistration"));
+                        persist(next);
+                        clearCatalog();
+                        attempt.status = "AUTHORIZED";
+                        return null;
+                    } catch (RuntimeException e) {
+                        if (!(e instanceof OpenAiResponsesClient.Failure f && "AI_CREDENTIAL_STORE_FAILED".equals(f.code()))) {
+                            failAttemptLocked(attempt, e instanceof OpenAiResponsesClient.Failure f ? f.code() : "AI_AUTH_FAILED");
+                        }
+                        throw e;
+                    }
                 });
             } catch (RuntimeException e) {
                 String code = e instanceof OpenAiResponsesClient.Failure f ? f.code() : "AI_AUTH_FAILED";
-                finishAttempt(attempt, code);
+                if (!handedOff) finishAttempt(attempt, code);
                 throw failure(code);
             } finally {
                 attempt.verifier = null;
@@ -232,10 +297,17 @@ public class ChatGptConnectionService {
     }
 
     private void finishAttempt(Attempt attempt, String code) {
-        if (!stateLock.tryLock()) return;
-        try {
-            if ("PROCESSING".equals(attempt.status)) { attempt.status = "FAILED"; attempt.failure = code; }
-        } finally { stateLock.unlock(); }
+        settle(() -> {
+            failAttemptLocked(attempt, code);
+            return null;
+        });
+    }
+
+    private void failAttemptLocked(Attempt attempt, String code) {
+        if ("PROCESSING".equals(attempt.status)) {
+            attempt.status = "FAILED";
+            attempt.failure = code;
+        }
     }
 
     public AttemptView attempt(String actor, String id) {
@@ -325,10 +397,18 @@ public class ChatGptConnectionService {
             try {
                 ObjectNode snapshot = locked(() -> { requireCurrent(selection); return saved.deepCopy(); });
                 if (snapshot.path("expiresAt").asLong() > Instant.now().plusSeconds(60).getEpochSecond()) return snapshot.path("accessToken").asText();
+                JsonNode tokens;
                 try {
-                    JsonNode tokens = oauth.refresh(snapshot.path("clientId").asText(), snapshot.path("refreshToken").asText());
+                    tokens = oauth.refresh(snapshot.path("clientId").asText(), snapshot.path("refreshToken").asText());
                     if (tokens.hasNonNull("id_token")) oauth.validate(tokens, snapshot.path("clientId").asText(), null, snapshot.path("subject").asText());
-                    return locked(() -> {
+                    // Validate the complete replacement before handing it to durable settlement.
+                    updateTokens(snapshot.deepCopy(), tokens, true);
+                } catch (OpenAiResponsesClient.Failure e) {
+                    boolean terminal = "AI_OAUTH_INVALID_GRANT".equals(e.code()) || "AI_AUTH_FAILED".equals(e.code());
+                    recordRefreshFailure(selection, e.code(), terminal);
+                    throw failure(terminal ? "AI_RECONNECT_REQUIRED" : e.code());
+                }
+                return settle(() -> {
                         requireCurrent(selection); // Disconnect/reconnect may have happened during network I/O.
                         ObjectNode next = saved.deepCopy();
                         updateTokens(next, tokens, true);
@@ -336,21 +416,14 @@ public class ChatGptConnectionService {
                         persist(next);
                         requireConnected();
                         return saved.path("accessToken").asText();
-                    });
-                } catch (OpenAiResponsesClient.Failure e) {
-                    boolean terminal = "AI_OAUTH_INVALID_GRANT".equals(e.code()) || "AI_AUTH_FAILED".equals(e.code());
-                    recordRefreshFailure(selection, e.code(), terminal);
-                    throw failure(terminal ? "AI_RECONNECT_REQUIRED" : e.code());
-                }
+                });
             } finally { refreshLock.unlock(); }
         });
     }
 
     private void recordRefreshFailure(AiProviderGateway.ResolvedSelection selection, String code, boolean terminal) {
-        // Preserve the short durable failure transition even when the network deadline just elapsed.
-        if (!stateLock.tryLock()) throw failure("AI_BUSY");
-        try {
-            if (!sameConnection(selection)) return;
+        settle(() -> {
+            if (!sameConnection(selection)) return null;
             ObjectNode next = saved.deepCopy();
             if (terminal) {
                 next.remove(List.of("accessToken", "refreshToken", "idToken", "verifiedModel", "verifiedAt", "scopes"));
@@ -359,7 +432,8 @@ public class ChatGptConnectionService {
             }
             next.put("failureCode", terminal ? "AI_RECONNECT_REQUIRED" : code);
             persist(next);
-        } finally { stateLock.unlock(); }
+            return null;
+        });
     }
 
     private void updateTokens(ObjectNode target, JsonNode tokens, boolean refreshing) {
@@ -405,7 +479,8 @@ public class ChatGptConnectionService {
         return ProviderHttp.bounded(() -> runProbe(actor, id, model, key));
     }
     private Probe runProbe(String actor, String id, String model, String key) {
-        access.requireLocal(actor);
+        HttpSession session = access.requireLocal(actor);
+        SessionPrincipal principal = access.current(actor);
         if (key == null || !key.matches("[A-Za-z0-9_-]{8,64}")) throw new BusinessException(422, "AI_INVALID_INPUT", "Invalid request key.");
         Object reservation = locked(() -> {
             requireId(id);
@@ -443,27 +518,31 @@ public class ChatGptConnectionService {
                 AiDraftContent.validateAndWrap(output.value(), sources, json);
                 return output;
             });
-        } catch (OpenAiResponsesClient.Failure e) { code = e.code(); }
-        return finishProbe(actor, selection, key, model, code);
+        } catch (RuntimeException e) {
+            code = e instanceof OpenAiResponsesClient.Failure f ? f.code() : "AI_CONNECTION_CHANGED";
+        }
+        return finishProbe(session, principal, selection, key, model, code);
     }
 
-    private Probe finishProbe(String actor, AiProviderGateway.ResolvedSelection selection, String key, String model, String code) {
-        if (!stateLock.tryLock()) throw failure("AI_BUSY");
-        try {
-            try { access.requireLocal(actor); requireCurrent(selection); }
+    private Probe finishProbe(HttpSession session, SessionPrincipal principal,
+            AiProviderGateway.ResolvedSelection selection, String key, String model, String outcomeCode) {
+        return settle(() -> {
+            String code = outcomeCode;
+            try { access.verifySession(session, principal); requireCurrent(selection); }
             catch (RuntimeException e) { if (code == null) code = "AI_CONNECTION_CHANGED"; }
-            for (var node : saved.withArray("probes")) {
+            ObjectNode next = saved.deepCopy();
+            for (var node : next.withArray("probes")) {
                 if (key.equals(node.path("requestKey").asText())) {
                     var probe = (ObjectNode) node;
                     probe.put("state", code == null ? "READY" : "FAILED").put("completedAt", Instant.now().toString());
                     if (code != null) probe.put("failureCode", code);
-                    else saved.put("verifiedModel", model).put("verifiedAt", Instant.now().toString());
-                    vault.write(saved);
+                    else next.put("verifiedModel", model).put("verifiedAt", Instant.now().toString());
+                    persist(next);
                     return probeView(probe);
                 }
             }
             throw conflict("AI_CONNECTION_CHANGED");
-        } finally { stateLock.unlock(); }
+        });
     }
     private Probe probeView(JsonNode node) {
         return new Probe(node.path("requestKey").asText(), node.path("model").asText(), node.path("state").asText(),
@@ -520,6 +599,7 @@ public class ChatGptConnectionService {
     private static OpenAiResponsesClient.Failure failure(String code) { return new OpenAiResponsesClient.Failure(code); }
     private static BusinessException conflict(String code) { return new BusinessException(409, code, "AI connection or request has changed."); }
     @PreDestroy public void close() {
+        settlements.shutdown();
         if (!stateLock.tryLock()) return;
         try { for (var attempt : attempts.values()) stop(attempt, "CANCELLED"); }
         finally { stateLock.unlock(); }
