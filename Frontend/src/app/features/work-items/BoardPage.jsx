@@ -158,7 +158,7 @@ export default function BoardPage({
           )}
         </div>
       )}
-      <div className="d-kanban-scroll">
+      <div className="d-kanban-scroll" role="region" aria-label="Các cột Kanban" tabIndex={0} data-lenis-prevent>
         <div className="d-kanban">
           {statuses.map((status) => {
             const cards = visible.filter((i) => i.status === status.id);

@@ -14,7 +14,7 @@
   background: transparent;
   border: none;
   color: var(--text-color, #333);
-  font-size: 14px;
+  font-size: var(--text-body);
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
@@ -63,7 +63,7 @@
   border: none;
   background: none;
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--text-body);
   border-bottom: 1px solid var(--border-color, #f0f0f0);
   overflow-wrap: anywhere;
 }
@@ -142,7 +142,7 @@
 
 .dialog-header h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--text-section);
 }
 
 .dialog-close {
@@ -164,7 +164,7 @@
   display: block;
   margin-bottom: 6px;
   font-weight: 500;
-  font-size: 14px;
+  font-size: var(--text-body);
 }
 
 .form-group input,
@@ -210,7 +210,7 @@
   margin: 0 auto;
 }
 
-.settings-project-name { font-size: 12px; font-weight: 400; color: #64748b; }
+.settings-project-name { font-size: var(--text-table); font-weight: 400; color: #64748b; }
 .tabs {
   display: flex;
   gap: 20px;
@@ -224,7 +224,7 @@
   border: none;
   border-bottom: 2px solid transparent;
   cursor: pointer;
-  font-size: 15px;
+  font-size: var(--text-section);
   font-weight: 500;
   color: #666;
 }
@@ -288,19 +288,19 @@
 }
 
 /* Settings keep the dashboard typography and teal palette. */
-.project-settings-page, .catalog-page { max-width: 1200px; width: 100%; color: #16334a; font-size: 13px; }
-.project-settings-page h1, .catalog-page h1 { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
-.project-settings-page h2, .catalog-page h2 { font-size: 15px; font-weight: 600; margin: 12px 0; }
-.project-settings-page h3, .catalog-page h3 { font-size: 14px; font-weight: 600; margin: 10px 0; }
+.project-settings-page, .catalog-page { max-width: 1200px; width: 100%; color: #16334a; font-size: var(--text-body); }
+.project-settings-page h1, .catalog-page h1 { font-size: var(--text-title); font-weight: 600; margin-bottom: 20px; }
+.project-settings-page h2, .catalog-page h2 { font-size: var(--text-section); font-weight: 600; margin: 12px 0; }
+.project-settings-page h3, .catalog-page h3 { font-size: var(--text-section); font-weight: 600; margin: 10px 0; }
 .project-settings-page .tabs, .catalog-page .tabs { gap: 4px; overflow-x: auto; }
-.project-settings-page .tab-btn, .catalog-page .tab-btn { white-space: nowrap; font-size: 13px; }
+.project-settings-page .tab-btn, .catalog-page .tab-btn { white-space: nowrap; font-size: var(--text-body); }
 .project-settings-page .tab-btn.active, .catalog-page .tab-btn.active { color: #078d84; border-color: #13b7a6; }
 .catalog-page .btn-primary { background: var(--color-mint, #0f766e); }
 .project-settings-page .cat-btn.primary, .catalog-page .cat-btn.primary { background: var(--color-mint, #0f766e); border-color: var(--color-mint, #0f766e); color: white; }
 .project-settings-page button:disabled, .catalog-page button:disabled { cursor: not-allowed; opacity: .55; }
 .settings-heading, .settings-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .settings-heading { justify-content: space-between; }
-.settings-hint { font-size: 12px; color: #64748b; margin: 10px 0; }
+.settings-hint { font-size: var(--text-table); color: #64748b; margin: 10px 0; }
 .settings-editor { background: white; border: 1px solid #dbe5ed; border-radius: 4px; padding: 18px; margin: 16px 0; }
 .settings-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 20px; }
 .settings-table-scroll { overflow-x: auto; }

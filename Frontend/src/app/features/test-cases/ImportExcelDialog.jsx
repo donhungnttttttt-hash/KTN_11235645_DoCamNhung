@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import { useDialogFocus } from '../../hooks/useDialogFocus';
 import React, { useEffect, useRef, useState } from 'react';
 import { X, CheckCircle2, AlertTriangle, FileSpreadsheet, ArrowRight } from 'lucide-react';
@@ -124,7 +125,7 @@ export function ImportExcelDialog({ projectId, onClose, onSuccess }) {
                 <p>Chưa thể nhập: sửa các dòng lỗi trong Excel, sau đó chọn lại tệp để xem trước.</p>
                 <label className="flex items-center gap-2 mt-2 cursor-pointer"><input type="checkbox" checked={errorsOnly} onChange={e => setErrorsOnly(e.target.checked)} />Chỉ hiện dòng lỗi</label>
               </div>}
-              <div role="region" aria-label="Các dòng xem trước" tabIndex={0} className="max-h-60 overflow-auto border border-slate-200 rounded">
+              <TableScroll label="Các dòng xem trước" role="region" aria-label="Các dòng xem trước" tabIndex={0} className="max-h-60 overflow-auto border border-slate-200 rounded">
                 <table className="w-full min-w-[620px] text-left text-xs">
                   <thead className="bg-slate-100 sticky top-0 text-slate-600 font-semibold border-b whitespace-nowrap">
                     <tr>
@@ -144,7 +145,7 @@ export function ImportExcelDialog({ projectId, onClose, onSuccess }) {
                         <td className="py-2 px-3">
                           <div>{r.titleVi}</div>
                           {r.errorMessage && (
-                            <div className="text-[11px] text-red-600 font-medium mt-0.5">{r.errorMessage}</div>
+                            <div className="ui-caption text-red-600 font-medium mt-0.5">{r.errorMessage}</div>
                           )}
                         </td>
                         <td className="py-2 px-3 text-center">
@@ -162,7 +163,7 @@ export function ImportExcelDialog({ projectId, onClose, onSuccess }) {
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </TableScroll>
             </div>
           )}
         </div>

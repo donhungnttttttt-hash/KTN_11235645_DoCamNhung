@@ -24,7 +24,7 @@
     "Segoe UI",
     Roboto,
     sans-serif;
-  font-size: 12px;
+  font-size: var(--text-table);
   line-height: 1.4;
 }
 .dashboard-board.work-items .d-board-page {
@@ -39,7 +39,7 @@
   margin-bottom: 12px;
 }
 .dashboard-board .wb-heading h1 {
-  font-size: 14px;
+  font-size: var(--text-title);
   font-weight: 600;
 }
 .dashboard-board .wb-heading-summary {
@@ -53,7 +53,7 @@
   width: 100%;
 }
 .dashboard-board .wb-filter-count {
-  font-size: 11px;
+  font-size: var(--text-caption);
   color: #64748b;
 }
 .dashboard-board.work-items .d-search-top {
@@ -61,7 +61,7 @@
   gap: 8px;
 }
 .dashboard-board.work-items .d-search-collapse {
-  font-size: 11px;
+  font-size: var(--text-caption);
   margin-right: 4px;
 }
 .dashboard-board.work-items .d-search-collapse svg {
@@ -71,14 +71,14 @@
   min-width: 112px;
   min-height: 28px;
   padding: 4px 10px;
-  font-size: 11px;
+  font-size: var(--text-caption);
   font-weight: 500;
   border-color: #d9dede;
 }
 .dashboard-board.work-items .d-status-filters {
   gap: 5px 7px;
   margin: 14px 0;
-  font-size: 10px;
+  font-size: var(--text-caption);
 }
 .dashboard-board.work-items .d-status-filters button {
   padding: 3px 7px;
@@ -106,7 +106,7 @@
   flex-wrap: wrap;
 }
 .dashboard-board.work-items .d-pagination {
-  font-size: 11px;
+  font-size: var(--text-caption);
   flex-wrap: wrap;
 }
 .dashboard-board.work-items .d-issue-table-scroll {
@@ -198,7 +198,7 @@
   padding: 0;
 }
 .dashboard-board.work-items .d-board-heading h1 {
-  font-size: 14px;
+  font-size: var(--text-title);
   font-weight: 600;
   margin-right: 4px;
 }
@@ -208,7 +208,7 @@
   padding: 6px 10px;
   border-radius: 2px;
   border-color: #d7dcdc;
-  font-size: 12px;
+  font-size: var(--text-table);
   line-height: 1.5;
   font-weight: 500;
   color: #475569;
@@ -235,7 +235,7 @@
   width: 178px;
 }
 .dashboard-board.work-items .d-field {
-  font-size: 11px;
+  font-size: var(--text-caption);
   color: #64748b;
 }
 .dashboard-board.work-items input:not([type="checkbox"]):not([type="radio"]),
@@ -248,7 +248,7 @@
   line-height: 1.5;
   border-color: #d7dcdc;
   border-radius: 2px;
-  font-size: 12px;
+  font-size: var(--text-table);
 }
 .dashboard-board.work-items .d-icon-button.outlined {
   width: 28px;
@@ -281,18 +281,18 @@
   height: 10px;
 }
 .dashboard-board.work-items .d-kanban-column h2 {
-  font-size: 12px;
+  font-size: var(--text-table);
   font-weight: 600;
 }
 .dashboard-board.work-items .d-column-count {
   min-width: 24px;
   padding: 1px 7px;
-  font-size: 10px;
+  font-size: var(--text-caption);
   background: #f1f5f9;
   color: #64748b;
 }
 .dashboard-board.work-items .d-column-subheading {
-  font-size: 11px;
+  font-size: var(--text-caption);
   padding: 0 10px 8px;
   color: #64748b;
 }
@@ -310,12 +310,12 @@
   border-color: #20b7a6;
 }
 .dashboard-board.work-items .d-card-title {
-  font-size: 12px;
+  font-size: var(--text-table);
   line-height: 1.6;
   padding: 4px 0 8px;
 }
 .dashboard-board.work-items .d-card-meta {
-  font-size: 10px;
+  font-size: var(--text-caption);
 }
 .dashboard-board.work-items .d-modal-backdrop {
   background: #0f172a66;
@@ -336,7 +336,7 @@
   padding: 16px;
 }
 .dashboard-board.work-items .d-detail-page > h1 {
-  font-size: 17px;
+  font-size: var(--text-title);
 }
 .dashboard-board.work-items .d-new-panel {
   padding: 16px;
@@ -344,7 +344,7 @@
 .dashboard-board.work-items .d-toast {
   left: 50%;
   bottom: 44px;
-  font-size: 12px;
+  font-size: var(--text-table);
   background: #147d72;
 }
 @media (max-width: 640px) {

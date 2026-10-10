@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import React, { useEffect, useState } from 'react';
 import { testCasesApi } from '../../services/api/testCases';
 import { executionApi } from '../../services/api/execution';
@@ -44,10 +45,10 @@ export function ScopeSetup({ projectId, cycle, configs, catalogs, members, onSav
         <Select label="Người thực hiện" value={assignee} items={eligible} describe={x => x.displayName} onChange={setAssignee} />
         <button className="cat-btn cat-btn-mint" disabled={busy || !Object.keys(selected).length || Object.keys(selected).length > 100}>Thêm case vào phạm vi</button>
       </div>
-      <div className="ex-table-wrap mt-3"><table className="ex-table"><thead><tr><th>Chọn</th><th>Mã case</th><th>Tiêu đề phiên bản hiện tại</th><th>Phê duyệt</th></tr></thead><tbody>
+      <TableScroll label="Phạm vi test case" className="ex-table-wrap mt-3"><table className="ex-table"><thead><tr><th>Chọn</th><th>Mã case</th><th>Tiêu đề phiên bản hiện tại</th><th>Phê duyệt</th></tr></thead><tbody>
         {cases?.items.map(c => <tr key={c.id}><td><input type="checkbox" aria-label={`Chọn ${c.caseNo}`} disabled={!c.approved} checked={!!selected[c.currentRevisionId]} onChange={e => setSelected(prev => { const next = { ...prev }; if (e.target.checked) next[c.currentRevisionId] = true; else delete next[c.currentRevisionId]; return next; })} /></td><td>{c.caseNo}</td><td>{c.titleVi}</td><td>{c.approved ? 'Đã duyệt' : 'Chờ PM duyệt'}</td></tr>)}
         {cases && !cases.items.length && <tr><td colSpan={4}>Chưa có test case. Tạo hoặc nhập tại Thư viện test case.</td></tr>}
-      </tbody></table></div>
+      </tbody></table></TableScroll>
     </form>
     {cases && <Pager data={cases} onChange={setPage} />}
   </section>;

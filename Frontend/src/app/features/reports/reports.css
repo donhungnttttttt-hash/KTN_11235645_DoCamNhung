@@ -1,7 +1,7 @@
 .rp-page{display:flex;flex-direction:column;gap:16px;color:#17324d}
-.rp-page h2{font-size:16px;font-weight:600}.rp-page h3{font-size:13px;font-weight:600;margin-bottom:10px}
+.rp-page h2{font-size:var(--text-title);font-weight:600}.rp-page h3{font-size:var(--text-body);font-weight:600;margin-bottom:10px}
 .rp-filters{display:flex;align-items:end;gap:16px;flex-wrap:wrap}.rp-filters .ex-field{min-width:230px}
-.rp-rates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.rp-rates strong{font-size:22px;font-weight:600;color:#159d91}.rp-rates small{color:#64748b}
+.rp-rates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.rp-rates strong{font-size:var(--text-metric);font-weight:600;color:#159d91}.rp-rates small{color:#64748b}
 .rp-meter{height:7px;background:#e9eff2;border-radius:5px;overflow:hidden;margin:12px 0}.rp-meter span{height:100%;background:#20b7a6;display:block}
 .rp-page .ex-panel{margin:0}.rp-page a{color:#128d84}.rp-page .cat-kpi-bar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}
 .rp-page .cat-kpi-block{border:1px solid #dbe5ea;border-left-width:3px;color:#17324d;background:#fff}

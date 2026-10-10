@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../auth/AuthProvider";
 import { emptyFilters, matchesIssueFilters } from "./issueFilters";
@@ -514,7 +515,7 @@ export default function IssuesPage({
           />
         </div>
       </div>
-      <div className="d-issue-table-scroll">
+      <TableScroll label="Danh sách lỗi" className="d-issue-table-scroll">
         <table className={`d-issue-table ${compact ? "compact" : ""}`}>
           <thead>
             <tr>
@@ -646,7 +647,7 @@ export default function IssuesPage({
             </Button>
           </div>
         )}
-      </div>
+      </TableScroll>
       {dialog && (
         <Modal
           title={

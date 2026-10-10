@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import { canManageProjectWork } from '../projects/projectAccess';
 import React, { useState, useEffect, useRef } from 'react';
 import { useProject } from '../projects/ProjectProvider';
@@ -40,9 +41,9 @@ function Cycles({ project, navigate }) {
       <button className="cat-btn cat-btn-mint" disabled={busy}>{busy ? 'Đang tạo…' : 'Tạo bản nháp'}</button><button type="button" className="cat-btn" disabled={busy} onClick={() => setForm(null)}>Hủy</button>
     </form>}
     {project && !data && !error && <p role="status">Đang tải…</p>}
-    {data && <><div className="ex-table-wrap"><table className="ex-table"><thead><tr><th>Mã đợt</th><th>Tên đợt</th><th>Trạng thái</th><th>Phạm vi</th></tr></thead><tbody>
+    {data && <><TableScroll label="Đợt kiểm thử" className="ex-table-wrap"><table className="ex-table"><thead><tr><th>Mã đợt</th><th>Tên đợt</th><th>Trạng thái</th><th>Phạm vi</th></tr></thead><tbody>
       {data.items.map(c => <tr key={c.id}><td><button className="ex-link" onClick={() => navigate(`/tests/cycles/${c.id}`)}>{c.code}</button></td><td>{c.name}</td><td>{c.statusCode === 'CLOSED' ? 'Đã chốt' : c.statusCode === 'ACTIVE' ? 'Đang thực hiện' : 'Bản nháp'}</td><td>{c.runCount} lượt kiểm thử</td></tr>)}
       {!data.items.length && <tr><td colSpan={4}>Chưa có đợt kiểm thử trong dự án.</td></tr>}
-    </tbody></table></div><Pager data={data} onChange={setPage} /></>}
+    </tbody></table></TableScroll><Pager data={data} onChange={setPage} /></>}
   </div>;
 }

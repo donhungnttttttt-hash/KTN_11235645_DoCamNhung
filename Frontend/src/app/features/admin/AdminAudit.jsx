@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import React,{useCallback,useState} from 'react';
 import {adminApi} from '../../services/api/admin';
 import {useAdminRead,ReadState} from './shared';
@@ -16,7 +17,7 @@ export function AdminAudit({api=adminApi,initialProjectId=''}) {
    <label>Múi giờ ngày lọc<select value={filters.timezone} onChange={e=>change('timezone',e.target.value)}><option>Asia/Ho_Chi_Minh</option><option>UTC</option></select></label>
   </div><p>Ngày lọc và thời gian hiển thị: {filters.timezone}. Bao gồm trọn ngày kết thúc. Sự kiện toàn hệ thống chỉ có trong Tất cả dự án.</p>
   <ReadState {...state}/>{state.data&&<section className="admin-card"><p>{state.data.totalElements} sự kiện · Trang {filters.page+1}</p>
-   {!state.data.items.length?<p>Không có sự kiện phù hợp.</p>:<div className="admin-table-scroll" tabIndex={0} aria-label="Nhật ký quản trị"><table><thead><tr><th>Thời gian</th><th>Người thực hiện</th><th>Phạm vi</th><th>Đối tượng</th><th>Thao tác</th></tr></thead><tbody>{state.data.items.map(e=><tr key={e.id}><td><time dateTime={e.occurredAt} title={e.occurredAt}>{new Date(e.occurredAt).toLocaleString('vi-VN',{timeZone:filters.timezone})}</time></td><td>{e.actorName||'Hệ thống'}</td><td>{e.projectId?<a href={`#/admin/projects/${e.projectId}`}>{e.projectName}</a>:'Toàn hệ thống'}</td><td title={e.entityType}>{labels[e.entityType]||e.entityType} · {e.entityId||'—'}</td><td title={e.action}>{labels[e.action]||e.action}</td></tr>)}</tbody></table></div>}
+   {!state.data.items.length?<p>Không có sự kiện phù hợp.</p>:<TableScroll className="admin-table-scroll" tabIndex={0} aria-label="Nhật ký quản trị"><table><thead><tr><th>Thời gian</th><th>Người thực hiện</th><th>Phạm vi</th><th>Đối tượng</th><th>Thao tác</th></tr></thead><tbody>{state.data.items.map(e=><tr key={e.id}><td><time dateTime={e.occurredAt} title={e.occurredAt}>{new Date(e.occurredAt).toLocaleString('vi-VN',{timeZone:filters.timezone})}</time></td><td>{e.actorName||'Hệ thống'}</td><td>{e.projectId?<a href={`#/admin/projects/${e.projectId}`}>{e.projectName}</a>:'Toàn hệ thống'}</td><td title={e.entityType}>{labels[e.entityType]||e.entityType} · {e.entityId||'—'}</td><td title={e.action}>{labels[e.action]||e.action}</td></tr>)}</tbody></table></TableScroll>}
    <div className="admin-pagination"><button disabled={!filters.page} onClick={()=>setFilters({...filters,page:filters.page-1})}>Trang trước</button><button disabled={(filters.page+1)*20>=state.data.totalElements} onClick={()=>setFilters({...filters,page:filters.page+1})}>Trang sau</button></div>
   </section>}
  </>;

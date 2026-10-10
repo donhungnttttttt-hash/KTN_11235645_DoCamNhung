@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { redmineApi } from '../../services/api/redmine';
 import { Button } from '../work-items/components';
@@ -103,7 +104,7 @@ function Comparison({ binding, mapping }) {
     }
     return snapshot[field];
   };
-  return <div className="rm-compare"><table><caption>Bản đã công bố và bản quan sát trên Redmine</caption><thead><tr><th>Trường</th><th>Đã công bố</th><th>Redmine hiện tại</th></tr></thead><tbody>
+  return <TableScroll label="Đối chiếu Redmine" className="rm-compare"><table><caption>Bản đã công bố và bản quan sát trên Redmine</caption><thead><tr><th>Trường</th><th>Đã công bố</th><th>Redmine hiện tại</th></tr></thead><tbody>
     {[['subject', 'Tiêu đề'], ['statusId', 'Trạng thái'], ['priorityId', 'Độ ưu tiên'], ['privateIssue', 'Hiển thị'], ['description', 'Nội dung']].map(([field, label]) => <tr key={field}><th>{label}</th>{[binding.deliveredPayload, binding.observedPayload].map((snapshot, i) => <td key={i}>{value(snapshot, field)}</td>)}</tr>)}
-  </tbody></table></div>;
+  </tbody></table></TableScroll>;
 }

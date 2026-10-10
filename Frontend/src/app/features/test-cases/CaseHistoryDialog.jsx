@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { testCasesApi } from '../../services/api/testCases';
@@ -30,7 +31,7 @@ export function CaseHistoryDialog({ projectId, row, timeZone, onClose, onExecuti
       <p className="td-history-note">Các cột thay đổi được đối chiếu với phiên bản liền trước. Nội dung cũ màu đỏ, nội dung mới nền vàng.</p>
       {error?<div className="td-error" role="alert">{error} <button className="cat-btn" onClick={()=>setRetry(v=>v+1)}>Thử lại</button></div>:!diff?<p role="status">Đang tải lịch sử…</p>:<>
         <p>Rev {diff.current.revisionNo} · {documentDate(diff.current.createdAt,timeZone)} · Người sửa: thành viên #{diff.current.createdBy ?? '—'}</p>
-        <div className="td-table-scroll"><table className="td-history-table"><thead><tr><th>Cột / hạng mục</th><th>Nội dung trước khi sửa</th><th>Nội dung sau khi sửa</th></tr></thead><tbody>{diff.changes.map(([field,label])=><tr key={field}><th scope="row">{label}</th><td><del>{diff.old?.[field] || '—'}</del></td><td><mark>{diff.current[field] || '—'}</mark></td></tr>)}</tbody></table></div>
+        <TableScroll label="Lịch sử phiên bản case" className="td-table-scroll"><table className="td-history-table"><thead><tr><th>Cột / hạng mục</th><th>Nội dung trước khi sửa</th><th>Nội dung sau khi sửa</th></tr></thead><tbody>{diff.changes.map(([field,label])=><tr key={field}><th scope="row">{label}</th><td><del>{diff.old?.[field] || '—'}</del></td><td><mark>{diff.current[field] || '—'}</mark></td></tr>)}</tbody></table></TableScroll>
         {!diff.old && <p>Phiên bản đầu tiên được lưu trong hệ thống.</p>}{!diff.changes.length && <p>Không có thay đổi nội dung giữa hai phiên bản.</p>}
       </>}
     </div>

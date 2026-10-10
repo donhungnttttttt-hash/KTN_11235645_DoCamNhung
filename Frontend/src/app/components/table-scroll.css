@@ -1,0 +1,18 @@
+.ui-table-frame { min-width:0; max-width:100%; }
+.ui-table-frame > .ui-table-region {
+  min-width:0; max-width:100%; width:100%;
+  max-height:min(65dvh,640px); overflow:auto; overscroll-behavior-x:contain;
+  scrollbar-gutter:stable; scrollbar-width:auto; scrollbar-color:#8ba6a1 #edf2f1;
+}
+.ui-table-frame > .ui-table-region::-webkit-scrollbar { width:12px; height:12px; }
+.ui-table-frame > .ui-table-region::-webkit-scrollbar-track { background:#edf2f1; }
+.ui-table-frame > .ui-table-region::-webkit-scrollbar-thumb { background:#8ba6a1; border:2px solid #edf2f1; border-radius:6px; }
+.ui-table-frame > .ui-table-region::-webkit-scrollbar-thumb:hover { background:#587b75; }
+.ui-table-region:focus-visible { outline:2px solid #0f766e; outline-offset:2px; }
+.ui-table-frame > .ui-table-hint { font-size:var(--text-caption,11px); line-height:1.5; color:#506761; margin:6px 0; }
+.ui-table-frame > .ui-table-region table { font-size:var(--text-table,12px); line-height:1.5; }
+.ui-table-region thead th { position:sticky; top:0; z-index:2; background:#f4f8f7; }
+.ui-table-region td,.ui-table-region th { overflow-wrap:anywhere; }
+.ui-table-region th { font-weight:600; }
+.ui-table-region td > button:not([class]) { text-align:left; }
+@media(max-height:500px) { .ui-table-frame > .ui-table-region { max-height:70dvh; } }

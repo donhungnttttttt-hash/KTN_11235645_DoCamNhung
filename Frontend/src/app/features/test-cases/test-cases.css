@@ -1,10 +1,14 @@
+.tc-case-table { min-width:880px; }
+.tc-suite-table { min-width:900px; }
+.tc-case-table th:nth-child(2),.tc-suite-table th:nth-child(3) { min-width:280px; }
+
 .tc-badge-approved {
   background-color: #ecfdf5;
   color: #047857;
   border: 1px solid #a7f3d0;
   padding: 2px 8px;
   border-radius: 9999px;
-  font-size: 11px;
+  font-size: var(--text-caption);
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -17,7 +21,7 @@
   border: 1px solid #fde68a;
   padding: 2px 8px;
   border-radius: 9999px;
-  font-size: 11px;
+  font-size: var(--text-caption);
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -26,7 +30,7 @@
 
 .tc-lang-label {
   display: inline-block;
-  font-size: 10px;
+  font-size: var(--text-caption);
   font-weight: 700;
   padding: 1px 4px;
   border-radius: 4px;
@@ -68,7 +72,7 @@
 
 .tc-tab-btn {
   padding: 8px 16px;
-  font-size: 13px;
+  font-size: var(--text-body);
   font-weight: 500;
   color: #64748b;
   border: none;

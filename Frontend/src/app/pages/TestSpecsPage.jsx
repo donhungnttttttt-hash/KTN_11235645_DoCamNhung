@@ -1,3 +1,4 @@
+import {TableScroll} from '../components/TableScroll';
 import { canManageProjectWork } from '../features/projects/projectAccess';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Upload, FolderPlus, CheckCircle2, Clock, Eye, Search, Layers, ListCheck } from 'lucide-react';
@@ -76,7 +77,7 @@ export function TestSpecsPage({ navigate = () => {} }) {
       {/* Top Header Bar */}
       <div className="tc-library-header">
         <div className="tc-library-heading">
-          <h2 className="text-sm font-bold text-slate-900">
+          <h2 className="ui-page-title text-slate-900">
             Thư viện test case
             {currentProject && <span className="text-xs text-teal-700 font-normal ml-2">({currentProject.name})</span>}
           </h2>
@@ -99,7 +100,7 @@ export function TestSpecsPage({ navigate = () => {} }) {
           </div>
         </div>
 
-        <div className="tc-library-actions flex flex-wrap items-center gap-1.5 text-[11px]">
+        <div className="tc-library-actions flex flex-wrap items-center gap-1.5 ui-caption">
           <button className="cat-btn" onClick={() => navigate('/tests')}>Tài liệu Excel</button>
           {canEdit && currentProject && (
             <>
@@ -169,8 +170,8 @@ export function TestSpecsPage({ navigate = () => {} }) {
             </div>
           )}
 
-          <div className="overflow-x-auto border border-slate-200 bg-white">
-            <table className="cat-table">
+          <TableScroll label="Thư viện test case" className="overflow-x-auto border border-slate-200 bg-white">
+            <table className="cat-table tc-case-table">
               <thead>
                 <tr>
                   <th className="w-24 text-center">Case No.</th>
@@ -215,7 +216,7 @@ export function TestSpecsPage({ navigate = () => {} }) {
                           </span>
                         )}
                       </td>
-                      <td className="text-slate-500 text-[10px]">
+                      <td className="text-slate-500 ui-caption">
                         {new Date(c.createdAt).toLocaleDateString('vi-VN')}
                       </td>
                       <td className="text-center">
@@ -232,7 +233,7 @@ export function TestSpecsPage({ navigate = () => {} }) {
                 )}
               </tbody>
             </table>
-          </div>
+          </TableScroll>
         </div>
       )}
 
@@ -245,8 +246,8 @@ export function TestSpecsPage({ navigate = () => {} }) {
       </div>}
       {/* Secondary View Mode: Test Suites / Specifications */}
       {viewMode === 'suites' && (
-        <div className="overflow-x-auto border border-slate-200 bg-white">
-          <table className="cat-table">
+        <TableScroll label="Nhóm test case" className="overflow-x-auto border border-slate-200 bg-white">
+          <table className="cat-table tc-suite-table">
             <thead>
               <tr>
                 <th className="w-12 text-center">No.</th>
@@ -274,11 +275,11 @@ export function TestSpecsPage({ navigate = () => {} }) {
                     </td>
                     <td className="text-center font-bold">{s.caseCount || 0}</td>
                     <td className="text-slate-600 text-xs">{s.description || '-'}</td>
-                    <td className="text-slate-500 text-[10px]">{new Date(s.createdAt).toLocaleDateString('vi-VN')}</td>
+                    <td className="text-slate-500 ui-caption">{new Date(s.createdAt).toLocaleDateString('vi-VN')}</td>
                     <td className="text-center">
                       <button
                         onClick={() => { setSelectedSuiteId(String(s.id)); setViewMode('cases'); }}
-                        className="cat-btn text-[10px] px-2 py-0.5"
+                        className="cat-btn ui-caption px-2 py-0.5"
                       >
                         Xem {s.caseCount || 0} cases
                       </button>
@@ -290,7 +291,7 @@ export function TestSpecsPage({ navigate = () => {} }) {
               )}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
       )}
 
       {/* Modals */}

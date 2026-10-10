@@ -8,6 +8,14 @@
 /* Use native scrolling so wheel/touch input reaches each page, table and dialog. */
 
 :root {
+  /* One compact, readable type scale for Admin and project workspaces. */
+  --text-caption: 0.6875rem;
+  --text-table: 0.75rem;
+  --text-body: 0.8125rem;
+  --text-section: 0.9375rem;
+  --text-title: 1.125rem;
+  --text-brand: 1.25rem;
+  --text-metric: 1.5rem;
   --color-sidebar-bg: #147e75;
   --color-sidebar-text: #ffffff;
   --color-sidebar-hover: #ffffff1c;
@@ -30,8 +38,8 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: #FFFFFF;
   color: var(--color-text-main);
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: var(--text-body);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -49,7 +57,7 @@ body {
   min-width: 0;
   max-width: 100%;
   padding: 6px 8px;
-  font-size: 12px;
+  font-size: var(--text-table);
   line-height: 1.5;
   color: #333333;
   background-color: #FFFFFF;
@@ -74,7 +82,7 @@ body {
   min-height: 36px;
   max-width: 100%;
   padding: 6px 10px;
-  font-size: 12px;
+  font-size: var(--text-table);
   line-height: 1.5;
   font-weight: 500;
   border-radius: 2px;
@@ -110,7 +118,7 @@ body {
 .cat-btn:disabled { cursor: not-allowed; opacity: .55; }
 
 @media (max-width: 640px) {
-  .cat-btn, .cat-input, .cat-select { min-height: 44px; font-size: 13px; }
+  .cat-btn, .cat-input, .cat-select { min-height: 44px; font-size: var(--text-body); }
 }
 
 /* Shared form layouts also apply when a picker is embedded outside a form. */
@@ -118,12 +126,25 @@ body {
 .ui-field > input, .ui-field > select, .ui-field > textarea { width: 100%; min-width: 0; max-width: 100%; }
 .ui-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 12px 0; min-width: 0; }
 .ui-actions > button { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.ui-page-title { font-size:var(--text-title); line-height:1.4; font-weight:600; }
+.ui-caption { font-size:var(--text-caption); line-height:1.5; }
+/* Keep narrow flex/grid children from pushing the page wider than the viewport. */
+:where(main,section,article,fieldset) { min-width:0; }
+:where(h1,h2,h3,h4,p,dt,dd) { overflow-wrap:anywhere; }
+@media (max-width:768px),(pointer:coarse) {
+  .admin-shell button,.fw-page button,.ai-page .ai-button,
+  .dashboard-board.work-items .d-button,.cat-btn { min-height:44px; }
+}
+@media (max-width:768px) {
+  /* iOS must not zoom into smaller text fields on focus. */
+  input:not([type=checkbox]):not([type=radio]),select,textarea { font-size:1rem !important; }
+}
 
 /* Dense Data Tables */
 .cat-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: var(--text-table);
   text-align: left;
 }
 
@@ -214,7 +235,7 @@ body {
 
 .cat-handbook-title {
   font-weight: 700;
-  font-size: 13px;
+  font-size: var(--text-body);
   color: #1A3636;
   border-b: 1px solid #D5DDDD;
   padding-bottom: 6px;
@@ -223,7 +244,7 @@ body {
 
 .cat-handbook-section {
   font-weight: 700;
-  font-size: 12px;
+  font-size: var(--text-table);
   color: #20B7A6;
   margin-top: 8px;
   margin-bottom: 4px;

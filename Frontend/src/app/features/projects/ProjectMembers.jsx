@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import React, { useEffect, useState } from 'react';
 import { projectsApi } from '../../services/api/projects';
 
@@ -24,10 +25,10 @@ export function ProjectMembers({projectId,canEdit,onMembershipChange=()=>{}}) {
     <p className="settings-hint">Thêm tài khoản nội bộ đã có vào dự án. Quyền dự án không cấp quyền tạo tài khoản mới.</p>
     {error && <p role="alert" className="text-danger">{error} <button className="cat-btn" disabled={busy} onClick={()=>setReload(x=>x+1)}>Thử lại</button></p>}
     {editor && <MemberEditor projectId={projectId} member={editor.member} onClose={()=>setEditor(null)} onSaved={()=>{setEditor(null);setReload(x=>x+1);onMembershipChange();}}/>}
-    {!members ? !error && <p>Đang tải thành viên…</p> : <div className="settings-table-scroll"><table className="data-table"><thead><tr><th>Tên</th><th>Vai trò dự án</th>{canEdit && <th>Thao tác</th>}</tr></thead><tbody>
+    {!members ? !error && <p>Đang tải thành viên…</p> : <TableScroll label="Thành viên dự án" className="settings-table-scroll"><table className="data-table"><thead><tr><th>Tên</th><th>Vai trò dự án</th>{canEdit && <th>Thao tác</th>}</tr></thead><tbody>
       {members.map(member=><tr key={member.userId}><td><strong>{member.displayName}</strong><div>@{member.username}</div></td><td>{roles[member.projectRole]}</td>{canEdit && <td><div className="ui-actions"><button className="btn-icon" disabled={busy || !!editor} onClick={()=>setEditor({member})}>Sửa vai trò {member.displayName}</button><button className="btn-icon text-danger" disabled={busy || !!editor} onClick={()=>remove(member)}>Gỡ {member.displayName}</button></div></td>}</tr>)}
       {!members.length && <tr><td colSpan={3}>Chưa có thành viên.</td></tr>}
-    </tbody></table></div>}
+    </tbody></table></TableScroll>}
   </section>;
 }
 function MemberEditor({projectId,member,onClose,onSaved}) {

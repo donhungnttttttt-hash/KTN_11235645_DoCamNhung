@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '../work-items/components';
 export const requestLabels = { OPEN: 'Chờ kiểm thử', SUBMITTED: 'Đã ghi kết quả', CANCELLED: 'Đã hủy' };
@@ -20,7 +21,7 @@ export function RetestError({ action, reload }) {
   return <>{action.error && <p className="ex-error" role="alert">{action.error}</p>}{action.conflict && <Button disabled={action.busy} onClick={() => action.reconcile(reload)}>Tải bản hiện hành, giữ bản nháp</Button>}</>;
 }
 export function CoverageTable({ items, selected, onSelect }) {
-  return <div className="ex-table-wrap"><table className="ex-table rt-table"><thead><tr>{onSelect && <th>Chọn</th>}<th>Test case</th><th>Cấu hình</th><th>Người thực hiện</th><th>Xác minh bug</th></tr></thead><tbody>
+  return <TableScroll label="Lượt kiểm thử cần xác minh" className="ex-table-wrap"><table className="ex-table rt-table"><thead><tr>{onSelect && <th>Chọn</th>}<th>Test case</th><th>Cấu hình</th><th>Người thực hiện</th><th>Xác minh bug</th></tr></thead><tbody>
     {items.map(item => <tr key={item.id}>{onSelect && <td><input type="checkbox" aria-label={`Chọn ${item.caseNo} ${item.environmentName} ${item.deviceName}`} checked={selected.includes(item.id)} onChange={() => onSelect(item.id)} /></td>}<td><a href={`#/tests/cycles/${item.cycleId}`}>{item.caseNo}</a><small>{item.titleVi}</small></td><td>{item.environmentName}<small>{item.deviceName}</small></td><td>{item.assigneeName}</td><td><span className={`rt-verdict ${item.verdict || ''}`}>{verdictLabels[item.verdict] || 'Chưa xác minh'}</span></td></tr>)}
-  </tbody></table></div>;
+  </tbody></table></TableScroll>;
 }

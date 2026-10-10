@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import React, {useState} from 'react';
 
 export function useCaseViewState() {
@@ -24,10 +25,10 @@ export function FileCaseView({view,raw,renderResult,renderActions,viewState}) {
       <h3>{row.caseNo} · {row.titleVi}</h3><p>{index+1}/{view.rows.length} case trong file</p>
       <div className="fw-case-result">{renderResult(row)}{renderActions(row)}</div>
       <dl className="fw-case-fields">{(raw?row.sourceCells:row.cells).map((cell,i)=><div key={i}><dt>{view.headers[i] || `Cột ${i+1}`}</dt><dd>{cell || '—'}</dd></div>)}</dl>
-    </section> : <div className="fw-table-scroll" tabIndex={0} role="region" aria-label="Case thực thi chính thức"><table>
+    </section> : <TableScroll className="fw-table-scroll" tabIndex={0} role="region" aria-label="Case thực thi chính thức"><table>
       <thead><tr>{view.headers.map((h,i)=><th key={i} scope="col">{h}</th>)}<th>Kết quả / ngữ cảnh</th><th>Thao tác</th></tr></thead>
       <tbody>{view.rows.map(r=><tr key={r.runItemId}>{(raw?r.sourceCells:r.cells).map((cell,i)=><td key={i}>{cell}</td>)}<td>{renderResult(r)}</td><td>{renderActions(r)}</td></tr>)}</tbody>
-    </table></div>}
+    </table></TableScroll>}
   </section>;
 }
 

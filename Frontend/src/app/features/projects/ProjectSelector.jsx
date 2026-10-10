@@ -22,7 +22,7 @@ export function ProjectSelector() {
   if (!projectContext) {
     return (
       <div className="project-selector-container">
-        <span style={{ fontSize: "14px", color: "var(--text-secondary, #94a3b8)" }}>
+        <span style={{ fontSize: "var(--text-body)", color: "var(--text-secondary, #94a3b8)" }}>
           Dự án: <strong>Mặc định</strong>
         </span>
       </div>

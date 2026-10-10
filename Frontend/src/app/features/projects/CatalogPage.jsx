@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import { canManageProjectWork } from './projectAccess';
 import React, { useState, useEffect } from "react";
 import { useProject } from "./ProjectProvider";
@@ -148,10 +149,10 @@ function ProjectCatalog({ currentProject }) {
         ) : error ? (
           <p className="text-danger" role="alert">{error} <button onClick={()=>setReload(value=>value+1)}>Thử lại</button></p>
         ) : (
-          <div className="settings-table-scroll"><table className="data-table full-width">
+          <TableScroll label="Danh mục dự án" className="settings-table-scroll"><table className="data-table full-width">
             <thead>{renderTableHeaders()}</thead>
             <tbody>{renderTableRows()}</tbody>
-          </table></div>
+          </table></TableScroll>
         )}
       </div>
     </div>

@@ -252,7 +252,7 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
                         ) : (
                           <span className="text-amber-600">Dự thảo</span>
                         )}
-                        <span className="text-slate-400 font-mono text-[10px]">
+                        <span className="text-slate-400 font-mono ui-caption">
                           {new Date(r.createdAt).toLocaleDateString('vi-VN')}
                         </span>
                       </div>

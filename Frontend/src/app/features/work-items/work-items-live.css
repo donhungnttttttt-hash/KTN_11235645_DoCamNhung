@@ -1,5 +1,5 @@
 .wi-form { display: grid; gap: 16px; }
-.wi-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; color: #254565; font-size: 12px; }
+.wi-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; color: #254565; font-size: var(--text-table); }
 .wi-field > span { color: #64748b; font-weight: 500; }
 .wi-field input,.wi-field select,.wi-field textarea { width: 100%; border: 1px solid #cbd5e1; background: #fff; color: #183651; border-radius: 3px; padding: 8px 10px; font: inherit; }
 .wi-field textarea { resize: vertical; min-height: 70px; line-height: 1.65; }
@@ -12,27 +12,32 @@
 .wi-actions:has(> .wi-field) { align-items: flex-end; }
 .wi-actions > .wi-field { flex: 0 1 320px; max-width: 100%; }
 .wi-field input[type="file"] { min-width: 0; max-width: 100%; }
-.wi-note { color: #64748b; font-size: 12px; line-height: 1.6; }
+.wi-note { color: #64748b; font-size: var(--text-table); line-height: 1.6; }
 .wi-error { padding: 10px 12px; border: 1px solid #fecaca; color: #9f1239; background: #fff1f2; border-radius: 4px; display: flex; align-items: center; gap: 12px; }
 .wi-section { padding-top: 16px; border-top: 1px solid #dbe5ef; display: grid; gap: 12px; }
 .wi-toolbar { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; padding: 12px 0 18px; }
 .wi-toolbar .wi-field { flex: 1; min-width: 130px; }
 .wi-table-scroll { overflow-x: auto; background: white; border: 1px solid #dbe5ef; }
-.wi-table { border-collapse: collapse; min-width: 1080px; width: 100%; font-size: 12px; }
+.wi-table { border-collapse: collapse; min-width: 1600px; width: 100%; font-size: var(--text-table); }
 .wi-table th { color: #07988e; font-weight: 500; background: #fff; white-space: nowrap; }
-.wi-table th,.wi-table td { padding: 13px 12px; border-bottom: 1px solid #d8e1e9; text-align: left; }
+.wi-table th,.wi-table td { padding: 8px 10px; border-bottom: 1px solid #d8e1e9; text-align: left; vertical-align:top; }
 .wi-table tr:nth-child(even) { background: #f5f7f9; }
 .wi-table tbody tr:hover { background: #fffdeb; }
 .wi-table .wi-title { min-width: 280px; max-width: 420px; line-height: 1.6; }
+.wi-table .wi-title button { text-align:left; line-height:1.5; }
+.wi-table .wi-person { display:flex; align-items:center; gap:6px; min-width:150px; }
+.wi-table .wi-person > :first-child { flex-shrink:0; }
+.wi-table .wi-date { white-space:nowrap; min-width:110px; }
+.wi-table .d-status-badge { max-width:220px; }
 .wi-detail { display: grid; gap: 20px; }
 .wi-detail > *, .wi-detail-body > *, .wi-section > * { min-width: 0; }
 .wi-detail .wi-actions > button { max-width: 100%; overflow-wrap: anywhere; white-space: normal; }
 .wi-detail-body { display: grid; grid-template-columns: minmax(0,2fr) minmax(210px,1fr); gap: 24px; }
-.wi-detail h2 { font-size: 17px; line-height: 1.6; margin: 0; }
-.wi-detail h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.wi-detail h2 { font-size: var(--text-section); line-height: 1.6; margin: 0; }
+.wi-detail h3 { font-size: var(--text-section); font-weight: 600; margin-bottom: 8px; }
 .wi-detail p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.75; }
 .wi-properties { background: #f7fafc; padding: 16px; display: grid; gap: 12px; align-content: start; border: 1px solid #e2e8f0; }
-.wi-properties dt { color: #64748b; font-size: 11px; }.wi-properties dd { margin-top: 3px; font-size: 12px; }
+.wi-properties dt { color: #64748b; font-size: var(--text-caption); }.wi-properties dd { margin-top: 3px; font-size: var(--text-table); }
 .wi-history-item { border-bottom: 1px solid #e2e8f0; padding: 12px 0; }.wi-history-item small { color: #64748b; }
 .wi-batch { background: #e8f7f5; padding: 10px; display: flex; align-items: center; gap: 12px; }
 .wi-batch select { padding: 6px; border: 1px solid #cbd5e1; }

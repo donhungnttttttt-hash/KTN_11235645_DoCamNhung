@@ -1,13 +1,13 @@
 .rm-panel summary { color: #158c82; cursor: pointer; font-weight: 600; }
 .rm-content { padding-top: 14px; }
-.rm-status { font-size: 12px; border-radius: 12px; padding: 4px 10px; background: #edf2f7; color: #456078; }
+.rm-status { font-size: var(--text-table); border-radius: 12px; padding: 4px 10px; background: #edf2f7; color: #456078; }
 .rm-DELIVERED { background: #e0f5ee; color: #17806d; }
 .rm-CONFLICT,.rm-UNCERTAIN,.rm-FAILED { background: #fff3df; color: #936215; }
-.rm-warning { padding: 10px 12px; background: #fffaf0; border-left: 3px solid #deb160; font-size: 12px; }
-.rm-review { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.rm-warning { padding: 10px 12px; background: #fffaf0; border-left: 3px solid #deb160; font-size: var(--text-table); }
+.rm-review { display: flex; align-items: center; gap: 8px; font-size: var(--text-table); }
 .rm-compare { overflow-x: auto; margin: 12px 0; }
-.rm-compare table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+.rm-compare table { width: 100%; min-width:600px; border-collapse: collapse; font-size: var(--text-table); table-layout: fixed; }
 .rm-compare caption { text-align: left; font-weight: 600; padding: 8px 0; }
 .rm-compare th,.rm-compare td { padding: 9px; border: 1px solid #dce4ee; text-align: left; vertical-align: top; white-space: pre-wrap; overflow-wrap: anywhere; }
 .rm-compare thead { background: #f5f8fb; }.rm-compare th:first-child { width: 18%; }
-.rm-history { margin-top: 12px; font-size: 12px; }.rm-history p { padding: 6px 0; border-bottom: 1px solid #e6edf4; }
+.rm-history { margin-top: 12px; font-size: var(--text-table); }.rm-history p { padding: 6px 0; border-bottom: 1px solid #e6edf4; }

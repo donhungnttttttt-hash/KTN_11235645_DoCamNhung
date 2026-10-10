@@ -1,3 +1,4 @@
+import {TableScroll} from '../components/TableScroll';
 import React from 'react';
 
 export function CatHandbook() {
@@ -46,7 +47,7 @@ export function CatHandbook() {
         <div>
           <div className="cat-handbook-section">3. Các quy tắc thu thập bằng chứng (thủ tục chứng cứ)</div>
           <p className="text-xs text-slate-600 mb-2">Để chứng minh rằng cuộc thử nghiệm đã được thực hiện, chúng tôi sẽ lưu giữ bằng chứng theo các quy tắc sau:</p>
-          <table className="cat-table text-xs">
+          <TableScroll label="Quy định chứng cứ"><table className="cat-table text-xs">
             <thead>
               <tr>
                 <th className="w-1/4">Mục</th>
@@ -71,7 +72,7 @@ export function CatHandbook() {
                 <td>Các trường hợp kiểm thử mục tiêu, các phiếu báo lỗi mục tiêu</td>
               </tr>
             </tbody>
-          </table>
+          </table></TableScroll>
         </div>
 
         <div>

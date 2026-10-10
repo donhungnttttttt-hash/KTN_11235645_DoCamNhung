@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import React, { useEffect, useState } from 'react';
 import { testCasesApi } from '../../services/api/testCases';
 import { useDialogFocus } from '../../hooks/useDialogFocus';
@@ -20,7 +21,7 @@ export function DocumentResultHistory({projectId,documentId,row,timeZone,onClose
       {error && <div role="alert" className="td-error">{error} <button className="cat-btn" onClick={()=>setRetry(n=>n+1)}>Thử lại</button></div>}
       {busy && <p role="status">Đang tải lịch sử…</p>}
       {!busy && !error && !items.length && <p>Chưa có thay đổi kết quả trên tài liệu.</p>}
-      {!!items.length && <div className="td-table-scroll"><table className="td-history-table td-document-result-history"><thead><tr><th>Thời gian</th><th>Người sửa</th><th>Trước</th><th>Sau</th></tr></thead><tbody>{items.map(item=><tr key={item.id}><td>{documentDate(item.occurredAt,timeZone)}</td><td>{item.actor}</td><td>{item.before}</td><td>{item.after}</td></tr>)}</tbody></table></div>}
+      {!!items.length && <TableScroll label="Lịch sử kết quả" className="td-table-scroll"><table className="td-history-table td-document-result-history"><thead><tr><th>Thời gian</th><th>Người sửa</th><th>Trước</th><th>Sau</th></tr></thead><tbody>{items.map(item=><tr key={item.id}><td>{documentDate(item.occurredAt,timeZone)}</td><td>{item.actor}</td><td>{item.before}</td><td>{item.after}</td></tr>)}</tbody></table></TableScroll>}
       {more && !error && <button className="cat-btn" disabled={busy} onClick={()=>setBefore(items.at(-1).id)}>Xem lịch sử cũ hơn</button>}
     </div>
   </section></div>;

@@ -1,3 +1,4 @@
+import {TableScroll} from '../../components/TableScroll';
 import React, { useEffect, useState } from 'react';
 
 export function useAdminRead(key, load) {
@@ -23,7 +24,7 @@ export function ReadState({loading,error,retry}) {
   return null;
 }
 export function ProjectTable({items,scope=''}) {
-  return <div className="admin-table-scroll" tabIndex={0} aria-label="Bảng tổng hợp dự án"><table><thead><tr><th>Dự án</th><th>PM hoạt động</th><th>Thành viên hoạt động</th><th>Lượt áp dụng</th><th>Đã thực thi</th><th>Đạt</th><th>Bug mở</th><th>Mốc quá hạn</th><th>Máy đang giữ</th><th>Trạng thái</th></tr></thead><tbody>
+  return <TableScroll className="admin-table-scroll admin-project-table" tabIndex={0} aria-label="Bảng tổng hợp dự án"><table><thead><tr><th>Dự án</th><th>PM hoạt động</th><th>Thành viên hoạt động</th><th>Lượt áp dụng</th><th>Đã thực thi</th><th>Đạt</th><th>Bug mở</th><th>Mốc quá hạn</th><th>Máy đang giữ</th><th>Trạng thái</th></tr></thead><tbody>
     {items.map(p=><tr key={p.id}><th><a className="admin-project-link" href={`#/admin/projects/${p.id}${scope}`}>{p.code} · {p.name}</a></th><td>{p.pmNames || 'Chưa có PM hoạt động'}</td><td>{p.activeMembers}</td><td>{p.metrics.applicable}</td><td>{percent(p.metrics.executionPercent)}</td><td>{percent(p.metrics.passPercent)}</td><td>{p.openBugs}</td><td>{p.overdueMilestones ?? 0}</td><td>{p.heldDevices??0}</td><td>{p.archivedAt ? 'Lưu trữ' : 'Hoạt động'}</td></tr>)}
-  </tbody></table></div>;
+  </tbody></table></TableScroll>;
 }
