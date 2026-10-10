@@ -52,18 +52,20 @@ class NativeAiDraftTest {
                 assertThat(NativeFqFixture.bytes(c,"SELECT source_workbook FROM import_batches WHERE id=?",fixture.document)).isEqualTo(fixture.source);
                 assertThat(NativeFqFixture.scalar(c,"SELECT COUNT(*) FROM ai_generated_drafts")).isZero();
                 assertThat(flyway("23").migrate().migrationsExecuted).isZero();
+                long legacy=NativeFqFixture.insert(c,"INSERT INTO ai_generated_drafts(project_id,created_by,purpose,source_reference,prompt_version,request_key,request_hash,model,created_at,expires_at) VALUES(?,?,'PM_PROGRESS_REPORT',?,'v1','legacy-v23-provenance',REPEAT('a',64),'gpt-4.1-mini-2025-04-14',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6)+INTERVAL 7 DAY)",fixture.project,fixture.pm,"project:"+fixture.project);
                 assertThat(flyway("24").migrate().migrationsExecuted).isEqualTo(1);
+                assertThat(NativeFqFixture.scalar(c,"SELECT COUNT(*) FROM ai_generated_drafts WHERE id=? AND provider='OPENAI_API' AND connection_id IS NULL AND connection_version=0 AND requested_model IS NULL AND model='gpt-4.1-mini-2025-04-14'",legacy)).isEqualTo(1);
                 assertThat(flyway("24").migrate().migrationsExecuted).isZero();
                 NativeFqDatabase.cleanOwned(c,NativeFileWorkQaMigrationTest.tables(c));
-                assertThat(flyway("24").migrate().migrationsExecuted).isEqualTo(24);
-                flyway("24").validate();
+                assertThat(flyway("25").migrate().migrationsExecuted).isEqualTo(25);
+                flyway("25").validate();
             } finally { NativeFqFixture.scalar(c,"SELECT RELEASE_LOCK(CONCAT('native-fq-',DATABASE()))"); }
         }
         r.add("spring.datasource.url",NativeFqDatabase::url);r.add("spring.datasource.username",NativeFqDatabase::user);r.add("spring.datasource.password",NativeFqDatabase::password);
         r.add("TMS_DB_URL",NativeFqDatabase::url);r.add("TMS_DB_USER",NativeFqDatabase::user);r.add("TMS_DB_PASSWORD",NativeFqDatabase::password);
         r.add("TMS_MIGRATION_USER",NativeFqDatabase::user);r.add("TMS_MIGRATION_PASSWORD",NativeFqDatabase::password);
         r.add("spring.flyway.enabled",()->"false");r.add("spring.sql.init.mode",()->"never");r.add("spring.jpa.hibernate.ddl-auto",()->"validate");
-        r.add("spring.session.jdbc.cleanup-cron",()->"-");r.add("TMS_AI_DRAFT_CLEANUP_CRON",()->"-");
+        r.add("spring.session.jdbc.cleanup-cron",()->"-");r.add("TMS_AI_DRAFT_CLEANUP_CRON",()->"-");r.add("TMS_AI_CHAT_CLEANUP_CRON",()->"-");
         r.add("TMS_BOOTSTRAP_ENABLED",()->"false");r.add("TMS_REDMINE_ENABLED",()->"false");r.add("TMS_OPENAI_ENABLED",()->"true");
         r.add("OPENAI_API_KEY",()->"test-only-never-live");
         r.add("TMS_AI_PROJECT_DAILY_LIMIT",()->"2");
