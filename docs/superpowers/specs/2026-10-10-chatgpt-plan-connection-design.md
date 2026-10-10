@@ -13,6 +13,12 @@ Ngày: 10/10/2026 · Nhánh khảo sát: `system-design` · Baseline: `66eeaf0`.
 - Không tự động đăng nhập thay người dùng, mua credit, chia sẻ token hoặc đổi provider khi lỗi. Bản local ChatGPT chỉ được nghiệm thu sau thao tác đăng nhập/cấp quyền của người dùng. Không coi việc có Plus/Pro là đủ bằng chứng inference.
 - Lựa chọn thực hiện: native repository `system-design`, workflow subagent-driven-development cho các task độc lập theo thứ tự, controller kiểm thử tích hợp. User đã yêu cầu thực hiện, không chờ một lượt duyệt chung mới; quyền truy cập tài khoản cá nhân được thực hiện ở bước đăng nhập chính thức.
 
+### Chốt cách triển khai local
+
+Giữ cơ chế request đồng bộ có deadline để tái sử dụng pipeline bản nháp hiện tại: nguồn mới có tối đa 25 giây cho refresh và inference, API hiện tại tối đa 30 giây; frontend giữ timeout 35 giây và tra lại cùng request key khi mất phản hồi. Không giữ transaction database trong thời gian gọi model. Thiết kế worker 90 giây ở phần nền là phương án sau nếu đo thực tế thấy cần tác vụ dài.
+
+Metadata kết nối ChatGPT, phiên bản, model đã kiểm tra, khóa idempotency và hạn mức probe được lưu cùng credential trong kho runtime mã hóa và giới hạn quyền file; không tạo thêm bảng kết nối/probe trong MySQL ở bản local này. Các kết quả phân tích và hội thoại vẫn được lưu vào MySQL theo yêu cầu. Pending probe sau khởi động lại chuyển thất bại, không tự gọi model lại.
+
 ## 1. Mục tiêu và phạm vi
 
 Người dùng đã có tài khoản ChatGPT trả phí và credit, muốn tận dụng trong TMS để phân tích dự án, báo cáo, phân công và hỗ trợ ticket. Nội dung AI vẫn phải lưu tạm vào database. Quyền Admin/PM/Tester/Dev đã chốt vẫn áp dụng.
