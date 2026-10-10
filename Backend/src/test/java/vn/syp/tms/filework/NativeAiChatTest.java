@@ -135,6 +135,33 @@ class NativeAiChatTest {
         send(f.pm,id,"Hello","archive-private-001").andExpect(status().isOk());
         verify(provider,times(1)).generate(anyString(),any(),anyString(),any());
     }
+    @Test void closedFileGroupCycleAndArchivedProjectKeepSavedChatReadonly() throws Exception {
+        long group;try(var c=dataSource.getConnection()){group=f.group(c,f.run(c));}
+        long id=create(f.pm,f.project,"PM_ASSIGNMENT_SUGGESTION",group);
+        var saved=read(send(f.pm,id,"Suggest assignments","closed-file-group-001")
+                .andExpect(status().isOk()).andExpect(jsonPath("$.state").value("READY")).andReturn());
+        directActor(f.pm);
+        var pending=store.reserve(f.pm,id,"Before close","closed-file-group-pending",new AiProviderGateway.ResolvedSelection("OPENAI_API","gpt-4.1-mini",null,0),List.of(),false);
+        jdbc.update("UPDATE test_cycles SET status_code='CLOSED',activated_at=UTC_TIMESTAMP(6),activated_by=? WHERE id=?",f.pmMember,f.cycle);
+        assertThatThrownBy(()->store.complete(f.pm,pending.id(),output("Too late")))
+                .isInstanceOfSatisfying(vn.syp.tms.shared.web.BusinessException.class,e->assertThat(e.code()).isEqualTo("NOT_FOUND"));
+        store.markFailed(f.pm,pending.id(),"AI_CONTEXT_CHANGED");
+        SecurityContextHolder.clearContext();
+        for(boolean archived:List.of(false,true)) {
+            if(archived)jdbc.update("UPDATE projects SET archived_at=UTC_TIMESTAMP(6) WHERE id=?",f.project);
+            mvc.perform(get("/api/v1/ai/chats/"+id).with(actor(f.pm))).andExpect(status().isOk())
+                    .andExpect(jsonPath("$.turns[0].id").value(saved.path("id").asLong()));
+            mvc.perform(get("/api/v1/ai/chats").with(actor(f.pm))).andExpect(status().isOk())
+                    .andExpect(jsonPath("$.items[0].id").value(id));
+            send(f.pm,id,"Suggest assignments","closed-file-group-001").andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(saved.path("id").asLong()));
+            send(f.pm,id,"New request","closed-file-group-new").andExpect(status().is4xxClientError());
+            mvc.perform(get("/api/v1/ai/chats/"+id).with(actor(f.tester))).andExpect(status().isNotFound());
+        }
+        jdbc.update("UPDATE project_memberships SET active=FALSE WHERE id=?",f.pmMember);
+        mvc.perform(get("/api/v1/ai/chats/"+id).with(actor(f.pm))).andExpect(status().isNotFound());
+        verify(provider,times(1)).generate(anyString(),any(),anyString(),any());
+    }
     @Test void failedTurnKeepsQuestionButNeverBecomesHistory() throws Exception {
         long id=create(f.pm,null,null,null);
         when(provider.generate(anyString(),any(),anyString(),any())).thenThrow(new OpenAiResponsesClient.Failure("AI_INTERRUPTED"));

@@ -50,7 +50,7 @@ public class AiChatStore {
             db.row("SELECT id FROM work_items WHERE project_id=? AND id=? FOR SHARE",thread.projectId(),thread.targetId());
         access.requireSource(thread.projectId(),caller,purpose,thread.sourceReference());
         if("FILE_GROUP".equals(purpose.target()))
-            db.row("SELECT g.id FROM file_work_groups g JOIN test_cycles c ON c.project_id=g.project_id AND c.id=g.cycle_id WHERE g.project_id=? AND g.id=? AND c.status_code<>'CLOSED' FOR SHARE",thread.projectId(),thread.targetId());
+            db.row("SELECT g.id FROM file_work_groups g JOIN test_cycles c ON c.project_id=g.project_id AND c.id=g.cycle_id WHERE g.project_id=? AND g.id=? AND (?=FALSE OR c.status_code<>'CLOSED') FOR SHARE",thread.projectId(),thread.targetId(),write);
     }
     public ThreadView create(String actor,Long project,String purpose,Long target,AiProviderGateway.Selection selection) {
         owner(actor);
