@@ -797,10 +797,12 @@
       "accounts": true,
       "selfTest": true,
       "commit": true,
-      "pushBranch": "system-design",
+      "pushBranch": null,
       "merge": false,
       "deploy": false,
-      "localBackendRestart": true
+      "localBackendRestart": true,
+      "push": false,
+      "pushPolicy": "2026-10-10: User revoked standing push permission. Push only after a new explicit user request; latest keep-feature message does not authorize push."
     }
   },
   "confirmedDecisions": {
@@ -848,7 +850,7 @@
     }
   },
   "aiProvidersChat": {
-    "status": "IN_PROGRESS",
+    "status": "IN_REVIEW",
     "authorizedAt": "2026-10-10",
     "branch": "system-design",
     "plan": "docs/superpowers/plans/2026-10-10-ai-providers-chat.md",
@@ -859,13 +861,28 @@
       "Ollama local adapter",
       "Private persisted floating chat"
     ],
-    "implementationStage": "Provider, persisted chat, frontend and configuration helper independently reviewed; final whole-change review pending",
-    "liveVerification": "PENDING_USER_LOGIN: owner credentials on hand not accepted; user asked to sign in at localhost5173. Official OAuth/consent/model probe not run. Ollama not installed.",
-    "nativeVerification": "PASS: NativeAiChatTest18 isolated...0008, NativeAiDraftTest18 isolated...0010, freshV25/upgrades and Spring auth/CSRF/concurrency/lifecycle checks. Main8080 migrated V23 to V25, health UP; preservation66tables/6055oldrows/0changed.",
-    "coverage": "MEASURED: new chat classes91.94% lines/83.10% branches from merged matching-class JaCoCo; Task1 focused70.1%lines/50.7%branches. Not whole-system coverage.",
-    "nextAction": "Whole-change review, final relevant checks and authorized branch push. User admin.local login then official OAuth required for live ChatGPT acceptance.",
-    "browserVerification": "PASS scoped fixture checks: provider selector, general/project chat persistence/history/copy/minimize/unsent retention/navigation; measured CSS374x812,374x500,1024x768,1366x800 bounds and inspected screenshots. Initial tooling timeout recovered; viewport reset. No live AI or business DB writes.",
-    "frontendVerification": "PASS:713 full frontend tests before focusedracefix;46 coveringAI/API tests andbuild on7c4ec0 after7RED->GREEN regressions; scoped independentre-reviewR1/R2closed. WholeFEcoverage historical85.10/82.36/79.45/84.42; finalAI83.45/82.68/82.60/90.93(statements/branches/functions/lines).",
-    "localConfiguration": "PASS: reviewed helper PlanOnly and real setup for admin.local; external protected vault and User config; existing API settings preserved."
+    "implementationStage": "FR1-FR3 and FM1 fixed at f51a753; independent scoped re-review approved, no Critical/Important open. Multi-provider/chat retained by latest user instruction.",
+    "liveVerification": "PENDING_USER_LOGIN_AND_CONSENT: admin.local credential on hand not accepted; prepared localhost5173 tab. Official OAuth/model-specific probe not run, native Ollama not installed. Historical API quota error is not a current-balance check.",
+    "nativeVerification": "PASS: final NativeAiChatTest22 and NativeAiDraftTest18 on isolated3307...0012. Main8080 V25 healthUP; final preservation69tables/6060oldrows/0changed.",
+    "coverage": "Final27-test connection suite only:91.53%lines/69.67%branches; combined final batch NOT_MEASURED. Previous scoped evidence retained in handover; no whole-product80%claim.",
+    "nextAction": "User signs into admin.local then completes official ChatGPT consent/model probe for live acceptance; configure installed Ollama if wanted. Keep code local; push only after a new explicit user request.",
+    "browserVerification": "PASS scoped fixture responsive/persistence checks previously recorded; final main runtime DemoAdmin login,3source chooser/chat panel and saved API provenance independent of current ChatGPT selection checked. No real inference calls.",
+    "frontendVerification": "PASS: final64files/721tests andbuild on f51a753; changed provenance scope11/11. Previous responsive fixture coverage retained; no new whole-FE coverage measurement.",
+    "localConfiguration": "PASS: reviewed helper PlanOnly and real setup for admin.local; external protected vault and User config; existing API settings preserved.",
+    "implementation": "COMPLETE_LOCAL_REVIEWED",
+    "databaseVersion": 25,
+    "backendVerification": "PASS:82distinct affected unit/provider cases across final55+27runs after a test-only Mockito fixture correction; cleancompile/packagePASS.",
+    "delivery": {
+      "sourceCommit": "f51a753cbb59efc588e717c0169ac50c556af420",
+      "pushed": false,
+      "requiresExplicitPushRequest": true,
+      "lastRemoteHead": "66eeaf02a147b1d913bbc4e8192ff3b92d2c2b61"
+    },
+    "evidence": [
+      "docs/reviews/2026-10-10-ai-providers-chat-handover.md",
+      "docs/reviews/2026-10-10-ai-providers-final-review.md",
+      "docs/reviews/2026-10-10-ai-providers-final-fixes.md",
+      "docs/reviews/2026-10-10-ai-providers-final-re-review.md"
+    ]
   }
 }

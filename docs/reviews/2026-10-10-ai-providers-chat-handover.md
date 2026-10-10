@@ -1,6 +1,6 @@
 # Bàn giao nguồn AI và hội thoại riêng — 10/10/2026
 
-Code nguồn/API/chat/UI đã triển khai trên `system-design`. Helper thiết lập local đã được review độc lập và chạy cho owner `admin.local`; backend8080 đã lên V25. Tài liệu này phân biệt kiểm thử tổng hợp, kiểm tra browser của controller và nghiệm thu model thật. Whole-change review và push cuối còn đang thực hiện; chưa gọi là liveAI PASS.
+Code nguồn/API/chat/UI đã triển khai trên `system-design`. Helper thiết lập local đã được review độc lập và chạy cho owner `admin.local`; backend8080 đã lên V25. Review tổng thể FR1–FR3 và minor FM1 đã sửa ở `f51a753`; review lại độc lập xác nhận không còn Critical/Important trong phạm vi này. Người dùng chốt giữ tính năng sau khi hủy yêu cầu hoàn tác; **chỉ push khi có yêu cầu rõ ràng mới**. Chưa gọi là liveAI PASS.
 
 ## Phạm vi và các sửa lỗi đã kiểm chứng
 
@@ -56,10 +56,24 @@ Controller xác minh PID/classpath backend cũ, restart đúng backend8080 bằn
 
 Anonymous metadata trả401 đúng yêu cầu. Đăng nhập owner bằng credential bootstrap cũ và mật khẩu browser lưu sẵn không được chấp nhận; không đoán thêm hoặc reset mật khẩu. Đã mở tab `http://localhost:5173/#/admin/ai` và yêu cầu người dùng đăng nhập `admin.local`. Vì vậy action kết nối trên runtime chính và official OAuth/live probe còn **PENDING_USER_LOGIN**, không gọi PASS từ fixture.
 
-User phải hoàn tất official authorization/consent, chọn catalog model và chủ động probe trước khi dùng ChatGPT; entitlement/plan allowance/live inference/schema/quality còn riêng. Ollama chưa cài binary/server/model; không tự download. API insufficient_quota ngày09/10 là lịch sử, không được tự gọi lại hay suy balance hiện tại. Whole-change independent review, planning state, final commit/push do controller làm; không merge. Các gate UAT/pilot/đích triển khai thật của S11 không được đóng bởi test fixture này.
+User phải hoàn tất official authorization/consent, chọn catalog model và chủ động probe trước khi dùng ChatGPT; entitlement/plan allowance/live inference/schema/quality còn riêng. Ollama chưa cài binary/server/model; không tự download. API insufficient_quota ngày09/10 là lịch sử, không được tự gọi lại hay suy balance hiện tại. Review độc lập cuối và sửa lỗi được ghi ở báo cáo riêng. Không push khi chưa có yêu cầu rõ ràng mới từ người dùng; không merge/deploy. Các gate UAT/pilot/đích triển khai thật của S11 không được đóng bởi test fixture này.
 
 ## Quyết định triển khai và chi phí nếu cần đổi
 
 1. Giữ request đồng bộ giới hạn25s cho nguồn mới, API tối đa30s, dùng lại request key khi chưa rõ kết quả. Tránh worker trùng; tác vụ chậm sẽ báo timeout và có thể cần async worker trong tương lai.
 2. Metadata kết nối/probe/hạn mức local nằm trong vault mã hóa ngoài MySQL; nội dung AI vẫn ở MySQL. Mất key/cài lại hoặc process chết trước khi commit token xoay vòng có thể phải kết nối lại.
 3. Dự án lưu trữ/đợt file đã đóng vẫn cho chủ sở hữu có quyền hiện tại đọc lịch sử; không cho tạo hoặc hoàn tất inference mới. Nếu khách hàng muốn đóng là thu hồi cả quyền đọc, cần thay chính sách này.
+4. Sau khi nhận token refresh xoay vòng, nếu không kiểm chứng được danh tính thì yêu cầu kết nối lại và vô hiệu hóa token cũ. Cách này tránh dùng lại token đã bị tiêu thụ; chi phí là có thể phải đăng nhập lại sau lỗi mạng ở bước kiểm chứng.
+
+## Kết quả cuối sau review
+
+- [Review tổng thể](2026-10-10-ai-providers-final-review.md), [bản sửa và bằng chứng](2026-10-10-ai-providers-final-fixes.md), [review lại có phạm vi](2026-10-10-ai-providers-final-re-review.md): FR1/FR2/FR3/FM1 đã xử lý. FM2 định dạng code UI và FM3 kích thước bundle/coverage còn là việc cải thiện không chặn tính năng; không suy đủ coverage từ test PASS.
+- Backend **82 case liên quan PASS qua các lần chạy cuối** (55 case và 27 case chạy lại sau sửa fixture Mockito); native **22 chat/phiên + 18 draft PASS** trên schema riêng...0012. Đã tái hiện thực tế bốn ca chat/draft × xóa/đổi session, account version không đổi, rồi xác nhận FAILED/no content/401 sau sửa.
+- Frontend cuối **64 file/721 test PASS**, build PASS; test provenance 11/11. Kiểm thử browser cuối trên runtime chính đăng nhập `syp.demo.admin`: ba nguồn nằm trên Tác vụ, mở khung chat, đọc bản API cũ và đổi lựa chọn sang ChatGPT vẫn giữ nhãn API/model đúng trong kết quả/lịch sử. Không bấm Phân tích/Gửi hoặc gọi model thật. Lựa chọn đã trả về API mặc định.
+- Backend đã được khởi động lại với code đã kiểm chứng, PID13944 tại8080, health HTTP200 UP,25 migration hợp lệ. Đối chiếu cuối trước login demo: **69 bảng/6.060 bản ghi cũ/0 bảng thay đổi**. Đây là kiểm tra bổ sung sau snapshot V23→V25 ban đầu, không thay số liệu66bảng/6.055bản ghi ở trên. Frontend5173 hoạt động. Log runtime `var/ai-reviewed-backend-20261010.log` ngoài git.
+- So khớp hai secret thực đang cấu hình (API key và vault key) với lịch sử/diff PASS; không có file config local/vault/key/var được track. Không in secret. RTK no-hook và LF/CRLF là advisory công cụ.
+- Không thực hiện push/merge/deploy. PR#2 cũ đã được merge trước phần mở rộng này; không coi PR đó là nghiệm thu hay phát hành phần code local hiện tại. Remote `system-design` vẫn ở `66eeaf0` khi kiểm tra cuối.
+
+Phần review chưa đánh giá được giữ nguyên thành gate rõ ràng: quyền gói/consent/model thật của ChatGPT; runtime/model/chất lượng Ollama; UAT/pilot toàn sản phẩm; đánh giá tải/hạ tầng và inventory dependency đầy đủ. Triển khai hosted/chia sẻ token hoặc settlement phân tán ngoài phạm vi personal-local. Chính sách đọc lịch sử archive giữ theo quyết định số3. Không phần nào được gọi PASS từ fixture.
+
+Các log/brief tạm trong workspace của kế hoạch được dọn sau khi ghi bằng chứng và quyết định vào các tài liệu đã track; chúng không phải tài liệu bàn giao lâu dài. Code, cấu hình local, vault, log runtime và các schema test được giữ. Người dùng vẫn cần đăng nhập `admin.local` ở tab localhost5173, rồi tự hoàn tất consent/probe để nghiệm thu ChatGPT; tài khoản demo không sử dụng kết nối cá nhân này.

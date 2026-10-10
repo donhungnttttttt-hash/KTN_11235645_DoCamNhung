@@ -2,7 +2,9 @@
 
 Phần mở rộng AI ngày 10/10: [kế hoạch](../superpowers/plans/2026-10-09-role-ai.md), [đặc tả theo vai trò](../product/AI-ASSISTANCE.md). Không gộp trạng thái nghiệm thu model live vào S11; gate số dư API và đánh giá chất lượng người dùng được ghi riêng.
 
-Mở rộng đã duyệt ngày 10/10: [nguồn AI và chat nổi](../superpowers/plans/2026-10-10-ai-providers-chat.md), [thiết kế](../superpowers/specs/2026-10-10-chatgpt-plan-connection-design.md). Đã triển khai lựa chọn ChatGPT/API/Ollama và hội thoại riêng lưu tạm MySQL; backend local đã lên V25, đang review tổng thể và bàn giao. OAuth và chất lượng model live phải được kiểm chứng riêng, không suy từ tài khoản trả phí.
+Mở rộng đã duyệt ngày 10/10: [nguồn AI và chat nổi](../superpowers/plans/2026-10-10-ai-providers-chat.md), [thiết kế](../superpowers/specs/2026-10-10-chatgpt-plan-connection-design.md). Đã triển khai lựa chọn ChatGPT/API/Ollama và hội thoại riêng lưu tạm MySQL; backend local đã lên V25, code đã qua review/sửa lỗi và kiểm chứng local; xem báo cáo bàn giao. OAuth và chất lượng model live phải được kiểm chứng riêng, không suy từ tài khoản trả phí.
+
+Chỉ đạo mới nhất ngày 10/10: giữ cả ba nguồn AI và chat, hủy yêu cầu hoàn tác trước đó. **Không còn quyền push thường trực: chỉ push sau một yêu cầu rõ ràng mới của người dùng.** Chỉ đạo giữ tính năng không phải cho phép push; chưa merge/deploy phần mở rộng này.
 
 Bàn giao ngày 09/10: [kiểm nghiệm và V22](../reviews/2026-10-09-verification-demo-v22.md), thêm [100 user/120 thiết bị](../database/demo-v22.md), sửa focus form kho máy. Local đã lên V22; giữ S11 IN_REVIEW cho các gate UAT/môi trường thật.
 
