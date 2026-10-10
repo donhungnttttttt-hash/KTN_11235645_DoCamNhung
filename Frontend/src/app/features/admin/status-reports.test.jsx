@@ -26,7 +26,8 @@ test('read-only member/admin sees history and automatic warning without posting 
 test('audit local named project and dates are sent with explicit timezone and reset page',async()=>{
  const api={projects:vi.fn().mockResolvedValue({items:[{id:7,code:'P7',name:'Project Seven'}],totalElements:1}),audit:vi.fn().mockResolvedValue({items:[],totalElements:0})};
  render(<AdminAudit api={api}/>);const user=userEvent.setup();
- await user.selectOptions(await screen.findByLabelText('Dự án trong nhật ký'),'7');
+ await user.click(screen.getByLabelText('Dự án trong nhật ký'));
+ await user.click(await screen.findByRole('option',{name:'P7 · Project Seven'}));
  await waitFor(()=>expect(api.audit).toHaveBeenLastCalledWith(expect.objectContaining({projectId:'7',page:0,timezone:'Asia/Ho_Chi_Minh'}),expect.anything()));
  expect(screen.getByText(/Ngày lọc và thời gian hiển thị/)).toBeInTheDocument();
 });

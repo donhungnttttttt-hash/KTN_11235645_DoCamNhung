@@ -15,7 +15,7 @@ Gợi ý nhân sự không phải xếp hạng năng lực. Dữ liệu hiện c
 
 ## Luồng sử dụng
 
-1. Đăng nhập, chọn dự án, vào **Trợ lý AI**. Backend trả các tác vụ của vai trò hiện tại.
+1. Đăng nhập, chọn dự án, vào **Trợ lý AI**. Admin mở **Dự án cần hỗ trợ** và gõ tên hoặc mã ngay trong dropdown để tìm, rồi chọn kết quả; không cần nút tìm riêng. Gõ từ khóa hoặc đóng dropdown chưa làm thay đổi dự án đang chọn. Backend trả các tác vụ của vai trò hiện tại.
 2. Chọn tác vụ; chọn file/ticket nếu cần. Tìm theo từ khóa nếu danh sách dài.
 3. Chọn **Phân tích**. Backend dựng snapshot tối thiểu, giữ mã yêu cầu rồi gọi OpenAI ngoài transaction database; kết quả được lưu thành bản nháp để đối chiếu.
 4. Chỉ hiển thị thành công sau khi lưu kết quả hợp lệ. Lỗi provider được lưu bằng mã cố định, không lưu raw error hoặc khóa. Timeout dùng **Kiểm tra lại yêu cầu**, không tự phát sinh lần gọi mới.

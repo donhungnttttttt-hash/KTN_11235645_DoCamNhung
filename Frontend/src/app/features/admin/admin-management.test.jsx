@@ -13,13 +13,12 @@ describe('central project creation',()=>{
   const selected={id:301,code:'SEL',name:'Selected project'};
   const api={projects:vi.fn().mockImplementation(async filters=>({items:filters.keyword?[{id:302,code:'MATCH',name:'Search match'}]:[selected],totalElements:1}))};
   render(<AdminUserProjectFilter api={api} value="301" onChange={vi.fn()}/>);
+  fireEvent.click(screen.getByLabelText('Dự án của người dùng'));
   await screen.findByRole('option',{name:'SEL · Selected project'});
   fireEvent.change(screen.getByLabelText('Tìm dự án theo tên hoặc mã'),{target:{value:'Search'}});
-  fireEvent.click(screen.getByRole('button',{name:'Tìm dự án'}));
   await screen.findByRole('option',{name:'MATCH · Search match'});
   expect(api.projects).toHaveBeenLastCalledWith({page:0,size:100,keyword:'Search'},expect.anything());
-  expect(screen.getByLabelText('Dự án của người dùng')).toHaveValue('301');
-  expect(screen.getByRole('option',{name:'SEL · Selected project'})).toBeInTheDocument();
+  expect(screen.getByRole('button',{name:'Dự án của người dùng'})).toHaveTextContent('SEL · Selected project');
  });
  it('requires explicit PM and retains draft when create fails',async()=>{
   const api={projects:vi.fn().mockResolvedValue({items:[{id:1,code:"AA",name:"Project Alpha"}],totalElements:1}),users:vi.fn().mockResolvedValue({items:[{id:'pm',displayName:'Manager',role:'PM'}],totalElements:1}),createProject:vi.fn().mockRejectedValue(new Error('Mã đã tồn tại'))};
@@ -95,7 +94,8 @@ it('locks and unlocks with current versions, reports failures and resets paging 
  fireEvent.click(await screen.findByRole('button',{name:'Trang trước'}));
  fireEvent.change(screen.getByLabelText('Tìm username hoặc tên'),{target:{value:'none'}});
  fireEvent.change(screen.getByLabelText('Trạng thái'),{target:{value:'false'}});
- fireEvent.change(screen.getByLabelText('Dự án của người dùng'),{target:{value:'1'}});
+ fireEvent.click(screen.getByLabelText('Dự án của người dùng'));
+ fireEvent.click(await screen.findByRole('option',{name:'AA · Project Alpha'}));
  await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({keyword:'none',enabled:'false',projectId:'1',page:0}),expect.anything()));
 });
 
@@ -129,13 +129,14 @@ it('selects named projects locally and retains the chosen label while paging the
  const api={projects:vi.fn(({page})=>Promise.resolve({items:page?[{id:2,code:'BB',name:'Beta'}]:[{id:1,code:'AA',name:'Alpha'}],totalElements:101}))};
  const changed=vi.fn();function Picker(){const [value,setValue]=React.useState('');return <AdminUserProjectFilter api={api} value={value} onChange={v=>{setValue(v);changed(v);}}/>;}
  window.location.hash='/admin/users';render(<Picker/>);
- const select=screen.getByLabelText('Dự án của người dùng');expect(select).toHaveValue('');
- await screen.findByRole('option',{name:'AA · Alpha'});fireEvent.change(select,{target:{value:'1'}});
+ const select=screen.getByLabelText('Dự án của người dùng');expect(select).toHaveTextContent('Tất cả dự án');
+ fireEvent.click(select);fireEvent.click(await screen.findByRole('option',{name:'AA · Alpha'}));
  expect(changed).toHaveBeenLastCalledWith('1');expect(window.location.hash).toBe('#/admin/users');
+ fireEvent.click(select);
  fireEvent.click(screen.getByRole('button',{name:'Dự án tiếp'}));await screen.findByRole('option',{name:'BB · Beta'});
- expect(select).toHaveValue('1');expect(screen.getByRole('option',{name:'AA · Alpha'})).toBeInTheDocument();
+ expect(select).toHaveTextContent('AA · Alpha');
  fireEvent.click(screen.getByRole('button',{name:'Dự án trước'}));await waitFor(()=>expect(api.projects).toHaveBeenLastCalledWith({page:0,size:100},expect.anything()));
- fireEvent.change(select,{target:{value:''}});expect(changed).toHaveBeenLastCalledWith('');
+ fireEvent.click(await screen.findByRole('option',{name:'Tất cả dự án'}));expect(changed).toHaveBeenLastCalledWith('');
 });
 
 it('discards selected additions and role drafts when navigating to another project',async()=>{
@@ -156,13 +157,11 @@ it('never labels a newly selected project with the previous project name while i
  let resolveSecond;
  const api={projects:vi.fn().mockResolvedValue({items:[],totalElements:0}),project:vi.fn(id=>String(id)==='1'?Promise.resolve({id:1,code:'AA',name:'Alpha'}):new Promise(resolve=>{resolveSecond=resolve;}))};
  const view=render(<AdminUserProjectFilter api={api} value="1" onChange={()=>{}}/>);
- await screen.findByRole('option',{name:'AA · Alpha'});
+ await waitFor(()=>expect(screen.getByLabelText('Dự án của người dùng')).toHaveTextContent('AA · Alpha'));
  view.rerender(<AdminUserProjectFilter api={api} value="2" onChange={()=>{}}/>);
  const select=screen.getByLabelText('Dự án của người dùng');
- expect(select).toHaveValue('2');
- expect(select.selectedOptions[0].textContent).toBe('Dự án #2');
+ expect(select).toHaveTextContent('Dự án #2');
  await waitFor(()=>expect(resolveSecond).toBeTypeOf('function'));
  resolveSecond({id:2,code:'BB',name:'Beta'});
- await screen.findByRole('option',{name:'BB · Beta'});
- expect(select.selectedOptions[0].textContent).toBe('BB · Beta');
+ await waitFor(()=>expect(select).toHaveTextContent('BB · Beta'));
 });

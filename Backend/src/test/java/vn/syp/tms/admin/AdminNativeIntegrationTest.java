@@ -61,6 +61,18 @@ class AdminNativeIntegrationTest {
         assertThat(all.totalProjects()).isGreaterThanOrEqualTo(2);
         assertThat(all.totalUsers()).isEqualTo(jdbc.queryForObject("SELECT COUNT(*) FROM identity_users",Long.class));
     }
+    @Test void projectSearchAcceptsVietnameseNamesAndTreatsWildcardCharactersLiterally() throws Exception {
+        jdbc.update("UPDATE projects SET name=? WHERE id=?","Dự án kiểm thử tiếng Việt 100%_",first);
+        for(String keyword:List.of("kiểm thử tiếng Việt","%","_")) {
+            mvc.perform(get("/api/v1/admin/projects").param("projectId",Long.toString(first)).param("keyword",keyword).with(actor(admin)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.items[0].id").value(first));
+        }
+        for(String keyword:List.of("không tồn tại","%","_")) {
+            mvc.perform(get("/api/v1/admin/projects").param("projectId",Long.toString(second)).param("keyword",keyword).with(actor(admin)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(0));
+        }
+    }
     @Test void anonymousTesterAndRevokedAdminDenied() throws Exception {
         mvc.perform(get("/api/v1/admin/overview")).andExpect(status().isUnauthorized());
         mvc.perform(get("/api/v1/admin/overview").with(actor(tester))).andExpect(status().isForbidden());

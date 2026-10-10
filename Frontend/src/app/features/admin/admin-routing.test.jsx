@@ -18,10 +18,11 @@ describe('admin route boundary',()=>{
  test('project scope keeps the named selection when browsing another page of projects',async()=>{
   const api={projects:vi.fn(({page})=>Promise.resolve({items:page?[{id:2,code:'P2',name:'Second'}]:[{id:1,code:'P1',name:'First'}],totalElements:101})),project:vi.fn().mockResolvedValue({id:1,code:'P1',name:'First'})};
   render(<AdminLayout path="/admin/projects/1" projectId="1" navigate={vi.fn()} api={api}/>);
+  await userEvent.setup().click(screen.getByLabelText('Phạm vi dự án'));
   await screen.findByRole('option',{name:'P1 · First'});
   await userEvent.setup().click(screen.getByRole('button',{name:/^Dự án (tiếp|sau trong bộ chọn)$/}));
   await screen.findByRole('option',{name:'P2 · Second'});
-  await waitFor(()=>expect(screen.getByLabelText('Phạm vi dự án').selectedOptions[0].textContent).toBe('P1 · First'));
+  expect(screen.getByRole('button',{name:'Phạm vi dự án'})).toHaveTextContent('P1 · First');
  });
  test('different identity remount cannot inherit a retained explicit workspace query',async()=>{
   const workspaceIdentity={current:null};window.history.replaceState(null,'','#/dashboard?workspace=1');
@@ -49,8 +50,9 @@ describe('admin route boundary',()=>{
   mocks.project.mockResolvedValue({id:1,code:'P1',name:'First',activeMembers:0,openBugs:0,awaitingVerification:0,metrics:empty.metrics,milestones:[],verificationBugs:[]});
   render(<AdminApp route="/admin/projects/1?projectId=2"/>);
   await screen.findByRole('heading',{name:'P1 · First'});
-  expect(screen.getByLabelText('Phạm vi dự án')).toHaveValue('1');
-  await userEvent.setup().selectOptions(screen.getByLabelText('Phạm vi dự án'),'2');
+  expect(screen.getByLabelText('Phạm vi dự án')).toHaveTextContent('P1 · First');
+  await userEvent.setup().click(screen.getByLabelText('Phạm vi dự án'));
+  await userEvent.setup().click(await screen.findByRole('option',{name:'P2 · Second'}));
   expect(window.location.hash).toBe('#/admin/projects/2?projectId=2');
  });
  test('logout failure is retryable and keyboard skip preserves the hash route',async()=>{

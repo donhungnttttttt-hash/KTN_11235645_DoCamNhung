@@ -57,8 +57,9 @@ public class AdminOverviewService {
         authorize(actor);
         if(page<0 || size<1 || size>100 || keyword!=null && keyword.length()>100) fail(422,"VALIDATION_ERROR","Bộ lọc hoặc phân trang không hợp lệ.");
         scope(projectId);
-        // LOCATE performs literal substring search: '%' and '_' do not broaden scope.
-        String search=" AND (?='' OR LOCATE(?,p.code)>0 OR LOCATE(?,p.name)>0)";
+        // Code is stored as ASCII; convert the column so a Vietnamese search term
+        // is never coerced to ASCII. Keep code matching case-sensitive and literal.
+        String search=" AND (?='' OR LOCATE(?,CONVERT(p.code USING utf8mb4) COLLATE utf8mb4_bin)>0 OR LOCATE(?,p.name)>0)";
         var params=new ArrayList<Object>(Arrays.asList(args(projectId)));String term=text(keyword);
         params.add(term);params.add(term);params.add(term);
         long count=db.count("SELECT COUNT(*) FROM projects p WHERE 1=1"+filter(projectId)+search,params.toArray());

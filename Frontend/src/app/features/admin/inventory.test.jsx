@@ -8,6 +8,7 @@ import {DeviceAllocationDialog} from './DeviceAllocationDialog';
 import {ProjectDevices} from '../projects/ProjectDevices';
 const asset={id:8,assetCode:'IP-08',type:'IPAD',model:'iPad',conditionCode:'AVAILABLE',status:'AVAILABLE',version:2};
 const page=items=>({items,totalElements:items.length});
+async function chooseProject(label){fireEvent.click(screen.getByLabelText(label));fireEvent.click(await screen.findByRole('option',{name:'AA · Alpha'}));}
 it('creates project with selected physical machine and clears recipient after member removal',async()=>{
  const api={users:vi.fn().mockResolvedValue(page([{id:'pm',displayName:'Manager',username:'manager',role:'PM'},{id:'dev',displayName:'Developer',username:'developer',role:'DEV'}])),assets:vi.fn().mockResolvedValue(page([asset])),createProject:vi.fn().mockRejectedValue(new Error('Máy đã được giao'))};
  render(<AdminProjectForm api={api} onSaved={()=>{}}/>);
@@ -24,16 +25,16 @@ it('preserves edited asset draft and reloads version on conflict',async()=>{
  fireEvent.change(screen.getByLabelText('Hãng / model'),{target:{value:'New iPad'}});fireEvent.click(screen.getByText('Lưu máy'));await screen.findByText('Conflict');fireEvent.click(screen.getByText('Tải phiên bản hiện hành, giữ bản nháp'));await screen.findByText(/Đã tải phiên bản hiện hành/);expect(screen.getByLabelText('Hãng / model')).toHaveValue('New iPad');fireEvent.click(screen.getByText('Lưu máy'));await waitFor(()=>expect(saved).toHaveBeenCalled());expect(api.updateAsset).toHaveBeenLastCalledWith(8,expect.objectContaining({model:'New iPad',expectedVersion:3}));
 });
 it('named local project filter resets paging and history is explicit',async()=>{
- const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),assets:vi.fn().mockResolvedValue({...page([asset]),totalElements:30}),allocations:vi.fn().mockResolvedValue(page([]))};render(<AdminDevices api={api}/>);await screen.findByText('IP-08');fireEvent.click(screen.getByText('Trang sau'));await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({page:1}),expect.anything()));fireEvent.change(screen.getByLabelText('Dự án đang giữ máy'),{target:{value:'2'}});await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({page:0,projectId:'2'}),expect.anything()));fireEvent.click(screen.getByLabelText('Xem lịch sử bàn giao'));await screen.findByText('Chưa có dữ liệu phù hợp.');expect(api.allocations).toHaveBeenCalledWith(expect.objectContaining({history:true,projectId:'2'}),expect.anything());
+ const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),assets:vi.fn().mockResolvedValue({...page([asset]),totalElements:30}),allocations:vi.fn().mockResolvedValue(page([]))};render(<AdminDevices api={api}/>);await screen.findByText('IP-08');fireEvent.click(screen.getByText('Trang sau'));await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({page:1}),expect.anything()));await chooseProject('Dự án đang giữ máy');await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({page:0,projectId:'2'}),expect.anything()));fireEvent.click(screen.getByLabelText('Xem lịch sử bàn giao'));await screen.findByText('Chưa có dữ liệu phù hợp.');expect(api.allocations).toHaveBeenCalledWith(expect.objectContaining({history:true,projectId:'2'}),expect.anything());
 });
 it('assignment selects named members and prevents duplicate submission',async()=>{
- let resolve;const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),members:vi.fn().mockResolvedValue([{userId:'pm',displayName:'Manager',username:'manager',active:true}]),assignDevice:vi.fn().mockReturnValue(new Promise(r=>{resolve=r;}))};render(<DeviceAllocationDialog asset={asset} api={api} onSaved={()=>{}} onCancel={()=>{}}/>);await screen.findByText('AA · Alpha');fireEvent.change(screen.getByLabelText('Dự án nhận máy'),{target:{value:'2'}});await screen.findByText('Manager · manager');fireEvent.change(screen.getByLabelText('Người nhận'),{target:{value:'pm'}});fireEvent.click(screen.getByText('Xác nhận bàn giao'));expect(screen.getByText('Xác nhận bàn giao')).toBeDisabled();expect(api.assignDevice).toHaveBeenCalledTimes(1);resolve({});
+ let resolve;const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),members:vi.fn().mockResolvedValue([{userId:'pm',displayName:'Manager',username:'manager',active:true}]),assignDevice:vi.fn().mockReturnValue(new Promise(r=>{resolve=r;}))};render(<DeviceAllocationDialog asset={asset} api={api} onSaved={()=>{}} onCancel={()=>{}}/>);await chooseProject('Dự án nhận máy');await screen.findByText('Manager · manager');fireEvent.change(screen.getByLabelText('Người nhận'),{target:{value:'pm'}});fireEvent.click(screen.getByText('Xác nhận bàn giao'));expect(screen.getByText('Xác nhận bàn giao')).toBeDisabled();expect(api.assignDevice).toHaveBeenCalledTimes(1);resolve({});
 });
 it('project inventory is read only and has retry state',async()=>{
  const api={projectDevices:vi.fn().mockRejectedValueOnce(new Error('Offline')).mockResolvedValue(page([]))};render(<ProjectDevices projectId={2} api={api}/>);await screen.findByText('Offline');fireEvent.click(screen.getByText('Thử lại'));await screen.findByText('Dự án chưa được bàn giao máy.');expect(screen.queryByText('Nhập máy')).toBeNull();expect(screen.queryByText('Xác nhận bàn giao')).toBeNull();
 });
 it('late return lookup cannot reopen editor after page scope changed',async()=>{
- let resolve;const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),assets:vi.fn().mockResolvedValue(page([{...asset,status:'ALLOCATED'}])),allocations:vi.fn().mockReturnValue(new Promise(r=>{resolve=r;}))};render(<AdminDevices api={api}/>);fireEvent.click(await screen.findByText('Thu hồi IP-08'));fireEvent.change(screen.getByLabelText('Dự án đang giữ máy'),{target:{value:'2'}});resolve(page([{id:10,version:0,recipientName:'Manager'}]));await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({projectId:'2'}),expect.anything()));expect(screen.queryByText('Xác nhận thu hồi')).toBeNull();
+ let resolve;const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),assets:vi.fn().mockResolvedValue(page([{...asset,status:'ALLOCATED'}])),allocations:vi.fn().mockReturnValue(new Promise(r=>{resolve=r;}))};render(<AdminDevices api={api}/>);fireEvent.click(await screen.findByText('Thu hồi IP-08'));await chooseProject('Dự án đang giữ máy');resolve(page([{id:10,version:0,recipientName:'Manager'}]));await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({projectId:'2'}),expect.anything()));expect(screen.queryByText('Xác nhận thu hồi')).toBeNull();
 });
 
 it.each(['asset','assign','return'])('late %s save preserves replacement editor and its draft',async(kind)=>{
@@ -56,8 +57,7 @@ it.each(['asset','assign','return'])('late %s save preserves replacement editor 
  }else if(kind==='assign'){
   fireEvent.click(screen.getByText('Bàn giao IP-08'));
   await screen.findByLabelText('Dự án nhận máy');
-  await waitFor(()=>expect(screen.getByLabelText('Dự án nhận máy').options).toHaveLength(2));
-  fireEvent.change(screen.getByLabelText('Dự án nhận máy'),{target:{value:'2'}});
+  await chooseProject('Dự án nhận máy');
   await screen.findByText('Manager · manager');
   fireEvent.change(screen.getByLabelText('Người nhận'),{target:{value:'pm'}});
   fireEvent.click(screen.getByText('Xác nhận bàn giao'));
@@ -66,7 +66,7 @@ it.each(['asset','assign','return'])('late %s save preserves replacement editor 
   fireEvent.click(await screen.findByText('Xác nhận thu hồi'));
  }
  expect(api[kind==='asset'?'updateAsset':kind==='assign'?'assignDevice':'returnDevice']).toHaveBeenCalledTimes(1);
- fireEvent.change(screen.getByLabelText('Dự án đang giữ máy'),{target:{value:'2'}});
+ await chooseProject('Dự án đang giữ máy');
  fireEvent.click(await screen.findByText('Sửa IP-08'));
  fireEvent.change(screen.getByLabelText('Hãng / model'),{target:{value:'Replacement draft'}});
  await act(async()=>{resolveSave({});});

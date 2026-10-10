@@ -6,6 +6,16 @@ Implementation commit `c9f1b7d` đã push `origin/system-design`; [PR #2](https:
 
 Cập nhật nhãn ngày 10/10 theo yêu cầu người dùng: nút **Tạo bản nháp** đổi thành **Phân tích** cho mọi vai trò. Hướng dẫn sử dụng và selector trong test đã đồng bộ; `AiAssistantPage.test.jsx` 10/10 PASS, diff check PASS. Đây là sửa nội dung giao diện, không thay contract hoặc nghiệp vụ; không đo lại coverage toàn hệ thống. Áp dụng kiểm chứng theo `verification-loop`; giới hạn AI live phía dưới vẫn còn.
 
+## Cập nhật bộ chọn dự án — 10/10/2026
+
+- Theo yêu cầu mới: bỏ ô/nút tìm dự án bên ngoài, đưa tìm theo tên/mã vào dropdown. Tự lọc qua API sau 250 ms, giữ dự án hiện tại cho đến khi chọn; Escape/click ngoài/Tab đóng, hỗ trợ phím mũi tên/Enter, kết quả rỗng/lỗi/thử lại và phân trang trong hộp.
+- Dùng chung cho AI, người dùng, thiết bị, bàn giao máy, nhật ký và phạm vi trang chi tiết dự án. Trang danh sách dự án vốn tắt tìm trong bộ chọn vẫn giữ select gốc và bộ lọc riêng.
+- Kiểm thử browser phát hiện API trả 503 khi tìm tiếng Việt có dấu do `LOCATE` đối chiếu từ khóa Unicode với cột mã ASCII. Sửa chuyển cột mã sang UTF-8 trong truy vấn; giữ đối chiếu mã phân biệt hoa/thường, `%`/`_` là ký tự thường. Không sửa migration/schema hoặc contract.
+- Áp dụng `frontend-patterns`, hồi quy RED → GREEN và `verification-loop`. Frontend: 4 test mới, tổng **682/682 PASS (60 files)** với 2 worker; build PASS (JS 582.27 KB, cảnh báo chunk >500 KB còn). Backend: **15/15 PASS**, gồm 8 native HTTP/integration và 7 service; regression Unicode quan sát 503 trước sửa, 200 và đúng kết quả sau sửa, có kiểm tra từ khóa không tồn tại và `%`/`_`.
+- Native dùng schema riêng `tms_docstest_202610100007`, rollback fixture. Lần đầu runner thiếu location migration demo V20/V22 nên Flyway từ chối; chạy lại với `SPRING_FLYWAY_LOCATIONS=classpath:db/migration,classpath:db/demo` đúng schema đã có, không repair/xóa migration.
+- Browser Chrome: mở/tìm mã/chọn bằng bàn phím, giữ lựa chọn khi tìm, Escape và áp dụng bộ lọc người dùng; viewport 375/768/1920 px, không tràn ngang, mục chọn tối thiểu 44 px, danh sách cuộn trong dropdown. Chưa kiểm tra bàn phím ảo hay thiết bị cảm ứng thật. Không gọi AI live. Không đo lại coverage trong lượt sửa này.
+- Backend local đã khởi động lại với code mới lúc 08:09 ngày 10/10, PID34584/cổng8080, health `UP`; MySQL3307 `tms` vẫn V23, không có migration mới. Browser xác nhận tìm “thư viện” trả đúng DEMO-S04, “không tồn tại 12345” hiện kết quả rỗng thay vì 503. Bộ lọc người dùng chọn SYP-LAB-22-IOS hiển thị 34 tài khoản của dự án.
+
 ## Kết quả triển khai
 
 - Admin rà soát dự án; PM soạn báo cáo tiến độ và gợi ý Tester cho file; Tester tổng hợp công việc cá nhân và hoàn thiện bug; Dev rà soát BUG/QA được giao và tìm ticket liên quan trong cùng dự án.
