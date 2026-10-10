@@ -4,6 +4,8 @@ Phạm vi mở rộng từ kết nối OpenAI sang sáu tác vụ cho Admin/PM/T
 
 Implementation commit `c9f1b7d` đã push `origin/system-design`; [PR #2](https://github.com/donhungnttttttt-hash/KTN_11235645_DoCamNhung/pull/2) mở vào `develop`. Không merge hoặc deploy.
 
+Cập nhật nhãn ngày 10/10 theo yêu cầu người dùng: nút **Tạo bản nháp** đổi thành **Phân tích** cho mọi vai trò. Hướng dẫn sử dụng và selector trong test đã đồng bộ; `AiAssistantPage.test.jsx` 10/10 PASS, diff check PASS. Đây là sửa nội dung giao diện, không thay contract hoặc nghiệp vụ; không đo lại coverage toàn hệ thống. Áp dụng kiểm chứng theo `verification-loop`; giới hạn AI live phía dưới vẫn còn.
+
 ## Kết quả triển khai
 
 - Admin rà soát dự án; PM soạn báo cáo tiến độ và gợi ý Tester cho file; Tester tổng hợp công việc cá nhân và hoàn thiện bug; Dev rà soát BUG/QA được giao và tìm ticket liên quan trong cùng dự án.

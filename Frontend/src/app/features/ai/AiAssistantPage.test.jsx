@@ -13,7 +13,7 @@ it('requires a project and does not call APIs without one',()=>{
 });
 it('shows only server-granted tasks, generates persisted content and saves a separate edit',async()=>{
  render(<AiWorkspace projectId={1} api={api}/>);
- const generate=await screen.findByRole('button',{name:'Tạo bản nháp'});
+ const generate=await screen.findByRole('button',{name:'Phân tích'});
  expect(screen.queryByRole('option',{name:'Rà soát dự án'})).toBeNull();
  fireEvent.click(generate);await screen.findByRole('heading',{name:'Báo cáo của tôi'});
  expect(api.generate.mock.calls[0][1]).toMatchObject({purpose:'TESTER_WORK_REPORT',targetId:null,requestKey:expect.any(String)});
@@ -25,16 +25,16 @@ it('shows only server-granted tasks, generates persisted content and saves a sep
 });
 it('retains the request key after a timeout and never starts a duplicate paid request on retry',async()=>{
  api.generate.mockRejectedValueOnce(Object.assign(new Error('Chậm'),{code:'TIMEOUT'}));
- render(<AiWorkspace projectId={1} api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Tạo bản nháp'}));
+ render(<AiWorkspace projectId={1} api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Phân tích'}));
  fireEvent.click(await screen.findByRole('button',{name:'Kiểm tra lại yêu cầu'}));
  await screen.findByRole('heading',{name:'Báo cáo của tôi'});
  expect(api.generate).toHaveBeenCalledTimes(2);expect(api.generate.mock.calls[0][1]).toEqual(api.generate.mock.calls[1][1]);
 });
 it('requires an allowed target and explains an empty target list',async()=>{
- render(<AiWorkspace projectId={1} api={api}/>);await screen.findByRole('button',{name:'Tạo bản nháp'});
+ render(<AiWorkspace projectId={1} api={api}/>);await screen.findByRole('button',{name:'Phân tích'});
  fireEvent.change(screen.getByLabelText('Tác vụ AI'),{target:{value:'TESTER_BUG_DRAFT'}});
  await screen.findByText(/Chưa có file hoặc ticket phù hợp/);
- expect(screen.getByRole('button',{name:'Tạo bản nháp'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Phân tích'})).toBeDisabled();
 });
 it('keeps saved drafts readable when generation is disabled and reads details from the server',async()=>{
  api.metadata.mockResolvedValue({enabled:false,role:'TESTER',retentionDays:7,purposes});api.list.mockResolvedValue([draft]);
@@ -42,23 +42,23 @@ it('keeps saved drafts readable when generation is disabled and reads details fr
  expect(await screen.findByText(/AI chưa được bật/)).toBeInTheDocument();
  fireEvent.click(screen.getByRole('button',{name:/Mở bản nháp.*Báo cáo của tôi/}));
  await screen.findByRole('heading',{name:'Báo cáo của tôi'});expect(api.get).toHaveBeenCalledWith(1,4,expect.anything());
- expect(screen.getByRole('button',{name:'Tạo bản nháp'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Phân tích'})).toBeDisabled();
 });
 it('shows provider quota failure without invented generated content',async()=>{
  api.generate.mockResolvedValue({...draft,state:'FAILED',content:null,failureCode:'AI_QUOTA_EXHAUSTED'});
- render(<AiWorkspace projectId={1} api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Tạo bản nháp'}));
+ render(<AiWorkspace projectId={1} api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Phân tích'}));
  expect(await screen.findByText(/hết số dư API/)).toBeInTheDocument();expect(screen.queryByLabelText('Nội dung để sử dụng')).toBeNull();
 });
 it('retains edited text on a save conflict',async()=>{
  api.edit.mockRejectedValue(Object.assign(new Error('Bản nháp đã thay đổi'),{status:409,code:'VERSION_CONFLICT'}));
- render(<AiWorkspace projectId={1} api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Tạo bản nháp'}));
+ render(<AiWorkspace projectId={1} api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Phân tích'}));
  fireEvent.change(await screen.findByLabelText('Nội dung để sử dụng'),{target:{value:'Chưa được mất'}});
  fireEvent.click(screen.getByRole('button',{name:'Lưu chỉnh sửa'}));await screen.findByText(/Bản nháp đã thay đổi/);
  expect(screen.getByLabelText('Nội dung để sử dụng')).toHaveValue('Chưa được mất');
 });
 it('aborts old project work and does not display a late response',async()=>{
  let finish;api.generate.mockImplementation(()=>new Promise(resolve=>{finish=resolve;}));
- const view=render(<AiWorkspace projectId={1} api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Tạo bản nháp'}));
+ const view=render(<AiWorkspace projectId={1} api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Phân tích'}));
  const signal=api.generate.mock.calls[0][2].signal;
  view.rerender(<AiWorkspace projectId={2} api={api}/>);await waitFor(()=>expect(api.metadata).toHaveBeenCalledWith(2,expect.anything()));
  expect(signal.aborted).toBe(true);await act(async()=>finish(draft));
@@ -73,7 +73,7 @@ it('preserves unsaved edits when opening another draft and switching project sco
  fireEvent.click(screen.getByRole('button',{name:'Mở bản nháp Bản thứ hai'}));await screen.findByRole('heading',{name:'Bản thứ hai'});
  fireEvent.click(screen.getByRole('button',{name:'Mở bản nháp Báo cáo của tôi'}));
  await waitFor(()=>expect(screen.getByLabelText('Nội dung để sử dụng')).toHaveValue('Nội dung chưa lưu cần giữ'));
- view.rerender(<AiWorkspace projectId={2} api={api}/>);await screen.findByRole('button',{name:'Tạo bản nháp'});
+ view.rerender(<AiWorkspace projectId={2} api={api}/>);await screen.findByRole('button',{name:'Phân tích'});
  view.rerender(<AiWorkspace projectId={1} api={api}/>);
  fireEvent.click(await screen.findByRole('button',{name:'Mở bản nháp Báo cáo của tôi'}));
  await waitFor(()=>expect(screen.getByLabelText('Nội dung để sử dụng')).toHaveValue('Nội dung chưa lưu cần giữ'));

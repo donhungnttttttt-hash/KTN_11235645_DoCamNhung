@@ -135,7 +135,7 @@ function Workspace({projectId,projectName,api,edits}) {
       {targets?.hasMore&&<p>Đang hiển thị 50 mục. Tìm theo tên để thu hẹp danh sách.</p>}
      </div>}
      <p className="ai-privacy">OpenAI sẽ nhận phần dữ liệu cần thiết của tác vụ. Bản nháp lưu {metadata.retentionDays} ngày, chỉ bạn được xem. Hãy đối chiếu nguồn trước khi dùng.</p>
-     <div className="ai-actions"><button className="ai-button ai-primary" disabled={!canGenerate} onClick={()=>generate()}><Sparkles size={16} aria-hidden="true"/>{busy?'Đang xử lý…':'Tạo bản nháp'}</button>
+     <div className="ai-actions"><button className="ai-button ai-primary" disabled={!canGenerate} onClick={()=>generate()}><Sparkles size={16} aria-hidden="true"/>{busy?'Đang xử lý…':'Phân tích'}</button>
       {pending&&<button className="ai-button" disabled={busy} onClick={()=>generate(true)}>Kiểm tra lại yêu cầu</button>}</div>
      {pending&&!busy&&<p role="status">Yêu cầu có thể đang được xử lý. Kiểm tra lại sẽ dùng cùng mã yêu cầu.</p>}
     </section>

@@ -17,7 +17,7 @@ Gợi ý nhân sự không phải xếp hạng năng lực. Dữ liệu hiện c
 
 1. Đăng nhập, chọn dự án, vào **Trợ lý AI**. Backend trả các tác vụ của vai trò hiện tại.
 2. Chọn tác vụ; chọn file/ticket nếu cần. Tìm theo từ khóa nếu danh sách dài.
-3. Chọn **Tạo bản nháp**. Backend dựng snapshot tối thiểu, giữ mã yêu cầu rồi gọi OpenAI ngoài transaction database.
+3. Chọn **Phân tích**. Backend dựng snapshot tối thiểu, giữ mã yêu cầu rồi gọi OpenAI ngoài transaction database; kết quả được lưu thành bản nháp để đối chiếu.
 4. Chỉ hiển thị thành công sau khi lưu kết quả hợp lệ. Lỗi provider được lưu bằng mã cố định, không lưu raw error hoặc khóa. Timeout dùng **Kiểm tra lại yêu cầu**, không tự phát sinh lần gọi mới.
 5. Đối chiếu nguồn, chỉnh nội dung, chọn **Lưu chỉnh sửa** hoặc **Sao chép** để đưa vào báo cáo/ticket qua luồng nghiệp vụ hiện có. Bản AI ban đầu vẫn được giữ để so sánh.
 6. Đọc lại ở **Bản nháp của bạn**. Một bản nháp chỉ chủ sở hữu được đọc; mất quyền dự án hoặc bị chuyển ticket sẽ chặn truy cập tương ứng.
