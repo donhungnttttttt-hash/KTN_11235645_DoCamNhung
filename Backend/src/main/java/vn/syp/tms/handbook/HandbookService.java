@@ -39,7 +39,7 @@ public class HandbookService {
     }
 
     public List<HandbookDtos.ResourceDto> listResources(Long projectId, String userId) {
-        projectService.requireMembership(projectId, userId);
+        projectService.requireReadAccess(projectId, userId);
         return resourceRepo.findByProjectId(projectId).stream()
                 .map(r -> {
                     ResourceRevision current = r.getCurrentRevisionId() == null ? null : revisionRepo.findById(java.util.Objects.requireNonNull(r.getCurrentRevisionId())).orElse(null);
@@ -49,7 +49,7 @@ public class HandbookService {
     }
 
     public HandbookDtos.ResourceDetailDto getResource(Long projectId, String userId, Long resourceId) {
-        projectService.requireMembership(projectId, userId);
+        projectService.requireReadAccess(projectId, userId);
         ProjectResource r = resourceRepo.findByProjectIdAndId(projectId, resourceId).orElseThrow(() -> new BusinessException(404, "NOT_FOUND", "Không tìm thấy"));
         ResourceRevision current = r.getCurrentRevisionId() == null ? null : revisionRepo.findById(java.util.Objects.requireNonNull(r.getCurrentRevisionId())).orElse(null);
         List<HandbookDtos.RevisionDto> history = revisionRepo.findByProjectIdAndResourceId(projectId, resourceId).stream().sorted(java.util.Comparator.comparing((ResourceRevision revision) -> revision.getRevisionNo()).reversed()).map(this::mapRevision).collect(Collectors.toList());

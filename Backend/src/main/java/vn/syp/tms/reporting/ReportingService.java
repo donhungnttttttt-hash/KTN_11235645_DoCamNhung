@@ -46,7 +46,7 @@ public class ReportingService {
         audit.record(p,actor,"REPORT",p,"EXPORT_XLSX");return bytes;
     }
     private Map<String,Object> snapshot(long p,String actor,Long cycle,Long build,int limit,Integer page) {
-        work.membership(p,actor);
+        work.readMembership(p,actor);
         Instant asOf=Instant.now();
         var project=db.row("SELECT id,code,name,timezone FROM projects WHERE id=?",p);
         if(cycle!=null) { positive(cycle);db.row("SELECT id FROM test_cycles WHERE project_id=? AND id=?",p,cycle); }

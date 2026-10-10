@@ -61,7 +61,7 @@ public class TestCaseService {
     // ===== Suites =====
 
     public List<TestCaseDtos.SuiteSummary> listSuites(Long projectId, String userId) {
-        projectService.requireMembership(projectId, userId);
+        projectService.requireReadAccess(projectId, userId);
         List<TestCaseEntities.TestSuite> suites = suiteRepository.findByProjectIdAndArchivedAtIsNullOrderBySortOrderAscIdAsc(projectId);
         return suites.stream().map(s -> {
             long count = caseRepository.countByProjectIdAndSuiteIdAndArchivedAtIsNull(projectId, s.getId());
@@ -124,7 +124,7 @@ public class TestCaseService {
     // ===== Cases =====
 
     public TestCaseDtos.CasePage searchCases(Long projectId,String userId,Long suiteId,String keyword,int page,int size) {
-        projectService.requireMembership(projectId,userId);
+        projectService.requireReadAccess(projectId,userId);
         if (page<0 || size<1 || size>100 || keyword.length()>255) throw new BusinessException(422,"INVALID_SEARCH","Tham số tìm kiếm không hợp lệ.");
         if (suiteId!=null) activeSuite(projectId,suiteId);
         String term="%"+keyword.toLowerCase(Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
@@ -137,7 +137,7 @@ public class TestCaseService {
     }
 
     public List<TestCaseDtos.CaseSummary> listCases(Long projectId, String userId, Long suiteId) {
-        projectService.requireMembership(projectId, userId);
+        projectService.requireReadAccess(projectId, userId);
         List<TestCaseEntities.TestCase> cases = (suiteId != null)
                 ? caseRepository.findByProjectIdAndSuiteIdAndArchivedAtIsNullOrderByIdDesc(projectId, suiteId)
                 : caseRepository.findByProjectIdAndArchivedAtIsNullOrderByIdDesc(projectId);
@@ -160,7 +160,7 @@ public class TestCaseService {
     }
 
     public TestCaseDtos.CaseDetail getCaseDetail(Long projectId, String userId, Long caseId) {
-        projectService.requireMembership(projectId, userId);
+        projectService.requireReadAccess(projectId, userId);
         TestCaseEntities.TestCase c = caseRepository.findByProjectIdAndId(projectId, caseId)
                 .orElseThrow(() -> new BusinessException(404, "NOT_FOUND", "Không tìm thấy test case."));
 
@@ -423,7 +423,7 @@ public class TestCaseService {
         }
     }
     public TestCaseDtos.RevisionDetail getRevision(Long projectId,String userId,Long caseId,Long revisionId) {
-        projectService.requireMembership(projectId,userId);
+        projectService.requireReadAccess(projectId,userId);
         var r=revisionRepository.findByProjectIdAndTestCaseIdAndId(projectId,caseId,revisionId)
                 .orElseThrow(()->new BusinessException(404,"NOT_FOUND","Không tìm thấy phiên bản test case."));
         return new TestCaseDtos.RevisionDetail(r.getId(),r.getRevisionNo(),r.getTitleVi(),r.getPreconditionsVi(),r.getStepsVi(),r.getExpectedVi(),r.getTitleJp(),r.getPreconditionsJp(),r.getStepsJp(),r.getExpectedJp(),r.getSourceReference(),r.getApprovedAt()!=null,r.getApprovedAt(),r.getCreatedAt(),r.getCreatedBy());

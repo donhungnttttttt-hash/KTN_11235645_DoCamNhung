@@ -45,6 +45,8 @@ class WorkItemHistoryTest {
                 .thenReturn(Map.of("id", 1L));
         when(store.row(java.util.Objects.requireNonNull(startsWith("SELECT m.id,CASE WHEN")), eq(1L), eq("pm")))
                 .thenReturn(Map.of("id", 7L, "role", "PM", "systemRole", "PM"));
+        when(store.row(java.util.Objects.requireNonNull(startsWith("SELECT COALESCE(m.id,0)")), eq(1L), eq("pm")))
+                .thenReturn(Map.of("id", 7L, "role", "PM", "systemRole", "PM"));
         when(store.row(java.util.Objects.requireNonNull(contains("FROM work_items w")), eq(1L), eq(9L)))
                 .thenAnswer(invocation -> new LinkedHashMap<>(existing));
         when(store.rows(java.util.Objects.requireNonNull(contains("FROM work_item_clarifications")), eq(1L), eq(9L)))

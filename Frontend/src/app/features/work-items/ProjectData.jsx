@@ -41,6 +41,6 @@ export function ProjectDataProvider({ children }) {
   return <ProjectDataContext.Provider value={{ ...current, projectId, issues: current.items, query, setQuery, refresh,
     canTriage: current.metadata?.canTriage === true && !currentProject?.archived,
     canCreateQa: current.metadata?.canCreateQa === true && !current.loading && !current.error && !currentProject?.archived,
-    writable: !!projectId && !currentProject?.archived }}>{children}</ProjectDataContext.Provider>;
+    writable: !!projectId && !currentProject?.archived && current.metadata?.membershipId !== 0 }}>{children}</ProjectDataContext.Provider>;
 }
 export function useProjectData() { return useContext(ProjectDataContext); }

@@ -1,3 +1,4 @@
+import { canManageProjectWork } from '../projects/projectAccess';
 import React, { useState, useEffect, useRef } from 'react';
 import { useProject } from '../projects/ProjectProvider';
 import { useAuth } from '../auth/AuthProvider';
@@ -11,7 +12,7 @@ export function TestCyclesPage({ navigate }) {
 }
 function Cycles({ project, navigate }) {
   const { hasRole } = useAuth();
-  const manager = project && !project.archived && (project.projectRole === 'PM' || hasRole?.('ADMIN'));
+  const manager = canManageProjectWork(project, hasRole);
   const [page, setPage] = useState(0), [reload, setReload] = useState(0);
   const [data, setData] = useState(null), [error, setError] = useState(''), [busy, setBusy] = useState(false);
   const [form, setForm] = useState(null);

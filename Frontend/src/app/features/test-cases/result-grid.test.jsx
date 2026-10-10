@@ -6,14 +6,15 @@ import { TestDocumentPage } from './TestDocumentPage';
 import { testCasesApi } from '../../services/api/testCases';
 import { executionApi } from '../../services/api/execution';
 
-const context=vi.hoisted(()=>({currentProject:{id:1,name:'Demo',projectRole:'TESTER'}}));
+const context=vi.hoisted(()=>({currentProject:{id:1,name:'Demo',projectRole:'TESTER'},role:'TESTER'}));
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>context}));
-vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({user:{id:'tester'}})}));
+vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({user:{id:'tester'},hasRole:role=>context.role===role})}));
 vi.mock('../../services/api/testCases',()=>({testCasesApi:{getDocument:vi.fn(),updateDocumentResult:vi.fn(),documentResultHistory:vi.fn(),exportDocument:vi.fn()}}));
 vi.mock('../../services/api/execution',()=>({executionApi:{cycles:vi.fn(),record:vi.fn(),decideScope:vi.fn()}}));
 beforeEach(()=>{
   vi.resetAllMocks();sessionStorage.clear();window.location.hash='';
   context.currentProject={id:1,name:'Demo',projectRole:'TESTER'};
+  context.role='TESTER';
   executionApi.cycles.mockResolvedValue({items:[],totalPages:0});
   const document={document:{id:9,fileName:'demo.xlsx',format:'CUSTOMER_V1'},headers:['ID','iPad*'],columns:{sourceId:0,result:1},rows:[1,2].map(id=>({rowId:id,caseId:id,sourceId:String(id),rowNumber:id+1,cells:[String(id),'Unexecuted'],sourceCells:[String(id),'OK'],resultStatus:'UNEXECUTED',resultVersion:0}))};
   testCasesApi.getDocument.mockImplementation(async()=>structuredClone(document));
@@ -83,4 +84,14 @@ it('does not allow cycling archived project data',async()=>{
   context.currentProject.archived=true;
   render(<TestDocumentPage documentId="9" navigate={vi.fn()}/>);
   expect(await screen.findByRole('button',{name:'Kết quả test case 1'})).toBeDisabled();
+});
+it('lets a global admin inspect and export a document without recording a test result',async()=>{
+  context.currentProject.projectRole=null;context.role='ADMIN';
+  const user=userEvent.setup();render(<TestDocumentPage documentId="9" navigate={vi.fn()}/>);
+  const button=await screen.findByRole('button',{name:'Kết quả test case 1'});
+  expect(button).toBeDisabled();await user.click(button);
+  expect(testCasesApi.updateDocumentResult).not.toHaveBeenCalled();
+  expect(screen.getByRole('button',{name:'Xuất Excel'})).toBeEnabled();
+  expect(screen.getByRole('button',{name:'Xem kết quả theo đợt'})).toBeEnabled();
+  expect(screen.getAllByRole('button',{name:'Lịch sử / chứng cứ'})[0]).toBeEnabled();
 });

@@ -60,7 +60,10 @@ public class ProjectStatusReportService {
   String role=identity.current(actor).getRole();
   boolean pm=false;
   if(admin) {if(!"ADMIN".equals(role))fail(403,"FORBIDDEN","Chỉ ADMIN được đọc quản trị.");}
-  else pm="PM".equals(membership(actor,projectId,false).get("role"))&&!"DEV".equals(role);
+  else if("ADMIN".equals(role)) {
+   var members=db.rows("SELECT project_role AS role FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE",projectId,actor);
+   pm=!members.isEmpty()&&"PM".equals(members.getFirst().get("role"));
+  } else pm="PM".equals(membership(actor,projectId,false).get("role"))&&!"DEV".equals(role);
   var project=db.row("SELECT id,archived_at AS archivedAt FROM projects WHERE id=?",projectId);
   if(page<0||size<1||size>100)fail(422,"INVALID_FILTER","Phân trang không hợp lệ.");
   long total=db.count("SELECT COUNT(*) FROM project_status_reports WHERE project_id=?",projectId);

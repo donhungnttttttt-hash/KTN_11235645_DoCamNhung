@@ -38,7 +38,7 @@ public class CatalogService {
 
     // Environments
     public List<CatalogDtos.EnvironmentDto> listEnvironments(Long projectId, String userId) {
-        projectService.requireMembership(projectId, userId);
+        projectService.requireReadAccess(projectId, userId);
         return environmentRepo.findByProjectId(projectId).stream()
                 .map(e -> new CatalogDtos.EnvironmentDto(e.getId(), e.getProjectId(), e.getCode(), e.getName(), e.getDescription(), e.isActive(), e.getVersion()))
                 .collect(Collectors.toList());
@@ -74,7 +74,7 @@ public class CatalogService {
 
     // Builds
     public List<CatalogDtos.BuildDto> listBuilds(Long projectId, String userId) {
-        projectService.requireMembership(projectId, userId);
+        projectService.requireReadAccess(projectId, userId);
         return buildRepo.findByProjectId(projectId).stream()
                 .filter(e -> e.getArchivedAt() == null)
                 .map(e -> new CatalogDtos.BuildDto(e.getId(), e.getProjectId(), e.getVersionLabel(), e.getBuildNumber(), e.getPlatform(), e.getNotes(), e.getReleasedAt(), e.getVersion()))
@@ -117,7 +117,7 @@ public class CatalogService {
 
     // Devices
     public List<CatalogDtos.DeviceDto> listDevices(Long projectId, String userId) {
-        projectService.requireMembership(projectId, userId);
+        projectService.requireReadAccess(projectId, userId);
         return deviceRepo.findByProjectId(projectId).stream()
                 .map(e -> new CatalogDtos.DeviceDto(e.getId(), e.getProjectId(), e.getCode(), e.getName(), e.getModel(), e.getOsName(), e.getOsVersion(), e.isActive(), e.getVersion()))
                 .collect(Collectors.toList());
@@ -155,7 +155,7 @@ public class CatalogService {
 
     // Categories
     public List<CatalogDtos.CategoryDto> listCategories(Long projectId, String userId) {
-        projectService.requireMembership(projectId, userId);
+        projectService.requireReadAccess(projectId, userId);
         return categoryRepo.findByProjectId(projectId).stream()
                 .map(e -> new CatalogDtos.CategoryDto(e.getId(), e.getProjectId(), e.getCode(), e.getName(), e.isActive(), e.getVersion()))
                 .collect(Collectors.toList());
@@ -190,7 +190,7 @@ public class CatalogService {
 
     // Milestones
     public List<CatalogDtos.MilestoneDto> listMilestones(Long projectId, String userId) {
-        projectService.requireMembership(projectId, userId);
+        projectService.requireReadAccess(projectId, userId);
         return milestoneRepo.findByProjectId(projectId).stream()
                 .map(e -> new CatalogDtos.MilestoneDto(e.getId(), e.getProjectId(), e.getCode(), e.getName(), e.getStartsOn(), e.getDueOn(), e.getArchivedAt() != null, e.getVersion()))
                 .collect(Collectors.toList());

@@ -62,7 +62,7 @@ public class ExecutionService {
 
     @Transactional(readOnly=true)
     public ExecutionDtos.Page<Map<String,Object>> cycles(long p,String actor,int page,int size) {
-        projects.requireMembership(p,actor); paging(page,size);
+        projects.requireReadAccess(p,actor); paging(page,size);
         long total=count("SELECT COUNT(*) FROM test_cycles WHERE project_id=?",p);
         return new ExecutionDtos.Page<>(rows(CYCLE+"WHERE c.project_id=? ORDER BY c.id DESC LIMIT ? OFFSET ?",p,size,(long)page*size),total,page,size,(int)((total+size-1)/size));
     }
@@ -77,7 +77,7 @@ public class ExecutionService {
 
     @Transactional(readOnly=true)
     public Map<String,Object> cycle(long p,String actor,long id) {
-        projects.requireMembership(p,actor);
+        projects.requireReadAccess(p,actor);
         return row(CYCLE+"WHERE c.project_id=? AND c.id=?",p,id);
     }
 
@@ -146,7 +146,7 @@ public class ExecutionService {
 
     @Transactional(readOnly=true)
     public Map<String,Object> run(long p,String actor,long id) {
-        projects.requireMembership(p,actor); return row(RUN+" WHERE r.project_id=? AND r.id=?",p,id);
+        projects.requireReadAccess(p,actor); return row(RUN+" WHERE r.project_id=? AND r.id=?",p,id);
     }
 
     public Map<String,Object> assign(long p,String actor,long id,ExecutionDtos.Assignment input) {

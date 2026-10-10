@@ -40,7 +40,7 @@ public class RuleService {
     }
 
     public List<RuleDtos.RulesetDto> listRulesets(Long projectId, String userId) {
-        projectService.requireMembership(projectId, userId);
+        projectService.requireReadAccess(projectId, userId);
         return rulesetRepo.findByProjectId(projectId).stream()
                 .map(r -> {
                     RuleVersion activeVersion = r.getActiveVersionId() == null ? null : versionRepo.findById(java.util.Objects.requireNonNull(r.getActiveVersionId())).orElse(null);
@@ -104,7 +104,7 @@ public class RuleService {
     }
 
     public List<RuleDtos.RuleVersionDto> versions(Long projectId,String userId,Long rulesetId) {
-        projectService.requireMembership(projectId,userId);
+        projectService.requireReadAccess(projectId,userId);
         rulesetRepo.findByProjectIdAndId(projectId,rulesetId).orElseThrow(()->new BusinessException(404,"NOT_FOUND","Không tìm thấy bộ quy tắc."));
         return versionRepo.findByProjectIdAndRulesetId(projectId,rulesetId).stream().sorted(java.util.Comparator.comparing((RuleVersion version) -> version.getVersionNo()).reversed()).map(this::mapVersion).toList();
     }

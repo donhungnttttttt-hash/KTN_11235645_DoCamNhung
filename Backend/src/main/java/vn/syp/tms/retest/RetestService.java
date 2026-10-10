@@ -114,7 +114,7 @@ public class RetestService {
     }
     @Transactional(readOnly=true)
     public WorkItemDtos.Page<Map<String,Object>> candidates(long p,String actor,int page,String keyword) {
-        work.membership(p,actor); page=Math.max(0,page); String term="%"+text(keyword).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
+        work.readMembership(p,actor); page=Math.max(0,page); String term="%"+text(keyword).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
         String from=" FROM run_items r JOIN test_cycles c ON c.project_id=r.project_id AND c.id=r.cycle_id JOIN test_cases tc ON tc.project_id=r.project_id AND tc.id=r.test_case_id JOIN test_case_revisions rv ON rv.project_id=r.project_id AND rv.id=r.revision_id JOIN cycle_configurations cf ON cf.project_id=r.project_id AND cf.id=r.configuration_id JOIN environments e ON e.project_id=cf.project_id AND e.id=cf.environment_id JOIN devices d ON d.project_id=cf.project_id AND d.id=cf.device_id JOIN project_memberships m ON m.project_id=r.project_id AND m.id=r.assignee_membership_id JOIN identity_users u ON u.id=m.user_id WHERE r.project_id=? AND c.status_code='ACTIVE' AND tc.archived_at IS NULL AND (tc.case_no LIKE ? ESCAPE '!' OR rv.title_vi LIKE ? ESCAPE '!')";
         from+=" AND NOT EXISTS (SELECT 1 FROM run_scope_decisions sd WHERE sd.project_id=r.project_id AND sd.id=r.scope_decision_id AND sd.excluded=TRUE)";
         long total=db.count("SELECT COUNT(*)"+from,p,term,term);
@@ -157,7 +157,7 @@ public class RetestService {
     }
     @Transactional(readOnly=true)
     public WorkItemDtos.Page<Map<String,Object>> queue(long p,String actor,int page,boolean mine,String status) {
-        var member=work.membership(p,actor);page=Math.max(0,page);var args=new ArrayList<Object>();args.add(p);
+        var member=work.readMembership(p,actor);page=Math.max(0,page);var args=new ArrayList<Object>();args.add(p);
         String where=" WHERE q.project_id=?";
         if(mine) {where+=" AND q.assignee_membership_id=?";args.add(member.get("id"));}
         if(!text(status).isEmpty()) {if(!Set.of("OPEN","SUBMITTED","CANCELLED").contains(status)) fail(422,"INVALID_STATUS","Trạng thái yêu cầu không hợp lệ.");where+=" AND q.status=?";args.add(status);}
@@ -166,7 +166,7 @@ public class RetestService {
     }
     @Transactional(readOnly=true)
     public Map<String,Object> request(long p,String actor,long id) {
-        var member=work.membership(p,actor);var request=db.row(REQUEST+" WHERE q.project_id=? AND q.id=?",p,id);
+        var member=work.readMembership(p,actor);var request=db.row(REQUEST+" WHERE q.project_id=? AND q.id=?",p,id);
         var items=db.rows(ITEMS+" JOIN retest_request_items qi ON qi.project_id=i.project_id AND qi.coverage_item_id=i.id WHERE qi.project_id=? AND qi.request_id=? ORDER BY i.id",p,id);
         request.put("items",items);request.put("results",db.rows("SELECT coverage_item_id AS coverageItemId,verdict,actual_result AS actualResult,evidence_attachment_id AS evidenceAttachmentId,execution_attempt_id AS executionAttemptId,verified_at AS verifiedAt FROM bug_verification_attempts WHERE project_id=? AND request_id=? ORDER BY id",p,id));
         var state=state(p,number(request,"bugId"));

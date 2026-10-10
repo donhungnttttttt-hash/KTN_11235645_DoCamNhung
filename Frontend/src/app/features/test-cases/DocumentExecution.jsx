@@ -1,3 +1,4 @@
+import { isProjectObserver } from '../projects/projectAccess';
 import React, { useEffect, useMemo, useState } from 'react';
 import { executionApi } from '../../services/api/execution';
 import { projectsApi } from '../../services/api/projects';
@@ -83,6 +84,7 @@ function FileWorkContextDialog({ execution:e, navigate, disabled }) {
 export function DocumentExecutionControls({ execution:e, project, navigate, disabled=false }){
   const {user,hasRole}=useAuth();
   const dev=hasRole?.('DEV') || project?.projectRole==='DEV';
+  const readOnly=dev || isProjectObserver(project, hasRole);
   const picker=Boolean(e.requested && (!e.selected || !e.context));
   const grouped=e.selected?.fileWorkGroupId != null && !e.requested?.historyOnly;
   const controls=<fieldset disabled={disabled} className="td-execution-controls" aria-label="Ngữ cảnh ghi kết quả">
@@ -93,7 +95,7 @@ export function DocumentExecutionControls({ execution:e, project, navigate, disa
       </select></label>
       {e.cycles?.totalPages>1 && <><button className="cat-btn" disabled={!e.cyclePage} onClick={()=>e.setCyclePage(v=>v-1)}>Đợt trước</button><button className="cat-btn" disabled={e.cyclePage+1>=e.cycles.totalPages} onClick={()=>e.setCyclePage(v=>v+1)}>Đợt tiếp</button></>}
       {e.context && <label>Cấu hình <select aria-label="Cấu hình ghi kết quả" value={e.configurationId} onChange={event=>e.setConfiguration(event.target.value)}><option value="">Chọn cấu hình</option>{e.context.configs.map(c=><option key={c.id} value={c.id}>{c.environmentName} / {c.deviceName} · {c.versionLabel} ({c.buildNumber || '—'})</option>)}</select></label>}
-      <button className="cat-btn" onClick={e.refresh}>Tải lại kết quả</button><button className="cat-btn" onClick={()=>navigate(e.choice.cycleId?`/tests/cycles/${e.choice.cycleId}`:'/tests/cycles')}>Thiết lập đợt / phân công</button>
+      <button className="cat-btn" onClick={e.refresh}>Tải lại kết quả</button><button className="cat-btn" onClick={()=>navigate(e.choice.cycleId?`/tests/cycles/${e.choice.cycleId}`:'/tests/cycles')}>{readOnly ? 'Xem đợt kiểm thử' : 'Thiết lập đợt / phân công'}</button>
       {e.loading && <span role="status">Đang tải kết quả…</span>}
       {!picker && e.pending && !e.choice.cycleId && <p role="status">Chọn đợt và cấu hình để ghi kết quả cho case {e.pending.sourceId}. Kết quả Excel gốc được giữ nguyên.</p>}
       {e.notice && <p role="status">{e.notice}</p>}{e.error && <div className="td-error" role="alert">{e.error}</div>}
@@ -102,7 +104,7 @@ export function DocumentExecutionControls({ execution:e, project, navigate, disa
     {picker?<ResultContextDialog execution={e}>{controls}</ResultContextDialog>:e.open?controls:null}
     {e.selected && e.context && (grouped
       ? <FileWorkContextDialog execution={e} navigate={navigate} disabled={disabled}/>
-      : <AttemptDialog key={e.selected.id} projectId={project.id} run={e.selected} builds={e.context.builds} active={e.context.cycle.statusCode==='ACTIVE' && !project.archived} readOnly={dev || e.requested?.historyOnly} currentUserId={user?.id} onClose={e.close} onSaved={e.refresh} timeZone={project.timezone}/>)}
+      : <AttemptDialog key={e.selected.id} projectId={project.id} run={e.selected} builds={e.context.builds} active={e.context.cycle.statusCode==='ACTIVE' && !project.archived} readOnly={readOnly || e.requested?.historyOnly} currentUserId={user?.id} onClose={e.close} onSaved={e.refresh} timeZone={project.timezone}/>)}
     {e.scope && <CycleDecisionDialog projectId={project.id} run={e.scope} onClose={()=>e.setScope(null)} onSaved={()=>{e.setScope(null);e.refresh();}}/>}
   </>;
 }

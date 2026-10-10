@@ -40,7 +40,7 @@ public class TestDocumentService {
         """;
 
     public TestDocumentDtos.Page list(Long projectId, String actor, int page, int size, String keyword) {
-        projects.requireMembership(projectId,actor);
+        projects.requireReadAccess(projectId,actor);
         if (page<0 || page>100000 || size<1 || size>100 || keyword.length()>255) throw invalidSearch();
         String term="%"+keyword.toLowerCase(Locale.ROOT).replace("!","!!").replace("%","!%").replace("_","!_")+"%";
         String filter=" AND LOWER(b.file_name) LIKE ? ESCAPE '!'";
@@ -50,7 +50,7 @@ public class TestDocumentService {
     }
 
     public TestDocumentDtos.Detail get(Long projectId, String actor, Long id) {
-        projects.requireMembership(projectId,actor);
+        projects.requireReadAccess(projectId,actor);
         var summary=summary(projectId,id);
         return detail(summary);
     }
@@ -90,7 +90,7 @@ public class TestDocumentService {
                 (rs,n)->new TestDocumentDtos.Result(rs.getLong(1),rs.getString(2),rs.getLong(3),rs.getTimestamp(4).toInstant(),rs.getString(5)),projectId,rowId).getFirst();
     }
     public List<TestDocumentDtos.Change> resultHistory(Long projectId,String actor,Long id,Long rowId,long before) {
-        projects.requireMembership(projectId,actor);
+        projects.requireReadAccess(projectId,actor);
         if(before<0) throw invalidSearch();
         Long count=jdbc.queryForObject("SELECT COUNT(*) FROM import_rows ir JOIN import_batches b ON b.project_id=ir.project_id AND b.id=ir.batch_id WHERE ir.project_id=? AND ir.batch_id=? AND ir.id=? AND b.status='COMMITTED' AND ir.target_case_id IS NOT NULL",Long.class,projectId,id,rowId);
         if(count==null || count==0) throw notFound();
@@ -103,7 +103,7 @@ public class TestDocumentService {
     private BusinessException notFound() { return new BusinessException(404,"NOT_FOUND","Không tìm thấy dòng test trong tài liệu."); }
 
     public TestDocumentDtos.Download export(Long projectId, String actor, Long id, boolean original) {
-        projects.requireMembership(projectId,actor);
+        projects.requireReadAccess(projectId,actor);
         var summary=summary(projectId,id);
         byte[] source=source(projectId,id);
         if (original) {

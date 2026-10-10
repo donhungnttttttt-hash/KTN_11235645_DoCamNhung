@@ -1,3 +1,4 @@
+import { isProjectObserver } from '../projects/projectAccess';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Download, FileSpreadsheet, Search, ClipboardList, RefreshCw, Table2, Highlighter, ChevronLeft, ChevronRight, List } from 'lucide-react';
 import { useProject } from '../projects/ProjectProvider';
@@ -38,6 +39,7 @@ export function TestDocumentPage({ documentId, navigate }) {
 function DocumentGrid({ project, documentId, navigate }) {
   const {hasRole}=useAuth();
   const dev=hasRole?.('DEV') || project.projectRole==='DEV';
+  const readOnly=dev || isProjectObserver(project, hasRole);
   const execution=useDocumentExecution(project,documentId);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -124,7 +126,7 @@ function DocumentGrid({ project, documentId, navigate }) {
     <div className="td-sheet-tabs"><span><Table2 size={14}/>{doc.sheetName}</span><small>{data.rows.length} test case · {lastSaved?.updatedBy || doc.updatedBy} · {documentDate(lastSaved?.updatedAt || doc.updatedAt,project.timezone)}</small></div>
     <fieldset className="td-sheet-toolbar">
       <div className="td-actions">
-        <button className="cat-btn" aria-expanded={execution.open} onClick={()=>execution.setOpen(v=>!v)}>Ghi kết quả</button>
+        <button className="cat-btn" aria-expanded={execution.open} onClick={()=>execution.setOpen(v=>!v)}>{readOnly ? 'Xem kết quả theo đợt' : 'Ghi kết quả'}</button>
         <button className="cat-btn" aria-expanded={showSummary} onClick={()=>setShowSummary(v=>!v)}><Table2 size={14}/> Tổng quan tài liệu</button>
         <button className="cat-btn" aria-label="Tô màu kết quả" aria-pressed={highlight} onClick={()=>setHighlight(v=>!v)}><Highlighter size={14}/> Tô màu {highlight?'Bật':'Tắt'}</button>
       </div>
@@ -146,7 +148,7 @@ function DocumentGrid({ project, documentId, navigate }) {
     {downloading && <p role="status" className="td-muted">Đang chuẩn bị file Excel...</p>}
     <DocumentExecutionControls execution={execution} project={project} navigate={navigate}/>
     {message && <div role="status" className="td-source-note">{message}</div>}
-    <div className="td-source-note">{customer ? 'Bấm ô để đổi Unexecuted → OK → P → NG → Fixed → NA và tự lưu vào tài liệu.' : 'Nội dung hiển thị theo phiên bản case hiện tại.'}</div>
+    <div className="td-source-note">{customer && readOnly ? 'Chế độ xem: bạn có thể xem kết quả, lịch sử và xuất tài liệu.' : customer ? 'Bấm ô để đổi Unexecuted → OK → P → NG → Fixed → NA và tự lưu vào tài liệu.' : 'Nội dung hiển thị theo phiên bản case hiện tại.'}</div>
     <div ref={grid} className="td-grid-scroll" role="region" aria-label="Bảng test case của tài liệu" tabIndex={0} aria-busy={loading} data-lenis-prevent>
       <table className="td-case-grid" style={{fontSize:`${fontSize}px`,width:headers.reduce((sum,_,index)=>sum+columnWidth(index),0)}}>
         <colgroup>{headers.map((_,index)=><col key={index} style={{width:columnWidth(index)}}/>)}</colgroup>
@@ -161,7 +163,7 @@ function DocumentGrid({ project, documentId, navigate }) {
               <div className="td-case-menu" ref={caseMenu===row.caseId?menuRef:null}><button className="td-menu-trigger" aria-label={`Tùy chọn test case ${row.sourceId}`} aria-expanded={caseMenu===row.caseId} onClick={()=>setCaseMenu(v=>v===row.caseId?null:row.caseId)}><List size={15}/></button>
                 {caseMenu===row.caseId && <div className="td-menu-items"><button onClick={()=>{setDetailCase(row.caseId);setCaseMenu(null);}}>Hiển thị chi tiết</button><button onClick={()=>{setHistoryCase(row);setCaseMenu(null);}}>Hiển thị lịch sử</button><button onClick={()=>copyCase(row)}>Sao chép URL</button></div>}
               </div><small>{row.archived?'Đã lưu trữ':row.approved?'Đã duyệt':'Dự thảo'}</small></> :
-              customer && index===resultColumn ? <><ResultCycleButton disabled={dev || loading || downloading || !!results.error || row.rowId==null || row.archived || project.archived} value={value} sourceId={row.sourceId} onChange={resultCode=>results.change(row,resultCode)}/>
+              customer && index===resultColumn ? <><ResultCycleButton disabled={readOnly || loading || downloading || !!results.error || row.rowId==null || row.archived || project.archived} value={value} sourceId={row.sourceId} onChange={resultCode=>results.change(row,resultCode)}/>
                 <button className="td-result-history" disabled={results.pending>0} onClick={()=>setResultHistory(row)}>Lịch sử / chứng cứ</button>
                 {!dev && project.projectRole==='PM' && !project.archived && execution.context?.cycle.statusCode==='ACTIVE' && execution.byCase.has(String(row.caseId)) && <button className="td-result-history" onClick={()=>execution.setScope(execution.byCase.get(String(row.caseId)))}>{execution.byCase.get(String(row.caseId)).excluded?'Khôi phục phạm vi':'NA · Ngoài phạm vi'}</button>}
               </> : <CellText value={value}/>}

@@ -84,11 +84,11 @@ class TestCaseIntegrationTest {
     }
     long count(String table) { return java.util.Objects.requireNonNull(jdbc.queryForObject("SELECT COUNT(*) FROM "+table+" WHERE project_id=?",Long.class,project)); }
 
-    @Test void removedMembershipAndUnrelatedAdminCannotReadOrWriteProject() throws Exception {
+    @Test void removedTesterCannotReadAndGlobalAdminReadsWithoutWriteAuthority() throws Exception {
         projects.removeMember(project,pm.getId(),tester.getId(),0L);
         for(var user:List.of(tester,outsider)) {
             for(String resource:List.of("","/test-cases","/test-suites","/catalogs/builds"))
-                mvc.perform(get(path(resource)).with(actor(user))).andExpect(status().isNotFound());
+                mvc.perform(get(path(resource)).with(actor(user))).andExpect(status().is(user==outsider?200:404));
             mvc.perform(post(path("/test-suites")).with(actor(user)).with(csrf()).contentType("application/json")
                     .content("{\"code\":\"OTHER\",\"name\":\"Nhóm\"}")).andExpect(status().isNotFound());
         }

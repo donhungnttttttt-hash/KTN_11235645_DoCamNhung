@@ -4,6 +4,17 @@
   min-height: 100dvh;
   background: #f8fafc;
 }
+.project-access-notice {
+  margin: 0 20px 12px;
+  padding: 10px 14px;
+  border: 1px solid #b9ded9;
+  border-radius: 6px;
+  background: #effaf7;
+  color: #28524d;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
 .app-shell button:focus-visible,
 .app-shell a:focus-visible {
   outline: 2px solid #148e7d;

@@ -1,4 +1,14 @@
-# Quyền nội bộ — Sprint 02
+# Quyền nội bộ
+
+## Quyền xem của quản trị tổng — 10/10/2026
+
+Theo yêu cầu sửa lỗi Admin thấy dự án tại quản trị nhưng workspace trống: ADMIN đang hoạt động được liệt kê và đọc mọi dự án trong Không gian dự án, kể cả khi không có membership. Phạm vi đọc gồm công việc/QA, tài liệu đã import, case/revision, đợt/run/lịch sử, file được giao, báo cáo, danh mục, thành viên và máy bàn giao. Hàng việc cần xử lý của Admin quan sát là toàn dự án; bộ lọc cá nhân vẫn chỉ lấy đúng người.
+
+Quyền xem không tạo membership, không tự gán PM/Tester và không cho phép ghi kết quả, nhập file, phân công hoặc chuyển trạng thái nghiệp vụ. ProjectSummary.projectRole vẫn null nếu không có membership; UI thể hiện chế độ xem. ADMIN có membership thật tiếp tục theo quy tắc hiện có. Các lệnh chỉ PM, executor, Dev được giao hoặc Tester tạo QA vẫn kiểm tra vai trò/người được giao như trước.
+
+Tài khoản PM/Tester/Dev chỉ đọc các dự án có membership active. Resource ID vẫn phải thuộc projectId trên URL; Admin không được đọc resource của dự án B bằng URL của A. Preview import chưa commit vẫn thuộc người tạo. Tài khoản bị khóa/thu hồi quyền không được dùng quyền Admin cũ. Xem [báo cáo kiểm chứng](../reviews/2026-10-10-admin-workspace-read.md).
+
+Các mục lịch sử bên dưới áp dụng cùng cập nhật quyền đọc này; không mở rộng quyền ghi.
 
 ## Thiết kế F/Q đã duyệt — 06/10/2026
 
@@ -25,7 +35,7 @@ QA là loại riêng, không mở quyền Dev cho TASK/REQUEST/IMPROVEMENT. Gene
 - DEV là role hệ thống và role dự án. Tài khoản DEV không được gán PM/TESTER/MEMBER. Dữ liệu cũ không bị rewrite; các guard vẫn từ chối quyền ghi kết quả theo role DEV hiện hành, kể cả assignment cũ hoặc membership bất nhất.
 - Dev đọc case, tài liệu, kết quả và lịch sử trong dự án. Chỉ xử lý BUG được giao còn chưa terminal sang `progress` hoặc `resolved`; cần version và lý do, `resolved` cần build đã sửa. Lý do/lịch sử/bình luận lưu thông tin sửa lỗi, không thêm bảng fix-notes. Bình luận/chứng cứ của Dev chỉ cho bug đang được giao.
 - Dev không tạo/triage/phân công công việc, batch transition, đóng/mở lại lỗi, ghi execution/retest/kết quả tài liệu, duyệt case hay quyết định NA/đợt. Fixed không trở thành OK; Tester kiểm thử lại và PM đóng theo các guard hiện có.
-- Dashboard toàn hệ thống, selector dự án chỉ ở tab Dự án; bộ lọc user và thiết bị thuộc trang tương ứng. ADMIN ngoài membership chỉ có API quản trị, không được dùng quyền PM nghiệp vụ ngầm.
+- Dashboard toàn hệ thống, selector dự án chỉ ở tab Dự án; bộ lọc user và thiết bị thuộc trang tương ứng. ADMIN ngoài membership có quyền quản trị và quyền đọc workspace toàn hệ thống; không có quyền PM nghiệp vụ ngầm.
 
 Người dùng xác nhận chỉ tài khoản nội bộ và chỉ Admin/PM được Admin cấp quyền mới tạo tài khoản. Backend thực thi; ẩn nút frontend không phải ranh giới bảo mật.
 
@@ -50,7 +60,7 @@ Các kịch bản S03 phải kiểm chứng khi có API dự án: thành viên A
 ## Xác nhận S04 ngày 28/09/2026
 
 - Chỉ membership đang hoạt động với `projectRole=PM` của chính dự án được duyệt revision. ADMIN hệ thống không tự có quyền duyệt; phải được giao PM trong dự án đó.
-- Đọc case/suite cần membership đang hoạt động. ADMIN ngoài dự án cũng bị từ chối; gỡ thành viên chặn cả đọc và ghi ngay request tiếp theo.
+- Đọc case/suite cần membership đang hoạt động hoặc global ADMIN hiện hành. Gỡ thành viên chặn quyền ghi; PM/Tester/Dev bị gỡ cũng mất quyền đọc.
 - Tạo/sửa case, suite và nhập Excel: PM dự án hoặc ADMIN là thành viên dự án. Role dự án không cấp quyền tạo tài khoản mới.
 - Dự án phải còn ít nhất một PM. Chặn gỡ/hạ quyền PM cuối cùng.
 - Đã kiểm chứng phạm vi dự án, thành viên bị gỡ, admin ngoài dự án, duyệt PM-only, FK khác dự án và bản dựng khác dự án trong `TestCaseIntegrationTest`.
@@ -59,7 +69,7 @@ Các kịch bản S03 phải kiểm chứng khi có API dự án: thành viên A
 
 | Hành động | Điều kiện tại backend |
 | --- | --- |
-| Đọc đợt, scope, lần chạy và lịch sử | Thành viên active của chính dự án; ADMIN ngoài dự án không được đọc |
+| Đọc đợt, scope, lần chạy và lịch sử | Thành viên active của chính dự án hoặc global ADMIN hiện hành |
 | Tạo đợt, thêm cấu hình/case, kích hoạt, phân công | PM dự án hoặc ADMIN là thành viên dự án; dự án chưa archive |
 | Ghi OK/NG/P | Chính người đang được phân công, membership PM/TESTER active, user enabled; đợt ACTIVE, dự án chưa archive |
 | Duyệt revision trước khi đưa vào scope | Vẫn chỉ PM của dự án theo S04 |
@@ -84,11 +94,11 @@ Phần này cập nhật source hiện hành; các mô tả S02–S05 ở trên 
 | Xác nhận câu trả lời QA | Chính TESTER tạo câu hỏi; đúng generation/answerId/answerVersion hiện hành |
 | Bình luận/chứng cứ QA | Policy typed hiện hành cho PM, TESTER tạo hoặc DEV được giao; QA đã đóng không có quyền ghi |
 
-QA không dùng generic transition/batch/update để bỏ qua typed lifecycle, không vào BUG retest/closure/Redmine. UI dùng capability từ server và đóng quyền trong loading/error/scope hoặc version không phù hợp. Quyền vẫn được backend kiểm lại trước replay; bản nháp hoặc response thành công cũ không cấp quyền mới. ADMIN ngoài dự án không tự được xem hoặc ghi resource nghiệp vụ dự án.
+QA không dùng generic transition/batch/update để bỏ qua typed lifecycle, không vào BUG retest/closure/Redmine. UI dùng capability từ server và đóng quyền trong loading/error/scope hoặc version không phù hợp. Quyền vẫn được backend kiểm lại trước replay; bản nháp hoặc response thành công cũ không cấp quyền mới. ADMIN ngoài dự án được đọc resource nghiệp vụ theo cập nhật 10/10/2026, không tự có quyền ghi.
 
 ## Lưu trữ dự án và kết thúc công việc thường — 08/10/2026
 
-Theo ủy quyền lựa chọn quy tắc của người dùng: chỉ ADMIN tổng được archive/reopen dự án; lý do bắt buộc, version hiện hành và requestKey được kiểm lại ở backend. Không cần tự thêm ADMIN vào membership để quản trị vòng đời. Quyền đọc tài liệu/case/xuất của workspace vẫn yêu cầu membership hiện hành; quyền quản trị tổng không trở thành quyền nghiệp vụ dự án.
+Theo ủy quyền lựa chọn quy tắc của người dùng: chỉ ADMIN tổng được archive/reopen dự án; lý do bắt buộc, version hiện hành và requestKey được kiểm lại ở backend. Không cần tự thêm ADMIN vào membership để quản trị vòng đời. Quyền đọc tài liệu/case/xuất của workspace cho phép membership hiện hành hoặc ADMIN đang hoạt động; quyền quản trị tổng không trở thành quyền ghi nghiệp vụ dự án.
 
 Archive bị chặn bởi phiên DOING/PAUSED, máy chưa thu hồi, ticket chưa terminal, đợt ACTIVE hoặc DRAFT có run, retest OPEN và outbox Redmine QUEUED/RETRY_WAIT/RUNNING. Không có quyền bỏ qua blocker. Mở lại không tự mở ticket hoặc bàn giao lại máy. Lý do/người/thời điểm lưu trong project_lifecycle_decisions V21 và sự kiện trong project_audit.
 

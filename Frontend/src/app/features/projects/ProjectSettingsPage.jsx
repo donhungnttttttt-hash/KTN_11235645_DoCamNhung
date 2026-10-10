@@ -1,3 +1,4 @@
+import { canManageProjectWork } from './projectAccess';
 import React, { useEffect, useState } from 'react';
 import { useProject } from './ProjectProvider';
 import { useAuth } from '../auth/AuthProvider';
@@ -14,7 +15,7 @@ export function ProjectSettingsPage({ activeRoute = '/settings' }) {
   const { hasRole } = useAuth();
   if (!currentProject) return <div className="page-container">Vui lòng chọn một dự án.</div>;
   const tab = activeRoute.split('?')[0].split('/')[2] || 'general';
-  return <Settings key={currentProject.id} admin={hasRole('ADMIN')} tab={tab} project={currentProject} refresh={refreshProjects} canEdit={!currentProject.archived && (hasRole('ADMIN') || currentProject.projectRole === 'PM')} />;
+  return <Settings key={currentProject.id} admin={hasRole('ADMIN')} tab={tab} project={currentProject} refresh={refreshProjects} canEdit={canManageProjectWork(currentProject, hasRole)} />;
 }
 
 function Settings({ project, refresh, canEdit, tab, admin }) {

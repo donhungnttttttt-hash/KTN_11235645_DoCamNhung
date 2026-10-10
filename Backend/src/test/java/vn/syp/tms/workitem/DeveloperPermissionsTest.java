@@ -56,7 +56,7 @@ class DeveloperPermissionsTest {
     }
     @Test void assignedDevGetsCanonicalProgressAndResolvedOptions(){
         var current=item("BUG","open",7);
-        doReturn(member).when(service).membership(1L,"dev");
+        doReturn(member).when(service).readMembership(1L,"dev");
         when(db.row(itemLookupSql(),eq(1L),eq(11L))).thenReturn(current);
         var destinations=List.of(Map.<String,Object>of("id","progress","label","Đang xử lý"),Map.<String,Object>of("id","resolved","label","Đã xử lý"));
         when(db.rows("SELECT code AS id,label_vi AS label FROM work_item_statuses WHERE code IN ('progress','resolved') AND code<>? ORDER BY sort_order","open")).thenReturn(destinations);
@@ -70,7 +70,7 @@ class DeveloperPermissionsTest {
 
     @Test void qaMetadataUsesCurrentTypedAuthorityAndDistinctLabels(){
         when(rules.titlePrefix(1L)).thenReturn("");
-        doReturn(Map.of("id",7L,"role","PM","systemRole","PM")).when(service).membership(1,"dev");
+        doReturn(Map.of("id",7L,"role","PM","systemRole","PM")).when(service).readMembership(1,"dev");
         var labels=List.of(Map.<String,Object>of("id","resolved","label","Đã sửa - chờ kiểm thử lại"));
         when(db.rows("SELECT code AS id,label_vi AS label,color,terminal FROM work_item_statuses ORDER BY sort_order")).thenReturn(labels);
         for(var current:List.of(new QaService.Actor(7,true,false,false,false),new QaService.Actor(7,false,true,false,false),
@@ -88,13 +88,13 @@ class DeveloperPermissionsTest {
         }
         var ordered=inOrder(qa,service);
         ordered.verify(qa).authorize(1,"dev",false);
-        ordered.verify(service).membership(1,"dev");
+        ordered.verify(service).readMembership(1,"dev");
     }
 
     @Test void metadataDeniesInvalidCurrentIdentityBeforeLegacyMembership(){
         when(qa.authorize(1,"dev",false)).thenThrow(new BusinessException(401,"UNAUTHENTICATED","disabled/stale session"));
         assertEquals(401,assertThrows(BusinessException.class,()->service.metadata(1,"dev")).status());
-        verify(service,never()).membership(anyLong(),anyString());
+        verify(service,never()).readMembership(anyLong(),anyString());
     }
 
     QaDtos.QaDetail qaDetail(boolean writable) {
@@ -114,14 +114,14 @@ class DeveloperPermissionsTest {
         assertEquals("resolved",detail.get("status"));assertEquals("Đã trả lời",detail.get("statusLabel"));
         assertEquals(List.of(),detail.get("allowedTransitions"));assertEquals(false,detail.get("canComment"));assertEquals(false,detail.get("canAttach"));
         assertFalse(detail.containsKey("fixedBuildId"));assertFalse(detail.containsKey("policyVersion"));
-        verify(service,never()).membership(anyLong(),anyString());verifyNoInteractions(retest);
+        verify(service,never()).readMembership(anyLong(),anyString());verifyNoInteractions(retest);
     }
 
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
     @SuppressWarnings("null")
     @Test void genericListAndOverviewProjectQaWithTypedLabelsAndCapabilities(){
         when(qa.authorize(1,"dev",false)).thenReturn(new QaService.Actor(7,false,false,true,false));
-        doReturn(member).when(service).membership(1,"dev");
+        doReturn(member).when(service).readMembership(1,"dev");
         when(qa.detail(1,"dev",11)).thenReturn(qaDetail(true));
         when(db.rows(contains("FROM work_items w"),any(Object[].class))).thenReturn(List.of(item("QA","resolved",7),item("BUG","resolved",7)));
         var rows=service.list(1,"dev",0,20,null,null,null,null,null,null).items();
@@ -132,7 +132,7 @@ class DeveloperPermissionsTest {
     }
 
     @Test void unchangedBugGetNeverEntersQaLockingGuardEvenInReadOnlyRetestCaller(){
-        doReturn(member).when(service).membership(1,"dev");
+        doReturn(member).when(service).readMembership(1,"dev");
         when(db.row(itemLookupSql(),eq(1L),eq(11L))).thenReturn(item("BUG","resolved",7));
         service.get(1,"dev",11);
         verifyNoInteractions(qa);
@@ -164,7 +164,7 @@ class DeveloperPermissionsTest {
         verify(db,never()).rows(contains("redmine_bindings"),any(Object[].class));
         verify(db,never()).rows(contains("redmine_outbox"),any(Object[].class));
         verify(db,never()).rows(contains("redmine_delivery_attempts"),any(Object[].class));
-        verify(service,never()).membership(anyLong(),anyString());
+        verify(service,never()).readMembership(anyLong(),anyString());
         var state=vn.syp.tms.integration.RedmineService.class.getMethod("state",long.class,String.class,long.class);
         var tx=state.getAnnotation(org.springframework.transaction.annotation.Transactional.class);
         assertTrue(tx==null||!tx.readOnly());
@@ -174,7 +174,7 @@ class DeveloperPermissionsTest {
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
     @SuppressWarnings("null")
     @Test void redmineNonQaStateKeepsProjectionAndQueueStillRequiresBug(){
-        doReturn(Map.of("id",7L,"role","PM","systemRole","PM")).when(service).membership(1,"dev");
+        doReturn(Map.of("id",7L,"role","PM","systemRole","PM")).when(service).readMembership(1,"dev");
         doReturn(Map.of("id",7L,"role","PM","systemRole","PM")).when(service).writable(1,"dev");
         var redmine=new vn.syp.tms.integration.RedmineService(db,service,
             mock(vn.syp.tms.integration.RedmineConfiguration.class),new com.fasterxml.jackson.databind.ObjectMapper(),mock(ProjectAudit.class));

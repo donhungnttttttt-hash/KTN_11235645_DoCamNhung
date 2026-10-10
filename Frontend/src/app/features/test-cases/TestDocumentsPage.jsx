@@ -1,3 +1,4 @@
+import { canManageProjectWork } from '../projects/projectAccess';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FileSpreadsheet, Upload, ListChecks, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useProject } from '../projects/ProjectProvider';
@@ -19,7 +20,7 @@ export function TestDocumentsPage({ navigate }) {
 
 function DocumentLibrary({ project, navigate }) {
   const { hasRole } = useAuth();
-  const canImport = project.projectRole === 'PM' || hasRole?.('ADMIN');
+  const canImport = canManageProjectWork(project, hasRole);
   const [keyword, setKeyword] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);

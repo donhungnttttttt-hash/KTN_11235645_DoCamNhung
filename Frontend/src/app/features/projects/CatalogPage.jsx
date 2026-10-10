@@ -1,3 +1,4 @@
+import { canManageProjectWork } from './projectAccess';
 import React, { useState, useEffect } from "react";
 import { useProject } from "./ProjectProvider";
 import { projectsApi } from "../../services/api/projects";
@@ -30,7 +31,7 @@ function ProjectCatalog({ currentProject }) {
   const [archiving, setArchiving] = useState(null);
   const [editor, setEditor] = useState(null);
   
-  const canEdit = !!currentProject && !currentProject.archived && (hasRole("ADMIN") || currentProject.projectRole === "PM");
+  const canEdit = canManageProjectWork(currentProject, hasRole);
 
   useEffect(() => {
     let live = true;

@@ -73,6 +73,10 @@ public class QaService {
         positive(p);
         var account=identity.lockIdentity(user);
         var project=db.row("SELECT id,code,archived_at AS archivedAt FROM projects WHERE id=? FOR UPDATE",p);
+        // Membership ID 0 is a read-only observer, never a persisted/assignable member.
+        if(!write && "ADMIN".equals(account.getRole()) && db.rows(
+            "SELECT id FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",p,user).isEmpty())
+            return new Actor(0,false,false,false,project.get("archivedAt")!=null);
         var member=db.row("SELECT id,project_role AS projectRole FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",p,user);
         boolean globalDev="DEV".equals(account.getRole());
         var actor=new Actor(number(member,"id"),!globalDev&&"PM".equals(member.get("projectRole")),

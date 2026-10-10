@@ -37,6 +37,10 @@ public class FileWorkService {
             if(!principal.id().equals(actor) || principal.version()!=number(current,"version")) fail(401,"UNAUTHENTICATED","Phiên đăng nhập đã thay đổi.");
         }
         var project=db.row("SELECT id,archived_at AS archivedAt FROM projects WHERE id=? FOR UPDATE",p);
+        // Membership ID 0 is a read-only observer, never a persisted/assignable member.
+        if(!pmWrite && "ADMIN".equals(account.getRole()) && db.rows(
+            "SELECT id FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",p,actor).isEmpty())
+            return new Actor(0,false,false,project.get("archivedAt")!=null);
         var member=db.row("SELECT id,project_role AS projectRole FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",p,actor);
         boolean pm="PM".equals(member.get("projectRole")) && !"DEV".equals(account.getRole());
         boolean tester="TESTER".equals(member.get("projectRole")) && !"DEV".equals(account.getRole());

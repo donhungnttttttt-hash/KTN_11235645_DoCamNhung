@@ -8,9 +8,9 @@ import { ImportExcelDialog } from './ImportExcelDialog';
 import { testCasesApi } from '../../services/api/testCases';
 import { documentDate } from './documentDownload';
 
-const state=vi.hoisted(()=>({currentProject:{id:1,name:'Dự án A',projectRole:'PM'}}));
+const state=vi.hoisted(()=>({currentProject:{id:1,name:'Dự án A',projectRole:'PM'},role:'PM'}));
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>state}));
-vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:()=>false})}));
+vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>state.role===role})}));
 vi.mock('../../services/api/testCases',()=>({testCasesApi:{listDocuments:vi.fn(),getDocument:vi.fn(),exportDocument:vi.fn(),createImportPreview:vi.fn(),commitImportPreview:vi.fn(),importTemplate:vi.fn(),getCase:vi.fn(),getRevision:vi.fn()}}));
 vi.mock('./CaseDetailModal',()=>({CaseDetailModal:({caseId,onClose,onUpdated})=><div role="dialog" aria-label="Chi tiết test case">Case {caseId}<button onClick={onUpdated}>Cập nhật case</button><button onClick={onClose}>Đóng chi tiết</button></div>}));
 const doc={id:9,projectId:1,fileName:'仕様書_VI.xlsx',sheetName:'タブレット',format:'CUSTOMER_V1',totalRows:1,caseCount:1,updatedAt:'2026-10-03T12:00:00Z',updatedBy:'PM dự án',hasSourceFile:true,sourceCounts:{Fixed:1}};
@@ -19,7 +19,7 @@ const cells=['1','Đăng nhập','Có tài khoản','Bước 1\nBước 2','Ch�
 const detail={document:doc,headers,rows:[{rowId:41,resultStatus:'UNEXECUTED',resultVersion:0,rowNumber:2,sourceId:'1',caseId:21,caseNo:'XLSX-9-2',revisionId:31,cells,sourceCells:cells}]};
 beforeEach(()=>{
   sessionStorage.clear(); window.location.hash='';
-  vi.resetAllMocks(); state.currentProject={id:1,name:'Dự án A',projectRole:'PM'};
+  vi.resetAllMocks(); state.currentProject={id:1,name:'Dự án A',projectRole:'PM'};state.role='PM';
   testCasesApi.listDocuments.mockResolvedValue({items:[doc],totalItems:1,totalPages:1});
   testCasesApi.getDocument.mockResolvedValue(detail);
   testCasesApi.exportDocument.mockResolvedValue(new Blob(['xlsx']));
@@ -32,6 +32,12 @@ it('lets Dev read document results but disables result changes',async()=>{
   render(<TestDocumentPage documentId="9" navigate={vi.fn()}/>);
   const result=await screen.findByRole('button',{name:/Kết quả.*1/i});
   expect(result).toBeDisabled();
+});
+it('shows existing documents to an admin observer without offering import',async()=>{
+  state.role='ADMIN';state.currentProject.projectRole=null;
+  render(<TestDocumentsPage navigate={vi.fn()}/>);
+  expect(await screen.findByText(doc.fileName)).toBeVisible();
+  expect(screen.queryByRole('button',{name:'Nhập Excel'})).not.toBeInTheDocument();
 });
 
 it('restores detail navigation, revision management and real history from the row menu',async()=>{

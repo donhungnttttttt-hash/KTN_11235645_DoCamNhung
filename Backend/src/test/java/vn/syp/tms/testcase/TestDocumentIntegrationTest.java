@@ -125,8 +125,11 @@ class TestDocumentIntegrationTest {
         mvc.perform(get(path("/import-previews/"+pending.id())).with(actor(owner))).andExpect(status().isNotFound());
         mvc.perform(multipart(path("/import-previews")).file(file(CustomerWorkbookFixture.bytes())).with(actor(tester)).with(csrf())).andExpect(status().isForbidden());
         cases.commitImportPreview(project,pm.getId(),pending.id());
-        for(String tail:List.of("/test-documents","/test-documents/"+pending.id(),"/test-documents/"+pending.id()+"/export"))
-            mvc.perform(get(path(tail)).with(actor(outsider))).andExpect(status().isNotFound());
+        var unrelated=users.saveAndFlush(new IdentityUser("doc.unrelated."+UUID.randomUUID().toString().substring(0,8),"Unrelated","unused-hash","TESTER"));
+        for(String tail:List.of("/test-documents","/test-documents/"+pending.id(),"/test-documents/"+pending.id()+"/export")) {
+            mvc.perform(get(path(tail)).with(actor(outsider))).andExpect(status().isOk());
+            mvc.perform(get(path(tail)).with(actor(unrelated))).andExpect(status().isNotFound());
+        }
         mvc.perform(get(path("/test-documents")).param("size","1000").with(actor(tester))).andExpect(status().isUnprocessableEntity());
         mvc.perform(get(path("/test-documents")).param("keyword","%").with(actor(tester))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
     }

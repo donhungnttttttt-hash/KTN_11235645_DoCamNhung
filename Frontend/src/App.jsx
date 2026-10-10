@@ -1,3 +1,4 @@
+import { ProjectAccessNotice } from './app/features/projects/ProjectAccessNotice';
 import React, { useState, useEffect } from "react";
 import { MainLayout } from "./app/layouts/MainLayout";
 import { AppRouter } from "./app/routes/AppRouter";
@@ -52,6 +53,7 @@ export default function App() {
   return (
     <MainLayout activeRoute={activeRoute} navigate={navigate}>
       {auth?.hasRole('ADMIN') && <a href="#/admin" style={{display:'inline-block',padding:'12px 20px'}}>Quản trị hệ thống</a>}
+      <ProjectAccessNotice/>
       <AppRouter
         activeRoute={activeRoute}
         project={project}

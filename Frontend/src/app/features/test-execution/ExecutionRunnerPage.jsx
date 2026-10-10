@@ -1,3 +1,4 @@
+import { canManageProjectWork } from '../projects/projectAccess';
 import React, { useEffect, useRef, useState } from 'react';
 import { useProject } from '../projects/ProjectProvider';
 import { useAuth } from '../auth/AuthProvider';
@@ -19,7 +20,7 @@ export function ExecutionRunnerPage(props) {
 function Runner({ project, cycleId, navigate }) {
   const { hasRole, user } = useAuth();
   const dev = hasRole?.('DEV') || project?.projectRole==='DEV';
-  const manager = !dev && project && !project.archived && (project.projectRole === 'PM' || hasRole?.('ADMIN'));
+  const manager = canManageProjectWork(project, hasRole);
   const [data, setData] = useState(null), [runs, setRuns] = useState(null), [reload, setReload] = useState(0);
   const [error, setError] = useState(''), [loading, setLoading] = useState(true), [busy, setBusy] = useState(false);
   const [page, setPage] = useState(0), [mine, setMine] = useState(false), [pendingBug, setPendingBug] = useState(false);

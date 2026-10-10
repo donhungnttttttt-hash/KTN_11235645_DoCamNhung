@@ -72,7 +72,7 @@ public class DeviceInventoryService {
  }
  private void touch(long id,String actor){db.update("UPDATE device_assets SET updated_at=UTC_TIMESTAMP(6),updated_by=?,lock_version=lock_version+1 WHERE id=?",actor,id);}
  @Transactional(readOnly=true) public AdminDtos.Page<Map<String,Object>> allocations(String actor,Long projectId,Long assetId,boolean history,int page,int size){admin(actor);return allocationPage(projectId,assetId,history,page,size);}
- @Transactional(readOnly=true) public AdminDtos.Page<Map<String,Object>> projectAllocations(String actor,long projectId,int page,int size){identity.current(actor);projects.requireMembership(projectId,actor);return allocationPage(projectId,null,false,page,size);}
+ @Transactional(readOnly=true) public AdminDtos.Page<Map<String,Object>> projectAllocations(String actor,long projectId,int page,int size){identity.current(actor);projects.requireReadAccess(projectId,actor);return allocationPage(projectId,null,false,page,size);}
  private AdminDtos.Page<Map<String,Object>> allocationPage(Long projectId,Long assetId,boolean history,int page,int size){
   page(page,size);var args=new ArrayList<Object>();String where=history?" WHERE 1=1":" WHERE l.returned_at IS NULL";
   if(projectId!=null){where+=" AND l.project_id=?";args.add(projectId);}if(assetId!=null){where+=" AND l.asset_id=?";args.add(assetId);}

@@ -1,3 +1,4 @@
+import { canManageProjectWork } from '../features/projects/projectAccess';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Upload, FolderPlus, CheckCircle2, Clock, Eye, Search, Layers, ListCheck } from 'lucide-react';
 import { useProject } from '../features/projects/ProjectProvider';
@@ -14,7 +15,7 @@ export function TestSpecsPage({ navigate = () => {} }) {
   const projectContext = useProject();
   const currentProject = projectContext?.currentProject;
   const { hasRole } = useAuth();
-  const canEdit = !!currentProject && (currentProject.projectRole === 'PM' || hasRole?.('ADMIN'));
+  const canEdit = canManageProjectWork(currentProject, hasRole);
   const requestId = useRef(0);
 
   const [viewMode, setViewMode] = useState('cases'); // 'cases' or 'suites'

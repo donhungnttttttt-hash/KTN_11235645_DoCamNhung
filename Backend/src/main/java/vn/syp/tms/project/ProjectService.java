@@ -25,16 +25,19 @@ public class ProjectService {
     }
 
     public List<ProjectDtos.ProjectSummary> list(String userId) {
-        List<ProjectMembership> memberships = membershipRepository.findByUserIdAndActiveTrue(userId);
-        return memberships.stream()
-                .map(m -> projectRepository.findById(java.util.Objects.requireNonNull(m.getProjectId())).orElse(null))
-                .filter(p -> p != null)
-                .map(p -> new ProjectDtos.ProjectSummary(p.getId(), p.getCode(), p.getName(), p.getDescription(), p.getTimezone(), p.getArchivedAt() != null, p.getLockVersion(), membershipRepository.findByProjectIdAndUserId(p.getId(), userId).getProjectRole()))
-                .collect(Collectors.toList());
+        boolean admin = "ADMIN".equals(identityService.current(userId).getRole());
+        var roles = membershipRepository.findByUserIdAndActiveTrue(userId).stream()
+                .collect(Collectors.toMap(ProjectMembership::getProjectId, ProjectMembership::getProjectRole));
+        var visible = admin ? projectRepository.findAll(org.springframework.data.domain.Sort.by("id"))
+                : projectRepository.findAllById(roles.keySet()).stream()
+                    .sorted(java.util.Comparator.comparing(Project::getId)).toList();
+        return visible.stream().map(p -> new ProjectDtos.ProjectSummary(p.getId(), p.getCode(), p.getName(),
+                p.getDescription(), p.getTimezone(), p.getArchivedAt() != null, p.getLockVersion(), roles.get(p.getId())))
+                .toList();
     }
 
     public ProjectDtos.ProjectDetail get(Long projectId, String userId) {
-        requireMembership(projectId, userId);
+        requireReadAccess(projectId, userId);
         Project p = projectRepository.findById(java.util.Objects.requireNonNull(projectId)).orElseThrow(() -> new BusinessException(404, "NOT_FOUND", "Không tìm thấy dự án."));
         long count = membershipRepository.findByProjectIdAndActiveTrue(projectId).size();
         return new ProjectDtos.ProjectDetail(p.getId(), p.getCode(), p.getName(), p.getDescription(), p.getTimezone(), p.getArchivedAt() != null, p.getLockVersion(), count, p.getCreatedAt(), p.getCreatedBy(), p.getUpdatedAt(), p.getUpdatedBy());
@@ -129,7 +132,7 @@ public class ProjectService {
     }
 
     public List<ProjectDtos.MemberInfo> listMembers(Long projectId, String userId) {
-        if (!identityService.isAdmin(userId)) requireMembership(projectId, userId);
+        requireReadAccess(projectId, userId);
         return membershipRepository.findByProjectIdAndActiveTrue(projectId).stream()
             .map(m -> {
                 try {
@@ -140,6 +143,14 @@ public class ProjectService {
                 }
             })
             .collect(Collectors.toList());
+    }
+
+    /** Global ADMIN can inspect every existing project without acquiring a project role. */
+    public void requireReadAccess(Long projectId, String userId) {
+        if ("ADMIN".equals(identityService.current(userId).getRole())) {
+            if (!projectRepository.existsById(java.util.Objects.requireNonNull(projectId)))
+                throw new BusinessException(404, "NOT_FOUND", "Không tìm thấy dự án.");
+        } else requireMembership(projectId, userId);
     }
 
     public void requireMembership(Long projectId, String userId) {

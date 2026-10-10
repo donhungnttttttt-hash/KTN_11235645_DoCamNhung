@@ -25,7 +25,7 @@ public class RedmineService {
     }
     @Transactional(readOnly=true)
     public Map<String,Object> configuration(long p,String actor) {
-        var m=work.membership(p,actor);
+        var m=work.readMembership(p,actor);
         boolean manage="PM".equals(m.get("role")) && db.row("SELECT archived_at FROM projects WHERE id=?",p).get("archived_at")==null;
         var result=new LinkedHashMap<String,Object>();result.put("configured",config.configured(p));result.put("canManage",manage);
         if(config.configured(p)){result.put("baseUrl",config.base().toString());result.put("mapping",config.mapping(p));}
