@@ -2,6 +2,8 @@
 .codex/
 .gemini/
 scratch/
+.playwright-cli/
+output/playwright/
 
 # Python scripts
 *.py
@@ -9,3 +11,17 @@ scratch/
 # OS
 .DS_Store
 Thumbs.db
+
+# Local configuration, build outputs and secrets
+.env
+.env.*.local
+Backend/target/
+Backend/var/
+var/evidence/
+var/redmine/
+var/demo/
+var/mysql-native/
+artifacts/
+Frontend/coverage/
+Backend/.idea/
+*.log

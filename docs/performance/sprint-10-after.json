@@ -1,0 +1,79 @@
+{
+  "dataset" : {
+    "runItems" : 10000,
+    "concurrentSessions" : 20,
+    "bugs" : 1000,
+    "cycles" : 20,
+    "cases" : 1000
+  },
+  "seedMs" : 21557,
+  "java" : "21.0.9",
+  "os" : "Windows 11",
+  "availableProcessors" : 16,
+  "maxJvmHeapBytes" : 4139778048,
+  "mysql" : "8.4.8 Docker Desktop",
+  "hikariPool" : 5,
+  "jacocoEnabled" : true,
+  "/work-items?page=0&size=50" : {
+    "maxMs" : 619,
+    "failures" : 0,
+    "requestsPerSecond" : 43.92,
+    "p95Ms" : 562,
+    "requests" : 100,
+    "p50Ms" : 445,
+    "statuses" : {
+      "200" : 100
+    }
+  },
+  "/test-cycles?page=0&size=20" : {
+    "maxMs" : 421,
+    "failures" : 0,
+    "requestsPerSecond" : 54.88,
+    "p95Ms" : 412,
+    "requests" : 100,
+    "p50Ms" : 360,
+    "statuses" : {
+      "200" : 100
+    }
+  },
+  "/reports/summary" : {
+    "maxMs" : 2124,
+    "failures" : 0,
+    "requestsPerSecond" : 12.43,
+    "p95Ms" : 1910,
+    "requests" : 100,
+    "p50Ms" : 1504,
+    "statuses" : {
+      "200" : 100
+    }
+  },
+  "explainWorkItems" : [ {
+    "id" : 1,
+    "select_type" : "SIMPLE",
+    "table" : "work_items",
+    "partitions" : null,
+    "type" : "range",
+    "possible_keys" : "uq_work_project_id,uq_work_project_id_type,uq_work_number,uq_work_request,fk_work_category,fk_work_milestone,fk_work_creator,fk_work_editor,ix_work_board,ix_work_type,ix_work_assignee",
+    "key" : "ix_work_type",
+    "key_len" : "26",
+    "ref" : null,
+    "rows" : 1000,
+    "filtered" : 100.0,
+    "Extra" : "Using index condition; Backward index scan"
+  } ],
+  "explainRunScope" : [ {
+    "id" : 1,
+    "select_type" : "SIMPLE",
+    "table" : "run_items",
+    "partitions" : null,
+    "type" : "ref",
+    "possible_keys" : "uq_run_scope,uq_run_project_id,fk_run_revision,fk_run_assignee,ix_run_assignee,fk_run_latest_attempt,fk_run_scope_decision",
+    "key" : "fk_run_latest_attempt",
+    "key_len" : "8",
+    "ref" : "const",
+    "rows" : 4905,
+    "filtered" : 100.0,
+    "Extra" : "Using index"
+  } ],
+  "limits" : "Local synthetic closed-loop sample, 100 requests per endpoint after 3 report warmups. Not a production SLA or sustained soak; includes real HTTP sessions and JSON serialization, excludes browser rendering."
+}

@@ -1,0 +1,138 @@
+openapi: 3.0.3
+info:
+  title: TMS physical inventory (A3)
+  version: 1.0.0
+servers:
+  - url: /api/v1
+security:
+  - session: []
+paths:
+  /admin/device-assets:
+    get:
+      summary: ADMIN inventory, one row per physical asset; project filter includes current allocations only
+      parameters:
+        - {in: query, name: projectId, schema: {type: integer, format: int64}}
+        - {in: query, name: keyword, schema: {type: string, maxLength: 100}}
+        - {in: query, name: status, schema: {type: string, enum: [AVAILABLE, ALLOCATED, MAINTENANCE, RETIRED]}}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/Size'}
+      responses:
+        '200': {description: 'Page {items,page,size,totalElements}; item has id, assetCode, type, model, serial, osName, osVersion, conditionCode, status, notes, version, createdAt, updatedAt, allocationId, projectId, projectCode, projectName'}
+    post:
+      summary: ADMIN creates physical asset; CSRF required
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/AssetInput'}
+      responses:
+        '201': {description: Created asset}
+        '409': {description: Duplicate assetCode or nonblank serial}
+  /admin/device-assets/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/Id'}
+    get:
+      summary: ADMIN current asset including version for conflict recovery
+      responses:
+        '200': {description: Asset}
+    patch:
+      summary: ADMIN replaces editable asset fields; expectedVersion and CSRF required
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - {$ref: '#/components/schemas/AssetInput'}
+                - {type: object, required: [expectedVersion], properties: {expectedVersion: {type: integer, format: int64, minimum: 0}}}
+      responses:
+        '200': {description: Updated asset}
+        '409': {description: Stale version, duplicate identification, or allocated asset cannot enter maintenance/retirement}
+  /admin/device-allocations:
+    get:
+      summary: ADMIN active allocations by default; history=true includes returned allocations
+      parameters:
+        - {in: query, name: projectId, schema: {type: integer, format: int64}}
+        - {in: query, name: assetId, schema: {type: integer, format: int64}}
+        - {in: query, name: history, schema: {type: boolean, default: false}}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/Size'}
+      responses:
+        '200': {description: 'Page {items,page,size,totalElements}; allocation includes asset and project names/codes, recipientName/Username, assignedAt/ByName, expectedReturnOn, handoverNote, returnedAt/ByName/Condition, returnNote, version'}
+    post:
+      summary: ADMIN assigns available asset to active enabled project member; CSRF required
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - {$ref: '#/components/schemas/InitialAllocation'}
+                - {type: object, required: [projectId], properties: {projectId: {type: integer, format: int64, minimum: 1}}}
+      responses:
+        '201': {description: Allocation; actor/time recorded by server and asset version incremented}
+        '409': {description: Stale asset version, unavailable asset or archived project}
+        '422': {description: Invalid recipient or expected return before receiving-project local date}
+  /admin/device-allocations/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/Id'}
+    patch:
+      summary: ADMIN return; remains available for archived project; CSRF required
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [expectedVersion, conditionCode]
+              properties:
+                expectedVersion: {type: integer, format: int64, minimum: 0}
+                conditionCode: {type: string, enum: [AVAILABLE, MAINTENANCE, RETIRED]}
+                returnNote: {type: string, maxLength: 1000}
+      responses:
+        '200': {description: Returned allocation; actor/time recorded by server; allocation and asset versions increment}
+        '409': {description: Stale version or already returned}
+  /projects/{id}/device-allocations:
+    parameters:
+      - {$ref: '#/components/parameters/Id'}
+    get:
+      summary: Active project member reads currently held physical machines; no mutation privilege
+      parameters:
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/Size'}
+      responses:
+        '200': {description: Allocation page}
+        '404': {description: Project not found or no active membership}
+components:
+  securitySchemes:
+    session: {type: apiKey, in: cookie, name: TMS_SESSION}
+  parameters:
+    Id: {in: path, name: id, required: true, schema: {type: integer, format: int64, minimum: 1}}
+    Page: {in: query, name: page, schema: {type: integer, minimum: 0, default: 0}}
+    Size: {in: query, name: size, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+  schemas:
+    AssetInput:
+      type: object
+      required: [assetCode, type, model, conditionCode]
+      properties:
+        assetCode: {type: string, minLength: 1, maxLength: 64}
+        type: {type: string, enum: [IPAD, IPHONE, ANDROID, OTHER]}
+        model: {type: string, minLength: 1, maxLength: 100}
+        serial: {type: string, maxLength: 100, nullable: true, description: Empty/whitespace becomes null; otherwise unique}
+        osName: {type: string, maxLength: 50}
+        osVersion: {type: string, maxLength: 50}
+        conditionCode: {type: string, enum: [AVAILABLE, MAINTENANCE, RETIRED]}
+        notes: {type: string, maxLength: 1000}
+    InitialAllocation:
+      type: object
+      required: [assetId, recipientUserId, expectedVersion]
+      properties:
+        assetId: {type: integer, format: int64, minimum: 1}
+        recipientUserId: {type: string, minLength: 1}
+        expectedVersion: {type: integer, format: int64, minimum: 0}
+        expectedReturnOn: {type: string, format: date, nullable: true}
+        handoverNote: {type: string, maxLength: 1000}
+# POST /admin/projects additionally accepts devices: InitialAllocation[] (optional, max1000).
+# Each recipient must be among explicit initial members. Project+members+allocations commit together.
+# No quota. Asset IDs must be distinct. Reassignment is return then new assign; history is immutable.
+# All endpoints use existing 401/403/404/409/422 error envelope and session/CSRF conventions.

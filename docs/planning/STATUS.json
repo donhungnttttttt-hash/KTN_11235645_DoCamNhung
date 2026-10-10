@@ -1,0 +1,845 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-10",
+  "baselineCommit": "bd7e482",
+  "branchAtPlanning": "feature/Fontend-design",
+  "integrationBranch": "develop",
+  "activeSprint": "S11",
+  "phase": "IN_REVIEW",
+  "implementationStarted": true,
+  "notes": [
+    "09/10/2026 kiểm nghiệm và dữ liệu V22 trên system-design: 100 user mới (3 PM, 20 DEV, 77 TESTER), 120 máy (30 mỗi nhóm iPad/iPhone/tablet Android/smartphone Android), 3 dự án và 24 bàn giao; chỉ db/demo local, không seed case/kết quả. Sửa focus form kho máy RED→GREEN. Final fullFE665/665, coverage85.13/82.30/78.75/83.42; Admin68/68, nativeFQ9/9/concurrency5/5/migration1/1, HTTPpreview6kịch bản, runner10/10, JDT204sources0error0warning và build/verifyPASS. Backup rồi restart8080/native3307/tmsV22; hash65bảng/5303hàngcũ và8workbookgiữnguyên; mainHTTP role/scope/count và browser120máyPASS. Preview18080/15173 đã dừng. Bàn giao docs/database/demo-v22.md, review docs/reviews/2026-10-09-verification-demo-v22.md; S11 IN_REVIEW UAT/thiết bị thật/NFR production.",
+    "08/10/2026 khách hàng yêu cầu tiêu chuẩn sản phẩm nghiêm túc: chốt tiêu chí tại docs/reviews/2026-10-08-customer-quality-gates.md; phân biệt lỗi, thiếu chức năng và thiếu bằng chứng. Đối chiếu source inbox/export với review V21; sửa docs/evaluation.md đang dùng V11/coverage cũ như hiện trạng. Chỉ cập nhật tài liệu, không đổi runtime hoặc chạy lại test; S11 IN_REVIEW, chưa nghiệm thu toàn sản phẩm.",
+    "08/10/2026 người dùng duyệt chọn quy tắc tốt nhất và đánh giá lại: triển khai Admin archive/reopen có sáu blocker, lý do/version/idempotency/history V21; PM đóng/mở lại TASK/REQUEST/IMPROVEMENT; sửa DEV membership, focus case, inbox refresh, phạm vi Excel và dashboard archived. FullFE659/659 với coverage đo, final scoped44/44; BE lifecycle/quyền41/41, dashboard13/13, native migration1/lifecycle7/concurrency6/FQ9 PASS, contract36/36/build PASS; JDT203sources0error0warning. Backup rồi restart8080/MySQL3307/tmsV21; 65 bảng/5304 hàng và8 workbook nguồn giữ nguyên. Browser1366/768/375 PASS trong phạm vi mới, không ghi fixture vào tms. Báo cáo docs/reviews/2026-10-08-customer-reassessment.md; S11 IN_REVIEW cho UAT/pilot/NFR production.",
+    "08/10/2026 cải tiến khách hàng trên system-design: preparation checklist PM, tên context, single-case responsive giữ lựa chọn sau lưu, Admin project search, action inbox FILE/QA/BUG/RETEST phân quyền, tên Excel cập nhật. FullFE632/632, Admin final49/49; BE scoped108/108, native isolated9/9, JDT197sources0error0warning, contract27/27/build PASS. Backend8080 đã restart/native3307/tmsV20; không migration mới. Báo cáo docs/reviews/2026-10-08-customer-improvements.md. Archive policy còn chờ trả lời; S11 giữ IN_REVIEW UAT/pilot/NFR production.",
+    "06/10/2026 audit luồng ADMIN→PM→Tester→Dev→retest: sửa canonical DEV progress và 2 lỗi UI permission/read-only bằng RED→GREEN. FullFE344/344(44files), BE scoped26/26(6suites), builds PASS, JDT167sources0error0warning, contract structural checker PASS. SELECT native V16, metadata59tables/560cols/139FK; không ghi DB/fixture/migration hoặc restart8080/5173. Viết docs/product PRD/SRS/DATA-DICTIONARY/TRACEABILITY-UAT; gap phân công file/session/máy thật/file execution export và QA chờ duyệt, không gọi đã triển khai. Review docs/reviews/2026-10-06-system-workflow-review.md. S11 giữ IN_REVIEW; không commit/push.",
+    "05/10/2026 ADMIN A1–A4 đã triển khai, review từng phần và tổng thể đã duyệt sau sửa2 lỗi đồng thời. Flyway native V16 sau backup; fullFE341/341 PASS, BE133/133 theo XML của30suite chọn lọc, packagePASS, Eclipse167sources0errors0warnings. Browser đọc/form/responsive1440→320 PASS. Native fixture/fresh/concurrency chưa chạy do thiếu quyền1044; S11 giữ IN_REVIEW. Preview18080/15173 đã dừng, không đụng8080/5173. Không commit/push. Guide docs/admin-guide.md và báo cáo docs/reviews/2026-10-05-admin-implementation.md.",
+    "05/10/2026 người dùng duyệt toàn bộ thiết kế ADMIN, triển khai A1–A4 trên system-design. Đã bắt đầu A1; native MySQL V13, schema test riêng chưa có. Theo yêu cầu tự tạo đã thử CREATE DATABASE bằng migrator nhưng MySQL trả1044 (thiếu quyền). Không chạy fixture trên tms. Theo dõi tại docs/reviews/2026-10-05-admin-implementation.md; không commit/push trong tác vụ mới.",
+    "05/10/2026 yêu cầu mới: khu ADMIN riêng theo role, dashboard tất cả/một dự án, quản lý dự án/user/kho thiết bị. D1 chốt từng máy/một dự án mỗi thời điểm; D2 dùng hạn thực tế kết hợp PM ghi lý do/báo cáo. Đã khảo sát và lập đề xuất docs/planning/proposals/2026-10-05-admin-portal.md, chờ review thiết kế tổng thể theo brainstorming trước implementation; chưa sửa runtime/migration. Giữ S11 IN_REVIEW và phần CSS chưa commit.",
+    "05/10/2026 sửa UI cắt chữ select do height28px/padding16px và căn hàng trạng thái/chứng cứ trong 2 CSS chung. Browser native1440/390/320px, FE290/290 tests36files/build PASS; không đổi nghiệp vụ/BE/database. Xem docs/reviews/2026-10-05-work-item-ui.md; S11 giữ IN_REVIEW, chưa commit/push tác vụ này.",
+    "05/10/2026 sửa đúng13 null-type-safety warnings tại3 file theo ảnh; Eclipse137source0error0warning,29/29 tests liên quan và verify/package PASS. Người dùng yêu cầu commit/push system-design cùng code tự lưu/xuất Excel chờ từ lượt trước. Không đổi schema/runtime nghiệp vụ; giữ gate isolated integration/UAT. Xem docs/reviews/2026-10-05-java-diagnostics.md.",
+    "04/10/2026 user chốt tự lưu kết quả tài liệu, xuất bản cập nhật và giữ file gốc. V13 đã chạy native3307, vẫn56 bảng; import_rows+project_audit, PUT version/CSRF/idempotency, queue từng dòng và lịch sử. Browser demo đủ vòng/reload, Excel J2=NG, original hash khớp; native409/422/403/404/replay PASS. FE290/290 tests36files/build, BE82/82 tests17classes/verify, backup metadata test PASS. Sửa milestone ID/deadline và bộ lọc tổng quan không có dữ liệu. Xem docs/reviews/2026-10-04-document-results-and-wiring.md. Giữ IN_REVIEW: isolated integration/UAT/pilot; không commit/push.",
+    "04/10/2026 theo phản hồi mới đã bỏ form inline: ô đổi liên tục Unexecuted→OK→P→NG→Fixed→NA giống develop, màu riêng cho chữ/viền/nền. State mỗi case tại giao diện, chưa ghi đợt; không giả báo đã lưu. FE284/284 tests35files/build, browser đủ vòng/màu/không hàng phụ PASS. Xem docs/reviews/2026-10-04-result-cycle-investigation.md. Không BE/schema/commit/push.",
+    "04/10/2026 review code/API/import: hỗ trợ ô gộp trình bày an toàn, giữ export nguồn; sửa HTTP client timeout/JSON/session, mapping400/405/415 và UX preview. FE276/276 tests33files/build, BE76/76 tests16classes/verify, Java136source0warning PASS. Browser native preview Scale57dòng0lỗi, mobile/focus/Escape PASS; backend đã restart. Xem docs/reviews/2026-10-04-code-api-import-review.md. User cho phép commit/push system-design riêng tác vụ; giữ IN_REVIEW integration/UAT/pilot.",
+    "04/10/2026 UI/UX final theo yêu cầu push system-design: sửa dropdown/focus, drawer mobile sau desktop-collapse, document deep-link, modal Tab, tải/retry/stale case, khóa draft khi gửi, responsive form và đồng bộ nút; bỏ yêu thích chưa lưu. Final FE271/271 tests33files/build PASS; coverage6files 93.84 statements/87.66 branches/90.54 functions/96 lines. Browser mobile320/390, dialog320x480, desktop1440 và ô kết quả/history PASS trong phạm vi báo cáo docs/reviews/2026-10-04-ui-ux-audit.md. Người dùng cho phép commit/push riêng tác vụ này, không merge/deploy; không đổi BE/schema. Giữ S11 IN_REVIEW và gate merged-cell import/integration/UAT/pilot.",
+    "04/10/2026 review chức năng/UI trên system-design: sửa focus/Escape/nested modal, retry lịch sử giữ draft, khóa input khi lưu, tiêu đề route, nhận diện TMS và contrast/responsive. FE256/256 tests30files/build PASS; coverage AttemptDialog/useDialogFocus 92.18 statements/85.84 branches/89.65 functions/97.14 lines. Browser đọc các màn tổng quan/công việc/cycle/retest/report/lỗi/thành viên, keyboard/dialog/320–1440px PASS trong phạm vi báo cáo. Còn merged-cell import và yêu thích chỉ lưu phiên; không đổi BE/schema/ghi nghiệp vụ. Xem docs/reviews/2026-10-04-functionality-ui-review.md; S11 IN_REVIEW, giữ gate integration/UAT/pilot.",
+    "Final kiểm chứng sửa ô kết quả (kết thúc 04/10/2026): toàn bộ FE248/248 tests (29files), build và diff-check PASS. Sửa vẫn ở working tree system-design, chưa commit/push.",
+    "03/10/2026 sửa ô kết quả: bấm mở dialog ngay, chọn đợt/cấu hình và thông báo thiếu scope trong dialog; giữ case khi đổi context, hủy pending khi đóng, chặn stale context. RED2→GREEN, focused11/11; coverage DocumentExecution91.37/85/80.55/94.23. Browser doc4 thiếu scope hiện đúng; demo run242 OK→P→reload giữP→OK và lịch sử PASS. Xem docs/reviews/2026-10-03-result-cell-dialog.md. Không đổi quyền/BE/schema, chưa commit/push, S11IN_REVIEW.",
+    "03/10/2026 final wheel-scroll verification: toàn bộ frontend246/246 tests (29files) và build PASS; git diff --check PASS. Thay đổi đang ở working tree system-design, chưa commit/push.",
+    "03/10/2026 sửa cuộn chung trên system-design: gỡ Lenis window chặn wheel của vùng overflow riêng, dùng native scrolling. RED6→GREEN8, coverage App.jsx100%; browser xác minh cuộn dọc/ngang bảng, hai modal và trang thư viện bằng input thật. Xem docs/reviews/2026-10-03-native-wheel-scroll.md. Không đổi BE/database; S11 IN_REVIEW.",
+    "03/10/2026 final system-design checkpoint: frontend238/238 tests (28files), focused32/32 và build PASS; coverage4files khôi phục 91.26 statements/81.56 branches/86.13 functions/93.98 lines. Đã kiểm tra native browser lưu/reload/history; giữ gate S11 IN_REVIEW và các việc chưa nghiệm thu trong báo cáo khôi phục.",
+    "03/10/2026 khôi phục màn test case từ thiết kế develop: menu ba gạch/chi tiết Trước–Tiếp/lịch sử revision diff/kéo cột; ô kết quả nối API execution theo đợt-cấu hình, giữ dữ liệu Excel nguồn. Browser demo riêng project4/document5/cycle6/run242 ghi OK và lịch sử, reload giữ kết quả. FE232/232/build PASS. Nhánh làm việc từ nay system-design, mang toàn bộ code/tài liệu sprint hiện có. Xem docs/reviews/2026-10-03-restored-test-grid.md. S11 giữ IN_REVIEW; gate isolated integration/UAT/pilot chưa đóng.",
+    "03/10/2026 import theo tiêu đề hoàn tất phạm vi hai workbook khách: 128case/0lỗi trên browser native, mapping JSON giữ cột phụ và title kế thừa không đổi ô nguồn; template khách mới. FE225/225/build, BE20parser/export/verify và diagnostics0warning PASS; round-trip128x14 và155x14 PASS. Xem docs/reviews/2026-10-03-header-based-import.md. Ưu tiên hoàn tất import trước rồi tiếp tục yêu cầu khôi phục màn cũ/nút ba gạch/lịch sử/ghi kết quả; chưa thay đổi nghiệp vụ thực thi. Gate isolated integration/UAT giữ mở.",
+    "03/10/2026 22:47–23:00: theo yêu cầu dùng Flyway tự cập nhật, đã backup native tms rồi restart backend để áp V12 thành công; restart lần nữa validate/up-to-date. API tài liệu hết404. Browser thật nhập workbook155case vào project1/document3, mở lưới/chi tiết revision, lọc NG3dòng, phân trang100+55, reload/menu/mobile PASS. Export API200, bản gốc giống bytes và bản hiện tại giữ155x14cell/type/style/hyperlink (39links). FE224/224/build PASS, BE14/14 parser/export/verify PASS. Coverage riêng TestDocumentPage: statements94.59%,branches83.2%,functions92.5%,lines98.59%. Còn isolated native integration/fresh migration, coverage BE API/service và UAT; không chạy destructive tests trên tms. Chi tiết docs/reviews/2026-10-03-test-documents.md.",
+    "03/10/2026 Excel khách: người dùng duyệt toàn bộ thiết kế và giao thực hiện. Đã thêm parser customer, lưu nguồn, V12 additive không thêm bảng, API tài liệu/export, danh sách tên file và lưới14cột/chi tiết case. Kết quả cũ và M/N chỉ là nguồn. FE222tests/build PASS, BE65unit regression và final13parser/export PASS; Eclipse136source/0warning. Actual155rows round-trip giữ39links/33styles. Fresh review sửa callback import sau unmount; browser API mock desktop/mobile PASS. Chưa chạy native integration/fresh-upgradeV12/E2E thật: user sẽ tạo tms_docstest_202610030001 trong Workbench, kiểm tra vẫn chưa có schema; không test ghi/xóa lên tms. docs/reviews/2026-10-03-test-documents.md có plan/evidence/next commands; S04/S11 IN_REVIEW.",
+    "03/10/2026: người dùng duyệt thiết kế menu con sidebar theo Bảng công việc. Đã chuyển Tổng quan/Quản lý kiểm thử/Cài đặt dự án sang submenu, bỏ tab điều hướng trùng và thêm route settings; chỉnh toolbar thư viện ở màn hẹp. Frontend 203 tests/26 files PASS, build PASS, coverage riêng Sidebar + ProjectSettingsPage 91.3% lines/97.1% branches. Browser native local xác minh desktop/mobile, Back/reload/settings routes PASS. Không đổi BE/schema/quyền; S11 vẫn IN_REVIEW với gate UAT/pilot cũ. Chi tiết nhật ký SPRINT-11.",
+    "03/10/2026 20:07 direct Maven native: yêu cầu chạy cd Backend/mvn spring-boot:run. RED lỗi thiếuTMS_DB_URL và config1/4 lỗi; POM run mặc địnhlocal, YAMLlocal import.env.mysql.local/dựngURL. GREEN config4/4,tổng57unit/verify/package PASS; compiler126/0error/0warning. Startup exactcommand khôngTMS/Spring env local/8080/MySQL9.7.0/3307/tms/FlywayV11, readiness200UP, no migration/bootstrap; đã dừng verifier để trống8080. Release/default không tựloadnative secrets, JARkhông.env. docs/reviews/2026-10-03-direct-maven-startup.md; S11IN_REVIEW, khôngintegration/browser/V12/commit/push/deploy.",
+    "03/10/2026 19:58 Java Problems follow-up: ảnh còn17; checker trước thiếu potentialNullReference. Bật potentialNullReference warning/nullReference error, tái hiện16 cảnh báo auto-unboxing/session và sửa non-null guards (không fallback throttle/count về0). Checker125source/0error/0warning PASS; Maven verify53unit/package PASS. Còn IDE Maven configuration update; chưa xác nhận UI Problems=0. Đính chính docs/reviews/2026-10-03-java-problems.md; không integration/native writes/browser/schema/commit/push/deploy; S11 IN_REVIEW.",
+    "03/10/2026 Java Problems: compiler Eclipse tái hiện485warning/124source, sửa contract/import/lambda/resource/APIdeprecated, checker125source/0warning/0error PASS; Maven verify53unit tests/package PASS. Null analysis giữ bật, Maven IDE update automatic. docs/reviews/2026-10-03-java-problems.md. Chưa xác nhận trực tiếp UI Problems hoặc chạy integration/native regression/browser; S11 vẫn IN_REVIEW, không V12/commit/push/deploy.",
+    "03/10/2026 native startup: user đã thiết lập Workbench/tms, .env.mysql.local có cấu hình 3307. Log Maven trực tiếp thiếu TMS_DB_URL; dùng script hiện có khởi động thành công MySQL9.7.0/8080/local/FlywayV11 và readiness PASS. Audit56bảng/128FK/6domain checks không vi phạm. docs/reviews/2026-10-03-native-startup.md. Còn UI/evidence, regression9.7 và gate pilot; Flyway có warning phiên bản server mới. S11 IN_REVIEW, chưa V12/commit/push/deploy.",
+    "Người dùng yêu cầu tạo nhánh từ develop và thực hiện một sprint gồm FE/BE/MySQL/Flyway để xem thử.",
+    "develop đã có frontend qua merge tại 3355cfc; nhánh mới feature/sprint-01-foundation.",
+    "Theo chỉnh sửa của người dùng: gỡ màn Kiểm tra hệ thống khỏi web; theo dõi backend/MySQL/Flyway bằng terminal, log và scripts/Check-System.ps1. V1 đã áp dụng giữ nguyên, không triển khai CRUD nghiệp vụ S02 trở đi.",
+    "S00-T03 vẫn chốt quyết định nghiệp vụ theo gate. Không tự bắt đầu sprint kế tiếp, commit, push hoặc merge.",
+    "Người dùng yêu cầu triển khai S02 trên nhánh riêng. Đã tạo feature/sprint-02-auth; giữ bản dự phòng S01 trong Git stash mang tên Sprint 01 foundation checkpoint before Sprint 02. S01 chưa commit/merge, mã nền được mang sang nhánh mới; chưa push.",
+    "S02: người dùng xác nhận chỉ tài khoản nội bộ; chỉ Admin hoặc PM được Admin cấp quyền tạo tài khoản, Tester không được phép. PM được cấp trong S02 chỉ tạo Tester; tạo Admin/PM và cấp/thu hồi quyền chỉ Admin. Không có màn diagnostic trên web.",
+    "2026-09-22: S02 DONE; backend 17 tests MySQL thật, frontend 25 tests và build PASS; browser login/logout/expiry giữ draft cùng user PASS; local Flyway V2, V1 không đổi. Quyền dự án và khách hàng chưa triển khai.",
+    "2026-09-27: S03 DONE (Project, Catalog, Ruleset, Handbook, Flyway V3, backend 48 source files, frontend 25 tests + build PASS).",
+    "2026-09-27: S04 DONE (Test Suites, Test Cases, Revisions song ngữ VI/JP, Import Staging/Commit, Flyway V4, backend 55 source files compile PASS, frontend build + 25 tests PASS).",
+    "2026-09-28: Mở lại S03/S04 sau review: V4 lỗi SQL trên MySQL 8.4, thiếu kiểm thử phạm vi dự án, chưa nhập XLSX thật. Quyết định mới xem ADR-004. Có Git stash checkpoint, chưa commit/push.",
+    "2026-09-28 review: S04-T01/T02 DONE theo mẫu nội bộ; S04-T03 IN_REVIEW vì browser automation upload bị thiếu quyền file URL. S03 cần hoàn thiện UI/thành viên/ruleset/handbook trước S05. FE 34 tests + build PASS, BE 34 tests PASS; local MySQL 8.4.8/Flyway V5 UP.",
+    "28/09/2026: Người dùng yêu cầu bổ sung thiết kế database và triển khai S05. Nhánh feature/sprint-05-execution mang working tree chưa commit từ review; không merge/commit/push. V6 chỉ thêm execution, thiết kế các module tiếp theo ghi rõ sprint. ADR-005.",
+    "29/09/2026: Đã lưu quy trình chủ động áp dụng skill ECC trong AGENTS.md/docs/development-skills.md. S05-T00 DONE; T01/T02/T03 IN_REVIEW, chức năng và tests đã PASS nhưng còn đối chiếu coverage và browser TESTER. 44 FE tests + build, 44 BE tests + verify PASS; V6 MySQL. Sửa phân công giữ draft/response cũ/retry và thời gian API thiếu UTC offset bằng test tái hiện. Coverage FE chưa đạt 80% tất cả chỉ số, BE chưa đo. Xem docs/reviews/2026-09-29-sprint-05.md; chưa mở S06 hoặc commit/push.",
+    "29/09/2026: người dùng duyệt và yêu cầu tiếp tục các sprint. S05 nghiệm thu DONE theo phạm vi ADR-005; mở S06 trên feature/sprint-06-work-items từ develop 3355cfc, mang working tree tiền nhiệm chưa commit/merge. Bốn quyết định nội bộ xác nhận tại ADR-006; S03/S04 vẫn giữ review riêng. Không tự mở S07 trong khi S06 chưa đạt DoD.",
+    "29/09/2026: S06 DONE phạm vi nội bộ ADR-006. FE 102 tests/build và hai gate module PASS; BE full 69 + targeted cuối 25 PASS; browser NG→bug→ba view→PM transition→reload PASS; local V7/7 migrations. Xem docs/reviews/2026-09-29-sprint-06.md. Chưa nghiệm thu toàn bộ S03/S04/production, không commit/push/merge, dừng trước S07.",
+    "29/09/2026 yêu cầu mới: bắt đầu S07 và luôn tiếp tục các sprint sau. Quyền tiếp tục tuần tự đã lưu executionPolicy; thay thế yêu cầu dừng ở mỗi ranh giới trước đây, vẫn giữ kiểm chứng và không suy quyết định nghiệp vụ.",
+    "29/09/2026: người dùng yêu cầu áp dụng đủ ECC; docs/development-skills.md bổ sung checklist review/security/build/tests/coverage/migration/UI/status và quyền tiếp tục tuần tự. S08 nghiệp vụ đã được chốt ADR-008, chưa implementation khi S07 chưa DONE.",
+    "29/09/2026 S07 DONE nội bộ, mở feature/sprint-08-reporting base develop 3355cfc, giữ toàn bộ working tree tiền nhiệm chưa commit. S08 thêm T00 NA/chốt/mở đợt theo ADR-008; tổng roadmap 39 task.",
+    "30/09/2026 S08 đang kiểm chứng ECC. Không sửa V1–V8. V9 mới kiểm tra Testcontainers, chưa áp dụng local ở thời điểm ghi. Đã hỏi provider/sandbox Sprint 9 để chuẩn bị; chưa có câu trả lời thì chưa triển khai adapter hoặc gửi ticket.",
+    "30/09/2026 S08 DONE nội bộ sau ECC review, full + targeted tests, V9 MySQL local và E2E/Excel. Sửa key React trùng, NA candidate, và chốt đợt phải tính bug chỉ liên kết qua coverage PM. S03/S04 giữ review riêng. Redmine S09 đã chọn, sandbox riêng theo ủy quyền; chưa commit/push/merge/deploy.",
+    "30/09/2026 mở S09 trên feature/sprint-09-redmine base develop 3355cfc sau S08 DONE. Giữ working tree chưa commit; sandbox riêng theo ADR-009, không gửi tracker khách, không commit/push/merge/deploy.",
+    "30/09/2026 S09 DONE nội bộ sau final 71 tests và runtime restart. Đính chính smoke private ban đầu thiếu readback: role sandbox đã sửa tối thiểu, strict smoke và hai ticket private/unique PASS. Không nghiệm thu tracker khách hoặc UAT.",
+    "30/09/2026 mở S10 feature/sprint-10-hardening từ develop 3355cfc, giữ working tree S01–S09 chưa commit. User chưa đưa quy mô, dùng giả định nội bộ 10000 run items/1000 bugs/20 concurrent, không SLA. Các hạn chế S03/S04 và UAT khách vẫn giữ, S10 kiểm tra/fix finding có giới hạn.",
+    "30/09/2026 S10: T02/T03 DONE phạm vi kiểm chứng kỹ thuật nội bộ; T01 và sprint IN_REVIEW vì gate S03/S04/browser/UAT còn mở. Full BE159, FE157, patched dependency scan, load/restore/runtime đã kiểm chứng. Xem review S10; không commit/push/merge/deploy, chưa mở S11.",
+    "30/09/2026: Người dùng yêu cầu giải thích và thực hiện review để hoàn thiện IN_REVIEW. Mở rộng S10-T01 để sửa trực tiếp phần còn thiếu S03/S04; không tự triển khai S11, commit hoặc deploy. Đang kiểm chứng catalog/membership version+audit, ruleset typed nội bộ, handbook plain text và browser/keyboard.",
+    "30/09/2026 hoàn thiện review: S03 DONE phạm vi nội bộ; 171 BE/181 FE PASS, V11. S04-T03 và S10-T01 giữ IN_REVIEW với browser/UAT cụ thể; S00 còn quyết định khách/production, S11 PLANNED. Không commit/push/merge/deploy.",
+    "30/09/2026: người dùng mở phạm vi sang S11, tổng kiểm tra và nạp dữ liệu. Thực hiện chuẩn bị bàn giao + demo nội bộ; giữ gate browser/UAT S10 và triển khai thật riêng, không tự ký nghiệm thu.",
+    "01/10/2026: chuẩn bị kỹ thuật S11 hoàn tất trong phạm vi local; toàn sprint IN_REVIEW do gate UAT/triển khai thật/số đo pilot. Bảo toàn S04/S10 còn mở, không tự ghi DONE.",
+    "01/10/2026 yêu cầu mới: tự review độ phức tạp database, vẽ ERD và ưu tiên MySQL native/Workbench, không yêu cầu Docker cho runtime. Metadata 56 bảng/514 cột/128 FK; giữ dữ liệu nguồn, chưa cutover server 3307 khi thiếu root credential.",
+    "01/10/2026: theo yêu cầu mới, xuất ảnh ERD tĩnh giống mẫu: 9 PNG/SVG (1 tổng thể + 8 nhóm), đủ 56 bảng/514 cột/128 FK; xem docs/database/erd/images/README.md. Không xây thêm web, không sửa schema hoặc thay đổi trạng thái nghiệm thu sprint.",
+    "03/10/2026: user yêu cầu review/cải tiến database. Đối chiếu 56 bảng với code/FK/index; đính chính application_info dùng khóa bootstrap Admin. Sửa JSON history UPDATE chỉ giữ trường có thể sửa và giá trị chuẩn hóa, bảo toàn lịch sử cũ. 3 WorkItemHistoryTest và Maven verify/package PASS; coverage helper mới 100%, không phải toàn module. Schema V11 không đổi; native chưa có credential/config, chưa integration/E2E mới. Review tại docs/reviews/2026-10-03-database-complexity.md; S11 vẫn IN_REVIEW, không commit/push/deploy.",
+    "03/10/2026: yêu cầu brainstorming bổ sung audit fields/chuẩn hóa N-M và hướng dẫn native MySQL. Đã rà đủ 56 bảng và 128 FK, xác nhận các quan hệ N-M chính có bảng trung gian; phát hiện actor/time thiếu và writer NA chưa cập nhật updated_by. Đề xuất Architectural tại docs/reviews/2026-10-03-database-audit-fields-relations.md đang chờ xem thiết kế, chưa là spec/plan được duyệt; chưa tạo V12 hoặc sửa backend. Guide Workbench bổ sung đường dùng backup SQL sẵn có không bật Docker. MySQL97/3307 Running, PlanOnly PASS, checksum backup khớp; chưa xác thực/import/cutover. Skill brainstorming/using-superpowers; S11 vẫn IN_REVIEW, không commit/push/deploy.",
+    "06/10/2026: người dùng duyệt toàn bộ F01–F05/Q01–Q03 (mình duyệt hết). Đang triển khai nhóm giao file, phiên/máy vật lý, execution/export theo lượt, QA và handoff theo tasks/plan.md; phê duyệt không là nghiệm thu. Giữ S11 IN_REVIEW, native test/UAT/pilot là gate riêng; không commit/push/deploy hoặc fixture trên tms.",
+    "06/10/2026 F/Q: Task1–5 source reviews PASS; coreUI, router/rawExcel và library/groupedlegacy nối xong, scoped tests/build PASS (không cộng overlapping suites). Task6A QA đang triển khai;6B/C,7,8 còn gate. docs/reviews/2026-10-06-fq-implementation.md; native V17/V18 fresh/upgrade/HTTP/UAT NOT_RUN, S11 IN_REVIEW giữ nguyên.",
+    "06/10/2026 F/Q: source Task1–6 reviewed PASS; QA core/boundary/evidence final scoped112 tests and fresh javac125 main/61 test PASS. These runs are not unique/full-suite/native acceptance. Task7/8 continue; MySQL V16, isolated schema privilege unavailable, native/FK/race/HTTP/UAT NOT_RUN.",
+    "06/10/2026 F/Q: Task1–7,8A/8B/8C source gates reviewed; FE598/598, current isolated offline BE390/390, fresh javac127main/64test and JDT191source0errors0warnings PASS. Contract109legacy+17file-work+14QA/handoff operations,50schemas,20focused tests PASS. Native V17/V18/fresh/upgrade/FK/HTTP/UAT remain NOT_RUN; three named races NOT_WRITTEN. Final wholebranch review still pending; no migration/runtime restart/commit/push/merge/deploy, S11 IN_REVIEW.",
+    "06/10/2026 final broad ADMIN/F/Q review: With fixes, no Critical; I1 QA error hash navigation, I2 archived build history/PM cancel recovery, I3 PM filters/rates/start/activity/milestone context. M1 nullable enums and M2 ADMIN auth contract names. One combined fix wave underway, no second broad review. Existing regression evidence preserved; native/HTTP/UAT/pilot remain separate. See docs/reviews/2026-10-06-fq-final-review.md.",
+    "06/10/2026 F/Q final source APPROVED: one broad ADMIN/F/Q review, one combined fix wave and one scoped re-review; I1–I3/M1–M2 addressed/no new breakage. Final612/612FE49files,394/394offlineBE38suites, freshjavac127main/64test/JDT1910errors0warnings, build/package/JAR18source-matched migrations/contracts PASS. FirstparallelFE611pass/1old-test-timeout preserved; serialretry passes with original timeout. UI-only fixture proof and cleanup recorded. Native V17/V18/SQL/fresh/upgrade/FK/preservation/HTTP/UAT/pilot remain NOT_RUN, three races NOT_WRITTEN and independent commit/rollback/Java guard regression open. No migration/user restart/commit/push/merge/deploy. See docs/reviews/2026-10-06-fq-implementation.md and fq-final-review.md; S11 IN_REVIEW.",
+    "2026-10-06: Người dùng yêu cầu tạo tài khoản với quyền tương ứng, tự test, bàn giao đầy đủ và push system-design. Quyền commit/push được chốt cho tác vụ này; không mở rộng sang merge/deploy. Native kiểm tra lại: tms V16; migrator chỉ có quyền tms; credential root cấu hình trả 1045. Backup tạo tại var/mysql-native/backups/2026-10-06T01-09-39-750Z-tms.sql.",
+    "2026-10-06 bàn giao: 7 null warnings sửa xong, JDT cuối192sources0error0warning; phát hiện/sửa HTTP500 gán thành viên do numeric archived projection (RED/GREEN18test, reviewApproved). Full offline396test/39suitePASS; 4tài khoản handover.admin/pm/tester/dev tạoquaAPI thật; PM/Tester/Dev gánDEMO-PILOT; 47kiểmtraAPI(28role+12read+7negative)PASS. NativeV17/V18/fullFQ vẫn chưa nghiệmthu vì root1045; không đánh dấuS11DONE.",
+    "2026-10-06: Commit2a0ace7 tập hợp code ADMIN/FQ, PRD/đặc tả và bản sửa null/projection đã review. Tiến trình kiểm chứng18080/15175 đã dừng; listener8080/5173 của người dùng giữ nguyên. Đang hoàn tất metadata và xác minh push remote, không merge/deploy.",
+    "2026-10-06: Tiếp tục nghiệm thu native theo yêu cầu; được cập nhật backend local 8080 sau gate. Bổ sung 5 test concurrency/transaction native và 2 test guard offline. Java guard 2/2, Node runner 7/7, JDT 194 source 0 lỗi/0 cảnh báo; review source Approved. Native/HTTP vẫn NOT_RUN vì chưa có schema riêng và credential root chưa thay đổi. Xem docs/reviews/2026-10-06-native-completion-preflight.md.",
+    "2026-10-06: Người dùng cung cấp credential root native; tạo schema test riêng tại 3307. Phát hiện hai FK QA nullable-prefix bỏ lọt trên MySQL 9.7, thêm V19 giữ V1–V18. Migration 1/1, integration 5/5, concurrency 5/5, local config 5/5, runner 7/7 PASS; JDT 194 source, 0 lỗi/0 cảnh báo. HTTP 37 bước mỗi V18/V19, export POI/source byte PASS. Backup V16 mới, áp V17–V19 trên tms, backend 8080 PID 40628 UP, 23 HTTP bốn vai trò và browser PM PASS. Xem docs/reviews/2026-10-06-native-completion.md.",
+    "07/10/2026 V20 local demo: 5 user ADMIN/PM/TESTER01/TESTER02/DEV, 2 dự án, 7 membership, 4 thiết bị/3 bàn giao, danh mục/build/2 đợt. Native fresh/upgrade/rollback/no-reset PASS, config5/5, runner8/8, JDT195source0error0warning. tms V20/8080 UP sau backup, 4379 dòng cũ/64 bảng giữ nguyên. Import riêng 2 file hiện có/88case, phân công Tester01/02, 0 phiên/attempt trên dự án demo chính. HTTP5account + 23 oldrole checks PASS; browser Admin/Tester smoke. Review docs/reviews/2026-10-07-demo-v20.md; không nhúng workbook vào Git.",
+    "07/10/2026 UI Admin: dùng chung màu menu dự án, icon/active/focus; nhóm nút cách 8px và control 44px, form và phân trang co giãn. Admin46/46 và frontend612/612 PASS, build PASS; Chrome 320/768/942/1440px có kiểm tra bố cục. Không thay đổi nghiệp vụ/DB; S11 giữ IN_REVIEW. Xem docs/reviews/2026-10-07-admin-ui.md.",
+    "07/10/2026 responsive/product review: shared control 36px/44px mobile, action gaps/wrap, Admin member picker/scope, filters/dialogs and mobile Excel grid; translated file states and cancellable assignment draft. Two behavior tests RED then GREEN; file-work91/91, frontend614/614 and build PASS. Chrome 21 project + 6 Admin routes across six viewports, additional Tester/Dev/forms, geometry evidence and screenshots saved. PRD/spec1.3 reflect nativeV20; no API/schema change. Coverage not measured; UAT/pilot and cross-browser remain separate, S11 IN_REVIEW. See docs/reviews/2026-10-07-responsive-product-review.md.",
+    "07/10/2026 customer follow-up: fixed project-scope label baseline by reusing the shared chooser; 14px labels, 44px controls, full selected name, correct identity across pagination/pending lookup. Fixed adjacent filter grid stretching and added file-work filter reset preserving My work/document scope. Four regressions RED then GREEN; Admin/File-work141/141, FE618/618, build PASS. Chrome23 chooser states + 4 file-filter viewports checked; no business data mutations. Review docs/reviews/2026-10-07-project-scope-customer-followup.md; S11 IN_REVIEW, customer UAT and broader roadmap remain separate."
+  ],
+  "sprints": [
+    {
+      "id": "S00",
+      "name": "Khảo sát, kiến trúc và chốt phạm vi",
+      "status": "IN_REVIEW",
+      "file": "sprints/SPRINT-00.md",
+      "dependsOn": [],
+      "releaseGate": null,
+      "tasks": [
+        {
+          "id": "S00-T01",
+          "title": "Khảo sát hiện trạng",
+          "status": "DONE",
+          "evidence": [
+            "01-discovery.md — đọc source/config/imports; không chạy runtime"
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S00-T02",
+          "title": "Lập kế hoạch có trạng thái",
+          "status": "DONE",
+          "evidence": [
+            "README.md, 03-master-plan.md, sprints/, 04-database-and-migrations.md, 05-api-contract.md, 06-execution-guide.md — chỉ tài liệu",
+            "2026-09-22: kiểm tra 12 sprint/37 task, ID và dependency, liên kết Markdown, JSON hợp lệ, đủ 18/49 mục discovery/master plan và hai bản sao nguồn có SHA-256 trùng khớp; PASS. Không chạy build ứng dụng vì không đổi source."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S00-T03",
+          "title": "Ghi quyết định nghiệp vụ theo gate",
+          "status": "IN_REVIEW",
+          "evidence": [
+            "30/09/2026: đối chiếu các quyết định nội bộ ADR-004–009 với code; giữ giới hạn không rule khách/khách hàng/production và không tự ký UAT."
+          ],
+          "blockers": [],
+          "nextAction": "Chốt rule/mapping khách, môi trường pilot, retention và UAT khi có chủ thể xác nhận; không chặn lại chức năng nội bộ đã được ADR cho phép.",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "id": "S01",
+      "name": "Nền tảng backend, MySQL và Flyway",
+      "status": "DONE",
+      "file": "sprints/SPRINT-01.md",
+      "dependsOn": [
+        "S00-T01",
+        "S00-T02"
+      ],
+      "releaseGate": null,
+      "tasks": [
+        {
+          "id": "S01-T01",
+          "title": "Chốt cấu hình và skeleton",
+          "status": "DONE",
+          "evidence": [
+            "Backend/pom.xml, mvnw*, compose.yaml, scripts/, docs/development.md; Java 21 + Spring Boot 3.5.16 + Maven 3.9.11 + MySQL 8.4.8.",
+            "2026-09-22 PASS: mvnw verify (9 tests); health UP khi DB chạy, HTTP 503/DOWN khi dừng container; khởi động thiếu TMS_DB_URL thất bại; runtime grants chỉ DML.",
+            "docs/decisions/ADR-001-sprint-01-foundation.md; nhánh từ develop 3355cfc; wrapper checksum xác thực; docs/api/openapi.yaml.",
+            "2026-09-22 PASS: scripts/Check-System.ps1 chỉ đọc, exit 0 khi backend/MySQL/Flyway sẵn sàng; exit 1 khi cổng backend không kết nối."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S01-T02",
+          "title": "Migration nền tảng",
+          "status": "DONE",
+          "evidence": [
+            "Backend/src/main/resources/db/migration/V1__create_foundation.sql; application_info + foundation_checks; docs/database/README.md.",
+            "2026-09-22 PASS: MigrationTest (2 tests) với Testcontainers MySQL 8.4.8: fresh, migrate lại 0 thay đổi/giữ dữ liệu, checksum mismatch bị chặn, clean bị khóa, DB unavailable fail.",
+            "2026-09-22 PASS: MySQL local có V1 success đúng một lần; restart container giữ bản ghi. Hibernate validate, migrator riêng runtime."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S01-T03",
+          "title": "Khung contract và kiểm thử frontend",
+          "status": "DONE",
+          "evidence": [
+            "Frontend/src/app/services/api/client.js, routes/; docs/api/openapi.yaml. Đã gỡ màn, tab, CSS và service diagnostic khỏi frontend theo yêu cầu người dùng.",
+            "2026-09-22 PASS sau chỉnh sửa: npm test 16/16 (API boundary 10; navigation 6), npm run build. 4 test UI của màn diagnostic được gỡ cùng màn đó.",
+            "Bằng chứng nghiệm thu ban đầu và thay đổi tiếp theo được giữ trong sprints/SPRINT-01.md. Theo dõi kỹ thuật bằng terminal/log; không gọi API diagnostic từ web."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "id": "S02",
+      "name": "Đăng nhập, người dùng và phân quyền",
+      "status": "DONE",
+      "file": "sprints/SPRINT-02.md",
+      "dependsOn": [
+        "S01"
+      ],
+      "releaseGate": null,
+      "tasks": [
+        {
+          "id": "S02-T01",
+          "title": "Contract và chính sách truy cập",
+          "status": "DONE",
+          "evidence": [
+            "docs/decisions/ADR-002-internal-auth.md; docs/business/permissions.md; docs/api/identity.md + openapi.yaml. Nội bộ, Admin/PM được cấp tạo user; PM chỉ tạo Tester.",
+            "PASS: OpenAPI parse 11 path/13 operation, duplicate key/local ref; ma trận quyền đồng bộ implementation. Project scope S03 chưa triển khai."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S02-T02",
+          "title": "Identity backend",
+          "status": "DONE",
+          "evidence": [
+            "Backend identity/, SecurityConfig; V2__create_identity.sql; scripts/Initialize-Auth.ps1. PBKDF2, Spring Session JDBC, CSRF, revoke, throttle DB, audit, delegation.",
+            "2026-09-22 PASS: mvnw verify 17/17 tests, 0 skipped; HTTP/cookie thật + MySQL 8.4.8; fresh + upgrade V1 có dữ liệu; V1 khớp checkpoint.",
+            "Local Check-System PASS: backend UP, MySQL 8.4.8, Flyway V2/2 migrations; bootstrap không reset khi restart."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S02-T03",
+          "title": "Nối login và session vào ứng dụng",
+          "status": "DONE",
+          "evidence": [
+            "Frontend features/auth, API auth/client, Header/runner/profile; shell giữ 6 menu và submenu Board; draft giữ trong bộ nhớ khi hết phiên cùng user, reset khi logout/đổi user.",
+            "2026-09-22 PASS: npm test 25/25 (9 auth + 10 API + 6 navigation), npm run build.",
+            "Browser PASS: login/profile, Danh sách/Kanban, nhập nháp → expiry → reauth giữ nguyên tiêu đề; Escape không mất form; logout về login. Screenshot login đã xem.",
+            "docs/development.md, scripts/Show-LocalLogin.ps1; không có UI quản trị user riêng hoặc diagnostic trên web."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "id": "S03",
+      "name": "Dự án, danh mục, quy tắc khách hàng và sổ tay",
+      "status": "DONE",
+      "file": "sprints/SPRINT-03.md",
+      "dependsOn": [
+        "S02"
+      ],
+      "releaseGate": null,
+      "tasks": [
+        {
+          "id": "S03-T01",
+          "title": "Project và catalog",
+          "status": "DONE",
+          "evidence": [
+            "Flyway V3 migration: projects, memberships, counters, environments, builds, devices, categories, milestones",
+            "Backend Project & Catalog entities, repositories, services, controllers",
+            "Frontend ProjectProvider, ProjectSelector, CatalogPage, ProjectSettingsPage",
+            "30/09/2026: docs/reviews/2026-09-30-review-completion.md; full backend 171 tests + final targeted 29 tests/verify, frontend 181 tests/build PASS; 33-test settings/focus coverage gate PASS. Flyway V11 fresh/upgrade/local, HTTP settings/concurrency/security và demo Chrome trên DEMO-REVIEW-0930."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S03-T02",
+          "title": "Ruleset phiên bản",
+          "status": "DONE",
+          "evidence": [
+            "Flyway V3 migration: rulesets, rule_versions",
+            "Backend Ruleset & RuleVersion entities, repositories, service, controller /bug-rule-versions",
+            "30/09/2026: docs/reviews/2026-09-30-review-completion.md; full backend 171 tests + final targeted 29 tests/verify, frontend 181 tests/build PASS; 33-test settings/focus coverage gate PASS. Flyway V11 fresh/upgrade/local, HTTP settings/concurrency/security và demo Chrome trên DEMO-REVIEW-0930.",
+            "Nghiệm thu phạm vi nội bộ INTERNAL_DEMO: source/publish/version/audit, prefix và bộ trường ADR-006; rule khách hàng chính thức vẫn thuộc gate Q02/S00/S11."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S03-T03",
+          "title": "Sổ tay dự án",
+          "status": "DONE",
+          "evidence": [
+            "Flyway V3 migration: project_resources, resource_revisions",
+            "Backend ProjectResource & ResourceRevision entities, repositories, service, controller /handbook",
+            "30/09/2026: docs/reviews/2026-09-30-review-completion.md; full backend 171 tests + final targeted 29 tests/verify, frontend 181 tests/build PASS; 33-test settings/focus coverage gate PASS. Flyway V11 fresh/upgrade/local, HTTP settings/concurrency/security và demo Chrome trên DEMO-REVIEW-0930."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "id": "S04",
+      "name": "Bộ test case, phiên bản và nhập Excel",
+      "status": "IN_REVIEW",
+      "file": "sprints/SPRINT-04.md",
+      "dependsOn": [
+        "S03"
+      ],
+      "releaseGate": null,
+      "tasks": [
+        {
+          "id": "S04-T01",
+          "title": "Domain case và revision",
+          "status": "DONE",
+          "evidence": [
+            "Flyway V4 migration (V4__create_test_case_library.sql): test_suites, test_cases, test_case_revisions with circular FK",
+            "Backend TestSuite, TestCase, TestCaseRevision entities, repositories, service, controllers (/test-suites, /test-cases, revisions, approve, archive)",
+            "Backend compilation: 55 Java source files compiled successfully",
+            "2026-09-28: docs/reviews/2026-09-28-sprints.md; ADR-004; API test-cases.openapi.json; MySQL thật, Flyway V1–V5, fresh và upgrade V4 bảo toàn approved revision.",
+            "34 backend tests PASS; TestCaseIntegrationTest kiểm chứng scope/approval/atomic import/idempotency/concurrency/paging; TestCaseWorkbookTest chặn formula/merged/wrong format/caps và giữ Unicode."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S04-T02",
+          "title": "Import preview và commit",
+          "status": "DONE",
+          "evidence": [
+            "Flyway V4 migration: import_batches, import_rows",
+            "Backend ImportBatch and ImportRow entities, repositories, service staging with TTL, row validation (empty, duplicate, suite check), atomic idempotent commit",
+            "ImportController endpoints: POST /import-previews, GET /import-previews/{id}, POST /import-previews/{id}/commit",
+            "2026-09-28: docs/reviews/2026-09-28-sprints.md; ADR-004; API test-cases.openapi.json; MySQL thật, Flyway V1–V5, fresh và upgrade V4 bảo toàn approved revision.",
+            "34 backend tests PASS; TestCaseIntegrationTest kiểm chứng scope/approval/atomic import/idempotency/concurrency/paging; TestCaseWorkbookTest chặn formula/merged/wrong format/caps và giữ Unicode."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S04-T03",
+          "title": "UI quản lý case",
+          "status": "IN_REVIEW",
+          "evidence": [
+            "Frontend testCasesApi client (/services/api/testCases.js)",
+            "TestSpecsPage dual view: Test Cases library + Test Specifications suites, search filter, suite filter",
+            "CreateSuiteDialog, CreateCaseDialog (dual-language VI/JP), ImportExcelDialog (preview validation rows, commit), CaseDetailModal (dual-language, revisions history, approve)",
+            "Frontend build passed (Vite), 25 Vitest tests PASS",
+            "2026-09-28: docs/reviews/2026-09-28-sprints.md; ADR-004; API test-cases.openapi.json; MySQL thật, Flyway V1–V5, fresh và upgrade V4 bảo toàn approved revision.",
+            "30/09/2026: focus/aria/responsive dialog bổ sung; frontend 181 tests/build PASS. Chrome mở dialog, lỗi thiếu file, tạo nhóm AUTH và focus trả về nút mở. HTTP import→preview→commit→readback PASS trong full suite.",
+            "03/10/2026: mở rộng mẫu khách/tài liệu theo phê duyệt đầy đủ. docs/reviews/2026-10-03-test-documents.md: FE222/build/coverage4file PASS, BE65unit+final13 PASS, workbook155rows round-trip PASS; codeV12/API/grid đã có, native integration và E2E thật còn chờ schema riêng.",
+            "03/10/2026 22:47–23:00: theo yêu cầu dùng Flyway tự cập nhật, đã backup native tms rồi restart backend để áp V12 thành công; restart lần nữa validate/up-to-date. API tài liệu hết404. Browser thật nhập workbook155case vào project1/document3, mở lưới/chi tiết revision, lọc NG3dòng, phân trang100+55, reload/menu/mobile PASS. Export API200, bản gốc giống bytes và bản hiện tại giữ155x14cell/type/style/hyperlink (39links). FE224/224/build PASS, BE14/14 parser/export/verify PASS. Coverage riêng TestDocumentPage: statements94.59%,branches83.2%,functions92.5%,lines98.59%. Còn isolated native integration/fresh migration, coverage BE API/service và UAT; không chạy destructive tests trên tms. Chi tiết docs/reviews/2026-10-03-test-documents.md."
+          ],
+          "blockers": [
+            "Chưa có schema native test riêng để chạy fresh V1–V12 và integration permission/concurrency/rollback; live upgrade V11→V12 và browser nhập/xem thật đã PASS. Còn xác nhận download UI và hồi quy export/reimport trên dữ liệu test độc lập."
+          ],
+          "nextAction": "Chạy NativeDocumentMigrationTest và TestDocumentIntegrationTest trên schema test riêng khi sẵn sàng; đo coverage API/service, hoàn tất export/reimport và quyền Tester. Không cần cập nhật lại tms để dùng màn tài liệu.",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "id": "S05",
+      "name": "Đợt kiểm thử, phân công và ghi nhận thực thi",
+      "status": "DONE",
+      "file": "sprints/SPRINT-05.md",
+      "dependsOn": [
+        "S04"
+      ],
+      "releaseGate": null,
+      "tasks": [
+        {
+          "id": "S05-T00",
+          "title": "Rà soát và hoàn thiện thiết kế database toàn hệ thống",
+          "status": "DONE",
+          "evidence": [
+            "docs/database/README.md + system-design.md + ADR-005: inventory 33 bảng ứng dụng và Flyway history, ERD, FK/unique/index/transaction, mapping S06–S09.",
+            "V6__create_test_execution.sql: 7 bảng mới; MigrationTest fresh + V5→V6 giữ revision/Unicode/build PASS; ExecutionIntegrationTest kiểm tra FK sai case/cycle/run PASS.",
+            "29/09/2026 nghiệm thu S05: 48 BE tests verify PASS, 60 FE tests + build PASS; gate FE execution/API 94.20/80.51/93.12/96.41%, BE execution instructions 94.87%, branches 80.49%, methods/lines 100%. Browser PM phân công Tester riêng, NG #3 → reload → OK #4, lịch sử/actor giữ nguyên. docs/reviews/2026-09-29-sprint-05.md. Q08 NA/đóng đợt vẫn ngoài phạm vi được triển khai."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S05-T01",
+          "title": "Cycle và phân công",
+          "status": "DONE",
+          "evidence": [
+            "ExecutionService/Controller/Dtos và UI TestCyclesPage/ScopeSetup/AssignmentDialog: DRAFT/ACTIVE, approved revision scope, phân công/history, version; catalog lock cùng project.",
+            "ExecutionIntegrationTest: scope atomic, activate idempotent, permission/project scope, reassignment/concurrency PASS. Browser local tạo/kích hoạt/phân công cycle đã kiểm chứng.",
+            "FE regression phân công: 409 phải tải version và xác nhận lại, giữ draft; bỏ response của dialog cũ; retry lịch sử và refresh version thất bại PASS.",
+            "29/09/2026 nghiệm thu S05: 48 BE tests verify PASS, 60 FE tests + build PASS; gate FE execution/API 94.20/80.51/93.12/96.41%, BE execution instructions 94.87%, branches 80.49%, methods/lines 100%. Browser PM phân công Tester riêng, NG #3 → reload → OK #4, lịch sử/actor giữ nguyên. docs/reviews/2026-09-29-sprint-05.md. Q08 NA/đóng đợt vẫn ngoài phạm vi được triển khai."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S05-T02",
+          "title": "Execution attempts",
+          "status": "DONE",
+          "evidence": [
+            "ExecutionService + docs/business/execution-results.md + docs/api/execution.openapi.json: append-only attempts, context snapshot, idempotency checksum, expectedVersion, latest pointer và pending NG.",
+            "10 ExecutionIntegrationTest PASS: duplicate key/race, NG/P validation, auth/CSRF/actor, archive/cross-project, FK, history, ISO UTC projections. Toàn bộ BE 44 tests + verify PASS ngày 29/09/2026.",
+            "29/09/2026 nghiệm thu S05: 48 BE tests verify PASS, 60 FE tests + build PASS; gate FE execution/API 94.20/80.51/93.12/96.41%, BE execution instructions 94.87%, branches 80.49%, methods/lines 100%. Browser PM phân công Tester riêng, NG #3 → reload → OK #4, lịch sử/actor giữ nguyên. docs/reviews/2026-09-29-sprint-05.md. Q08 NA/đóng đợt vẫn ngoài phạm vi được triển khai."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S05-T03",
+          "title": "Nối runner và lỗi trạng thái",
+          "status": "DONE",
+          "evidence": [
+            "Runner thật tại #/tests/cycles, thay STATUS_CYCLE prototype; loading/empty/error/retry, NG/OK/P rõ hành động, lịch sử theo revision/snapshot và timezone dự án.",
+            "44 FE tests PASS, Vite build PASS; rtk proxy npm run test:coverage có baseline toàn FE và module execution. Chi tiết docs/reviews/2026-09-29-sprint-05.md.",
+            "Browser local: ADMIN là PM được phân công ghi NG #1, reload vẫn giữ, ghi OK #2 vẫn còn NG #1; bộ lọc pending NG dựa latest result. Chưa browser E2E với TESTER riêng.",
+            "29/09/2026 nghiệm thu S05: 48 BE tests verify PASS, 60 FE tests + build PASS; gate FE execution/API 94.20/80.51/93.12/96.41%, BE execution instructions 94.87%, branches 80.49%, methods/lines 100%. Browser PM phân công Tester riêng, NG #3 → reload → OK #4, lịch sử/actor giữ nguyên. docs/reviews/2026-09-29-sprint-05.md. Q08 NA/đóng đợt vẫn ngoài phạm vi được triển khai."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "id": "S06",
+      "name": "Bug chuẩn hóa và một nguồn dữ liệu công việc",
+      "status": "DONE",
+      "file": "sprints/SPRINT-06.md",
+      "dependsOn": [
+        "S05"
+      ],
+      "releaseGate": null,
+      "tasks": [
+        {
+          "id": "S06-T01",
+          "title": "Contract/domain/schema work item",
+          "status": "DONE",
+          "evidence": [
+            "ADR-006: người dùng xác nhận 10 trạng thái, một mã bug, bộ trường tối thiểu/PM standalone, kho nội bộ PNG/JPG/PDF/MP4 20 MiB, quyền PM triage và tạm khóa 3 trạng thái kết thúc.",
+            "ADR-006 và docs/business/defect-lifecycle.md: bốn quyết định nội bộ đã chốt, matrix PM/7 nonterminal/3 terminal khóa; không suy rule khách.",
+            "V7 thêm 10 bảng; docs/database/README.md inventory 43 + Flyway history và ERD. MySQL 8.4.8 fresh/upgrade V6 có NG/Unicode/latest pointer PASS, không sửa V1–V6.",
+            "docs/api/work-items.openapi.json 19 operations; Check-Contracts PASS 47 operations S04–S06 và tài liệu."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S06-T02",
+          "title": "Create/update/triage backend",
+          "status": "DONE",
+          "evidence": [
+            "WorkItemService/Controller: canonical ID, BUG subtype/context snapshot, create/update/link NG, idempotency/project counter/optimistic version, PM triage/batch rollback, history/manual external/clarification.",
+            "69 tests full backend verify PASS; targeted cuối 25 tests PASS gồm WorkItemIntegrationTest 19: quyền/project scope/validation/409/retry/batch rollback/actor/source snapshot/concurrent create. JaCoCo workitem+attachment 94.81% instructions, 82.11% branches, 99.31% lines, 100% methods."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S06-T03",
+          "title": "Evidence và bình luận",
+          "status": "DONE",
+          "evidence": [
+            "EvidenceService/Controller/Content + EvidencePanel: local UUID blob, metadata owner FK, 20 MiB PNG/JPG/PDF/MP4, content checks, download có quyền, rollback cleanup/orphan reconciliation; INTERNAL comments render text.",
+            "Multipart HTTP/MySQL/filesystem integration và nội dung file PASS; UI upload/retry/delete/download permission/error tests PASS. Browser chọn file E2E chưa kiểm chứng; không tuyên bố antivirus/retention/restore production."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S06-T04",
+          "title": "Nối ba màn hình cùng API",
+          "status": "DONE",
+          "evidence": [
+            "ProjectData, WorkBoardPage, WorkItemForm/Detail/TransitionDialog, NgBugActions, ProjectOverview nối một API; Kanban/List/Quản lý lỗi cùng numeric ID; không mock fallback; giữ submenu/màu/font.",
+            "FE 102 tests/14 files + build 1643 modules PASS. Gate S06 39 tests PASS: statements 96.38%, branches 82.45%, functions 96.06%, lines 98.83%. Gate S05 30 tests PASS; toàn app chưa đạt 80%.",
+            "Browser PASS Tester tạo từ NG #3 → DEMO-S04-1 xuất hiện ba view, comment lưu; PM open→ready có reason/history, reload giữ actor/time/status. StrictMode 409 regression và failed Kanban giữ trạng thái thật PASS."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "id": "S07",
+      "name": "Kiểm thử lại, đóng/mở lại lỗi và nhất quán dữ liệu",
+      "status": "DONE",
+      "file": "sprints/SPRINT-07.md",
+      "dependsOn": [
+        "S06"
+      ],
+      "releaseGate": null,
+      "tasks": [
+        {
+          "id": "S07-T01",
+          "title": "Chính sách retest và đối chiếu",
+          "status": "DONE",
+          "evidence": [
+            "29/09/2026: mở S07, nhánh feature/sprint-07-retest base develop 3355cfc; giữ working tree tiền nhiệm. Đã hỏi Q03/Q04/Q05/Q01 nội bộ về coverage, quyền closure/reopen và authority; chưa tự chốt.",
+            "29/09/2026: người dùng xác nhận ba quyết định tại ADR-007; policy + retest.openapi.json + retest.md; Check-Contracts PASS 56 operations. Đối chiếu S05/S06 và 7 bảng V8, transaction/project lock/current coverage/build."
+          ],
+          "blockers": [],
+          "nextAction": "Đã đạt DoD nội bộ; xem docs/reviews/2026-09-29-sprint-07.md. Chuyển S08 theo ADR-008.",
+          "commit": null
+        },
+        {
+          "id": "S07-T02",
+          "title": "Transaction retest backend",
+          "status": "DONE",
+          "evidence": [
+            "29/09/2026: đã có V8/RetestService/Controller, lifecycle guards, evidence retention. Backend full 76 PASS; thêm retest tests concurrency/security đang kiểm chứng. Local backup trước V8; Check-System PASS V8/8 migrations.",
+            "Final: full backend 76 PASS; retest suite 15 PASS. Fresh/upgrade V8, concurrent retry, atomic rollback, cross-project/assignee, partial coverage, stale build/reopen, evidence retention. JaCoCo gate package S07 PASS 96.94 instruction / 80.47 branch / 100 line+method."
+          ],
+          "blockers": [],
+          "nextAction": "Đã đạt DoD nội bộ; xem docs/reviews/2026-09-29-sprint-07.md. Chuyển S08 theo ADR-008.",
+          "commit": null
+        },
+        {
+          "id": "S07-T03",
+          "title": "UI retest và cảnh báo sai lệch",
+          "status": "DONE",
+          "evidence": [
+            "29/09/2026: UI chi tiết bug và hàng chờ /tests/retests; FE full 115 PASS, S07 gate 13 PASS: 95.86 statement / 88.10 branch / 94.73 function / 98.07 line. Browser workflow đang kiểm tra.",
+            "Final browser PASS: PM coverage/request → Tester FAIL → PM resolve/new coverage → BUG_ONLY PASS → PM close giữ latest NG #5 → reopen → FULL_CASE PASS tạo OK #6 và giữ NG #5 sau reload. FE 115 PASS/build PASS; gate module 13 PASS. Baseline toàn FE 62.85/55.62/56.44/53.91 không phải 80% toàn app."
+          ],
+          "blockers": [],
+          "nextAction": "Đã đạt DoD nội bộ; xem docs/reviews/2026-09-29-sprint-07.md. Chuyển S08 theo ADR-008.",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "id": "S08",
+      "name": "Tiến độ, dashboard và báo cáo từ dữ liệu thật",
+      "status": "DONE",
+      "file": "sprints/SPRINT-08.md",
+      "dependsOn": [
+        "S07"
+      ],
+      "releaseGate": null,
+      "tasks": [
+        {
+          "id": "S08-T00",
+          "title": "NA và chốt/mở lại đợt theo quyết định Q08",
+          "status": "DONE",
+          "evidence": [
+            "29/09/2026: mở rộng S08 theo ba câu trả lời người dùng tại ADR-008, hoàn thiện phần NA/chốt đợt đã hoãn từ S05.",
+            "30/09/2026: FE/BE/MySQL V9 implementation và contract reporting đã có. RED→GREEN ban đầu: 20 cycle/retest tests, 8 metric/cycle tests; gate cycle BE >=80, reporting BE >=80, execution FE >=80, reporting FE >=80. Còn full regression cuối, migration upgrade, browser và review trước DONE.",
+            "30/09/2026 DONE nội bộ ADR-008: docs/reviews/2026-09-30-sprint-08.md. FE full 134/build PASS; reporting gate 10, execution gate 39 >=80%; BE full 96 trước review cuối, targeted 27 và cuối 22 PASS; cycle/reporting gate >=80%; V9 fresh/upgrade/local; browser PM/Tester, NA/chốt/mở/NG→OK, ba view và XLSX tải thực tế khớp nguồn."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S08-T01",
+          "title": "Metric definitions và API tổng hợp",
+          "status": "DONE",
+          "evidence": [
+            "30/09/2026: FE/BE/MySQL V9 implementation và contract reporting đã có. RED→GREEN ban đầu: 20 cycle/retest tests, 8 metric/cycle tests; gate cycle BE >=80, reporting BE >=80, execution FE >=80, reporting FE >=80. Còn full regression cuối, migration upgrade, browser và review trước DONE.",
+            "30/09/2026 DONE nội bộ ADR-008: docs/reviews/2026-09-30-sprint-08.md. FE full 134/build PASS; reporting gate 10, execution gate 39 >=80%; BE full 96 trước review cuối, targeted 27 và cuối 22 PASS; cycle/reporting gate >=80%; V9 fresh/upgrade/local; browser PM/Tester, NA/chốt/mở/NG→OK, ba view và XLSX tải thực tế khớp nguồn."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S08-T02",
+          "title": "Nối các dashboard/report UI",
+          "status": "DONE",
+          "evidence": [
+            "30/09/2026: FE/BE/MySQL V9 implementation và contract reporting đã có. RED→GREEN ban đầu: 20 cycle/retest tests, 8 metric/cycle tests; gate cycle BE >=80, reporting BE >=80, execution FE >=80, reporting FE >=80. Còn full regression cuối, migration upgrade, browser và review trước DONE.",
+            "30/09/2026 DONE nội bộ ADR-008: docs/reviews/2026-09-30-sprint-08.md. FE full 134/build PASS; reporting gate 10, execution gate 39 >=80%; BE full 96 trước review cuối, targeted 27 và cuối 22 PASS; cycle/reporting gate >=80%; V9 fresh/upgrade/local; browser PM/Tester, NA/chốt/mở/NG→OK, ba view và XLSX tải thực tế khớp nguồn."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S08-T03",
+          "title": "Xuất báo cáo và truy xuất nguồn",
+          "status": "DONE",
+          "evidence": [
+            "30/09/2026: FE/BE/MySQL V9 implementation và contract reporting đã có. RED→GREEN ban đầu: 20 cycle/retest tests, 8 metric/cycle tests; gate cycle BE >=80, reporting BE >=80, execution FE >=80, reporting FE >=80. Còn full regression cuối, migration upgrade, browser và review trước DONE.",
+            "30/09/2026 DONE nội bộ ADR-008: docs/reviews/2026-09-30-sprint-08.md. FE full 134/build PASS; reporting gate 10, execution gate 39 >=80%; BE full 96 trước review cuối, targeted 27 và cuối 22 PASS; cycle/reporting gate >=80%; V9 fresh/upgrade/local; browser PM/Tester, NA/chốt/mở/NG→OK, ba view và XLSX tải thực tế khớp nguồn."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "id": "S09",
+      "name": "Redmine và đối chiếu dữ liệu ngoài hệ thống",
+      "status": "DONE",
+      "file": "sprints/SPRINT-09.md",
+      "dependsOn": [
+        "S08"
+      ],
+      "releaseGate": "Bắt buộc trước pilot nếu khách yêu cầu mọi bug lên tracker; scope/mapping cần chốt.",
+      "tasks": [
+        {
+          "id": "S09-T01",
+          "title": "Chốt provider và mapping",
+          "status": "DONE",
+          "evidence": [
+            "30/09/2026: user xác nhận Redmine; ủy quyền chọn cách triển khai sandbox tốt nhất. ADR-009 + docs/integrations/redmine-mapping.md chốt cấu hình thử nội bộ, khác rule khách hàng. Tài liệu REST/Image chính thức đã khảo sát.",
+            "30/09/2026 sandbox Redmine 7.0.1/MySQL 8.4.8 riêng chạy TLS kiểm chứng; seed lại giữ token/project; API private issue #1 create/read/update/filter và không tạo trùng marker, user admin API 403. Contract trước implementation docs/api/redmine.md, credentials ignore. Không nghiệm thu khách hàng.",
+            "30/09/2026: nghiệm thu nội bộ ADR-009; docs/reviews/2026-09-30-sprint-09.md. FE 147 tests/build, BE full 148 + final targeted 71 PASS; coverage module >=80%; V10/10 local; E2E private publication, 403/retry, conflict/reconcile, Tester read-only PASS."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S09-T02",
+          "title": "Outbox và adapter có retry",
+          "status": "DONE",
+          "evidence": [
+            "30/09: V10 + PM API/outbox/worker/HTTP adapter đã triển khai. 55 targeted tests PASS, gồm fresh/restart/upgrade V9; FE full 147 PASS/build PASS. Gate BE lần 55 còn 78.57% branches, đang bổ sung kiểm chứng; chưa nghiệm thu DONE.",
+            "30/09/2026: nghiệm thu nội bộ ADR-009; docs/reviews/2026-09-30-sprint-09.md. FE 147 tests/build, BE full 148 + final targeted 71 PASS; coverage module >=80%; V10/10 local; E2E private publication, 403/retry, conflict/reconcile, Tester read-only PASS."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S09-T03",
+          "title": "Nối UI đối chiếu và nghiệm thu sandbox",
+          "status": "DONE",
+          "evidence": [
+            "30/09: RedminePanel trong chi tiết bug, 13 tests/module gate FE PASS. Browser PM gửi bug #1 → Redmine #2, phát hiện thiếu quyền own-issue privacy và đã sửa seed + smoke assertion RED/GREEN; công bố lại cùng ticket DELIVERED. Đang kiểm chứng retry 403, Tester readonly, conflict và full BE.",
+            "30/09/2026: nghiệm thu nội bộ ADR-009; docs/reviews/2026-09-30-sprint-09.md. FE 147 tests/build, BE full 148 + final targeted 71 PASS; coverage module >=80%; V10/10 local; E2E private publication, 403/retry, conflict/reconcile, Tester read-only PASS."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "id": "S10",
+      "name": "Kiểm thử toàn hệ thống, bảo mật và hiệu năng",
+      "status": "IN_REVIEW",
+      "file": "sprints/SPRINT-10.md",
+      "dependsOn": [
+        "S08"
+      ],
+      "conditionalDependencies": [
+        {
+          "sprint": "S09",
+          "condition": "Bắt buộc nếu Q01/Q10 xác nhận tích hợp tracker là điều kiện release. Nếu không, phải ghi quyết định phương án được chấp thuận; không tự miễn gate."
+        }
+      ],
+      "releaseGate": null,
+      "tasks": [
+        {
+          "id": "S10-T01",
+          "title": "Regression và UAT nghiệp vụ",
+          "status": "IN_REVIEW",
+          "evidence": [
+            "30/09/2026: docs/reviews/2026-09-30-sprint-10.md. FE 157 tests/build; BE full 159 tests/verify PASS trên dependency đã vá, báo cáo gate >=80%; runtime local V10/10. Whole-app coverage chưa đạt 80% mọi chỉ số; không nghiệm thu production.",
+            "30/09/2026: docs/reviews/2026-09-30-review-completion.md; full backend 171 tests + final targeted 29 tests/verify, frontend 181 tests/build PASS; 33-test settings/focus coverage gate PASS. Flyway V11 fresh/upgrade/local, HTTP settings/concurrency/security và demo Chrome trên DEMO-REVIEW-0930.",
+            "01/10/2026: docs/reviews/2026-09-30-sprint-11.md; backend full 178 tests/verify, frontend 181 tests/build, OSV 94 dependencies và npm audit không finding; dữ liệu demo thật + audit 56 bảng/128 FK/6 domain checks."
+          ],
+          "blockers": [
+            "S04-T03 còn bước browser upload hoàn chỉnh; keyboard/mobile toàn chuỗi chưa được kiểm chứng đầy đủ.",
+            "Chưa có người/lịch và kết quả UAT nội bộ được người dùng/PM xác nhận."
+          ],
+          "nextAction": "Tiếp tục browser/keyboard/mobile và người dùng/PM UAT; S11 được mở riêng cho chuẩn bị nội bộ theo yêu cầu mới 30/09.",
+          "commit": null
+        },
+        {
+          "id": "S10-T02",
+          "title": "Bảo mật và dữ liệu",
+          "status": "DONE",
+          "evidence": [
+            "30/09/2026: docs/reviews/2026-09-30-sprint-10.md. FE 157 tests/build; BE full 159 tests/verify PASS trên dependency đã vá, báo cáo gate >=80%; runtime local V10/10. Whole-app coverage chưa đạt 80% mọi chỉ số; không nghiệm thu production.",
+            "Phạm vi kỹ thuật nội bộ: quyền/IDOR/CSRF, input/XSS/upload/session, local DB DML-only, secret check và advisory scan. Vá 4 package/12 advisory; OSV runtime 94 packages không còn finding, npm audit 294 không có finding. OS/image/JDK/pentest và policy dữ liệu thật vẫn là gate trước pilot.",
+            "01/10/2026: phát hiện 2 advisory Jackson mới; BOM 2.21.7, full regression và quét lại OSV 94 không finding. docs/security/sprint-11-dependencies.md."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        },
+        {
+          "id": "S10-T03",
+          "title": "Hiệu năng và vận hành lỗi",
+          "status": "DONE",
+          "evidence": [
+            "30/09/2026: docs/reviews/2026-09-30-sprint-10.md. FE 157 tests/build; BE full 159 tests/verify PASS trên dependency đã vá, báo cáo gate >=80%; runtime local V10/10. Whole-app coverage chưa đạt 80% mọi chỉ số; không nghiệm thu production.",
+            "Đo riêng 10000 lượt/1000 bug/20 phiên, 300/300 HTTP 200; phân trang trước join và aggregate trước tên, giữ Hikari 5; EXPLAIN thật. Hai lần restore DB riêng, 54 bảng/một chứng cứ, có migration tạm thất bại. Không SLA/RTO production."
+          ],
+          "blockers": [],
+          "nextAction": "",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "id": "S11",
+      "name": "Triển khai thử nghiệm, bàn giao và đánh giá đề tài",
+      "status": "IN_REVIEW",
+      "file": "sprints/SPRINT-11.md",
+      "dependsOn": [
+        "S10"
+      ],
+      "releaseGate": null,
+      "tasks": [
+        {
+          "id": "S11-T01",
+          "title": "Đóng gói và runbook triển khai",
+          "status": "IN_REVIEW",
+          "evidence": [
+            "01/10/2026: docs/reviews/2026-09-30-sprint-11.md; backend full 178 tests/verify, frontend 181 tests/build, OSV 94 dependencies và npm audit không finding; dữ liệu demo thật + audit 56 bảng/128 FK/6 domain checks.",
+            "Migration job riêng, profile release runtime DML-only, gói JAR/FE/docs/manifest SHA-256 và diễn tập local database sạch; docs/deployment.md.",
+            "Review database/native: docs/reviews/2026-10-01-database-native-mysql.md; ERD và công cụ tạo/kết nối MySQL Windows.",
+            "03/10/2026: docs/reviews/2026-10-03-native-startup.md; native MySQL3307 đã có cấu hình/dữ liệu, backend startup/readiness FlywayV11 PASS; audit56bảng/128FK/6domain checks không vi phạm."
+          ],
+          "blockers": [
+            "Chưa có môi trường đích/TLS, secret store, retention và phê duyệt chuyển traffic thật.",
+            "Native MySQL3307 đã startup/readiness/audit PASS; còn kiểm chứng UI/chứng cứ và full regression/fresh-upgrade9.7; Flyway warning server mới hơn phiên bản đã kiểm chứng."
+          ],
+          "nextAction": "Đối chiếu UI/đăng nhập/chứng cứ trên native3307, kiểm chứng regression9.7 và gate pilot; giữ DB nguồn/backup trước khi nghiệm thu cutover.",
+          "commit": null,
+          "deliverables": [
+            {
+              "name": "Đóng gói và diễn tập local",
+              "status": "DONE"
+            },
+            {
+              "name": "Triển khai môi trường thật",
+              "status": "BLOCKED",
+              "reason": "Chưa có đích triển khai được xác định và cho phép."
+            }
+          ]
+        },
+        {
+          "id": "S11-T02",
+          "title": "Pilot, hướng dẫn và nghiệm thu",
+          "status": "IN_REVIEW",
+          "evidence": [
+            "01/10/2026: docs/reviews/2026-09-30-sprint-11.md; backend full 178 tests/verify, frontend 181 tests/build, OSV 94 dependencies và npm audit không finding; dữ liệu demo thật + audit 56 bảng/128 FK/6 domain checks.",
+            "DEMO-PILOT: 120 cases/240 run items/72 work items/32 bugs/10 trạng thái; seed qua API, rerun không trùng. docs/user-guide.md, docs/uat/pilot.md, docs/operations/support.md; browser desktop có screenshot."
+          ],
+          "blockers": [
+            "Browser XLSX/keyboard/mobile đầy đủ còn mở ở S04/S10.",
+            "Chưa có người/lịch và biên bản PM/Tester nghiệm thu."
+          ],
+          "nextAction": "Người dùng/PM thực hành theo pilot.md; ghi artifact, viewport và PASS/FAIL từng mục.",
+          "commit": null,
+          "deliverables": [
+            {
+              "name": "Demo, hướng dẫn và kịch bản pilot",
+              "status": "DONE"
+            },
+            {
+              "name": "Pilot có người dùng và xác nhận",
+              "status": "BLOCKED",
+              "reason": "Chưa có người tham gia/lịch/kết quả thực tế."
+            }
+          ]
+        },
+        {
+          "id": "S11-T03",
+          "title": "Đánh giá mục tiêu và tổng kết kỹ thuật",
+          "status": "IN_REVIEW",
+          "evidence": [
+            "01/10/2026: docs/reviews/2026-09-30-sprint-11.md; backend full 178 tests/verify, frontend 181 tests/build, OSV 94 dependencies và npm audit không finding; dữ liệu demo thật + audit 56 bảng/128 FK/6 domain checks.",
+            "docs/evaluation.md: số liệu kỹ thuật tái lập, công thức đối chiếu và mẫu đo baseline/pilot; không bịa số đo hiệu quả người dùng.",
+            "03/10/2026: docs/reviews/2026-10-03-database-complexity.md + database-usage-audit.json: giải thích đủ 56 bảng, 128 FK/249 index theo snapshot; giảm dư thừa JSON history mới, 3 unit test RED→GREEN/verify PASS; chưa đo storage/query live trên native."
+          ],
+          "blockers": [
+            "Chưa có baseline và dữ liệu thời gian/thao tác của pilot thật."
+          ],
+          "nextAction": "Thu số liệu từ buổi pilot rồi hoàn thiện kết luận hiệu quả và cỡ mẫu.",
+          "commit": null
+        }
+      ]
+    }
+  ],
+  "implementationBranch": "system-design",
+  "implementationBaseCommit": "3355cfc",
+  "lastCompletedSprint": "S09",
+  "nextSuggestedSprint": null,
+  "nextAction": "UAT/pilot theo bốn vai trò và bộ mẫu Excel khách hàng; đo cảm ứng/thiết bị thật, Safari, tải và phục hồi production. Xem docs/reviews/2026-10-08-customer-reassessment.md; vòng đời dự án đã triển khai/kiểm chứng V21, không còn chờ quyết định archive. S11 giữ IN_REVIEW đến khi đạt DoD.",
+  "executionPolicy": {
+    "continueSequentially": true,
+    "authorizedAt": "2026-09-29",
+    "userInstruction": "bắt đầu đi, và hãy luôn làm tiếp các sprint sau đó nhé",
+    "perSprintVerificationRequired": true,
+    "commitPushMergeDeployAuthorized": false,
+    "handoverAuthorization": {
+      "authorizedAt": "2026-10-06",
+      "accounts": true,
+      "selfTest": true,
+      "commit": true,
+      "pushBranch": "system-design",
+      "merge": false,
+      "deploy": false,
+      "localBackendRestart": true
+    }
+  },
+  "confirmedDecisions": {
+    "S07": "ADR-007: full PM coverage, assigned tester, PM close/reopen, TMS authoritative internally",
+    "S08": "ADR-008: run-item metrics, PM NA/cycle closure/reopen, internal XLSX approved 2026-09-29",
+    "S09": "ADR-009: user chọn Redmine và giao chọn phương án tốt nhất; sandbox local/mapping nội bộ, TMS authoritative, chỉ PM công bố; không gửi tracker khách.",
+    "projectLifecycle": "08/10/2026 người dùng giao chọn quy tắc tốt nhất: chỉ Admin lưu trữ/mở lại, lý do/version/idempotency/lịch sử; sáu nhóm việc tồn chặn archive, không tự đóng/thu hồi; PM kết thúc công việc thường, BUG/QA giữ luồng chuyên biệt. Xem docs/planning/project-lifecycle-2026-10-08.md."
+  },
+  "aiAssistance": {
+    "status": "IN_REVIEW",
+    "implementation": "COMPLETE_LOCAL",
+    "branch": "system-design",
+    "migration": 23,
+    "purposes": [
+      "ADMIN_PROJECT_REVIEW",
+      "PM_PROGRESS_REPORT",
+      "PM_ASSIGNMENT_SUGGESTION",
+      "TESTER_WORK_REPORT",
+      "TESTER_BUG_DRAFT",
+      "DEV_TICKET_REVIEW"
+    ],
+    "evidence": [
+      "docs/reviews/2026-10-09-openai-connection.md",
+      "docs/product/AI-ASSISTANCE.md",
+      "docs/api/ai-assistance.openapi.json"
+    ],
+    "checks": {
+      "backendUnit": 48,
+      "nativeIntegration": 18,
+      "frontend": 678,
+      "nativeRunner": 11,
+      "javaErrors": 0,
+      "javaWarnings": 0
+    },
+    "blockers": [
+      "OpenAI live probe returned 429 credit_balance_exhausted / insufficient_quota; awaiting API credit before real-model UAT."
+    ],
+    "nextAction": "Sau khi API có số dư, kiểm thử tác vụ demo theo bốn vai trò và đối chiếu chất lượng/citation cùng người dùng. Không coi mock tests là nghiệm thu AI live.",
+    "delivery": {
+      "target": "origin/system-design",
+      "pullRequest": 2,
+      "base": "develop",
+      "mergeAuthorized": false
+    }
+  }
+}

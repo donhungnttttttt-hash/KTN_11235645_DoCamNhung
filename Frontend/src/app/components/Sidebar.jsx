@@ -1,169 +1,98 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
-  Home,
-  Columns3,
-  FlaskConical,
-  Bug,
-  ChartGantt,
-  ChartNoAxesCombined,
-  Menu,
-  X,
-  ChevronDown,
-  List,
-} from "lucide-react";
+  Home, Columns3, FlaskConical, Bug, ChartGantt, ChartNoAxesCombined,
+  Menu, X, ChevronDown, List, Settings, LayoutDashboard, BookOpen,
+  ClipboardList, RotateCcw, Users, SlidersHorizontal, Layers, FileCheck, Sparkles,
+} from 'lucide-react';
 
 const navigation = [
-  { label: "Tổng quan", route: "/dashboard", icon: Home, id: "dashboard" },
-  { label: "Bảng công việc", route: "/board", icon: Columns3, id: "board" },
-  {
-    label: "Quản lý kiểm thử",
-    route: "/tests",
-    icon: FlaskConical,
-    id: "tests",
-  },
-  { label: "Quản lý lỗi", route: "/issues", icon: Bug, id: "issues" },
-  {
-    label: "Quản lý tiến độ",
-    route: "/progress",
-    icon: ChartGantt,
-    id: "progress",
-  },
-  {
-    label: "Tổng hợp & Phân tích",
-    route: "/analysis",
-    icon: ChartNoAxesCombined,
-    id: "analysis",
-  },
+  { label: 'Tổng quan', route: '/dashboard', icon: Home, id: 'dashboard', children: [
+    { label: 'Việc cần xử lý', route: '/dashboard/actions', icon: ClipboardList },
+    { label: 'Tổng quan dự án', route: '/dashboard', icon: LayoutDashboard },
+    { label: 'Tổng quan kiểm thử', route: '/dashboard/testing', icon: ChartNoAxesCombined },
+  ] },
+  { label: 'Bảng công việc', route: '/board', icon: Columns3, id: 'board', children: [
+    { label: 'Bảng Kanban', route: '/board', icon: Columns3 },
+    { label: 'Danh sách', route: '/board/list', icon: List },
+  ] },
+  { label: 'Quản lý kiểm thử', route: '/tests', icon: FlaskConical, id: 'tests', children: [
+    { label: 'Thư viện test case', route: '/tests', icon: BookOpen },
+    { label: 'Công việc theo file', route: '/tests/file-work', icon: FileCheck },
+    { label: 'Đợt kiểm thử', route: '/tests/cycles', icon: ClipboardList },
+    { label: 'Kiểm thử lại', route: '/tests/retests', icon: RotateCcw },
+  ] },
+  { label: 'Quản lý lỗi', route: '/issues', icon: Bug, id: 'issues' },
+  { label: 'Quản lý tiến độ', route: '/progress', icon: ChartGantt, id: 'progress' },
+  { label: 'Tổng hợp & Phân tích', route: '/analysis', icon: ChartNoAxesCombined, id: 'analysis' },
+  { label: 'Trợ lý AI', route: '/ai', icon: Sparkles, id: 'ai' },
+  { label: 'Cài đặt dự án', route: '/settings', icon: Settings, id: 'settings', children: [
+    { label: 'Thông tin chung', route: '/settings', icon: SlidersHorizontal },
+    { label: 'Thành viên', route: '/settings/members', icon: Users },
+    { label: 'Danh mục', route: '/settings/catalogs', icon: Layers },
+    { label: 'Quy tắc báo lỗi', route: '/settings/rules', icon: FileCheck },
+    { label: 'Sổ tay dự án', route: '/settings/handbook', icon: BookOpen },
+  ] },
 ];
 
-export function Sidebar({
-  activeRoute,
-  navigate,
-  collapsed,
-  onToggle,
-  onClose,
-}) {
-  const path = activeRoute.split("?")[0];
-  const active = path.split("/")[1];
-  const [boardOpen, setBoardOpen] = useState(active === "board");
-  const boardView =
-    path === "/board/list" ||
-    new URLSearchParams(activeRoute.split("?")[1] || "").get("view") === "list"
-      ? "list"
-      : "kanban";
-  useEffect(() => {
-    setBoardOpen(active === "board");
-  }, [activeRoute, active]);
-  return (
-    <aside className="app-sidebar" aria-label="Menu dự án" data-lenis-prevent>
-      <div className="app-sidebar-toggle">
-        <button
-          className="sidebar-desktop-toggle"
-          onClick={onToggle}
-          aria-label={collapsed ? "Mở rộng menu" : "Thu gọn menu"}
-          aria-expanded={!collapsed}
-        >
-          <Menu size={21} />
-        </button>
-        <button
-          className="sidebar-mobile-close"
-          onClick={onClose}
-          aria-label="Đóng menu"
-        >
-          <X size={21} />
-        </button>
-      </div>
-      <nav aria-label="Điều hướng dự án">
-        {navigation.map(({ label, route, icon: Icon, id }) =>
-          id === "board" ? (
-            <div key={id} className="app-nav-group">
-              <button
-                title={label}
-                className={`app-nav-item ${active === id ? "active" : ""}`}
-                aria-expanded={boardOpen && !collapsed}
-                aria-controls="board-submenu"
-                onClick={() => {
-                  if (collapsed) {
-                    onToggle();
-                    setBoardOpen(true);
-                  } else setBoardOpen((open) => !open);
-                }}
-              >
-                <Icon size={21} strokeWidth={1.8} />
-                <span>{label}</span>
-                <ChevronDown
-                  size={15}
-                  className={`app-nav-chevron ${boardOpen ? "open" : ""}`}
-                />
+function selectedPage(activeRoute) {
+  const [path, query] = activeRoute.split('?');
+  if (path === '/board' || path.startsWith('/board/')) {
+    return path === '/board/list' || new URLSearchParams(query).get('view') === 'list' ? '/board/list' : '/board';
+  }
+  if (path === '/tests/file-work' || /^\/tests\/file-work\/[1-9]\d*$/.test(path)) return '/tests/file-work';
+  if (/^\/tests\/(?:cycles\/)?\d+$/.test(path)) return '/tests/cycles';
+  if (path === '/tests/cases' || path.startsWith('/tests/documents/')) return '/tests';
+  return path;
+}
+
+export function Sidebar({ activeRoute, navigate, collapsed, onToggle, onClose, panelRef, overlayOpen = false }) {
+  const active = activeRoute.split('?')[0].split('/')[1];
+  const [openGroup, setOpenGroup] = useState(active);
+  const selected = selectedPage(activeRoute);
+  useEffect(() => { setOpenGroup(active); }, [activeRoute, active]);
+
+  function openPage(route) {
+    navigate(route);
+    onClose();
+  }
+
+  return <aside ref={panelRef} id="project-navigation" className="app-sidebar" aria-label="Menu dự án"
+    role={overlayOpen ? 'dialog' : undefined} aria-modal={overlayOpen ? 'true' : undefined} tabIndex={overlayOpen ? -1 : undefined}>
+    <div className="app-sidebar-toggle">
+      {!overlayOpen && <button className="sidebar-desktop-toggle" onClick={onToggle}
+        aria-label={collapsed ? 'Mở rộng menu' : 'Thu gọn menu'} aria-expanded={!collapsed}>
+        <Menu size={21} />
+      </button>}
+      {overlayOpen && <button className="sidebar-mobile-close" onClick={onClose} aria-label="Đóng menu"><X size={21} /></button>}
+    </div>
+    <nav aria-label="Điều hướng dự án">
+      {navigation.map(({ label, route, icon: Icon, id, children }) => children ? (
+        <div key={id} className="app-nav-group">
+          <button title={label} className={'app-nav-item ' + (active === id ? 'active' : '')}
+            aria-expanded={openGroup === id && !collapsed} aria-controls={id + '-submenu'}
+            onClick={() => {
+              if (collapsed) { onToggle(); setOpenGroup(id); }
+              else setOpenGroup(open => open === id ? null : id);
+            }}>
+            <Icon size={21} strokeWidth={1.8} /><span>{label}</span>
+            <ChevronDown size={15} className={'app-nav-chevron ' + (openGroup === id ? 'open' : '')} />
+          </button>
+          {openGroup === id && !collapsed && <div id={id + '-submenu'} className="app-submenu" role="group" aria-label={'Các mục ' + label}>
+            {children.map(({ label: childLabel, route: childRoute, icon: ChildIcon }) => (
+              <button key={childRoute} aria-current={selected === childRoute ? 'page' : undefined}
+                onClick={() => openPage(childRoute)}>
+                <ChildIcon size={15} /><span>{childLabel}</span>
               </button>
-              {boardOpen && (
-                <div
-                  id="board-submenu"
-                  className="app-submenu"
-                  role="group"
-                  aria-label="Các mục Bảng công việc"
-                >
-                  {[
-                    {
-                      label: "Bảng Kanban",
-                      route: "/board",
-                      view: "kanban",
-                      icon: Columns3,
-                    },
-                    {
-                      label: "Danh sách",
-                      route: "/board/list",
-                      view: "list",
-                      icon: List,
-                    },
-                  ].map(
-                    ({
-                      label: childLabel,
-                      route: childRoute,
-                      view,
-                      icon: ChildIcon,
-                    }) => (
-                      <button
-                        key={view}
-                        aria-current={
-                          active === "board" && boardView === view
-                            ? "page"
-                            : undefined
-                        }
-                        onClick={() => {
-                          navigate(childRoute);
-                          onClose();
-                        }}
-                      >
-                        <ChildIcon size={15} />
-                        <span>{childLabel}</span>
-                      </button>
-                    ),
-                  )}
-                </div>
-              )}
-            </div>
-          ) : (
-            <button
-              key={id}
-              title={label}
-              className={`app-nav-item ${active === id ? "active" : ""}`}
-              aria-current={active === id ? "page" : undefined}
-              onClick={() => {
-                navigate(route);
-                onClose();
-              }}
-            >
-              <Icon size={21} strokeWidth={1.8} />
-              <span>{label}</span>
-            </button>
-          ),
-        )}
-      </nav>
-      <div className="app-sidebar-bottom">
-        <span>S+Flutter</span>
-        <small>Quản lý dự án & kiểm thử</small>
-      </div>
-    </aside>
-  );
+            ))}
+          </div>}
+        </div>
+      ) : (
+        <button key={id} title={label} className={'app-nav-item ' + (active === id ? 'active' : '')}
+          aria-current={active === id ? 'page' : undefined} onClick={() => openPage(route)}>
+          <Icon size={21} strokeWidth={1.8} /><span>{label}</span>
+        </button>
+      ))}
+    </nav>
+    <div className="app-sidebar-bottom"><span>S+TMS</span><small>Quản lý dự án & kiểm thử</small></div>
+  </aside>;
 }

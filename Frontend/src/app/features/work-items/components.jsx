@@ -21,6 +21,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { members, statuses } from "./data";
+import { useDialogFocus } from '../../hooks/useDialogFocus';
 
 export function IconButton({ icon: Icon, label, className = "", ...props }) {
   return (
@@ -189,45 +190,7 @@ export function Modal({
   wide = false,
   drawer = false,
 }) {
-  const ref = useRef(null);
-  const closeRef = useRef(onClose);
-  closeRef.current = onClose;
-  useEffect(() => {
-    const previous = document.activeElement;
-    ref.current?.focus();
-    const escape = (e) => {
-      const dialogs = document.querySelectorAll(
-        '[role="dialog"][aria-modal="true"]',
-      );
-      if (e.key === "Escape" && dialogs[dialogs.length - 1] === ref.current)
-        closeRef.current();
-    };
-    document.addEventListener("keydown", escape);
-    return () => {
-      document.removeEventListener("keydown", escape);
-      previous?.focus?.();
-    };
-  }, []);
-  function trapFocus(e) {
-    if (e.key !== "Tab") return;
-    e.stopPropagation();
-    const focusables = ref.current.querySelectorAll(
-      'button, input, select, textarea, a[href], [tabindex="0"]',
-    );
-    const first = focusables[0],
-      last = focusables[focusables.length - 1];
-    if (
-      e.shiftKey &&
-      (document.activeElement === first ||
-        document.activeElement === ref.current)
-    ) {
-      e.preventDefault();
-      last?.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault();
-      first?.focus();
-    }
-  }
+  const ref = useDialogFocus(onClose);
   return (
     <div
       className={`d-modal-backdrop ${drawer ? "wb-drawer-backdrop" : ""}`}
@@ -236,7 +199,6 @@ export function Modal({
       <section
         ref={ref}
         tabIndex={-1}
-        onKeyDown={trapFocus}
         role="dialog"
         aria-modal="true"
         aria-label={title}

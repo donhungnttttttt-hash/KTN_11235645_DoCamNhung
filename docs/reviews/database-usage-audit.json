@@ -1,0 +1,4602 @@
+{
+  "generatedAt": "2026-10-03T05:34:32.697Z",
+  "mode": "Offline review of current source and previously exported metadata; not a live database audit",
+  "schemaSource": "docs/database/erd/schema.json",
+  "schemaGeneratedAt": "2026-09-30T17:38:33.402Z",
+  "schemaSha256": "e2e17054aef445b241d6cbee47515d36144e421cb27037962a5a8d4048a794cb",
+  "rowCountsSource": "docs/uat/database-audit.json",
+  "rowCountsCheckedAt": "2026-09-30T16:54:11.968Z",
+  "limitations": [
+    "Literal references include SQL/JPA mapping, but are not executed-query telemetry.",
+    "No table is classified as unused automatically.",
+    "Index comparison uses ordered column names only; verify type/prefix length/sort order/visibility and EXPLAIN before any DDL.",
+    "Row counts are a dated demo snapshot, not current production volume or table storage bytes."
+  ],
+  "totals": {
+    "tables": 56,
+    "columns": 514,
+    "foreignKeys": 128,
+    "compositeForeignKeys": 97,
+    "indexes": 249,
+    "primaryIndexes": 56,
+    "uniqueSecondaryIndexes": 69,
+    "nonUniqueIndexes": 124
+  },
+  "duplicateIndexes": [],
+  "nonUniquePrefixCandidates": [],
+  "tables": [
+    {
+      "table": "SPRING_SESSION",
+      "group": "Danh tính & đăng nhập",
+      "columns": 7,
+      "outgoingForeignKeys": 0,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "SPRING_SESSION",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "PRIMARY_ID"
+          ]
+        },
+        {
+          "table": "SPRING_SESSION",
+          "name": "SPRING_SESSION_IX1",
+          "unique": true,
+          "columns": [
+            "SESSION_ID"
+          ]
+        },
+        {
+          "table": "SPRING_SESSION",
+          "name": "SPRING_SESSION_IX2",
+          "unique": false,
+          "columns": [
+            "EXPIRY_TIME"
+          ]
+        },
+        {
+          "table": "SPRING_SESSION",
+          "name": "SPRING_SESSION_IX3",
+          "unique": false,
+          "columns": [
+            "PRINCIPAL_NAME"
+          ]
+        }
+      ],
+      "snapshotRows": 0,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/identity/IdentityService.java",
+          "line": 86
+        }
+      ]
+    },
+    {
+      "table": "SPRING_SESSION_ATTRIBUTES",
+      "group": "Danh tính & đăng nhập",
+      "columns": 3,
+      "outgoingForeignKeys": 1,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "SPRING_SESSION_ATTRIBUTES",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "SESSION_PRIMARY_ID",
+            "ATTRIBUTE_NAME"
+          ]
+        }
+      ],
+      "snapshotRows": 0,
+      "literalRuntimeReferences": []
+    },
+    {
+      "table": "application_info",
+      "group": "Nền tảng kỹ thuật",
+      "columns": 4,
+      "outgoingForeignKeys": 0,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "application_info",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "application_info",
+          "name": "uq_application_system_key",
+          "unique": true,
+          "columns": [
+            "system_key"
+          ]
+        }
+      ],
+      "snapshotRows": 1,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/foundation/FoundationService.java",
+          "line": 25
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/identity/IdentityService.java",
+          "line": 91
+        }
+      ]
+    },
+    {
+      "table": "bug_closure_decisions",
+      "group": "Retest & đóng lỗi",
+      "columns": 12,
+      "outgoingForeignKeys": 5,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "bug_closure_decisions",
+          "name": "ix_closure_history",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "id"
+          ]
+        },
+        {
+          "table": "bug_closure_decisions",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "bug_closure_decisions",
+          "name": "project_id",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "evidence_attachment_id"
+          ]
+        },
+        {
+          "table": "bug_closure_decisions",
+          "name": "project_id_2",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "coverage_revision_id"
+          ]
+        },
+        {
+          "table": "bug_closure_decisions",
+          "name": "project_id_3",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "build_id"
+          ]
+        },
+        {
+          "table": "bug_closure_decisions",
+          "name": "project_id_4",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "decided_by"
+          ]
+        }
+      ],
+      "snapshotRows": 10,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/attachment/EvidenceService.java",
+          "line": 69
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 101
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 240
+        }
+      ]
+    },
+    {
+      "table": "bug_coverage_items",
+      "group": "Retest & đóng lỗi",
+      "columns": 5,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "bug_coverage_items",
+          "name": "coverage_revision_id",
+          "unique": true,
+          "columns": [
+            "coverage_revision_id",
+            "run_item_id"
+          ]
+        },
+        {
+          "table": "bug_coverage_items",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "bug_coverage_items",
+          "name": "project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "coverage_revision_id",
+            "id"
+          ]
+        },
+        {
+          "table": "bug_coverage_items",
+          "name": "project_id_2",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "coverage_revision_id",
+            "id",
+            "run_item_id"
+          ]
+        },
+        {
+          "table": "bug_coverage_items",
+          "name": "project_id_3",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "run_item_id"
+          ]
+        }
+      ],
+      "snapshotRows": 13,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 40
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 83
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 122
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 42
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 107
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 128
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 145
+        }
+      ]
+    },
+    {
+      "table": "bug_coverage_revisions",
+      "group": "Retest & đóng lỗi",
+      "columns": 9,
+      "outgoingForeignKeys": 3,
+      "incomingForeignKeys": 4,
+      "indexes": [
+        {
+          "table": "bug_coverage_revisions",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "bug_coverage_revisions",
+          "name": "project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "id"
+          ]
+        },
+        {
+          "table": "bug_coverage_revisions",
+          "name": "project_id_2",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "revision_no"
+          ]
+        },
+        {
+          "table": "bug_coverage_revisions",
+          "name": "project_id_3",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "build_id"
+          ]
+        },
+        {
+          "table": "bug_coverage_revisions",
+          "name": "project_id_4",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "created_by"
+          ]
+        }
+      ],
+      "snapshotRows": 13,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 92
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 126
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 127
+        }
+      ]
+    },
+    {
+      "table": "bug_details",
+      "group": "Công việc & bug",
+      "columns": 16,
+      "outgoingForeignKeys": 8,
+      "incomingForeignKeys": 4,
+      "indexes": [
+        {
+          "table": "bug_details",
+          "name": "fk_bug_build",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "build_id"
+          ]
+        },
+        {
+          "table": "bug_details",
+          "name": "fk_bug_device",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "device_id"
+          ]
+        },
+        {
+          "table": "bug_details",
+          "name": "fk_bug_env",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "environment_id"
+          ]
+        },
+        {
+          "table": "bug_details",
+          "name": "fk_bug_fixed_build",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "fixed_build_id"
+          ]
+        },
+        {
+          "table": "bug_details",
+          "name": "fk_bug_policy",
+          "unique": false,
+          "columns": [
+            "policy_version"
+          ]
+        },
+        {
+          "table": "bug_details",
+          "name": "fk_bug_revision",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "test_case_id",
+            "revision_id"
+          ]
+        },
+        {
+          "table": "bug_details",
+          "name": "fk_bug_rule_version",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "rule_version_id"
+          ]
+        },
+        {
+          "table": "bug_details",
+          "name": "fk_bug_work",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "item_type"
+          ]
+        },
+        {
+          "table": "bug_details",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id"
+          ]
+        }
+      ],
+      "snapshotRows": 34,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/BugRetestLifecycle.java",
+          "line": 20
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 36
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 133
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 134
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 149
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 165
+        }
+      ]
+    },
+    {
+      "table": "bug_retest_state",
+      "group": "Retest & đóng lỗi",
+      "columns": 4,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "bug_retest_state",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id"
+          ]
+        },
+        {
+          "table": "bug_retest_state",
+          "name": "project_id",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "current_coverage_id"
+          ]
+        }
+      ],
+      "snapshotRows": 34,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 41
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 84
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 122
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/BugRetestLifecycle.java",
+          "line": 14
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/BugRetestLifecycle.java",
+          "line": 18
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 62
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 107
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 129
+        }
+      ]
+    },
+    {
+      "table": "bug_verification_attempts",
+      "group": "Retest & đóng lỗi",
+      "columns": 12,
+      "outgoingForeignKeys": 4,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "bug_verification_attempts",
+          "name": "ix_verification_latest",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "coverage_item_id",
+            "id"
+          ]
+        },
+        {
+          "table": "bug_verification_attempts",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "bug_verification_attempts",
+          "name": "project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "request_id",
+            "coverage_item_id"
+          ]
+        },
+        {
+          "table": "bug_verification_attempts",
+          "name": "project_id_2",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "request_id",
+            "coverage_item_id",
+            "run_item_id"
+          ]
+        },
+        {
+          "table": "bug_verification_attempts",
+          "name": "project_id_3",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "evidence_attachment_id"
+          ]
+        },
+        {
+          "table": "bug_verification_attempts",
+          "name": "project_id_4",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "run_item_id",
+            "execution_attempt_id"
+          ]
+        },
+        {
+          "table": "bug_verification_attempts",
+          "name": "project_id_5",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "verified_by"
+          ]
+        }
+      ],
+      "snapshotRows": 11,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/attachment/EvidenceService.java",
+          "line": 69
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 41
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 169
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 204
+        }
+      ]
+    },
+    {
+      "table": "builds",
+      "group": "Dự án & cấu hình",
+      "columns": 11,
+      "outgoingForeignKeys": 1,
+      "incomingForeignKeys": 7,
+      "indexes": [
+        {
+          "table": "builds",
+          "name": "ix_build_released",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "released_at",
+            "id"
+          ]
+        },
+        {
+          "table": "builds",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "builds",
+          "name": "uq_build_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        },
+        {
+          "table": "builds",
+          "name": "uq_build_project_ver",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "platform",
+            "version_label",
+            "build_number"
+          ]
+        }
+      ],
+      "snapshotRows": 4,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 31
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 44
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 57
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 71
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogEntities.java",
+          "line": 39
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogService.java",
+          "line": 75
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogService.java",
+          "line": 240
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 88
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 214
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 118
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 53
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 87
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 30
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 83
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 124
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 37
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 164
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 234
+        }
+      ]
+    },
+    {
+      "table": "categories",
+      "group": "Dự án & cấu hình",
+      "columns": 8,
+      "outgoingForeignKeys": 1,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "categories",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "categories",
+          "name": "uq_cat_project_code",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "code"
+          ]
+        },
+        {
+          "table": "categories",
+          "name": "uq_cat_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 6,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 33
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 46
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 59
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 73
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogEntities.java",
+          "line": 109
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogService.java",
+          "line": 156
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 34
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 239
+        }
+      ]
+    },
+    {
+      "table": "cycle_configurations",
+      "group": "Thực thi kiểm thử",
+      "columns": 7,
+      "outgoingForeignKeys": 4,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "cycle_configurations",
+          "name": "fk_config_build",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "default_build_id"
+          ]
+        },
+        {
+          "table": "cycle_configurations",
+          "name": "fk_config_device",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "device_id"
+          ]
+        },
+        {
+          "table": "cycle_configurations",
+          "name": "fk_config_env",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "environment_id"
+          ]
+        },
+        {
+          "table": "cycle_configurations",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "cycle_configurations",
+          "name": "uq_config_cycle_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "cycle_id",
+            "id"
+          ]
+        },
+        {
+          "table": "cycle_configurations",
+          "name": "uq_config_scope",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "cycle_id",
+            "environment_id",
+            "device_id"
+          ]
+        }
+      ],
+      "snapshotRows": 9,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 44
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 86
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 96
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 97
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 98
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 104
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 27
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 47
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 116
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 229
+        }
+      ]
+    },
+    {
+      "table": "cycle_decisions",
+      "group": "Thực thi kiểm thử",
+      "columns": 9,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "cycle_decisions",
+          "name": "fk_cycle_decision_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "decided_by"
+          ]
+        },
+        {
+          "table": "cycle_decisions",
+          "name": "ix_cycle_decision_history",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "cycle_id",
+            "id"
+          ]
+        },
+        {
+          "table": "cycle_decisions",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 3,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 62
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 100
+        }
+      ]
+    },
+    {
+      "table": "cycle_statuses",
+      "group": "Thực thi kiểm thử",
+      "columns": 2,
+      "outgoingForeignKeys": 0,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "cycle_statuses",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "code"
+          ]
+        }
+      ],
+      "snapshotRows": 3,
+      "literalRuntimeReferences": []
+    },
+    {
+      "table": "devices",
+      "group": "Dự án & cấu hình",
+      "columns": 11,
+      "outgoingForeignKeys": 1,
+      "incomingForeignKeys": 3,
+      "indexes": [
+        {
+          "table": "devices",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "devices",
+          "name": "uq_device_project_code",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "code"
+          ]
+        },
+        {
+          "table": "devices",
+          "name": "uq_device_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 3,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 32
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 45
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 58
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 72
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogEntities.java",
+          "line": 74
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogService.java",
+          "line": 118
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 46
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 87
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 213
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 29
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 32
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 49
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 85
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 116
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 39
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 236
+        }
+      ]
+    },
+    {
+      "table": "environments",
+      "group": "Dự án & cấu hình",
+      "columns": 9,
+      "outgoingForeignKeys": 1,
+      "incomingForeignKeys": 3,
+      "indexes": [
+        {
+          "table": "environments",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "environments",
+          "name": "uq_env_project_code",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "code"
+          ]
+        },
+        {
+          "table": "environments",
+          "name": "uq_env_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 4,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 30
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 43
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 56
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 70
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogEntities.java",
+          "line": 10
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogService.java",
+          "line": 39
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 45
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 86
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 212
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 28
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 31
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 48
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 84
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 116
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 38
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 235
+        }
+      ]
+    },
+    {
+      "table": "execution_attempts",
+      "group": "Thực thi kiểm thử",
+      "columns": 14,
+      "outgoingForeignKeys": 4,
+      "incomingForeignKeys": 3,
+      "indexes": [
+        {
+          "table": "execution_attempts",
+          "name": "fk_attempt_executor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "executor_membership_id"
+          ]
+        },
+        {
+          "table": "execution_attempts",
+          "name": "fk_attempt_result",
+          "unique": false,
+          "columns": [
+            "result_code"
+          ]
+        },
+        {
+          "table": "execution_attempts",
+          "name": "ix_attempt_build_run",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "build_id",
+            "run_item_id",
+            "attempt_no"
+          ]
+        },
+        {
+          "table": "execution_attempts",
+          "name": "ix_attempt_history",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "run_item_id",
+            "executed_at",
+            "id"
+          ]
+        },
+        {
+          "table": "execution_attempts",
+          "name": "ix_attempt_pending_bug",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "result_code",
+            "id"
+          ]
+        },
+        {
+          "table": "execution_attempts",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "execution_attempts",
+          "name": "uq_attempt_no",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "run_item_id",
+            "attempt_no"
+          ]
+        },
+        {
+          "table": "execution_attempts",
+          "name": "uq_attempt_request",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "request_key"
+          ]
+        },
+        {
+          "table": "execution_attempts",
+          "name": "uq_attempt_run_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "run_item_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 188,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 74
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 47
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 55
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 175
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 192
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 193
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 201
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 73
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 86
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 93
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 105
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 136
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 68
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 99
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 122
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 229
+        }
+      ]
+    },
+    {
+      "table": "execution_results",
+      "group": "Thực thi kiểm thử",
+      "columns": 2,
+      "outgoingForeignKeys": 0,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "execution_results",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "code"
+          ]
+        }
+      ],
+      "snapshotRows": 3,
+      "literalRuntimeReferences": []
+    },
+    {
+      "table": "flyway_schema_history",
+      "group": "Nền tảng kỹ thuật",
+      "columns": 10,
+      "outgoingForeignKeys": 0,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "flyway_schema_history",
+          "name": "flyway_schema_history_s_idx",
+          "unique": false,
+          "columns": [
+            "success"
+          ]
+        },
+        {
+          "table": "flyway_schema_history",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "installed_rank"
+          ]
+        }
+      ],
+      "snapshotRows": 11,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/foundation/FoundationService.java",
+          "line": 26
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/foundation/FoundationService.java",
+          "line": 27
+        }
+      ]
+    },
+    {
+      "table": "foundation_checks",
+      "group": "Nền tảng kỹ thuật",
+      "columns": 3,
+      "outgoingForeignKeys": 0,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "foundation_checks",
+          "name": "ix_foundation_checks_created",
+          "unique": false,
+          "columns": [
+            "created_at",
+            "id"
+          ]
+        },
+        {
+          "table": "foundation_checks",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 1,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/foundation/FoundationCheck.java",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "table": "identity_audit",
+      "group": "Danh tính & đăng nhập",
+      "columns": 7,
+      "outgoingForeignKeys": 3,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "identity_audit",
+          "name": "fk_audit_project",
+          "unique": false,
+          "columns": [
+            "project_id"
+          ]
+        },
+        {
+          "table": "identity_audit",
+          "name": "fk_identity_audit_actor",
+          "unique": false,
+          "columns": [
+            "actor_id"
+          ]
+        },
+        {
+          "table": "identity_audit",
+          "name": "ix_identity_audit_subject",
+          "unique": false,
+          "columns": [
+            "subject_id",
+            "occurred_at"
+          ]
+        },
+        {
+          "table": "identity_audit",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 87,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/identity/IdentityAudit.java",
+          "line": 14
+        }
+      ]
+    },
+    {
+      "table": "identity_login_buckets",
+      "group": "Danh tính & đăng nhập",
+      "columns": 3,
+      "outgoingForeignKeys": 0,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "identity_login_buckets",
+          "name": "ix_identity_login_expiry",
+          "unique": false,
+          "columns": [
+            "expires_at"
+          ]
+        },
+        {
+          "table": "identity_login_buckets",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "bucket_key"
+          ]
+        }
+      ],
+      "snapshotRows": 7,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/identity/LoginThrottle.java",
+          "line": 21
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/identity/LoginThrottle.java",
+          "line": 30
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/identity/LoginThrottle.java",
+          "line": 33
+        }
+      ]
+    },
+    {
+      "table": "identity_roles",
+      "group": "Danh tính & đăng nhập",
+      "columns": 2,
+      "outgoingForeignKeys": 0,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "identity_roles",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "code"
+          ]
+        }
+      ],
+      "snapshotRows": 3,
+      "literalRuntimeReferences": []
+    },
+    {
+      "table": "identity_users",
+      "group": "Danh tính & đăng nhập",
+      "columns": 9,
+      "outgoingForeignKeys": 1,
+      "incomingForeignKeys": 7,
+      "indexes": [
+        {
+          "table": "identity_users",
+          "name": "fk_identity_role",
+          "unique": false,
+          "columns": [
+            "role_code"
+          ]
+        },
+        {
+          "table": "identity_users",
+          "name": "ix_identity_users_created",
+          "unique": false,
+          "columns": [
+            "created_at",
+            "id"
+          ]
+        },
+        {
+          "table": "identity_users",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "identity_users",
+          "name": "uq_identity_username",
+          "unique": true,
+          "columns": [
+            "username"
+          ]
+        }
+      ],
+      "snapshotRows": 7,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 101
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 43
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 56
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 165
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 190
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 218
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/identity/IdentityUser.java",
+          "line": 8
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 48
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 57
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 31
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 110
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 139
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 30
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 51
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 80
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 101
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 116
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 31
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 33
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 43
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 193
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 198
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 241
+        }
+      ]
+    },
+    {
+      "table": "import_batches",
+      "group": "Thư viện & nhập Excel",
+      "columns": 13,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "import_batches",
+          "name": "fk_ib_user",
+          "unique": false,
+          "columns": [
+            "imported_by"
+          ]
+        },
+        {
+          "table": "import_batches",
+          "name": "ix_ib_created",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "created_at",
+            "id"
+          ]
+        },
+        {
+          "table": "import_batches",
+          "name": "ix_import_dedup",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "file_checksum",
+            "imported_by"
+          ]
+        },
+        {
+          "table": "import_batches",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "import_batches",
+          "name": "uq_ib_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 2,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/testcase/TestCaseEntities.java",
+          "line": 236
+        }
+      ]
+    },
+    {
+      "table": "import_rows",
+      "group": "Thư viện & nhập Excel",
+      "columns": 11,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "import_rows",
+          "name": "fk_ir_batch",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "batch_id"
+          ]
+        },
+        {
+          "table": "import_rows",
+          "name": "fk_ir_case",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "target_case_id"
+          ]
+        },
+        {
+          "table": "import_rows",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "import_rows",
+          "name": "uq_ir_batch_row",
+          "unique": true,
+          "columns": [
+            "batch_id",
+            "source_row_number"
+          ]
+        }
+      ],
+      "snapshotRows": 2,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/testcase/TestCaseEntities.java",
+          "line": 310
+        }
+      ]
+    },
+    {
+      "table": "milestones",
+      "group": "Dự án & cấu hình",
+      "columns": 10,
+      "outgoingForeignKeys": 1,
+      "incomingForeignKeys": 2,
+      "indexes": [
+        {
+          "table": "milestones",
+          "name": "ix_ms_due",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "due_on",
+            "id"
+          ]
+        },
+        {
+          "table": "milestones",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "milestones",
+          "name": "uq_ms_project_code",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "code"
+          ]
+        },
+        {
+          "table": "milestones",
+          "name": "uq_ms_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 3,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 34
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 47
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 60
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 74
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogEntities.java",
+          "line": 135
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogService.java",
+          "line": 191
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 69
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 35
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 58
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 240
+        }
+      ]
+    },
+    {
+      "table": "project_audit",
+      "group": "Dự án & cấu hình",
+      "columns": 7,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "project_audit",
+          "name": "fk_project_audit_actor",
+          "unique": false,
+          "columns": [
+            "actor_id"
+          ]
+        },
+        {
+          "table": "project_audit",
+          "name": "ix_project_audit_history",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "entity_type",
+            "entity_id",
+            "id"
+          ]
+        },
+        {
+          "table": "project_audit",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 949,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/project/ProjectAudit.java",
+          "line": 15
+        }
+      ]
+    },
+    {
+      "table": "project_counters",
+      "group": "Dự án & cấu hình",
+      "columns": 3,
+      "outgoingForeignKeys": 1,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "project_counters",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "counter_code"
+          ]
+        }
+      ],
+      "snapshotRows": 2,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 127
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 128
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 131
+        }
+      ]
+    },
+    {
+      "table": "project_memberships",
+      "group": "Dự án & cấu hình",
+      "columns": 8,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 35,
+      "indexes": [
+        {
+          "table": "project_memberships",
+          "name": "ix_membership_user",
+          "unique": false,
+          "columns": [
+            "user_id",
+            "active",
+            "project_id"
+          ]
+        },
+        {
+          "table": "project_memberships",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "project_memberships",
+          "name": "uq_membership_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        },
+        {
+          "table": "project_memberships",
+          "name": "uq_membership_project_user",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "user_id"
+          ]
+        }
+      ],
+      "snapshotRows": 10,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 101
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 42
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 55
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 164
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 190
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 218
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 220
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 48
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 57
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/project/ProjectMembership.java",
+          "line": 7
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 30
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 109
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 138
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 29
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 50
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 80
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 101
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 116
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 30
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 32
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 43
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 193
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 198
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 241
+        }
+      ]
+    },
+    {
+      "table": "project_resources",
+      "group": "Dự án & cấu hình",
+      "columns": 9,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "project_resources",
+          "name": "fk_res_current_revision",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "id",
+            "current_revision_id"
+          ]
+        },
+        {
+          "table": "project_resources",
+          "name": "ix_res_type",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "resource_type",
+            "updated_at",
+            "id"
+          ]
+        },
+        {
+          "table": "project_resources",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "project_resources",
+          "name": "uq_res_project_code",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "code"
+          ]
+        },
+        {
+          "table": "project_resources",
+          "name": "uq_res_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 4,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/handbook/ProjectResource.java",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "table": "projects",
+      "group": "Dự án & cấu hình",
+      "columns": 11,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 16,
+      "indexes": [
+        {
+          "table": "projects",
+          "name": "fk_projects_created_by",
+          "unique": false,
+          "columns": [
+            "created_by"
+          ]
+        },
+        {
+          "table": "projects",
+          "name": "fk_projects_updated_by",
+          "unique": false,
+          "columns": [
+            "updated_by"
+          ]
+        },
+        {
+          "table": "projects",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "projects",
+          "name": "uq_projects_code",
+          "unique": true,
+          "columns": [
+            "code"
+          ]
+        }
+      ],
+      "snapshotRows": 3,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/attachment/EvidenceController.java",
+          "line": 10
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/catalog/CatalogController.java",
+          "line": 12
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/config/SecurityConfig.java",
+          "line": 61
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/config/SecurityConfig.java",
+          "line": 62
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/config/SecurityConfig.java",
+          "line": 63
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionController.java",
+          "line": 9
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionController.java",
+          "line": 11
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 21
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 25
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 26
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 61
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 67
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 76
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 94
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 103
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 119
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 145
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 149
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 171
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 172
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 173
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/handbook/HandbookController.java",
+          "line": 10
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineController.java",
+          "line": 9
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 29
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 35
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 57
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 61
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 93
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 116
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+          "line": 7
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/project/ProjectController.java",
+          "line": 10
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingController.java",
+          "line": 9
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 51
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestController.java",
+          "line": 9
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/rules/RuleController.java",
+          "line": 10
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/testcase/ImportController.java",
+          "line": 10
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/testcase/TestCaseController.java",
+          "line": 11
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/testcase/TestSuiteController.java",
+          "line": 11
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemController.java",
+          "line": 9
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 47
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 129
+        }
+      ]
+    },
+    {
+      "table": "redmine_bindings",
+      "group": "Tích hợp Redmine",
+      "columns": 17,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "redmine_bindings",
+          "name": "fk_redmine_binding_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "created_by"
+          ]
+        },
+        {
+          "table": "redmine_bindings",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "redmine_bindings",
+          "name": "uq_redmine_binding_scope",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "id"
+          ]
+        },
+        {
+          "table": "redmine_bindings",
+          "name": "uq_redmine_binding_work",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id"
+          ]
+        },
+        {
+          "table": "redmine_bindings",
+          "name": "uq_redmine_marker",
+          "unique": true,
+          "columns": [
+            "correlation_marker"
+          ]
+        },
+        {
+          "table": "redmine_bindings",
+          "name": "uq_redmine_remote",
+          "unique": true,
+          "columns": [
+            "instance_hash",
+            "external_issue_id"
+          ]
+        }
+      ],
+      "snapshotRows": 2,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 38
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 65
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 69
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 70
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 98
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 50
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 63
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 119
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 121
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 122
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 125
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 126
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 212
+        }
+      ]
+    },
+    {
+      "table": "redmine_delivery_attempts",
+      "group": "Tích hợp Redmine",
+      "columns": 11,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "redmine_delivery_attempts",
+          "name": "fk_redmine_attempt_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "actor_membership_id"
+          ]
+        },
+        {
+          "table": "redmine_delivery_attempts",
+          "name": "ix_redmine_attempt_history",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "outbox_id",
+            "id"
+          ]
+        },
+        {
+          "table": "redmine_delivery_attempts",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "redmine_delivery_attempts",
+          "name": "uq_redmine_attempt",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "outbox_id",
+            "lease_key"
+          ]
+        }
+      ],
+      "snapshotRows": 8,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 48
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 100
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 132
+        }
+      ]
+    },
+    {
+      "table": "redmine_outbox",
+      "group": "Tích hợp Redmine",
+      "columns": 27,
+      "outgoingForeignKeys": 3,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "redmine_outbox",
+          "name": "fk_redmine_outbox_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "created_by"
+          ]
+        },
+        {
+          "table": "redmine_outbox",
+          "name": "fk_redmine_outbox_binding",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "binding_id"
+          ]
+        },
+        {
+          "table": "redmine_outbox",
+          "name": "fk_redmine_outbox_dispatch_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "dispatch_by"
+          ]
+        },
+        {
+          "table": "redmine_outbox",
+          "name": "ix_redmine_dispatch",
+          "unique": false,
+          "columns": [
+            "status",
+            "next_attempt_at",
+            "id"
+          ]
+        },
+        {
+          "table": "redmine_outbox",
+          "name": "ix_redmine_expired_lease",
+          "unique": false,
+          "columns": [
+            "status",
+            "lease_until",
+            "id"
+          ]
+        },
+        {
+          "table": "redmine_outbox",
+          "name": "ix_redmine_work_history",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "id"
+          ]
+        },
+        {
+          "table": "redmine_outbox",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "redmine_outbox",
+          "name": "uq_redmine_active",
+          "unique": true,
+          "columns": [
+            "active_binding"
+          ]
+        },
+        {
+          "table": "redmine_outbox",
+          "name": "uq_redmine_outbox_scope",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        },
+        {
+          "table": "redmine_outbox",
+          "name": "uq_redmine_request",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "request_key"
+          ]
+        }
+      ],
+      "snapshotRows": 6,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 46
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 48
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 54
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 75
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 82
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 87
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 90
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 96
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 99
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 101
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 25
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 36
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 41
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 43
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 48
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 49
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 113
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineWorker.java",
+          "line": 128
+        }
+      ]
+    },
+    {
+      "table": "resource_revisions",
+      "group": "Dự án & cấu hình",
+      "columns": 9,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "resource_revisions",
+          "name": "fk_rr_edited_by",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "edited_by"
+          ]
+        },
+        {
+          "table": "resource_revisions",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "resource_revisions",
+          "name": "uq_rr_resource_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "resource_id",
+            "id"
+          ]
+        },
+        {
+          "table": "resource_revisions",
+          "name": "uq_rr_resource_no",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "resource_id",
+            "revision_no"
+          ]
+        }
+      ],
+      "snapshotRows": 5,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/handbook/ResourceRevision.java",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "table": "retest_request_items",
+      "group": "Retest & đóng lỗi",
+      "columns": 6,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "retest_request_items",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "request_id",
+            "coverage_item_id"
+          ]
+        },
+        {
+          "table": "retest_request_items",
+          "name": "project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "request_id",
+            "coverage_item_id",
+            "run_item_id"
+          ]
+        },
+        {
+          "table": "retest_request_items",
+          "name": "project_id_2",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "coverage_revision_id",
+            "request_id"
+          ]
+        },
+        {
+          "table": "retest_request_items",
+          "name": "project_id_3",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "coverage_revision_id",
+            "coverage_item_id",
+            "run_item_id"
+          ]
+        }
+      ],
+      "snapshotRows": 13,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 89
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 153
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 168
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 190
+        }
+      ]
+    },
+    {
+      "table": "retest_requests",
+      "group": "Retest & đóng lỗi",
+      "columns": 22,
+      "outgoingForeignKeys": 7,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "retest_requests",
+          "name": "ix_retest_bug",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "id"
+          ]
+        },
+        {
+          "table": "retest_requests",
+          "name": "ix_retest_queue",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "status",
+            "assignee_membership_id",
+            "id"
+          ]
+        },
+        {
+          "table": "retest_requests",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "retest_requests",
+          "name": "project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        },
+        {
+          "table": "retest_requests",
+          "name": "project_id_2",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "coverage_revision_id",
+            "id"
+          ]
+        },
+        {
+          "table": "retest_requests",
+          "name": "project_id_3",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "request_key"
+          ]
+        },
+        {
+          "table": "retest_requests",
+          "name": "project_id_4",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "build_id"
+          ]
+        },
+        {
+          "table": "retest_requests",
+          "name": "project_id_5",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "environment_id"
+          ]
+        },
+        {
+          "table": "retest_requests",
+          "name": "project_id_6",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "device_id"
+          ]
+        },
+        {
+          "table": "retest_requests",
+          "name": "project_id_7",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "assignee_membership_id"
+          ]
+        },
+        {
+          "table": "retest_requests",
+          "name": "project_id_8",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "created_by"
+          ]
+        },
+        {
+          "table": "retest_requests",
+          "name": "project_id_9",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "submitted_by"
+          ]
+        }
+      ],
+      "snapshotRows": 13,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 89
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/BugRetestLifecycle.java",
+          "line": 23
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 28
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 135
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 152
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 162
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 207
+        }
+      ]
+    },
+    {
+      "table": "rule_versions",
+      "group": "Dự án & cấu hình",
+      "columns": 9,
+      "outgoingForeignKeys": 3,
+      "incomingForeignKeys": 2,
+      "indexes": [
+        {
+          "table": "rule_versions",
+          "name": "fk_rv_created_by",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "created_by"
+          ]
+        },
+        {
+          "table": "rule_versions",
+          "name": "fk_rv_published_by",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "published_by"
+          ]
+        },
+        {
+          "table": "rule_versions",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "rule_versions",
+          "name": "uq_rule_version_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        },
+        {
+          "table": "rule_versions",
+          "name": "uq_rv_ruleset_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "ruleset_id",
+            "id"
+          ]
+        },
+        {
+          "table": "rule_versions",
+          "name": "uq_rv_ruleset_no",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "ruleset_id",
+            "version_no"
+          ]
+        }
+      ],
+      "snapshotRows": 2,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/rules/RuleVersion.java",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "table": "rulesets",
+      "group": "Dự án & cấu hình",
+      "columns": 8,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "rulesets",
+          "name": "fk_ruleset_active_version",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "id",
+            "active_version_id"
+          ]
+        },
+        {
+          "table": "rulesets",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "rulesets",
+          "name": "uq_ruleset_project_code",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "code"
+          ]
+        },
+        {
+          "table": "rulesets",
+          "name": "uq_ruleset_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 2,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/rules/Ruleset.java",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "table": "run_item_assignments",
+      "group": "Thực thi kiểm thử",
+      "columns": 8,
+      "outgoingForeignKeys": 4,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "run_item_assignments",
+          "name": "fk_assignment_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "assigned_by"
+          ]
+        },
+        {
+          "table": "run_item_assignments",
+          "name": "fk_assignment_previous",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "previous_membership_id"
+          ]
+        },
+        {
+          "table": "run_item_assignments",
+          "name": "fk_assignment_target",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "assignee_membership_id"
+          ]
+        },
+        {
+          "table": "run_item_assignments",
+          "name": "ix_assignment_history",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "run_item_id",
+            "id"
+          ]
+        },
+        {
+          "table": "run_item_assignments",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 242,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 164
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 222
+        }
+      ]
+    },
+    {
+      "table": "run_items",
+      "group": "Thực thi kiểm thử",
+      "columns": 11,
+      "outgoingForeignKeys": 5,
+      "incomingForeignKeys": 4,
+      "indexes": [
+        {
+          "table": "run_items",
+          "name": "fk_run_assignee",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "assignee_membership_id"
+          ]
+        },
+        {
+          "table": "run_items",
+          "name": "fk_run_latest_attempt",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "id",
+            "latest_attempt_id"
+          ]
+        },
+        {
+          "table": "run_items",
+          "name": "fk_run_revision",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "test_case_id",
+            "revision_id"
+          ]
+        },
+        {
+          "table": "run_items",
+          "name": "fk_run_scope_decision",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "id",
+            "scope_decision_id"
+          ]
+        },
+        {
+          "table": "run_items",
+          "name": "ix_run_assignee",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "cycle_id",
+            "assignee_membership_id",
+            "id"
+          ]
+        },
+        {
+          "table": "run_items",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "run_items",
+          "name": "uq_run_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        },
+        {
+          "table": "run_items",
+          "name": "uq_run_scope",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "cycle_id",
+            "configuration_id",
+            "test_case_id"
+          ]
+        }
+      ],
+      "snapshotRows": 241,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 32
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 73
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 81
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 85
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 90
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 29
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 40
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 107
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 110
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 111
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 123
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 154
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 194
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 77
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 103
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 120
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 122
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 136
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 42
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 74
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 116
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 99
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 229
+        }
+      ]
+    },
+    {
+      "table": "run_scope_decisions",
+      "group": "Thực thi kiểm thử",
+      "columns": 7,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "run_scope_decisions",
+          "name": "fk_scope_decision_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "decided_by"
+          ]
+        },
+        {
+          "table": "run_scope_decisions",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "run_scope_decisions",
+          "name": "uq_scope_decision_run",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "run_item_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 10,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 31
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 73
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 100
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 48
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 32
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 104
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 44
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 117
+        }
+      ]
+    },
+    {
+      "table": "test_case_revisions",
+      "group": "Thư viện & nhập Excel",
+      "columns": 20,
+      "outgoingForeignKeys": 5,
+      "incomingForeignKeys": 3,
+      "indexes": [
+        {
+          "table": "test_case_revisions",
+          "name": "fk_tcr_approved_by",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "approved_by"
+          ]
+        },
+        {
+          "table": "test_case_revisions",
+          "name": "fk_tcr_created_by",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "created_by"
+          ]
+        },
+        {
+          "table": "test_case_revisions",
+          "name": "fk_tcr_reviewer",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "reviewer_membership_id"
+          ]
+        },
+        {
+          "table": "test_case_revisions",
+          "name": "fk_tcr_translator",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "translator_membership_id"
+          ]
+        },
+        {
+          "table": "test_case_revisions",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "test_case_revisions",
+          "name": "uq_tcr_case_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "test_case_id",
+            "id"
+          ]
+        },
+        {
+          "table": "test_case_revisions",
+          "name": "uq_tcr_case_revision_no",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "test_case_id",
+            "revision_no"
+          ]
+        }
+      ],
+      "snapshotRows": 122,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 41
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 206
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 26
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 46
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 74
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 116
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/testcase/TestCaseEntities.java",
+          "line": 127
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 63
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 123
+        }
+      ]
+    },
+    {
+      "table": "test_cases",
+      "group": "Thư viện & nhập Excel",
+      "columns": 8,
+      "outgoingForeignKeys": 3,
+      "incomingForeignKeys": 2,
+      "indexes": [
+        {
+          "table": "test_cases",
+          "name": "fk_tc_current_revision",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "id",
+            "current_revision_id"
+          ]
+        },
+        {
+          "table": "test_cases",
+          "name": "ix_tc_suite",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "suite_id",
+            "id"
+          ]
+        },
+        {
+          "table": "test_cases",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "test_cases",
+          "name": "uq_tc_project_case_no",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "case_no"
+          ]
+        },
+        {
+          "table": "test_cases",
+          "name": "uq_tc_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 121,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 40
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 206
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 25
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 45
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 74
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 116
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/testcase/TestCaseEntities.java",
+          "line": 73
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 99
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 123
+        }
+      ]
+    },
+    {
+      "table": "test_cycles",
+      "group": "Thực thi kiểm thử",
+      "columns": 11,
+      "outgoingForeignKeys": 5,
+      "incomingForeignKeys": 2,
+      "indexes": [
+        {
+          "table": "test_cycles",
+          "name": "fk_cycle_activator",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "activated_by"
+          ]
+        },
+        {
+          "table": "test_cycles",
+          "name": "fk_cycle_creator",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "created_by"
+          ]
+        },
+        {
+          "table": "test_cycles",
+          "name": "fk_cycle_milestone",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "milestone_id"
+          ]
+        },
+        {
+          "table": "test_cycles",
+          "name": "fk_cycle_status",
+          "unique": false,
+          "columns": [
+            "status_code"
+          ]
+        },
+        {
+          "table": "test_cycles",
+          "name": "ix_cycles_status",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "status_code",
+            "id"
+          ]
+        },
+        {
+          "table": "test_cycles",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "test_cycles",
+          "name": "uq_cycle_code",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "code"
+          ]
+        },
+        {
+          "table": "test_cycles",
+          "name": "uq_cycle_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 5,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 33
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 63
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 29
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 62
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 68
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 70
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 127
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 224
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 24
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 52
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 77
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 103
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 108
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 121
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 122
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 136
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 43
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 74
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 116
+        }
+      ]
+    },
+    {
+      "table": "test_suites",
+      "group": "Thư viện & nhập Excel",
+      "columns": 10,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 2,
+      "indexes": [
+        {
+          "table": "test_suites",
+          "name": "ix_ts_parent",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "parent_id",
+            "sort_order",
+            "id"
+          ]
+        },
+        {
+          "table": "test_suites",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "test_suites",
+          "name": "uq_ts_project_code",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "code"
+          ]
+        },
+        {
+          "table": "test_suites",
+          "name": "uq_ts_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 8,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 206
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 74
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/testcase/TestCaseEntities.java",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "table": "work_item_attachments",
+      "group": "Công việc & bug",
+      "columns": 9,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 2,
+      "indexes": [
+        {
+          "table": "work_item_attachments",
+          "name": "fk_attachment_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "uploaded_by"
+          ]
+        },
+        {
+          "table": "work_item_attachments",
+          "name": "ix_attachment_work",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "uploaded_at",
+            "id"
+          ]
+        },
+        {
+          "table": "work_item_attachments",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "work_item_attachments",
+          "name": "uq_attachment_bug",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 32,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/attachment/EvidenceService.java",
+          "line": 28
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/attachment/EvidenceService.java",
+          "line": 33
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/attachment/EvidenceService.java",
+          "line": 39
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/attachment/EvidenceService.java",
+          "line": 52
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/attachment/EvidenceService.java",
+          "line": 60
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/attachment/EvidenceService.java",
+          "line": 67
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/attachment/EvidenceService.java",
+          "line": 71
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/attachment/EvidenceService.java",
+          "line": 93
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 215
+        }
+      ]
+    },
+    {
+      "table": "work_item_clarifications",
+      "group": "Công việc & bug",
+      "columns": 10,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "work_item_clarifications",
+          "name": "fk_clarification_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "recorded_by"
+          ]
+        },
+        {
+          "table": "work_item_clarifications",
+          "name": "ix_clarification_work",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "id"
+          ]
+        },
+        {
+          "table": "work_item_clarifications",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 0,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 101
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 224
+        }
+      ]
+    },
+    {
+      "table": "work_item_comments",
+      "group": "Công việc & bug",
+      "columns": 8,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "work_item_comments",
+          "name": "fk_comment_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "author_membership_id"
+          ]
+        },
+        {
+          "table": "work_item_comments",
+          "name": "ix_comment_history",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "id"
+          ]
+        },
+        {
+          "table": "work_item_comments",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "work_item_comments",
+          "name": "uq_comment_request",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "request_key"
+          ]
+        }
+      ],
+      "snapshotRows": 33,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 198
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 202
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 207
+        }
+      ]
+    },
+    {
+      "table": "work_item_execution_links",
+      "group": "Công việc & bug",
+      "columns": 6,
+      "outgoingForeignKeys": 3,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "work_item_execution_links",
+          "name": "fk_work_link_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "linked_by"
+          ]
+        },
+        {
+          "table": "work_item_execution_links",
+          "name": "fk_work_link_attempt",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "run_item_id",
+            "attempt_id"
+          ]
+        },
+        {
+          "table": "work_item_execution_links",
+          "name": "ix_work_link_attempt",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "attempt_id",
+            "work_item_id"
+          ]
+        },
+        {
+          "table": "work_item_execution_links",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "attempt_id"
+          ]
+        }
+      ],
+      "snapshotRows": 35,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 72
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 80
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 39
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/execution/ExecutionService.java",
+          "line": 136
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 120
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 104
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 106
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 202
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 99
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 183
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 243
+        }
+      ]
+    },
+    {
+      "table": "work_item_external_references",
+      "group": "Công việc & bug",
+      "columns": 9,
+      "outgoingForeignKeys": 2,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "work_item_external_references",
+          "name": "fk_external_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "recorded_by"
+          ]
+        },
+        {
+          "table": "work_item_external_references",
+          "name": "fk_external_work",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id"
+          ]
+        },
+        {
+          "table": "work_item_external_references",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "work_item_external_references",
+          "name": "uq_external_reference",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "provider",
+            "external_id"
+          ]
+        }
+      ],
+      "snapshotRows": 0,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/integration/RedmineService.java",
+          "line": 62
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 100
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 216
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 218
+        }
+      ]
+    },
+    {
+      "table": "work_item_history",
+      "group": "Công việc & bug",
+      "columns": 10,
+      "outgoingForeignKeys": 4,
+      "incomingForeignKeys": 0,
+      "indexes": [
+        {
+          "table": "work_item_history",
+          "name": "fk_work_history_actor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "actor_membership_id"
+          ]
+        },
+        {
+          "table": "work_item_history",
+          "name": "fk_work_history_from",
+          "unique": false,
+          "columns": [
+            "from_status"
+          ]
+        },
+        {
+          "table": "work_item_history",
+          "name": "fk_work_history_to",
+          "unique": false,
+          "columns": [
+            "to_status"
+          ]
+        },
+        {
+          "table": "work_item_history",
+          "name": "ix_work_history",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "work_item_id",
+            "id"
+          ]
+        },
+        {
+          "table": "work_item_history",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "snapshotRows": 185,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 48
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 244
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 193
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 246
+        }
+      ]
+    },
+    {
+      "table": "work_item_policy_versions",
+      "group": "Công việc & bug",
+      "columns": 3,
+      "outgoingForeignKeys": 0,
+      "incomingForeignKeys": 1,
+      "indexes": [
+        {
+          "table": "work_item_policy_versions",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "code"
+          ]
+        }
+      ],
+      "snapshotRows": 1,
+      "literalRuntimeReferences": []
+    },
+    {
+      "table": "work_item_statuses",
+      "group": "Công việc & bug",
+      "columns": 5,
+      "outgoingForeignKeys": 0,
+      "incomingForeignKeys": 3,
+      "indexes": [
+        {
+          "table": "work_item_statuses",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "code"
+          ]
+        }
+      ],
+      "snapshotRows": 10,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 119
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 74
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 98
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 157
+        }
+      ]
+    },
+    {
+      "table": "work_items",
+      "group": "Công việc & bug",
+      "columns": 19,
+      "outgoingForeignKeys": 7,
+      "incomingForeignKeys": 7,
+      "indexes": [
+        {
+          "table": "work_items",
+          "name": "fk_work_category",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "category_id"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "fk_work_creator",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "created_by"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "fk_work_editor",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "updated_by"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "fk_work_milestone",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "milestone_id"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "fk_work_status",
+          "unique": false,
+          "columns": [
+            "status_code"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "ix_work_assignee",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "assignee_membership_id",
+            "id"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "ix_work_board",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "status_code",
+            "updated_at",
+            "id"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "ix_work_type",
+          "unique": false,
+          "columns": [
+            "project_id",
+            "item_type",
+            "updated_at",
+            "id"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "PRIMARY",
+          "unique": true,
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "uq_work_key",
+          "unique": true,
+          "columns": [
+            "item_key"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "uq_work_number",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "item_no"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "uq_work_project_id",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "uq_work_project_id_type",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "id",
+            "item_type"
+          ]
+        },
+        {
+          "table": "work_items",
+          "name": "uq_work_request",
+          "unique": true,
+          "columns": [
+            "project_id",
+            "request_key"
+          ]
+        }
+      ],
+      "snapshotRows": 74,
+      "literalRuntimeReferences": [
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 42
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 47
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+          "line": 78
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/reporting/ReportingService.java",
+          "line": 119
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 28
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 104
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 208
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 228
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 235
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/retest/RetestService.java",
+          "line": 243
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 29
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 57
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 58
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 90
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 106
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 130
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 151
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 167
+        },
+        {
+          "file": "Backend/src/main/java/vn/syp/tms/workitem/WorkItemService.java",
+          "line": 244
+        }
+      ]
+    }
+  ]
+}

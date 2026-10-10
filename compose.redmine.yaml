@@ -1,0 +1,50 @@
+name: syp-tms-redmine
+services:
+  database:
+    image: mysql:8.4.8
+    environment:
+      MYSQL_ROOT_PASSWORD: ${RDM_ROOT_PASSWORD:?Run Initialize-RedmineSandbox.ps1}
+      MYSQL_DATABASE: redmine
+      MYSQL_USER: redmine
+      MYSQL_PASSWORD: ${RDM_DB_PASSWORD:?Missing sandbox database password}
+    volumes:
+      - redmine_database:/var/lib/mysql
+      - ./var/redmine/tls:/opt/tms-tls:ro
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--ssl-ca=/opt/tms-tls/ca/mysql-ca.pem", "--ssl-cert=/opt/tms-tls/server/server-cert.pem", "--ssl-key=/opt/tms-tls/server/server-key.pem", "--require-secure-transport=ON"]
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_ROOT_PASSWORD\" mysql --protocol=TCP -h 127.0.0.1 -u root -Nse 'SELECT 1' >/dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+  redmine:
+    image: redmine:7.0.1-alpine
+    entrypoint: ["/bin/sh", "/opt/tms-seed/start.sh"]
+    command: ["rails", "server", "-b", "0.0.0.0"]
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${RDM_PORT:-3080}:3000"
+    environment:
+      REDMINE_DB_MYSQL: database
+      REDMINE_DB_USERNAME: redmine
+      REDMINE_DB_PASSWORD: ${RDM_DB_PASSWORD:?Missing sandbox database password}
+      REDMINE_DB_DATABASE: redmine
+      REDMINE_DB_ENCODING: utf8mb4
+      SECRET_KEY_BASE: ${RDM_SECRET_KEY:?Missing sandbox cookie secret}
+      TMS_SANDBOX_ADMIN_PASSWORD: ${RDM_ADMIN_PASSWORD:?Missing sandbox admin password}
+      TMS_SANDBOX_SERVICE_PASSWORD: ${RDM_SERVICE_PASSWORD:?Missing service account password}
+    volumes:
+      - redmine_files:/usr/src/redmine/files
+      - ./infra/redmine:/opt/tms-seed:ro
+      - ./var/redmine/tls/ca:/opt/tms-ca:ro
+    healthcheck:
+      test: ["CMD", "ruby", "-rnet/http", "-e", "exit(Net::HTTP.get_response(URI('http://127.0.0.1:3000/login')).code.to_i == 200 ? 0 : 1)"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 60s
+volumes:
+  redmine_database:
+  redmine_files:

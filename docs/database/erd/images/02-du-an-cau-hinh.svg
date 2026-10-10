@@ -1,0 +1,797 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1541" height="3600" viewBox="0 0 1541 3600"><rect width="100%" height="100%" fill="white"/>
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(32.4 3467.8)">
+<title>ERD</title>
+<polygon fill="white" stroke="none" points="-32.4,32.4 -32.4,-3467.8 1508.94,-3467.8 1508.94,32.4 -32.4,32.4"/>
+<text xml:space="preserve" text-anchor="middle" x="738.27" y="-3408.9" font-family="Arial" font-size="25.00" fill="#173f62">DỰ ÁN &amp; CẤU HÌNH · 13 BẢNG</text>
+<!-- t31&#45;&gt;t29 -->
+<g id="F052" class="edge">
+<title>t31:e&#45;&gt;t29:w</title>
+<g id="a_F052"><a xlink:title="F052 fk_membership_project: project_memberships(project_id) → projects(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M676.81,-1211.85C687.14,-1145.82 769.75,-617.6 769.75,-617.6 769.75,-617.6 783.84,-540.26 789.67,-508.23"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="679.32,-1218.45 672.4,-1217.37 672.62,-1215.98 679.54,-1217.07 679.32,-1218.45"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.75,-1218.6 676.29,-1215.14"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="679.86,-1214.99 672.94,-1213.91 673.16,-1212.53 680.08,-1213.61 679.86,-1214.99"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="676.29,-1215.14 676.84,-1211.68"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="790.83,-501.87 795.19,-495.54 791.53,-498.04 792.02,-495.36 792.02,-495.36 792.02,-495.36 791.53,-498.04 788.99,-494.41 790.83,-501.87"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="789.98" cy="-506.56" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t31&#45;&gt;t15 -->
+<g id="F035" class="edge">
+<title>t31:e&#45;&gt;t15:w</title>
+<g id="a_F035"><a xlink:title="F035 fk_env_project: environments(project_id) → projects(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M677.81,-1211.99C691.18,-1168.91 765.93,-928.21 784.41,-868.7"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="679.3,-1218.97 672.62,-1216.89 673.03,-1215.56 679.72,-1217.63 679.3,-1218.97"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.75,-1218.6 676.79,-1215.26"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="680.34,-1215.63 673.66,-1213.55 674.07,-1212.21 680.76,-1214.29 680.34,-1215.63"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="676.79,-1215.26 677.83,-1211.91"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="786.35,-862.45 791.44,-856.7 787.5,-858.74 788.31,-856.13 788.31,-856.13 788.31,-856.13 787.5,-858.74 785.42,-854.83 786.35,-862.45"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="784.94" cy="-867.01" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t31&#45;&gt;t9 -->
+<g id="F026" class="edge">
+<title>t31:e&#45;&gt;t9:w</title>
+<g id="a_F026"><a xlink:title="F026 fk_build_project: builds(project_id) → projects(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M676.11,-1225.3C682.56,-1347.4 775.23,-3099.82 784.53,-3275.78"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="672.3,-1219.48 679.29,-1219.11 679.36,-1220.51 672.37,-1220.88 672.3,-1219.48"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.75,-1218.6 675.94,-1222.1"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="672.48,-1222.98 679.47,-1222.61 679.54,-1224.01 672.55,-1224.38 672.48,-1222.98"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.94,-1222.1 676.12,-1225.59"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="784.89,-3282.63 782.12,-3289.78 785.1,-3286.5 785.24,-3289.23 785.24,-3289.23 785.24,-3289.23 785.1,-3286.5 788.41,-3289.45 784.89,-3282.63"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="784.64" cy="-3277.86" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t31&#45;&gt;t14 -->
+<g id="F034" class="edge">
+<title>t31:e&#45;&gt;t14:w</title>
+<g id="a_F034"><a xlink:title="F034 fk_device_project: devices(project_id) → projects(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M676.21,-1225.25C683.53,-1332.45 777.01,-2701.1 787.57,-2855.8"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="672.31,-1219.54 679.29,-1219.06 679.39,-1220.46 672.4,-1220.93 672.31,-1219.54"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.75,-1218.6 675.99,-1222.09"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="672.55,-1223.03 679.53,-1222.55 679.63,-1223.95 672.64,-1224.43 672.55,-1223.03"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.99,-1222.09 676.23,-1225.58"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="788.04,-2862.63 785.37,-2869.83 788.3,-2866.51 788.49,-2869.23 788.49,-2869.23 788.49,-2869.23 788.3,-2866.51 791.66,-2869.4 788.04,-2862.63"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="787.71" cy="-2857.87" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t31&#45;&gt;t10 -->
+<g id="F027" class="edge">
+<title>t31:e&#45;&gt;t10:w</title>
+<g id="a_F027"><a xlink:title="F027 fk_cat_project: categories(project_id) → projects(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M676.39,-1225.53C684.86,-1318.03 775.45,-2307.64 787.27,-2436.74"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="672.33,-1219.62 679.3,-1218.98 679.43,-1220.37 672.46,-1221.01 672.33,-1219.62"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.75,-1218.6 676.07,-1222.09"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="672.65,-1223.1 679.62,-1222.46 679.75,-1223.86 672.78,-1224.5 672.65,-1223.1"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="676.07,-1222.09 676.39,-1225.57"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="787.87,-2443.25 785.37,-2450.5 788.22,-2447.11 788.47,-2449.83 788.47,-2449.83 788.47,-2449.83 788.22,-2447.11 791.64,-2449.93 787.87,-2443.25"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="787.43" cy="-2438.49" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t31&#45;&gt;t26 -->
+<g id="F048" class="edge">
+<title>t31:e&#45;&gt;t26:w</title>
+<g id="a_F048"><a xlink:title="F048 fk_ms_project: milestones(project_id) → projects(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M676.6,-1225.34C686.11,-1301.4 773.22,-1997.72 786.77,-2106.06"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="672.37,-1219.73 679.31,-1218.86 679.49,-1220.25 672.54,-1221.12 672.37,-1219.73"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.75,-1218.6 676.19,-1222.07"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="672.8,-1223.2 679.75,-1222.33 679.92,-1223.72 672.98,-1224.59 672.8,-1223.2"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="676.19,-1222.07 676.62,-1225.55"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="787.63,-2112.87 785.37,-2120.21 788.11,-2116.73 788.45,-2119.44 788.45,-2119.44 788.45,-2119.44 788.11,-2116.73 791.62,-2119.43 787.63,-2112.87"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="787.03" cy="-2108.13" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t31&#45;&gt;t39 -->
+<g id="F080" class="edge">
+<title>t31:e&#45;&gt;t39:w</title>
+<g id="a_F080"><a xlink:title="F080 fk_ruleset_project: rulesets(project_id) → projects(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M679.5,-1224.33C694.01,-1246.53 746.65,-1327.07 766.66,-1357.68"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="673.21,-1221.1 679.07,-1217.27 679.83,-1218.44 673.97,-1222.27 673.21,-1221.1"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.75,-1218.6 677.67,-1221.53"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="675.12,-1224.03 680.98,-1220.2 681.75,-1221.37 675.89,-1225.2 675.12,-1224.03"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="677.67,-1221.53 679.58,-1224.46"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="770.41,-1363.42 771.6,-1371 772.53,-1366.67 774.03,-1368.96 774.03,-1368.96 774.03,-1368.96 772.53,-1366.67 776.87,-1367.55 770.41,-1363.42"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="767.79" cy="-1359.42" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t31&#45;&gt;t30 -->
+<g id="F055" class="edge">
+<title>t31:e&#45;&gt;t30:w</title>
+<g id="a_F055"><a xlink:title="F055 fk_res_project: project_resources(project_id) → projects(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M677.01,-1225.45C686.99,-1279.78 753.33,-1640.96 767.21,-1716.55"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="672.44,-1219.92 679.32,-1218.66 679.58,-1220.03 672.69,-1221.3 672.44,-1219.92"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.75,-1218.6 676.39,-1222.04"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="673.07,-1223.36 679.95,-1222.1 680.21,-1223.48 673.32,-1224.74 673.07,-1223.36"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="676.39,-1222.04 677.02,-1225.48"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="768.42,-1723.14 766.59,-1730.59 769.12,-1726.96 769.61,-1729.64 769.61,-1729.64 769.61,-1729.64 769.12,-1726.96 772.78,-1729.45 768.42,-1723.14"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="767.56" cy="-1718.44" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t31&#45;&gt;t28 -->
+<g id="F051" class="edge">
+<title>t31:e&#45;&gt;t28:w</title>
+<g id="a_F051"><a xlink:title="F051 fk_counter_project: project_counters(project_id) → projects(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M679.78,-1213.25C696.16,-1191.48 757.95,-1109.33 780.55,-1079.29"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="678.97,-1220.14 673.38,-1215.94 674.22,-1214.82 679.81,-1219.03 678.97,-1220.14"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.75,-1218.6 677.86,-1215.8"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="681.08,-1217.35 675.48,-1213.14 676.32,-1212.02 681.92,-1216.23 681.08,-1217.35"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="677.86,-1215.8 679.96,-1213.01"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="784.46,-1074.1 791.18,-1070.4 786.79,-1071 788.43,-1068.81 788.43,-1068.81 788.43,-1068.81 786.79,-1071 786.15,-1066.61 784.46,-1074.1"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="781.58" cy="-1077.92" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t31&#45;&gt;t27 -->
+<g id="F050" class="edge">
+<title>t31:e&#45;&gt;t27:w</title>
+<g id="a_F050"><a xlink:title="F050 fk_project_audit_project: project_audit(project_id) → projects(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M676.43,-1211.89C684.88,-1128.08 769.75,-286.6 769.75,-286.6 769.75,-286.6 784.97,-209.38 791.28,-177.41"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="679.31,-1218.25 672.34,-1217.55 672.48,-1216.16 679.45,-1216.86 679.31,-1218.25"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="675.75,-1218.6 676.1,-1215.12"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="679.66,-1214.77 672.69,-1214.07 672.83,-1212.68 679.8,-1213.38 679.66,-1214.77"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="676.1,-1215.12 676.46,-1211.64"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="792.53,-171.05 796.98,-164.79 793.28,-167.23 793.81,-164.55 793.81,-164.55 793.81,-164.55 793.28,-167.23 790.8,-163.57 792.53,-171.05"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="791.61" cy="-175.73" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t29&#45;&gt;t38 -->
+<g id="F076" class="edge">
+<title>t29:e&#45;&gt;t38:w</title>
+<g id="a_F076"><a xlink:title="F076 fk_rv_created_by: rule_versions(project_id, created_by) → project_memberships(project_id, id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M1077.2,-530.28C1092.4,-562.39 1163.41,-712.45 1184.69,-757.43"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1071.46,-526.33 1077.79,-523.34 1078.39,-524.6 1072.06,-527.6 1071.46,-526.33"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="1074.33,-524.2 1075.82,-527.36"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1072.96,-529.49 1079.29,-526.5 1079.89,-527.76 1073.56,-530.76 1072.96,-529.49"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="1075.82,-527.36 1077.32,-530.53"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1187.57,-763.52 1187.72,-771.2 1189.23,-767.04 1190.4,-769.5 1190.4,-769.5 1190.4,-769.5 1189.23,-767.04 1193.41,-768.5 1187.57,-763.52"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="1185.53" cy="-759.21" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t29&#45;&gt;t38 -->
+<g id="F077" class="edge">
+<title>t29:e&#45;&gt;t38:w</title>
+<g id="a_F077"><a xlink:title="F077 fk_rv_published_by: rule_versions(project_id, published_by) → project_memberships(project_id, id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M1077.94,-533.67C1094.82,-577.94 1165.99,-764.52 1185.67,-816.13"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1071.31,-526.1 1077.85,-523.61 1078.35,-524.91 1071.81,-527.41 1071.31,-526.1"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="1074.33,-524.2 1075.57,-527.47"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="1076.78" cy="-530.62" rx="2.8" ry="2.8"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1188.1,-822.5 1187.65,-830.16 1189.48,-826.13 1190.46,-828.68 1190.46,-828.68 1190.46,-828.68 1189.48,-826.13 1193.54,-827.92 1188.1,-822.5"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="1186.4" cy="-818.04" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t29&#45;&gt;t35 -->
+<g id="F065" class="edge">
+<title>t29:e&#45;&gt;t35:w</title>
+<g id="a_F065"><a xlink:title="F065 fk_rr_edited_by: resource_revisions(project_id, edited_by) → project_memberships(project_id, id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M1075.94,-530.92C1081.08,-552.33 1096.73,-617.6 1096.73,-617.6 1096.73,-617.6 1177.41,-1313.23 1189.86,-1420.57"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1071.09,-525.7 1077.89,-524.06 1078.22,-525.43 1071.41,-527.06 1071.09,-525.7"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="1074.33,-524.2 1075.14,-527.6"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1071.9,-529.1 1078.71,-527.47 1079.04,-528.83 1072.23,-530.46 1071.9,-529.1"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="1075.14,-527.6 1075.96,-531.01"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1190.61,-1427.06 1188.29,-1434.38 1191.06,-1430.92 1191.38,-1433.64 1191.38,-1433.64 1191.38,-1433.64 1191.06,-1430.92 1194.55,-1433.65 1190.61,-1427.06"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="1190.06" cy="-1422.32" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t39&#45;&gt;t38 -->
+<g id="F078" class="edge">
+<title>t39:e&#45;&gt;t38:w</title>
+<g id="a_F078"><a xlink:title="F078 fk_rv_ruleset: rule_versions(project_id, ruleset_id) → rulesets(project_id, id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M1093.51,-1392.47C1104.4,-1342.68 1172.42,-1031.56 1187.69,-961.71"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1095.61,-1399.26 1088.77,-1397.77 1089.07,-1396.4 1095.91,-1397.9 1095.61,-1399.26"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="1092.04,-1399.2 1092.78,-1395.78"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1096.35,-1395.84 1089.52,-1394.35 1089.81,-1392.98 1096.65,-1394.48 1096.35,-1395.84"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="1092.78,-1395.78 1093.53,-1392.36"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1189.15,-955.01 1193.73,-948.85 1189.98,-951.22 1190.57,-948.55 1190.57,-948.55 1190.57,-948.55 1189.98,-951.22 1187.57,-947.5 1189.15,-955.01"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="1188.13" cy="-959.68" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t38&#45;&gt;t39 -->
+<g id="F079" class="edge">
+<title>t38:e&#45;&gt;t39:w</title>
+<g id="a_F079"><a xlink:title="F079 fk_ruleset_active_version: rulesets(project_id, id, active_version_id) → rule_versions(project_id, ruleset_id, id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M1476.41,-1017.17C1476.14,-1038.26 1475.54,-1084.8 1475.54,-1084.8 1475.54,-1084.8 1096.73,-1160.6 1096.73,-1160.6 1096.73,-1160.6 775.45,-1176.2 775.45,-1176.2 775.45,-1176.2 774.86,-1220.61 774.58,-1241.09"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1473.04,-1007.65 1480.04,-1007.74 1480.02,-1009.14 1473.02,-1009.05 1473.04,-1007.65"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="1476.54,-1007 1476.5,-1010.5"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="1476.46" cy="-1013.87" rx="2.8" ry="2.8"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="777.96,-1250.55 770.96,-1250.45 770.98,-1249.05 777.98,-1249.15 777.96,-1250.55"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="774.45,-1251.2 774.49,-1247.7"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="774.54" cy="-1244.33" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t30&#45;&gt;t35 -->
+<g id="F066" class="edge">
+<title>t30:e&#45;&gt;t35:w</title>
+<g id="a_F066"><a xlink:title="F066 fk_rr_resource: resource_revisions(project_id, resource_id) → project_resources(project_id, id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M1099.46,-1754.02C1112.39,-1725.76 1167.5,-1605.23 1185.64,-1565.53"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1100.21,-1760.82 1093.84,-1757.91 1094.42,-1756.63 1100.79,-1759.55 1100.21,-1760.82"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="1096.73,-1760 1098.19,-1756.82"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1101.66,-1757.64 1095.29,-1754.72 1095.88,-1753.45 1102.24,-1756.36 1101.66,-1757.64"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="1098.19,-1756.82 1099.64,-1753.63"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1188.39,-1559.52 1194.17,-1554.46 1190.01,-1555.98 1191.14,-1553.5 1191.14,-1553.5 1191.14,-1553.5 1190.01,-1555.98 1188.44,-1551.84 1188.39,-1559.52"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="1186.41" cy="-1563.86" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t35&#45;&gt;t30 -->
+<g id="F054" class="edge">
+<title>t35:e&#45;&gt;t30:w</title>
+<g id="a_F054"><a xlink:title="F054 fk_res_current_revision: project_resources(project_id, id, current_revision_id) → resource_revisions(project_id, resource_id, id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M1475.68,-1622.17C1475.41,-1643.26 1474.81,-1689.8 1474.81,-1689.8 1474.81,-1689.8 1191.46,-1689.8 1191.46,-1689.8 1191.46,-1689.8 1096.73,-1507.4 1096.73,-1507.4 1096.73,-1507.4 770.75,-1507.4 770.75,-1507.4 770.75,-1507.4 770.1,-1575.79 769.85,-1601.97"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="1472.3,-1612.65 1479.3,-1612.74 1479.28,-1614.14 1472.29,-1614.05 1472.3,-1612.65"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="1475.81,-1612 1475.77,-1615.5"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="1475.72" cy="-1618.87" rx="2.8" ry="2.8"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="773.26,-1611.33 766.26,-1611.27 766.27,-1609.87 773.27,-1609.93 773.26,-1611.33"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="769.75,-1612 769.79,-1608.5"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="769.82" cy="-1605.13" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t23&#45;&gt;t31 -->
+<g id="F056" class="edge">
+<title>t23:e&#45;&gt;t31:w</title>
+<g id="a_F056"><a xlink:title="F056 fk_projects_created_by: projects(created_by) → identity_users(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M294.49,-701.63C306.49,-738.22 365.45,-918.04 382.02,-968.57"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="289.25,-696.86 295.9,-694.67 296.33,-696.01 289.68,-698.19 289.25,-696.86"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="292.35,-695.1 293.44,-698.43"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="290.34,-700.18 296.99,-698 297.42,-699.33 290.77,-701.51 290.34,-700.18"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="293.44,-698.43 294.53,-701.75"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="384.05,-974.78 383.24,-982.42 385.26,-978.47 386.11,-981.07 386.11,-981.07 386.11,-981.07 385.26,-978.47 389.23,-980.45 384.05,-974.78"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="382.56" cy="-970.24" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t23&#45;&gt;t31 -->
+<g id="F057" class="edge">
+<title>t23:e&#45;&gt;t31:w</title>
+<g id="a_F057"><a xlink:title="F057 fk_projects_updated_by: projects(updated_by) → identity_users(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M294.87,-701.19C307.42,-731.57 363.42,-867.09 381.03,-909.72"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="289.39,-697.08 295.86,-694.41 296.39,-695.7 289.92,-698.38 289.39,-697.08"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="292.35,-695.1 293.69,-698.33"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="290.72,-700.32 297.19,-697.65 297.73,-698.94 291.26,-701.61 290.72,-700.32"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="293.69,-698.33 295.03,-701.57"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="383.53,-915.77 383.3,-923.45 385.02,-919.37 386.06,-921.89 386.06,-921.89 386.06,-921.89 385.02,-919.37 389.12,-921.04 383.53,-915.77"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="381.71" cy="-911.36" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t23&#45;&gt;t29 -->
+<g id="F053" class="edge">
+<title>t23:e&#45;&gt;t29:w</title>
+<g id="a_F053"><a xlink:title="F053 fk_membership_user: project_memberships(user_id) → identity_users(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M298.67,-692.19C350.65,-668.26 707.57,-503.94 779.53,-470.81"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="294.45,-697.99 291.53,-691.63 292.8,-691.04 295.72,-697.4 294.45,-697.99"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="292.35,-695.1 295.53,-693.64"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="297.63,-696.52 294.7,-690.16 295.98,-689.58 298.9,-695.94 297.63,-696.52"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="295.53,-693.64 298.71,-692.17"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="785.45,-468.09 793.13,-468.02 788.98,-466.46 791.46,-465.32 791.46,-465.32 791.46,-465.32 788.98,-466.46 790.49,-462.3 785.45,-468.09"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="781.11" cy="-470.09" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t23&#45;&gt;t27 -->
+<g id="F049" class="edge">
+<title>t23:e&#45;&gt;t27:w</title>
+<g id="a_F049"><a xlink:title="F049 fk_project_audit_actor: project_audit(actor_id) → identity_users(id)">
+<path fill="none" stroke="#85a6c5" stroke-width="1.15" d="M295.48,-689.06C311.79,-657.57 386.35,-513.6 386.35,-513.6 386.35,-513.6 721.12,-202 783.88,-143.58"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="295.78,-696.09 289.57,-692.87 290.21,-691.63 296.43,-694.84 295.78,-696.09"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="292.35,-695.1 293.96,-691.99"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="297.39,-692.98 291.18,-689.76 291.82,-688.52 298.04,-691.74 297.39,-692.98"/>
+<polyline fill="none" stroke="#85a6c5" stroke-width="1.15" points="293.96,-691.99 295.57,-688.88"/>
+<polygon fill="#85a6c5" stroke="#85a6c5" stroke-width="1.15" points="788.55,-139.23 795.82,-136.77 791.4,-136.58 793.4,-134.72 793.4,-134.72 793.4,-134.72 791.4,-136.58 791.53,-132.16 788.55,-139.23"/>
+<ellipse fill="none" stroke="#85a6c5" stroke-width="1.15" cx="785.06" cy="-142.49" rx="2.8" ry="2.8"/>
+</a>
+</g>
+</g>
+<!-- t31 -->
+<g id="table&#45;projects" class="node">
+<title>t31</title>
+<polygon fill="#edf6fc" stroke="none" points="386.35,-906.8 386.35,-1296.4 675.75,-1296.4 675.75,-906.8 386.35,-906.8"/>
+<polygon fill="none" stroke="#c1d6e7" points="386.35,-906.8 386.35,-1296.4 675.75,-1296.4 675.75,-906.8 386.35,-906.8"/>
+<polygon fill="#c6e3f7" stroke="none" points="387.35,-1259.4 387.35,-1295.4 674.75,-1295.4 674.75,-1259.4 387.35,-1259.4"/>
+<text xml:space="preserve" text-anchor="start" x="499.93" y="-1273.6" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">projects</text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-1242.4" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-1242.4" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-1242.4" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-1213.4" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-1213.4" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-1214.2" font-family="Arial" font-size="11.00" fill="#355f88">PK AI</text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-1183.8" font-family="Arial" font-size="13.00" fill="#20374a">code</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-1183.8" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-1184.6" font-family="Arial" font-size="11.00" fill="#355f88">UQ</text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-1154.2" font-family="Arial" font-size="13.00" fill="#20374a">name</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-1154.2" font-family="Arial" font-size="13.00" fill="#455a70">varchar(100)</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-1155" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-1124.6" font-family="Arial" font-size="13.00" fill="#20374a">description</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-1124.6" font-family="Arial" font-size="13.00" fill="#455a70">varchar(500)</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-1125.4" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-1095" font-family="Arial" font-size="13.00" fill="#20374a">timezone</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-1095" font-family="Arial" font-size="13.00" fill="#455a70">varchar(50)</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-1095.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-1065.4" font-family="Arial" font-size="13.00" fill="#20374a">archived_at</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-1065.4" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-1066.2" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-1035.8" font-family="Arial" font-size="13.00" fill="#20374a">lock_version</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-1035.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-1036.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-1006.2" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-1006.2" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-1007" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-976.6" font-family="Arial" font-size="13.00" fill="#20374a">created_by</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-976.6" font-family="Arial" font-size="13.00" fill="#455a70">varchar(36)</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-977.4" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-947" font-family="Arial" font-size="13.00" fill="#20374a">updated_at</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-947" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-947.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="394.35" y="-917.4" font-family="Arial" font-size="13.00" fill="#20374a">updated_by</text>
+<text xml:space="preserve" text-anchor="start" x="480.61" y="-917.4" font-family="Arial" font-size="13.00" fill="#455a70">varchar(36)</text>
+<text xml:space="preserve" text-anchor="start" x="568.31" y="-918.2" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+</g>
+<!-- t29 -->
+<g id="table&#45;project_memberships" class="node">
+<title>t29</title>
+<polygon fill="#edf6fc" stroke="none" points="792.16,-301.2 792.16,-602 1074.33,-602 1074.33,-301.2 792.16,-301.2"/>
+<polygon fill="none" stroke="#c1d6e7" points="792.16,-301.2 792.16,-602 1074.33,-602 1074.33,-301.2 792.16,-301.2"/>
+<polygon fill="#c6e3f7" stroke="none" points="793.16,-565 793.16,-601 1073.33,-601 1073.33,-565 793.16,-565"/>
+<text xml:space="preserve" text-anchor="start" x="850.1" y="-579.2" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">project_memberships</text>
+<text xml:space="preserve" text-anchor="start" x="800.16" y="-548" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="886.41" y="-548" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="966.88" y="-548" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="800.16" y="-519" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="886.41" y="-519" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="966.88" y="-519.8" font-family="Arial" font-size="11.00" fill="#355f88">PK AI</text>
+<text xml:space="preserve" text-anchor="start" x="800.16" y="-489.4" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="886.41" y="-489.4" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="966.88" y="-490.2" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="800.16" y="-459.8" font-family="Arial" font-size="13.00" fill="#20374a">user_id</text>
+<text xml:space="preserve" text-anchor="start" x="886.41" y="-459.8" font-family="Arial" font-size="13.00" fill="#455a70">varchar(36)</text>
+<text xml:space="preserve" text-anchor="start" x="966.88" y="-460.6" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="800.16" y="-430.2" font-family="Arial" font-size="13.00" fill="#20374a">project_role</text>
+<text xml:space="preserve" text-anchor="start" x="886.41" y="-430.2" font-family="Arial" font-size="13.00" fill="#455a70">varchar(16)</text>
+<text xml:space="preserve" text-anchor="start" x="966.88" y="-431" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="800.16" y="-400.6" font-family="Arial" font-size="13.00" fill="#20374a">active</text>
+<text xml:space="preserve" text-anchor="start" x="886.41" y="-400.6" font-family="Arial" font-size="13.00" fill="#455a70">tinyint(1)</text>
+<text xml:space="preserve" text-anchor="start" x="966.88" y="-401.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="800.16" y="-371" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="886.41" y="-371" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="966.88" y="-371.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="800.16" y="-341.4" font-family="Arial" font-size="13.00" fill="#20374a">updated_at</text>
+<text xml:space="preserve" text-anchor="start" x="886.41" y="-341.4" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="966.88" y="-342.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="800.16" y="-311.8" font-family="Arial" font-size="13.00" fill="#20374a">lock_version</text>
+<text xml:space="preserve" text-anchor="start" x="886.41" y="-311.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="966.88" y="-312.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t15 -->
+<g id="table&#45;environments" class="node">
+<title>t15</title>
+<polygon fill="#edf6fc" stroke="none" points="788.54,-632.4 788.54,-962.8 1077.94,-962.8 1077.94,-632.4 788.54,-632.4"/>
+<polygon fill="none" stroke="#c1d6e7" points="788.54,-632.4 788.54,-962.8 1077.94,-962.8 1077.94,-632.4 788.54,-632.4"/>
+<polygon fill="#c6e3f7" stroke="none" points="789.54,-925.8 789.54,-961.8 1076.94,-961.8 1076.94,-925.8 789.54,-925.8"/>
+<text xml:space="preserve" text-anchor="start" x="880.79" y="-940" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">environments</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-908.8" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-908.8" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-908.8" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-879.8" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-879.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-880.6" font-family="Arial" font-size="11.00" fill="#355f88">PK AI</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-850.2" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-850.2" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-851" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-820.6" font-family="Arial" font-size="13.00" fill="#20374a">code</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-820.6" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-821.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-791" font-family="Arial" font-size="13.00" fill="#20374a">name</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-791" font-family="Arial" font-size="13.00" fill="#455a70">varchar(100)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-791.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-761.4" font-family="Arial" font-size="13.00" fill="#20374a">description</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-761.4" font-family="Arial" font-size="13.00" fill="#455a70">varchar(500)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-762.2" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-731.8" font-family="Arial" font-size="13.00" fill="#20374a">active</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-731.8" font-family="Arial" font-size="13.00" fill="#455a70">tinyint(1)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-732.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-702.2" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-702.2" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-703" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-672.6" font-family="Arial" font-size="13.00" fill="#20374a">updated_at</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-672.6" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-673.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-643" font-family="Arial" font-size="13.00" fill="#20374a">lock_version</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-643" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-643.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t9 -->
+<g id="table&#45;builds" class="node">
+<title>t9</title>
+<polygon fill="#edf6fc" stroke="none" points="785.28,-3007.8 785.28,-3397.4 1081.2,-3397.4 1081.2,-3007.8 785.28,-3007.8"/>
+<polygon fill="none" stroke="#c1d6e7" points="785.28,-3007.8 785.28,-3397.4 1081.2,-3397.4 1081.2,-3007.8 785.28,-3007.8"/>
+<polygon fill="#c6e3f7" stroke="none" points="786.28,-3360.4 786.28,-3396.4 1080.2,-3396.4 1080.2,-3360.4 786.28,-3360.4"/>
+<text xml:space="preserve" text-anchor="start" x="909.69" y="-3374.6" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">builds</text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3343.4" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3343.4" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3343.4" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3314.4" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3314.4" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3315.2" font-family="Arial" font-size="11.00" fill="#355f88">PK AI</text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3284.8" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3284.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3285.6" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3255.2" font-family="Arial" font-size="13.00" fill="#20374a">version_label</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3255.2" font-family="Arial" font-size="13.00" fill="#455a70">varchar(50)</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3256" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3225.6" font-family="Arial" font-size="13.00" fill="#20374a">build_number</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3225.6" font-family="Arial" font-size="13.00" fill="#455a70">varchar(50)</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3226.4" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3196" font-family="Arial" font-size="13.00" fill="#20374a">platform</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3196" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3196.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3166.4" font-family="Arial" font-size="13.00" fill="#20374a">notes</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3166.4" font-family="Arial" font-size="13.00" fill="#455a70">varchar(500)</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3167.2" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3136.8" font-family="Arial" font-size="13.00" fill="#20374a">released_at</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3136.8" font-family="Arial" font-size="13.00" fill="#455a70">date</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3137.6" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3107.2" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3107.2" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3108" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3077.6" font-family="Arial" font-size="13.00" fill="#20374a">updated_at</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3077.6" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3078.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3048" font-family="Arial" font-size="13.00" fill="#20374a">archived_at</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3048" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3048.8" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="793.28" y="-3018.4" font-family="Arial" font-size="13.00" fill="#20374a">lock_version</text>
+<text xml:space="preserve" text-anchor="start" x="886.06" y="-3018.4" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="973.75" y="-3019.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t14 -->
+<g id="table&#45;devices" class="node">
+<title>t14</title>
+<polygon fill="#edf6fc" stroke="none" points="788.54,-2587.8 788.54,-2977.4 1077.94,-2977.4 1077.94,-2587.8 788.54,-2587.8"/>
+<polygon fill="none" stroke="#c1d6e7" points="788.54,-2587.8 788.54,-2977.4 1077.94,-2977.4 1077.94,-2587.8 788.54,-2587.8"/>
+<polygon fill="#c6e3f7" stroke="none" points="789.54,-2940.4 789.54,-2976.4 1076.94,-2976.4 1076.94,-2940.4 789.54,-2940.4"/>
+<text xml:space="preserve" text-anchor="start" x="903.89" y="-2954.6" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">devices</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2923.4" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2923.4" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2923.4" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2894.4" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2894.4" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2895.2" font-family="Arial" font-size="11.00" fill="#355f88">PK AI</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2864.8" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2864.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2865.6" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2835.2" font-family="Arial" font-size="13.00" fill="#20374a">code</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2835.2" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2836" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2805.6" font-family="Arial" font-size="13.00" fill="#20374a">name</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2805.6" font-family="Arial" font-size="13.00" fill="#455a70">varchar(100)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2806.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2776" font-family="Arial" font-size="13.00" fill="#20374a">model</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2776" font-family="Arial" font-size="13.00" fill="#455a70">varchar(100)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2776.8" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2746.4" font-family="Arial" font-size="13.00" fill="#20374a">os_name</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2746.4" font-family="Arial" font-size="13.00" fill="#455a70">varchar(50)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2747.2" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2716.8" font-family="Arial" font-size="13.00" fill="#20374a">os_version</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2716.8" font-family="Arial" font-size="13.00" fill="#455a70">varchar(50)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2717.6" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2687.2" font-family="Arial" font-size="13.00" fill="#20374a">active</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2687.2" font-family="Arial" font-size="13.00" fill="#455a70">tinyint(1)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2688" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2657.6" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2657.6" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2658.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2628" font-family="Arial" font-size="13.00" fill="#20374a">updated_at</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2628" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2628.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2598.4" font-family="Arial" font-size="13.00" fill="#20374a">lock_version</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2598.4" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2599.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t10 -->
+<g id="table&#45;categories" class="node">
+<title>t10</title>
+<polygon fill="#edf6fc" stroke="none" points="788.54,-2257.2 788.54,-2558 1077.94,-2558 1077.94,-2257.2 788.54,-2257.2"/>
+<polygon fill="none" stroke="#c1d6e7" points="788.54,-2257.2 788.54,-2558 1077.94,-2558 1077.94,-2257.2 788.54,-2257.2"/>
+<polygon fill="#c6e3f7" stroke="none" points="789.54,-2521 789.54,-2557 1076.94,-2557 1076.94,-2521 789.54,-2521"/>
+<text xml:space="preserve" text-anchor="start" x="893.22" y="-2535.2" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">categories</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2504" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2504" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2504" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2475" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2475" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2475.8" font-family="Arial" font-size="11.00" fill="#355f88">PK AI</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2445.4" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2445.4" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2446.2" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2415.8" font-family="Arial" font-size="13.00" fill="#20374a">code</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2415.8" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2416.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2386.2" font-family="Arial" font-size="13.00" fill="#20374a">name</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2386.2" font-family="Arial" font-size="13.00" fill="#455a70">varchar(100)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2387" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2356.6" font-family="Arial" font-size="13.00" fill="#20374a">active</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2356.6" font-family="Arial" font-size="13.00" fill="#455a70">tinyint(1)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2357.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2327" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2327" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2327.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2297.4" font-family="Arial" font-size="13.00" fill="#20374a">updated_at</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2297.4" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2298.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2267.8" font-family="Arial" font-size="13.00" fill="#20374a">lock_version</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2267.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2268.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t26 -->
+<g id="table&#45;milestones" class="node">
+<title>t26</title>
+<polygon fill="#edf6fc" stroke="none" points="788.54,-1867.6 788.54,-2227.6 1077.94,-2227.6 1077.94,-1867.6 788.54,-1867.6"/>
+<polygon fill="none" stroke="#c1d6e7" points="788.54,-1867.6 788.54,-2227.6 1077.94,-2227.6 1077.94,-1867.6 788.54,-1867.6"/>
+<polygon fill="#c6e3f7" stroke="none" points="789.54,-2190.6 789.54,-2226.6 1076.94,-2226.6 1076.94,-2190.6 789.54,-2190.6"/>
+<text xml:space="preserve" text-anchor="start" x="891.45" y="-2204.8" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">milestones</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2173.6" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2173.6" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2173.6" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2144.6" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2144.6" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2145.4" font-family="Arial" font-size="11.00" fill="#355f88">PK AI</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2115" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2115" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2115.8" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2085.4" font-family="Arial" font-size="13.00" fill="#20374a">code</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2085.4" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2086.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2055.8" font-family="Arial" font-size="13.00" fill="#20374a">name</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2055.8" font-family="Arial" font-size="13.00" fill="#455a70">varchar(100)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2056.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-2026.2" font-family="Arial" font-size="13.00" fill="#20374a">starts_on</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-2026.2" font-family="Arial" font-size="13.00" fill="#455a70">date</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-2027" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-1996.6" font-family="Arial" font-size="13.00" fill="#20374a">due_on</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-1996.6" font-family="Arial" font-size="13.00" fill="#455a70">date</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-1997.4" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-1967" font-family="Arial" font-size="13.00" fill="#20374a">archived_at</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-1967" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-1967.8" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-1937.4" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-1937.4" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-1938.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-1907.8" font-family="Arial" font-size="13.00" fill="#20374a">updated_at</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-1907.8" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-1908.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="796.54" y="-1878.2" font-family="Arial" font-size="13.00" fill="#20374a">lock_version</text>
+<text xml:space="preserve" text-anchor="start" x="882.8" y="-1878.2" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.49" y="-1879" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t39 -->
+<g id="table&#45;rulesets" class="node">
+<title>t39</title>
+<polygon fill="#edf6fc" stroke="none" points="774.45,-1176.2 774.45,-1477 1092.04,-1477 1092.04,-1176.2 774.45,-1176.2"/>
+<polygon fill="none" stroke="#c1d6e7" points="774.45,-1176.2 774.45,-1477 1092.04,-1477 1092.04,-1176.2 774.45,-1176.2"/>
+<polygon fill="#c6e3f7" stroke="none" points="775.45,-1440 775.45,-1476 1091.04,-1476 1091.04,-1440 775.45,-1440"/>
+<text xml:space="preserve" text-anchor="start" x="902.56" y="-1454.2" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">rulesets</text>
+<text xml:space="preserve" text-anchor="start" x="782.45" y="-1423" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="896.89" y="-1423" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="984.59" y="-1423" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="782.45" y="-1394" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="896.89" y="-1394" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="984.59" y="-1394.8" font-family="Arial" font-size="11.00" fill="#355f88">PK FK AI</text>
+<text xml:space="preserve" text-anchor="start" x="782.45" y="-1364.4" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="896.89" y="-1364.4" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="984.59" y="-1365.2" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="782.45" y="-1334.8" font-family="Arial" font-size="13.00" fill="#20374a">code</text>
+<text xml:space="preserve" text-anchor="start" x="896.89" y="-1334.8" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="984.59" y="-1335.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="782.45" y="-1305.2" font-family="Arial" font-size="13.00" fill="#20374a">name</text>
+<text xml:space="preserve" text-anchor="start" x="896.89" y="-1305.2" font-family="Arial" font-size="13.00" fill="#455a70">varchar(100)</text>
+<text xml:space="preserve" text-anchor="start" x="984.59" y="-1306" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="782.45" y="-1275.6" font-family="Arial" font-size="13.00" fill="#20374a">active</text>
+<text xml:space="preserve" text-anchor="start" x="896.89" y="-1275.6" font-family="Arial" font-size="13.00" fill="#455a70">tinyint(1)</text>
+<text xml:space="preserve" text-anchor="start" x="984.59" y="-1276.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="782.45" y="-1246" font-family="Arial" font-size="13.00" fill="#20374a">active_version_id</text>
+<text xml:space="preserve" text-anchor="start" x="896.89" y="-1246" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="984.59" y="-1246.8" font-family="Arial" font-size="11.00" fill="#355f88">FK NULL</text>
+<text xml:space="preserve" text-anchor="start" x="782.45" y="-1216.4" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="896.89" y="-1216.4" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="984.59" y="-1217.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="782.45" y="-1186.8" font-family="Arial" font-size="13.00" fill="#20374a">updated_at</text>
+<text xml:space="preserve" text-anchor="start" x="896.89" y="-1186.8" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="984.59" y="-1187.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t38 -->
+<g id="table&#45;rule_versions" class="node">
+<title>t38</title>
+<polygon fill="#edf6fc" stroke="none" points="1190.73,-754.4 1190.73,-1084.8 1476.54,-1084.8 1476.54,-754.4 1190.73,-754.4"/>
+<polygon fill="none" stroke="#c1d6e7" points="1190.73,-754.4 1190.73,-1084.8 1476.54,-1084.8 1476.54,-754.4 1190.73,-754.4"/>
+<polygon fill="#c6e3f7" stroke="none" points="1191.73,-1047.8 1191.73,-1083.8 1475.54,-1083.8 1475.54,-1047.8 1191.73,-1047.8"/>
+<text xml:space="preserve" text-anchor="start" x="1281.61" y="-1062" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">rule_versions</text>
+<text xml:space="preserve" text-anchor="start" x="1198.73" y="-1030.8" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="1289.35" y="-1030.8" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="1369.1" y="-1030.8" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="1198.73" y="-1001.8" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="1289.35" y="-1001.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="1369.1" y="-1002.6" font-family="Arial" font-size="11.00" fill="#355f88">PK AI</text>
+<text xml:space="preserve" text-anchor="start" x="1198.73" y="-972.2" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="1289.35" y="-972.2" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="1369.1" y="-973" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="1198.73" y="-942.6" font-family="Arial" font-size="13.00" fill="#20374a">ruleset_id</text>
+<text xml:space="preserve" text-anchor="start" x="1289.35" y="-942.6" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="1369.1" y="-943.4" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="1198.73" y="-913" font-family="Arial" font-size="13.00" fill="#20374a">version_no</text>
+<text xml:space="preserve" text-anchor="start" x="1289.35" y="-913" font-family="Arial" font-size="13.00" fill="#455a70">int</text>
+<text xml:space="preserve" text-anchor="start" x="1369.1" y="-913.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="1198.73" y="-883.4" font-family="Arial" font-size="13.00" fill="#20374a">content_json</text>
+<text xml:space="preserve" text-anchor="start" x="1289.35" y="-883.4" font-family="Arial" font-size="13.00" fill="#455a70">json</text>
+<text xml:space="preserve" text-anchor="start" x="1369.1" y="-884.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="1198.73" y="-853.8" font-family="Arial" font-size="13.00" fill="#20374a">published_at</text>
+<text xml:space="preserve" text-anchor="start" x="1289.35" y="-853.8" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="1369.1" y="-854.6" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="1198.73" y="-824.2" font-family="Arial" font-size="13.00" fill="#20374a">published_by</text>
+<text xml:space="preserve" text-anchor="start" x="1289.35" y="-824.2" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="1369.1" y="-825" font-family="Arial" font-size="11.00" fill="#355f88">FK NULL</text>
+<text xml:space="preserve" text-anchor="start" x="1198.73" y="-794.6" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="1289.35" y="-794.6" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="1369.1" y="-795.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="1198.73" y="-765" font-family="Arial" font-size="13.00" fill="#20374a">created_by</text>
+<text xml:space="preserve" text-anchor="start" x="1289.35" y="-765" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="1369.1" y="-765.8" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+</g>
+<!-- t30 -->
+<g id="table&#45;project_resources" class="node">
+<title>t30</title>
+<polygon fill="#edf6fc" stroke="none" points="769.75,-1507.4 769.75,-1837.8 1096.73,-1837.8 1096.73,-1507.4 769.75,-1507.4"/>
+<polygon fill="none" stroke="#c1d6e7" points="769.75,-1507.4 769.75,-1837.8 1096.73,-1837.8 1096.73,-1507.4 769.75,-1507.4"/>
+<polygon fill="#c6e3f7" stroke="none" points="770.75,-1800.8 770.75,-1836.8 1095.73,-1836.8 1095.73,-1800.8 770.75,-1800.8"/>
+<text xml:space="preserve" text-anchor="start" x="863.88" y="-1815" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">project_resources</text>
+<text xml:space="preserve" text-anchor="start" x="777.75" y="-1783.8" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="901.59" y="-1783.8" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="989.28" y="-1783.8" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="777.75" y="-1754.8" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="901.59" y="-1754.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="989.28" y="-1755.6" font-family="Arial" font-size="11.00" fill="#355f88">PK FK AI</text>
+<text xml:space="preserve" text-anchor="start" x="777.75" y="-1725.2" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="901.59" y="-1725.2" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="989.28" y="-1726" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="777.75" y="-1695.6" font-family="Arial" font-size="13.00" fill="#20374a">code</text>
+<text xml:space="preserve" text-anchor="start" x="901.59" y="-1695.6" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="989.28" y="-1696.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="777.75" y="-1666" font-family="Arial" font-size="13.00" fill="#20374a">resource_type</text>
+<text xml:space="preserve" text-anchor="start" x="901.59" y="-1666" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="989.28" y="-1666.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="777.75" y="-1636.4" font-family="Arial" font-size="13.00" fill="#20374a">name</text>
+<text xml:space="preserve" text-anchor="start" x="901.59" y="-1636.4" font-family="Arial" font-size="13.00" fill="#455a70">varchar(100)</text>
+<text xml:space="preserve" text-anchor="start" x="989.28" y="-1637.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="777.75" y="-1606.8" font-family="Arial" font-size="13.00" fill="#20374a">current_revision_id</text>
+<text xml:space="preserve" text-anchor="start" x="901.59" y="-1606.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="989.28" y="-1607.6" font-family="Arial" font-size="11.00" fill="#355f88">FK NULL</text>
+<text xml:space="preserve" text-anchor="start" x="777.75" y="-1577.2" font-family="Arial" font-size="13.00" fill="#20374a">archived_at</text>
+<text xml:space="preserve" text-anchor="start" x="901.59" y="-1577.2" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="989.28" y="-1578" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="777.75" y="-1547.6" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="901.59" y="-1547.6" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="989.28" y="-1548.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="777.75" y="-1518" font-family="Arial" font-size="13.00" fill="#20374a">updated_at</text>
+<text xml:space="preserve" text-anchor="start" x="901.59" y="-1518" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="989.28" y="-1518.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t35 -->
+<g id="table&#45;resource_revisions" class="node">
+<title>t35</title>
+<polygon fill="#edf6fc" stroke="none" points="1191.46,-1359.4 1191.46,-1689.8 1475.81,-1689.8 1475.81,-1359.4 1191.46,-1359.4"/>
+<polygon fill="none" stroke="#c1d6e7" points="1191.46,-1359.4 1191.46,-1689.8 1475.81,-1689.8 1475.81,-1359.4 1191.46,-1359.4"/>
+<polygon fill="#c6e3f7" stroke="none" points="1192.46,-1652.8 1192.46,-1688.8 1474.81,-1688.8 1474.81,-1652.8 1192.46,-1652.8"/>
+<text xml:space="preserve" text-anchor="start" x="1260.26" y="-1667" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">resource_revisions</text>
+<text xml:space="preserve" text-anchor="start" x="1199.46" y="-1635.8" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="1287.9" y="-1635.8" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="1368.36" y="-1635.8" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="1199.46" y="-1606.8" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="1287.9" y="-1606.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="1368.36" y="-1607.6" font-family="Arial" font-size="11.00" fill="#355f88">PK AI</text>
+<text xml:space="preserve" text-anchor="start" x="1199.46" y="-1577.2" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="1287.9" y="-1577.2" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="1368.36" y="-1578" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="1199.46" y="-1547.6" font-family="Arial" font-size="13.00" fill="#20374a">resource_id</text>
+<text xml:space="preserve" text-anchor="start" x="1287.9" y="-1547.6" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="1368.36" y="-1548.4" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="1199.46" y="-1518" font-family="Arial" font-size="13.00" fill="#20374a">revision_no</text>
+<text xml:space="preserve" text-anchor="start" x="1287.9" y="-1518" font-family="Arial" font-size="13.00" fill="#455a70">int</text>
+<text xml:space="preserve" text-anchor="start" x="1368.36" y="-1518.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="1199.46" y="-1488.4" font-family="Arial" font-size="13.00" fill="#20374a">content_html</text>
+<text xml:space="preserve" text-anchor="start" x="1287.9" y="-1488.4" font-family="Arial" font-size="13.00" fill="#455a70">text</text>
+<text xml:space="preserve" text-anchor="start" x="1368.36" y="-1489.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="1199.46" y="-1458.8" font-family="Arial" font-size="13.00" fill="#20374a">visibility</text>
+<text xml:space="preserve" text-anchor="start" x="1287.9" y="-1458.8" font-family="Arial" font-size="13.00" fill="#455a70">varchar(16)</text>
+<text xml:space="preserve" text-anchor="start" x="1368.36" y="-1459.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="1199.46" y="-1429.2" font-family="Arial" font-size="13.00" fill="#20374a">edited_by</text>
+<text xml:space="preserve" text-anchor="start" x="1287.9" y="-1429.2" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="1368.36" y="-1430" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="1199.46" y="-1399.6" font-family="Arial" font-size="13.00" fill="#20374a">published_at</text>
+<text xml:space="preserve" text-anchor="start" x="1287.9" y="-1399.6" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="1368.36" y="-1400.4" font-family="Arial" font-size="11.00" fill="#355f88">NULL</text>
+<text xml:space="preserve" text-anchor="start" x="1199.46" y="-1370" font-family="Arial" font-size="13.00" fill="#20374a">created_at</text>
+<text xml:space="preserve" text-anchor="start" x="1287.9" y="-1370" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="1368.36" y="-1370.8" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t28 -->
+<g id="table&#45;project_counters" class="node">
+<title>t28</title>
+<polygon fill="#edf6fc" stroke="none" points="788.89,-993.2 788.89,-1146 1077.59,-1146 1077.59,-993.2 788.89,-993.2"/>
+<polygon fill="none" stroke="#c1d6e7" points="788.89,-993.2 788.89,-1146 1077.59,-1146 1077.59,-993.2 788.89,-993.2"/>
+<polygon fill="#c6e3f7" stroke="none" points="789.89,-1109 789.89,-1145 1076.59,-1145 1076.59,-1109 789.89,-1109"/>
+<text xml:space="preserve" text-anchor="start" x="868.34" y="-1123.2" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">project_counters</text>
+<text xml:space="preserve" text-anchor="start" x="796.89" y="-1092" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="889.68" y="-1092" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="970.14" y="-1092" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="796.89" y="-1063" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="889.68" y="-1063" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.14" y="-1063.8" font-family="Arial" font-size="11.00" fill="#355f88">PK FK</text>
+<text xml:space="preserve" text-anchor="start" x="796.89" y="-1033.4" font-family="Arial" font-size="13.00" fill="#20374a">counter_code</text>
+<text xml:space="preserve" text-anchor="start" x="889.68" y="-1033.4" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="970.14" y="-1034.2" font-family="Arial" font-size="11.00" fill="#355f88">PK</text>
+<text xml:space="preserve" text-anchor="start" x="796.89" y="-1003.8" font-family="Arial" font-size="13.00" fill="#20374a">next_value</text>
+<text xml:space="preserve" text-anchor="start" x="889.68" y="-1003.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="970.14" y="-1004.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t27 -->
+<g id="table&#45;project_audit" class="node">
+<title>t27</title>
+<polygon fill="#edf6fc" stroke="none" points="793.96,0 793.96,-271.2 1072.52,-271.2 1072.52,0 793.96,0"/>
+<polygon fill="none" stroke="#c1d6e7" points="793.96,0 793.96,-271.2 1072.52,-271.2 1072.52,0 793.96,0"/>
+<polygon fill="#c6e3f7" stroke="none" points="794.96,-234.2 794.96,-270.2 1071.52,-270.2 1071.52,-234.2 794.96,-234.2"/>
+<text xml:space="preserve" text-anchor="start" x="883.01" y="-248.4" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">project_audit</text>
+<text xml:space="preserve" text-anchor="start" x="801.96" y="-217.2" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="884.61" y="-217.2" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="965.08" y="-217.2" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="801.96" y="-188.2" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="884.61" y="-188.2" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="965.08" y="-189" font-family="Arial" font-size="11.00" fill="#355f88">PK AI</text>
+<text xml:space="preserve" text-anchor="start" x="801.96" y="-158.6" font-family="Arial" font-size="13.00" fill="#20374a">project_id</text>
+<text xml:space="preserve" text-anchor="start" x="884.61" y="-158.6" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="965.08" y="-159.4" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="801.96" y="-129" font-family="Arial" font-size="13.00" fill="#20374a">actor_id</text>
+<text xml:space="preserve" text-anchor="start" x="884.61" y="-129" font-family="Arial" font-size="13.00" fill="#455a70">varchar(36)</text>
+<text xml:space="preserve" text-anchor="start" x="965.08" y="-129.8" font-family="Arial" font-size="11.00" fill="#355f88">FK</text>
+<text xml:space="preserve" text-anchor="start" x="801.96" y="-99.4" font-family="Arial" font-size="13.00" fill="#20374a">entity_type</text>
+<text xml:space="preserve" text-anchor="start" x="884.61" y="-99.4" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="965.08" y="-100.2" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="801.96" y="-69.8" font-family="Arial" font-size="13.00" fill="#20374a">entity_id</text>
+<text xml:space="preserve" text-anchor="start" x="884.61" y="-69.8" font-family="Arial" font-size="13.00" fill="#455a70">bigint</text>
+<text xml:space="preserve" text-anchor="start" x="965.08" y="-70.6" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="801.96" y="-40.2" font-family="Arial" font-size="13.00" fill="#20374a">action</text>
+<text xml:space="preserve" text-anchor="start" x="884.61" y="-40.2" font-family="Arial" font-size="13.00" fill="#455a70">varchar(32)</text>
+<text xml:space="preserve" text-anchor="start" x="965.08" y="-41" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+<text xml:space="preserve" text-anchor="start" x="801.96" y="-10.6" font-family="Arial" font-size="13.00" fill="#20374a">occurred_at</text>
+<text xml:space="preserve" text-anchor="start" x="884.61" y="-10.6" font-family="Arial" font-size="13.00" fill="#455a70">datetime(6)</text>
+<text xml:space="preserve" text-anchor="start" x="965.08" y="-11.4" font-family="Arial" font-size="11.00" fill="#355f88"> </text>
+</g>
+<!-- t23 -->
+<g id="ref&#45;identity_users" class="node">
+<title>t23</title>
+<polygon fill="#f3f6f8" stroke="none" points="0,-679.3 0,-777.9 292.35,-777.9 292.35,-679.3 0,-679.3"/>
+<polygon fill="none" stroke="#c1d6e7" points="0,-679.3 0,-777.9 292.35,-777.9 292.35,-679.3 0,-679.3"/>
+<polygon fill="#e1e9ef" stroke="none" points="1,-735.9 1,-776.9 291.35,-776.9 291.35,-735.9 1,-735.9"/>
+<text xml:space="preserve" text-anchor="start" x="91.93" y="-756.5" font-family="Arial" font-weight="bold" font-size="16.00" fill="#123f66">identity_users</text>
+<text xml:space="preserve" text-anchor="start" x="8" y="-745" font-family="Arial" font-size="11.00" fill="#63788c">Tham chiếu ngoài nhóm · chỉ hiện cột khóa liên quan</text>
+<text xml:space="preserve" text-anchor="start" x="8" y="-718.9" font-family="Arial" font-size="10.00" fill="#8299ad">CỘT</text>
+<text xml:space="preserve" text-anchor="start" x="63.92" y="-718.9" font-family="Arial" font-size="10.00" fill="#8299ad">KIỂU MYSQL</text>
+<text xml:space="preserve" text-anchor="start" x="164.65" y="-718.9" font-family="Arial" font-size="10.00" fill="#8299ad">KHÓA / THUỘC TÍNH</text>
+<text xml:space="preserve" text-anchor="start" x="8" y="-689.9" font-family="Arial" font-size="13.00" fill="#20374a">id</text>
+<text xml:space="preserve" text-anchor="start" x="63.92" y="-689.9" font-family="Arial" font-size="13.00" fill="#455a70">varchar(36)</text>
+<text xml:space="preserve" text-anchor="start" x="164.65" y="-690.7" font-family="Arial" font-size="11.00" fill="#355f88">PK</text>
+</g>
+</g>
+<g font-family="Arial" font-size="12" fill="#587087"><text x="32" y="3528">PK: khóa chính · FK: khóa ngoại · UQ: unique một cột · NULL: cho phép rỗng · AI: tự tăng · GEN: cột sinh tự động</text><text x="32" y="3549">Cột không ghi NULL là NOT NULL. Đường nối: một ràng buộc FK (kể cả khóa ghép); chân quạ: nhiều; vòng tròn: có thể không có.</text><text x="32" y="3570">Bảng xanh: đủ cột trong nhóm. Bảng xám: khóa tham chiếu ngoài nhóm. Chỉ vẽ FK đi từ bảng trong nhóm.</text><text x="32" y="3591">Nguồn: tms · Flyway V11 · metadata 00:38 1/10/26 (giờ Việt Nam) · Chi tiết khóa ghép: foreign-keys.csv</text></g></svg>

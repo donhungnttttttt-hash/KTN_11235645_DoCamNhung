@@ -1,12 +1,17 @@
 import React from "react";
 import { Menu } from "lucide-react";
+import { AccountMenu } from "../features/auth/AccountMenu";
+import { ProjectSelector } from "../features/projects/ProjectSelector";
+import "../features/projects/projects.css";
 
-export function Header({ navigate, phase, setPhase, onOpenMenu }) {
+export function Header({ navigate, onOpenMenu, menuOpen = false }) {
   return (
     <header className="app-header">
       <button
         className="app-mobile-menu app-header-icon"
         aria-label="Mở menu dự án"
+        aria-expanded={menuOpen}
+        aria-controls="project-navigation"
         onClick={onOpenMenu}
       >
         <Menu size={21} />
@@ -14,42 +19,16 @@ export function Header({ navigate, phase, setPhase, onOpenMenu }) {
       <button
         className="app-header-brand"
         onClick={() => navigate("/dashboard")}
-        aria-label="Tổng quan Flutter"
+        aria-label="Tổng quan TMS"
       >
         <span>S+</span>
-        <strong>Flutter</strong>
+        <strong>TMS</strong>
       </button>
       <div className="app-header-project">
-        <span>
-          Dự án: <strong>Flutter</strong>
-        </span>
-        <span className="app-header-divider">|</span>
-        <span>
-          Giai đoạn: <strong>{phase}</strong>
-        </span>
+        <ProjectSelector />
       </div>
       <div className="app-header-details">
-        <span className="app-expiry">
-          Chế độ xem · hết hạn 01/09/2027 09:00
-        </span>
-        <div className="app-user-details">
-          <span>SpiderPlus Co., Ltd.</span>
-          <span>|</span>
-          <strong>Nguyen Xuan Nguyen Giap</strong>
-        </div>
-        <span className="app-user-avatar" title="Nguyen Xuan Nguyen Giap">
-          NG
-        </span>
-        <select
-          className="cat-select"
-          aria-label="Giai đoạn kiểm thử"
-          value={phase}
-          onChange={(event) => setPhase(event.target.value)}
-        >
-          <option>Chuẩn_iPad Merge Regression</option>
-          <option>Chuẩn_Android Regression</option>
-          <option>System Test Sprint 14</option>
-        </select>
+        <AccountMenu />
       </div>
     </header>
   );

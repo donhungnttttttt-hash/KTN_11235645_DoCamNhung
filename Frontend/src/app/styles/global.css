@@ -1,35 +1,21 @@
-/* Japanese Enterprise QA System Styling (CATEST / SHIFT Inc Visual Specification) */
+/* TMS: compact tables and a shared teal palette. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Lenis Smooth Scroll Base CSS (Required by Lenis Skill) */
-html.lenis, html.lenis-smooth {
-  height: auto;
-}
-
-html.lenis body {
-  min-height: 100%;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
-}
+/* Use native scrolling so wheel/touch input reaches each page, table and dialog. */
 
 :root {
-  --color-mint: #20B7A6;
-  --color-mint-active: #1EB7A5;
-  --color-mint-hover: #199c8d;
+  --color-sidebar-bg: #147e75;
+  --color-sidebar-text: #ffffff;
+  --color-sidebar-hover: #ffffff1c;
+  --color-sidebar-active-bg: #f0f2f2;
+  --color-sidebar-active-text: #0f766e;
+  --color-mint: #0f766e;
+  --color-mint-active: #0f766e;
+  --color-mint-hover: #115e59;
   --color-mint-light: #EBF8F6;
   --color-bg-main: #FFFFFF;
   --color-bg-sub: #FAFAFA;
@@ -58,9 +44,13 @@ body {
 
 /* Compact Japanese Business Inputs & Dropdowns */
 .cat-input, .cat-select {
-  height: 28px;
-  padding: 0 8px;
-  font-size: 11px;
+  height: auto;
+  min-height: 36px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 8px;
+  font-size: 12px;
+  line-height: 1.5;
   color: #333333;
   background-color: #FFFFFF;
   border: 1px solid #D7DCDC;
@@ -73,11 +63,19 @@ body {
   border-color: var(--color-mint);
 }
 
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid #0f766e;
+  outline-offset: 2px;
+}
+
 /* Compact Buttons */
 .cat-btn {
-  height: 28px;
-  padding: 0 10px;
-  font-size: 11px;
+  height: auto;
+  min-height: 36px;
+  max-width: 100%;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1.5;
   font-weight: 500;
   border-radius: 2px;
   border: 1px solid #D7DCDC;
@@ -88,7 +86,8 @@ body {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   transition: all 0.15s ease;
 }
 
@@ -107,6 +106,18 @@ body {
   background-color: var(--color-mint-hover);
   border-color: var(--color-mint-hover);
 }
+
+.cat-btn:disabled { cursor: not-allowed; opacity: .55; }
+
+@media (max-width: 640px) {
+  .cat-btn, .cat-input, .cat-select { min-height: 44px; font-size: 13px; }
+}
+
+/* Shared form layouts also apply when a picker is embedded outside a form. */
+.ui-field { display: grid; gap: 6px; min-width: 0; }
+.ui-field > input, .ui-field > select, .ui-field > textarea { width: 100%; min-width: 0; max-width: 100%; }
+.ui-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 12px 0; min-width: 0; }
+.ui-actions > button { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 
 /* Dense Data Tables */
 .cat-table {

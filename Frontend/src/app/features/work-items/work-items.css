@@ -161,11 +161,11 @@
 }
 .work-items .d-button.primary {
   color: white;
-  background: var(--d-accent);
-  border-color: var(--d-accent);
+  background: var(--color-mint, #0f766e);
+  border-color: var(--color-mint, #0f766e);
 }
 .work-items .d-button.primary:hover {
-  background: #158469;
+  background: var(--color-mint-hover, #115e59);
 }
 .work-items .d-button.rounded {
   border-radius: 20px;

@@ -1,0 +1,10 @@
+production:
+  adapter: mysql2
+  host: database
+  port: 3306
+  database: redmine
+  username: redmine
+  password: <%= ENV.fetch('REDMINE_DB_PASSWORD').to_json %>
+  encoding: utf8mb4
+  sslverify: true
+  sslca: /opt/tms-ca/mysql-ca.pem

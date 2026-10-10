@@ -1,0 +1,22 @@
+{
+  "version": "22",
+  "oldTablesPreserved": 65,
+  "oldRowsPreserved": 5303,
+  "workbookHashesUnchanged": 8,
+  "added": {
+    "builds": 6,
+    "categories": 6,
+    "cycle_configurations": 4,
+    "device_allocations": 24,
+    "device_assets": 120,
+    "devices": 4,
+    "environments": 3,
+    "identity_audit": 100,
+    "identity_users": 100,
+    "milestones": 3,
+    "project_audit": 247,
+    "project_memberships": 100,
+    "projects": 3,
+    "test_cycles": 3
+  }
+}

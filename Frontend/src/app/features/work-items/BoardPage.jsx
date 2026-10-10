@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth } from "../auth/AuthProvider";
 import {
   ListFilter,
   Plus,
@@ -14,7 +15,7 @@ import {
   TypeBadge,
   Modal,
 } from "./components";
-import { statuses, members, categories, milestones, types } from "./data";
+import { statuses as defaultStatuses, members, categories, milestones, types } from "./data";
 import { emptyFilters, matchesIssueFilters } from "./issueFilters";
 
 export default function BoardPage({
@@ -26,7 +27,12 @@ export default function BoardPage({
   sharedFilters,
   onFiltersChange,
   embedded = false,
+  hideControls = false,
+  statuses = defaultStatuses,
+  canTriage = false,
+  onMove,
 }) {
+  const { user } = useAuth();
   const [showFilters, setShowFilters] = useState(true);
   const [filters, setFilters] = useState({
     type: "",
@@ -51,12 +57,21 @@ export default function BoardPage({
   const isFiltered = sharedFilters
     ? Object.values(sharedFilters).some((value) => value.length > 0)
     : Object.values(filters).some(Boolean);
+  const isQa = issue => issue?.typeCode === "QA" || issue?.type === "QA";
+  const canMove = issue => canTriage === true && !!issue && !isQa(issue);
+  const currentMenu = menu && issues.find(issue => issue.id === menu.id);
   function changeFilter(key, value) {
     if (onFiltersChange)
       onFiltersChange((prev) => ({ ...prev, [key]: value ? [value] : [] }));
     else setFilters((prev) => ({ ...prev, [key]: value }));
   }
   function moveIssue(id, status) {
+    if (!canMove(issues.find(issue => issue.id === id)) || !statuses.some(s => s.id === status && !s.terminal)) return;
+    if (onMove) {
+      setDragged(null); setDropTarget(null); setMenu(null);
+      onMove(id, status);
+      return;
+    }
     updateIssues((prev) =>
       prev.map((i) => (i.id === id ? { ...i, status } : i)),
     );
@@ -69,7 +84,7 @@ export default function BoardPage({
   }
   return (
     <div className="d-board-page">
-      <div className="d-board-heading">
+      {!hideControls && <div className="d-board-heading">
         {!embedded && <h1>Bảng công việc</h1>}
         <Button
           rounded
@@ -83,14 +98,14 @@ export default function BoardPage({
         <Button rounded icon={ListFilter} onClick={() => setSaveOpen(true)}>
           Lưu bộ lọc
         </Button>
-      </div>
-      {showFilters && (
+      </div>}
+      {!hideControls && showFilters && (
         <div className="d-board-filters">
           {[
             ["type", "Loại", types],
             ["category", "Danh mục", categories],
             ["milestone", "Mốc phát hành", milestones],
-            ["assignee", "Người phụ trách", members.map((m) => m.name)],
+            ["assignee", "Người phụ trách", [...new Set([...members.map((m) => m.name), user.displayName])]],
           ].map(([key, label, options]) => (
             <FieldSelect
               key={key}
@@ -122,7 +137,7 @@ export default function BoardPage({
             className="outlined d-self-filter"
             icon={UserRound}
             label="Chỉ hiển thị công việc của tôi"
-            onClick={() => changeFilter("assignee", "Đỗ Cẩm Nhung")}
+            onClick={() => changeFilter("assignee", user.displayName)}
           />
           {isFiltered && (
             <button
@@ -153,6 +168,7 @@ export default function BoardPage({
                 aria-label={`Cột ${status.label}`}
                 className={`d-kanban-column ${dropTarget === status.id ? "drop-target" : ""}`}
                 onDragOver={(e) => {
+                  if (!canMove(issues.find(issue => issue.id === dragged)) || status.terminal) return;
                   e.preventDefault();
                   e.dataTransfer.dropEffect = "move";
                   setDropTarget(status.id);
@@ -163,6 +179,7 @@ export default function BoardPage({
                 }}
                 onDrop={(e) => {
                   e.preventDefault();
+                  if (!canTriage || status.terminal) return;
                   const id = e.dataTransfer.getData("text/plain");
                   if (issues.some((i) => i.id === id)) moveIssue(id, status.id);
                 }}
@@ -220,8 +237,9 @@ export default function BoardPage({
                     cards.map((issue) => (
                       <article
                         key={issue.id}
-                        draggable
+                        draggable={canMove(issue)}
                         onDragStart={(e) => {
+                          if (!canMove(issue)) { e.preventDefault(); return; }
                           e.dataTransfer.setData("text/plain", issue.id);
                           e.dataTransfer.effectAllowed = "move";
                           setDragged(issue.id);
@@ -243,14 +261,14 @@ export default function BoardPage({
                             {issue.id}
                           </button>
                           <span className="d-spacer" />
-                          <IconButton
+                          {canMove(issue) && <IconButton
                             icon={MoreHorizontal}
                             label={`Tùy chọn ${issue.id}`}
                             onClick={() => {
                               setMenu(issue);
                               setMoveTo(issue.status);
                             }}
-                          />
+                          />}
                         </div>
                         <button
                           className="d-card-title"
@@ -258,6 +276,7 @@ export default function BoardPage({
                         >
                           {issue.title}
                         </button>
+                        {isQa(issue) && <span className="d-status-text">{issue.statusLabel || status.label}</span>}
                         <Avatar name={issue.assignee} size={25} />
                       </article>
                     ))
@@ -268,12 +287,12 @@ export default function BoardPage({
           })}
         </div>
       </div>
-      {menu && (
+      {canMove(currentMenu) && (
         <Modal title={menu.id} onClose={() => setMenu(null)}>
           <p className="d-dialog-issue-title">{menu.title}</p>
           <FieldSelect
             label="Chuyển sang trạng thái"
-            options={statuses}
+            options={statuses.filter(status => !status.terminal)}
             value={moveTo}
             onChange={setMoveTo}
             empty={null}
@@ -308,7 +327,7 @@ export default function BoardPage({
               disabled={!name.trim()}
               onClick={() => {
                 sessionStorage.setItem(
-                  "design-board-filter",
+                  `work-board-filter:${user.id}`,
                   JSON.stringify({ name, filters: sharedFilters ?? filters }),
                 );
                 setSaveOpen(false);

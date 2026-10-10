@@ -1,0 +1,83 @@
+import React from 'react';
+import { beforeEach, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { NewWorkItemForm } from './WorkItemForm';
+import { TransitionDialog } from './TransitionDialog';
+import { workItemsApi } from '../../services/api/workItems';
+import { testCasesApi } from '../../services/api/testCases';
+vi.mock('../../services/api/workItems', () => ({workItemsApi:{create:vi.fn(),source:vi.fn(),transition:vi.fn(),get:vi.fn(),batch:vi.fn()}}));
+vi.mock('../../services/api/testCases', () => ({testCasesApi:{listCases:vi.fn()}}));
+const catalogs={builds:[{id:3,versionLabel:'1.0',platform:'WEB'}],environments:[{id:4,name:'QA'}],devices:[{id:5,name:'Chrome'}]};
+beforeEach(()=>{vi.resetAllMocks();testCasesApi.listCases.mockResolvedValue({items:[],totalPages:0});});
+it('preserves draft and idempotency key across a failed submission, navigates only on success',async()=>{
+  const saved=vi.fn();workItemsApi.create.mockRejectedValueOnce(new Error('Mất kết nối')).mockResolvedValueOnce({id:9,key:'DEMO-9'});
+  render(<NewWorkItemForm projectId={1} catalogs={catalogs} canTriage onCreated={saved}/>);
+  fireEvent.change(screen.getByLabelText('Loại công việc'),{target:{value:'TASK'}});
+  fireEvent.change(screen.getByLabelText('Tiêu đề'),{target:{value:'Kiểm tra phát hành'}});
+  fireEvent.click(screen.getByRole('button',{name:'Tạo công việc'}));
+  await screen.findByText('Mất kết nối');expect(saved).not.toHaveBeenCalled();
+  expect(screen.getByLabelText('Tiêu đề')).toHaveValue('Kiểm tra phát hành');
+  fireEvent.click(screen.getByRole('button',{name:'Tạo công việc'}));
+  await waitFor(()=>expect(saved).toHaveBeenCalledWith({id:9,key:'DEMO-9'}));
+  expect(workItemsApi.create.mock.calls[0][1].requestKey).toBe(workItemsApi.create.mock.calls[1][1].requestKey);
+});
+it('uses the exact NG attempt context and keeps its catalogs locked',async()=>{
+  workItemsApi.source.mockResolvedValue({attemptId:8,revisionId:7,buildId:3,environmentId:4,deviceId:5,title:'Đăng nhập',steps:'Nhập tài khoản',expectedResult:'Vào trang chủ',actualResult:'Màn hình trắng'});
+  workItemsApi.create.mockResolvedValue({id:9,key:'DEMO-9'});
+  render(<NewWorkItemForm projectId={1} catalogs={catalogs} attemptId={8} onCreated={()=>{}}/>);
+  await screen.findByDisplayValue('Màn hình trắng');
+  expect(screen.getByLabelText('Build phát sinh')).toBeDisabled();
+  fireEvent.click(screen.getByRole('button',{name:'Tạo công việc'}));
+  await waitFor(()=>expect(workItemsApi.create).toHaveBeenCalledWith(1,expect.objectContaining({attemptId:8,revisionId:7,buildId:3,environmentId:4,deviceId:5})));
+});
+it('keeps transition reason after 409 and requires explicit refresh before retrying the current version',async()=>{
+  const saved=vi.fn();
+  workItemsApi.transition.mockRejectedValueOnce(Object.assign(new Error('Dữ liệu đã thay đổi'),{status:409})).mockResolvedValueOnce({id:9});
+  workItemsApi.get.mockResolvedValue({id:9,key:'DEMO-9',type:'BUG',status:'progress',version:5});
+  render(<React.StrictMode><TransitionDialog projectId={1} items={[{id:'DEMO-9',serverId:9,typeCode:'BUG',status:'open',version:0}]} status="ready" catalogs={catalogs} onClose={()=>{}} onSaved={saved}/></React.StrictMode>);
+  fireEvent.change(screen.getByLabelText('Lý do chuyển trạng thái'),{target:{value:'Đã đủ thông tin'}});
+  fireEvent.click(screen.getByRole('button',{name:'Xác nhận chuyển'}));
+  await screen.findByText('Dữ liệu đã thay đổi');expect(saved).not.toHaveBeenCalled();expect(screen.getByRole('button',{name:'Xác nhận chuyển'})).toBeDisabled();
+  fireEvent.click(screen.getByRole('button',{name:'Tải bản hiện hành, giữ lý do'}));
+  await screen.findByText('Đã tải lại. Đối chiếu trạng thái rồi xác nhận lưu lại.');
+  expect(screen.getByLabelText('Lý do chuyển trạng thái')).toHaveValue('Đã đủ thông tin');
+  fireEvent.click(screen.getByRole('button',{name:'Xác nhận chuyển'}));
+  await waitFor(()=>expect(saved).toHaveBeenCalledOnce());
+  expect(workItemsApi.transition).toHaveBeenLastCalledWith(1,9,{status:'ready',reason:'Đã đủ thông tin',fixedBuildId:null,expectedVersion:5});
+});
+it('does not report a successful batch when one item is rejected',async()=>{
+  const saved=vi.fn();workItemsApi.batch.mockRejectedValue(new Error('Một công việc không hợp lệ'));
+  render(<TransitionDialog projectId={1} items={[{id:'D-1',serverId:1,version:1},{id:'D-2',serverId:2,version:3}]} status="progress" catalogs={catalogs} onClose={()=>{}} onSaved={saved}/>);
+  fireEvent.change(screen.getByLabelText('Lý do chuyển trạng thái'),{target:{value:'Bắt đầu'}});fireEvent.click(screen.getByRole('button',{name:'Xác nhận chuyển'}));
+  await screen.findByText('Một công việc không hợp lệ');expect(saved).not.toHaveBeenCalled();
+  expect(workItemsApi.batch).toHaveBeenCalledWith(1,expect.objectContaining({items:[{id:1,expectedVersion:1},{id:2,expectedVersion:3}]}));
+});
+it('requires a fixed build for resolved bugs and retains retry after a failed refresh',async()=>{
+  const saved=vi.fn();workItemsApi.transition.mockRejectedValueOnce(Object.assign(new Error('Xung đột'),{status:409})).mockResolvedValueOnce({id:9});
+  workItemsApi.get.mockRejectedValueOnce(new Error('Chưa tải được')).mockResolvedValueOnce({id:9,key:'DEMO-9',type:'BUG',status:'ready',version:2});
+  render(<TransitionDialog projectId={1} items={[{id:'DEMO-9',serverId:9,typeCode:'BUG',status:'progress',version:0}]} status="resolved" catalogs={catalogs} onClose={()=>{}} onSaved={saved}/>);
+  expect(screen.getByLabelText('Build đã sửa')).toBeRequired();expect(screen.getByText('Đã xử lý vẫn chờ Tester kiểm thử lại.')).toBeVisible();
+  fireEvent.change(screen.getByLabelText('Build đã sửa'),{target:{value:'3'}});fireEvent.change(screen.getByLabelText('Lý do chuyển trạng thái'),{target:{value:'Dev đã báo sửa'}});fireEvent.click(screen.getByRole('button',{name:'Xác nhận chuyển'}));
+  await screen.findByText('Xung đột');fireEvent.click(screen.getByRole('button',{name:'Tải bản hiện hành, giữ lý do'}));await screen.findByText('Chưa tải được');
+  expect(screen.getByRole('button',{name:'Xác nhận chuyển'})).toBeDisabled();fireEvent.click(screen.getByRole('button',{name:'Tải bản hiện hành, giữ lý do'}));await screen.findByText('Đã tải lại. Đối chiếu trạng thái rồi xác nhận lưu lại.');
+  fireEvent.click(screen.getByRole('button',{name:'Xác nhận chuyển'}));await waitFor(()=>expect(saved).toHaveBeenCalledOnce());
+  expect(workItemsApi.transition).toHaveBeenLastCalledWith(1,9,expect.objectContaining({fixedBuildId:3,expectedVersion:2,status:'resolved'}));
+});
+it('lets PM supply a standalone reason, or choose an actual revision from paged case search',async()=>{
+  testCasesApi.listCases.mockRejectedValueOnce(new Error('Lỗi tải case')).mockResolvedValue({items:[{currentRevisionId:8,caseNo:'TC-8',titleVi:'Đăng nhập'}],totalPages:2});
+  workItemsApi.create.mockResolvedValue({id:9});render(<NewWorkItemForm projectId={1} catalogs={catalogs} canTriage onCreated={()=>{}}/>);
+  await screen.findByText('Lỗi tải case');fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));await screen.findByRole('option',{name:'TC-8 · Đăng nhập'});
+  fireEvent.change(screen.getByLabelText('Lý do chưa có test case'),{target:{value:'Khảo sát nội bộ'}});
+  for(const [label,value] of [['Tiêu đề','Lỗi mới'],['Mô tả','Mô tả mới'],['Các bước tái hiện','Đăng nhập'],['Kết quả mong đợi','Trang chủ'],['Kết quả thực tế','Trắng'],['Build phát sinh','3'],['Môi trường','4'],['Thiết bị','5']])fireEvent.change(screen.getByLabelText(label),{target:{value}});
+  fireEvent.click(screen.getByRole('button',{name:'Tạo công việc'}));await waitFor(()=>expect(workItemsApi.create).toHaveBeenCalledWith(1,expect.objectContaining({standaloneReason:'Khảo sát nội bộ',revisionId:null})));
+  fireEvent.click(screen.getByRole('button',{name:'Case tiếp'}));await waitFor(()=>expect(testCasesApi.listCases).toHaveBeenLastCalledWith(1,null,{page:1,keyword:''}));
+  fireEvent.click(screen.getByRole('button',{name:'Case trước'}));fireEvent.change(screen.getByLabelText('Tìm test case'),{target:{value:'Đăng nhập'}});
+  fireEvent.change(screen.getByLabelText('Test case liên quan'),{target:{value:'8'}});expect(screen.queryByLabelText('Lý do chưa có test case')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button',{name:'Tạo công việc'}));await waitFor(()=>expect(workItemsApi.create).toHaveBeenLastCalledWith(1,expect.objectContaining({revisionId:8,buildId:3,environmentId:4,deviceId:5})));
+});
+it('allows retrying NG context lookup without creating a partial bug',async()=>{
+  workItemsApi.source.mockRejectedValueOnce(new Error('Không lấy được lần chạy')).mockResolvedValueOnce({attemptId:8,revisionId:7,buildId:3,environmentId:4,deviceId:5,title:'Đăng nhập',steps:'Nhập tài khoản',expectedResult:'Trang chủ',actualResult:'Trắng'});
+  render(<NewWorkItemForm projectId={1} catalogs={catalogs} attemptId={8} onCreated={()=>{}}/>);
+  await screen.findByText('Không lấy được lần chạy');expect(screen.queryByRole('button',{name:'Tạo công việc'})).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));await screen.findByDisplayValue('Trắng');expect(workItemsApi.create).not.toHaveBeenCalled();
+});

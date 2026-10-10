@@ -1,0 +1,322 @@
+/* Project Selector */
+.project-selector-container {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.project-selector-btn {
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-color, #333);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.project-selector-btn > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.project-selector-btn > svg { flex-shrink: 0; }
+
+.project-selector-btn:hover {
+  background-color: var(--hover-bg, #f0f0f0);
+}
+
+.project-selector-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 998;
+}
+
+.project-selector-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 200px;
+  width: 340px;
+  max-width: calc(100vw - 24px);
+  background: white;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 999;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.project-selector-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: min(300px, calc(100dvh - 130px));
+  overflow-y: auto;
+}
+
+.project-selector-list button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border-color, #f0f0f0);
+  overflow-wrap: anywhere;
+}
+
+.project-selector-list button:hover {
+  background: var(--hover-bg, #f9f9f9);
+}
+
+.project-selector-list button.active {
+  font-weight: bold;
+  color: var(--primary-color, #0056b3);
+  background: var(--active-bg, #e6f0fa);
+}
+
+.project-selector-footer {
+  padding: 8px;
+  border-top: 1px solid var(--border-color, #eee);
+  background: #fafafa;
+}
+
+.project-selector-create-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--primary-color, #0056b3);
+  cursor: pointer;
+  font-weight: 500;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.project-selector-create-btn:hover {
+  background: rgba(0, 86, 179, 0.1);
+}
+
+.project-selector-empty {
+  padding: 16px;
+  text-align: center;
+  color: #888;
+}
+
+/* Dialog Overlay */
+.dialog-overlay {
+  padding: 12px;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog-content {
+  background: white;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.dialog-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+}
+
+.dialog-form {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: var(--color-mint, #0f766e);
+  color: white;
+}
+
+.btn-secondary {
+  background: white;
+  border-color: #ddd;
+  color: #333;
+}
+
+/* Settings Page */
+.page-container {
+  padding: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.settings-project-name { font-size: 12px; font-weight: 400; color: #64748b; }
+.tabs {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  color: #666;
+}
+
+.tab-btn.active {
+  color: var(--primary-color, #0056b3);
+  border-bottom-color: var(--primary-color, #0056b3);
+}
+
+.settings-form {
+  max-width: 600px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.data-table th {
+  font-weight: 600;
+  background: #f9f9f9;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 4px;
+}
+
+.text-danger {
+  color: #dc3545;
+}
+
+.message {
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.message.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.message.error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.archived-row {
+  opacity: 0.6;
+  background: #f9f9f9;
+}
+
+/* Settings keep the dashboard typography and teal palette. */
+.project-settings-page, .catalog-page { max-width: 1200px; width: 100%; color: #16334a; font-size: 13px; }
+.project-settings-page h1, .catalog-page h1 { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+.project-settings-page h2, .catalog-page h2 { font-size: 15px; font-weight: 600; margin: 12px 0; }
+.project-settings-page h3, .catalog-page h3 { font-size: 14px; font-weight: 600; margin: 10px 0; }
+.project-settings-page .tabs, .catalog-page .tabs { gap: 4px; overflow-x: auto; }
+.project-settings-page .tab-btn, .catalog-page .tab-btn { white-space: nowrap; font-size: 13px; }
+.project-settings-page .tab-btn.active, .catalog-page .tab-btn.active { color: #078d84; border-color: #13b7a6; }
+.catalog-page .btn-primary { background: var(--color-mint, #0f766e); }
+.project-settings-page .cat-btn.primary, .catalog-page .cat-btn.primary { background: var(--color-mint, #0f766e); border-color: var(--color-mint, #0f766e); color: white; }
+.project-settings-page button:disabled, .catalog-page button:disabled { cursor: not-allowed; opacity: .55; }
+.settings-heading, .settings-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.settings-heading { justify-content: space-between; }
+.settings-hint { font-size: 12px; color: #64748b; margin: 10px 0; }
+.settings-editor { background: white; border: 1px solid #dbe5ed; border-radius: 4px; padding: 18px; margin: 16px 0; }
+.settings-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 20px; }
+.settings-table-scroll { overflow-x: auto; }
+.settings-table-scroll table { min-width: 520px; }
+.settings-editor input, .settings-editor textarea, .settings-editor select, .settings-form input { display: block; width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 3px; background: white; font: inherit; }
+.settings-editor .form-group, .settings-form .form-group { display: block; margin-bottom: 14px; }
+.settings-editor input:focus-visible, .settings-editor textarea:focus-visible, .settings-editor select:focus-visible, .project-settings-page button:focus-visible, .catalog-page button:focus-visible { outline: 2px solid #0d9488; outline-offset: 2px; }
+.handbook-layout { display: grid; grid-template-columns: minmax(160px,220px) minmax(0,1fr); gap: 20px; margin-top: 16px; }
+.handbook-list { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.handbook-list button { text-align: left; white-space: normal; }
+.handbook-detail { min-width: 0; background: white; border: 1px solid #dbe5ed; padding: 18px; }
+.handbook-text { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.7; margin: 12px 0; }
+.handbook-revision { border-top: 1px solid #dbe5ed; padding: 12px 0; overflow-wrap: anywhere; }
+@media(max-width: 640px) { .project-settings-page,.catalog-page { padding: 16px; } .settings-fields,.handbook-layout { grid-template-columns: 1fr; } .settings-heading { align-items: flex-start; } }
+@media(max-width: 640px) {
+  .project-selector-menu { position: fixed; top: var(--header-height, 48px); left: 12px; right: 12px; width: auto; }
+  .dialog-actions { flex-wrap: wrap; }
+  .dialog-close { min-height: 40px; min-width: 40px; display: grid; place-items: center; }
+}

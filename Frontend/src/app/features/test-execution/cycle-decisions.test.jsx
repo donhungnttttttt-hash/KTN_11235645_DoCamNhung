@@ -1,0 +1,94 @@
+import React from 'react';
+import { beforeEach, expect, it, vi } from 'vitest';
+import { act, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { CycleDecisionDialog, DecisionHistory } from './CycleDecisionDialog';
+import { executionApi } from '../../services/api/execution';
+
+vi.mock('../../services/api/execution', () => ({ executionApi: { decideCycle: vi.fn(), decideScope: vi.fn(), cycle: vi.fn(), run: vi.fn(), cycleDecisions: vi.fn(), scopeDecisions: vi.fn() } }));
+beforeEach(() => vi.resetAllMocks());
+it('preserves close reasons across failure and requires explicit reconciliation on conflict', async () => {
+  const saved = vi.fn(), user = userEvent.setup();
+  executionApi.decideCycle.mockRejectedValueOnce(Object.assign(new Error('Dữ liệu đã thay đổi'), { status: 409 })).mockResolvedValueOnce({});
+  executionApi.cycle.mockResolvedValue({ id: 4, statusCode: 'ACTIVE', version: 8 });
+  render(<CycleDecisionDialog projectId={1} cycle={{ id: 4, statusCode: 'ACTIVE', version: 6 }} onClose={vi.fn()} onSaved={saved} />);
+  await user.type(screen.getByLabelText('Lý do quyết định'), 'Chốt kết quả kiểm thử');
+  await user.type(screen.getByLabelText('Ghi nhận tồn đọng'), 'Còn bug đang xử lý');
+  await user.click(screen.getByRole('button', { name: 'Xác nhận chốt đợt' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent('Dữ liệu đã thay đổi');
+  expect(saved).not.toHaveBeenCalled();
+  expect(screen.getByRole('button', { name: 'Xác nhận chốt đợt' })).toBeDisabled();
+  await user.click(screen.getByRole('button', { name: 'Tải bản hiện hành, giữ bản nháp' }));
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Xác nhận chốt đợt' })).toBeEnabled());
+  expect(screen.getByLabelText('Ghi nhận tồn đọng')).toHaveValue('Còn bug đang xử lý');
+  await user.click(screen.getByRole('button', { name: 'Xác nhận chốt đợt' }));
+  await waitFor(() => expect(saved).toHaveBeenCalledOnce());
+  expect(executionApi.decideCycle).toHaveBeenLastCalledWith(1, 4, { action: 'CLOSE', reason: 'Chốt kết quả kiểm thử', outstandingReason: 'Còn bug đang xử lý', expectedVersion: 8 });
+});
+it('records NA as a scope decision and never sends an execution verdict', async () => {
+  const user = userEvent.setup(), saved = vi.fn();
+  executionApi.decideScope.mockResolvedValue({ excluded: true });
+  render(<CycleDecisionDialog projectId={2} run={{ id: 9, caseNo: 'TC-9', excluded: false, version: 3 }} onClose={vi.fn()} onSaved={saved} />);
+  await user.type(screen.getByLabelText('Lý do quyết định'), 'Cấu hình không áp dụng');
+  await user.click(screen.getByRole('button', { name: 'Xác nhận NA' }));
+  await waitFor(() => expect(saved).toHaveBeenCalledOnce());
+  expect(executionApi.decideScope).toHaveBeenCalledWith(2, 9, { excluded: true, reason: 'Cấu hình không áp dụng', expectedVersion: 3 });
+});
+it('restores excluded scope, keeps draft after a refresh failure and does not silently toggle a stale decision', async () => {
+  const user = userEvent.setup();
+  executionApi.decideScope.mockRejectedValue(Object.assign(new Error('Phiên bản cũ'), { status: 409 }));
+  executionApi.run.mockRejectedValueOnce(new Error('Mất kết nối')).mockResolvedValueOnce({ id: 9, excluded: false, version: 6 });
+  render(<CycleDecisionDialog projectId={2} run={{ id: 9, excluded: true, version: 3 }} onClose={vi.fn()} onSaved={vi.fn()} />);
+  await user.type(screen.getByLabelText('Lý do quyết định'), 'Đưa lại vào phạm vi');
+  await user.click(screen.getByRole('button', { name: 'Đưa lại vào phạm vi' }));
+  expect(executionApi.decideScope).toHaveBeenCalledWith(2, 9, { excluded: false, reason: 'Đưa lại vào phạm vi', expectedVersion: 3 });
+  await user.click(await screen.findByRole('button', { name: 'Tải bản hiện hành, giữ bản nháp' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent('Mất kết nối');
+  expect(screen.getByRole('button', { name: 'Đưa lại vào phạm vi' })).toBeDisabled();
+  await user.click(screen.getByRole('button', { name: 'Tải bản hiện hành, giữ bản nháp' }));
+  expect(await screen.findByRole('status')).toHaveTextContent('quyết định này không còn áp dụng');
+  expect(screen.getByRole('button', { name: 'Đưa lại vào phạm vi' })).toBeDisabled();
+});
+it('reopens a closed cycle and retries a transient error without discarding its reason', async () => {
+  const user = userEvent.setup(), close = vi.fn();
+  executionApi.decideCycle.mockRejectedValueOnce(new Error('Kết nối lỗi')).mockResolvedValueOnce({});
+  render(<CycleDecisionDialog projectId={1} cycle={{ id: 4, statusCode: 'CLOSED', version: 9 }} onClose={close} onSaved={vi.fn()} />);
+  expect(screen.queryByLabelText('Ghi nhận tồn đọng')).not.toBeInTheDocument();
+  await user.type(screen.getByLabelText('Lý do quyết định'), 'Xác minh build tiếp theo');
+  await user.click(screen.getByRole('button', { name: 'Xác nhận mở lại đợt' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent('Kết nối lỗi');
+  await user.click(screen.getByRole('button', { name: 'Xác nhận mở lại đợt' }));
+  expect(executionApi.decideCycle).toHaveBeenLastCalledWith(1, 4, { action: 'REOPEN', reason: 'Xác minh build tiếp theo', outstandingReason: '', expectedVersion: 9 });
+  await user.click(screen.getByRole('button', { name: 'Đóng' }));expect(close).toHaveBeenCalledOnce();
+});
+it('loads paged closure decisions on demand and can recover from a history error', async () => {
+  const user = userEvent.setup();
+  executionApi.cycleDecisions.mockRejectedValueOnce(new Error('Không tải được lịch sử')).mockResolvedValueOnce({ items: [{ id: 1, action: 'CLOSE', actor: 'PM An', reason: 'Chốt bản đầu', outstandingReason: 'Bug B-1', decidedAt: '2026-09-29T01:00:00Z' }], page: 0, totalPages: 2, totalItems: 51 }).mockResolvedValueOnce({ items: [{ id: 2, action: 'REOPEN', actor: 'PM An', reason: 'Kiểm tra thêm' }], page: 1, totalPages: 2, totalItems: 51 });
+  render(<DecisionHistory projectId={1} id={4} />);
+  expect(executionApi.cycleDecisions).not.toHaveBeenCalled();
+  await user.click(screen.getByRole('button', { name: 'Lịch sử chốt / mở đợt' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được lịch sử');
+  await user.click(screen.getByRole('button', { name: 'Thử lại' }));
+  expect(await screen.findByText('Tồn đọng: Bug B-1')).toBeVisible();
+  await user.click(screen.getByRole('button', { name: 'Tiếp' }));
+  expect(await screen.findByText('Kiểm tra thêm')).toBeVisible();
+  await user.click(screen.getByRole('button', { name: 'Lịch sử chốt / mở đợt' }));
+  expect(screen.queryByText('Kiểm tra thêm')).not.toBeInTheDocument();
+});
+it('ignores stale scope history after switching run and shows the empty state', async () => {
+  let resolveOld;const user = userEvent.setup();
+  executionApi.scopeDecisions.mockReturnValueOnce(new Promise(resolve => { resolveOld = resolve; })).mockResolvedValueOnce({ items: [], page: 0, totalPages: 0, totalItems: 0 });
+  const view = render(<DecisionHistory projectId={1} id={1} scope />);
+  await user.click(screen.getByRole('button', { name: 'Lịch sử phạm vi NA' }));
+  expect(screen.getByRole('status')).toHaveTextContent('Đang tải');
+  view.rerender(<DecisionHistory projectId={1} id={2} scope />);
+  expect(await screen.findByText('Chưa có quyết định.')).toBeVisible();
+  await act(async () => resolveOld({ items: [{ id: 1, excluded: true, reason: 'Quyết định của run cũ' }], totalItems: 1 }));
+  expect(screen.queryByText('Quyết định của run cũ')).not.toBeInTheDocument();
+});
+it('renders NA and restoration history with the project timezone', async () => {
+  executionApi.scopeDecisions.mockResolvedValue({ items: [{ id: 2, excluded: false, reason: 'Khôi phục' }, { id: 1, excluded: true, reason: 'Không áp dụng' }], totalItems: 2, totalPages: 1, page: 0 });
+  render(<DecisionHistory projectId={1} id={1} scope timeZone="Asia/Ho_Chi_Minh" />);
+  await userEvent.click(screen.getByRole('button', { name: 'Lịch sử phạm vi NA' }));
+  expect(await screen.findByText('Áp dụng')).toBeVisible();expect(screen.getByText('NA')).toBeVisible();
+});

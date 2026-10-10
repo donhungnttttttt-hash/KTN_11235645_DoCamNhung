@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { SlidersHorizontal, MessageSquare, Star, Rss } from "lucide-react";
+import { SlidersHorizontal, MessageSquare, Rss } from "lucide-react";
 import { Avatar, Button, IconButton, Modal } from "./components";
 import { statuses, milestones } from "./data";
-export default function HomePage({ issues, activities, navigate, notify }) {
+export default function HomePage({ issues, activities, navigate, notify, statusCounts, milestoneCounts, activitySource='all' }) {
   const [expanded, setExpanded] = useState([]);
-  const [stars, setStars] = useState([]);
   const [settings, setSettings] = useState(false);
   const [showUpdates, setShowUpdates] = useState(true);
   const [showComments, setShowComments] = useState(true);
@@ -12,13 +11,14 @@ export default function HomePage({ issues, activities, navigate, notify }) {
   const ActivityHeading = "h2";
   const summary = statuses.map((status) => ({
     ...status,
-    count: issues.filter((issue) => issue.status === status.id).length,
+    count: statusCounts ? Number(statusCounts.find(row => row.status === status.id)?.count || 0) : issues.filter((issue) => issue.status === status.id).length,
   }));
-  const completed = issues.filter((issue) => issue.status === "closed").length;
-  const completion = issues.length
-    ? Math.round((completed / issues.length) * 100)
+  const completed = summary.find(status => status.id === 'closed').count;
+  const total = summary.reduce((sum, status) => sum + status.count, 0);
+  const completion = total
+    ? Math.round((completed / total) * 100)
     : 0;
-  const milestoneSummary = [
+  const milestoneSummary = milestoneCounts ? milestoneCounts.map(row => ({...row,percent:row.total?Math.round(Number(row.done)/Number(row.total)*100):0})) : [
     ...new Set([
       ...milestones,
       ...issues.map((issue) => issue.milestone).filter(Boolean),
@@ -41,10 +41,10 @@ export default function HomePage({ issues, activities, navigate, notify }) {
       <section className="d-home-main">
         <div className="d-section-heading">
           <ActivityHeading>
-            {"Cập nhật gần đây"}
+            {"Công việc tạo gần đây"}
             <Rss size={15} />
           </ActivityHeading>
-          <div>
+          {activitySource!=='created' && <div>
             <span className="d-muted">
               Bộ lọc: {showUpdates && showComments ? "Tất cả" : "Tùy chỉnh"}
             </span>
@@ -55,16 +55,19 @@ export default function HomePage({ issues, activities, navigate, notify }) {
             >
               Hiển thị
             </Button>
-          </div>
+          </div>}
         </div>
 
         <div className="d-activity-panel">
-          <h2>{"Hoạt động của dự án"}</h2>
+          <h2>{activitySource==='created'?'30 công việc mới nhất':'Hoạt động của dự án'}</h2>
           <div className="d-activity-list">
             {visibleActivities.slice(0, activityLimit).map((a) => {
               const issue = issues.find((i) => i.id === a.issueId);
               if (!issue) return null;
               const isExpanded = expanded.includes(a.id);
+              const activityStatusLabel =
+                (issue.status === a.status && issue.statusLabel) ||
+                statuses.find((s) => s.id === a.status)?.label;
               return (
                 <article className="d-activity" key={a.id}>
                   <Avatar name={a.user} size={32} />
@@ -110,7 +113,7 @@ export default function HomePage({ issues, activities, navigate, notify }) {
                         {a.text}
                       </div>
                     )}
-                    {a.text.length > 90 && (
+                    {(a.text?.length || 0) > 90 && (
                       <button
                         className="d-text-button"
                         onClick={() =>
@@ -127,7 +130,7 @@ export default function HomePage({ issues, activities, navigate, notify }) {
                     <div className="d-activity-bottom">
                       <span>
                         [ Trạng thái:{" "}
-                        {statuses.find((s) => s.id === a.status)?.label} ]
+                        {activityStatusLabel} ]
                       </span>
                       <div>
                         <IconButton
@@ -136,20 +139,6 @@ export default function HomePage({ issues, activities, navigate, notify }) {
                           label={`Bình luận ${issue.id}`}
                           onClick={() => navigate(`/board/issue/${issue.id}`)}
                         />
-                        <button
-                          className={`d-star ${stars.includes(a.id) ? "active" : ""}`}
-                          aria-label={`Yêu thích cập nhật ${a.id}`}
-                          onClick={() =>
-                            setStars(
-                              stars.includes(a.id)
-                                ? stars.filter((id) => id !== a.id)
-                                : [...stars, a.id],
-                            )
-                          }
-                        >
-                          <Star size={17} fill="currentColor" />
-                          {stars.includes(a.id) ? 1 : 0}
-                        </button>
                       </div>
                     </div>
                   </div>
@@ -188,7 +177,7 @@ export default function HomePage({ issues, activities, navigate, notify }) {
               ))}
           </div>
           <div className="d-completion">
-            {`${completed}/${issues.length} công việc hoàn thành · ${completion}%`}
+            {`${completed}/${total} công việc hoàn thành · ${completion}%`}
           </div>
           <div className="d-status-summary">
             {summary.map((s) => (
@@ -215,10 +204,11 @@ export default function HomePage({ issues, activities, navigate, notify }) {
         <div className="d-milestone-panel">
           {milestoneSummary.map((milestone) => (
             <button
-              key={milestone.name}
+              key={milestone.id ?? milestone.name}
+              disabled={milestone.id == null}
               onClick={() =>
                 navigate(
-                  `/board/list?milestone=${encodeURIComponent(milestone.name)}`,
+                  `/board/list?milestone=${encodeURIComponent(milestone.id)}`,
                 )
               }
             >
@@ -235,7 +225,7 @@ export default function HomePage({ issues, activities, navigate, notify }) {
                   }}
                 />
               </div>
-              <small>Chưa đặt hạn phát hành</small>
+              <small>{milestone.dueOn?`Hạn phát hành: ${milestone.dueOn.split('-').reverse().join('/')}`:'Chưa đặt hạn phát hành'}</small>
             </button>
           ))}
         </div>

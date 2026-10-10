@@ -1,0 +1,23 @@
+name: syp-tms
+services:
+  mysql:
+    image: mysql:8.4.8
+    ports:
+      - "127.0.0.1:${TMS_MYSQL_PORT:-3310}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run scripts/Initialize-Local.ps1 first}
+      MYSQL_DATABASE: tms
+      TMS_DB_PASSWORD: ${TMS_DB_PASSWORD:?Missing runtime password}
+      TMS_MIGRATION_PASSWORD: ${TMS_MIGRATION_PASSWORD:?Missing migrator password}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./infra/mysql/01-users.sh:/docker-entrypoint-initdb.d/01-users.sh:ro
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci"]
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_ROOT_PASSWORD\" mysql --protocol=TCP -h 127.0.0.1 -u root -Nse 'SELECT 1' >/dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+volumes:
+  mysql_data:

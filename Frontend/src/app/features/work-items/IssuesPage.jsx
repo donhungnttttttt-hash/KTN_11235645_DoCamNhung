@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useAuth } from "../auth/AuthProvider";
 import { emptyFilters, matchesIssueFilters } from "./issueFilters";
 import {
   ChevronUp,
@@ -47,12 +48,14 @@ export default function IssuesPage({
   onFiltersChange,
   embedded = false,
 }) {
+  const { user } = useAuth();
+  const memberNames = [...new Set([...members.map((m) => m.name), user.displayName])];
   const [advanced, setAdvanced] = useState(params.get("advanced") === "true");
   const advancedParam = params.get("advanced");
   const [localFilters, setLocalFilters] = useState(() => {
     if (params.get("saved") === "true") {
       try {
-        const saved = JSON.parse(sessionStorage.getItem("design-saved-filter"));
+        const saved = JSON.parse(sessionStorage.getItem(`work-filter:${user.id}`));
         if (saved?.filters) return { ...emptyFilters, ...saved.filters };
       } catch {
         /* Use the default search when no valid saved filter exists. */
@@ -120,7 +123,7 @@ export default function IssuesPage({
     ["type", "Loại", types],
     ["category", "Danh mục", categories],
     ["milestone", "Mốc phát hành", milestones],
-    ["assignee", "Người phụ trách", members.map((m) => m.name)],
+    ["assignee", "Người phụ trách", memberNames],
   ];
   const sort = (key) => {
     setSortBy(key);
@@ -269,7 +272,7 @@ export default function IssuesPage({
                 className="outlined d-self-filter"
                 icon={UserRound}
                 label="Công việc của tôi"
-                onClick={() => setFilter("assignee", ["Đỗ Cẩm Nhung"])}
+                onClick={() => setFilter("assignee", [user.displayName])}
               />
               <label className="d-field">
                 <span>Từ khóa</span>
@@ -351,13 +354,13 @@ export default function IssuesPage({
                   />
                   <MultiSelect
                     label="Người phụ trách"
-                    options={members.map((m) => m.name)}
+                    options={memberNames}
                     selected={draft.assignee}
                     onChange={(v) => setFilter("assignee", v, true)}
                     action={
                       <button
                         onClick={() =>
-                          setFilter("assignee", ["Đỗ Cẩm Nhung"], true)
+                          setFilter("assignee", [user.displayName], true)
                         }
                       >
                         Chọn tôi
@@ -366,7 +369,7 @@ export default function IssuesPage({
                   />
                   <MultiSelect
                     label="Người tạo"
-                    options={members.map((m) => m.name)}
+                    options={memberNames}
                     selected={draft.creator}
                     onChange={(v) => setFilter("creator", v, true)}
                   />
@@ -409,7 +412,7 @@ export default function IssuesPage({
                 <div className="d-other-filters">
                   <MultiSelect
                     label="Người tạo"
-                    options={members.map((m) => m.name)}
+                    options={memberNames}
                     selected={draft.creator}
                     onChange={(v) => setFilter("creator", v, true)}
                   />
@@ -671,7 +674,7 @@ export default function IssuesPage({
                   disabled={!savedName.trim()}
                   onClick={() => {
                     sessionStorage.setItem(
-                      "design-saved-filter",
+                      `work-filter:${user.id}`,
                       JSON.stringify({ name: savedName, filters }),
                     );
                     setDialog(null);

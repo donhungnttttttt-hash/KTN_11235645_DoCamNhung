@@ -1,0 +1,798 @@
+{
+  "scope": [
+    {
+      "height": 640,
+      "label": "/admin/users",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 248,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án của người dùng",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 320
+    },
+    {
+      "height": 1024,
+      "label": "/admin/users",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 162,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án của người dùng",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 768
+    },
+    {
+      "height": 768,
+      "label": "/admin/users",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 253.5,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án của người dùng",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 1366
+    },
+    {
+      "height": 375,
+      "label": "/admin/users",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 187.65625,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án của người dùng",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 667
+    },
+    {
+      "height": 640,
+      "label": "/admin/devices",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 248,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án đang giữ máy",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 320
+    },
+    {
+      "height": 1024,
+      "label": "/admin/devices",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 163.5,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án đang giữ máy",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 768
+    },
+    {
+      "height": 768,
+      "label": "/admin/devices",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 255,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án đang giữ máy",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 1366
+    },
+    {
+      "height": 375,
+      "label": "/admin/devices",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 187.65625,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án đang giữ máy",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 667
+    },
+    {
+      "height": 640,
+      "label": "/admin/audit",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 248,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án trong nhật ký",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 320
+    },
+    {
+      "height": 1024,
+      "label": "/admin/audit",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 162,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án trong nhật ký",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 768
+    },
+    {
+      "height": 768,
+      "label": "/admin/audit",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 199.59375,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án trong nhật ký",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 1366
+    },
+    {
+      "height": 375,
+      "label": "/admin/audit",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 187.65625,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án trong nhật ký",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 667
+    },
+    {
+      "height": 640,
+      "label": "Device/allocation-draft",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 248,
+          "description": null,
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án đang giữ máy",
+          "labelAbove": true,
+          "selected": "Tất cả dự án"
+        },
+        {
+          "controlHeight": 44,
+          "controlWidth": 248,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án nhận máy",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 320
+    },
+    {
+      "height": 1024,
+      "label": "Device/allocation-draft",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 162,
+          "description": null,
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án đang giữ máy",
+          "labelAbove": true,
+          "selected": "Tất cả dự án"
+        },
+        {
+          "controlHeight": 44,
+          "controlWidth": 416,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án nhận máy",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 768
+    },
+    {
+      "height": 768,
+      "label": "Device/allocation-draft",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 253.5,
+          "description": null,
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án đang giữ máy",
+          "labelAbove": true,
+          "selected": "Tất cả dự án"
+        },
+        {
+          "controlHeight": 44,
+          "controlWidth": 408,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án nhận máy",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 1366
+    },
+    {
+      "height": 375,
+      "label": "Device/allocation-draft",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 187.65625,
+          "description": null,
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án đang giữ máy",
+          "labelAbove": true,
+          "selected": "Tất cả dự án"
+        },
+        {
+          "controlHeight": 44,
+          "controlWidth": 416,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Dự án nhận máy",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 667
+    },
+    {
+      "height": 640,
+      "label": "Projects/detail",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 248,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Phạm vi dự án",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 320
+    },
+    {
+      "height": 812,
+      "label": "Projects/detail",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 303,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Phạm vi dự án",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 375
+    },
+    {
+      "height": 1024,
+      "label": "Projects/detail",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 560,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Phạm vi dự án",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 768
+    },
+    {
+      "height": 768,
+      "label": "Projects/detail",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 560,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Phạm vi dự án",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 1024
+    },
+    {
+      "height": 768,
+      "label": "Projects/detail",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 560,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Phạm vi dự án",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 1366
+    },
+    {
+      "height": 1080,
+      "label": "Projects/detail",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 560,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Phạm vi dự án",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 1920
+    },
+    {
+      "height": 375,
+      "label": "Projects/detail",
+      "overflow": false,
+      "pickers": [
+        {
+          "controlHeight": 44,
+          "controlWidth": 560,
+          "description": "Đã chọn: SYP-DEMO-WEB-20 · [Demo] Web trên Android",
+          "fontSize": "14px",
+          "inside": true,
+          "label": "Phạm vi dự án",
+          "labelAbove": true,
+          "selected": "SYP-DEMO-WEB-20 · [Demo] Web trên Android"
+        }
+      ],
+      "width": 667
+    }
+  ],
+  "filterAlignment": [
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Tìm username hoặc tên",
+          "top": 449.1875
+        },
+        {
+          "height": 44,
+          "label": "Vai trò",
+          "top": 534.78125
+        },
+        {
+          "height": 44,
+          "label": "Trạng thái",
+          "top": 620.375
+        },
+        {
+          "height": 44,
+          "label": "Dự án của người dùng",
+          "top": 705.96875
+        }
+      ],
+      "route": "/admin/users",
+      "width": 320
+    },
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Tìm username hoặc tên",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Vai trò",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Trạng thái",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Dự án của người dùng",
+          "top": 307.59375
+        }
+      ],
+      "route": "/admin/users",
+      "width": 768
+    },
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Tìm username hoặc tên",
+          "top": 219.59375
+        },
+        {
+          "height": 44,
+          "label": "Vai trò",
+          "top": 219.59375
+        },
+        {
+          "height": 44,
+          "label": "Trạng thái",
+          "top": 219.59375
+        },
+        {
+          "height": 44,
+          "label": "Dự án của người dùng",
+          "top": 219.59375
+        }
+      ],
+      "route": "/admin/users",
+      "width": 1366
+    },
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Tìm username hoặc tên",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Vai trò",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Trạng thái",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Dự án của người dùng",
+          "top": 393.1875
+        }
+      ],
+      "route": "/admin/users",
+      "width": 667
+    },
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Dự án đang giữ máy",
+          "top": 566.359375
+        },
+        {
+          "height": 44,
+          "label": "Tìm mã / model / serial",
+          "top": 758.953125
+        },
+        {
+          "height": 44,
+          "label": "Lọc tình trạng",
+          "top": 844.546875
+        }
+      ],
+      "route": "/admin/devices",
+      "width": 320
+    },
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Dự án đang giữ máy",
+          "top": 575.109375
+        },
+        {
+          "height": 44,
+          "label": "Tìm mã / model / serial",
+          "top": 575.109375
+        },
+        {
+          "height": 44,
+          "label": "Lọc tình trạng",
+          "top": 575.109375
+        }
+      ],
+      "route": "/admin/devices",
+      "width": 768
+    },
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Dự án đang giữ máy",
+          "top": 254.375
+        },
+        {
+          "height": 44,
+          "label": "Tìm mã / model / serial",
+          "top": 254.375
+        },
+        {
+          "height": 44,
+          "label": "Lọc tình trạng",
+          "top": 254.375
+        }
+      ],
+      "route": "/admin/devices",
+      "width": 1366
+    },
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Dự án đang giữ máy",
+          "top": 342.375
+        },
+        {
+          "height": 44,
+          "label": "Tìm mã / model / serial",
+          "top": 342.375
+        },
+        {
+          "height": 44,
+          "label": "Lọc tình trạng",
+          "top": 474.96875
+        }
+      ],
+      "route": "/admin/devices",
+      "width": 667
+    },
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Dự án trong nhật ký",
+          "top": 449.1875
+        },
+        {
+          "height": 44,
+          "label": "Loại sự kiện",
+          "top": 581.78125
+        },
+        {
+          "height": 44,
+          "label": "Từ ngày",
+          "top": 667.375
+        },
+        {
+          "height": 44,
+          "label": "Đến hết ngày",
+          "top": 752.96875
+        },
+        {
+          "height": 44,
+          "label": "Múi giờ ngày lọc",
+          "top": 838.5625
+        }
+      ],
+      "route": "/admin/audit",
+      "width": 320
+    },
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Dự án trong nhật ký",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Loại sự kiện",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Từ ngày",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Đến hết ngày",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Múi giờ ngày lọc",
+          "top": 459.6875
+        }
+      ],
+      "route": "/admin/audit",
+      "width": 768
+    },
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Dự án trong nhật ký",
+          "top": 219.59375
+        },
+        {
+          "height": 44,
+          "label": "Loại sự kiện",
+          "top": 219.59375
+        },
+        {
+          "height": 44,
+          "label": "Từ ngày",
+          "top": 219.59375
+        },
+        {
+          "height": 44,
+          "label": "Đến hết ngày",
+          "top": 219.59375
+        },
+        {
+          "height": 44,
+          "label": "Múi giờ ngày lọc",
+          "top": 219.59375
+        }
+      ],
+      "route": "/admin/audit",
+      "width": 1366
+    },
+    {
+      "fields": [
+        {
+          "height": 44,
+          "label": "Dự án trong nhật ký",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Loại sự kiện",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Từ ngày",
+          "top": 307.59375
+        },
+        {
+          "height": 44,
+          "label": "Đến hết ngày",
+          "top": 440.1875
+        },
+        {
+          "height": 44,
+          "label": "Múi giờ ngày lọc",
+          "top": 440.1875
+        }
+      ],
+      "route": "/admin/audit",
+      "width": 667
+    }
+  ],
+  "fileFilters": [
+    {
+      "height": 640,
+      "pageOverflow": false,
+      "resetButtonHeight": 44,
+      "width": 320
+    },
+    {
+      "height": 1024,
+      "pageOverflow": false,
+      "resetButtonHeight": 44,
+      "width": 768
+    },
+    {
+      "height": 768,
+      "pageOverflow": false,
+      "resetButtonHeight": 44,
+      "width": 1366
+    },
+    {
+      "height": 375,
+      "pageOverflow": false,
+      "resetButtonHeight": 44,
+      "width": 667
+    }
+  ]
+}

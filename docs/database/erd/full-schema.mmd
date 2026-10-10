@@ -1,0 +1,462 @@
+erDiagram
+  identity_users {
+    varchar_36_ id PK
+    varchar_16_ role_code FK
+  }
+  identity_roles {
+    varchar_16_ code PK
+  }
+  identity_audit {
+    varchar_36_ id PK
+    varchar_36_ actor_id FK
+    varchar_36_ subject_id FK
+    bigint project_id FK
+  }
+  identity_login_buckets {
+    char_64_ bucket_key PK
+  }
+  SPRING_SESSION {
+    char_36_ PRIMARY_ID PK
+  }
+  SPRING_SESSION_ATTRIBUTES {
+    char_36_ SESSION_PRIMARY_ID PK
+    varchar_200_ ATTRIBUTE_NAME PK
+  }
+  projects {
+    bigint id PK
+    varchar_36_ created_by FK
+    varchar_36_ updated_by FK
+  }
+  project_memberships {
+    bigint id PK
+    bigint project_id FK
+    varchar_36_ user_id FK
+  }
+  environments {
+    bigint id PK
+    bigint project_id FK
+  }
+  builds {
+    bigint id PK
+    bigint project_id FK
+  }
+  devices {
+    bigint id PK
+    bigint project_id FK
+  }
+  categories {
+    bigint id PK
+    bigint project_id FK
+  }
+  milestones {
+    bigint id PK
+    bigint project_id FK
+  }
+  rulesets {
+    bigint id PK
+    bigint project_id FK
+    bigint active_version_id FK
+  }
+  rule_versions {
+    bigint id PK
+    bigint project_id FK
+    bigint ruleset_id FK
+    bigint published_by FK
+    bigint created_by FK
+  }
+  project_resources {
+    bigint id PK
+    bigint project_id FK
+    bigint current_revision_id FK
+  }
+  resource_revisions {
+    bigint id PK
+    bigint project_id FK
+    bigint resource_id FK
+    bigint edited_by FK
+  }
+  project_counters {
+    bigint project_id PK
+    varchar_32_ counter_code PK
+  }
+  project_audit {
+    bigint id PK
+    bigint project_id FK
+    varchar_36_ actor_id FK
+  }
+  test_suites {
+    bigint id PK
+    bigint project_id FK
+    bigint parent_id FK
+  }
+  test_cases {
+    bigint id PK
+    bigint project_id FK
+    bigint suite_id FK
+    bigint current_revision_id FK
+  }
+  test_case_revisions {
+    bigint id PK
+    bigint project_id FK
+    bigint test_case_id FK
+    bigint translator_membership_id FK
+    bigint reviewer_membership_id FK
+    bigint approved_by FK
+    bigint created_by FK
+  }
+  import_batches {
+    bigint id PK
+    bigint project_id FK
+    varchar_36_ imported_by FK
+  }
+  import_rows {
+    bigint id PK
+    bigint project_id FK
+    bigint batch_id FK
+    bigint target_case_id FK
+  }
+  test_cycles {
+    bigint id PK
+    bigint project_id FK
+    bigint milestone_id FK
+    varchar_16_ status_code FK
+    bigint activated_by FK
+    bigint created_by FK
+  }
+  cycle_configurations {
+    bigint id PK
+    bigint project_id FK
+    bigint cycle_id FK
+    bigint environment_id FK
+    bigint device_id FK
+    bigint default_build_id FK
+  }
+  run_items {
+    bigint id PK
+    bigint project_id FK
+    bigint cycle_id FK
+    bigint configuration_id FK
+    bigint test_case_id FK
+    bigint revision_id FK
+    bigint assignee_membership_id FK
+    bigint latest_attempt_id FK
+    bigint scope_decision_id FK
+  }
+  execution_attempts {
+    bigint id PK
+    bigint project_id FK
+    bigint run_item_id FK
+    varchar_16_ result_code FK
+    bigint build_id FK
+    bigint executor_membership_id FK
+  }
+  run_item_assignments {
+    bigint id PK
+    bigint project_id FK
+    bigint run_item_id FK
+    bigint previous_membership_id FK
+    bigint assignee_membership_id FK
+    bigint assigned_by FK
+  }
+  run_scope_decisions {
+    bigint id PK
+    bigint project_id FK
+    bigint run_item_id FK
+    bigint decided_by FK
+  }
+  cycle_decisions {
+    bigint id PK
+    bigint project_id FK
+    bigint cycle_id FK
+    bigint decided_by FK
+  }
+  cycle_statuses {
+    varchar_16_ code PK
+  }
+  execution_results {
+    varchar_16_ code PK
+  }
+  work_items {
+    bigint id PK
+    bigint project_id FK
+    varchar_32_ status_code FK
+    bigint category_id FK
+    bigint milestone_id FK
+    bigint assignee_membership_id FK
+    bigint created_by FK
+    bigint updated_by FK
+  }
+  bug_details {
+    bigint project_id PK
+    bigint work_item_id PK
+    varchar_16_ item_type FK
+    varchar_32_ policy_version FK
+    bigint build_id FK
+    bigint environment_id FK
+    bigint device_id FK
+    bigint test_case_id FK
+    bigint revision_id FK
+    bigint fixed_build_id FK
+    bigint rule_version_id FK
+  }
+  work_item_execution_links {
+    bigint project_id PK
+    bigint work_item_id PK
+    bigint run_item_id FK
+    bigint attempt_id PK
+    bigint linked_by FK
+  }
+  work_item_comments {
+    bigint id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    bigint author_membership_id FK
+  }
+  work_item_attachments {
+    char_36_ id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    bigint uploaded_by FK
+  }
+  work_item_history {
+    bigint id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    varchar_32_ from_status FK
+    varchar_32_ to_status FK
+    bigint actor_membership_id FK
+  }
+  work_item_clarifications {
+    bigint id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    bigint recorded_by FK
+  }
+  work_item_external_references {
+    bigint id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    bigint recorded_by FK
+  }
+  work_item_statuses {
+    varchar_32_ code PK
+  }
+  work_item_policy_versions {
+    varchar_32_ code PK
+  }
+  bug_retest_state {
+    bigint project_id PK
+    bigint work_item_id PK
+    bigint current_coverage_id FK
+  }
+  bug_coverage_revisions {
+    bigint id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    bigint build_id FK
+    bigint created_by FK
+  }
+  bug_coverage_items {
+    bigint id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    bigint coverage_revision_id FK
+    bigint run_item_id FK
+  }
+  retest_requests {
+    bigint id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    bigint coverage_revision_id FK
+    bigint build_id FK
+    bigint environment_id FK
+    bigint device_id FK
+    bigint assignee_membership_id FK
+    bigint created_by FK
+    bigint submitted_by FK
+  }
+  retest_request_items {
+    bigint project_id PK
+    bigint work_item_id FK
+    bigint coverage_revision_id FK
+    bigint request_id PK
+    bigint coverage_item_id PK
+    bigint run_item_id FK
+  }
+  bug_verification_attempts {
+    bigint id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    bigint request_id FK
+    bigint coverage_item_id FK
+    bigint run_item_id FK
+    char_36_ evidence_attachment_id FK
+    bigint execution_attempt_id FK
+    bigint verified_by FK
+  }
+  bug_closure_decisions {
+    bigint id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    char_36_ evidence_attachment_id FK
+    bigint coverage_revision_id FK
+    bigint build_id FK
+    bigint decided_by FK
+  }
+  redmine_bindings {
+    bigint id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    bigint created_by FK
+  }
+  redmine_outbox {
+    bigint id PK
+    bigint project_id FK
+    bigint work_item_id FK
+    bigint binding_id FK
+    bigint created_by FK
+    bigint dispatch_by FK
+  }
+  redmine_delivery_attempts {
+    bigint id PK
+    bigint project_id FK
+    bigint outbox_id FK
+    bigint actor_membership_id FK
+  }
+  application_info {
+    smallint id PK
+  }
+  foundation_checks {
+    varchar_36_ id PK
+  }
+  flyway_schema_history {
+    int installed_rank PK
+  }
+  SPRING_SESSION ||--o{ SPRING_SESSION_ATTRIBUTES : "SPRING_SESSION_ATTRIBUTES_FK"
+  bug_details ||--o{ bug_closure_decisions : "bug_closure_decisions_ibfk_1"
+  work_item_attachments |o--o{ bug_closure_decisions : "bug_closure_decisions_ibfk_2"
+  bug_coverage_revisions |o--o{ bug_closure_decisions : "bug_closure_decisions_ibfk_3"
+  builds |o--o{ bug_closure_decisions : "bug_closure_decisions_ibfk_4"
+  project_memberships ||--o{ bug_closure_decisions : "bug_closure_decisions_ibfk_5"
+  bug_coverage_revisions ||--o{ bug_coverage_items : "bug_coverage_items_ibfk_1"
+  run_items ||--o{ bug_coverage_items : "bug_coverage_items_ibfk_2"
+  bug_details ||--o{ bug_coverage_revisions : "bug_coverage_revisions_ibfk_1"
+  builds ||--o{ bug_coverage_revisions : "bug_coverage_revisions_ibfk_2"
+  project_memberships ||--o{ bug_coverage_revisions : "bug_coverage_revisions_ibfk_3"
+  builds ||--o{ bug_details : "fk_bug_build"
+  devices ||--o{ bug_details : "fk_bug_device"
+  environments ||--o{ bug_details : "fk_bug_env"
+  builds |o--o{ bug_details : "fk_bug_fixed_build"
+  work_item_policy_versions ||--o{ bug_details : "fk_bug_policy"
+  test_case_revisions |o--o{ bug_details : "fk_bug_revision"
+  rule_versions |o--o{ bug_details : "fk_bug_rule_version"
+  work_items ||--o| bug_details : "fk_bug_work"
+  bug_details ||--o| bug_retest_state : "bug_retest_state_ibfk_1"
+  bug_coverage_revisions |o--o| bug_retest_state : "bug_retest_state_ibfk_2"
+  retest_request_items ||--o| bug_verification_attempts : "bug_verification_attempts_ibfk_1"
+  work_item_attachments |o--o{ bug_verification_attempts : "bug_verification_attempts_ibfk_2"
+  execution_attempts |o--o{ bug_verification_attempts : "bug_verification_attempts_ibfk_3"
+  project_memberships ||--o{ bug_verification_attempts : "bug_verification_attempts_ibfk_4"
+  projects ||--o{ builds : "fk_build_project"
+  projects ||--o{ categories : "fk_cat_project"
+  builds ||--o{ cycle_configurations : "fk_config_build"
+  test_cycles ||--o{ cycle_configurations : "fk_config_cycle"
+  devices ||--o{ cycle_configurations : "fk_config_device"
+  environments ||--o{ cycle_configurations : "fk_config_env"
+  project_memberships ||--o{ cycle_decisions : "fk_cycle_decision_actor"
+  test_cycles ||--o{ cycle_decisions : "fk_cycle_decision_cycle"
+  projects ||--o{ devices : "fk_device_project"
+  projects ||--o{ environments : "fk_env_project"
+  builds ||--o{ execution_attempts : "fk_attempt_build"
+  project_memberships ||--o{ execution_attempts : "fk_attempt_executor"
+  execution_results ||--o{ execution_attempts : "fk_attempt_result"
+  run_items ||--o{ execution_attempts : "fk_attempt_run"
+  projects |o--o{ identity_audit : "fk_audit_project"
+  identity_users |o--o{ identity_audit : "fk_identity_audit_actor"
+  identity_users |o--o{ identity_audit : "fk_identity_audit_subject"
+  identity_roles ||--o{ identity_users : "fk_identity_role"
+  projects ||--o{ import_batches : "fk_ib_project"
+  identity_users ||--o{ import_batches : "fk_ib_user"
+  import_batches ||--o{ import_rows : "fk_ir_batch"
+  test_cases |o--o{ import_rows : "fk_ir_case"
+  projects ||--o{ milestones : "fk_ms_project"
+  identity_users ||--o{ project_audit : "fk_project_audit_actor"
+  projects ||--o{ project_audit : "fk_project_audit_project"
+  projects ||--o{ project_counters : "fk_counter_project"
+  projects ||--o{ project_memberships : "fk_membership_project"
+  identity_users ||--o{ project_memberships : "fk_membership_user"
+  resource_revisions |o--o| project_resources : "fk_res_current_revision"
+  projects ||--o{ project_resources : "fk_res_project"
+  identity_users ||--o{ projects : "fk_projects_created_by"
+  identity_users ||--o{ projects : "fk_projects_updated_by"
+  project_memberships ||--o{ redmine_bindings : "fk_redmine_binding_actor"
+  work_items ||--o| redmine_bindings : "fk_redmine_binding_work"
+  project_memberships ||--o{ redmine_delivery_attempts : "fk_redmine_attempt_actor"
+  redmine_outbox ||--o{ redmine_delivery_attempts : "fk_redmine_attempt_job"
+  project_memberships ||--o{ redmine_outbox : "fk_redmine_outbox_actor"
+  redmine_bindings ||--o{ redmine_outbox : "fk_redmine_outbox_binding"
+  project_memberships ||--o{ redmine_outbox : "fk_redmine_outbox_dispatch_actor"
+  project_memberships ||--o{ resource_revisions : "fk_rr_edited_by"
+  project_resources ||--o{ resource_revisions : "fk_rr_resource"
+  retest_requests ||--o{ retest_request_items : "retest_request_items_ibfk_1"
+  bug_coverage_items ||--o{ retest_request_items : "retest_request_items_ibfk_2"
+  bug_coverage_revisions ||--o{ retest_requests : "retest_requests_ibfk_1"
+  builds ||--o{ retest_requests : "retest_requests_ibfk_2"
+  environments ||--o{ retest_requests : "retest_requests_ibfk_3"
+  devices ||--o{ retest_requests : "retest_requests_ibfk_4"
+  project_memberships ||--o{ retest_requests : "retest_requests_ibfk_5"
+  project_memberships ||--o{ retest_requests : "retest_requests_ibfk_6"
+  project_memberships |o--o{ retest_requests : "retest_requests_ibfk_7"
+  project_memberships ||--o{ rule_versions : "fk_rv_created_by"
+  project_memberships |o--o{ rule_versions : "fk_rv_published_by"
+  rulesets ||--o{ rule_versions : "fk_rv_ruleset"
+  rule_versions |o--o| rulesets : "fk_ruleset_active_version"
+  projects ||--o{ rulesets : "fk_ruleset_project"
+  project_memberships ||--o{ run_item_assignments : "fk_assignment_actor"
+  project_memberships |o--o{ run_item_assignments : "fk_assignment_previous"
+  run_items ||--o{ run_item_assignments : "fk_assignment_run"
+  project_memberships ||--o{ run_item_assignments : "fk_assignment_target"
+  project_memberships ||--o{ run_items : "fk_run_assignee"
+  cycle_configurations ||--o{ run_items : "fk_run_config"
+  execution_attempts |o--o| run_items : "fk_run_latest_attempt"
+  test_case_revisions ||--o{ run_items : "fk_run_revision"
+  run_scope_decisions |o--o| run_items : "fk_run_scope_decision"
+  project_memberships ||--o{ run_scope_decisions : "fk_scope_decision_actor"
+  run_items ||--o{ run_scope_decisions : "fk_scope_decision_run"
+  project_memberships |o--o{ test_case_revisions : "fk_tcr_approved_by"
+  test_cases ||--o{ test_case_revisions : "fk_tcr_case"
+  project_memberships ||--o{ test_case_revisions : "fk_tcr_created_by"
+  project_memberships |o--o{ test_case_revisions : "fk_tcr_reviewer"
+  project_memberships |o--o{ test_case_revisions : "fk_tcr_translator"
+  test_case_revisions |o--o| test_cases : "fk_tc_current_revision"
+  projects ||--o{ test_cases : "fk_tc_project"
+  test_suites ||--o{ test_cases : "fk_tc_suite"
+  project_memberships |o--o{ test_cycles : "fk_cycle_activator"
+  project_memberships ||--o{ test_cycles : "fk_cycle_creator"
+  milestones |o--o{ test_cycles : "fk_cycle_milestone"
+  projects ||--o{ test_cycles : "fk_cycle_project"
+  cycle_statuses ||--o{ test_cycles : "fk_cycle_status"
+  test_suites |o--o{ test_suites : "fk_ts_parent"
+  projects ||--o{ test_suites : "fk_ts_project"
+  project_memberships ||--o{ work_item_attachments : "fk_attachment_actor"
+  work_items ||--o{ work_item_attachments : "fk_attachment_work"
+  project_memberships ||--o{ work_item_clarifications : "fk_clarification_actor"
+  work_items ||--o{ work_item_clarifications : "fk_clarification_work"
+  project_memberships ||--o{ work_item_comments : "fk_comment_actor"
+  work_items ||--o{ work_item_comments : "fk_comment_work"
+  project_memberships ||--o{ work_item_execution_links : "fk_work_link_actor"
+  execution_attempts ||--o{ work_item_execution_links : "fk_work_link_attempt"
+  bug_details ||--o{ work_item_execution_links : "fk_work_link_bug"
+  project_memberships ||--o{ work_item_external_references : "fk_external_actor"
+  work_items ||--o{ work_item_external_references : "fk_external_work"
+  project_memberships ||--o{ work_item_history : "fk_work_history_actor"
+  work_item_statuses |o--o{ work_item_history : "fk_work_history_from"
+  work_items ||--o{ work_item_history : "fk_work_history_item"
+  work_item_statuses |o--o{ work_item_history : "fk_work_history_to"
+  project_memberships |o--o{ work_items : "fk_work_assignee"
+  categories |o--o{ work_items : "fk_work_category"
+  project_memberships ||--o{ work_items : "fk_work_creator"
+  project_memberships ||--o{ work_items : "fk_work_editor"
+  milestones |o--o{ work_items : "fk_work_milestone"
+  projects ||--o{ work_items : "fk_work_project"
+  work_item_statuses ||--o{ work_items : "fk_work_status"

@@ -1,0 +1,57 @@
+{
+    "tests":  159,
+    "failures":  0,
+    "errors":  0,
+    "skipped":  0,
+    "source":  "Full Maven verify, 2026-09-30, patched runtime dependencies",
+    "changedClasses":  {
+                           "vn/syp/tms/project/ProjectTimezone":  {
+                                                                      "INSTRUCTION":  100,
+                                                                      "BRANCH":  100,
+                                                                      "LINE":  100,
+                                                                      "COMPLEXITY":  100,
+                                                                      "METHOD":  100,
+                                                                      "CLASS":  100
+                                                                  },
+                           "vn/syp/tms/catalog/CatalogInput":  {
+                                                                   "INSTRUCTION":  100,
+                                                                   "BRANCH":  100,
+                                                                   "LINE":  100,
+                                                                   "COMPLEXITY":  100,
+                                                                   "METHOD":  100,
+                                                                   "CLASS":  100
+                                                               },
+                           "vn/syp/tms/identity/SessionAccountFilter":  {
+                                                                            "INSTRUCTION":  100,
+                                                                            "BRANCH":  87.5,
+                                                                            "LINE":  100,
+                                                                            "COMPLEXITY":  85.71,
+                                                                            "METHOD":  100,
+                                                                            "CLASS":  100
+                                                                        },
+                           "vn/syp/tms/reporting/ReportingService":  {
+                                                                         "INSTRUCTION":  96.71,
+                                                                         "BRANCH":  92.42,
+                                                                         "LINE":  98.44,
+                                                                         "COMPLEXITY":  86.96,
+                                                                         "METHOD":  92.31,
+                                                                         "CLASS":  100
+                                                                     },
+                           "vn/syp/tms/reporting/ReportMetrics":  {
+                                                                      "INSTRUCTION":  95.63,
+                                                                      "BRANCH":  77.78,
+                                                                      "LINE":  100,
+                                                                      "COMPLEXITY":  83.33,
+                                                                      "METHOD":  100,
+                                                                      "CLASS":  100
+                                                                  }
+                       },
+    "wholeBackend":  {
+                         "INSTRUCTION":  85.51,
+                         "BRANCH":  72.81,
+                         "LINE":  84.16,
+                         "COMPLEXITY":  68.34,
+                         "METHOD":  79.13,
+                         "CLASS":  89.2
+                     }
+}
