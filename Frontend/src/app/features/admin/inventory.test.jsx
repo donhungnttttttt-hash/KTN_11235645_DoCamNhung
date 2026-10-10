@@ -34,7 +34,7 @@ it('project inventory is read only and has retry state',async()=>{
  const api={projectDevices:vi.fn().mockRejectedValueOnce(new Error('Offline')).mockResolvedValue(page([]))};render(<ProjectDevices projectId={2} api={api}/>);await screen.findByText('Offline');fireEvent.click(screen.getByText('Thử lại'));await screen.findByText('Dự án chưa được bàn giao máy.');expect(screen.queryByText('Nhập máy')).toBeNull();expect(screen.queryByText('Xác nhận bàn giao')).toBeNull();
 });
 it('late return lookup cannot reopen editor after page scope changed',async()=>{
- let resolve;const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),assets:vi.fn().mockResolvedValue(page([{...asset,status:'ALLOCATED'}])),allocations:vi.fn().mockReturnValue(new Promise(r=>{resolve=r;}))};render(<AdminDevices api={api}/>);fireEvent.click(await screen.findByText('Thu hồi IP-08'));await chooseProject('Dự án đang giữ máy');resolve(page([{id:10,version:0,recipientName:'Manager'}]));await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({projectId:'2'}),expect.anything()));expect(screen.queryByText('Xác nhận thu hồi')).toBeNull();
+ let resolve;const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),assets:vi.fn().mockResolvedValue(page([{...asset,status:'ALLOCATED'}])),allocations:vi.fn().mockReturnValue(new Promise(r=>{resolve=r;}))};render(<AdminDevices api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Thu hồi IP-08',exact:true}));await chooseProject('Dự án đang giữ máy');resolve(page([{id:10,version:0,recipientName:'Manager'}]));await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({projectId:'2'}),expect.anything()));expect(screen.queryByText('Xác nhận thu hồi')).toBeNull();
 });
 
 it.each(['asset','assign','return'])('late %s save preserves replacement editor and its draft',async(kind)=>{
@@ -52,22 +52,22 @@ it.each(['asset','assign','return'])('late %s save preserves replacement editor 
  render(<AdminDevices api={api}/>);
  await screen.findByText('IP-08');
  if(kind==='asset'){
-  fireEvent.click(screen.getByText('Sửa IP-08'));
+  fireEvent.click(screen.getByRole('button',{name:'Sửa IP-08',exact:true}));
   fireEvent.click(screen.getByText('Lưu máy'));
  }else if(kind==='assign'){
-  fireEvent.click(screen.getByText('Bàn giao IP-08'));
+  fireEvent.click(screen.getByRole('button',{name:'Bàn giao IP-08',exact:true}));
   await screen.findByLabelText('Dự án nhận máy');
   await chooseProject('Dự án nhận máy');
   await screen.findByText('Manager · manager');
   fireEvent.change(screen.getByLabelText('Người nhận'),{target:{value:'pm'}});
   fireEvent.click(screen.getByText('Xác nhận bàn giao'));
  }else{
-  fireEvent.click(screen.getByText('Thu hồi IP-08'));
+  fireEvent.click(screen.getByRole('button',{name:'Thu hồi IP-08',exact:true}));
   fireEvent.click(await screen.findByText('Xác nhận thu hồi'));
  }
  expect(api[kind==='asset'?'updateAsset':kind==='assign'?'assignDevice':'returnDevice']).toHaveBeenCalledTimes(1);
  await chooseProject('Dự án đang giữ máy');
- fireEvent.click(await screen.findByText('Sửa IP-08'));
+ fireEvent.click(await screen.findByRole('button',{name:'Sửa IP-08',exact:true}));
  fireEvent.change(screen.getByLabelText('Hãng / model'),{target:{value:'Replacement draft'}});
  await act(async()=>{resolveSave({});});
  expect(screen.getByLabelText('Hãng / model')).toHaveValue('Replacement draft');

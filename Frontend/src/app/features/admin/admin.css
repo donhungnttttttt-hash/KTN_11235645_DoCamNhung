@@ -29,6 +29,20 @@
 .admin-actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; min-width:0; }
 .admin-actions > button { flex:0 1 auto; overflow-wrap:anywhere; }
 .admin-shell td > .admin-actions { min-width:180px; }
+/* Dense inventory rows; forms and other admin tables retain their own sizing. */
+.admin-main .admin-inventory-count { font-size:12px; margin:8px 0; }
+.admin-device-table table { table-layout:fixed; min-width:760px; font-size:12px; }
+.admin-device-table th,.admin-device-table td { padding:10px 12px; line-height:1.5; overflow-wrap:anywhere; }
+.admin-device-table .admin-device-code { width:20%; }
+.admin-device-table .admin-device-serial { width:16%; }
+.admin-device-table .admin-device-project { width:28%; }
+.admin-device-table .admin-device-controls { width:160px; }
+.admin-device-table td p { font-size:inherit; line-height:1.5; margin:4px 0 0; }
+.admin-device-table td > .admin-actions { min-width:0; flex-wrap:nowrap; gap:8px; }
+.admin-device-table .admin-actions button { font-size:12px; line-height:1.5; min-height:32px; min-width:44px; padding:5px 10px; border-radius:6px; white-space:nowrap; }
+@media(max-width:768px),(pointer:coarse) {
+  .admin-device-table .admin-actions button { min-height:44px; }
+}
 .admin-page-heading > :first-child { min-width:0; overflow-wrap:anywhere; }
 .admin-page-heading h1 { margin-bottom:0; }
 .admin-main button:not(:disabled):hover { background:#edf7f4; border-color:var(--admin-teal); }
