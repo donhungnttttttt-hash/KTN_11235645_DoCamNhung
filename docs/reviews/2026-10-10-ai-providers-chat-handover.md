@@ -1,6 +1,6 @@
 # Bàn giao nguồn AI và hội thoại riêng — 10/10/2026
 
-Code nguồn/API/chat/UI đã triển khai trên `system-design`. Task4 bổ sung helper thiết lập local và nạp cấu hình AI khi backend khởi động, giữ cấu hình API đang có. Tài liệu này phân biệt kiểm thử tổng hợp, kiểm tra browser của controller và nghiệm thu model thật. Whole-change review cuối, cấu hình User thật, restart8080, commit/push cuối do controller thực hiện; chưa gọi là liveAI PASS.
+Code nguồn/API/chat/UI đã triển khai trên `system-design`. Helper thiết lập local đã được review độc lập và chạy cho owner `admin.local`; backend8080 đã lên V25. Tài liệu này phân biệt kiểm thử tổng hợp, kiểm tra browser của controller và nghiệm thu model thật. Whole-change review và push cuối còn đang thực hiện; chưa gọi là liveAI PASS.
 
 ## Phạm vi và các sửa lỗi đã kiểm chứng
 
@@ -48,8 +48,18 @@ Skills: `tdd-workflow` cho RED/GREEN; `security-review` cho env/vault/SQL/bind/s
 
 Recovery trước commit giữ nguyên implementation và xác nhận lại 27 PowerShell + 4 Node PASS; actual startup prefix tại base vẫn có một behavioral FAIL như dự kiến. `rtk proxy node scripts/Check-Contracts.cjs` PASS (structural contracts/routes/DTO constraints và 52 tài liệu local links; không phải full OpenAPI/HTTP), `rtk git diff --check` PASS. Không chạy lại các suite backend/frontend đã có bằng chứng ở trên. Coverage helper vẫn NOT_MEASURED.
 
-## Gate vận hành còn lại
+## Vận hành local và gate còn lại
 
-Controller phải review diff/helper rồi chạy `-PlanOnly` và cấu hình owner `admin.local`, bảo toàn key/config/API settings; kiểm tra bản ghi gốc trước/sau migrate bằng script preservation chỉ in counts, xác minh PID/classpath rồi restart đúng backend8080. Kiểm tra metadata và action **Kết nối ChatGPT** bằng owner riêng tại runtime chính. Worker chưa thực hiện các bước này và chưa gọi chúng PASS.
+Task4 review độc lập trên `860d5f8` APPROVE: không có Critical/Important; RTK báo thiếu hook là advisory công cụ, không phải lỗi sản phẩm. Controller chạy `Configure-LocalAi.ps1 -OwnerUsername admin.local -PlanOnly` rồi cấu hình thật thành công. Key/vault/host riêng nằm ngoài repository, cấu hình API trong file local được giữ; không persist generic `SERVER_ADDRESS`.
+
+Controller xác minh PID/classpath backend cũ, restart đúng backend8080 bằng script có `WindowStyle Hidden`. Flyway áp dụng V24/V25; health HTTP200 UP, runtime mới PID8400. Đối chiếu hash các cột/bản ghi cũ trước/sau: **66 bảng, 6.055 bản ghi cũ, 0 bảng bị thay đổi dữ liệu cũ** (không tính Flyway và session/login). Frontend5173 giữ nguyên. Log vận hành local `var/ai-local-backend-20261010.log`, không đưa log/secret vào git.
+
+Anonymous metadata trả401 đúng yêu cầu. Đăng nhập owner bằng credential bootstrap cũ và mật khẩu browser lưu sẵn không được chấp nhận; không đoán thêm hoặc reset mật khẩu. Đã mở tab `http://localhost:5173/#/admin/ai` và yêu cầu người dùng đăng nhập `admin.local`. Vì vậy action kết nối trên runtime chính và official OAuth/live probe còn **PENDING_USER_LOGIN**, không gọi PASS từ fixture.
 
 User phải hoàn tất official authorization/consent, chọn catalog model và chủ động probe trước khi dùng ChatGPT; entitlement/plan allowance/live inference/schema/quality còn riêng. Ollama chưa cài binary/server/model; không tự download. API insufficient_quota ngày09/10 là lịch sử, không được tự gọi lại hay suy balance hiện tại. Whole-change independent review, planning state, final commit/push do controller làm; không merge. Các gate UAT/pilot/đích triển khai thật của S11 không được đóng bởi test fixture này.
+
+## Quyết định triển khai và chi phí nếu cần đổi
+
+1. Giữ request đồng bộ giới hạn25s cho nguồn mới, API tối đa30s, dùng lại request key khi chưa rõ kết quả. Tránh worker trùng; tác vụ chậm sẽ báo timeout và có thể cần async worker trong tương lai.
+2. Metadata kết nối/probe/hạn mức local nằm trong vault mã hóa ngoài MySQL; nội dung AI vẫn ở MySQL. Mất key/cài lại hoặc process chết trước khi commit token xoay vòng có thể phải kết nối lại.
+3. Dự án lưu trữ/đợt file đã đóng vẫn cho chủ sở hữu có quyền hiện tại đọc lịch sử; không cho tạo hoặc hoàn tất inference mới. Nếu khách hàng muốn đóng là thu hồi cả quyền đọc, cần thay chính sách này.

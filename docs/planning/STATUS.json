@@ -846,5 +846,26 @@
       "base": "develop",
       "mergeAuthorized": false
     }
+  },
+  "aiProvidersChat": {
+    "status": "IN_PROGRESS",
+    "authorizedAt": "2026-10-10",
+    "branch": "system-design",
+    "plan": "docs/superpowers/plans/2026-10-10-ai-providers-chat.md",
+    "spec": "docs/superpowers/specs/2026-10-10-chatgpt-plan-connection-design.md",
+    "scope": [
+      "ChatGPT personal local OAuth",
+      "OpenAI API selection",
+      "Ollama local adapter",
+      "Private persisted floating chat"
+    ],
+    "implementationStage": "Provider, persisted chat, frontend and configuration helper independently reviewed; final whole-change review pending",
+    "liveVerification": "PENDING_USER_LOGIN: owner credentials on hand not accepted; user asked to sign in at localhost5173. Official OAuth/consent/model probe not run. Ollama not installed.",
+    "nativeVerification": "PASS: NativeAiChatTest18 isolated...0008, NativeAiDraftTest18 isolated...0010, freshV25/upgrades and Spring auth/CSRF/concurrency/lifecycle checks. Main8080 migrated V23 to V25, health UP; preservation66tables/6055oldrows/0changed.",
+    "coverage": "MEASURED: new chat classes91.94% lines/83.10% branches from merged matching-class JaCoCo; Task1 focused70.1%lines/50.7%branches. Not whole-system coverage.",
+    "nextAction": "Whole-change review, final relevant checks and authorized branch push. User admin.local login then official OAuth required for live ChatGPT acceptance.",
+    "browserVerification": "PASS scoped fixture checks: provider selector, general/project chat persistence/history/copy/minimize/unsent retention/navigation; measured CSS374x812,374x500,1024x768,1366x800 bounds and inspected screenshots. Initial tooling timeout recovered; viewport reset. No live AI or business DB writes.",
+    "frontendVerification": "PASS:713 full frontend tests before focusedracefix;46 coveringAI/API tests andbuild on7c4ec0 after7RED->GREEN regressions; scoped independentre-reviewR1/R2closed. WholeFEcoverage historical85.10/82.36/79.45/84.42; finalAI83.45/82.68/82.60/90.93(statements/branches/functions/lines).",
+    "localConfiguration": "PASS: reviewed helper PlanOnly and real setup for admin.local; external protected vault and User config; existing API settings preserved."
   }
 }
