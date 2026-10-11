@@ -1,5 +1,5 @@
 import {TableScroll} from '../../components/TableScroll';
-import { canManageProjectWork } from '../projects/projectAccess';
+import { canManageProjectWork, isProjectDeveloper } from '../projects/projectAccess';
 import React, { useEffect, useRef, useState } from 'react';
 import { useProject } from '../projects/ProjectProvider';
 import { useAuth } from '../auth/AuthProvider';
@@ -20,14 +20,14 @@ export function ExecutionRunnerPage(props) {
 }
 function Runner({ project, cycleId, navigate }) {
   const { hasRole, user } = useAuth();
-  const dev = hasRole?.('DEV') || project?.projectRole==='DEV';
+  const dev = isProjectDeveloper(project,hasRole);
   const manager = canManageProjectWork(project, hasRole);
   const [data, setData] = useState(null), [runs, setRuns] = useState(null), [reload, setReload] = useState(0);
   const [error, setError] = useState(''), [loading, setLoading] = useState(true), [busy, setBusy] = useState(false);
   const [page, setPage] = useState(0), [mine, setMine] = useState(false), [pendingBug, setPendingBug] = useState(false);
   const [selected, setSelected] = useState(null), [assignment, setAssignment] = useState(null), [confirmStart, setConfirmStart] = useState(false);
   const [decision, setDecision] = useState(null);
-  const projectPm = !dev && project?.projectRole === 'PM' && !project.archived;
+  const projectPm = manager;
   const live = useRef(true);
   useEffect(() => { live.current = true; return () => { live.current = false; }; }, []);
   useEffect(() => {
@@ -62,13 +62,13 @@ function Runner({ project, cycleId, navigate }) {
       {projectPm && data.cycle.statusCode !== 'DRAFT' && <button className="cat-btn" disabled={loading} onClick={() => setDecision({ cycle: data.cycle })}>{data.cycle.statusCode === 'CLOSED' ? 'Mở lại đợt' : 'Chốt đợt kiểm thử'}</button>}
       <DecisionHistory key={`cycle-history-${reload}`} projectId={project.id} id={cycleId} timeZone={project.timezone} />
       {confirmStart && <section className="ex-panel" role="alertdialog" aria-label="Xác nhận bắt đầu đợt"><p>Khóa {data.cycle.runCount} lượt kiểm thử theo phiên bản case đã chọn và cho phép người được phân công ghi kết quả?</p><div className="ex-checks"><button className="cat-btn cat-btn-mint" disabled={busy} onClick={start}>Xác nhận bắt đầu</button><button className="cat-btn" disabled={busy} onClick={() => setConfirmStart(false)}>Hủy</button></div></section>}
-      {manager && data.cycle.statusCode === 'DRAFT' && <ScopeSetup projectId={project.id} cycle={data.cycle} configs={data.configs} catalogs={data.catalogs} members={data.members} onSaved={refresh} refreshKey={reload} />}
+      {manager && data.cycle.statusCode === 'DRAFT' && <ScopeSetup projectId={project.id} cycle={data.cycle} configs={data.configs} catalogs={data.catalogs} members={data.members} onSaved={refresh} navigate={navigate} refreshKey={reload} />}
       <div className="ex-checks"><label><input type="checkbox" checked={mine} onChange={e => { setMine(e.target.checked); setPage(0); }} />Được giao cho tôi</label><label><input type="checkbox" checked={pendingBug} onChange={e => { setPendingBug(e.target.checked); setPage(0); }} />NG chờ liên kết bug</label><button className="cat-btn" onClick={refresh}>Tải lại</button></div>
       {runs && <><TableScroll label="Lượt kiểm thử" className="ex-table-wrap"><table className="ex-table"><thead><tr><th>Mã case</th><th>Nội dung kiểm thử</th><th>Cấu hình chạy</th><th>Người thực hiện</th><th>Kết quả mới nhất</th><th>Thao tác</th></tr></thead><tbody>
-        {runs.items.map(r => <tr key={r.id}><td><button className="ex-link" onClick={() => openRun(r)}>{r.caseNo}</button><small>Phiên bản {r.revisionNo}</small></td><td>{r.titleVi}</td><td>{r.environmentName}<small>{r.deviceName}</small></td><td>{r.assigneeName}</td><td><Result value={r.resultCode} />{r.excluded && <small title={r.scopeReason}>NA · Ngoài phạm vi</small>}{!!r.pendingBugLink && <small>Chờ liên kết bug</small>}</td><td><div className="ui-actions ex-row-actions"><button className="cat-btn" disabled={r.fileWorkGroupId != null && !positiveId(r.fileWorkGroupId)} onClick={() => openRun(r)}>{r.fileWorkGroupId != null ? 'Công việc theo file' : !dev && data.cycle.statusCode === 'ACTIVE' && !r.excluded && r.assigneeUserId === user?.id ? 'Ghi kết quả' : 'Chi tiết / lịch sử'}</button>{manager && data.cycle.statusCode !== 'CLOSED' && <button className="cat-btn" onClick={() => setAssignment(r)}>Phân công</button>}{projectPm && data.cycle.statusCode === 'ACTIVE' && <button className="cat-btn" onClick={() => setDecision({ run: r })}>{r.excluded ? 'Khôi phục phạm vi' : 'Đánh dấu NA'}</button>}</div></td></tr>)}
+        {runs.items.map(r => <tr key={r.id}><td><button className="ex-link" onClick={() => openRun(r)}>{r.caseNo}</button><small>Phiên bản {r.revisionNo}</small></td><td>{r.titleVi}</td><td>{r.environmentName}<small>{r.deviceName}</small></td><td>{r.assigneeName}</td><td><Result value={r.resultCode} />{r.excluded && <small title={r.scopeReason}>NA · Ngoài phạm vi</small>}{!!r.pendingBugLink && <small>Chờ liên kết bug</small>}</td><td><div className="ui-actions ex-row-actions"><button className="cat-btn" disabled={r.fileWorkGroupId != null && !positiveId(r.fileWorkGroupId)} onClick={() => openRun(r)}>{r.fileWorkGroupId != null ? 'Công việc theo file' : !dev && data.cycle.statusCode === 'ACTIVE' && !r.excluded && (hasRole?.('ADMIN') || r.assigneeUserId === user?.id) ? 'Ghi kết quả' : 'Chi tiết / lịch sử'}</button>{manager && data.cycle.statusCode !== 'CLOSED' && (r.fileWorkGroupId != null ? <button className="cat-btn" disabled={!positiveId(r.fileWorkGroupId)} onClick={() => openRun(r)}>Giao lại file</button> : <button className="cat-btn" onClick={() => setAssignment(r)}>Phân công</button>)}{projectPm && data.cycle.statusCode === 'ACTIVE' && <button className="cat-btn" onClick={() => setDecision({ run: r })}>{r.excluded ? 'Khôi phục phạm vi' : 'Đánh dấu NA'}</button>}</div></td></tr>)}
         {!runs.items.length && <tr><td colSpan={6}>Chưa có lượt kiểm thử phù hợp.</td></tr>}
       </tbody></table></TableScroll><Pager data={runs} onChange={setPage} /></>}
-      {selected && <AttemptDialog key={selected.id} projectId={project.id} run={selected} builds={data.catalogs.builds} active={!dev && data.cycle.statusCode === 'ACTIVE' && !project.archived} currentUserId={user?.id} onClose={() => setSelected(null)} onSaved={refresh} timeZone={project.timezone} />}
+      {selected && <AttemptDialog globalAdmin={hasRole?.('ADMIN')} key={selected.id} projectId={project.id} run={selected} builds={data.catalogs.builds} active={!dev && data.cycle.statusCode === 'ACTIVE' && !project.archived} currentUserId={user?.id} onClose={() => setSelected(null)} onSaved={refresh} timeZone={project.timezone} />}
     </>}
     {decision && <CycleDecisionDialog projectId={project.id} {...decision} onClose={() => setDecision(null)} onSaved={() => { setDecision(null); refresh(); }} />}
     {assignment && <AssignmentDialog key={assignment.id} projectId={project.id} run={assignment} members={data.members} timeZone={project.timezone} onClose={() => setAssignment(null)} onSaved={() => { setAssignment(null); refresh(); }} />}

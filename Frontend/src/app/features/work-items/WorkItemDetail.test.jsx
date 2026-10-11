@@ -1,12 +1,13 @@
 import React from 'react';
 import { beforeEach, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { WorkItemDetail } from './WorkItemDetail';
 import { workItemsApi } from '../../services/api/workItems';
 vi.mock('../../services/api/workItems',()=>({workItemsApi:{get:vi.fn(),comments:vi.fn(),history:vi.fn(),comment:vi.fn(),update:vi.fn(),external:vi.fn(),clarify:vi.fn(),attachments:vi.fn(),transition:vi.fn()}}));
 const item={id:7,key:'DEMO-7',type:'BUG',title:'Màn hình trắng',description:'Mô tả',status:'open',priority:'MEDIUM',version:0,steps:'Đăng nhập',expectedResult:'Trang chủ',actualResult:'Trắng',links:[{attemptId:3,attemptNo:1,caseNo:'TC-1'}],externalReferences:[],clarifications:[],creator:'Tester',createdAt:'2026-09-29T05:00:00Z',updatedAt:'2026-09-29T05:00:00Z',allowedTransitions:[{id:'ready',label:'Sẵn sàng xử lý'}],contextSnapshot:JSON.stringify({build:{versionLabel:'1.0'},device:{name:'Máy cũ'},environment:{name:'QA cũ'}})};
 const catalogs={members:[{membershipId:8,displayName:'Tester',username:'tester'}],categories:[{id:9,name:'Đăng nhập'}],milestones:[{id:10,name:'M1'}],builds:[{id:11,platform:'WEB',versionLabel:'1.1'}]};
 const props={projectId:1,id:7,catalogs,canTriage:false,writable:true,membershipId:8,onChanged:vi.fn()};
+const deferred=()=>{let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};};
 beforeEach(()=>{vi.resetAllMocks();workItemsApi.get.mockResolvedValue(item);workItemsApi.comments.mockResolvedValue([]);workItemsApi.history.mockResolvedValue([]);workItemsApi.attachments.mockResolvedValue([]);});
 it('allows an assigned Dev transition from server permissions without PM editing controls',async()=>{
   workItemsApi.get.mockResolvedValue({...item,allowedTransitions:[{id:'progress',label:'Đang xử lý'},{id:'resolved',label:'Đã sửa'}],canComment:true});
@@ -78,4 +79,64 @@ it('shows the saved fixed build after PM resolves, without replacing the linked 
   fireEvent.change(screen.getByLabelText('Build đã sửa'),{target:{value:'11'}});fireEvent.change(screen.getByLabelText('Lý do chuyển trạng thái'),{target:{value:'Dev báo đã sửa'}});
   workItemsApi.get.mockResolvedValue({...item,status:'resolved',fixedBuildId:11});fireEvent.click(screen.getByRole('button',{name:'Xác nhận chuyển'}));
   await screen.findByText('WEB 1.1 (—)');expect(screen.getByText(/NG #3/)).toBeVisible();expect(props.onChanged).toHaveBeenCalled();
+});
+it('announces an information save immediately and confirms it at the save controls',async()=>{
+  const pending=deferred();workItemsApi.update.mockReturnValue(pending.promise);
+  render(<WorkItemDetail {...props} canTriage/>);fireEvent.click(await screen.findByText('Sửa thông tin và phân công'));
+  fireEvent.change(screen.getByLabelText('Lý do sửa'),{target:{value:'Cập nhật nội dung'}});
+  fireEvent.click(screen.getByRole('button',{name:'Lưu thông tin'}));
+  expect(screen.getByRole('button',{name:'Đang lưu thông tin…'})).toBeDisabled();
+  await act(async()=>pending.resolve({...item,version:1}));
+  expect(await screen.findByText('Đã lưu thông tin công việc.')).toBeVisible();
+});
+it('shows manual detail refresh progress while retaining the loaded ticket',async()=>{
+ render(<WorkItemDetail {...props}/>);await screen.findByText('DEMO-7');
+ const pending=deferred();workItemsApi.get.mockReturnValueOnce(pending.promise);
+ fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
+ expect(screen.getByRole('button',{name:'Đang tải chi tiết…'})).toBeDisabled();
+ expect(screen.getByText('Màn hình trắng',{selector:'h2'})).toBeVisible();
+ await act(async()=>pending.resolve(item));
+ expect(screen.getByRole('button',{name:'Tải lại chi tiết'})).toBeEnabled();
+});
+it('announces pending comment submission beside the comment form',async()=>{
+ const pending=deferred();workItemsApi.comment.mockReturnValueOnce(pending.promise);
+ render(<WorkItemDetail {...props}/>);await screen.findByLabelText('Nội dung bình luận');
+ fireEvent.change(screen.getByLabelText('Nội dung bình luận'),{target:{value:'Kiểm tra lại kết quả'}});
+ fireEvent.click(screen.getByRole('button',{name:'Đăng bình luận'}));
+ expect(screen.getByRole('button',{name:'Đang đăng bình luận…'})).toBeDisabled();
+ await act(async()=>pending.resolve({id:3}));
+ expect(await screen.findByText('Đã đăng bình luận.')).toBeVisible();
+});
+it('focuses a failed comment beside its preserved draft and reuses the exact retry key',async()=>{
+ workItemsApi.comment.mockRejectedValueOnce(new Error('Không đăng được bình luận')).mockResolvedValueOnce({id:3});
+ render(<WorkItemDetail {...props}/>);await screen.findByLabelText('Nội dung bình luận');
+ fireEvent.change(screen.getByLabelText('Nội dung bình luận'),{target:{value:'Giữ bình luận này'}});
+ fireEvent.click(screen.getByRole('button',{name:'Đăng bình luận'}));
+ const failure=await screen.findByText('Không đăng được bình luận');expect(failure).toHaveAttribute('role','alert');expect(failure).toHaveFocus();
+ expect(failure.closest('form')).toContainElement(screen.getByLabelText('Nội dung bình luận'));
+ expect(screen.getByLabelText('Nội dung bình luận')).toHaveValue('Giữ bình luận này');
+ fireEvent.click(screen.getByRole('button',{name:'Đăng bình luận'}));
+ await screen.findByText('Đã đăng bình luận.');
+ expect(workItemsApi.comment.mock.calls[0][2]).toEqual(workItemsApi.comment.mock.calls[1][2]);
+});
+it.each([['external','Lưu tham chiếu','Đã lưu tham chiếu tracker.'],['clarify','Lưu nội dung làm rõ','Đã lưu nội dung làm rõ.']])('announces %s writes rather than leaving the unchanged form silent',async(kind,label,success)=>{
+  const pending=deferred();workItemsApi[kind].mockReturnValue(pending.promise);
+  render(<WorkItemDetail {...props} canTriage/>);fireEvent.click(await screen.findByText('Tham chiếu tracker và nội dung làm rõ'));
+  if(kind==='external'){
+    fireEvent.change(screen.getByLabelText('Mã bên ngoài'),{target:{value:'123'}});
+    fireEvent.change(screen.getByLabelText('URL bên ngoài'),{target:{value:'https://tracker.example/issues/123'}});
+  }else for(const [field,value] of [['Tham chiếu xác nhận','Biên bản'],['Người xác nhận','PM'],['Thời điểm xác nhận','2026-10-11T09:00'],['Nội dung kết luận','Đã xác nhận']])fireEvent.change(screen.getByLabelText(field),{target:{value}});
+  fireEvent.click(screen.getByRole('button',{name:label}));
+  expect(screen.getByText('Đang lưu…',{selector:'[role="status"]'})).toBeVisible();
+  await act(async()=>pending.resolve(item));
+  expect(await screen.findByText(success)).toBeVisible();
+});
+it.each([['comments','Bình luận cũ hơn','Đã tải hết bình luận.'],['history','Lịch sử cũ hơn','Đã tải hết lịch sử.']])('finishes %s paging when an exact full page has no older rows',async(kind,label,done)=>{
+  const pending=deferred();
+  workItemsApi[kind].mockResolvedValueOnce(Array.from({length:50},(_,i)=>({id:100-i,body:'Bình luận '+i,reason:'Lý do '+i,author:'Tester',actor:'PM'}))).mockReturnValueOnce(pending.promise);
+  render(<WorkItemDetail {...props}/>);fireEvent.click(await screen.findByRole('button',{name:label}));
+  expect(screen.getByRole('button',{name:label})).toBeDisabled();
+  await act(async()=>pending.resolve([]));
+  expect(await screen.findByText(done)).toBeVisible();
+  expect(screen.queryByRole('button',{name:label})).not.toBeInTheDocument();
 });

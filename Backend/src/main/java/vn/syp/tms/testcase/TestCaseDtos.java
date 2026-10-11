@@ -58,7 +58,8 @@ public interface TestCaseDtos {
             boolean approved,
             Instant approvedAt,
             Instant createdAt,
-            Long createdBy
+            Long createdBy,
+            String createdByUserId
     ) {}
 
     record RevisionDetail(
@@ -76,7 +77,8 @@ public interface TestCaseDtos {
             boolean approved,
             Instant approvedAt,
             Instant createdAt,
-            Long createdBy
+            Long createdBy,
+            String createdByUserId
     ) {}
 
     record CaseDetail(

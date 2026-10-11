@@ -26,6 +26,13 @@ final class DocumentWorkbook {
             } else {
                 sheet = book.getSheet(sheetName);
                 if (sheet == null) throw new IllegalStateException("Stored document sheet is missing");
+                var header=sheet.getRow(0);
+                for(int c=0;c<headers.size();c++) {
+                    var cell=header.getCell(c);
+                    if(cell!=null && CustomerWorkbook.value(cell,1).equals(headers.get(c)))continue;
+                    if(cell==null){cell=header.createCell(c);sheet.setColumnWidth(c,30*256);}
+                    cell.setCellValue(headers.get(c));
+                }
             }
             for (var data : rows) {
                 var row = sheet.getRow(data.rowNumber()-1);

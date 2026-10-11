@@ -1,5 +1,5 @@
 import {TableScroll} from '../components/TableScroll';
-import { canManageProjectWork } from '../features/projects/projectAccess';
+import { canManageProjectWork, canImportTestCases } from '../features/projects/projectAccess';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Upload, FolderPlus, CheckCircle2, Clock, Eye, Search, Layers, ListCheck } from 'lucide-react';
 import { useProject } from '../features/projects/ProjectProvider';
@@ -17,6 +17,7 @@ export function TestSpecsPage({ navigate = () => {} }) {
   const currentProject = projectContext?.currentProject;
   const { hasRole } = useAuth();
   const canEdit = canManageProjectWork(currentProject, hasRole);
+  const canImport = canImportTestCases(currentProject, hasRole);
   const requestId = useRef(0);
 
   const [viewMode, setViewMode] = useState('cases'); // 'cases' or 'suites'
@@ -116,13 +117,15 @@ export function TestSpecsPage({ navigate = () => {} }) {
               >
                 <FolderPlus size={13} /> Tạo nhóm
               </button>
+            </>
+          )}
+          {canImport && (
               <button
                 onClick={() => setShowImport(true)}
                 className="cat-btn flex items-center gap-1 bg-slate-50 border-teal-300 text-teal-700 font-semibold"
               >
                 <Upload size={13} /> Nhập Excel
               </button>
-            </>
           )}
 
           <div className="relative">
@@ -278,7 +281,7 @@ export function TestSpecsPage({ navigate = () => {} }) {
                     <td className="text-slate-500 ui-caption">{new Date(s.createdAt).toLocaleDateString('vi-VN')}</td>
                     <td className="text-center">
                       <button
-                        onClick={() => { setSelectedSuiteId(String(s.id)); setViewMode('cases'); }}
+                        onClick={() => { setSelectedSuiteId(String(s.id)); setPage(0); setViewMode('cases'); }}
                         className="cat-btn ui-caption px-2 py-0.5"
                       >
                         Xem {s.caseCount || 0} cases
@@ -317,7 +320,7 @@ export function TestSpecsPage({ navigate = () => {} }) {
         <ImportExcelDialog
           projectId={currentProject.id}
           onClose={() => setShowImport(false)}
-          onSuccess={result => navigate?.(`/tests/documents/${result.id}`)}
+          onSuccess={result => result.id ? navigate?.(`/tests/documents/${result.id}`) : navigate?.('/tests')}
         />
       )}
 

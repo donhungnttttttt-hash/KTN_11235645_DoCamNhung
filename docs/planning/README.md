@@ -1,5 +1,31 @@
 # Kế hoạch phát triển theo sprint
 
+Yêu cầu mới 11/10: người dùng cho phép commit và push các thay đổi đã kiểm chứng lên nhánh hiện tại `system-design`. Quyền này chỉ áp dụng cho lần bàn giao này, không bao gồm merge/deploy. Các ghi chú “chưa push” bên dưới phản ánh thời điểm review trước yêu cầu mới.
+
+Rà soát sâu 11/10: [source, button và liên kết dữ liệu](../reviews/2026-10-11-deep-source-buttons-review.md). Đọc 354 file/29.224 dòng; sửa 12 lỗi, FE856, BE552 unit và 60 native PASS. Coverage FE 86,98/84,22/81,65/86,83; Java264 không lỗi/cảnh báo. Không đồng nhất kiểm tra source với UAT mọi trạng thái; giữ S11 IN_REVIEW, không commit/push.
+
+Kết quả thực thi 11/10: [nghiệp vụ đã chốt](2026-10-11-execution-document-results.md), [kiểm chứng](../reviews/2026-10-11-execution-document-results.md). Sửa popup mặc định NG; lần thực thi mới nhất cập nhật cột iPad một chiều, sửa iPad không đổi lượt test lần 2. FE846, native32 và lượt BE127 có test trùng PASS; JDT263source0lỗi0cảnhbáo, build/contract PASS. Backend local đã chạy lại V29, dữ liệu cũ giữ nguyên; không push, S11 IN_REVIEW.
+
+Rà lại nút 11/10: [các lỗi mới và bằng chứng](../reviews/2026-10-11-button-recheck.md). Sửa submit nhầm, bàn giao một phần, điều hướng muộn, focus/retry/phản hồi; full FE842, coverage toàn FE 86.85/83.95/81.35/86.65, build/contract PASS. Có ảnh Chrome; không commit/push, giữ S11 IN_REVIEW.
+
+Rà soát nút thao tác 11/10: [nguyên nhân, sửa chữa và bằng chứng](../reviews/2026-10-11-action-buttons-audit.md). Bàn giao nhiều máy có người nhận chung, thông báo thiếu dữ liệu và phản hồi cạnh nút; sửa thêm validation/lưu/phân trang/retry AI ở các module đang dùng. 822 FE, 547 unit BE, 16 native/inventory PASS; không commit/push.
+
+Sửa luồng 11/10: [kế hoạch W1–W7](2026-10-11-workflow-repair.md), [kiểm chứng](../reviews/2026-10-11-workflow-repair.md), [hướng dẫn sử dụng](../user-guides/project-testing-workflow.md). Giao theo file/khoảng ID, chia Tester, phản hồi lưu thành viên, bổ sung máy tại dự án và sửa UI dùng chung. Local V29; 791 FE, 547 unit BE, hồi quy native/migration và JDT 0 lỗi/cảnh báo PASS. Giữ S11 IN_REVIEW và không commit/push.
+
+Sửa bổ sung 11/10: [nút giao test lần 2](../reviews/2026-10-11-second-test-assignment.md). Admin/PM mở hộp phân công cho case nháp và duyệt phiên bản ngay trong hộp; hướng dẫn khi thiếu đợt/cấu hình/Tester. 765 test frontend và build PASS; không đổi backend/schema, không commit/push. Giữ S11 IN_REVIEW.
+
+Quyết định mới 10/10: [Admin tổng toàn quyền và khôi phục nút kết quả](2026-10-10-admin-full-authority.md), [kiểm chứng](../reviews/2026-10-10-admin-full-authority.md). Thay chế độ Admin chỉ xem; vòng bấm Unexecuted → OK → NG → P → NA → Unexecuted. Local V28; frontend 756, backend unit 546, native hồi quy 35 test PASS, Java 0 lỗi/cảnh báo. Không commit/push; giữ S11 IN_REVIEW.
+
+Sửa bổ sung 10/10: [chọn thiết bị và 39 Java Problems](../reviews/2026-10-10-device-picker-java-problems.md). Nhóm nút/hướng dẫn responsive; Eclipse kiểm tra 256 file còn 0 lỗi/0 cảnh báo; 20 test FE và 69 test BE liên quan PASS. Không commit/push.
+
+Bổ sung bảng tài liệu 10/10: [kế hoạch](2026-10-10-document-workspace.md), [review](../reviews/2026-10-10-document-workspace.md). Toolbar/phân trang ở trên, sửa ô có revision/lịch sử, PM phân công test lần 2 liên kết run thật; Flyway V27, 748 test frontend PASS. Giữ S11 IN_REVIEW, không commit/push.
+
+Bổ sung linkage/UI 10/10: [kế hoạch](2026-10-10-workflow-linkage-audit.md), [review](../reviews/2026-10-10-workflow-linkage-review.md). Search dropdown, bộ lọc một hàng, phóng to ticket và nguồn Excel trước phân công; audit 73 bảng/179 FK, integration V26 và kiểm thử frontend. Không push.
+
+Bổ sung UI 10/10: [popup và danh sách lựa chọn](2026-10-10-ui-dialog-selection-audit.md), [kiểm chứng](../reviews/2026-10-10-ui-dialog-selection-audit.md). Modal quản trị, bộ lọc/chọn tất cả/cột chọn-tên dùng chung; 736 test frontend PASS, kiểm tra responsive Chrome. Giữ riêng các giới hạn UAT/thiết bị thật và không push.
+
+Bổ sung 10/10: [Admin tổng nhập Excel và nhập nhiều file](2026-10-10-admin-excel-import.md). Quyền import tách khỏi quyền thực thi; V26 lưu đúng identity người nhập không cần membership. Không push khi chưa có yêu cầu mới.
+
 Phần mở rộng AI ngày 10/10: [kế hoạch](../superpowers/plans/2026-10-09-role-ai.md), [đặc tả theo vai trò](../product/AI-ASSISTANCE.md). Không gộp trạng thái nghiệm thu model live vào S11; gate số dư API và đánh giá chất lượng người dùng được ghi riêng.
 
 Mở rộng đã duyệt ngày 10/10: [nguồn AI và chat nổi](../superpowers/plans/2026-10-10-ai-providers-chat.md), [thiết kế](../superpowers/specs/2026-10-10-chatgpt-plan-connection-design.md). Đã triển khai lựa chọn ChatGPT/API/Ollama và hội thoại riêng lưu tạm MySQL; backend local đã lên V25, code đã qua review/sửa lỗi và kiểm chứng local; xem báo cáo bàn giao. OAuth và chất lượng model live phải được kiểm chứng riêng, không suy từ tài khoản trả phí.

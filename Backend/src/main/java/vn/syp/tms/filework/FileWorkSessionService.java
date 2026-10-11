@@ -21,7 +21,7 @@ public class FileWorkSessionService {
     public FileWorkSessionService(WorkItemStore db,FileWorkGuard guard,ProjectAudit audit,ObjectMapper json){this.db=db;this.guard=guard;this.audit=audit;this.json=json;}
 
     public Map<String,Object> start(long p,String actor,long id,FileWorkDtos.Start input) {
-        var caller=guard.authorize(p,actor,false);key(input.requestKey());positive(input.allocationId());positive(input.buildId());
+        var caller=guard.authorize(p,actor,false,true);key(input.requestKey());positive(input.allocationId());positive(input.buildId());
         var group=guard.group(p,id);var runs=guard.runs(p,id);
         var snapshot=guard.usable(p,caller,group,runs,input.allocationId(),input.buildId(),null);
         String checksum=db.checksum(List.of("START",p,id,input));
@@ -98,7 +98,7 @@ public class FileWorkSessionService {
     public FileWorkDtos.Page<Map<String,Object>> list(long p,String actor,long groupId,int page,int size){var caller=guard.authorize(p,actor,false);paging(page,size);var group=guard.group(p,groupId);long total=db.count("SELECT COUNT(*) FROM file_work_sessions WHERE project_id=? AND group_id=?",p,groupId);var values=db.rows("SELECT id FROM file_work_sessions WHERE project_id=? AND group_id=? ORDER BY id DESC LIMIT ? OFFSET ?",p,groupId,size,(long)page*size);var result=values.stream().map(s->read(p,caller,group,guard.session(p,number(s,"id"),false))).toList();return new FileWorkDtos.Page<>(result,total,page,size,(int)((total+size-1)/size));}
     public List<Map<String,Object>> eligible(long p,String actor,long groupId){var caller=guard.authorize(p,actor,false);var group=guard.group(p,groupId);var runs=guard.runs(p,groupId);guard.assigned(caller,runs);return eligibleCurrent(p,caller,group,runs);}
     private List<Map<String,Object>> eligibleCurrent(long p,FileWorkGuard.Actor caller,Map<String,Object> group,List<Map<String,Object>> runs){
-        var candidates=db.rows("SELECT al.id AS allocationId,al.lock_version AS allocationVersion,a.id AS assetId,a.asset_code AS assetCode,a.type,a.model,a.os_name AS osName,a.os_version AS osVersion,al.recipient_membership_id AS recipientMembershipId,al.expected_return_on AS expectedReturnOn FROM device_allocations al JOIN device_assets a ON a.id=al.asset_id WHERE al.project_id=? AND al.recipient_membership_id=? AND al.returned_at IS NULL AND a.condition_code='AVAILABLE' ORDER BY a.id,al.id",p,caller.membershipId());
+        var candidates=db.rows("SELECT al.id AS allocationId,al.lock_version AS allocationVersion,a.id AS assetId,a.asset_code AS assetCode,a.type,a.model,a.os_name AS osName,a.os_version AS osVersion,al.recipient_membership_id AS recipientMembershipId,al.expected_return_on AS expectedReturnOn FROM device_allocations al JOIN device_assets a ON a.id=al.asset_id WHERE al.project_id=? AND (? OR al.recipient_membership_id=?) AND al.returned_at IS NULL AND a.condition_code='AVAILABLE' ORDER BY a.id,al.id",p,caller.admin(),caller.membershipId());
         var eligible=new ArrayList<Map<String,Object>>();
         for(var allocation:candidates){try{guard.usable(p,caller,group,runs,number(allocation,"allocationId"),number(group,"defaultBuildId"),number(allocation,"assetId"));availableAsset(number(allocation,"assetId"),null);eligible.add(allocation);}catch(BusinessException e){if(!Set.of("ASSET_BUSY","ALLOCATION_INACTIVE","DEVICE_INCOMPATIBLE").contains(e.code()))throw e;}}
         return eligible;
@@ -111,7 +111,7 @@ public class FileWorkSessionService {
         caps.put("canAssign",caller.pm()&&!caller.archived()&&!"CLOSED".equals(group.get("cycleStatus"))&&!groupOpen);caps.put("canCancel",caller.pm()&&!caller.archived()&&open);
         if(!caller.tester() || caller.archived())return caps;
         try{var runs=guard.runs(p,number(group,"id"));guard.assigned(caller,runs);
-            if(session!=null && open){if(number(session,"executorMembershipId")!=caller.membershipId())return caps;guard.usable(p,caller,group,runs,number(session,"allocationId"),number(session,"buildId"),number(session,"assetId"));boolean doing="DOING".equals(session.get("state"));caps.put("canPause",doing);caps.put("canRecord",doing);caps.put("canComplete",doing&&guard.completionReady(p,number(group,"id"),number(session,"buildId")));if(!doing){availableAsset(number(session,"assetId"),number(session,"id"));caps.put("canResume",true);}}
+            if(session!=null && open){if(!caller.admin() && number(session,"executorMembershipId")!=caller.membershipId())return caps;guard.usable(p,caller,group,runs,number(session,"allocationId"),number(session,"buildId"),number(session,"assetId"));boolean doing="DOING".equals(session.get("state"));caps.put("canPause",doing);caps.put("canRecord",doing);caps.put("canComplete",doing&&guard.completionReady(p,number(group,"id"),number(session,"buildId")));if(!doing){availableAsset(number(session,"assetId"),number(session,"id"));caps.put("canResume",true);}}
             else if(!groupOpen)caps.put("canStart",!eligibleCurrent(p,caller,group,runs).isEmpty());
         }catch(BusinessException e){/* UI hints fail closed; commands recheck and return the actionable error. */}return caps;
     }

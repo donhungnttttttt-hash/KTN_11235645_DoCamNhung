@@ -6,7 +6,8 @@ import { WorkError, WorkField } from './WorkItemForm';
 export function EvidencePanel({ projectId, workId, writable, canTriage, membershipId }) {
   const [files, setFiles] = useState([]), [file, setFile] = useState(null), [error, setError] = useState(''), [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false), [revision, setRevision] = useState(0), [message, setMessage] = useState('');
-  const input = useRef(null), live = useRef(true);
+  const [downloading,setDownloading]=useState(null);
+  const input = useRef(null), live = useRef(true), downloadLock=useRef(false);
   useEffect(() => { live.current = true; return () => { live.current = false; }; }, []);
   useEffect(() => {
     let current = true;
@@ -22,10 +23,12 @@ export function EvidencePanel({ projectId, workId, writable, canTriage, membersh
     catch (e) { if (live.current) setError(e.message); } finally { if (live.current) setBusy(false); }
   }
   async function download(attachment) {
-    setError('');
+    if(downloadLock.current)return;
+    downloadLock.current=true;setDownloading(attachment.id);setError('');setMessage(`Đang tải ${attachment.name}…`);
     try { const blob = await workItemsApi.download(projectId, workId, attachment.id); if (!live.current) return;
-      const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = attachment.name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
-    catch (e) { if (live.current) setError(e.message); }
+      const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = attachment.name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);setMessage(`Đã gửi ${attachment.name} tới trình duyệt để tải xuống.`); }
+    catch (e) { if (live.current) {setError(e.message);setMessage('');} }
+    finally{downloadLock.current=false;if(live.current)setDownloading(null);}
   }
   async function remove(attachment) {
     setBusy(true);setError('');
@@ -35,7 +38,7 @@ export function EvidencePanel({ projectId, workId, writable, canTriage, membersh
   return <section className="wi-section"><h3>Chứng cứ</h3><p className="wi-note">PNG, JPG, PDF, MP4 · Tối đa 20 MiB/tệp · Chỉ thành viên dự án</p>
     <WorkError error={error} retry={() => setRevision(r => r + 1)} />{message && <p role="status">{message}</p>}
     {writable && <div className="wi-actions"><WorkField label="Chọn chứng cứ"><input ref={input} type="file" accept=".png,.jpg,.jpeg,.pdf,.mp4" disabled={busy} onChange={e => { setFile(e.target.files[0] || null); setError(''); }} /></WorkField><Button primary disabled={!file || busy} onClick={upload}>{busy ? 'Đang lưu…' : 'Tải chứng cứ lên'}</Button></div>}
-    {files.map(attachment => <div className="wi-actions" key={attachment.id}><Button onClick={() => download(attachment)}>{attachment.name}</Button><span className="wi-note">{Math.ceil(attachment.size / 1024)} KiB</span>
+    {files.map(attachment => <div className="wi-actions" key={attachment.id}><Button disabled={downloading!==null} onClick={() => download(attachment)}>{attachment.name}</Button><span className="wi-note">{Math.ceil(attachment.size / 1024)} KiB</span>
       {writable && (canTriage || attachment.uploadedBy === membershipId) && <Button disabled={busy} onClick={() => remove(attachment)}>Gỡ {attachment.name}</Button>}</div>)}
     {loaded && !files.length && <p className="wi-note">Chưa có chứng cứ.</p>}
   </section>;

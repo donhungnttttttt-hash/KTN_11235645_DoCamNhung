@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   X,
+  Maximize2,
+  Minimize2,
   ChevronDown,
   Search,
   Paperclip,
@@ -189,12 +191,14 @@ export function Modal({
   onClose,
   wide = false,
   drawer = false,
+  busy = false,
 }) {
-  const ref = useDialogFocus(onClose);
+  const ref = useDialogFocus(onClose, busy);
+  const [expanded,setExpanded]=useState(false);
   return (
     <div
       className={`d-modal-backdrop ${drawer ? "wb-drawer-backdrop" : ""}`}
-      onClick={onClose}
+      onClick={busy ? undefined : onClose}
     >
       <section
         ref={ref}
@@ -202,12 +206,15 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`d-modal ${wide ? "wide" : ""} ${drawer ? "wb-drawer" : ""}`}
+        className={`d-modal ${wide ? "wide" : ""} ${drawer ? "wb-drawer" : ""} ${expanded?'is-expanded':''}`}
         onClick={(e) => e.stopPropagation()}
       >
         <header>
           <h2>{title}</h2>
-          <IconButton icon={X} label="Đóng hộp thoại" onClick={onClose} />
+          <div className="d-modal-window-actions">
+            {drawer&&<IconButton icon={expanded?Minimize2:Maximize2} label={expanded?'Thu nhỏ ticket':'Phóng to ticket'} aria-pressed={expanded} onClick={()=>setExpanded(value=>!value)}/>}
+            <IconButton icon={X} label="Đóng hộp thoại" disabled={busy} onClick={onClose} />
+          </div>
         </header>
         <div className="d-modal-body">{children}</div>
       </section>

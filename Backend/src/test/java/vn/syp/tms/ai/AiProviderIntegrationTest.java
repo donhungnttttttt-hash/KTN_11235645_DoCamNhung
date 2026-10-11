@@ -17,7 +17,7 @@ class AiProviderIntegrationTest {
     @Test void ollamaCatalogAndStructuredNonstreamInferenceUseInstalledModel()throws Exception {
         response("/api/tags",200,"{\"models\":[{\"name\":\"qwen3:8b\"}]}");
         response("/api/chat",200,"{\"model\":\"qwen3:8b\",\"done\":true,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"answer\\\":\\\"ok\\\"}\"},\"prompt_eval_count\":3,\"eval_count\":2}");
-        var client=new OllamaClient(config(),json);assertThat(client.models()).extracting(AiProviderGateway.Model::id).containsExactly("qwen3:8b");
+        var client=new OllamaClient(config(),json);assertThat(client.models()).extracting(model->model.id()).containsExactly("qwen3:8b");
         var output=client.generate("qwen3:8b","Only facts",json.createObjectNode(),json.createObjectNode().put("type","object"));
         assertThat(output.value().path("answer").asText()).isEqualTo("ok");var sent=json.readTree(request.get());assertThat(sent.path("stream").asBoolean()).isFalse();assertThat(sent.path("format").path("type").asText()).isEqualTo("object");
     }

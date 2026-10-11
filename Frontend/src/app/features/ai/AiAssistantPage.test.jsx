@@ -56,11 +56,40 @@ it('retains the request key after a timeout and never starts a duplicate paid re
  await screen.findByRole('heading',{name:'Báo cáo của tôi'});
  expect(api.generate).toHaveBeenCalledTimes(2);expect(api.generate.mock.calls[0][1]).toEqual(api.generate.mock.calls[1][1]);
 });
+it('keeps a pending paid request when refreshing draft metadata',async()=>{
+ api.generate.mockRejectedValueOnce(Object.assign(new Error('Chậm'),{code:'TIMEOUT'}));
+ render(<AiWorkspace projectId={1} api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Phân tích'}));
+ await screen.findByRole('button',{name:'Kiểm tra lại yêu cầu'});
+ fireEvent.click(screen.getByRole('button',{name:'Cập nhật danh sách'}));
+ await waitFor(()=>expect(api.list).toHaveBeenCalledTimes(2));
+ fireEvent.click(screen.getByRole('button',{name:'Kiểm tra lại yêu cầu'}));
+ await screen.findByRole('heading',{name:'Báo cáo của tôi'});
+ expect(api.generate.mock.calls[1][1]).toEqual(api.generate.mock.calls[0][1]);
+});
 it('requires an allowed target and explains an empty target list',async()=>{
  render(<AiWorkspace projectId={1} api={api}/>);await screen.findByRole('button',{name:'Phân tích'});
  fireEvent.change(screen.getByLabelText('Tác vụ AI'),{target:{value:'TESTER_BUG_DRAFT'}});
  await screen.findByText(/Chưa có file hoặc ticket phù hợp/);
  expect(screen.getByRole('button',{name:'Phân tích'})).toBeDisabled();
+});
+it('retries source search with the same keyword after a failed read',async()=>{
+ api.targets.mockRejectedValueOnce(new Error('Không tải được nguồn')).mockResolvedValueOnce({items:[{id:8,label:'Bug được phép'}],hasMore:false});
+ render(<AiWorkspace projectId={1} api={api}/>);await screen.findByRole('button',{name:'Phân tích'});
+ fireEvent.change(screen.getByLabelText('Tác vụ AI'),{target:{value:'TESTER_BUG_DRAFT'}});
+ await screen.findByText('Không tải được nguồn');
+ fireEvent.click(screen.getByRole('button',{name:'Tìm',exact:true}));
+ expect(await screen.findByRole('option',{name:'Bug được phép'})).toBeInTheDocument();
+ expect(api.targets).toHaveBeenCalledTimes(2);
+ expect(screen.queryByText('Không tải được nguồn')).not.toBeInTheDocument();
+});
+it('retries the failed source request from the error recovery button',async()=>{
+ api.targets.mockRejectedValueOnce(new Error('Không tải được nguồn')).mockResolvedValueOnce({items:[{id:8,label:'Bug sau khi thử lại'}],hasMore:false});
+ render(<AiWorkspace projectId={1} api={api}/>);await screen.findByRole('button',{name:'Phân tích'});
+ fireEvent.change(screen.getByLabelText('Tác vụ AI'),{target:{value:'TESTER_BUG_DRAFT'}});
+ await screen.findByText('Không tải được nguồn');
+ fireEvent.click(screen.getByRole('button',{name:'Tải lại danh sách'}));
+ expect(await screen.findByRole('option',{name:'Bug sau khi thử lại'})).toBeInTheDocument();
+ expect(api.targets).toHaveBeenCalledTimes(2);
 });
 it('keeps saved drafts readable when generation is disabled and reads details from the server',async()=>{
  api.metadata.mockResolvedValue({enabled:false,role:'TESTER',retentionDays:7,purposes});api.list.mockResolvedValue([draft]);

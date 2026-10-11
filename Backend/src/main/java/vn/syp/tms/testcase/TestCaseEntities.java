@@ -184,8 +184,11 @@ public class TestCaseEntities {
         @Column(name = "created_at", nullable = false)
         private Instant createdAt;
 
-        @Column(name = "created_by", nullable = false)
+        @Column(name = "created_by")
         private Long createdBy;
+
+        @Column(name = "created_by_user_id", length = 36)
+        private String createdByUserId;
 
         @PrePersist
         protected void onCreate() {
@@ -230,6 +233,8 @@ public class TestCaseEntities {
         public Instant getCreatedAt() { return createdAt; }
         public Long getCreatedBy() { return createdBy; }
         public void setCreatedBy(Long createdBy) { this.createdBy = createdBy; }
+        public String getCreatedByUserId() { return createdByUserId; }
+        public void setCreatedByUserId(String createdByUserId) { this.createdByUserId = createdByUserId; }
     }
 
     @Entity

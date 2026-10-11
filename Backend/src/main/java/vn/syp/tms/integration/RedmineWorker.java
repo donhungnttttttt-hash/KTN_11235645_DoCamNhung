@@ -56,7 +56,7 @@ public class RedmineWorker {
         return new Claim(p,id,lease,job,binding,blocked);
     }
     private boolean allowed(Map<String,Object> job) {
-        return db.count("SELECT COUNT(*) FROM project_memberships m JOIN identity_users u ON u.id=m.user_id JOIN projects p ON p.id=m.project_id WHERE m.project_id=? AND m.id=? AND m.active=TRUE AND u.enabled=TRUE AND m.project_role='PM' AND p.archived_at IS NULL",job.get("project_id"),job.get("dispatch_by"))==1;
+        return db.count("SELECT COUNT(*) FROM project_memberships m JOIN identity_users u ON u.id=m.user_id JOIN projects p ON p.id=m.project_id WHERE m.project_id=? AND m.id=? AND u.enabled=TRUE AND p.archived_at IS NULL AND (u.role_code='ADMIN' OR (u.role_code<>'DEV' AND m.active=TRUE AND m.project_role='PM'))",job.get("project_id"),job.get("dispatch_by"))==1;
     }
     private boolean reserveCreate(Claim c) {
         return Boolean.TRUE.equals(transaction.execute(s->{

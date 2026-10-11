@@ -500,7 +500,8 @@ public class ChatGptConnectionService {
         if (key == null || !key.matches("[A-Za-z0-9_-]{8,64}")) throw new BusinessException(422, "AI_INVALID_INPUT", "Invalid request key.");
         Object reservation = locked(() -> {
             requireId(id);
-            var probes = saved.withArray("probes");
+            var next = saved.deepCopy();
+            var probes = next.withArray("probes");
             for (var prior : probes) {
                 if (key.equals(prior.path("requestKey").asText())) {
                     if (!model.equals(prior.path("model").asText()) || !id.equals(prior.path("connectionId").asText())) throw conflict("AI_REQUEST_CONFLICT");
@@ -516,8 +517,8 @@ public class ChatGptConnectionService {
                 if (probes.get(i).path("date").asText().compareTo(LocalDate.now(ZoneOffset.UTC).minusDays(7).toString()) < 0) probes.remove(i);
             probes.addObject().put("requestKey", key).put("model", model).put("connectionId", id)
                     .put("version", selection.connectionVersion()).put("date", today).put("state", "GENERATING");
-            if (model.equals(saved.path("verifiedModel").asText())) saved.remove(List.of("verifiedModel", "verifiedAt"));
-            vault.write(saved);
+            if (model.equals(next.path("verifiedModel").asText())) next.remove(List.of("verifiedModel", "verifiedAt"));
+            persist(next);
             return selection;
         });
         if (reservation instanceof Probe prior) return prior;

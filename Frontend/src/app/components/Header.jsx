@@ -2,9 +2,11 @@ import React from "react";
 import { Menu } from "lucide-react";
 import { AccountMenu } from "../features/auth/AccountMenu";
 import { ProjectSelector } from "../features/projects/ProjectSelector";
+import { useChatLauncherSlot } from "../features/ai/ChatLauncherSlot";
 import "../features/projects/projects.css";
 
 export function Header({ navigate, onOpenMenu, menuOpen = false }) {
+  const registerChatSlot = useChatLauncherSlot();
   return (
     <header className="app-header">
       <button
@@ -27,6 +29,7 @@ export function Header({ navigate, onOpenMenu, menuOpen = false }) {
       <div className="app-header-project">
         <ProjectSelector />
       </div>
+      <div className="app-chat-launcher-slot" ref={registerChatSlot} />
       <div className="app-header-details">
         <AccountMenu />
       </div>

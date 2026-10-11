@@ -23,6 +23,7 @@ describe('admin route boundary',()=>{
   await userEvent.setup().click(screen.getByRole('button',{name:/^Dự án (tiếp|sau trong bộ chọn)$/}));
   await screen.findByRole('option',{name:'P2 · Second'});
   expect(screen.getByRole('button',{name:'Phạm vi dự án'})).toHaveTextContent('P1 · First');
+  expect(screen.queryByText(/Đã chọn:/)).not.toBeInTheDocument();
  });
  test('different identity remount cannot inherit a retained explicit workspace query',async()=>{
   const workspaceIdentity={current:null};window.history.replaceState(null,'','#/dashboard?workspace=1');
@@ -91,7 +92,9 @@ describe('admin route boundary',()=>{
   render(<AdminApp route="/admin/projects?projectId=2"/>);
   await waitFor(()=>expect(screen.getByRole('link',{name:'Dự án'})).toHaveAttribute('href','#/admin/projects'));
   expect(screen.getByLabelText('Phạm vi dự án').closest('header')).toBeNull();
-  await userEvent.setup().selectOptions(screen.getByLabelText('Phạm vi dự án'),'');
+  await userEvent.setup().click(screen.getByRole('button',{name:'Phạm vi dự án'}));
+  expect(screen.getByRole('combobox',{name:'Tìm dự án theo tên hoặc mã'})).toBeInTheDocument();
+  await userEvent.setup().click(await screen.findByRole('option',{name:'Tất cả dự án'}));
   expect(window.location.hash).toBe('#/admin/projects');
  });
  test('explicit project workspace keeps existing project providers',()=>{

@@ -13,8 +13,10 @@ import vn.syp.tms.workitem.WorkItemStore;
 public class FileWorkGuard {
     private final WorkItemStore db;
     private final IdentityService identity;
-    public FileWorkGuard(WorkItemStore db,IdentityService identity){this.db=db;this.identity=identity;}
-    public record Actor(long membershipId,boolean pm,boolean tester,boolean archived) {}
+    private final vn.syp.tms.project.ProjectActorService actors;
+    public FileWorkGuard(WorkItemStore db,IdentityService identity,vn.syp.tms.project.ProjectActorService actors){this.db=db;this.identity=identity;this.actors=actors;}
+    public record Actor(long membershipId,boolean pm,boolean tester,boolean archived,boolean admin) {}
+    public long adminActor(long p,String actor,boolean write) { return write?actors.forWrite(p,actor):actors.existing(p,actor); }
     public record Context(Actor actor,Map<String,Object> group,List<Map<String,Object>> runs,
                           Map<String,Object> session,Map<String,Object> snapshot) {}
 
@@ -29,15 +31,19 @@ public class FileWorkGuard {
         return account;
     }
     public Actor authorize(long p,String actor,boolean pmWrite) {
+        return authorize(p,actor,pmWrite,false);
+    }
+    public Actor authorize(long p,String actor,boolean pmWrite,boolean executionWrite) {
         positive(p);var account=lockIdentity(actor);
         var project=db.row("SELECT id,archived_at AS archivedAt FROM projects WHERE id=? FOR UPDATE",p);
-        // Membership ID 0 is a read-only observer, never a persisted/assignable member.
-        if(!pmWrite && "ADMIN".equals(account.getRole()) && db.rows(
-            "SELECT id FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",p,actor).isEmpty())
-            return new Actor(0,false,false,project.get("archivedAt")!=null);
+        if("ADMIN".equals(account.getRole())) {
+            boolean archived=project.get("archivedAt")!=null;
+            if((pmWrite||executionWrite) && archived)fail(409,"ARCHIVED","Dự án đã được lưu trữ.");
+            return new Actor(adminActor(p,actor,pmWrite||executionWrite),true,true,archived,true);
+        }
         var member=db.row("SELECT id,project_role AS projectRole FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",p,actor);
         boolean effective=!"DEV".equals(account.getRole());
-        var caller=new Actor(number(member,"id"),effective&&"PM".equals(member.get("projectRole")),effective&&"TESTER".equals(member.get("projectRole")),project.get("archivedAt")!=null);
+        var caller=new Actor(number(member,"id"),effective&&"PM".equals(member.get("projectRole")),effective&&"TESTER".equals(member.get("projectRole")),project.get("archivedAt")!=null,false);
         if(pmWrite && !caller.pm())fail(403,"FORBIDDEN","Chỉ PM hiện hành của dự án được hủy phiên.");
         if(pmWrite && caller.archived())fail(409,"ARCHIVED","Dự án đã được lưu trữ.");
         return caller;
@@ -55,6 +61,7 @@ public class FileWorkGuard {
     }
     public void assigned(Actor actor,List<Map<String,Object>> runs) {
         if(actor.archived())fail(409,"ARCHIVED","Dự án đã được lưu trữ.");
+        if(actor.admin())return;
         if(!actor.tester())fail(403,"FORBIDDEN","Chỉ TESTER được giao file được thực thi.");
         var ids=runs.stream().map(r->number(r,"assigneeMembershipId")).distinct().toList();
         if(ids.size()!=1)fail(409,"ASSIGNMENT_MIXED","PM cần giao lại toàn bộ file trước khi thực thi.");
@@ -74,18 +81,20 @@ public class FileWorkGuard {
         if(pinnedAsset!=null && pinnedAsset!=assetId)fail(409,"SESSION_CONTEXT_MISMATCH","Phân bổ không còn khớp máy đã pin.");
         var asset=db.row("SELECT id,asset_code AS assetCode,type,model,serial,os_name AS osName,os_version AS osVersion,condition_code AS conditionCode FROM device_assets WHERE id=? FOR UPDATE",assetId);
         var assigned=db.row("SELECT id,project_id AS projectId,asset_id AS assetId,recipient_membership_id AS recipientMembershipId,assigned_at AS assignedAt,returned_at AS returnedAt FROM device_allocations WHERE project_id=? AND id=? FOR UPDATE",p,allocation);
-        if(assigned.get("returnedAt")!=null || number(assigned,"recipientMembershipId")!=actor.membershipId() || number(assigned,"assetId")!=assetId)fail(409,"ALLOCATION_INACTIVE","Máy phải được phân bổ hiện hành cho chính bạn trong dự án.");
+        if(assigned.get("returnedAt")!=null || !actor.admin() && number(assigned,"recipientMembershipId")!=actor.membershipId() || number(assigned,"assetId")!=assetId)fail(409,"ALLOCATION_INACTIVE","Máy phải có phân bổ hiện hành trong dự án.");
         if(!"AVAILABLE".equals(asset.get("conditionCode")))fail(409,"ALLOCATION_INACTIVE","Máy không còn sẵn sàng để thực thi.");
         compatible(device,asset,selected);
-        var executor=db.row("SELECT m.id AS membershipId,u.display_name AS displayName,u.username FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.id=? AND m.active=TRUE AND m.project_role='TESTER' AND u.enabled=TRUE AND u.role_code<>'DEV' FOR SHARE",p,actor.membershipId());
+        var executor=actor.admin() && actor.membershipId()==0
+            ? Map.<String,Object>of("membershipId",0L,"displayName","Quản trị tổng","role","ADMIN")
+            : db.row("SELECT m.id AS membershipId,u.display_name AS displayName,u.username FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.id=? AND u.enabled=TRUE AND (u.role_code='ADMIN' OR (m.active=TRUE AND m.project_role='TESTER' AND u.role_code<>'DEV')) FOR SHARE",p,actor.membershipId());
         var snapshot=new LinkedHashMap<String,Object>();
         for(String key:List.of("id","documentId","cycleId","configurationId"))snapshot.put(key.equals("id")?"groupId":key,group.get(key));
         snapshot.put("revisionIds",runs.stream().map(r->number(r,"revisionId")).toList());
         snapshot.put("environment",without(environment,"active"));snapshot.put("device",without(device,"active"));snapshot.put("build",without(selected,"archivedAt"));snapshot.put("executor",executor);snapshot.put("physicalAsset",without(asset,"conditionCode"));snapshot.put("allocation",without(assigned,"returnedAt","projectId","assetId"));return snapshot;
     }
     public Context execution(long p,String actor,long sessionId) {
-        var caller=authorize(p,actor,false);var located=session(p,sessionId,false);var group=group(p,number(located,"groupId"));var runs=runs(p,number(group,"id"));var session=session(p,sessionId,true);
-        if(number(session,"executorMembershipId")!=caller.membershipId())fail(403,"NOT_SESSION_EXECUTOR","Chỉ người thực thi của phiên được thao tác.");
+        var caller=authorize(p,actor,false,true);var located=session(p,sessionId,false);var group=group(p,number(located,"groupId"));var runs=runs(p,number(group,"id"));var session=session(p,sessionId,true);
+        if(!caller.admin() && number(session,"executorMembershipId")!=caller.membershipId())fail(403,"NOT_SESSION_EXECUTOR","Chỉ người thực thi của phiên được thao tác.");
         var snapshot=usable(p,caller,group,runs,number(session,"allocationId"),number(session,"buildId"),number(session,"assetId"));
         return new Context(caller,group,runs,session,snapshot);
     }

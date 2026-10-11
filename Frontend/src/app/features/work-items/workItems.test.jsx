@@ -1,6 +1,6 @@
 import React from 'react';
 import { beforeEach, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { NewWorkItemForm } from './WorkItemForm';
 import { TransitionDialog } from './TransitionDialog';
 import { workItemsApi } from '../../services/api/workItems';
@@ -80,4 +80,13 @@ it('allows retrying NG context lookup without creating a partial bug',async()=>{
   render(<NewWorkItemForm projectId={1} catalogs={catalogs} attemptId={8} onCreated={()=>{}}/>);
   await screen.findByText('Không lấy được lần chạy');expect(screen.queryByRole('button',{name:'Tạo công việc'})).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));await screen.findByDisplayValue('Trắng');expect(workItemsApi.create).not.toHaveBeenCalled();
+});
+it('visibly disables close during a pending transition and restores it on failure',async()=>{
+ let reject;workItemsApi.transition.mockReturnValue(new Promise((_resolve,fail)=>{reject=fail;}));
+ const close=vi.fn();render(<TransitionDialog projectId={1} items={[{id:'DEMO-9',serverId:9,typeCode:'BUG',status:'open',version:0}]} status="ready" catalogs={catalogs} onClose={close} onSaved={vi.fn()}/>);
+ fireEvent.change(screen.getByLabelText('Lý do chuyển trạng thái'),{target:{value:'Đã đủ thông tin'}});fireEvent.click(screen.getByRole('button',{name:'Xác nhận chuyển'}));
+ expect(screen.getByRole('button',{name:'Đóng hộp thoại'})).toBeDisabled();
+ fireEvent.keyDown(document,{key:'Escape'});expect(close).not.toHaveBeenCalled();
+ await act(async()=>reject(new Error('Chưa lưu được')));
+ expect(screen.getByRole('button',{name:'Đóng hộp thoại'})).toBeEnabled();fireEvent.click(screen.getByRole('button',{name:'Đóng hộp thoại'}));expect(close).toHaveBeenCalledOnce();
 });

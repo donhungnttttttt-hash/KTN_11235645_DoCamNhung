@@ -45,6 +45,7 @@ class TestDocumentIntegrationTest {
     @Autowired IdentityUserRepository users;
     @Autowired ProjectService projects;
     @Autowired TestCaseService cases;
+    @Autowired vn.syp.tms.execution.ExecutionService execution;
     IdentityUser owner, pm, tester, outsider;
     Long project;
     @BeforeEach void setup() {
@@ -70,6 +71,121 @@ class TestDocumentIntegrationTest {
         mvc.perform(post(path("/import-previews/"+id+"/commit")).with(actor(pm)).with(csrf())).andExpect(status().isOk());
         return id;
     }
+    @Test void globalAdminCyclesNewDocumentResultsAndReloadsWithAudit() throws Exception {
+        long id=imported();
+        var first=body(mvc.perform(get(path("/test-documents/"+id)).with(actor(outsider))).andReturn());
+        assertThat(first.at("/rows/0/resultStatus").asText()).isEqualTo("UNEXECUTED");
+        long row=first.at("/rows/0/rowId").asLong();
+        long version=0;
+        for(String result:List.of("OK","NG","P","NA","UNEXECUTED")) {
+            var input=Map.of("status",result,"expectedVersion",version,"requestKey",UUID.randomUUID().toString());
+            mvc.perform(put(path("/test-documents/"+id+"/rows/"+row+"/result")).with(actor(outsider)).with(csrf())
+                .contentType("application/json").content(Objects.requireNonNull(json.writeValueAsString(input)))).andExpect(status().isOk());
+            mvc.perform(get(path("/test-documents/"+id)).with(actor(outsider)))
+                .andExpect(jsonPath("$.rows[0].resultStatus").value(result));
+            version++;
+        }
+        mvc.perform(get(path("/test-documents/"+id+"/rows/"+row+"/result-history")).with(actor(outsider)))
+            .andExpect(jsonPath("$.length()").value(5));
+    }
+    @Test void pmEditsCellsWithConflictProtectionAndOriginalPreservation() throws Exception {
+        long id=imported();
+        byte[] original=mvc.perform(get(path("/test-documents/"+id+"/export?original=true")).with(actor(pm))).andReturn().getResponse().getContentAsByteArray();
+        var row=body(mvc.perform(get(path("/test-documents/"+id)).with(actor(pm))).andReturn()).at("/rows/0");
+        String endpoint=path("/test-documents/"+id+"/rows/"+row.get("rowId").asLong()+"/cells/4");
+        String payload=Objects.requireNonNull(json.writeValueAsString(Map.of("value","Quan điểm đã sửa","expectedVersion",0,"expectedRevisionId",row.get("revisionId").asLong())));
+        mvc.perform(put(endpoint).with(actor(tester)).with(csrf()).contentType("application/json").content(payload)).andExpect(status().isForbidden());
+        mvc.perform(put(endpoint).with(actor(outsider)).with(csrf()).contentType("application/json").content(payload)).andExpect(status().isOk());
+        mvc.perform(put(endpoint).with(actor(pm)).with(csrf()).contentType("application/json").content(payload)).andExpect(status().isConflict());
+        mvc.perform(get(path("/test-documents/"+id)).with(actor(tester))).andExpect(jsonPath("$.rows[0].cells[4]").value("Quan điểm đã sửa"));
+        mvc.perform(get(endpoint+"/history").with(actor(pm))).andExpect(status().isOk()).andExpect(jsonPath("$[0].afterValue").value("Quan điểm đã sửa"));
+        String titleEndpoint=endpoint.substring(0,endpoint.length()-1)+"1";
+        mvc.perform(put(titleEndpoint).with(actor(pm)).with(csrf()).contentType("application/json").content(Objects.requireNonNull(payload.replace("Quan điểm đã sửa","Tiêu đề mới")))).andExpect(status().isOk());
+        mvc.perform(get(path("/test-documents/"+id)).with(actor(pm))).andExpect(jsonPath("$.rows[0].cells[1]").value("Tiêu đề mới"));
+        var bytes=mvc.perform(get(path("/test-documents/"+id+"/export?original=true")).with(actor(pm))).andReturn().getResponse().getContentAsByteArray();
+        assertThat(bytes).isEqualTo(original);
+    }
+    @Test void adminCreatesApprovesAssignsAndExecutesSecondTestForAnotherTester() throws Exception {
+        long id=imported();
+        var row=body(mvc.perform(get(path("/test-documents/"+id)).with(actor(pm))).andReturn()).at("/rows/0");
+        long revision=row.get("revisionId").asLong(),caseId=row.get("caseId").asLong();
+        jdbc.update("INSERT INTO environments(project_id,code,name,created_at,updated_at) VALUES(?,'QA','QA',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",project);
+        jdbc.update("INSERT INTO devices(project_id,code,name,created_at,updated_at) VALUES(?,'WEB','Browser',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",project);
+        jdbc.update("INSERT INTO builds(project_id,version_label,platform,created_at,updated_at) VALUES(?,'2','WEB',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",project);
+        long env=Objects.requireNonNull(jdbc.queryForObject("SELECT id FROM environments WHERE project_id=?",Long.class,project));
+        long device=Objects.requireNonNull(jdbc.queryForObject("SELECT id FROM devices WHERE project_id=?",Long.class,project));
+        long build=Objects.requireNonNull(jdbc.queryForObject("SELECT id FROM builds WHERE project_id=?",Long.class,project));
+        long member=Objects.requireNonNull(jdbc.queryForObject("SELECT id FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,project,tester.getId()));
+        var cycle=execution.create(project,outsider.getId(),new vn.syp.tms.execution.ExecutionDtos.CreateCycle("SECOND","Test lần 2",null));
+        long cycleId=((Number)cycle.get("id")).longValue();
+        cycle=execution.configure(project,outsider.getId(),cycleId,new vn.syp.tms.execution.ExecutionDtos.Configuration(env,device,build,0L));
+        long config=((Number)execution.configurations(project,pm.getId(),cycleId).getFirst().get("id")).longValue();
+        var input=new LinkedHashMap<String,Object>(Map.of("cycleId",cycleId,"configurationId",config,"assigneeMembershipId",member,"note","Kiểm tra sau sửa","expectedVersion",0,"expectedCycleVersion",cycle.get("version"),"expectedRevisionId",revision));
+        String endpoint=path("/test-documents/"+id+"/rows/"+row.get("rowId").asLong()+"/second-test");
+        String payload=Objects.requireNonNull(json.writeValueAsString(input));
+        mvc.perform(put(endpoint).with(actor(tester)).with(csrf()).contentType("application/json").content(payload)).andExpect(status().isForbidden());
+        mvc.perform(put(endpoint).with(actor(outsider)).with(csrf()).contentType("application/json").content(payload)).andExpect(status().isUnprocessableEntity());
+        mvc.perform(put(endpoint).with(actor(pm)).with(csrf()).contentType("application/json").content(payload)).andExpect(status().isUnprocessableEntity());
+        cases.approveRevision(project,outsider.getId(),caseId,revision);
+        mvc.perform(put(endpoint).with(actor(outsider)).with(csrf()).contentType("application/json").content(payload)).andExpect(status().isOk());
+        mvc.perform(put(endpoint).with(actor(pm)).with(csrf()).contentType("application/json").content(payload)).andExpect(status().isConflict());
+        var assignment=body(mvc.perform(get(path("/test-documents/"+id)).with(actor(tester))).andReturn()).at("/secondTests/0");
+        long run=assignment.get("runItemId").asLong();
+        assertThat(assignment.get("assigneeMembershipId").asLong()).isEqualTo(member);
+        assertThat(execution.runs(project,tester.getId(),cycleId,0,20,true,false).items()).hasSize(1);
+        cycle=execution.cycle(project,pm.getId(),cycleId);
+        execution.activate(project,outsider.getId(),cycleId,new vn.syp.tms.execution.ExecutionDtos.Version(((Number)cycle.get("version")).longValue()));
+        var attempt=execution.record(project,outsider.getId(),run,new vn.syp.tms.execution.ExecutionDtos.Attempt("OK",build,"Đã kiểm tra","","",UUID.randomUUID().toString(),0L));
+        assertThat(attempt.get("executorName")).isEqualTo(outsider.getDisplayName());
+        assertThat(execution.run(project,outsider.getId(),run).get("assigneeMembershipId")).isEqualTo(member);
+        mvc.perform(get(path("/test-documents/"+id)).with(actor(pm))).andExpect(jsonPath("$.secondTests[0].resultCode").value("OK"))
+                .andExpect(jsonPath("$.rows[0].resultStatus").value("OK"));
+        String resultEndpoint=path("/test-documents/"+id+"/rows/"+row.get("rowId").asLong()+"/result");
+        mvc.perform(put(resultEndpoint).with(actor(outsider)).with(csrf()).contentType("application/json")
+                .content("{\"status\":\"NG\",\"expectedVersion\":1,\"requestKey\":\""+UUID.randomUUID()+"\"}"))
+                .andExpect(status().isOk());
+        mvc.perform(get(path("/test-documents/"+id)).with(actor(pm))).andExpect(jsonPath("$.secondTests[0].resultCode").value("OK"))
+                .andExpect(jsonPath("$.rows[0].resultStatus").value("NG"));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM execution_attempts WHERE project_id=?",Long.class,project)).isEqualTo(1);
+        assertThat(execution.run(project,outsider.getId(),run).get("resultCode")).isEqualTo("OK");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM run_items WHERE project_id=?",Long.class,project)).isEqualTo(1);
+        input.put("expectedVersion",1);input.put("expectedRunVersion",1);
+        input.put("note","Đối chiếu xong");
+        mvc.perform(put(endpoint).with(actor(pm)).with(csrf()).contentType("application/json").content(Objects.requireNonNull(json.writeValueAsString(input)))).andExpect(status().isOk());
+        input.put("expectedVersion",2);input.put("assigneeMembershipId",jdbc.queryForObject("SELECT id FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,project,pm.getId()));
+        mvc.perform(put(endpoint).with(actor(pm)).with(csrf()).contentType("application/json").content(Objects.requireNonNull(json.writeValueAsString(input)))).andExpect(status().isUnprocessableEntity());
+        byte[] exported=mvc.perform(get(path("/test-documents/"+id+"/export")).with(actor(pm))).andReturn().getResponse().getContentAsByteArray();
+        try(var book=new XSSFWorkbook(new ByteArrayInputStream(exported))) {
+            assertThat(book.getSheetAt(0).getRow(0).getCell(14).getStringCellValue()).isEqualTo("Người test lần 2");
+            assertThat(book.getSheetAt(0).getRow(1).getCell(15).getStringCellValue()).isEqualTo("Đối chiếu xong");
+        }
+    }
+    @Test void globalAdminImportsWithoutMembershipAndKeepsRealAuthor() throws Exception {
+        mvc.perform(get(path("/import-previews/template")).with(actor(outsider))).andExpect(status().isOk());
+        var preview = body(mvc.perform(multipart(path("/import-previews")).file(file(CustomerWorkbookFixture.bytes())).with(actor(outsider)).with(csrf()))
+                .andExpect(status().isOk()).andReturn());
+        long id = preview.get("id").asLong();
+        mvc.perform(post(path("/import-previews/"+id+"/commit")).with(actor(outsider)).with(csrf())).andExpect(status().isOk());
+        mvc.perform(post(path("/import-previews/"+id+"/commit")).with(actor(outsider)).with(csrf())).andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,project,outsider.getId())).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM test_case_revisions WHERE project_id=? AND created_by IS NULL AND created_by_user_id=?",Long.class,project,outsider.getId())).isEqualTo(preview.get("validRows").asLong());
+        mvc.perform(get(path("/test-documents")).with(actor(pm))).andExpect(jsonPath("$.items[0].updatedBy").value(outsider.getDisplayName()));
+        var detail=body(mvc.perform(get(path("/test-documents/"+id)).with(actor(outsider))).andExpect(status().isOk()).andReturn());
+        long caseId=detail.at("/rows/0/caseId").asLong(), revisionId=detail.at("/rows/0/revisionId").asLong();
+        mvc.perform(get(path("/test-cases/"+caseId)).with(actor(outsider))).andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentRevision.createdBy").isEmpty()).andExpect(jsonPath("$.currentRevision.createdByUserId").value(outsider.getId()));
+        mvc.perform(post(path("/test-suites")).with(actor(outsider)).with(csrf()).contentType("application/json").content("{\"code\":\"MANUAL\",\"name\":\"Manual suite\"}")).andExpect(status().isOk());
+        mvc.perform(post(path("/test-cases/"+caseId+"/revisions/"+revisionId+"/approve")).with(actor(outsider)).with(csrf())).andExpect(status().isOk());
+    }
+    @Test void importStillEnforcesRolesOwnershipAndArchivedProjects() throws Exception {
+        var dev=users.saveAndFlush(new IdentityUser("doc.dev."+UUID.randomUUID().toString().substring(0,8),"Dev thử","unused-hash","DEV"));
+        projects.addOrUpdateMember(project,owner.getId(),dev.getId(),new ProjectDtos.SetMember("DEV"));
+        for(var denied:List.of(tester,dev)) mvc.perform(multipart(path("/import-previews")).file(file(CustomerWorkbookFixture.bytes())).with(actor(denied)).with(csrf())).andExpect(status().isForbidden());
+        var preview=cases.createImportPreview(project,pm.getId(),file(CustomerWorkbookFixture.bytes()));
+        mvc.perform(post(path("/import-previews/"+preview.id()+"/commit")).with(actor(outsider)).with(csrf())).andExpect(status().isNotFound());
+        jdbc.update("UPDATE projects SET archived_at=UTC_TIMESTAMP(6) WHERE id=?",project);
+        mvc.perform(multipart(path("/import-previews")).file(file(CustomerWorkbookFixture.bytes())).with(actor(outsider)).with(csrf())).andExpect(status().isConflict());
+    }
     @Test void documentResultPersistsExportsAndAuditsWithoutChangingOriginalOrExecution() throws Exception {
         long id=imported();
         var first=body(mvc.perform(get(path("/test-documents/"+id)).with(actor(tester))).andExpect(status().isOk()).andReturn());
@@ -78,7 +194,7 @@ class TestDocumentIntegrationTest {
         String payload=Objects.requireNonNull(json.writeValueAsString(Map.of("status","NG","expectedVersion",0,"requestKey",UUID.randomUUID().toString())));
         for(int attempt=0;attempt<2;attempt++) mvc.perform(put(endpoint).with(actor(tester)).with(csrf()).contentType("application/json").content(payload))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("NG")).andExpect(jsonPath("$.version").value(1));
-        mvc.perform(put(endpoint).with(actor(outsider)).with(csrf()).contentType("application/json").content(payload)).andExpect(status().isNotFound());
+        mvc.perform(put(endpoint).with(actor(outsider)).with(csrf()).contentType("application/json").content(payload)).andExpect(status().isConflict());
         mvc.perform(put(endpoint).with(actor(tester)).with(csrf()).contentType("application/json").content(Objects.requireNonNull(payload.replace("NG","OK")))).andExpect(status().isConflict());
         mvc.perform(get(path("/test-documents/"+id)).with(actor(tester))).andExpect(jsonPath("$.rows[0].cells[8]").value("NG"))
                 .andExpect(jsonPath("$.document.resultCounts.NG").value(1));

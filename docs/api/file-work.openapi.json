@@ -3,7 +3,7 @@
   "info": {
     "title": "File work — implemented F01–F05",
     "version": "1.0.0",
-    "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. Effective global DEV can only read. No client actor/time, provenance switch, session-detail GET or DB-health routes. See markdown contract for transactional lifecycle policy. Bean Validation constraints return 422 VALIDATION_ERROR; malformed JSON and parameter type binding return 400 INVALID_REQUEST."
+    "description": "Global ADMIN has full business authority without active project membership or assignment, including PM/Tester/Dev commands. Project scope, archive/state/version/context validation and actual actor attribution remain enforced. Role/ownership restrictions below apply to non-ADMIN users. Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. Global ADMIN or current project PM with global role not DEV; unarchived project. Effective global DEV can only read. No client actor/time, provenance switch, session-detail GET or DB-health routes. See markdown contract for transactional lifecycle policy. Bean Validation constraints return 422 VALIDATION_ERROR; malformed JSON and parameter type binding return 400 INVALID_REQUEST. Update 2026-10-11: one source document/cycle/configuration can have multiple groups assigned to different Testers; each group has a disjoint case scope. V29 preserves run uniqueness and project/source foreign keys."
   },
   "paths": {
     "/api/v1/projects/{projectId}/file-work-groups/metadata": {
@@ -14,7 +14,7 @@
       ],
       "get": {
         "operationId": "fileWorkMetadata",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Current PM canCreate; TESTER canViewMine; scope hints independent.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. Current PM canCreate; TESTER canViewMine; scope hints independent.",
         "security": [
           {
             "sessionCookie": []
@@ -122,7 +122,7 @@
       ],
       "post": {
         "operationId": "previewFileWorkScope",
-        "description": "Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. No database write. Source COMMITTED; DRAFT cycle; pinned approved distinct revisions; errors returned inside 200 Preview.",
+        "description": "Global ADMIN or current project PM with global role not DEV; unarchived project. No database write. Source COMMITTED; DRAFT cycle; pinned approved distinct revisions; errors returned inside 200 Preview.",
         "security": [
           {
             "sessionCookie": [],
@@ -241,7 +241,7 @@
       ],
       "post": {
         "operationId": "createFileWorkGroup",
-        "description": "Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. Creates scope in chunks <=100 in one transaction; max500 runs and50 configurations per cycle. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "description": "Global ADMIN or current project PM with global role not DEV; unarchived project. Creates scope in chunks <=100 in one transaction; max500 runs and50 configurations per cycle. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
         "security": [
           {
             "sessionCookie": [],
@@ -361,7 +361,7 @@
       },
       "get": {
         "operationId": "listFileWorkGroups",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Group ID descending. mine requires consistent assignment to current actor; mismatched mine+assignee returns no rows. build filters session/attempt presence.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. Group ID descending. mine requires consistent assignment to current actor; mismatched mine+assignee returns no rows. build filters session/attempt presence.",
         "security": [
           {
             "sessionCookie": []
@@ -576,7 +576,7 @@
       ],
       "get": {
         "operationId": "getFileWorkGroup",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Sessions latest100 descending. Selected build: latest session build, otherwise default.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. Sessions latest100 descending. Selected build: latest session build, otherwise default.",
         "security": [
           {
             "sessionCookie": []
@@ -694,7 +694,7 @@
       ],
       "put": {
         "operationId": "assignFileWorkGroup",
-        "description": "Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. Requires no DOING/PAUSED session, non-CLOSED cycle, all canonical run versions. MIXED assignment is repaired only by whole-group assignment. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "description": "Global ADMIN or current project PM with global role not DEV; unarchived project. Requires no DOING/PAUSED session, non-CLOSED cycle, all canonical run versions. MIXED assignment is repaired only by whole-group assignment. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
         "security": [
           {
             "sessionCookie": [],
@@ -823,7 +823,7 @@
       ],
       "get": {
         "operationId": "fileWorkHistory",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. ID-desc cursor; 50 per page; before=0 is latest, nextBefore null when exhausted.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. ID-desc cursor; 50 per page; before=0 is latest, nextBefore null when exhausted.",
         "security": [
           {
             "sessionCookie": []
@@ -954,7 +954,7 @@
       ],
       "get": {
         "operationId": "listFileWorkSessions",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Session ID descending.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. Session ID descending.",
         "security": [
           {
             "sessionCookie": []
@@ -1720,7 +1720,7 @@
       ],
       "post": {
         "operationId": "cancelFileWorkSession",
-        "description": "Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. DOING/PAUSED -> CANCELLED; reason required; PM may cancel after underlying assignment/allocation revocation. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "description": "Global ADMIN or current project PM with global role not DEV; unarchived project. DOING/PAUSED -> CANCELLED; reason required; PM may cancel after underlying assignment/allocation revocation. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
         "security": [
           {
             "sessionCookie": [],
@@ -1849,7 +1849,7 @@
       ],
       "get": {
         "operationId": "fileWorkExecutionView",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Pinned immutable revisions, canonical build results and workbook cells. Default selected build is latest session or configuration default. NA derives scope decision. Other source rows are out of scope.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. Pinned immutable revisions, canonical build results and workbook cells. Default selected build is latest session or configuration default. NA derives scope decision. Other source rows are out of scope.",
         "security": [
           {
             "sessionCookie": []
@@ -2126,7 +2126,7 @@
       ],
       "get": {
         "operationId": "exportFileWorkExecution",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Consistent selected-build pinned snapshot; authorization precedes BLOB. SourceMode EXECUTION, preserves safe Unicode/style/unmapped cells, removes unsafe formulas/links, marks other rows OUT_OF_SCOPE.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. Consistent selected-build pinned snapshot; authorization precedes BLOB. SourceMode EXECUTION, preserves safe Unicode/style/unmapped cells, removes unsafe formulas/links, marks other rows OUT_OF_SCOPE.",
         "security": [
           {
             "sessionCookie": []
@@ -4580,7 +4580,6 @@
       "VERSION_CONFLICT",
       "IDEMPOTENCY_CONFLICT",
       "DUPLICATE_SCOPE",
-      "FILE_GROUP_EXISTS",
       "ASSIGNMENT_MIXED",
       "SESSION_OPEN",
       "SESSION_NOT_DOING",

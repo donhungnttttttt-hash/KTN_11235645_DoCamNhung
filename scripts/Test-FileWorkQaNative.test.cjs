@@ -62,7 +62,7 @@ test('wrong selected database and bad host do not reach Maven',()=>{
 });
 test('valid integration launches only selected test with structured secret-free arguments',()=>{
  let call;
- const result=run([schema,'integration','NativeFileWorkQaIntegrationTest'],{readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:['19'],spawn:(command,args,options)=>{call={command,args,options};return {status:0};}});
+ const result=run([schema,'integration','NativeFileWorkQaIntegrationTest'],{readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:['29'],spawn:(command,args,options)=>{call={command,args,options};return {status:0};}});
  assert.equal(result,0);assert.equal(call.command,'rtk');
  assert.ok(call.args.includes('-Dtest=NativeFileWorkQaIntegrationTest'));
  assert.ok(!JSON.stringify(call.args).includes(config.TMS_MIGRATION_PASSWORD));

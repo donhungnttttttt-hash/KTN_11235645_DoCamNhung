@@ -29,7 +29,7 @@ async function open(){const user=userEvent.setup();const view=render(<TestDocume
 
 it('cycles repeatedly on the cell without any extra row, form, modal or context picker',async()=>{
   const {user,button}=await open();expect(button).toHaveTextContent('Unexecuted');
-  for(let round=0;round<2;round++)for(const [label,color] of [['OK','ok'],['P','pending'],['NG','ng'],['Fixed','fixed'],['NA','na'],['Unexecuted','-']]){
+  for(let round=0;round<2;round++)for(const [label,color] of [['OK','ok'],['NG','ng'],['P','pending'],['NA','na'],['Unexecuted','-']]){
     await user.click(button);expect(button).toHaveTextContent(label);
     expect(button.closest('td')).toHaveClass(`td-outcome-${color}`);
     expect(screen.queryByRole('dialog')).toBeNull();
@@ -41,7 +41,7 @@ it('cycles repeatedly on the cell without any extra row, form, modal or context 
   expect(executionApi.record).not.toHaveBeenCalled();expect(executionApi.decideScope).not.toHaveBeenCalled();
 });
 it('keeps each row selection independently when filtering and changing another row',async()=>{
-  const {user,button}=await open();await user.click(button);await user.click(button);
+  const {user,button}=await open();await user.click(button);await user.click(button);await user.click(button);
   await user.click(screen.getByRole('button',{name:'Kết quả test case 2'}));
   expect(button).toHaveTextContent('P');
   await user.selectOptions(screen.getByLabelText('Lọc kết quả'),'PENDING');
@@ -60,7 +60,7 @@ it('serializes quick clicks and prevents export until the last write completes',
   const save=testCasesApi.updateDocumentResult.getMockImplementation();let resolve;
   testCasesApi.updateDocumentResult.mockImplementationOnce((...args)=>new Promise(done=>{resolve=()=>save(...args).then(done);}));
   const {user,button}=await open();await user.click(button);await user.click(button);await user.click(button);
-  expect(button).toHaveTextContent('NG');expect(testCasesApi.updateDocumentResult).toHaveBeenCalledTimes(1);
+  expect(button).toHaveTextContent('P');expect(testCasesApi.updateDocumentResult).toHaveBeenCalledTimes(1);
   expect(screen.getByRole('button',{name:'Xuất Excel'})).toBeDisabled();
   resolve();await waitFor(()=>expect(testCasesApi.updateDocumentResult).toHaveBeenCalledTimes(3));
   await waitFor(()=>expect(screen.getByRole('button',{name:'Xuất Excel'})).toBeEnabled());
@@ -85,13 +85,13 @@ it('does not allow cycling archived project data',async()=>{
   render(<TestDocumentPage documentId="9" navigate={vi.fn()}/>);
   expect(await screen.findByRole('button',{name:'Kết quả test case 1'})).toBeDisabled();
 });
-it('lets a global admin inspect and export a document without recording a test result',async()=>{
+it('lets a global admin cycle, persist and reload results without project membership',async()=>{
   context.currentProject.projectRole=null;context.role='ADMIN';
   const user=userEvent.setup();render(<TestDocumentPage documentId="9" navigate={vi.fn()}/>);
   const button=await screen.findByRole('button',{name:'Kết quả test case 1'});
-  expect(button).toBeDisabled();await user.click(button);
-  expect(testCasesApi.updateDocumentResult).not.toHaveBeenCalled();
+  expect(button).toBeEnabled();await user.click(button);
+  await waitFor(()=>expect(testCasesApi.updateDocumentResult).toHaveBeenCalledWith(1,'9',1,expect.objectContaining({status:'OK',expectedVersion:0})));
   expect(screen.getByRole('button',{name:'Xuất Excel'})).toBeEnabled();
-  expect(screen.getByRole('button',{name:'Xem kết quả theo đợt'})).toBeEnabled();
+  expect(screen.getByRole('button',{name:'Ghi kết quả'})).toBeEnabled();
   expect(screen.getAllByRole('button',{name:'Lịch sử / chứng cứ'})[0]).toBeEnabled();
 });

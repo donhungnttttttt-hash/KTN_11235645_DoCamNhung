@@ -58,6 +58,7 @@ function Workspace({projectId,projectName,api,edits}) {
  const providers=useAiProviders();
  const [metadata,setMetadata]=useState(null),[history,setHistory]=useState([]),[purpose,setPurpose]=useState('');
  const [targets,setTargets]=useState(null),[target,setTarget]=useState(''),[search,setSearch]=useState(''),[query,setQuery]=useState('');
+ const [targetRetry,retryTargets]=useState(0),[targetError,setTargetError]=useState('');
  const [draft,setDraft]=useState(null),[text,setText]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState('');
  const [loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[targetLoading,setTargetLoading]=useState(false),[revision,setRevision]=useState(0);
  const [pending,setPending]=useState(null),[more,setMore]=useState(false);
@@ -73,13 +74,14 @@ function Workspace({projectId,projectName,api,edits}) {
  },[api,projectId,revision]);
  const selected=metadata?.purposes.find(p=>p.code===purpose);
  useEffect(()=>{
-  setTarget('');setTargets(null);setPending(null);request.current=null;
+  setTarget('');setTargets(null);setTargetError('');setPending(null);request.current=null;
   if(!selected||selected.target==='NONE'){setTargetLoading(false);return;}
-  const abort=new AbortController();setTargetLoading(true);
+  const abort=new AbortController();setTargetLoading(true);setError('');
   api.targets(projectId,purpose,query,{signal:abort.signal}).then(rows=>{if(!abort.signal.aborted)setTargets(rows);})
-   .catch(e=>{if(!abort.signal.aborted)setError(e.message);}).finally(()=>{if(!abort.signal.aborted)setTargetLoading(false);});
+   .catch(e=>{if(!abort.signal.aborted)setTargetError(e.message);}).finally(()=>{if(!abort.signal.aborted)setTargetLoading(false);});
   return()=>abort.abort();
- },[api,projectId,purpose,selected?.target,query]);
+ },[api,projectId,purpose,selected?.target,query,targetRetry]);
+ function searchTargets(){setQuery(search.trim());retryTargets(value=>value+1);}
  const editKey=id=>`${projectId}:${id}`;
  function show(value,saved=false){
   if(saved)edits.delete(editKey(value.id));
@@ -123,7 +125,8 @@ function Workspace({projectId,projectName,api,edits}) {
      <label className="ai-field">Tác vụ AI<select value={purpose} disabled={busy||!!pending} onChange={e=>{setPurpose(e.target.value);setQuery('');setSearch('');}}>{metadata.purposes.map(p=><option key={p.code} value={p.code}>{p.label}</option>)}</select></label>
      <p className="ai-description">{descriptions[purpose]}</p>
      {selected?.target!=='NONE'&&selected&&<div className="ai-target">
-      <div className="ai-search"><label className="ai-field">Tìm file hoặc ticket<input value={search} maxLength={80} disabled={busy||!!pending} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'){e.preventDefault();setQuery(search.trim());}}}/></label><button className="ai-button" disabled={busy||!!pending} onClick={()=>setQuery(search.trim())}>Tìm</button></div>
+      {targetError&&<div className="ai-error" role="alert">{targetError} <button className="ai-button" disabled={busy||!!pending||targetLoading} onClick={()=>retryTargets(value=>value+1)}>Tải lại danh sách</button></div>}
+      <div className="ai-search"><label className="ai-field">Tìm file hoặc ticket<input value={search} maxLength={80} disabled={busy||!!pending} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'){e.preventDefault();searchTargets();}}}/></label><button className="ai-button" disabled={busy||!!pending||targetLoading} onClick={searchTargets}>{targetLoading?'Đang tìm…':'Tìm'}</button></div>
       <label className="ai-field">File hoặc ticket<select value={target} disabled={busy||targetLoading||!!pending} onChange={e=>setTarget(e.target.value)}><option value="">Chọn một mục</option>{targets?.items.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
       {target&&<p className="ai-selected">{targets?.items.find(t=>String(t.id)===target)?.label}</p>}
       {targetLoading&&<p role="status">Đang tải các mục được phép…</p>}

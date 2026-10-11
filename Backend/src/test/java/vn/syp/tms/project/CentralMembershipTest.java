@@ -12,7 +12,7 @@ class CentralMembershipTest {
     final MembershipRepository memberships=mock(MembershipRepository.class);
     final IdentityService identity=mock(IdentityService.class);
     final IdentityUserRepository users=mock(IdentityUserRepository.class);
-    final ProjectService service=new ProjectService(projects,memberships,identity,mock(ProjectAudit.class),users);
+    final ProjectService service=new ProjectService(projects,memberships,identity,mock(ProjectAudit.class),users,mock(ProjectActorService.class));
     static IdentityUserRepository.CurrentAccount account(String role) {
         return new IdentityUserRepository.CurrentAccount() {
             public String getId(){return "id";}
@@ -80,5 +80,17 @@ class CentralMembershipTest {
         when(identity.lockCurrent("actor")).thenReturn(account("PM"));
         assertEquals(403,assertThrows(BusinessException.class,()->service.addOrUpdateMember(1L,"actor","target",new ProjectDtos.SetMember("TESTER"))).status());
         verifyNoInteractions(users,projects,memberships);
+    }
+    @Test void memberListExposesAccountAvailabilityWithoutHidingMembershipHistory() throws Exception {
+        var enabled=new IdentityUser("active","Active","hash","TESTER");
+        var disabled=new IdentityUser("locked","Locked","hash","TESTER");disabled.setEnabled(false);
+        when(identity.current("admin")).thenReturn(new IdentityUser("admin","Admin","hash","ADMIN"));
+        when(projects.existsById(1L)).thenReturn(true);
+        when(memberships.findByProjectIdAndActiveTrue(1L)).thenReturn(List.of(new ProjectMembership(1L,"a","TESTER"),new ProjectMembership(1L,"b","TESTER")));
+        when(users.findById("a")).thenReturn(Optional.of(enabled));when(users.findById("b")).thenReturn(Optional.of(disabled));
+        var result=new com.fasterxml.jackson.databind.ObjectMapper().valueToTree(service.listMembers(1L,"admin"));
+        assertTrue(result.get(0).has("enabled"));assertTrue(result.get(0).get("enabled").asBoolean());
+        assertTrue(result.get(1).has("enabled"));assertFalse(result.get(1).get("enabled").asBoolean());
+        assertTrue(result.get(1).get("active").asBoolean());
     }
 }

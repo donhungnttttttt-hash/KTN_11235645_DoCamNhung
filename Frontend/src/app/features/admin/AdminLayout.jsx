@@ -3,15 +3,17 @@ import { Home, FolderKanban, Users, TabletSmartphone, ScrollText, PanelsTopLeft,
 import { useAuth } from '../auth/AuthProvider';
 import { adminApi } from '../../services/api/admin';
 import { AdminUserProjectFilter } from './AdminUserProjectFilter';
+import { useChatLauncherSlot } from '../ai/ChatLauncherSlot';
 
 export function AdminLayout({path,projectId,navigate,children,api=adminApi}) {
   const {user,logout}=useAuth();
+  const registerChatSlot=useChatLauncherSlot();
   const [logoutError,setLogoutError]=useState('');const [busy,setBusy]=useState(false);
   const projectsPage=path.startsWith('/admin/projects');
   async function signOut() {setBusy(true);setLogoutError('');try{await logout();}catch(error){setLogoutError(error.message);}finally{setBusy(false);}}
   return <div className="admin-shell">
     <a className="admin-skip" href="#admin-main" onClick={event=>{event.preventDefault();document.getElementById('admin-main')?.focus();}}>Đến nội dung</a>
-    <header className="admin-header"><div><strong>TMS</strong><span>Quản trị hệ thống</span></div><div><span>{user.displayName}</span><button onClick={signOut} disabled={busy}>{busy ? 'Đang đăng xuất…' : 'Đăng xuất'}</button></div></header>
+    <header className="admin-header"><div><strong>TMS</strong><span>Quản trị hệ thống</span></div><div><span>{user.displayName}</span><button onClick={signOut} disabled={busy}>{busy ? 'Đang đăng xuất…' : 'Đăng xuất'}</button><div className="admin-chat-launcher-slot" ref={registerChatSlot}/></div></header>
     <aside className="admin-sidebar">
       <nav aria-label="Quản trị">
         {[
@@ -33,7 +35,7 @@ export function AdminLayout({path,projectId,navigate,children,api=adminApi}) {
     <main id="admin-main" className="admin-main" tabIndex={-1}>
       {logoutError && <p role="alert">{logoutError}</p>}
       {projectsPage && <section className="admin-project-filter" aria-label="Lọc dự án">
-        <AdminUserProjectFilter key={path==='/admin/projects'?'list':'detail'} searchable={path!=='/admin/projects'} api={api} label="Phạm vi dự án" value={projectId || ''} onChange={id=>navigate(path,id)}/>
+        <AdminUserProjectFilter key={path==='/admin/projects'?'list':'detail'} api={api} label="Phạm vi dự án" value={projectId || ''} onChange={id=>navigate(path,id)}/>
       </section>}
       {children}
     </main>

@@ -47,6 +47,31 @@ class ChatGptConnectionServiceTest {
         assertThatThrownBy(()->service.probe("owner",id,"other-model","probe-key1")).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);
     }
     @Test void disconnectFencesOldSelectionAndReportsRemoteRevocationFailure(){var p=authorize();service.completeCallback(p.get("attemptId"),p);var c=service.connection("owner");var selection=new AiProviderGateway.ResolvedSelection("CHATGPT","test",c.id(),c.version());assertThat(service.disconnect("owner",c.id(),c.version()).remoteRevoked()).isFalse();assertThatThrownBy(()->service.withCurrent("owner",selection,()->"persisted")).hasMessage("AI_CONNECT_REQUIRED");}
+    @Test void failedProbeAdmissionPreservesVerificationAndSameKeyRetryActuallyRuns() {
+        var prior=json.createObjectNode().put("id","conn").put("version",1)
+                .put("accessToken","test-token").put("expiresAt",Instant.now().plusSeconds(3600).getEpochSecond())
+                .put("scopes",ChatGptOAuthClient.SCOPES).put("verifiedModel","test").put("verifiedAt",Instant.now().toString());
+        when(vault.read()).thenReturn(prior);service.close();service=new ChatGptConnectionService(config,access,vault,oauth,client,json);
+        when(client.models(anyString())).thenReturn(List.of(new AiProviderGateway.Model("test","Test")));
+        service.models("owner","conn");
+        var value=json.createObjectNode().put("title","Test").put("summary","Connected");
+        value.putArray("observations");value.putArray("suggestedActions");value.putArray("missingInformation");
+        when(client.generate(anyString(),anyString(),anyString(),any(),anyString(),any()))
+                .thenReturn(new OpenAiResponsesClient.Output(value,"resp_test","test",1,1));
+        doThrow(new OpenAiResponsesClient.Failure("AI_CREDENTIAL_STORE_FAILED")).doNothing().when(vault).write(any());
+        var verified=service.connection("owner");
+        assertThatThrownBy(()->service.probe("owner","conn","test","probe-admission-retry"))
+                .hasMessage("AI_CREDENTIAL_STORE_FAILED");
+        verify(client,never()).generate(anyString(),anyString(),anyString(),any(),anyString(),any());
+        var afterFailure=service.connection("owner");
+        var retried=service.probe("owner","conn","test","probe-admission-retry");
+        org.junit.jupiter.api.Assertions.assertAll(
+                ()->assertThat(afterFailure).isEqualTo(verified),
+                ()->assertThat(retried.state()).isEqualTo("READY"),
+                ()->verify(client,times(1)).generate(anyString(),anyString(),anyString(),any(),anyString(),any()));
+        assertThat(service.probe("owner","conn","test","probe-admission-retry").state()).isEqualTo("READY");
+        verify(client,times(1)).generate(anyString(),anyString(),anyString(),any(),anyString(),any());
+    }
     @Test void replacingConnectionDuringProbeCannotVerifyNewConnection() {
         var p=authorize();service.completeCallback(p.get("attemptId"),p);String id=service.connection("owner").id();
         when(client.models(anyString())).thenReturn(List.of(new AiProviderGateway.Model("test","Test")));service.models("owner",id);
@@ -131,7 +156,7 @@ class ChatGptConnectionServiceTest {
         var clock=mock(java.time.Clock.class);var now=new java.util.concurrent.atomic.AtomicReference<>(receipt);
         when(clock.instant()).thenAnswer(call->now.get());
         service.close();service=new ChatGptConnectionService(config,access,vault,oauth,client,json,clock);
-        Map<String,String> params=refreshing?null:authorize();
+        Map<String,String> params=refreshing?Map.of():authorize();
         when(oauth.refresh(anyString(),anyString())).thenReturn(tokens());
         when(oauth.validate(any(),anyString(),any(),any())).thenAnswer(call->{
             now.set(receipt.plusSeconds(120));return json.createObjectNode().put("sub","subject");

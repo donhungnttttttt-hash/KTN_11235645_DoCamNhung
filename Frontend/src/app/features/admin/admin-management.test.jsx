@@ -113,6 +113,43 @@ it('preserves selected people across picker pages and restricts Dev to Dev role'
  await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({keyword:'search',page:0}),expect.anything()));
 });
 
+it('does not offer active members again or silently change their existing role',async()=>{
+ const member={userId:'admin',displayName:'Admin PM',username:'admin',systemRole:'ADMIN',projectRole:'PM',version:0};
+ const api={project:vi.fn().mockResolvedValue({id:1,name:'Project'}),members:vi.fn().mockResolvedValue([member]),users:vi.fn().mockResolvedValue({items:[{id:'admin',displayName:'Admin PM',username:'admin',role:'ADMIN'}],totalElements:1}),setMember:vi.fn()};
+ render(<AdminProjectDetail id="1" api={api}/>);
+ expect(await screen.findByLabelText('Chọn Admin PM')).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Lưu thành viên đã chọn'})).toBeDisabled();
+ expect(api.setMember).not.toHaveBeenCalled();
+});
+
+it('immediately acknowledges the save click and announces completion in the member section',async()=>{
+ let finish;const first={userId:'a',username:'a',displayName:'Tester A',projectRole:'TESTER',systemRole:'TESTER',version:0};
+ const api={project:vi.fn().mockResolvedValue({id:1,name:'Project'}),members:vi.fn().mockResolvedValue([]),users:vi.fn().mockResolvedValue({items:[{id:'a',username:'a',displayName:'Tester A',role:'TESTER'}],totalElements:1}),memberCandidate:vi.fn().mockResolvedValue({membershipVersion:null}),setMember:vi.fn().mockImplementation(()=>new Promise(resolve=>{finish=()=>{api.members.mockResolvedValue([first]);resolve(first);};}))};
+ render(<AdminProjectDetail id="1" api={api}/>);fireEvent.click(await screen.findByLabelText('Chọn Tester A'));fireEvent.click(screen.getByRole('button',{name:'Lưu thành viên đã chọn'}));
+ expect(screen.getByRole('button',{name:'Đang lưu thành viên…'})).toBeDisabled();expect(screen.getByRole('status')).toHaveTextContent('Đang lưu thành viên');
+ await waitFor(()=>expect(api.setMember).toHaveBeenCalledTimes(1));finish();await screen.findByLabelText('Vai trò Tester A');
+ await waitFor(()=>expect(screen.getByRole('status').parentElement).toHaveFocus());expect(screen.getByRole('status')).toHaveTextContent('Đã lưu 1 thành viên');
+});
+
+it('refreshes partial saves, identifies the failed person and retries only the remaining selections',async()=>{
+ const first={userId:'a',username:'a',displayName:'Tester A',projectRole:'TESTER',systemRole:'TESTER',version:0};
+ const api={project:vi.fn().mockResolvedValue({id:1,name:'Project'}),members:vi.fn().mockResolvedValue([]),users:vi.fn().mockResolvedValue({items:[{id:'a',username:'a',displayName:'Tester A',role:'TESTER'},{id:'b',username:'b',displayName:'Tester B',role:'TESTER'}],totalElements:2}),memberCandidate:vi.fn().mockResolvedValue({membershipVersion:null}),setMember:vi.fn().mockImplementationOnce(async()=>{api.members.mockResolvedValue([first]);}).mockRejectedValueOnce(new Error('Mất kết nối')).mockResolvedValue({})};
+ render(<AdminProjectDetail id="1" api={api}/>);
+ fireEvent.click(await screen.findByLabelText('Chọn Tester A'));fireEvent.click(screen.getByLabelText('Chọn Tester B'));
+ fireEvent.click(screen.getByRole('button',{name:'Lưu thành viên đã chọn'}));
+ expect(await screen.findByRole('alert')).toHaveTextContent(/Tester B.*Mất kết nối/);
+ await waitFor(()=>expect(api.members.mock.calls.length).toBeGreaterThan(1));
+ expect(screen.getByRole('status')).toHaveTextContent('Đã lưu 1 thành viên');
+ await screen.findByLabelText('Vai trò Tester A');
+ await waitFor(()=>expect(screen.getByRole('alert').parentElement).toHaveFocus());
+ expect(screen.getByLabelText('Chọn Tester A')).toBeDisabled();
+ expect(screen.getByLabelText('Chọn Tester B')).toBeChecked();
+ fireEvent.click(screen.getByRole('button',{name:'Lưu thành viên đã chọn'}));
+ await waitFor(()=>expect(api.setMember).toHaveBeenCalledTimes(3));
+ expect(api.setMember.mock.calls.map(call=>call[1])).toEqual(['a','b','b']);
+ expect(api.setMember).toHaveBeenLastCalledWith('1','b',{projectRole:'TESTER',expectedVersion:null});
+});
+
 it('restores an inactive member with its candidate version and supports removal',async()=>{
  const member={userId:'pm',displayName:'Manager',username:'pm',systemRole:'PM',projectRole:'PM',version:3};
  const api={projects:vi.fn().mockResolvedValue({items:[{id:1,code:"AA",name:"Project Alpha"}],totalElements:1}),project:vi.fn().mockResolvedValue({id:1,name:'Project',version:1}),members:vi.fn().mockResolvedValue([member]),users:vi.fn().mockResolvedValue({items:[{id:'d',username:'dev',displayName:'Developer',role:'DEV'}],totalElements:1}),memberCandidate:vi.fn().mockResolvedValue({membershipVersion:5}),setMember:vi.fn().mockResolvedValue({}),removeMember:vi.fn().mockResolvedValue({})};

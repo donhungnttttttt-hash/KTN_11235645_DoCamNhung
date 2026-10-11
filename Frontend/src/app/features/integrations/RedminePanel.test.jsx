@@ -1,6 +1,6 @@
 import React from 'react';
 import { beforeEach, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { RedminePanel } from './RedminePanel';
 import { redmineApi } from '../../services/api/redmine';
 vi.mock('../../services/api/redmine',()=>({redmineApi:{state:vi.fn(),publish:vi.fn(),reconcile:vi.fn(),retry:vi.fn()}}));
@@ -63,4 +63,30 @@ it('retries a definitive failure using the delivery version and shows history',a
 it('archive is read-only and shows local changes not yet published',async()=>{
   redmineApi.state.mockResolvedValue({...base,binding:{deliveredSourceVersion:1},deliveries:[{id:1,status:'DELIVERED'}]});render(<RedminePanel {...props} writable={false}/>);fireEvent.click(screen.getByText('Công bố và đối chiếu Redmine'));await screen.findByText('Đã đối chiếu khớp');
   expect(screen.getByText(/Bug có thay đổi trong TMS/)).toBeVisible();expect(screen.queryByLabelText('Lý do công bố hoặc đối chiếu')).not.toBeInTheDocument();
+});
+it('announces refresh of an existing state and blocks publishing until refreshed authority arrives',async()=>{
+  let resolveRefresh;
+  redmineApi.state.mockResolvedValueOnce(base).mockImplementationOnce(()=>new Promise(resolve=>{resolveRefresh=resolve;}));
+  render(<RedminePanel {...props}/>);await open();
+  fireEvent.change(screen.getByLabelText('Lý do công bố hoặc đối chiếu'),{target:{value:'Đã kiểm tra'}});
+  fireEvent.click(screen.getByRole('button',{name:'Tải lại Redmine'}));
+  expect(screen.getByRole('status')).toHaveTextContent('Đang tải liên kết Redmine');
+  expect(screen.getByRole('button',{name:'Tải lại Redmine'})).toBeDisabled();
+  expect(screen.getByRole('button',{name:'Công bố lên Redmine'})).toBeDisabled();
+  fireEvent.click(screen.getByRole('button',{name:'Công bố lên Redmine'}));
+  expect(redmineApi.publish).not.toHaveBeenCalled();
+  await act(async()=>resolveRefresh({...base,canManage:false}));
+  expect(screen.queryByRole('button',{name:'Công bố lên Redmine'})).not.toBeInTheDocument();
+  expect(screen.getByRole('status')).toHaveTextContent('Đã tải lại liên kết Redmine');
+});
+it('keeps failed refresh visibly retryable without allowing stale publish authority',async()=>{
+  redmineApi.state.mockResolvedValueOnce(base).mockRejectedValueOnce(new Error('Mạng gián đoạn')).mockResolvedValue(base);
+  render(<RedminePanel {...props}/>);await open();
+  fireEvent.change(screen.getByLabelText('Lý do công bố hoặc đối chiếu'),{target:{value:'Bản nháp còn nguyên'}});
+  fireEvent.click(screen.getByRole('button',{name:'Tải lại Redmine'}));await screen.findByRole('alert');
+  expect(screen.getByRole('button',{name:'Công bố lên Redmine'})).toBeDisabled();
+  expect(screen.getByLabelText('Lý do công bố hoặc đối chiếu')).toHaveValue('Bản nháp còn nguyên');
+  fireEvent.click(screen.getByRole('button',{name:'Tải lại Redmine'}));
+  await waitFor(()=>expect(screen.getByRole('button',{name:'Công bố lên Redmine'})).toBeEnabled());
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });

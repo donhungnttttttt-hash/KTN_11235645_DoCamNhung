@@ -1,4 +1,4 @@
-import { isProjectObserver } from '../projects/projectAccess';
+import { isProjectObserver, isProjectDeveloper } from '../projects/projectAccess';
 import React, { useEffect, useMemo, useState } from 'react';
 import { executionApi } from '../../services/api/execution';
 import { projectsApi } from '../../services/api/projects';
@@ -62,7 +62,7 @@ function ResultContextDialog({execution:e,children}){
   const ref=useDialogFocus(e.close);
   return <div className="ex-modal"><section ref={ref} tabIndex={-1} className="ex-dialog td-result-context-dialog" role="dialog" aria-modal="true" aria-label={`Ghi kết quả test case ${e.requested.sourceId}`}>
     <div className="ex-heading"><h3>Ghi kết quả · Test case {e.requested.sourceId}</h3><button className="cat-btn" onClick={e.close}>Đóng</button></div>
-    <p>Chọn đợt và cấu hình để ghi kết quả. Các giá trị OK/NG đang có trong Excel là kết quả nhập từ file, chưa phải lần chạy trong đợt kiểm thử.</p>
+    <p>Chọn đợt và cấu hình để ghi kết quả. Lần thực thi mới nhất sẽ cập nhật kết quả tài liệu; sửa trực tiếp ô kết quả tài liệu không thay đổi các lượt thực thi.</p>
     {children}
     {e.cycles && !e.cycles.items.length && <p role="status">Dự án chưa có đợt kiểm thử ở trang này. PM cần tạo đợt, thêm case đã duyệt và phân công người thực hiện.</p>}
     {e.context && !e.context.configs.length && <p role="status">Đợt này chưa có cấu hình kiểm thử. PM cần thêm môi trường, thiết bị và build trong phần thiết lập đợt.</p>}
@@ -81,9 +81,9 @@ function FileWorkContextDialog({ execution:e, navigate, disabled }) {
   </section></div>;
 }
 
-export function DocumentExecutionControls({ execution:e, project, navigate, disabled=false }){
+export function DocumentExecutionControls({ execution:e, project, navigate, disabled=false, onSaved }){
   const {user,hasRole}=useAuth();
-  const dev=hasRole?.('DEV') || project?.projectRole==='DEV';
+  const dev=isProjectDeveloper(project,hasRole);
   const readOnly=dev || isProjectObserver(project, hasRole);
   const picker=Boolean(e.requested && (!e.selected || !e.context));
   const grouped=e.selected?.fileWorkGroupId != null && !e.requested?.historyOnly;
@@ -97,14 +97,14 @@ export function DocumentExecutionControls({ execution:e, project, navigate, disa
       {e.context && <label>Cấu hình <select aria-label="Cấu hình ghi kết quả" value={e.configurationId} onChange={event=>e.setConfiguration(event.target.value)}><option value="">Chọn cấu hình</option>{e.context.configs.map(c=><option key={c.id} value={c.id}>{c.environmentName} / {c.deviceName} · {c.versionLabel} ({c.buildNumber || '—'})</option>)}</select></label>}
       <button className="cat-btn" onClick={e.refresh}>Tải lại kết quả</button><button className="cat-btn" onClick={()=>navigate(e.choice.cycleId?`/tests/cycles/${e.choice.cycleId}`:'/tests/cycles')}>{readOnly ? 'Xem đợt kiểm thử' : 'Thiết lập đợt / phân công'}</button>
       {e.loading && <span role="status">Đang tải kết quả…</span>}
-      {!picker && e.pending && !e.choice.cycleId && <p role="status">Chọn đợt và cấu hình để ghi kết quả cho case {e.pending.sourceId}. Kết quả Excel gốc được giữ nguyên.</p>}
+      {!picker && e.pending && !e.choice.cycleId && <p role="status">Chọn đợt và cấu hình để ghi kết quả cho case {e.pending.sourceId}. File Excel gốc được giữ nguyên.</p>}
       {e.notice && <p role="status">{e.notice}</p>}{e.error && <div className="td-error" role="alert">{e.error}</div>}
     </fieldset>;
   return <>
     {picker?<ResultContextDialog execution={e}>{controls}</ResultContextDialog>:e.open?controls:null}
     {e.selected && e.context && (grouped
       ? <FileWorkContextDialog execution={e} navigate={navigate} disabled={disabled}/>
-      : <AttemptDialog key={e.selected.id} projectId={project.id} run={e.selected} builds={e.context.builds} active={e.context.cycle.statusCode==='ACTIVE' && !project.archived} readOnly={readOnly || e.requested?.historyOnly} currentUserId={user?.id} onClose={e.close} onSaved={e.refresh} timeZone={project.timezone}/>)}
+      : <AttemptDialog globalAdmin={hasRole?.('ADMIN')} key={e.selected.id} projectId={project.id} run={e.selected} builds={e.context.builds} active={e.context.cycle.statusCode==='ACTIVE' && !project.archived} readOnly={readOnly || e.requested?.historyOnly} currentUserId={user?.id} onClose={e.close} onSaved={()=>{e.refresh();onSaved?.();}} timeZone={project.timezone}/>)}
     {e.scope && <CycleDecisionDialog projectId={project.id} run={e.scope} onClose={()=>e.setScope(null)} onSaved={()=>{e.setScope(null);e.refresh();}}/>}
   </>;
 }

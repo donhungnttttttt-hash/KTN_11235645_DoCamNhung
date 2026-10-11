@@ -25,7 +25,7 @@ export const fileWorkApi = {
   cancel: (p,id,body) => write(`${root(p)}/file-work-sessions/${id}/cancel`,body),
   execution: (p,id,buildId,options={}) => apiRequest(`${groups(p)}/${id}/execution?${query({buildId})}`,options),
   record: (p,id,run,body) => write(`${groups(p)}/${id}/run-items/${run}/attempts`,body),
-  export: (p,id,buildId) => apiRequest(`${groups(p)}/${id}/export?${query({buildId})}`,{responseType:'response'}),
+  export: (p,id,buildId) => apiRequest(`${groups(p)}/${id}/export?${query({buildId})}`,{responseType:'download'}),
 };
 export async function executionDownload(response) {
   const mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';

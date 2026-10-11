@@ -23,7 +23,7 @@ function Settings({ project, refresh, canEdit, tab, admin }) {
   return <section className="page-container project-settings-page">
     <h1>{title} <span className="settings-project-name">· {project.name}</span></h1>
     {tab==='general' && <General project={project} refresh={refresh} canEdit={canEdit}/>}
-    {tab==='members' && <>{admin&&<p><a className="cat-btn" href={`#/admin/projects/${project.id}`}>Quản lý thành viên tại khu Admin</a></p>}<ProjectMembers projectId={project.id} canEdit={false}/><ProjectDevices key={project.id} projectId={project.id}/></>}
+    {tab==='members' && <>{admin&&<p><a className="cat-btn" href={`#/admin/projects/${project.id}`}>Quản lý thành viên tại khu Admin</a></p>}<ProjectMembers projectId={project.id} canEdit={false}/><ProjectDevices key={project.id} projectId={project.id} admin={admin} archived={!!project.archived}/></>}
     {tab==='rules' && <RulesPanel projectId={project.id} canEdit={canEdit}/>}
     {tab==='handbook' && <HandbookPanel projectId={project.id} canEdit={canEdit}/>}
   </section>;

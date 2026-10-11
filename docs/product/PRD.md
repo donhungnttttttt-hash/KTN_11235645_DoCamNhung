@@ -1,5 +1,7 @@
 # PRD — Hệ thống quản lý dự án và kiểm thử TMS
 
+**Quyết định hiện hành 10–11/10/2026:** ADMIN tổng có toàn quyền nghiệp vụ trên mọi dự án, không cần membership; vẫn giữ kiểm tra dữ liệu hợp lệ, dự án/đợt lưu trữ và lịch sử tác giả. Một file được chia theo khoảng ID case cho nhiều Tester, không giao trùng case trong cùng đợt/cấu hình. Xem [phạm vi sửa luồng 11/10](../planning/2026-10-11-workflow-repair.md) và [quyền hiện hành](../business/permissions.md). Các số liệu kiểm thử/checkpoint lịch sử bên dưới chỉ có giá trị tại ngày ghi, không phải kết quả tái kiểm chứng của phiên bản mới.
+
 **Mở rộng 10/10/2026 — AI theo vai trò:** [Đặc tả và tiêu chí sử dụng](AI-ASSISTANCE.md). Admin rà soát dự án; PM soạn báo cáo/gợi ý phân công; Tester tổng hợp công việc/hoàn thiện bug; Dev rà soát ticket được giao. Kết quả là bản nháp có nguồn, owner, thời hạn lưu và phiên bản chỉnh sửa. AI không tự thực hiện nghiệp vụ. Kiểm thử live còn phụ thuộc số dư API OpenAI; phạm vi này không thay các gate UAT hiện có.
 
 Phiên bản tài liệu: **1.3 — 07/10/2026**. Chủ sản phẩm: người dùng/đơn vị vận hành. Nhánh `system-design`; F01–F05/Q01–Q03 đã triển khai, native đã áp V17–V20. Mục 1–15 giữ baseline trước F/Q, mục 16 giữ checkpoint source, **mục 17 là trạng thái hiện hành**, thay các ghi chú native/HTTP còn mở ở checkpoint cũ. [Kế hoạch](../../tasks/plan.md). Đây không phải biên bản khách hàng ký nghiệm thu.
@@ -33,13 +35,13 @@ Sơ đồ là luồng mục tiêu đã có implementation F/Q và bằng chứng
 
 | Người dùng | Nhu cầu chính | Trách nhiệm và giới hạn |
 | --- | --- | --- |
-| ADMIN tổng | Điều phối danh mục dự án, người và máy; xem toàn hệ thống | Tạo dự án, chọn PM/Tester/Dev, tài khoản, membership, bàn giao/thu hồi, dashboard/audit. Không tự trở thành PM của mọi dự án |
+| ADMIN tổng | Quản trị và thao tác toàn hệ thống | Toàn quyền tạo/sửa dự án, tài khoản, membership, máy, import/duyệt/giao case, thực thi, ticket, retest và báo cáo; server ghi đúng tác giả ADMIN, không cần giả làm membership PM/Tester |
 | PM dự án | Quản lý nội dung, phân công, tiến độ và chất lượng | Nhập/duyệt case, cấu hình đợt, giao việc, triage ticket, coverage/retest, NA/chốt đợt, báo cáo lý do chậm. Không tự quản trị tổng |
 | TESTER | Thực thi và xác minh đúng việc được giao | Ghi OK/NG/P trên run đang được giao; tạo bug, bình luận/chứng cứ; retest được giao. Không phân công, duyệt case hoặc đóng bug |
 | DEV | Xác minh và xử lý bug của mình | Xem dữ liệu dự án; BUG được giao chưa terminal: cập nhật `progress`/`resolved`, ghi lý do/build sửa/bình luận/chứng cứ. Không ghi kết quả test, retest, NA hoặc đóng bug |
 | Vận hành | Chạy ứng dụng, migration, sao lưu, phục hồi | Cấu hình ngoài repository; kiểm tra bằng công cụ phát triển. Không giả làm PM để sửa dữ liệu nghiệp vụ bằng SQL |
 
-Role hệ thống và role membership là hai lớp. ADMIN được đọc mọi dự án qua API quản trị, nhưng không vì vậy có quyền đọc/sửa nội dung nghiệp vụ qua API thành viên của dự án mình không tham gia. `admin.local` là tên tài khoản hiện dùng; định tuyến theo role ADMIN, không hardcode username. User có thể tham gia nhiều dự án qua membership. Máy vật lý chỉ bàn giao cho một dự án tại một thời điểm.
+Role hệ thống và role membership là hai lớp. ADMIN được đọc và thao tác nghiệp vụ mọi dự án theo quyết định 10/10/2026; các vai trò còn lại vẫn theo membership và phân công hiện hành. Định tuyến theo role ADMIN, không hardcode username. User có thể tham gia nhiều dự án qua membership. Máy vật lý chỉ bàn giao cho một dự án tại một thời điểm.
 
 ## 3. Mục tiêu, chỉ số thành công và dữ liệu đo
 
@@ -255,7 +257,7 @@ Rủi ro chính: ba nguồn kết quả dễ bị hiểu lẫn; cùng case xuấ
 | ID | Nội dung | Quyết định ngày 06/10/2026 |
 | --- | --- | --- |
 | D-F1 | Nguồn kết quả khi Tester làm file được PM giao | Đã duyệt: execution theo cycle/build/config; annotation giữ riêng; export chọn đúng chế độ |
-| D-F2 | Một file/một Tester hay chia case? | Đã duyệt: MVP một nhóm file/cấu hình có một Tester; canonical run assignment vẫn là authority |
+| D-F2 | Một file/một Tester hay chia case? | Cập nhật 11/10: chia file theo khoảng ID case thành nhiều nhóm cho nhiều Tester; mỗi nhóm một Tester, case không trùng trong cùng đợt/cấu hình; canonical run assignment vẫn là authority |
 | D-F3 | Người/máy và phiên đồng thời | Đã duyệt: máy allocation đúng người nhận; một máy và một nhóm chỉ có một DOING |
 | D-F4 | Kết thúc khi còn NG/P/chưa chạy | Đã duyệt: không NOT_RUN/P; NG đã có bug được hoàn tất thực thi, PM chốt tồn đọng riêng |
 | D-F5 | Revision hoặc tài nguyên bị thay giữa phiên | Đã duyệt: run giữ revision pin; chặn writes không còn quyền/máy; PM hủy với lý do |

@@ -14,7 +14,7 @@ const ctx=vi.hoisted(()=>({currentProject:{id:1,name:'Dự án A',projectRole:'P
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>ctx}));
 vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({user:{id:'tester'},hasRole:()=>false})}));
 vi.mock('../../services/api/execution',()=>({executionApi:{cycles:vi.fn(),create:vi.fn(),attempts:vi.fn(),record:vi.fn(),run:vi.fn(),scope:vi.fn(),configure:vi.fn(),cycle:vi.fn(),configurations:vi.fn(),runs:vi.fn(),assignments:vi.fn(),assign:vi.fn(),activate:vi.fn()}}));
-vi.mock('../../services/api/testCases',()=>({testCasesApi:{listCases:vi.fn()}}));
+vi.mock('../../services/api/testCases',()=>({testCasesApi:{listCases:vi.fn(),listDocuments:vi.fn(),getDocument:vi.fn()}}));
 vi.mock('../../services/api/projects',()=>({projectsApi:{listMembers:vi.fn(),listCatalog:vi.fn()}}));
 const run={id:9,caseNo:'TC-01',titleVi:'Đăng nhập',revisionNo:1,revisionId:12,version:0,assigneeUserId:'tester',assigneeName:'Tester',defaultBuildId:3,environmentName:'QA',deviceName:'Web',stepsVi:'Nhập tài khoản',expectedVi:'Mở trang chủ'};
 const builds=[{id:3,versionLabel:'1.0',buildNumber:'1',platform:'WEB'}];
@@ -23,9 +23,23 @@ beforeEach(()=>{vi.resetAllMocks();ctx.currentProject={id:1,name:'Dự án A',pr
 function dialog(extra={}) { const saved=vi.fn();render(<AttemptDialog projectId={1} run={run} builds={builds} active currentUserId="tester" onClose={vi.fn()} onSaved={saved} {...extra}/>);return saved; }
 
 describe('execution results',()=>{
+  it.each(['OK','NG','P'])('starts a new attempt with the current %s result',code=>{
+    dialog({run:{...run,resultCode:code}});
+    expect(screen.getByLabelText('Kết quả')).toHaveValue(code);
+    expect(screen.getByText('Kết quả hiện tại')).toBeVisible();
+    expect(screen.getByText('Kết quả lần chạy mới')).toBeVisible();
+  });
+  it('requires an explicit result when the run has not yet been executed',async()=>{
+    dialog({run:{...run,resultCode:'NOT_RUN'}});const user=userEvent.setup();
+    const result=screen.getByLabelText('Kết quả');
+    expect(result).toHaveValue('');expect(result).toBeRequired();
+    await user.click(screen.getByRole('button',{name:'Ghi kết quả'}));
+    expect(executionApi.record).not.toHaveBeenCalled();
+  });
   it('keeps the draft and the same idempotency key when retrying an uncertain network result',async()=>{
     const saved=dialog(),user=userEvent.setup();
     executionApi.record.mockRejectedValueOnce(new Error('Mất kết nối')).mockResolvedValueOnce({id:41,attemptNo:1,resultCode:'NG'});
+    await user.selectOptions(screen.getByLabelText('Kết quả'),'NG');
     await user.type(screen.getByLabelText('Kết quả thực tế'),'Trang trắng');
     await user.click(screen.getByRole('button',{name:'Ghi kết quả'}));
     expect(await screen.findByRole('alert')).toHaveTextContent('Mất kết nối');expect(saved).not.toHaveBeenCalled();
@@ -38,12 +52,13 @@ describe('execution results',()=>{
   it('requires explicit refresh and confirmation after 409 without discarding the draft',async()=>{
     dialog();const user=userEvent.setup();
     executionApi.record.mockRejectedValueOnce(Object.assign(new Error('Phiên bản đã đổi'),{status:409})).mockResolvedValueOnce({id:43,attemptNo:3,resultCode:'NG'});
-    executionApi.run.mockResolvedValue({...run,version:2});
+    executionApi.run.mockResolvedValue({...run,version:2,resultCode:'OK'});
+    await user.selectOptions(screen.getByLabelText('Kết quả'),'NG');
     await user.type(screen.getByLabelText('Kết quả thực tế'),'Chưa tải được');await user.click(screen.getByRole('button',{name:'Ghi kết quả'}));
     expect(await screen.findByRole('button',{name:'Ghi kết quả'})).toBeDisabled();
     await user.click(screen.getByRole('button',{name:'Tải bản hiện hành, giữ bản nháp'}));
     await waitFor(()=>expect(screen.getByRole('button',{name:'Ghi kết quả'})).toBeEnabled());
-    expect(screen.getByLabelText('Kết quả thực tế')).toHaveValue('Chưa tải được');expect(executionApi.record).toHaveBeenCalledTimes(1);
+    expect(screen.getByLabelText('Kết quả')).toHaveValue('NG');expect(screen.getByLabelText('Kết quả thực tế')).toHaveValue('Chưa tải được');expect(executionApi.record).toHaveBeenCalledTimes(1);
     await user.click(screen.getByRole('button',{name:'Ghi kết quả'}));
     await waitFor(()=>expect(executionApi.record).toHaveBeenCalledTimes(2));
     expect(executionApi.record.mock.calls[1][2]).toMatchObject({expectedVersion:2,actualResult:'Chưa tải được'});
@@ -105,6 +120,7 @@ describe('runner assignment', () => {
     render(<ExecutionRunnerPage cycleId={5} navigate={vi.fn()} />);
     await userEvent.click(await screen.findByRole('button',{name:'Ghi kết quả',exact:true}));
     const dialog=within(screen.getByRole('dialog',{name:'Thực thi TC-01'}));
+    await userEvent.selectOptions(dialog.getByLabelText('Kết quả'),'NG');
     await userEvent.type(dialog.getByLabelText('Kết quả thực tế'),'Kiểm tra cập nhật dữ liệu');
     await userEvent.click(dialog.getByRole('button',{name:'Ghi kết quả',exact:true}));
     await waitFor(()=>expect(executionApi.record).toHaveBeenCalledOnce());
@@ -255,10 +271,21 @@ describe('cycle scope and loading',()=>{
   it('loads case choices again after a failed request and clears the obsolete error', async () => {
     testCasesApi.listCases.mockRejectedValueOnce(new Error('Không tải được case')).mockResolvedValueOnce(empty);
     render(<ScopeSetup projectId={1} cycle={{ id: 5, version: 1 }} configs={[]} catalogs={{ builds: [], devices: [], environments: [] }} members={[]} onSaved={vi.fn()} />);
+    await userEvent.click(screen.getByRole('button',{name:'Case riêng lẻ'}));
     expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được case');
     await userEvent.click(screen.getByRole('button', { name: 'Thử lại' }));
     expect(await screen.findByText(/Chưa có test case/)).toBeVisible();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+  it('clears a manual case-list error when returning to file scope', async () => {
+    testCasesApi.listCases.mockRejectedValueOnce(new Error('Không tải được case'));
+    const user=userEvent.setup();
+    render(<ScopeSetup projectId={1} cycle={{ id: 5, version: 1 }} configs={[]} catalogs={{ builds: [], devices: [], environments: [] }} members={[]} onSaved={vi.fn()} />);
+    await user.click(screen.getByRole('button',{name:'Case riêng lẻ'}));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được case');
+    await user.click(screen.getByRole('button',{name:'Theo file Excel'}));
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button',{name:'Thử lại'})).not.toBeInTheDocument();
   });
   it('keeps configuration selections on failure and retries using the current cycle version', async () => {
     const saved = vi.fn(), user = userEvent.setup();
@@ -269,16 +296,46 @@ describe('cycle scope and loading',()=>{
     await user.selectOptions(screen.getByLabelText('Build mặc định'), '3');
     await user.click(screen.getByRole('button', { name: 'Thêm cấu hình' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Mất kết nối');
+    expect(screen.queryByRole('button', { name: 'Thử lại' })).not.toBeInTheDocument();
     expect(saved).not.toHaveBeenCalled();
     expect(screen.getByLabelText('Môi trường')).toHaveValue('4');
     await user.click(screen.getByRole('button', { name: 'Thêm cấu hình' }));
     await waitFor(() => expect(saved).toHaveBeenCalledOnce());
     expect(executionApi.configure).toHaveBeenLastCalledWith(1, 5, { environmentId: 4, deviceId: 6, buildId: 3, expectedVersion: 1 });
   });
+  it('keeps manual scope choices and retries the write from its save button', async () => {
+    const user=userEvent.setup(),saved=vi.fn();
+    testCasesApi.listCases.mockResolvedValue({...empty,totalItems:1,items:[{id:1,caseNo:'C1',currentRevisionId:10,titleVi:'Case 1',approved:true}]});
+    executionApi.scope.mockRejectedValueOnce(new Error('Lưu phạm vi thất bại')).mockResolvedValueOnce({version:2});
+    render(<ScopeSetup projectId={1} cycle={{id:5,version:1}} configs={[{id:7,environmentName:'QA',deviceName:'Web'}]} catalogs={{builds:[],devices:[],environments:[]}} members={[{id:8,displayName:'Tester',projectRole:'TESTER',active:true}]} onSaved={saved}/>);
+    await user.click(screen.getByRole('button',{name:'Case riêng lẻ'}));
+    await screen.findByLabelText('Chọn C1');
+    await user.click(screen.getByLabelText('Chọn C1'));
+    await user.selectOptions(screen.getByLabelText('Cấu hình chạy'),'7');
+    await user.selectOptions(screen.getByLabelText('Người thực hiện'),'8');
+    await user.click(screen.getByRole('button',{name:'Thêm case vào phạm vi'}));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Lưu phạm vi thất bại');
+    expect(screen.queryByRole('button',{name:'Thử lại'})).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Chọn C1')).toBeChecked();
+    expect(screen.getByLabelText('Cấu hình chạy')).toHaveValue('7');
+    await user.click(screen.getByRole('button',{name:'Thêm case vào phạm vi'}));
+    await waitFor(()=>expect(saved).toHaveBeenCalledOnce());
+    expect(executionApi.scope).toHaveBeenCalledTimes(2);
+  });
+  it('explains the 100-case limit when manual scope selection is too large',async()=>{
+    testCasesApi.listCases.mockResolvedValue({...empty,totalItems:101,totalPages:1,items:Array.from({length:101},(_,i)=>({id:i+1,caseNo:`C${i+1}`,currentRevisionId:i+1,titleVi:`Case ${i+1}`,approved:true}))});
+    render(<ScopeSetup projectId={1} cycle={{id:5,version:1}} configs={[]} catalogs={{builds:[],devices:[],environments:[]}} members={[]} onSaved={vi.fn()}/>);
+    await userEvent.click(screen.getByRole('button',{name:'Case riêng lẻ'}));
+    await screen.findByRole('checkbox',{name:/Chọn tất cả.*Phạm vi test case/});
+    await userEvent.click(screen.getByRole('checkbox',{name:/Chọn tất cả.*Phạm vi test case/}));
+    expect(screen.getByRole('button',{name:'Thêm case vào phạm vi'})).toBeDisabled();
+    expect(screen.getByText(/101.*100/)).toBeVisible();
+  });
   it('disables draft revisions and sends only the approved revision selected with the version',async()=>{
     testCasesApi.listCases.mockResolvedValue({...empty,totalItems:2,totalPages:1,items:[{id:1,caseNo:'A',currentRevisionId:10,titleVi:'Đã duyệt',approved:true},{id:2,caseNo:'B',currentRevisionId:11,titleVi:'Nháp',approved:false}]});
     const saved=vi.fn(),user=userEvent.setup();executionApi.scope.mockResolvedValue({version:2});
     render(<ScopeSetup projectId={1} cycle={{id:5,version:1}} configs={[{id:7,environmentName:'QA',deviceName:'Web'}]} catalogs={{builds:[],devices:[],environments:[]}} members={[{id:8,displayName:'Tester',projectRole:'TESTER',active:true}]} onSaved={saved}/>);
+    await user.click(screen.getByRole('button',{name:'Case riêng lẻ'}));
     expect(await screen.findByLabelText('Chọn B')).toBeDisabled();
     await user.click(screen.getByLabelText('Chọn A'));await user.selectOptions(screen.getByLabelText('Cấu hình chạy'),'7');await user.selectOptions(screen.getByLabelText('Người thực hiện'),'8');
     await user.click(screen.getByRole('button',{name:'Thêm case vào phạm vi'}));

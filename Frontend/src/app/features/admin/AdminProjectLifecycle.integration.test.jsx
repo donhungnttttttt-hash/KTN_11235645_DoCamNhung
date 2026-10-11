@@ -4,6 +4,20 @@ import userEvent from '@testing-library/user-event';
 import {expect,test,vi} from 'vitest';
 import {AdminProjectDetail} from './AdminProjectDetail';
 
+test('reload refreshes management and lifecycle after another Admin archives the project',async()=>{
+ let archived=false;
+ const project=()=>({id:7,code:'APP',name:'iPad',description:'',timezone:'UTC',version:archived?4:3,archivedAt:archived?'2026-10-08T02:00:00Z':null,metrics:{},milestones:[],verificationBugs:[]});
+ const api={project:vi.fn(async()=>project()),members:vi.fn().mockResolvedValue([]),users:vi.fn().mockResolvedValue({items:[],totalElements:0}),archiveReadiness:vi.fn(async()=>({projectId:7,version:archived?4:3,archived,canArchive:!archived,canReopen:archived,blockers:[]}))};
+ render(<AdminProjectDetail id="7" api={api}/>);
+ expect(await screen.findByRole('button',{name:'Sửa dự án'})).toBeEnabled();
+ await screen.findByRole('button',{name:'Kiểm tra lưu trữ'});
+ archived=true;fireEvent.click(screen.getByRole('button',{name:'Tải lại',exact:true}));
+ await waitFor(()=>expect(screen.getByRole('button',{name:'Sửa dự án'})).toBeDisabled());
+ expect(await screen.findByRole('button',{name:'Mở lại dự án'})).toBeEnabled();
+ expect(api.members).toHaveBeenCalledTimes(2);
+ expect(screen.getByRole('button',{name:'Lưu thành viên đã chọn'})).toBeDisabled();
+});
+
 test('archive refreshes the real detail, locks its edit actions and focuses the confirmed outcome',async()=>{
  let archived=false;
  const project=()=>({id:7,code:'APP',name:'iPad',description:'',timezone:'UTC',version:archived?4:3,archivedAt:archived?'2026-10-08T02:00:00Z':null,metrics:{},milestones:[],verificationBugs:[]});

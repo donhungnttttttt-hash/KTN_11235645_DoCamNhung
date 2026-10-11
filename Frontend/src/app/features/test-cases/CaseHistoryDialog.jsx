@@ -30,7 +30,7 @@ export function CaseHistoryDialog({ projectId, row, timeZone, onClose, onExecuti
       <div className="td-actions"><label>Phiên bản <select aria-label="Phiên bản lịch sử" value={selected} onChange={e=>setSelected(e.target.value)}>{data?.revisions.map(r=><option key={r.id} value={r.id}>Rev {r.revisionNo}</option>)}</select></label><button className="cat-btn" onClick={onExecution}>Lịch sử thực thi / kết quả</button></div>
       <p className="td-history-note">Các cột thay đổi được đối chiếu với phiên bản liền trước. Nội dung cũ màu đỏ, nội dung mới nền vàng.</p>
       {error?<div className="td-error" role="alert">{error} <button className="cat-btn" onClick={()=>setRetry(v=>v+1)}>Thử lại</button></div>:!diff?<p role="status">Đang tải lịch sử…</p>:<>
-        <p>Rev {diff.current.revisionNo} · {documentDate(diff.current.createdAt,timeZone)} · Người sửa: thành viên #{diff.current.createdBy ?? '—'}</p>
+        <p>Rev {diff.current.revisionNo} · {documentDate(diff.current.createdAt,timeZone)} · Người sửa: {diff.current.createdBy != null ? `thành viên #${diff.current.createdBy}` : diff.current.createdByUserId ? 'Quản trị viên nhập Excel' : '—'}</p>
         <TableScroll label="Lịch sử phiên bản case" className="td-table-scroll"><table className="td-history-table"><thead><tr><th>Cột / hạng mục</th><th>Nội dung trước khi sửa</th><th>Nội dung sau khi sửa</th></tr></thead><tbody>{diff.changes.map(([field,label])=><tr key={field}><th scope="row">{label}</th><td><del>{diff.old?.[field] || '—'}</del></td><td><mark>{diff.current[field] || '—'}</mark></td></tr>)}</tbody></table></TableScroll>
         {!diff.old && <p>Phiên bản đầu tiên được lưu trong hệ thống.</p>}{!diff.changes.length && <p>Không có thay đổi nội dung giữa hai phiên bản.</p>}
       </>}

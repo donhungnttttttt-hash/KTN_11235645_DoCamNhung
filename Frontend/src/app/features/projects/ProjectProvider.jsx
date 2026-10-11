@@ -26,9 +26,13 @@ export function ProjectProvider({ children }) {
       if (request !== generation.current) return;
       setProjects(data);
       
-      const storedId = preferredId != null ? String(preferredId) : localStorage.getItem(selectionKey);
+      const linkedId=new URLSearchParams(window.location.hash.split('?')[1]).get('projectId');
+      const storedId = preferredId != null ? String(preferredId) : linkedId || localStorage.getItem(selectionKey);
       let selected = data.find(p => String(p.id) === storedId);
       
+      if (!selected && linkedId && preferredId==null) {
+        setCurrentProject(null);setError('Không tìm thấy dự án được mở hoặc bạn không còn quyền truy cập.');return;
+      }
       if (!selected && data.length > 0) {
         selected = data[0];
       }
@@ -50,9 +54,21 @@ export function ProjectProvider({ children }) {
     return () => { generation.current++; };
   }, [refreshProjects]);
 
+  useEffect(() => {
+    const followLink=()=>{
+      const nextId=new URLSearchParams(window.location.hash.split('?')[1]).get('projectId');
+      if(nextId&&nextId!==String(currentProject?.id)){setCurrentProject(null);refreshProjects();}
+    };
+    window.addEventListener('hashchange',followLink);
+    return()=>window.removeEventListener('hashchange',followLink);
+  },[refreshProjects,currentProject?.id]);
+
   const selectProject = useCallback((projectId) => {
     const selected = projects.find(p => String(p.id) === String(projectId));
     if (selected) {
+      generation.current++;setLoading(false);setError('');
+      const [path,search]=window.location.hash.split('?');const params=new URLSearchParams(search);
+      if(params.has('projectId')){params.delete('projectId');window.history.replaceState(null,'',path+(params.size?'?'+params.toString():''));}
       setCurrentProject(selected);
       localStorage.setItem(selectionKey, String(selected.id));
     }

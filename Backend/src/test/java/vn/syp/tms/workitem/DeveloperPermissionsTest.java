@@ -73,8 +73,8 @@ class DeveloperPermissionsTest {
         doReturn(Map.of("id",7L,"role","PM","systemRole","PM")).when(service).readMembership(1,"dev");
         var labels=List.of(Map.<String,Object>of("id","resolved","label","Đã sửa - chờ kiểm thử lại"));
         when(db.rows("SELECT code AS id,label_vi AS label,color,terminal FROM work_item_statuses ORDER BY sort_order")).thenReturn(labels);
-        for(var current:List.of(new QaService.Actor(7,true,false,false,false),new QaService.Actor(7,false,true,false,false),
-                new QaService.Actor(7,false,false,true,false),new QaService.Actor(7,false,false,false,false),new QaService.Actor(7,true,false,false,true))) {
+        for(var current:List.of(new QaService.Actor(7,true,false,false,false,false),new QaService.Actor(7,false,true,false,false,false),
+                new QaService.Actor(7,false,false,true,false,false),new QaService.Actor(7,false,false,false,false,false),new QaService.Actor(7,true,false,false,true,false))) {
             when(qa.authorize(1,"dev",false)).thenReturn(current);
             var metadata=service.metadata(1,"dev");
             assertFalse(metadata.containsKey("qaStatuses"));
@@ -120,7 +120,7 @@ class DeveloperPermissionsTest {
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
     @SuppressWarnings("null")
     @Test void genericListAndOverviewProjectQaWithTypedLabelsAndCapabilities(){
-        when(qa.authorize(1,"dev",false)).thenReturn(new QaService.Actor(7,false,false,true,false));
+        when(qa.authorize(1,"dev",false)).thenReturn(new QaService.Actor(7,false,false,true,false,false));
         doReturn(member).when(service).readMembership(1,"dev");
         when(qa.detail(1,"dev",11)).thenReturn(qaDetail(true));
         when(db.rows(contains("FROM work_items w"),any(Object[].class))).thenReturn(List.of(item("QA","resolved",7),item("BUG","resolved",7)));

@@ -449,6 +449,14 @@ paths:
     $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}~1rows~1{rowId}~1result'
   /api/v1/projects/{projectId}/test-documents/{id}/rows/{rowId}/result-history:
     $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}~1rows~1{rowId}~1result-history'
+  /api/v1/projects/{projectId}/test-documents/{id}/rows/{rowId}/cells/{column}:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}~1rows~1{rowId}~1cells~1{column}'
+  /api/v1/projects/{projectId}/test-documents/{id}/rows/{rowId}/cells/{column}/history:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}~1rows~1{rowId}~1cells~1{column}~1history'
+  /api/v1/projects/{projectId}/test-documents/{id}/rows/{rowId}/second-test:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}~1rows~1{rowId}~1second-test'
+  /api/v1/projects/{projectId}/test-documents/{id}/approvals:
+    $ref: './test-cases.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1test-documents~1{id}~1approvals'
   /api/v1/admin/overview:
     $ref: './admin.openapi.yaml#/paths/~1admin~1overview'
   /api/v1/admin/projects:

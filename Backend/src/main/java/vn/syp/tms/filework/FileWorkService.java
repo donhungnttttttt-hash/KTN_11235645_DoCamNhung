@@ -22,10 +22,11 @@ public class FileWorkService {
     private final ProjectAudit audit;
     private final ObjectMapper json;
     private final FileWorkSessionService sessions;
-    public FileWorkService(WorkItemStore db,IdentityService identity,ExecutionService execution,ProjectAudit audit,ObjectMapper json,FileWorkSessionService sessions) {
-        this.db=db;this.identity=identity;this.execution=execution;this.audit=audit;this.json=json;this.sessions=sessions;
+    private final vn.syp.tms.project.ProjectActorService actors;
+    public FileWorkService(WorkItemStore db,IdentityService identity,ExecutionService execution,ProjectAudit audit,ObjectMapper json,FileWorkSessionService sessions,vn.syp.tms.project.ProjectActorService actors) {
+        this.db=db;this.identity=identity;this.execution=execution;this.audit=audit;this.json=json;this.sessions=sessions;this.actors=actors;
     }
-    public record Actor(long membershipId,boolean pm,boolean tester,boolean archived) {}
+    public record Actor(long membershipId,boolean pm,boolean tester,boolean archived,boolean admin) {}
 
     /** Current locking projections: never authorize from a repeatable-read JPA snapshot. */
     public Actor guard(long p,String actor,boolean pmWrite) {
@@ -37,17 +38,18 @@ public class FileWorkService {
             if(!principal.id().equals(actor) || principal.version()!=number(current,"version")) fail(401,"UNAUTHENTICATED","Phiên đăng nhập đã thay đổi.");
         }
         var project=db.row("SELECT id,archived_at AS archivedAt FROM projects WHERE id=? FOR UPDATE",p);
-        // Membership ID 0 is a read-only observer, never a persisted/assignable member.
-        if(!pmWrite && "ADMIN".equals(account.getRole()) && db.rows(
-            "SELECT id FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",p,actor).isEmpty())
-            return new Actor(0,false,false,project.get("archivedAt")!=null);
+        if("ADMIN".equals(account.getRole())) {
+            boolean archived=project.get("archivedAt")!=null;
+            if(pmWrite && archived)fail(409,"ARCHIVED","Dự án đã được lưu trữ.");
+            return new Actor(pmWrite?actors.forWrite(p,actor):actors.existing(p,actor),true,true,archived,true);
+        }
         var member=db.row("SELECT id,project_role AS projectRole FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",p,actor);
         boolean pm="PM".equals(member.get("projectRole")) && !"DEV".equals(account.getRole());
         boolean tester="TESTER".equals(member.get("projectRole")) && !"DEV".equals(account.getRole());
         boolean archived=project.get("archivedAt")!=null;
         if(pmWrite && !pm) fail(403,"FORBIDDEN","Chỉ PM hiện hành của dự án được giao file.");
         if(pmWrite && archived) fail(409,"ARCHIVED","Dự án đã được lưu trữ.");
-        return new Actor(number(member,"id"),pm,tester,archived);
+        return new Actor(number(member,"id"),pm,tester,archived,false);
     }
 
     /** Current permissions for an empty list; scoped group/session capabilities remain separate. */
@@ -170,7 +172,6 @@ public class FileWorkService {
         if(!"DRAFT".equals(cycle.get("statusCode"))) scopeError(errors,"INVALID_SCOPE","Chỉ thêm scope trong đợt DRAFT.",null);
         if(number(cycle,"version")!=input.expectedCycleVersion()) scopeError(errors,"VERSION_CONFLICT","Đợt kiểm thử đã thay đổi; tải lại trước khi giao file.",null);
         if(db.count("SELECT COUNT(*) FROM run_items WHERE project_id=? AND cycle_id=?",p,input.cycleId())+input.revisionIds().size()>500 || db.count("SELECT COUNT(*) FROM cycle_configurations WHERE project_id=? AND cycle_id=?",p,input.cycleId())>50) scopeError(errors,"SCOPE_LIMIT","Tối đa 500 lượt kiểm thử và 50 cấu hình trong một đợt.",null);
-        if(!db.rows("SELECT id FROM file_work_groups WHERE project_id=? AND document_id=? AND cycle_id=? AND configuration_id=?",p,input.documentId(),input.cycleId(),input.configurationId()).isEmpty()) scopeError(errors,"FILE_GROUP_EXISTS","Tài liệu đã được giao trong cấu hình và đợt này.",null);
         var ids=new HashSet<Long>();var cases=new HashSet<Long>();
         for(var row:items) {
             if(!ids.add(number(row,"revisionId")) || !cases.add(number(row,"testCaseId"))) scopeError(errors,"INVALID_SCOPE","Một case chỉ được chọn một phiên bản và một dòng nguồn.",row);
@@ -281,7 +282,7 @@ public class FileWorkService {
         var caps=new LinkedHashMap<>(sessions.capabilities(p,sessionActor(caller),group,latest));caps.put("canAssign",canAssign);
         value.put("capabilities",caps);return value;
     }
-    private FileWorkGuard.Actor sessionActor(Actor caller){return new FileWorkGuard.Actor(caller.membershipId(),caller.pm(),caller.tester(),caller.archived());}
+    private FileWorkGuard.Actor sessionActor(Actor caller){return new FileWorkGuard.Actor(caller.membershipId(),caller.pm(),caller.tester(),caller.archived(),caller.admin());}
 
     public FileWorkDtos.Page<Map<String,Object>> list(long p,String actor,FileWorkDtos.Filter filter) {
         var caller=guard(p,actor,false);paging(filter.page(),filter.size());

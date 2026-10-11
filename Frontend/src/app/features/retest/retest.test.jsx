@@ -5,9 +5,16 @@ import { RetestPanel } from './RetestPanel';
 import { RetestResult } from './RetestResult';
 import { CoverageEditor } from './CoverageEditor';
 import { RetestQueuePage } from './RetestQueuePage';
+import { ErrorNotice } from '../test-execution/components';
 import { useProject } from '../projects/ProjectProvider';
 import { retestApi } from '../../services/api/retest';
 import { workItemsApi } from '../../services/api/workItems';
+it('retry notice does not submit a containing form',()=>{
+ const submit=vi.fn(event=>event.preventDefault());const retry=vi.fn();
+ render(<form onSubmit={submit}><ErrorNotice error="Load failed" retry={retry}/></form>);
+ fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));
+ expect(retry).toHaveBeenCalledOnce();expect(submit).not.toHaveBeenCalled();
+});
 vi.mock('../../services/api/retest',()=>({retestApi:{summary:vi.fn(),candidates:vi.fn(),coverage:vi.fn(),create:vi.fn(),request:vi.fn(),submit:vi.fn(),close:vi.fn(),reopen:vi.fn(),queue:vi.fn()}}));
 vi.mock('../../services/api/workItems',()=>({workItemsApi:{attachments:vi.fn()}}));
 vi.mock('../projects/ProjectProvider',()=>({useProject:vi.fn()}));
@@ -23,7 +30,7 @@ it('PM selects full coverage, retries a failed save without losing reason, and r
  const changed=vi.fn();retestApi.candidates.mockResolvedValue({items:[{...item,id:9,cycleName:'C1'}],totalItems:1,page:0,totalPages:1});retestApi.coverage.mockRejectedValueOnce(new Error('Lỗi mạng')).mockResolvedValueOnce(summary);
  render(<RetestPanel projectId={1} bug={{id:7,version:3}} canManage writable onChanged={changed}/>);
  fireEvent.click(await screen.findByRole('button',{name:'Chọn toàn bộ phạm vi retest'}));await screen.findByLabelText('Lý do xác nhận phạm vi');
- fireEvent.change(screen.getByLabelText('Lý do xác nhận phạm vi'),{target:{value:'Đủ cấu hình ảnh hưởng'}});fireEvent.click(screen.getByRole('button',{name:'Xác nhận phạm vi'}));await screen.findByText('Lỗi mạng');
+ fireEvent.change(screen.getByLabelText('Lý do xác nhận phạm vi'),{target:{value:'Đủ cấu hình ảnh hưởng'}});fireEvent.click(screen.getByRole('button',{name:'Xác nhận phạm vi'}));await screen.findByText('Lỗi mạng');expect(screen.getByRole('alert')).toHaveFocus();
  expect(screen.getByLabelText('Lý do xác nhận phạm vi')).toHaveValue('Đủ cấu hình ảnh hưởng');fireEvent.click(screen.getByRole('button',{name:'Xác nhận phạm vi'}));
  await waitFor(()=>expect(changed).toHaveBeenCalled());expect(retestApi.coverage).toHaveBeenLastCalledWith(1,7,{runItemIds:[9],reason:'Đủ cấu hình ảnh hưởng',expectedVersion:3});
 });
@@ -58,18 +65,47 @@ it('retries a request network failure with the same key and chosen evidence',asy
  workItemsApi.attachments.mockResolvedValue([{id:'file-1',name:'Ảnh lỗi.png'}]);retestApi.submit.mockRejectedValueOnce(new Error('Không có kết nối')).mockResolvedValueOnce(request);
  const saved=vi.fn();render(<RetestResult projectId={1} requestId={11} writable onSaved={saved} onClose={vi.fn()}/>);
  fireEvent.change(await screen.findByLabelText('Kết quả TC-1'),{target:{value:'FAIL'}});fireEvent.change(screen.getByLabelText('Thực tế TC-1'),{target:{value:'Vẫn còn lỗi'}});fireEvent.change(screen.getByLabelText('Chứng cứ TC-1'),{target:{value:'file-1'}});
- fireEvent.click(screen.getByRole('button',{name:'Lưu kết quả retest'}));await screen.findByText('Không có kết nối');fireEvent.click(screen.getByRole('button',{name:'Lưu kết quả retest'}));
+ fireEvent.click(screen.getByRole('button',{name:'Lưu kết quả retest'}));await screen.findByText('Không có kết nối');expect(screen.getByRole('alert')).toHaveFocus();expect(screen.getByLabelText('Thực tế TC-1')).toHaveValue('Vẫn còn lỗi');fireEvent.click(screen.getByRole('button',{name:'Lưu kết quả retest'}));
  await waitFor(()=>expect(saved).toHaveBeenCalled());expect(retestApi.submit.mock.calls[0][2]).toEqual(retestApi.submit.mock.calls[1][2]);
  expect(retestApi.submit.mock.calls[0][2].results[0]).toMatchObject({verdict:'FAIL',evidenceAttachmentId:'file-1'});
+});
+it('keeps the request open while a result write is pending',async()=>{
+ let resolveWrite;retestApi.submit.mockImplementation(()=>new Promise(resolve=>{resolveWrite=resolve;}));
+ const close=vi.fn();render(<RetestResult projectId={1} requestId={11} writable onSaved={vi.fn()} onClose={close}/>);
+ fireEvent.change(await screen.findByLabelText('Kết quả TC-1'),{target:{value:'PASS'}});
+ fireEvent.change(screen.getByLabelText('Thực tế TC-1'),{target:{value:'Đã kiểm tra'}});
+ fireEvent.click(screen.getByRole('button',{name:'Lưu kết quả retest'}));
+ await waitFor(()=>expect(retestApi.submit).toHaveBeenCalled());
+ const closeButton=screen.getByRole('button',{name:'Đóng yêu cầu'});
+ expect(closeButton).toBeDisabled();fireEvent.click(closeButton);expect(close).not.toHaveBeenCalled();
+ resolveWrite({...request,status:'SUBMITTED',canSubmit:false});
+ await waitFor(()=>expect(closeButton).toBeEnabled());
 });
 it('coverage search preserves selections across pages and exposes retry/clear',async()=>{
  retestApi.candidates.mockRejectedValueOnce(new Error('Không tải được case')).mockResolvedValue({items:[{...item,id:9,cycleName:'C1'}],totalItems:51,totalPages:2,page:0});
  const save=vi.fn();render(<CoverageEditor projectId={1} items={[]} busy={false} onSubmit={save}/>);
- await screen.findByText('Không tải được case');fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));await screen.findByText('TC-1');
- fireEvent.click(screen.getByRole('checkbox'));fireEvent.click(screen.getByRole('button',{name:'Tiếp'}));await waitFor(()=>expect(retestApi.candidates).toHaveBeenLastCalledWith(1,1,''));
- expect(screen.getByRole('checkbox')).toBeChecked();fireEvent.click(screen.getByRole('button',{name:'Bỏ chọn tất cả'}));expect(screen.getByRole('button',{name:'Xác nhận phạm vi'})).toBeDisabled();
+ await screen.findByText('Không tải được case');fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));await screen.findByText('TC-1 · Đăng nhập');
+ fireEvent.click(screen.getByRole('checkbox',{name:'Chọn TC-1 · Đăng nhập'}));fireEvent.click(screen.getByRole('button',{name:'Tiếp'}));await waitFor(()=>expect(retestApi.candidates).toHaveBeenLastCalledWith(1,1,''));
+ expect(screen.getByRole('checkbox',{name:'Chọn TC-1 · Đăng nhập'})).toBeChecked();fireEvent.click(screen.getByRole('button',{name:'Bỏ chọn tất cả'}));expect(screen.getByRole('button',{name:'Xác nhận phạm vi'})).toBeDisabled();
  fireEvent.change(screen.getByLabelText('Tìm case cho phạm vi'),{target:{value:'đăng nhập'}});await waitFor(()=>expect(retestApi.candidates).toHaveBeenLastCalledWith(1,0,'đăng nhập'));
- fireEvent.click(screen.getByRole('checkbox'));fireEvent.change(screen.getByLabelText('Lý do xác nhận phạm vi'),{target:{value:'Bao gồm thiết bị này'}});fireEvent.click(screen.getByRole('button',{name:'Xác nhận phạm vi'}));expect(save).toHaveBeenCalledWith({runItemIds:[9],reason:'Bao gồm thiết bị này'});
+ fireEvent.click(screen.getByRole('checkbox',{name:'Chọn TC-1 · Đăng nhập'}));fireEvent.change(screen.getByLabelText('Lý do xác nhận phạm vi'),{target:{value:'Bao gồm thiết bị này'}});fireEvent.click(screen.getByRole('button',{name:'Xác nhận phạm vi'}));expect(save).toHaveBeenCalledWith({runItemIds:[9],reason:'Bao gồm thiết bị này'});
+});
+it('does not submit coverage when paging a completed coverage draft',async()=>{
+ retestApi.candidates.mockImplementation(async(_project,page)=>({items:[{...item,id:9,cycleName:'C1'}],totalItems:40,totalPages:2,page}));
+ const save=vi.fn();render(<CoverageEditor projectId={1} items={[item]} busy={false} onSubmit={save}/>);
+ await screen.findByText('TC-1 · Đăng nhập');
+ fireEvent.change(screen.getByLabelText('Lý do xác nhận phạm vi'),{target:{value:'Xác minh toàn bộ'}});
+ fireEvent.click(screen.getByRole('button',{name:'Tiếp'}));
+ await waitFor(()=>expect(retestApi.candidates).toHaveBeenLastCalledWith(1,1,''));
+ expect(save).not.toHaveBeenCalled();
+});
+it('explains the selection limit next to disabled coverage confirmation',async()=>{
+ retestApi.candidates.mockResolvedValue({items:[],totalItems:0,totalPages:0,page:0});
+ const items=Array.from({length:101},(_,i)=>({...item,runItemId:i+1}));
+ render(<CoverageEditor projectId={1} items={items} busy={false} onSubmit={vi.fn()}/>);
+ await screen.findByRole('button',{name:'Xác nhận phạm vi'});
+ expect(screen.getByRole('button',{name:'Xác nhận phạm vi'})).toBeDisabled();
+ expect(screen.getByText(/101.*100/)).toBeVisible();
 });
 it('queue supports mine/status filters, paging, request details and empty state',async()=>{
  const navigate=vi.fn();retestApi.queue.mockResolvedValue({items:[request],page:0,totalItems:51,totalPages:2});
@@ -100,4 +136,33 @@ it('preserves results after a conflict and uses an explicitly reloaded version',
  retestApi.request.mockResolvedValue({...request,bugVersion:4});fireEvent.click(screen.getByRole('button',{name:'Tải bản hiện hành, giữ bản nháp'}));
  await waitFor(()=>expect(screen.getByRole('button',{name:'Lưu kết quả retest'})).toBeEnabled());fireEvent.click(screen.getByRole('button',{name:'Lưu kết quả retest'}));
  await waitFor(()=>expect(retestApi.submit).toHaveBeenLastCalledWith(1,11,expect.objectContaining({expectedBugVersion:4,results:[expect.objectContaining({verdict:'PASS',actualResult:'Đã vào được trang chủ'})]})));
+});
+
+it('blocks stale retest management after a failed refresh and preserves the coverage draft for retry',async()=>{
+  retestApi.candidates.mockResolvedValue({items:[{...item,id:9,cycleName:'C1'}],totalItems:1,page:0,totalPages:1});
+  render(<RetestPanel projectId={1} bug={{id:7,version:3}} canManage writable onChanged={vi.fn()}/>);
+  fireEvent.click(await screen.findByRole('button',{name:'Chọn toàn bộ phạm vi retest'}));
+  fireEvent.change(await screen.findByLabelText('Lý do xác nhận phạm vi'),{target:{value:'Giữ phạm vi đã chọn'}});
+  retestApi.summary.mockRejectedValueOnce(Object.assign(new Error('Quyền vừa bị thu hồi'),{status:403})).mockResolvedValue(summary);
+  fireEvent.click(screen.getByRole('button',{name:'Tải lại retest'}));
+  await screen.findByText('Quyền vừa bị thu hồi');
+  expect(screen.getByLabelText('Lý do xác nhận phạm vi')).toHaveValue('Giữ phạm vi đã chọn');
+  expect(screen.getByRole('button',{name:'Xác nhận phạm vi'})).toBeDisabled();
+  fireEvent.click(screen.getByRole('button',{name:'Tải lại retest'}));
+  await waitFor(()=>expect(screen.getByRole('button',{name:'Xác nhận phạm vi'})).toBeEnabled());
+  expect(screen.getByLabelText('Lý do xác nhận phạm vi')).toHaveValue('Giữ phạm vi đã chọn');
+});
+
+it('blocks stale retest result submission after a failed refresh and retains the result draft',async()=>{
+  render(<RetestResult projectId={1} requestId={11} writable onSaved={vi.fn()} onClose={vi.fn()}/>);
+  fireEvent.change(await screen.findByLabelText('Kết quả TC-1'),{target:{value:'PASS'}});
+  fireEvent.change(screen.getByLabelText('Thực tế TC-1'),{target:{value:'Đã kiểm tra lại'}});
+  retestApi.request.mockRejectedValueOnce(Object.assign(new Error('Không xác nhận được quyền'),{status:403})).mockResolvedValue(request);
+  fireEvent.click(screen.getByRole('button',{name:'Tải lại yêu cầu'}));
+  await screen.findByText('Không xác nhận được quyền');
+  expect(screen.getByLabelText('Thực tế TC-1')).toHaveValue('Đã kiểm tra lại');
+  expect(screen.getByRole('button',{name:'Lưu kết quả retest'})).toBeDisabled();
+  fireEvent.click(screen.getByRole('button',{name:'Tải lại yêu cầu'}));
+  await waitFor(()=>expect(screen.getByRole('button',{name:'Lưu kết quả retest'})).toBeEnabled());
+  expect(screen.getByLabelText('Thực tế TC-1')).toHaveValue('Đã kiểm tra lại');
 });

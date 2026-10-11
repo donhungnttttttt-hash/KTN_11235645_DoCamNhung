@@ -18,7 +18,7 @@ class FileWorkServiceTest {
     final ExecutionService execution=mock(ExecutionService.class);
     final ProjectAudit audit=mock(ProjectAudit.class);
     final FileWorkSessionService sessionService=mock(FileWorkSessionService.class);
-    final FileWorkService service=new FileWorkService(db,identity,execution,audit,new ObjectMapper().findAndRegisterModules(),sessionService);
+    final FileWorkService service=new FileWorkService(db,identity,execution,audit,new ObjectMapper().findAndRegisterModules(),sessionService,mock(vn.syp.tms.project.ProjectActorService.class));
     String global="PM",role="PM",documentState="COMMITTED",cycleState="DRAFT";
     long cycleVersion=3,runCount=0;
     List<Map<String,Object>> sources=new ArrayList<>(),runs=new ArrayList<>(),sessions=new ArrayList<>(),commands=new ArrayList<>();
@@ -91,7 +91,7 @@ class FileWorkServiceTest {
     @Test void previewReportsDuplicateSourceCase(){sources.add(source(2,101,true));assertTrue(errors(service.preview(1,"actor",scope(List.of(1L,2L)))).stream().anyMatch(e->"INVALID_SCOPE".equals(e.get("code"))));}
     @Test void previewCannotReuseExistingRun(){sources.getFirst().put("existingRunItemId",99L);assertEquals("DUPLICATE_SCOPE",errors(service.preview(1,"actor",scope(List.of(1L)))).getFirst().get("code"));}
     @Test void previewBoundsWholeCycleBeforeChunking(){runCount=500;assertEquals("SCOPE_LIMIT",errors(service.preview(1,"actor",scope(List.of(1L)))).getFirst().get("code"));}
-    @Test void adminMemberDoesNotReceivePmCommandPower(){global="ADMIN";role="MEMBER";error("FORBIDDEN",()->service.preview(1,"actor",scope(List.of(1L))));verifyNoInteractions(execution);}
+    @Test void adminMemberReceivesManagementAuthority(){global="ADMIN";role="MEMBER";assertTrue(service.guard(1,"actor",true).pm());verifyNoInteractions(execution);}
     @Test void globalDevWithPmMembershipCannotPreview(){global="DEV";error("FORBIDDEN",()->service.preview(1,"actor",scope(List.of(1L))));}
     @Test void invalidPageRejected(){error("INVALID_PAGE",()->service.list(1,"actor",new FileWorkDtos.Filter(-1,101,false,null,null,null,null,null,null)));}
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.

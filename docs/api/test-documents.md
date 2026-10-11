@@ -16,7 +16,7 @@ Giới hạn: một sheet, tiêu đề ở hàng đầu, ≤500 dòng, ≤64 c�
 
 ## Đọc và xuất
 
-**Cập nhật đã duyệt 04/10/2026 — V13:** thành viên dự án đang hoạt động được ghi kết quả **tài liệu**; TESTER vẫn không có quyền import hoặc duyệt revision. Kết quả này tách biệt execution/bug/retest. `sourceCounts` bên dưới vẫn là dữ liệu nguồn bất biến; UI thư viện dùng `resultCounts` của bản cập nhật.
+**Cập nhật đã duyệt 04/10/2026 — V13:** thành viên dự án đang hoạt động được ghi kết quả **tài liệu**; TESTER vẫn không có quyền import hoặc duyệt revision. Sửa kết quả tài liệu không ghi execution/bug/retest. **Bổ sung 11/10/2026:** mỗi lần thực thi mới cập nhật kết quả tài liệu một chiều theo case; lần ghi mới nhất thắng, kể cả khác đợt/cấu hình. Tăng version và ghi lịch sử trong cùng transaction; replay attempt không ghi đè chỉnh sửa mới hơn. Không backfill lịch sử cũ. `sourceCounts` bên dưới vẫn là dữ liệu nguồn bất biến; UI thư viện dùng `resultCounts` của bản cập nhật.
 
 | Method / path (sau `/api/v1/projects/{projectId}`) | Contract mới |
 | --- | --- |

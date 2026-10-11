@@ -13,6 +13,14 @@ vi.mock('../features/auth/AuthProvider',()=>({useAuth:()=>({user:{id:'pm',displa
 vi.mock('../services/api/workItems',()=>({workItemsApi:{transition:vi.fn(),batch:vi.fn(),get:vi.fn(),create:vi.fn()}}));
 vi.mock('../services/api/testCases',()=>({testCasesApi:{listCases:vi.fn().mockResolvedValue({items:[]})}}));
 const issue={id:'DEMO-7',serverId:7,title:'Lỗi đăng nhập',type:'Lỗi',typeCode:'BUG',status:'open',version:0,assignee:'Tester',priority:'Trung bình',created:'2026-09-29',updated:'2026-09-29'};
+it('switches between status columns and a tabular list using the same work items',()=>{
+ const navigate=vi.fn(),{rerender}=render(<WorkBoardPage activeRoute="/board" navigate={navigate}/>);
+ expect(screen.getByRole('region',{name:'Các cột Kanban'})).toBeVisible();expect(screen.queryByRole('table')).not.toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'Danh sách',exact:true}));expect(navigate).toHaveBeenCalledWith('/board/list');
+ rerender(<WorkBoardPage activeRoute="/board/list" navigate={navigate}/>);
+ expect(screen.getByRole('table')).toBeVisible();expect(screen.queryByRole('region',{name:'Các cột Kanban'})).not.toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'Kanban',exact:true}));expect(navigate).toHaveBeenLastCalledWith('/board');
+});
 it('passes the overview milestone link to backend filters',()=>{
   render(<WorkBoardPage activeRoute="/board/list?milestone=10" navigate={vi.fn()}/>);
   expect(shared.queries).toHaveBeenLastCalledWith(expect.objectContaining({milestone:'10',page:0}));
@@ -43,6 +51,14 @@ it('a failed Kanban move keeps the card in its persisted column and never report
   fireEvent.change(screen.getByLabelText('Lý do chuyển trạng thái'),{target:{value:'Đủ thông tin'}});fireEvent.click(screen.getByRole('button',{name:'Xác nhận chuyển'}));
   await screen.findByText('Không thể chuyển trạng thái');expect(within(open).getByText('DEMO-7')).toBeVisible();expect(within(ready).queryByText('DEMO-7')).not.toBeInTheDocument();expect(shared.data.refresh).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole('button',{name:'Hủy'}));fireEvent.drop(screen.getByRole('region',{name:'Cột Hoàn thành'}),{dataTransfer:{getData:()=> 'DEMO-7'}});expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+});
+it('explains that a different status is required in the Kanban move menu',()=>{
+  render(<WorkBoardPage activeRoute="/board" navigate={vi.fn()}/>);
+  fireEvent.click(screen.getByRole('button',{name:'Tùy chọn DEMO-7'}));
+  const move=screen.getByRole('button',{name:'Chuyển công việc'});
+  expect(move).toBeDisabled();expect(screen.getByText('Chọn trạng thái khác với trạng thái hiện tại.')).toBeVisible();
+  fireEvent.change(screen.getByLabelText('Chuyển sang trạng thái'),{target:{value:'ready'}});
+  expect(move).toBeEnabled();fireEvent.click(move);expect(screen.getByLabelText('Lý do chuyển trạng thái')).toBeVisible();
 });
 it('batch selection uses canonical IDs and refreshes only after all items save',async()=>{
   shared.data.issues=[issue,{...issue,id:'DEMO-8',serverId:8,title:'Lỗi ảnh',version:3}];workItemsApi.batch.mockResolvedValue([]);

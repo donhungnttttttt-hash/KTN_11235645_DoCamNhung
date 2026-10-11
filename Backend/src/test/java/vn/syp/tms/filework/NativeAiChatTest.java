@@ -130,7 +130,7 @@ class NativeAiChatTest {
         return mvc.perform(post("/api/v1/ai/chats/"+thread+"/messages").with(actor(actor)).with(Objects.requireNonNull(csrf())).contentType("application/json")
                 .content(Objects.requireNonNull(json.createObjectNode().put("text",text).put("requestKey",key).toString())));
     }
-    JsonNode read(MvcResult result) throws Exception {return json.readTree(result.getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8));}
+    JsonNode read(MvcResult result) throws Exception {return json.readTree(result.getResponse().getContentAsByteArray());}
     @Test void privateGeneralChatPersistsOriginalTextAndDeduplicates() throws Exception {
         long id=create(f.pm,null,null,null);
         var first=read(send(f.pm,id," Hello\n","private-general-001").andExpect(status().isOk()).andExpect(jsonPath("$.state").value("READY")).andReturn());

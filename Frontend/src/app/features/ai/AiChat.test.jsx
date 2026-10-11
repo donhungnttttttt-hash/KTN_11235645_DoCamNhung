@@ -1,14 +1,20 @@
 import React from 'react';
-import {render,screen,fireEvent,waitFor,act} from '@testing-library/react';
+import {render,screen,fireEvent,waitFor,act,within} from '@testing-library/react';
 import {it,expect,vi,beforeEach} from 'vitest';
 import {AiProviderProvider} from './AiConnections';
 import {AiChat} from './AiChat';
+import {ChatLauncherProvider,useChatLauncherSlot} from './ChatLauncherSlot';
 const identity=vi.hoisted(()=>({status:'authenticated',user:{id:1}}));
 vi.mock('../auth/AuthProvider',()=>({useAuth:()=>identity}));
 let api;const thread={id:1,provider:'OPENAI_API',model:'m',projectId:null};
 beforeEach(()=>{identity.status='authenticated';identity.user={id:1};api={providers:vi.fn().mockResolvedValue({providers:[{code:'OPENAI_API',label:'API của hệ thống',available:true,models:[{id:'m',label:'m'}]}]}),chatList:vi.fn().mockResolvedValue({items:[],nextBefore:null}),chatCreate:vi.fn().mockResolvedValue(thread),chatGet:vi.fn().mockResolvedValue({thread,turns:[],nextBefore:null}),chatSend:vi.fn().mockResolvedValue({id:2,text:'Xin chào',state:'READY',content:{text:'Trả lời',sources:[]},provider:'OPENAI_API'})};});
 const mount=()=>render(<AiProviderProvider api={api}><AiChat api={api} projectApi={{list:async()=>[]}}/></AiProviderProvider>);
 const deferred=()=>{let resolve,reject;const promise=new Promise((done,fail)=>{resolve=done;reject=fail;});return {promise,resolve,reject};};
+it('places the chat launcher in a registered header slot',()=>{
+ function HeaderSlot(){const register=useChatLauncherSlot();return <header><div data-testid="chat-slot" ref={register}/></header>;}
+ render(<ChatLauncherProvider><AiProviderProvider api={api}><HeaderSlot/><AiChat api={api} projectApi={{list:async()=>[]}}/></AiProviderProvider></ChatLauncherProvider>);
+ expect(within(screen.getByTestId('chat-slot')).getByRole('button',{name:'Mở chat AI'})).toBeInTheDocument();
+});
 async function open(){fireEvent.click(screen.getByRole('button',{name:'Mở chat AI'}));await screen.findByLabelText('Tin nhắn AI');await waitFor(()=>expect(screen.getByRole('button',{name:'Gửi tin nhắn'})).toBeDisabled());}
 it('preserves unsent text on minimize, Shift+Enter and composing Enter; Enter sends',async()=>{
  mount();await open();const input=screen.getByLabelText('Tin nhắn AI');fireEvent.change(input,{target:{value:'Xin chào'}});fireEvent.keyDown(input,{key:'Enter',shiftKey:true});fireEvent.keyDown(input,{key:'Enter',isComposing:true});expect(api.chatSend).not.toHaveBeenCalled();
@@ -21,6 +27,16 @@ it('uses authorized project metadata, searches only allowed targets and pins the
 });
 it('keeps failed questions and generates a new key only on an explicit new send',async()=>{
  api.chatSend.mockResolvedValueOnce({id:2,text:'Xin chào',state:'FAILED',failureCode:'AI_DAILY_LIMIT',provider:'OPENAI_API',content:null});mount();await open();fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Xin chào'}});fireEvent.click(screen.getByRole('button',{name:'Gửi tin nhắn'}));await screen.findByText(/Bạn đã đạt giới hạn chat AI hôm nay/);expect(screen.getByLabelText('Tin nhắn AI')).toHaveValue('Xin chào');expect(api.chatSend).toHaveBeenCalledTimes(1);fireEvent.click(screen.getByRole('button',{name:'Gửi tin nhắn'}));await screen.findByText('Trả lời');expect(api.chatSend.mock.calls[1][1].requestKey).not.toBe(api.chatSend.mock.calls[0][1].requestKey);
+});
+it('retries a failed chat source search without changing the keyword',async()=>{
+ api.metadata=vi.fn().mockResolvedValue({purposes:[{code:'PM_ASSIGNMENT_SUGGESTION',label:'Gợi ý phân công file',target:'FILE_GROUP'}]});
+ api.targets=vi.fn().mockRejectedValueOnce(Object.assign(new Error('Mất kết nối'),{code:'NETWORK_ERROR'})).mockResolvedValueOnce({items:[{id:8,label:'File đã tải lại'}],hasMore:false});
+ render(<AiProviderProvider api={api}><AiChat api={api} projectApi={{list:async()=>[{id:1,name:'Dự án của tôi'}]}}/></AiProviderProvider>);
+ await open();fireEvent.click(screen.getByRole('button',{name:'Nguồn / phạm vi'}));
+ await screen.findByRole('option',{name:'Dự án của tôi'});fireEvent.change(screen.getByLabelText('Phạm vi chat'),{target:{value:'1'}});
+ await screen.findByRole('alert');fireEvent.click(screen.getByRole('button',{name:'Tìm',exact:true}));
+ expect(await screen.findByRole('option',{name:'File đã tải lại'})).toBeInTheDocument();
+ expect(api.targets).toHaveBeenCalledTimes(2);expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });
 it('returns focus on Escape and does not close a project select dropdown on Escape',async()=>{
  mount();await open();fireEvent.click(screen.getByRole('button',{name:'Nguồn / phạm vi'}));fireEvent.keyDown(screen.getByLabelText('Phạm vi chat'),{key:'Escape'});expect(screen.getByRole('dialog')).toBeInTheDocument();fireEvent.keyDown(screen.getByLabelText('Tin nhắn AI'),{key:'Escape'});expect(screen.queryByRole('dialog')).toBeNull();expect(screen.getByRole('button',{name:'Mở chat AI'})).toHaveFocus();

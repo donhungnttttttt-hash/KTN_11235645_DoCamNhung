@@ -3,6 +3,7 @@ import { qaApi } from '../../services/api/qa';
 import { Button } from '../work-items/components';
 
 const sourceKeys = ['documentId', 'groupId', 'runItemId', 'revisionId'];
+const sourceLabels = {documentId:'Tài liệu',groupId:'Công việc theo file',runItemId:'Lượt kiểm thử',revisionId:'Phiên bản case'};
 const initialForm = { title: '', question: '', priority: 'MEDIUM', categoryId: '', milestoneId: '' };
 const sourcePin = context => Object.fromEntries(sourceKeys.map(key => [key, context[key] ?? null]));
 const contextKey = (p, context) => JSON.stringify([p, sourcePin(context)]);
@@ -45,7 +46,7 @@ export function QaContext({ context = {} }) {
     {snapshot.revision?.caseNo && <p>{snapshot.revision.caseNo}</p>}
     {snapshot.revision?.title && <p>{snapshot.revision.title}</p>}
     {['preconditions', 'steps', 'expected'].map(key => snapshot.revision?.[key] && <p style={{ whiteSpace: 'pre-wrap' }} key={key}>{snapshot.revision[key]}</p>)}
-    {ids.map(key => <p key={key}>{key}: {String(context[key] ?? snapshot[key])}</p>)}
+    {ids.length>0 && <dl className="wi-source-references">{ids.map(key => <div key={key}><dt>{sourceLabels[key]}</dt><dd>#{String(context[key] ?? snapshot[key])}</dd></div>)}</dl>}
     {!ids.length && !snapshot.document && !snapshot.revision && <p>QA độc lập, chưa có nguồn được chọn.</p>}
   </section>;
 }

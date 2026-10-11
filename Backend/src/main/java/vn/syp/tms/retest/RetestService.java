@@ -174,7 +174,7 @@ public class RetestService {
         request.put("current",current);
         boolean cycleActive=items.stream().allMatch(i->"ACTIVE".equals(i.get("cycleStatus")) && !Boolean.TRUE.equals(i.get("excluded")) && !(i.get("excluded") instanceof Number n && n.intValue()!=0));
         request.put("cycleActive",cycleActive);
-        request.put("canSubmit",!WorkItemService.developer(member) && current && cycleActive && "OPEN".equals(request.get("status")) && number(request,"assigneeMembershipId")==number(member,"id") && items.stream().allMatch(i->number(i,"assigneeMembershipId")==number(member,"id")));
+        request.put("canSubmit",!WorkItemService.developer(member) && current && cycleActive && "OPEN".equals(request.get("status")) && ("ADMIN".equals(member.get("systemRole")) || number(request,"assigneeMembershipId")==number(member,"id")) && items.stream().allMatch(i->number(i,"assigneeMembershipId")==number(request,"assigneeMembershipId")));
         return request;
     }
     public Map<String,Object> submit(long p,String actor,long id,RetestDtos.Submit input) {
@@ -185,8 +185,8 @@ public class RetestService {
             if(!input.requestKey().equals(request.get("submitRequestKey")) || !checksum.equals(request.get("submitChecksum")) || number(request,"submittedBy")!=author) fail(409,"IDEMPOTENCY_CONFLICT","Yêu cầu đã có kết quả; không ghi đè lịch sử.");
             return request;
         }
-        if(number(request,"assigneeMembershipId")!=author) fail(403,"NOT_ASSIGNED","Chỉ người được phân công mới được ghi kết quả kiểm thử lại.");
-        eligibleMember(p,author);version(request,input.expectedVersion());
+        if(!"ADMIN".equals(member.get("systemRole")) && number(request,"assigneeMembershipId")!=author) fail(403,"NOT_ASSIGNED","Chỉ người được phân công mới được ghi kết quả kiểm thử lại.");
+        if(!"ADMIN".equals(member.get("systemRole"))) eligibleMember(p,author);version(request,input.expectedVersion());
         long bugId=number(request,"bugId");var bug=bug(p,actor,bugId);version(bug,input.expectedBugVersion());resolved(bug);
         if(!Boolean.TRUE.equals(request.get("current")) || !"OPEN".equals(request.get("status")) || !Objects.equals(request.get("buildId"),bug.get("fixedBuildId"))) fail(409,"STALE_RETEST","Yêu cầu không còn thuộc bản sửa và phạm vi hiện hành.");
         if(input.closeBug()) {pm(member);required(input.closureReason(),"lý do đóng lỗi");}
@@ -198,7 +198,7 @@ public class RetestService {
         boolean failed=false;
         for(var result:input.results()) {
             long runId=number(byId.get(result.coverageItemId()),"runItemId");var run=eligibleRun(p,actor,runId);version(run,result.expectedRunVersion());
-            if(number(run,"assigneeMembershipId")!=author) fail(409,"ASSIGNMENT_CHANGED","Case đã được phân công lại; PM cần tạo yêu cầu mới.");
+            if(number(run,"assigneeMembershipId")!=number(request,"assigneeMembershipId")) fail(409,"ASSIGNMENT_CHANGED","Case đã được phân công lại; PM cần tạo yêu cầu mới.");
             String evidence=evidence(p,bugId,result.evidenceAttachmentId(),false);Long attempt=null;
             if("FULL_CASE".equals(request.get("verificationScope"))) {
                 String key=db.checksum(List.of("RETEST",id,result.coverageItemId(),input.requestKey()));

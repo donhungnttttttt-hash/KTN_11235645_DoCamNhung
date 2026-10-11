@@ -29,16 +29,24 @@ export function RedminePanel(props) {
 }
 function RedmineContent({ projectId, bug, writable }) {
   const [data, setData] = useState(null), [error, setError] = useState(''), [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true), [loadFailed, setLoadFailed] = useState(false), [notice, setNotice] = useState('');
   const [reason, setReason] = useState(''), [reviewed, setReviewed] = useState(false), [stale, setStale] = useState(false);
   const generation = useRef(0), alive = useRef(true), requestKey = useRef(crypto.randomUUID());
   useEffect(() => { alive.current = true; return () => { alive.current = false; generation.current++; }; }, []);
   const load = useCallback(async () => {
     const current = ++generation.current;
+    setLoading(true); setError(''); setNotice('');
     try {
       const result = await redmineApi.state(projectId, bug.id);
       if (!alive.current || current !== generation.current) return;
-      setData(result); setError(''); setStale(false); setReviewed(false); requestKey.current = crypto.randomUUID();
-    } catch (e) { if (alive.current && current === generation.current) setError(e.message); }
+      setData(result); setError(''); setLoadFailed(false); setStale(false); setReviewed(false); requestKey.current = crypto.randomUUID();
+      setNotice('Đã tải lại liên kết Redmine.');
+    } catch (e) {
+      if (alive.current && current === generation.current) {
+        setError(e.message); setLoadFailed(true);
+        if ([401, 403, 404].includes(e.status)) setData(null);
+      }
+    } finally { if (alive.current && current === generation.current) setLoading(false); }
   }, [projectId, bug.id]);
   useEffect(() => { load(); }, [load, bug.version]);
   const latest = data?.deliveries[0], binding = data?.binding;
@@ -47,8 +55,8 @@ function RedmineContent({ projectId, bug, writable }) {
     const timer = setTimeout(load, 4000); return () => clearTimeout(timer);
   }, [latest, load, busy]);
   async function submit(kind) {
-    if (busy) return;
-    setBusy(true); setError(''); generation.current++;
+    if (busy || loading || loadFailed) return;
+    setBusy(true); setError(''); setNotice(''); generation.current++;
     const body = kind === 'retry' ? { expectedVersion: latest.version, reason } : {
       expectedVersion: data.sourceVersion, reason, requestKey: requestKey.current,
       ...(kind === 'publish' && latest?.status === 'CONFLICT' ? { observedFingerprint: binding.observedFingerprint } : {}),
@@ -63,12 +71,13 @@ function RedmineContent({ projectId, bug, writable }) {
   const conflict = latest?.status === 'CONFLICT';
   const manage = data?.configured && data.canManage && writable;
   const publish = !latest || ['DELIVERED', 'FAILED', 'SUPERSEDED'].includes(latest.status) || (conflict && binding?.externalIssueId && binding?.observedFingerprint);
-  const disabled = busy || stale || !reason.trim() || pending(latest?.status);
+  const disabled = busy || loading || loadFailed || stale || !reason.trim() || pending(latest?.status);
   return <div className="rm-content">
-    <div className="wi-actions">{data && <strong className={`rm-status rm-${latest?.status || 'EMPTY'}`}>{latest ? labels[latest.status] : 'Chưa công bố'}</strong>}<Button disabled={busy} onClick={load}>Tải lại Redmine</Button></div>
+    <div className="wi-actions">{data && <strong className={`rm-status rm-${latest?.status || 'EMPTY'}`}>{latest ? labels[latest.status] : 'Chưa công bố'}</strong>}<Button disabled={busy || loading} onClick={load}>Tải lại Redmine</Button></div>
+    {(loading || busy || notice) && <p role="status">{loading ? 'Đang tải liên kết Redmine…' : busy ? 'Đang gửi yêu cầu Redmine…' : notice}</p>}
     {error && <p role="alert" className="ex-error">{error}</p>}
     {stale && <p className="wi-note">Tải lại Redmine để đối chiếu bản hiện hành; lý do đã nhập được giữ lại.</p>}
-    {!data && !error && <p>Đang tải liên kết Redmine…</p>}
+    {loadFailed && data && <p className="wi-note">Chưa xác nhận được quyền và dữ liệu hiện hành. Tải lại Redmine trước khi gửi yêu cầu.</p>}
     {data && <>
       {!data.configured && <p className="wi-note">Dự án chưa được liên kết với Redmine.</p>}
       {binding?.url && <p><a href={binding.url} target="_blank" rel="noreferrer">Redmine #{binding.externalIssueId}</a> · Đối chiếu gần nhất: {date(binding.observedAt)}</p>}
@@ -78,6 +87,7 @@ function RedmineContent({ projectId, bug, writable }) {
       {conflict && binding?.observedPayload && <Comparison binding={binding} mapping={data.mapping} />}
       {manage && !pending(latest?.status) && <div className="wi-form">
         <WorkField label="Lý do công bố hoặc đối chiếu"><textarea maxLength={1000} value={reason} disabled={busy} onChange={e => { setReason(e.target.value); requestKey.current = crypto.randomUUID(); }} /></WorkField>
+        {!reason.trim() && <p className="wi-note">Nhập lý do để công bố, thử lại hoặc đối chiếu Redmine.</p>}
         {conflict && publish && <label className="rm-review"><input type="checkbox" checked={reviewed} onChange={e => setReviewed(e.target.checked)} /> Đã xem thay đổi trên Redmine</label>}
         <div className="wi-actions">
           {publish && <Button primary disabled={disabled || (conflict && !reviewed)} onClick={() => submit('publish')}>{conflict ? 'Công bố bản TMS đã duyệt' : 'Công bố lên Redmine'}</Button>}

@@ -33,7 +33,8 @@ public interface ProjectDtos {
         String systemRole,
         String projectRole,
         boolean active,
-        long version
+        long version,
+        boolean enabled
     ) {}
     
     record SetMember(

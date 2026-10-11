@@ -17,7 +17,10 @@ export function CatalogEditor({ projectId, kind, item, onClose, onSaved }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   async function save(event) {
-    event.preventDefault(); setBusy(true); setError('');
+    event.preventDefault(); if(busy)return;
+    const missing = fields.find(field => field.required && (!item || field.key !== 'code') && !form[field.key].trim());
+    if(missing){setError(`Nhập ${missing.label} trước khi lưu danh mục.`);event.currentTarget.elements.namedItem(missing.key)?.focus();return;}
+    setBusy(true); setError('');
     try {
       const payload = Object.fromEntries(fields.filter(field => !item || field.key !== 'code').map(field => [field.key, field.type === 'date' ? (form[field.key] || null) : form[field.key].trim()]));
       const clearDates = fields.filter(field => item && field.type === 'date' && item[field.key] && !form[field.key]).map(field => field.key);
@@ -28,12 +31,12 @@ export function CatalogEditor({ projectId, kind, item, onClose, onSaved }) {
     } catch (failure) { setError(failure.message); }
     finally { setBusy(false); }
   }
-  return <form className="settings-editor" onSubmit={save} aria-label={item ? 'Sửa danh mục' : 'Thêm danh mục'}>
+  return <form className="settings-editor" onSubmit={save} onInvalid={()=>setError('Kiểm tra các trường bắt buộc được đánh dấu trước khi lưu danh mục.')} aria-label={item ? 'Sửa danh mục' : 'Thêm danh mục'}>
     <h2>{item ? 'Sửa danh mục' : 'Thêm danh mục'}</h2>
     {error && <p role="alert" className="text-danger">{error}</p>}
     <fieldset disabled={busy} className="settings-fields">
       {fields.map((field, index) => <label className="form-group" key={field.key}>{field.label}
-        <input autoFocus={index === 0} type={field.type || 'text'} maxLength={field.max} required={field.required} disabled={!!item && field.key === 'code'} value={form[field.key]} onChange={event => setForm({ ...form, [field.key]: event.target.value })} />
+        <input name={field.key} autoFocus={index === 0} type={field.type || 'text'} maxLength={field.max} required={field.required} disabled={!!item && field.key === 'code'} value={form[field.key]} onChange={event => setForm({ ...form, [field.key]: event.target.value })} />
       </label>)}
     </fieldset>
     <div className="settings-actions"><button className="cat-btn primary" disabled={busy}>{busy ? 'Đang lưu…' : 'Lưu danh mục'}</button><button type="button" className="cat-btn" disabled={busy} onClick={onClose}>Hủy</button></div>

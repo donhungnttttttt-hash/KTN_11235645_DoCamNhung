@@ -1,0 +1,988 @@
+{
+  "reviewer": "root",
+  "createdAt": "2026-10-11T10:56:01.786Z",
+  "scope": "Complete source reads; runtime evidence separately tracked. Catalog/migration delegated to admin reviewer.",
+  "sources": [
+    {
+      "file": "Frontend/src/app/components/Footer.jsx",
+      "lines": 12,
+      "sha256": "7b88632d593a139e7e6a7a2765524cfb696b24fa0dcad21f395835a7221c2e50",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          12
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/components/Header.jsx",
+      "lines": 39,
+      "sha256": "4e06a9d2867ce8617f99da3f47cd1d5c90d6c399f816ff03af1f464819cb4283",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          39
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/components/selection-table.css",
+      "lines": 23,
+      "sha256": "720a39b7f2699a57c0e85401cfe675d333ba9cd8b90c860b65699e7e01bb2238",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          23
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/components/SelectionTable.jsx",
+      "lines": 31,
+      "sha256": "aa0370f09b4dddb76118448644000730dcd0356774e9115a1a4a61f725be6e2a",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/components/SelectPageCheckbox.jsx",
+      "lines": 9,
+      "sha256": "e53b95b8d22c99cfc71b48c052b3237ecdd7f30f46a7f00e5109e5e2bbfd65d6",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/components/Sidebar.jsx",
+      "lines": 99,
+      "sha256": "57ebc5fe2ac352ab9422b948875faddf3644697f3bcad963bdde0f3c559b969d",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          99
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/components/table-scroll.css",
+      "lines": 19,
+      "sha256": "75ddf6b8e8d4f0050a5e0cb21c3d9dfaf9e9569789f35766495a9d4f687461bd",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          19
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/components/TableScroll.jsx",
+      "lines": 25,
+      "sha256": "5753b1a9c9cc7ae51241e27084223323329fed961aafcd940c5f5f8ee2f354f9",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          25
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/hooks/useDialogFocus.js",
+      "lines": 56,
+      "sha256": "dcb99c794b6a0e444feacc8bf08b24cc35d514c9b872314117e27803f57386e7",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          56
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/hooks/useRefreshingResource.js",
+      "lines": 20,
+      "sha256": "63297919f2130b5edc19c1dc241172694f4e140e7795811211e059a069dc0d91",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          20
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/layouts/MainLayout.jsx",
+      "lines": 55,
+      "sha256": "760e4abafc0481f7d10e861125ebdaf901097398a0876bf7c2d1607e9e294c79",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/modules/CatHandbook.jsx",
+      "lines": 113,
+      "sha256": "67e62eedc5cf5b8b8243d489506078cecc16c2e55047e31b50a5b884f0c6cebc",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          113
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/modules/KpiSummaryBar.jsx",
+      "lines": 7,
+      "sha256": "ece164f8043b773be94bbabbc3cb2f4233be604696433a29d0024e09b0c0d5cc",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "lines": 41,
+      "sha256": "978fb04065c248b605df0ac8d6d54e44eeaa5e58501d4a021bb0a971e556f7fa",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          41
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/modules/TestingOverview.jsx",
+      "lines": 4,
+      "sha256": "00f06ec0a208fc64d8e842f149201263701572f42f89a9b6946e2351ad653f2c",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/pages/AnalysisPage.jsx",
+      "lines": 4,
+      "sha256": "2c0c52024b02b09a8707e29ccd29c585d780a450db861a8cb43b37719a1b6866",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/pages/DashboardPage.jsx",
+      "lines": 24,
+      "sha256": "7e1a3c18facd3bb9101e3e8b3a6b745d7f77807923425b9c2926c2962929eddd",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          24
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/pages/IssuesPage.jsx",
+      "lines": 61,
+      "sha256": "fd515c1830dc67395a547deca7a233e79b247f0071f99e83ec013f61ce1be81b",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          61
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/pages/NotFoundPage.jsx",
+      "lines": 7,
+      "sha256": "abc44f62d57dbd019fda63a4da79cd20abf93f114d85406eef3190c7929c22cb",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/pages/ProgressPage.jsx",
+      "lines": 4,
+      "sha256": "57b4109b630bfd354d51184c3b3b03b9892e7613f3792f7f68a55fadf4174286",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/pages/TestRunnerGridPage.jsx",
+      "lines": 8,
+      "sha256": "aea0d4522fcc1dead7765af9bb6597e93238fa56d8c41d6a1fed7a89dc55af2a",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "lines": 338,
+      "sha256": "273320bf550db3b9c6ac2df6639c5b6a64683f9281fd25267be62ee6e5f9e22e",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          338
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "lines": 91,
+      "sha256": "944f79bea263533096fda3389c27b00ebaa22bffe92eebf57b389768643d203d",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          91
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/routes/AppRouter.jsx",
+      "lines": 85,
+      "sha256": "e8f0c3c35880098195e82b318974c517139c83c2bcac8daa23766bfd706fb6af",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          85
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/routes/legacyRoutes.js",
+      "lines": 15,
+      "sha256": "3388efb196049686d0648888b7738d0d6cada940def2b656121188bc7d178d67",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          15
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/routes/routeInfo.js",
+      "lines": 44,
+      "sha256": "14127043fd4d991649c3e39527110890b0fa224cb45f300573c45a9c512a772d",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          44
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/admin.js",
+      "lines": 42,
+      "sha256": "3f95d7148184a1af1997c47b60bcae75b5f68b9dea2b0f146e6ab0c3618d6fbb",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          42
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/ai.js",
+      "lines": 27,
+      "sha256": "a26bfe30cdcf9c91b1cf2daff6e10c8b201c5c50dba3de628e956e5fffa897d6",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          27
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/auth.js",
+      "lines": 18,
+      "sha256": "4d6f4c1afebcd25c35956d71d4c09bfc42a9cd203f397e3d7e831655a173c730",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          18
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/client.js",
+      "lines": 75,
+      "sha256": "cdf630f1479dde6e239ebd90223f0271e0be30f7c322ca2d872fb03c266cf4f0",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          75
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/execution.js",
+      "lines": 26,
+      "sha256": "3fc2fe98eafe9d4c8604daa0953aaeadaa47df372d81ab950d971e27f66cf6bd",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          26
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/fileWork.js",
+      "lines": 44,
+      "sha256": "b300aaa83586807ab2f1e001377d9d8de95b800189094e6bbeb1ea85dc0d64b5",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          44
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/projects.js",
+      "lines": 47,
+      "sha256": "768ee278d73529380161568bdd8508892e959899a74306f68f2b28ba84c477d8",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          47
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/qa.js",
+      "lines": 27,
+      "sha256": "05c3237311976224b2bcdfbffb1dcc85a1efdbf1fc86e9064ae002455d302c5a",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          27
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/redmine.js",
+      "lines": 14,
+      "sha256": "5a5915d8f7dc97e9bd32bcfd776754056388f6e0e31b3ae32de92670d028b080",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          14
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/reports.js",
+      "lines": 7,
+      "sha256": "7dbaf787a13b70363cebba3ac326851a5c9aae6cf8c6ef0c2420540516cbb8d6",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/retest.js",
+      "lines": 18,
+      "sha256": "e7f5b5bb92493cf9be73772067b98944e321109dcf92c4e6279a976a8e69a330",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          18
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/testCases.js",
+      "lines": 54,
+      "sha256": "190e4ea02bd31a22b6232f09c276ff44405141edf99c8b2292073b8139f9d208",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          54
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/services/api/workItems.js",
+      "lines": 31,
+      "sha256": "992c8948d514e813d746145085c0f04e3eaa6d728fe3cc62ff2526c952e671b9",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/styles/app-shell.css",
+      "lines": 396,
+      "sha256": "a79caa55f32210e4ca7270bc18273bed5194f19174c64d8bf6a7238b55a844af",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          396
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "lines": 257,
+      "sha256": "7a5cacb919ee912adfccea6ad0eb76489dfc8f66d4bc9cd407d4a4d7a8be3f59",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          257
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/styles/project-overview.css",
+      "lines": 228,
+      "sha256": "64ebbebd9dfce11b5482fe6b2a076724da1c7739476cc53bf88cf97af2b6c65b",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          228
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/app/styles/work-board.css",
+      "lines": 385,
+      "sha256": "195db849cd5a7ffb02c28fe3c5d8f69a1751115730f46616bc3336d705967159",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          385
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/App.jsx",
+      "lines": 69,
+      "sha256": "933ac5b4d3c7906404c6371c1163594a3757abac000b6658569dcf46f2e743f8",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          69
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/AppEntry.jsx",
+      "lines": 56,
+      "sha256": "49ec786bf178abc49f6d547c6877bd060a9d4076ba805ae3297b2a4c9e7c653b",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          56
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/index.js",
+      "lines": 12,
+      "sha256": "e438ac4e02825696b3bdf63fe89235dd8a4c5164a576269c0e37a6a53c7d853e",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          12
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/main.jsx",
+      "lines": 11,
+      "sha256": "eeb676e98b1ddfd9bca150951fa62e411142d4f27fd5c90405e87210019fbee7",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          11
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Frontend/src/mocks/storeData.js",
+      "lines": 39,
+      "sha256": "a781de87ebfe57d08171feace26a714e0e18f2cd19ad25388e3e77fcdc333e31",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          39
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/config/JpaRepositoryConfig.java",
+      "lines": 9,
+      "sha256": "b6fbfaa1f4c999a7085b8c9d606219f27f4066bb87ffd2ad5ade1f7b98d3e8f0",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/config/SecurityConfig.java",
+      "lines": 93,
+      "sha256": "012cc59c2de3cc5376a7f272319d2ad47ca968932f733b370a6584208b5b9631",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          93
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionController.java",
+      "lines": 31,
+      "sha256": "1fa3ee7089049ed7a7f31e17a8fdf015b2d7df4e7481f8f54ab363b525752de1",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionDtos.java",
+      "lines": 13,
+      "sha256": "5e8f243a395ec9177f36e706c0bf228bdc99b78cd9093f3139629150fbea6ae4",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          13
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/cycle/CycleDecisionService.java",
+      "lines": 107,
+      "sha256": "7c54920ca8b9bdb81eda2bd9add4e4576c92e33a671b904eca8cb8a7e5d45152",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          107
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/foundation/FoundationCheck.java",
+      "lines": 32,
+      "sha256": "9c6f7b375aefea89be75f70a457ab2e241d9490db92cd3686a44275e5c97929c",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          32
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/foundation/FoundationCheckRepository.java",
+      "lines": 7,
+      "sha256": "0634121bb0236c4c54e133f841cf40b3a81c81fcd701debc6cfd6d05ccf69f49",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/foundation/FoundationController.java",
+      "lines": 31,
+      "sha256": "da3b6047137d60ccaebb34bc98b96c62ec0d3ffd47de8edbb879f08a78d24c71",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/foundation/FoundationDtos.java",
+      "lines": 22,
+      "sha256": "aec8cf34d42395e31f3665a3187f672697ef130acfb0ae8191947a878a8e3aaa",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/foundation/FoundationService.java",
+      "lines": 53,
+      "sha256": "7571fe97b59909c71b3e6699913dc4e9f0779c60c1a89e368560f5929ff2d3d6",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          53
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/release/MigrationCommand.java",
+      "lines": 28,
+      "sha256": "79bedfaf160f87339e5b4d42f2c758bcdd41f97f06689c42cc4eaa5d32b000e8",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          28
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/release/ReleaseDatabaseConfig.java",
+      "lines": 20,
+      "sha256": "b32debeba0b6483a7cb2db78d51f3b23b3d0ba22063ce2d3c255ee6b177918b5",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          20
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/shared/web/ApiError.java",
+      "lines": 9,
+      "sha256": "14a28ef6e59ff7f2ed1805cd6280e0c68bf8f397f62baaa44aac165053246b0b",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/shared/web/ApiExceptionHandler.java",
+      "lines": 106,
+      "sha256": "746f8b9cfa378419ffcee9f8bcc8272fb1a7ee62e0c32cda73d80912bc38f535",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          106
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/shared/web/BusinessException.java",
+      "lines": 14,
+      "sha256": "64df78a0574d1bd6f9c85b40482e292c3295cd93164380c214b114919b4f9a2b",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          14
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/shared/web/RequestIdFilter.java",
+      "lines": 36,
+      "sha256": "efc00035ea8bfef1e8fc07d21454920b67981013bb258628293f895f9dae42c1",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          36
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/TmsApplication.java",
+      "lines": 23,
+      "sha256": "91e30b4e19509baf3536ab11cafc73fceee32ec86130c23275ef8f74a65fe4de",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          23
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/resources/application-local.yml",
+      "lines": 19,
+      "sha256": "594fd13045a3165ba9c30d95fb3ba99302e6e8101e843db3f9c82b1632a14c3e",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          19
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/resources/application-release.yml",
+      "lines": 12,
+      "sha256": "035233b0cb39d616b589b64fcfba35d759557346ac5140ac3dd898bb91e09b55",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          12
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/resources/application.yml",
+      "lines": 72,
+      "sha256": "25f480b35c67cb6447a2dfc9bd9430edc9ff7f3b2f4b1eafeacea84c0972cb56",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          72
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/resources/db/demo/V20__local_role_demo_data.sql",
+      "lines": 87,
+      "sha256": "20efdde94623ba16a9b8e0d893d9f902e133a3792ccfb8f6f6dbf4e39e6538ae",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          87
+        ]
+      ],
+      "runtimeVerified": false
+    },
+    {
+      "file": "Backend/src/main/resources/db/demo/V22__local_scale_demo_data.sql",
+      "lines": 332,
+      "sha256": "a6eb8c3315f15384b0531b41cb0c342f1d8229f2819c8a5a30a65197a9b37c28",
+      "owner": "root",
+      "reviewStatus": "COMPLETE_SOURCE_READ",
+      "reviewedRanges": [
+        [
+          1,
+          332
+        ]
+      ],
+      "runtimeVerified": false
+    }
+  ],
+  "updatedAt": "2026-10-11T11:07:50.825Z"
+}

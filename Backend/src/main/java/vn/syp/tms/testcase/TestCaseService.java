@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.syp.tms.project.MembershipRepository;
-import vn.syp.tms.project.ProjectMembership;
 import vn.syp.tms.project.ProjectService;
 import vn.syp.tms.shared.web.BusinessException;
 
@@ -51,11 +50,7 @@ public class TestCaseService {
     }
 
     private Long getMemberId(Long projectId, String userId) {
-        ProjectMembership m = membershipRepository.findByProjectIdAndUserId(projectId, userId);
-        if (m == null || !m.isActive()) {
-            throw new BusinessException(403, "FORBIDDEN", "Bạn không phải thành viên của dự án này.");
-        }
-        return m.getId();
+        return projectService.actorMembershipId(projectId,userId);
     }
 
     // ===== Suites =====
@@ -71,6 +66,10 @@ public class TestCaseService {
 
     public TestCaseDtos.SuiteSummary createSuite(Long projectId, String userId, TestCaseDtos.CreateSuite input) {
         projectService.lockWritableProject(projectId, userId);
+        return createSuiteRecord(projectId,userId,input);
+    }
+
+    private TestCaseDtos.SuiteSummary createSuiteRecord(Long projectId, String userId, TestCaseDtos.CreateSuite input) {
         if (suiteRepository.existsByProjectIdAndCode(projectId, input.code())) {
             throw new BusinessException(400, "DUPLICATE_CODE", "Mã nhóm test case đã tồn tại.");
         }
@@ -166,7 +165,7 @@ public class TestCaseService {
 
         List<TestCaseEntities.TestCaseRevision> revs = revisionRepository.findByProjectIdAndTestCaseIdOrderByRevisionNoDesc(projectId, caseId);
         List<TestCaseDtos.RevisionSummary> revSummaries = revs.stream().map(r ->
-                new TestCaseDtos.RevisionSummary(r.getId(), r.getRevisionNo(), r.getTitleVi(), r.getApprovedAt() != null, r.getApprovedAt(), r.getCreatedAt(), r.getCreatedBy())
+                new TestCaseDtos.RevisionSummary(r.getId(), r.getRevisionNo(), r.getTitleVi(), r.getApprovedAt() != null, r.getApprovedAt(), r.getCreatedAt(), r.getCreatedBy(), r.getCreatedByUserId())
         ).collect(Collectors.toList());
 
         TestCaseDtos.RevisionDetail currentDetail = null;
@@ -176,7 +175,7 @@ public class TestCaseService {
                     currentDetail = new TestCaseDtos.RevisionDetail(
                             r.getId(), r.getRevisionNo(), r.getTitleVi(), r.getPreconditionsVi(), r.getStepsVi(), r.getExpectedVi(),
                             r.getTitleJp(), r.getPreconditionsJp(), r.getStepsJp(), r.getExpectedJp(), r.getSourceReference(),
-                            r.getApprovedAt() != null, r.getApprovedAt(), r.getCreatedAt(), r.getCreatedBy()
+                            r.getApprovedAt() != null, r.getApprovedAt(), r.getCreatedAt(), r.getCreatedBy(), r.getCreatedByUserId()
                     );
                     break;
                 }
@@ -188,13 +187,15 @@ public class TestCaseService {
 
     public TestCaseDtos.CaseDetail createCase(Long projectId, String userId, TestCaseDtos.CreateCase input) {
         projectService.lockWritableProject(projectId, userId);
+        return createCaseRecord(projectId,userId,input,getMemberId(projectId,userId));
+    }
+
+    private TestCaseDtos.CaseDetail createCaseRecord(Long projectId, String userId, TestCaseDtos.CreateCase input, Long memberId) {
         if (caseRepository.existsByProjectIdAndCaseNo(projectId, input.caseNo())) {
             throw new BusinessException(400, "DUPLICATE_CASE_NO", "Mã test case đã tồn tại.");
         }
         suiteRepository.findByProjectIdAndId(projectId, input.suiteId())
                 .orElseThrow(() -> new BusinessException(404, "SUITE_NOT_FOUND", "Nhóm test case không tồn tại."));
-
-        Long memberId = getMemberId(projectId, userId);
 
         TestCaseEntities.TestCase tc = new TestCaseEntities.TestCase();
         activeSuite(projectId, input.suiteId());
@@ -218,6 +219,7 @@ public class TestCaseService {
         rev.setExpectedJp(input.expectedJp());
         rev.setSourceReference(input.sourceReference());
         rev.setCreatedBy(memberId);
+        rev.setCreatedByUserId(userId);
         rev.setChecksum(TestCaseWorkbook.sha256(serialize(input).getBytes(java.nio.charset.StandardCharsets.UTF_8)));
         revisionRepository.save(rev);
         audit.record(projectId,userId,"TEST_CASE_REVISION",rev.getId(),"CREATE");
@@ -256,6 +258,7 @@ public class TestCaseService {
         rev.setExpectedJp(input.expectedJp());
         rev.setSourceReference(input.sourceReference());
         rev.setCreatedBy(memberId);
+        rev.setCreatedByUserId(userId);
         rev.setChecksum(TestCaseWorkbook.sha256(serialize(input).getBytes(java.nio.charset.StandardCharsets.UTF_8)));
         revisionRepository.save(rev);
         audit.record(projectId,userId,"TEST_CASE_REVISION",rev.getId(),"CREATE");
@@ -266,7 +269,7 @@ public class TestCaseService {
         return new TestCaseDtos.RevisionDetail(
                 rev.getId(), rev.getRevisionNo(), rev.getTitleVi(), rev.getPreconditionsVi(), rev.getStepsVi(), rev.getExpectedVi(),
                 rev.getTitleJp(), rev.getPreconditionsJp(), rev.getStepsJp(), rev.getExpectedJp(), rev.getSourceReference(),
-                false, null, rev.getCreatedAt(), rev.getCreatedBy()
+                false, null, rev.getCreatedAt(), rev.getCreatedBy(), rev.getCreatedByUserId()
         );
     }
 
@@ -288,7 +291,7 @@ public class TestCaseService {
         return new TestCaseDtos.RevisionDetail(
                 rev.getId(), rev.getRevisionNo(), rev.getTitleVi(), rev.getPreconditionsVi(), rev.getStepsVi(), rev.getExpectedVi(),
                 rev.getTitleJp(), rev.getPreconditionsJp(), rev.getStepsJp(), rev.getExpectedJp(), rev.getSourceReference(),
-                true, rev.getApprovedAt(), rev.getCreatedAt(), rev.getCreatedBy()
+                true, rev.getApprovedAt(), rev.getCreatedAt(), rev.getCreatedBy(), rev.getCreatedByUserId()
         );
     }
 
@@ -303,12 +306,12 @@ public class TestCaseService {
 
     // Import is serialized per project with case/revision and membership writes.
     public byte[] importTemplate(Long projectId, String userId) {
-        projectService.requirePmOrAdmin(projectId,userId);
+        projectService.lockTestCaseImport(projectId,userId);
         return workbook.customerTemplate();
     }
 
     public TestCaseDtos.ImportPreviewDetail createImportPreview(Long projectId, String userId, org.springframework.web.multipart.MultipartFile file) {
-        projectService.lockWritableProject(projectId,userId);
+        projectService.lockTestCaseImport(projectId,userId);
         var parsed=workbook.parse(file);
         boolean customer=TestCaseWorkbook.CUSTOMER.equals(parsed.format());
         if (customer) {
@@ -352,7 +355,7 @@ public class TestCaseService {
     }
 
     public TestCaseDtos.ImportPreviewDetail getImportPreview(Long projectId,String userId,Long batchId) {
-        projectService.requirePmOrAdmin(projectId,userId);
+        projectService.lockTestCaseImport(projectId,userId);
         var batch=ownedBatch(projectId,userId,batchId);
         var rows=rowRepository.findByProjectIdAndBatchIdOrderByRowNumberAsc(projectId,batchId).stream().map(row -> {
             var input=deserialize(row.getRawDataJson());
@@ -365,7 +368,7 @@ public class TestCaseService {
     }
 
     public TestCaseDtos.ImportBatchSummary commitImportPreview(Long projectId,String userId,Long batchId) {
-        projectService.lockWritableProject(projectId,userId);
+        projectService.lockTestCaseImport(projectId,userId);
         var batch=ownedBatch(projectId,userId,batchId);
         if ("COMMITTED".equals(batch.getStatus())) return batchSummary(batch);
         if (!"PREVIEW".equals(batch.getStatus()) || Instant.now().isAfter(batch.getStagedExpiresAt()))
@@ -377,8 +380,10 @@ public class TestCaseService {
         if (customer) {
             var duplicate=batchRepository.findFirstByProjectIdAndFileChecksumAndMappingVersionAndStatusOrderByIdDesc(projectId,batch.getFileChecksum(),TestCaseWorkbook.CUSTOMER,"COMMITTED");
             if (duplicate.isPresent()) return batchSummary(duplicate.get());
-            createSuite(projectId,userId,new TestCaseDtos.CreateSuite("XLSX-"+batchId,abbreviate(batch.getFileName(),100),"Nhập từ tài liệu Excel",null,0));
+            createSuiteRecord(projectId,userId,new TestCaseDtos.CreateSuite("XLSX-"+batchId,abbreviate(batch.getFileName(),100),"Nhập từ tài liệu Excel",null,0));
         }
+        var member=membershipRepository.findByProjectIdAndUserId(projectId,userId);
+        Long authorMembership=member!=null && member.isActive() ? member.getId() : null;
         for (var row:rows) {
             var input=deserialize(row.getRawDataJson());
             String caseNo=customer ? "XLSX-"+batchId+"-"+row.getRowNumber() : input.caseNo();
@@ -386,7 +391,7 @@ public class TestCaseService {
                     .orElseThrow(()->conflict("Nhóm đã thay đổi sau khi xem trước; hãy tải tệp lên lại."));
             if (caseRepository.existsByProjectIdAndCaseNo(projectId,caseNo))
                 throw conflict("Mã " + caseNo + " đã được tạo sau khi xem trước. Chưa nhập dòng nào.");
-            var detail=createCase(projectId,userId,new TestCaseDtos.CreateCase(caseNo,suite.getId(),input.titleVi(),input.preconditionsVi(),input.stepsVi(),input.expectedVi(),input.titleJp(),input.preconditionsJp(),input.stepsJp(),input.expectedJp(),input.sourceReference()));
+            var detail=createCaseRecord(projectId,userId,new TestCaseDtos.CreateCase(caseNo,suite.getId(),input.titleVi(),input.preconditionsVi(),input.stepsVi(),input.expectedVi(),input.titleJp(),input.preconditionsJp(),input.stepsJp(),input.expectedJp(),input.sourceReference()),authorMembership);
             row.setTargetCaseId(detail.id()); rowRepository.save(row);
         }
         batch.setStatus("COMMITTED"); batch.setCommittedAt(Instant.now()); batchRepository.saveAndFlush(batch);
@@ -426,6 +431,6 @@ public class TestCaseService {
         projectService.requireReadAccess(projectId,userId);
         var r=revisionRepository.findByProjectIdAndTestCaseIdAndId(projectId,caseId,revisionId)
                 .orElseThrow(()->new BusinessException(404,"NOT_FOUND","Không tìm thấy phiên bản test case."));
-        return new TestCaseDtos.RevisionDetail(r.getId(),r.getRevisionNo(),r.getTitleVi(),r.getPreconditionsVi(),r.getStepsVi(),r.getExpectedVi(),r.getTitleJp(),r.getPreconditionsJp(),r.getStepsJp(),r.getExpectedJp(),r.getSourceReference(),r.getApprovedAt()!=null,r.getApprovedAt(),r.getCreatedAt(),r.getCreatedBy());
+        return new TestCaseDtos.RevisionDetail(r.getId(),r.getRevisionNo(),r.getTitleVi(),r.getPreconditionsVi(),r.getStepsVi(),r.getExpectedVi(),r.getTitleJp(),r.getPreconditionsJp(),r.getStepsJp(),r.getExpectedJp(),r.getSourceReference(),r.getApprovedAt()!=null,r.getApprovedAt(),r.getCreatedAt(),r.getCreatedBy(),r.getCreatedByUserId());
     }
 }

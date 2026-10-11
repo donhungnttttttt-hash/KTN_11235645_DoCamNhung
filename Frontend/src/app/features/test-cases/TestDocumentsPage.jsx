@@ -1,5 +1,5 @@
 import {TableScroll} from '../../components/TableScroll';
-import { canManageProjectWork } from '../projects/projectAccess';
+import { canImportTestCases } from '../projects/projectAccess';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FileSpreadsheet, Upload, ListChecks, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useProject } from '../projects/ProjectProvider';
@@ -21,7 +21,7 @@ export function TestDocumentsPage({ navigate }) {
 
 function DocumentLibrary({ project, navigate }) {
   const { hasRole } = useAuth();
-  const canImport = canManageProjectWork(project, hasRole);
+  const canImport = canImportTestCases(project, hasRole);
   const [keyword, setKeyword] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
@@ -63,7 +63,7 @@ function DocumentLibrary({ project, navigate }) {
     {error && <div className="td-error" role="alert">{error} <button className="cat-btn" onClick={load}>Thử lại</button></div>}
     {loading && <p role="status" className="td-empty">Đang tải danh sách tài liệu...</p>}
     {!loading && !error && <>
-      <TableScroll className="td-table-scroll" role="region" aria-label="Danh sách tài liệu test" tabIndex={0}>
+      {data?.items?.length > 0 ? <TableScroll className="td-table-scroll" role="region" aria-label="Danh sách tài liệu test" tabIndex={0}>
         <table className="td-file-table">
           <thead><tr><th scope="col">No.</th><th scope="col">Tài liệu test</th><th scope="col">Số dòng</th>{results.map(([key,label]) => <th scope="col" key={key}>{label}</th>)}<th scope="col">Cập nhật lúc</th><th scope="col">Người cập nhật</th></tr></thead>
           <tbody>{data?.items?.map(doc => <tr key={doc.id}>
@@ -72,8 +72,7 @@ function DocumentLibrary({ project, navigate }) {
             <td className="td-nowrap">{documentDate(doc.updatedAt,project.timezone)}</td><td>{doc.updatedBy || '—'}</td>
           </tr>)}</tbody>
         </table>
-        {!data?.items?.length && <div className="td-empty"><FileSpreadsheet size={28}/><p>{search ? 'Không tìm thấy tài liệu phù hợp.' : 'Chưa có tài liệu Excel trong dự án.'}</p><p className="td-muted">Các case đã có vẫn nằm trong “Tất cả test case”.</p></div>}
-      </TableScroll>
+      </TableScroll> : <div className="td-empty td-empty-library"><FileSpreadsheet size={28}/><p>{search ? 'Không tìm thấy tài liệu phù hợp.' : 'Chưa có tài liệu Excel trong dự án.'}</p><p className="td-muted">Các case đã có vẫn nằm trong “Tất cả test case”.</p>{canImport && !search && <button className="cat-btn cat-btn-mint" onClick={() => setShowImport(true)}>Thêm tài liệu Excel</button>}</div>}
       <div className="td-pagination"><span>{data?.totalItems ?? 0} tài liệu</span><div><button className="cat-btn" aria-label="Trang trước" disabled={page===0} onClick={() => setPage(p => p-1)}><ChevronLeft size={14}/></button><span>Trang {page+1} / {Math.max(1,data?.totalPages || 0)}</span><button className="cat-btn" aria-label="Trang sau" disabled={page+1 >= (data?.totalPages || 0)} onClick={() => setPage(p => p+1)}><ChevronRight size={14}/></button></div></div>
     </>}
     {showImport && <ImportExcelDialog projectId={project.id} onClose={() => setShowImport(false)} onSuccess={result => { setShowImport(false); if (result?.id) navigate(`/tests/documents/${result.id}`); else load(); }} />}

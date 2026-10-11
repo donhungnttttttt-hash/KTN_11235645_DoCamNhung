@@ -36,11 +36,25 @@
 .ex-result-form > h4 { margin:0 0 12px; }
 .ex-result-form fieldset { min-width:0; }
 .ex-result-form .ex-field-hint { color:#7c4a03; margin-top:4px; font-size:var(--text-table); }
-.ex-attempt-dialog { font-size:var(--text-body); }
-.ex-attempt-dialog .ex-field input,.ex-attempt-dialog .ex-field select { min-height:34px; font-size:var(--text-body); }
-.ex-attempt-dialog .ex-field textarea { font-size:var(--text-body); }
-.ex-attempt-dialog .cat-btn { min-height:32px; font-size:var(--text-table); }
-.ex-attempt-actions { position:sticky; bottom:-20px; padding:10px 0; margin-top:10px; background:#fff; border-top:1px solid #dce5ed; }
+.ex-attempt-dialog { font-size:var(--text-body); padding:0; }
+.ex-attempt-header { position:sticky; top:0; z-index:2; margin:0; padding:12px 20px; background:#fff; border-bottom:1px solid #dce5ed; }
+.ex-attempt-header h3 { min-width:0; overflow-wrap:anywhere; line-height:1.35; }
+.ex-attempt-body { padding:16px 20px 20px; }
+.ex-attempt-dialog .ex-current-result { margin:8px 0 16px; }
+.ex-attempt-dialog .ex-detail { gap:18px; align-items:start; }
+.ex-attempt-instructions { white-space:normal; }
+.ex-attempt-instructions h4:first-child { margin-top:0; }
+.ex-attempt-instructions p { margin:0 0 14px; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.55; }
+.ex-attempt-instructions p:last-child { margin-bottom:0; }
+.ex-attempt-dialog .ex-result-form { min-width:0; }
+.ex-attempt-dialog .ex-result-form > h4 { margin-bottom:4px; }
+.ex-attempt-dialog .ex-result-form > .ex-help { margin:0 0 14px; }
+.ex-attempt-dialog .ex-field input,.ex-attempt-dialog .ex-field select { min-height:44px; font-size:var(--text-body); }
+.ex-attempt-dialog .ex-field textarea { min-height:88px; font-size:var(--text-body); }
+.ex-attempt-dialog .cat-btn { min-height:44px; padding-inline:12px; font-size:var(--text-body); }
+.ex-attempt-dialog .ex-link { min-height:44px; }
+.ex-attempt-actions { position:sticky; bottom:0; z-index:1; padding:12px 0 0; margin-top:14px; background:#fff; border-top:1px solid #dce5ed; }
+.ex-attempt-actions .cat-btn { width:100%; }
 .ex-history { border-top:1px solid #dce5ed; padding:12px 0; white-space:pre-wrap; }
 .ex-history small { color:#64748b; display:block; margin:5px 0; }
 .ex-checks { display:flex; gap:16px; align-items:center; margin:12px 0; }
@@ -59,7 +73,7 @@
 @media(max-width:640px) {
   .ex-modal { padding:10px; }
   .ex-dialog { padding:14px; max-height:calc(100dvh - 20px); }
-  .ex-attempt-actions { bottom:-14px; }
-  .ex-attempt-dialog .cat-btn,.ex-attempt-dialog .ex-field input,.ex-attempt-dialog .ex-field select { min-height:40px; }
+  .ex-attempt-header { padding:10px 14px; }
+  .ex-attempt-body { padding:14px; }
   .ex-pager { flex-wrap:wrap; }
 }

@@ -25,7 +25,7 @@ export function TransitionDialog({ projectId, items, status, catalogs, onClose, 
     } catch (e) { if (live.current) { setError(e.message); setConflict(e.status === 409); } }
     finally { if (live.current) setBusy(false); }
   }
-  return <Modal title={`Chuyển trạng thái · ${current.length} công việc`} onClose={busy ? () => {} : onClose}><form className="wi-form" onSubmit={submit}>
+  return <Modal title={`Chuyển trạng thái · ${current.length} công việc`} busy={busy} onClose={onClose}><form className="wi-form" onSubmit={submit}>
     <p>{current.map(item => item.id).join(', ')}</p><WorkError error={error} />
     {conflict && <Button disabled={busy} onClick={reload}>Tải bản hiện hành, giữ lý do</Button>}
     {refreshed && <p className="wi-note" role="status">Đã tải lại. Đối chiếu trạng thái rồi xác nhận lưu lại.</p>}

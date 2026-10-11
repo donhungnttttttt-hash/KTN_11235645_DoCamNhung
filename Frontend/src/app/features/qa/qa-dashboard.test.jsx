@@ -29,8 +29,7 @@ describe('current PM dashboard handoff', () => {
     expect(within(queue).getByText(/Hiện chưa được phép kết thúc/)).toBeVisible();
     const bug = within(queue).getByRole('link', { name: 'BUG-7' }); expect(bug).toHaveAttribute('href', '#/board/issue/7');
     fireEvent.click(bug); expect(navigate).toHaveBeenLastCalledWith('/board/issue/7');
-    const file = screen.getByRole('link', { name: 'Công việc theo file' }); expect(file).toHaveAttribute('href', '#/tests/file-work');
-    fireEvent.click(file); expect(navigate).toHaveBeenLastCalledWith('/tests/file-work');
+    expect(screen.queryByRole('link', { name: 'Công việc theo file' })).not.toBeInTheDocument();
     expect(screen.getByText('60/100 công việc hoàn thành · 60%')).toBeVisible();
     expect(within(queue).queryByRole('button', { name: /kết thúc|chuẩn bị/i })).toBeNull();
   });
@@ -42,7 +41,7 @@ describe('current PM dashboard handoff', () => {
     Object.assign(state, change); render(<ProjectOverview navigate={vi.fn()} />);
     await screen.findByText('60/100 công việc hoàn thành · 60%');
     expect(screen.queryByRole('region', { name: 'Hàng chờ bàn giao' })).toBeNull(); expect(qaApi.handoff).not.toHaveBeenCalled();
-    expect(screen.getByRole('link', { name: 'Công việc theo file' })).toHaveAttribute('href', '#/tests/file-work');
+    expect(screen.queryByRole('link', { name: 'Công việc theo file' })).not.toBeInTheDocument();
     if (state.loading || state.error) expect(screen.getByRole('button', { name: 'Thêm công việc' })).toBeDisabled();
   });
   it('keeps archived PM queue read-only while creation stays disabled', async () => {
@@ -51,13 +50,6 @@ describe('current PM dashboard handoff', () => {
     await screen.findByText(/Đủ kết quả xác minh · Vòng 3/);
     expect(screen.getByRole('button', { name: 'Thêm công việc' })).toBeDisabled();
     expect(screen.getByText(/Hiện chưa được phép kết thúc/)).toBeVisible();
-  });
-  it('keeps the file deep link in the actual hash router for normal and modified browser navigation', async () => {
-    const navigate=vi.fn();render(<ProjectOverview navigate={navigate}/>);
-    const file=screen.getByRole('link',{name:'Công việc theo file'});
-    expect(new URL(file.href).hash).toBe('#/tests/file-work');
-    fireEvent.click(file,{ctrlKey:true});expect(navigate).not.toHaveBeenCalled();
-    fireEvent.click(file);expect(navigate).toHaveBeenCalledWith('/tests/file-work');
   });
   it('unmounts on authority loss and clears old queue/project filters before a new current read', async () => {
     const { rerender } = render(<ProjectOverview navigate={vi.fn()} />);
@@ -81,7 +73,7 @@ describe('current PM dashboard handoff', () => {
 const statuses = [{ id: 'open', label: 'Chưa xử lý' }, { id: 'progress', label: 'Đang xử lý' }, { id: 'resolved', label: 'Đã xử lý / chờ kiểm thử lại' }, { id: 'closed', label: 'Đóng', terminal: true }];
 const qa = { id: 'QA-8', typeCode: 'QA', type: 'Hỏi đáp', status: 'resolved', statusLabel: 'Đã trả lời', title: 'QA question', assignee: 'Dev' };
 const bug = { id: 'BUG-7', typeCode: 'BUG', type: 'Lỗi', status: 'open', title: 'BUG title', assignee: 'Dev' };
-function board(props = {}) { return <BoardPage issues={[qa, bug]} statuses={statuses} canTriage navigate={vi.fn()} notify={vi.fn()} updateIssues={vi.fn()} hideControls {...props} />; }
+function board(props = {}) { return <BoardPage issues={[qa, bug]} statuses={statuses} canTriage canCreate navigate={vi.fn()} notify={vi.fn()} updateIssues={vi.fn()} hideControls {...props} />; }
 describe('typed QA Kanban affordance', () => {
   it('shows canonical QA status, keeps detail navigation and excludes pointer/keyboard move affordances', async () => {
     const navigate = vi.fn(), user = userEvent.setup(); render(board({ navigate }));

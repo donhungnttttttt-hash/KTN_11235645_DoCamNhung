@@ -32,3 +32,9 @@ it('permits creation after server metadata grants permission', async () => {
   await user.click(screen.getByRole('button', { name: 'Thêm công việc' }));
   expect(navigate).toHaveBeenCalledWith('/board/new');
 });
+it('surfaces a permission-load error with recovery instead of a silently disabled creation button',async()=>{
+  const refresh=vi.fn();useProjectData.mockReturnValue({projectId:1,writable:false,loading:false,error:'Không tải được quyền dự án',metadata:null,refresh});
+  const user=userEvent.setup();render(<ProjectOverview navigate={vi.fn()}/>);
+  await screen.findByText('Overview loaded');expect(screen.getByRole('alert')).toHaveTextContent('Không tải được quyền dự án');
+  await user.click(screen.getByRole('button',{name:'Thử lại'}));expect(refresh).toHaveBeenCalledOnce();
+});

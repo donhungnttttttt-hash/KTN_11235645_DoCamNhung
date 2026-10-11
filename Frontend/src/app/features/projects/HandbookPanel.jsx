@@ -8,6 +8,7 @@ export function HandbookPanel({projectId,canEdit=false}) {
   const [error,setError]=useState('');
   const [reload,setReload]=useState(0);
   const [editor,setEditor]=useState(null);
+  const [notice,setNotice]=useState('');
   useEffect(()=>{
     let live=true;setItems(null);setError('');
     projectsApi.listHandbook(projectId).then(data=>{if(live)setItems(data);}).catch(failure=>{if(live)setError(failure.message);});
@@ -17,7 +18,8 @@ export function HandbookPanel({projectId,canEdit=false}) {
     <div className="settings-heading"><h2>Sổ tay dự án</h2>{canEdit && <button className="cat-btn primary" disabled={!!editor} onClick={()=>setEditor({item:null})}>Thêm tài liệu</button>}</div>
     <p className="settings-hint">Hướng dẫn nội bộ và nguồn đặc tả. Chỉ lưu thông tin tham chiếu nơi cấp phát tài khoản, không ghi mật khẩu hoặc khóa truy cập.</p>
     {error && <p role="alert" className="text-danger">{error} <button className="cat-btn" onClick={()=>setReload(x=>x+1)}>Thử lại</button></p>}
-    {editor && <HandbookEditor key={editor.item?.id || 'new'} projectId={projectId} item={editor.item} onClose={()=>setEditor(null)} onSaved={()=>{setEditor(null);setSelected(null);setReload(x=>x+1);}}/>}
+    {notice && <p role="status">{notice}</p>}
+    {editor && <HandbookEditor key={editor.item?.id || 'new'} projectId={projectId} item={editor.item} onClose={()=>setEditor(null)} onSaved={()=>{setNotice('Đã lưu tài liệu.');setEditor(null);setSelected(null);setReload(x=>x+1);}}/>}
     {!items ? !error && <p>Đang tải sổ tay…</p> : !items.length ? <p>Chưa có tài liệu trong dự án.</p> : <div className="handbook-layout">
       <nav className="handbook-list" aria-label="Tài liệu dự án">{items.map(item=><button key={item.id} className="cat-btn" aria-current={selected===item.id?'page':undefined} onClick={()=>setSelected(item.id)}>{item.name} · v{item.currentRevision?.revisionNo}</button>)}</nav>
       {selected && <HandbookDetail key={selected} projectId={projectId} id={selected} canEdit={canEdit && !editor} onEdit={item=>setEditor({item})}/>}
@@ -38,12 +40,12 @@ function HandbookDetail({projectId,id,canEdit,onEdit}) {
 function HandbookEditor({projectId,item,onSaved,onClose}) {
   const [form,setForm]=useState({code:'',name:'',resourceType:'GUIDE',contentHtml:item?.currentRevision?.contentHtml || ''});
   const [error,setError]=useState(''),[busy,setBusy]=useState(false);
-  async function save(event){event.preventDefault();setBusy(true);setError('');try{
+  async function save(event){event.preventDefault();if(busy)return;setBusy(true);setError('');try{
     if(item)await projectsApi.addRevision(projectId,item.id,{contentHtml:form.contentHtml,visibility:'INTERNAL',expectedCurrentRevisionId:item.currentRevision.id});
     else await projectsApi.createHandbook(projectId,{...form,visibility:'INTERNAL'});
     onSaved();
   }catch(failure){setError(failure.message);}finally{setBusy(false);}}
-  return <form className="settings-editor" onSubmit={save}>
+  return <form className="settings-editor" onSubmit={save} onInvalid={()=>setError('Kiểm tra các trường bắt buộc được đánh dấu trước khi lưu tài liệu.')}>
     <h3>{item?`Phiên bản mới: ${item.name}`:'Tài liệu mới'}</h3>{error && <p role="alert" className="text-danger">{error}</p>}
     <fieldset disabled={busy}>
       {!item && <div className="settings-fields"><label className="form-group">Mã tài liệu<input autoFocus required maxLength={32} value={form.code} onChange={e=>setForm({...form,code:e.target.value})}/></label><label className="form-group">Tên tài liệu<input required maxLength={100} value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label>

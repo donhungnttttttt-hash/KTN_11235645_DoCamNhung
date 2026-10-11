@@ -36,7 +36,7 @@ class AdminStateProjectionTest {
         when(account.getRole()).thenReturn("ADMIN");
         when(identity.lockCurrent("admin")).thenReturn(account);
         var service = new ProjectService(repository, memberships, identity,
-                mock(ProjectAudit.class), mock(IdentityUserRepository.class));
+                mock(ProjectAudit.class), mock(IdentityUserRepository.class),mock(ProjectActorService.class));
         when(repository.lockAdminState(1L)).thenReturn(Optional.of(state(0)));
         assertDoesNotThrow(() -> service.lockAdminProject(1L, "admin"));
         when(repository.lockAdminState(1L)).thenReturn(Optional.of(state(1)));

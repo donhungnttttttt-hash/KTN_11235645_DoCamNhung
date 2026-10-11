@@ -57,7 +57,7 @@ class RedmineIntegrationTest {
         String suffix=UUID.randomUUID().toString().substring(0,8);
         pm=users.saveAndFlush(new IdentityUser("owner."+suffix,"PM thử","unused-hash","ADMIN"));
         tester=users.saveAndFlush(new IdentityUser("tester."+suffix,"Tester thử","unused-hash","TESTER"));
-        other=users.saveAndFlush(new IdentityUser("other."+suffix,"Ngoài dự án","unused-hash","ADMIN"));
+        other=users.saveAndFlush(new IdentityUser("other."+suffix,"PM ngoài dự án","unused-hash","PM"));
         p=projects.create(pm.getId(),new ProjectDtos.CreateProject("W"+suffix,"Dự án bug","","UTC")).id();
         member=projects.addOrUpdateMember(p,pm.getId(),tester.getId(),new ProjectDtos.SetMember("TESTER")).membershipId();
         long suite=library.createSuite(p,pm.getId(),new TestCaseDtos.CreateSuite("AUTH","Đăng nhập","",null,0)).id();
@@ -179,6 +179,7 @@ class RedmineIntegrationTest {
         verify(remote,times(1)).create(any(),any());
     }
     @Test void revokedPmCannotDispatchAlreadyQueuedPublication() throws Exception {
+        db.update("UPDATE identity_users SET role_code='PM' WHERE id=?",pm.getId());
         queueBug();db.update("UPDATE project_memberships SET active=FALSE WHERE project_id=? AND user_id=?",p,pm.getId());
         worker.runOne();assertThat(deliveryStatus()).isEqualTo("FAILED");verifyNoInteractions(remote);
     }

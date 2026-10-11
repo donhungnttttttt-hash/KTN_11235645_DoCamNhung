@@ -3,7 +3,7 @@
   "info": {
     "title": "Typed QA and PM handoff — implemented Q01–Q03",
     "version": "1.0.0",
-    "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. QA work_items identity/status/version remain authoritative; QA never changes BUG/retest/execution state. Discovery uses generic work-items/metadata canCreateQa and statusesByType.QA; ordinary canCreate does not grant QA. No typed /qa/metadata route exists. See markdown contract for transactional lifecycle policy. Bean Validation constraints return 422 VALIDATION_ERROR; malformed JSON and parameter type binding return 400 INVALID_REQUEST."
+    "description": "Global ADMIN has full business authority without active project membership or assignment, including PM/Tester/Dev commands. Project scope, archive/state/version/context validation and actual actor attribution remain enforced. Role/ownership restrictions below apply to non-ADMIN users. Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. QA work_items identity/status/version remain authoritative; QA never changes BUG/retest/execution state. Discovery uses generic work-items/metadata canCreateQa and statusesByType.QA; ordinary canCreate does not grant QA. No typed /qa/metadata route exists. See markdown contract for transactional lifecycle policy. Bean Validation constraints return 422 VALIDATION_ERROR; malformed JSON and parameter type binding return 400 INVALID_REQUEST."
   },
   "paths": {
     "/api/v1/projects/{projectId}/qa": {
@@ -134,7 +134,7 @@
       },
       "get": {
         "operationId": "listQa",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. updatedAt/ID descending. mine=DEV assigned, TESTER created, PM created/assigned; literal title/key/question keyword.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. updatedAt/ID descending. mine=DEV assigned, TESTER created, PM created/assigned; literal title/key/question keyword.",
         "security": [
           {
             "sessionCookie": []
@@ -309,7 +309,7 @@
       ],
       "get": {
         "operationId": "getQa",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Current pointers and immutable history distinct; contextSnapshot stores resolved IDs and readable pinned content.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. Current pointers and immutable history distinct; contextSnapshot stores resolved IDs and readable pinned content.",
         "security": [
           {
             "sessionCookie": []
@@ -427,7 +427,7 @@
       ],
       "put": {
         "operationId": "assignQa",
-        "description": "Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. Nonclosed; target enabled current DEV/global DEV. Different assignee increments generation, clears current answer/confirmation, opens QA; same Dev preserves answer/status. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "description": "Global ADMIN or current project PM with global role not DEV; unarchived project. Nonclosed; target enabled current DEV/global DEV. Different assignee increments generation, clears current answer/confirmation, opens QA; same Dev preserves answer/status. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
         "security": [
           {
             "sessionCookie": [],
@@ -1055,7 +1055,7 @@
       },
       "get": {
         "operationId": "listQaAnswers",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Immutable answers, answerVersion descending.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. Immutable answers, answerVersion descending.",
         "security": [
           {
             "sessionCookie": []
@@ -1308,7 +1308,7 @@
       },
       "get": {
         "operationId": "listQaConfirmations",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Immutable confirmations, ID descending.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. Immutable confirmations, ID descending.",
         "security": [
           {
             "sessionCookie": []
@@ -1449,7 +1449,7 @@
       ],
       "post": {
         "operationId": "closeQa",
-        "description": "Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. Ordinary recheck -> closed requires current confirmation of current answer/generation. exception=true permits any nonclosed -> closed with nonblank reason and no fabricated confirmation. Source archive may be tolerated to resolve existing QA. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "description": "Global ADMIN or current project PM with global role not DEV; unarchived project. Ordinary recheck -> closed requires current confirmation of current answer/generation. exception=true permits any nonclosed -> closed with nonblank reason and no fabricated confirmation. Source archive may be tolerated to resolve existing QA. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
         "security": [
           {
             "sessionCookie": [],
@@ -1578,7 +1578,7 @@
       ],
       "post": {
         "operationId": "reopenQa",
-        "description": "Current project PM, global role not DEV, unarchived project; ADMIN alone is insufficient. closed -> open; increment generation and clear current answer/confirmation. Source archive may be tolerated. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
+        "description": "Global ADMIN or current project PM with global role not DEV; unarchived project. closed -> open; increment generation and clear current answer/confirmation. Source archive may be tolerated. Exact actor/key/action/resource/body replay reauthorizes current context and returns saved response; key/body mismatch is 409. Failed commands leave no key.",
         "security": [
           {
             "sessionCookie": [],
@@ -1697,7 +1697,7 @@
       ],
       "get": {
         "operationId": "listPmHandoffQueue",
-        "description": "Enabled current session and active same-project membership. ADMIN requires that membership. Reads allowed on archived projects. Current PM/global non-DEV only. Derived BUG current coverage/request/verification projection; workItemId descending; full derive/filter before pagination. State readiness never grants mutation: use canClose/canPrepareRetest, false on archive. RETRY_REQUIRED > PREPARE_RETEST > READY_TO_CLOSE > VERIFYING > ASSIGNED. All-pass closure veto remains VERIFYING; no automatic requests or closure.",
+        "description": "Enabled current session and global ADMIN or active same-project membership. Reads allowed on archived projects. Current PM/global non-DEV only. Derived BUG current coverage/request/verification projection; workItemId descending; full derive/filter before pagination. State readiness never grants mutation: use canClose/canPrepareRetest, false on archive. RETRY_REQUIRED > PREPARE_RETEST > READY_TO_CLOSE > VERIFYING > ASSIGNED. All-pass closure veto remains VERIFYING; no automatic requests or closure.",
         "security": [
           {
             "sessionCookie": []

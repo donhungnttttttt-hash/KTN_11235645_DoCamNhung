@@ -31,7 +31,7 @@ function run(args,io={}){
  if(read('SELECT DATABASE();',prepared.client)[0]!==schema)throw Error('Selected schema verification failed.');
  if(mode==='fresh-migration'){
   if(read('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE();',prepared.client)[0]!=='0')throw Error('Fresh mode requires a truly empty preprovisioned schema.');
- }else if(read("SELECT version FROM flyway_schema_history WHERE success=1 ORDER BY installed_rank DESC LIMIT 1;",prepared.client)[0]!== (mode==='lifecycle-integration'?'21':'19'))throw Error('Integration requires the exact already migrated version for its isolated mode.');
+ }else if(read("SELECT version FROM flyway_schema_history WHERE success=1 ORDER BY installed_rank DESC LIMIT 1;",prepared.client)[0]!== (mode==='lifecycle-integration'?'21':'29'))throw Error('Integration requires the exact already migrated version for its isolated mode.');
  const mvnArgs=['-B','-ntp',`-Dtest=${selector}`,'verify'];
  const command=process.platform==='win32'?['proxy','cmd.exe','/d','/c','mvnw.cmd',...mvnArgs]:['proxy','./mvnw',...mvnArgs];
  const result=(io.spawn||spawnSync)('rtk',command,{cwd:path.join(root,'Backend'),stdio:'inherit',shell:false,env:{...process.env,...prepared.environment,...plan.environment}});

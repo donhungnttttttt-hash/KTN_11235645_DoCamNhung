@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-10",
+  "updatedAt": "2026-10-11",
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
@@ -8,6 +8,10 @@
   "phase": "IN_REVIEW",
   "implementationStarted": true,
   "notes": [
+    "11/10/2026 user chốt lần ghi thực thi mới nhất của case cập nhật iPad một chiều, sửa iPad không đổi run/test lần 2. Sửa popup cố định NG, nhãn/bố cục và refresh tài liệu; projection cùng transaction/version/audit, replay không ghi đè chỉnh sửa mới. FE846/76file PASS (giảm worker sau timeout), native32 và BEfocused127 có test trùng PASS, JDT263source0errors0warnings, build/contract PASS. Browser đúng XLSX-8-2 mở OK; desktop có ảnh,390px DOM/keyboard PASS nhưng screenshot timeout. Backend8080 đã chạy lại native3307/tmsV29; hash7268 dòng/72bảng cũ gồm workbook giữ nguyên, chỉ thêm1identity_audit do login. Không migration/backfill/commit/push. docs/reviews/2026-10-11-execution-document-results.md; S11 IN_REVIEW.",
+    "11/10/2026 rà lại nút theo yêu cầu mới: sửa submit nhầm khi phân trang, stock cũ sau bàn giao một phần, callback tạo dự án đổi route muộn, focus popup/retetst, phản hồi ticket/bình luận, X pending, retry nguồn AI/Redmine, lý do khóa/100-case limit và retry lịch sử ô. Full FE842/76file PASS, build/contract/diff PASS; coverage statements86.85 branches83.95 functions81.35 lines86.65. Kiểm kê370native+81custom declarations/42forms không thiếu đường handler/submit; không tương đương bấm mọi tổ hợp. Chrome20máy/keyboard390/ticket/Redmine read PASS, có ảnh; không fixturetms/productionJava/migration/restart/commit/push. Báo cáo docs/reviews/2026-10-11-button-recheck.md; S11 IN_REVIEW.",
+    "11/10/2026 phản hồi mới nút Bàn giao máy đã chọn không bấm được: xác nhận thiếu người nhận ở dưới fold và nút khóa im lặng. Thêm người nhận chung/áp dụng N máy, thiếu-count/jump/focus, prevalidation toàn batch, pending/error cạnh nút; giữ phần chưa lưu. Rà140fileFE/132trongcâyimport/368button và luồng admin/project/test/execution/file/retest/work/QA/report/auth/AI; sửa các lỗi validation, phản hồi save, paging hết dữ liệu, retry cùng từ khóa AI, Kanban và tải quyền. FullFE822/75files/build PASS; BEunit547, native+inventory16 gồm bàn giao20máy/readback/chặntrùng trên schema riêng PASS; JDT262sources0errors0warnings. Browser20selection/thiếu-thông-tin/jump/ápdụngngườinhận/viewport1366và390 xác nhận bằng DOM; chụpảnhtooltimeout, không có ảnh mới. Coverage9componentadmin 87.97/85.42/87.73/95.45, không suy toànapp. Báo cáo docs/reviews/2026-10-11-action-buttons-audit.md; không sửaproductionJava/migration, không fixturetms/restart/commit/push. S11 IN_REVIEW.",
+    "11/10/2026 sửa workflow W1–W7 theo phản hồi người dùng: mặc định chọn file và khoảng ID 1-35, duyệt hàng loạt nguyên tử, V29 chia cùng file/cấu hình cho nhiều Tester không trùng case; lưu thành viên có pending/success/error/focus và giữ phần chưa lưu; bổ sung máy tại dự án, deep link danh mục đúng project, Chat trong header và bộ lọc gọn. Full FE791/73files, unit BE547, hồi quy99 có native, upgrade1/fresh1+7/runner12 PASS (các lượt có test trùng); JDT262source0error0warning, build/contract/diff PASS. Backup rồi restart8080/native3307/tmsV29; 7224 dòng/73 bảng nghiệp vụ cũ gồm workbook giữ nguyên. Audit76bảng185FK và7domain checks không vi phạm. Browser file1-35 chọn35, project devices/catalog/audit/header1366/390/320 PASS trong phạm vi báo cáo docs/reviews/2026-10-11-workflow-repair.md; không fixture tms, không đo lại coverage, không commit/push. S11 IN_REVIEW cho UAT/thiết bị thật/NFR production.",
     "09/10/2026 kiểm nghiệm và dữ liệu V22 trên system-design: 100 user mới (3 PM, 20 DEV, 77 TESTER), 120 máy (30 mỗi nhóm iPad/iPhone/tablet Android/smartphone Android), 3 dự án và 24 bàn giao; chỉ db/demo local, không seed case/kết quả. Sửa focus form kho máy RED→GREEN. Final fullFE665/665, coverage85.13/82.30/78.75/83.42; Admin68/68, nativeFQ9/9/concurrency5/5/migration1/1, HTTPpreview6kịch bản, runner10/10, JDT204sources0error0warning và build/verifyPASS. Backup rồi restart8080/native3307/tmsV22; hash65bảng/5303hàngcũ và8workbookgiữnguyên; mainHTTP role/scope/count và browser120máyPASS. Preview18080/15173 đã dừng. Bàn giao docs/database/demo-v22.md, review docs/reviews/2026-10-09-verification-demo-v22.md; S11 IN_REVIEW UAT/thiết bị thật/NFR production.",
     "08/10/2026 khách hàng yêu cầu tiêu chuẩn sản phẩm nghiêm túc: chốt tiêu chí tại docs/reviews/2026-10-08-customer-quality-gates.md; phân biệt lỗi, thiếu chức năng và thiếu bằng chứng. Đối chiếu source inbox/export với review V21; sửa docs/evaluation.md đang dùng V11/coverage cũ như hiện trạng. Chỉ cập nhật tài liệu, không đổi runtime hoặc chạy lại test; S11 IN_REVIEW, chưa nghiệm thu toàn sản phẩm.",
     "08/10/2026 người dùng duyệt chọn quy tắc tốt nhất và đánh giá lại: triển khai Admin archive/reopen có sáu blocker, lý do/version/idempotency/history V21; PM đóng/mở lại TASK/REQUEST/IMPROVEMENT; sửa DEV membership, focus case, inbox refresh, phạm vi Excel và dashboard archived. FullFE659/659 với coverage đo, final scoped44/44; BE lifecycle/quyền41/41, dashboard13/13, native migration1/lifecycle7/concurrency6/FQ9 PASS, contract36/36/build PASS; JDT203sources0error0warning. Backup rồi restart8080/MySQL3307/tmsV21; 65 bảng/5304 hàng và8 workbook nguồn giữ nguyên. Browser1366/768/375 PASS trong phạm vi mới, không ghi fixture vào tms. Báo cáo docs/reviews/2026-10-08-customer-reassessment.md; S11 IN_REVIEW cho UAT/pilot/NFR production.",
@@ -810,7 +814,7 @@
     "S08": "ADR-008: run-item metrics, PM NA/cycle closure/reopen, internal XLSX approved 2026-09-29",
     "S09": "ADR-009: user chọn Redmine và giao chọn phương án tốt nhất; sandbox local/mapping nội bộ, TMS authoritative, chỉ PM công bố; không gửi tracker khách.",
     "projectLifecycle": "08/10/2026 người dùng giao chọn quy tắc tốt nhất: chỉ Admin lưu trữ/mở lại, lý do/version/idempotency/lịch sử; sáu nhóm việc tồn chặn archive, không tự đóng/thu hồi; PM kết thúc công việc thường, BUG/QA giữ luồng chuyên biệt. Xem docs/planning/project-lifecycle-2026-10-08.md.",
-    "adminWorkspaceRead": "10/10/2026: Admin tổng được xem mọi dự án trong Không gian dự án; quyền đọc không cấp membership/PM/executor hoặc quyền ghi nghiệp vụ. PM/Tester/Dev giữ phạm vi membership hiện hành."
+    "adminWorkspaceRead": "SUPERSEDED 10/10/2026: Admin tổng có toàn quyền nghiệp vụ trên mọi dự án, không cần membership. Xem adminFullAuthority."
   },
   "aiAssistance": {
     "status": "IN_REVIEW",
@@ -884,5 +888,292 @@
       "docs/reviews/2026-10-10-ai-providers-final-fixes.md",
       "docs/reviews/2026-10-10-ai-providers-final-re-review.md"
     ]
+  },
+  "uiDialogSelectionAudit": {
+    "status": "IN_REVIEW",
+    "implementation": "COMPLETE_LOCAL",
+    "requestedAt": "2026-10-10",
+    "branch": "system-design",
+    "plan": "docs/planning/2026-10-10-ui-dialog-selection-audit.md",
+    "review": "docs/reviews/2026-10-10-ui-dialog-selection-audit.md",
+    "scope": "Bounded admin dialogs; shared filtered selection tables with separate checkbox/name columns and select-visible; compact inline search/filter bars across modules; responsive, keyboard and QA source-label fixes.",
+    "verification": {
+      "frontendFiles": 67,
+      "frontendTests": 736,
+      "finalLayoutTargetedTests": 4,
+      "build": "PASS",
+      "diffCheck": "PASS",
+      "coverage": "NOT_MEASURED",
+      "browser": "Chrome Admin/PM route and popup audit plus representative Tester/Dev screens; compact filters measured at desktop and mobile. Details and limits in review.",
+      "backendChangesInThisScope": false
+    },
+    "remaining": [
+      "Real-device Safari/iOS/Android, virtual keyboard and remaining role/data-state combinations not browser-verified.",
+      "Vite bundle size advisory remains; no claim of zero UI bugs across all states."
+    ],
+    "pushed": false,
+    "requiresExplicitPushRequest": true
+  },
+  "adminExcelImport": {
+    "status": "IN_REVIEW",
+    "requestedAt": "2026-10-10",
+    "plan": "docs/planning/2026-10-10-admin-excel-import.md",
+    "scope": "Global ADMIN import without membership; multi-file preview/commit; responsive document library.",
+    "migration": "V26",
+    "pushed": false,
+    "implementation": "COMPLETE_LOCAL",
+    "review": "docs/reviews/2026-10-10-admin-excel-import.md",
+    "localBackendUpdated": true,
+    "localBackendPort": 8080,
+    "browserUploadGate": "Chrome extension file URL permission not enabled; HTTP and component upload flow tests PASS",
+    "verification": {
+      "frontendFullTests": 730,
+      "frontendFinalTargetedTests": 26,
+      "backendRegressionTests": 48,
+      "migrationTests": 1,
+      "backendFinalAuthorTests": 1,
+      "build": "PASS",
+      "httpUpload": "PASS",
+      "preservedRows": 3813,
+      "preservedTables": 7
+    }
+  },
+  "workflowLinkageAudit": {
+    "status": "IN_REVIEW",
+    "implementation": "COMPLETE_LOCAL",
+    "requestedAt": "2026-10-10",
+    "branch": "system-design",
+    "plan": "docs/planning/2026-10-10-workflow-linkage-audit.md",
+    "review": "docs/reviews/2026-10-10-workflow-linkage-review.md",
+    "findings": "DEMO-PILOT has 4 committed documents/252 source cases but 0 file assignments. UI now shows sources and PM handoff; no automatic assignment or permission expansion.",
+    "verification": {
+      "frontendFiles": 68,
+      "frontendTests": 740,
+      "finalFileWorkTests": 83,
+      "build": "PASS",
+      "nativeDocumentTests": 9,
+      "nativeFileWorkQaTests": 10,
+      "nativeConcurrencyTests": 5,
+      "runnerTests": 12,
+      "databaseTables": 73,
+      "foreignKeys": 179,
+      "domainChecks": 6,
+      "workflowChecks": 7,
+      "violations": 0,
+      "coverage": "NOT_MEASURED",
+      "browser": "Chrome Admin/PM source and assignment navigation; searchable project scope; 1366px one-row filters; 390px independent horizontal table scroll; ticket maximize/restore",
+      "backendUnitTests": 206
+    },
+    "testSchema": "tms_docstest_202610100016",
+    "pushed": false,
+    "requiresExplicitPushRequest": true,
+    "remaining": [
+      "Real-device and all role/data-state UAT remain; do not infer whole-product absence of UI or business bugs."
+    ]
+  },
+  "documentWorkspace": {
+    "status": "IN_REVIEW",
+    "implementation": "COMPLETE_LOCAL",
+    "requestedAt": "2026-10-10",
+    "branch": "system-design",
+    "plan": "docs/planning/2026-10-10-document-workspace.md",
+    "review": "docs/reviews/2026-10-10-document-workspace.md",
+    "confirmedDecision": "PM assigns second test to active project Tester using a real run in a draft cycle/configuration; source content retained.",
+    "migration": "V27",
+    "localBackendUpdated": true,
+    "verification": {
+      "frontendFiles": 69,
+      "frontendTests": 748,
+      "build": "PASS",
+      "backendRegressionTests": 237,
+      "nativeDocumentTests": 11,
+      "nativeFileWorkQaTests": 10,
+      "nativeConcurrencyTests": 5,
+      "runnerTests": 12,
+      "databaseTables": 76,
+      "foreignKeys": 184,
+      "domainChecks": 6,
+      "workflowChecks": 7,
+      "violations": 0,
+      "diffCheck": "PASS",
+      "coverage": "NOT_MEASURED",
+      "browser": "Admin/PM document editing and assignment dialog, Kanban/list; desktop and 390px independent grid scroll. Main database not used for mutation fixtures."
+    },
+    "testSchema": "tms_docstest_202610100016",
+    "pushed": false,
+    "requiresExplicitPushRequest": true,
+    "remaining": [
+      "User PM/Tester UAT and real-device/Safari verification remain; S11 stays IN_REVIEW."
+    ]
+  },
+  "devicePickerJavaProblems": {
+    "status": "DONE",
+    "requestedAt": "2026-10-10",
+    "branch": "system-design",
+    "review": "docs/reviews/2026-10-10-device-picker-java-problems.md",
+    "scope": "Compact responsive device picker footer and 39 Java compiler warnings; no business rule/schema change.",
+    "verification": {
+      "javaSources": 256,
+      "beforeWarnings": 39,
+      "errors": 0,
+      "warnings": 0,
+      "frontendTests": 20,
+      "backendProviderTests": 42,
+      "nativeRegressionTests": 27,
+      "build": "PASS",
+      "diffCheck": "PASS",
+      "coverage": "NOT_MEASURED",
+      "browser": "Chrome 1366x768 and 390x844: no horizontal overflow, controls remain usable; viewport reset."
+    },
+    "testSchema": "tms_docstest_202610100016",
+    "pushed": false,
+    "requiresExplicitPushRequest": true,
+    "limits": [
+      "VS Code Problems UI not read directly; compiler diagnostics verified with Java extension Eclipse compiler.",
+      "No full-suite/coverage or real-device/Safari rerun in this targeted fix."
+    ]
+  },
+  "adminFullAuthority": {
+    "status": "DONE",
+    "implementation": "COMPLETE_LOCAL",
+    "decision": "ADMIN toàn quyền; vòng kết quả Unexecuted → OK → NG → P → NA → Unexecuted",
+    "plan": "docs/planning/2026-10-10-admin-full-authority.md",
+    "review": "docs/reviews/2026-10-10-admin-full-authority.md",
+    "migration": "V28",
+    "checks": {
+      "frontendFiles": 70,
+      "frontendTests": 756,
+      "backendUnitClasses": 57,
+      "backendUnitTests": 546,
+      "nativeRegressionTests": 35,
+      "nativeUpgradeTests": 1,
+      "javaErrors": 0,
+      "javaWarnings": 0,
+      "databaseForeignKeys": 185,
+      "databaseViolations": 0,
+      "contracts": "PASS",
+      "coverage": "NOT_MEASURED"
+    },
+    "runtime": "Backend8080 healthUP, tmsV28; readonly audit76tables/185FK/6domain/7linkage PASS. Business table counts unchanged after migration.",
+    "browser": "PASS accessibility check: DemoAdmin create-work enabled and13document result buttons enabled. Write behavior verified on isolated MySQL only; screenshot capture timed out.",
+    "remaining": "No required implementation remains for this correction. Existing sprint UAT gates remain separate; S11 IN_REVIEW.",
+    "pushAuthorized": false
+  },
+  "secondTestAssignmentFix": {
+    "status": "DONE",
+    "implementation": "COMPLETE_LOCAL",
+    "requestedAt": "2026-10-11",
+    "branch": "system-design",
+    "review": "docs/reviews/2026-10-11-second-test-assignment.md",
+    "scope": "Enable Admin/PM assignment dialog on draft cases with explicit inline revision approval and actionable prerequisite guidance.",
+    "verification": {
+      "frontendFiles": 70,
+      "frontendTests": 765,
+      "targetedTests": 15,
+      "build": "PASS",
+      "contracts": "PASS",
+      "diffCheck": "PASS",
+      "coverageScope": "DocumentSecondTestDialog.jsx only",
+      "statementsCoverage": 98.05,
+      "branchesCoverage": 90.38,
+      "functionsCoverage": 100,
+      "linesCoverage": 100,
+      "browser": "Chrome accessibility: Demo Admin opens draft case assignment, sees approval and Tester choices, selects DEMO-4 and loads configuration; closes with focus restored. No business data write; screenshot timed out."
+    },
+    "backendOrSchemaChanged": false,
+    "remaining": "No required implementation remains for this correction. Product UAT/real-device gates remain separate; S11 IN_REVIEW.",
+    "pushAuthorized": false
+  },
+  "executionDocumentResults": {
+    "status": "DONE",
+    "scope": "Latest newly recorded execution projects to committed document rows of the same project/case; manual document results do not mutate execution or second-test runs",
+    "plan": "docs/planning/2026-10-11-execution-document-results.md",
+    "review": "docs/reviews/2026-10-11-execution-document-results.md",
+    "checks": {
+      "frontendTests": 846,
+      "frontendFiles": 76,
+      "affectedNativeTests": 32,
+      "finalBackendTests": 127,
+      "backendCountsOverlap": true,
+      "javaSources": 263,
+      "javaErrors": 0,
+      "javaWarnings": 0,
+      "build": "PASS_EXISTING_BUNDLE_WARNING",
+      "contracts": "PASS_STRUCTURAL",
+      "frontendCoverageRemeasured": false
+    },
+    "runtime": "Local 8080 restarted on native3307/tms V29; 7268 old rows across72tables preserved,1login audit appended; no fixture writes",
+    "browser": "Real XLSX-8-2 currentOK opens selectorOK; desktop screenshot,390px DOM/keyboard nooverflow44px controls PASS; mobile capture timeout",
+    "remaining": "No backfill by design; separate product UAT/real-device gates remain S11 IN_REVIEW",
+    "pushed": false
+  },
+  "buttonRecheck": {
+    "status": "DONE",
+    "scope": "Confirmed existing button behavior/feedback defects and source review; product S11 remains IN_REVIEW",
+    "review": "docs/reviews/2026-10-11-button-recheck.md",
+    "checks": {
+      "frontendTests": 842,
+      "frontendFiles": 76,
+      "build": "PASS",
+      "contracts": "PASS_STRUCTURAL",
+      "diff": "PASS",
+      "coverage": {
+        "statements": 86.85,
+        "branches": 83.95,
+        "functions": 81.35,
+        "lines": 86.65
+      },
+      "nativeButtonDeclarations": 370,
+      "customButtonUsages": 81,
+      "forms": 42
+    },
+    "browser": "Chrome Admin: 20-device draft validation/bulk-recipient, dialog focus desktop/390px, ticket expand/refresh/restore/close, Redmine read refresh. Screenshot recorded.",
+    "remaining": "Real-device/role-data UAT and external live delivery/paid AI remain separate; no blanket all-states guarantee.",
+    "backendOrSchemaChanged": false,
+    "pushed": false
+  },
+  "deepSourceButtonsReview": {
+    "status": "COMPLETE_LOCAL_REVIEW",
+    "requestedAt": "2026-10-11",
+    "branch": "system-design",
+    "review": "docs/reviews/2026-10-11-deep-source-buttons-review.md",
+    "scope": "All 354 production FE/BE source files read; UI action paths, API authority, persistence and readback traced. This is not blanket every-state UAT approval.",
+    "sourceFiles": 354,
+    "sourceLines": 29224,
+    "controlDeclarations": 1012,
+    "confirmedRepairs": 12,
+    "checks": {
+      "frontendTests": 856,
+      "frontendFiles": 78,
+      "frontendCoverage": {
+        "statements": 86.98,
+        "branches": 84.22,
+        "functions": 81.65,
+        "lines": 86.83
+      },
+      "backendUnitTests": 552,
+      "nativeTests": 60,
+      "combinedBackendRun": 120,
+      "combinedOverlapWithUnit": 75,
+      "javaSources": 264,
+      "javaErrors": 0,
+      "javaWarnings": 0,
+      "build": "PASS_EXISTING_668KB_BUNDLE_WARNING",
+      "contracts": "PASS_STRUCTURAL",
+      "diff": "PASS",
+      "databaseTables": 76,
+      "databaseForeignKeys": 185,
+      "semanticChecks": 10,
+      "databaseViolations": 0
+    },
+    "remaining": "S11 stays IN_REVIEW: role/data/real-device UAT and live AI/OAuth/Redmine verification remain separate. Testcontainers suite not fully rerun; no blanket all-state guarantee.",
+    "runtime": "Local8080 restarted PID25148 healthUP native3307/tmsV29. 7270 existing rows/72 tables unchanged across restart. Chrome Admin progress form, required feedback and390CSS width verified; viewport reset.",
+    "pushed": false
+  },
+  "currentBranchPushRequest": {
+    "date": "2026-10-11",
+    "branch": "system-design",
+    "authorization": "User explicitly requested push of current reviewed changes. No permanent push, merge or deploy authorization.",
+    "scope": "Reviewed source, tests, migrations V26-V29, documentation and selected review artifacts; local credentials, databases, builds and scratch logs excluded."
   }
 }

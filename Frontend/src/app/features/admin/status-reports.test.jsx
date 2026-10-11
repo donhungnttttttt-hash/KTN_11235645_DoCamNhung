@@ -23,6 +23,12 @@ test('read-only member/admin sees history and automatic warning without posting 
  render(<ProjectStatusReports projectId="1" admin api={{statusReports:vi.fn().mockResolvedValue(data)}}/>);
  await screen.findByText('Current update');expect(screen.getByText(/Quá hạn/)).toBeInTheDocument();expect(screen.queryByRole('button',{name:'Gửi báo cáo'})).not.toBeInTheDocument();
 });
+test('central Admin history links to the selected project progress workspace',async()=>{
+ render(<ProjectStatusReports projectId="7" admin api={{statusReports:vi.fn().mockResolvedValue(history(false))}}/>);
+ const link=await screen.findByRole('link',{name:'Mở không gian báo cáo tiến độ'});
+ expect(link).toHaveAttribute('href','#/progress?workspace=1&projectId=7');
+ expect(screen.queryByRole('button',{name:'Gửi báo cáo'})).not.toBeInTheDocument();
+});
 test('audit local named project and dates are sent with explicit timezone and reset page',async()=>{
  const api={projects:vi.fn().mockResolvedValue({items:[{id:7,code:'P7',name:'Project Seven'}],totalElements:1}),audit:vi.fn().mockResolvedValue({items:[],totalElements:0})};
  render(<AdminAudit api={api}/>);const user=userEvent.setup();

@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static vn.syp.tms.support.MockMvcContracts.csrf;
 import java.util.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.syp.tms.identity.*;
 import vn.syp.tms.project.*;
 
-/** Global read access must neither create memberships nor grant business write permissions. */
+/** Global admin reads are side-effect free; writes retain the real admin actor. */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -55,10 +55,10 @@ class AdminWorkspaceNativeTest {
     }
     @Test void globalAdminListsAllProjectsWithoutInventingMembershipOrPmRole() throws Exception {
         var all=projects.list(admin.getId());
-        assertThat(all).extracting(ProjectDtos.ProjectSummary::id).contains(first,second);
+        assertThat(all).extracting(project->project.id()).contains(first,second);
         assertThat(all).filteredOn(p->p.id()==first||p.id()==second).allMatch(p->p.projectRole()==null);
         assertThat(projects.list(owner.getId())).filteredOn(p->p.id()==first).allMatch(p->"PM".equals(p.projectRole()));
-        assertThat(projects.list(tester.getId())).extracting(ProjectDtos.ProjectSummary::id).containsExactly(first);
+        assertThat(projects.list(tester.getId())).extracting(project->project.id()).containsExactly(first);
         mvc.perform(get("/api/v1/projects/"+first).with(actor(admin))).andExpect(status().isOk());
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM project_memberships WHERE user_id=?",Long.class,admin.getId())).isZero();
     }
@@ -69,17 +69,35 @@ class AdminWorkspaceNativeTest {
         }
         mvc.perform(get("/api/v1/projects/"+first+"/work-items").with(actor(admin))).andExpect(jsonPath("$.items[0].id").value(item));
         mvc.perform(get("/api/v1/projects/"+second+"/work-items").with(actor(admin))).andExpect(jsonPath("$.items").isEmpty());
-        mvc.perform(get("/api/v1/projects/"+first+"/work-items/metadata").with(actor(admin))).andExpect(jsonPath("$.canCreate").value(false)).andExpect(jsonPath("$.canTriage").value(false));
-        mvc.perform(get("/api/v1/projects/"+first+"/work-items/"+item).with(actor(admin))).andExpect(status().isOk()).andExpect(jsonPath("$.canComment").value(false)).andExpect(jsonPath("$.canAttach").value(false)).andExpect(jsonPath("$.allowedTransitions").isEmpty());
+        mvc.perform(get("/api/v1/projects/"+first+"/work-items/metadata").with(actor(admin))).andExpect(jsonPath("$.canCreate").value(true)).andExpect(jsonPath("$.canTriage").value(true));
+        mvc.perform(get("/api/v1/projects/"+first+"/work-items/"+item).with(actor(admin))).andExpect(status().isOk()).andExpect(jsonPath("$.canComment").value(true)).andExpect(jsonPath("$.canAttach").value(true)).andExpect(jsonPath("$.allowedTransitions").isNotEmpty());
         mvc.perform(get("/api/v1/projects/"+second+"/work-items/"+item).with(actor(admin))).andExpect(status().isNotFound());
-        mvc.perform(get("/api/v1/projects/"+first+"/file-work-groups/metadata").with(actor(admin))).andExpect(jsonPath("$.canCreate").value(false)).andExpect(jsonPath("$.canViewMine").value(false));
+        mvc.perform(get("/api/v1/projects/"+first+"/file-work-groups/metadata").with(actor(admin))).andExpect(jsonPath("$.canCreate").value(true)).andExpect(jsonPath("$.canViewMine").value(true));
     }
-    @Test void observerCannotWriteWhileActualPmStillCan() throws Exception {
+    @Test void globalAdminWritesWithoutActiveMembershipAndLosesAuthorityAfterDemotion() throws Exception {
         String body="{\"type\":\"TASK\",\"title\":\"Do not create\",\"description\":\"Details\",\"priority\":\"MEDIUM\",\"requestKey\":\"workspace-denied\"}";
-        mvc.perform(post("/api/v1/projects/"+first+"/work-items").with(actor(admin)).with(csrf()).contentType("application/json").content(body)).andExpect(status().isNotFound());
+        mvc.perform(post("/api/v1/projects/"+first+"/work-items").with(actor(admin)).with(csrf()).contentType("application/json").content(body)).andExpect(status().isCreated());
+        projects.requireMembership(first,admin.getId());
+        projects.requireProjectPm(first,admin.getId());
+        assertThat(jdbc.queryForObject("SELECT active FROM project_memberships WHERE project_id=? AND user_id=?",Boolean.class,first,admin.getId())).isFalse();
+        assertThat(jdbc.queryForObject("SELECT project_role FROM project_memberships WHERE project_id=? AND user_id=?",String.class,first,admin.getId())).isEqualTo("MEMBER");
+        jdbc.update("UPDATE identity_users SET role_code='TESTER' WHERE id=?",admin.getId());entityManager.clear();
         assertThatThrownBy(()->projects.requireMembership(first,admin.getId())).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);
-        assertThatThrownBy(()->projects.requireProjectPm(first,admin.getId())).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);
-        mvc.perform(post("/api/v1/projects/"+first+"/work-items").with(actor(owner)).with(csrf()).contentType("application/json").content(body)).andExpect(status().isCreated());
+        mvc.perform(post("/api/v1/projects/"+first+"/work-items").with(actor(owner)).with(csrf()).contentType("application/json").content(Objects.requireNonNull(body.replace("workspace-denied","owner-create")))).andExpect(status().isCreated());
+    }
+    @Test void globalAdminPostsProgressWithInactiveAttributionAndReplaysWithoutDuplicatingHistory() throws Exception {
+        String path="/api/v1/projects/"+first+"/status-reports";
+        String body="{\"requestKey\":\"admin-progress-replay\",\"summary\":\"Admin progress update\",\"delayReason\":\"\",\"recoveryPlan\":\"\"}";
+        mvc.perform(get(Objects.requireNonNull(path)).with(actor(admin))).andExpect(status().isOk()).andExpect(jsonPath("$.canPost").value(true));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,first,admin.getId())).isZero();
+        for(int attempt=0;attempt<2;attempt++)mvc.perform(post(Objects.requireNonNull(path)).with(actor(admin)).with(csrf()).contentType("application/json").content(body)).andExpect(status().isCreated()).andExpect(jsonPath("$.summary").value("Admin progress update"));
+        var attribution=jdbc.queryForMap("SELECT r.created_by,m.user_id,m.active,m.project_role FROM project_status_reports r JOIN project_memberships m ON m.project_id=r.project_id AND m.id=r.author_membership_id WHERE r.project_id=? AND r.request_key=?",first,"admin-progress-replay");
+        assertThat(attribution).containsEntry("created_by",admin.getId()).containsEntry("user_id",admin.getId()).containsEntry("active",false).containsEntry("project_role","MEMBER");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM project_status_reports WHERE project_id=? AND request_key=?",Long.class,first,"admin-progress-replay")).isEqualTo(1L);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM project_audit WHERE project_id=? AND actor_id=? AND entity_type='STATUS_REPORT' AND action='CREATE'",Long.class,first,admin.getId())).isEqualTo(1L);
+        mvc.perform(get(Objects.requireNonNull(path)).with(actor(admin))).andExpect(jsonPath("$.reports.items[0].authorId").value(admin.getId())).andExpect(jsonPath("$.reports.items[0].summary").value("Admin progress update"));
+        jdbc.update("UPDATE projects SET archived_at=UTC_TIMESTAMP(6) WHERE id=?",first);
+        mvc.perform(get(Objects.requireNonNull(path)).with(actor(admin))).andExpect(jsonPath("$.canPost").value(false));
     }
     @Test void nonMembersRevokedAndDisabledAccountsDoNotGainGlobalReads() throws Exception {
         mvc.perform(get("/api/v1/projects/"+second+"/work-items").with(actor(tester))).andExpect(status().isNotFound());

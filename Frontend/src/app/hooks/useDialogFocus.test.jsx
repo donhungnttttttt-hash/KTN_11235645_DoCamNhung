@@ -9,6 +9,12 @@ function Dialog({ onClose, busy=false, empty=false }) {
   const ref=useDialogFocus(onClose,busy);
   return <div ref={ref} role="dialog" tabIndex={-1}>{!empty && <><button>Đầu</button><input aria-label="Nội dung"/><button disabled>Không chọn</button><button>Cuối</button></>}</div>;
 }
+it('a nonmodal AI chat does not disable the active modal keyboard controls',()=>{
+ const close=vi.fn();
+ render(<><Dialog onClose={close}/><section role="dialog" aria-modal="false" aria-label="AI chat"><button>Chat</button></section></>);
+ fireEvent.keyDown(document,{key:'Escape'});
+ expect(close).toHaveBeenCalledOnce();
+});
 it('traps Tab in both directions and returns focus to the opener on Escape',async()=>{
   const user=userEvent.setup();
   function Page(){const [open,setOpen]=useState(false);return <><button onClick={()=>setOpen(true)}>Mở</button>{open && <Dialog onClose={()=>setOpen(false)}/>}</>;}

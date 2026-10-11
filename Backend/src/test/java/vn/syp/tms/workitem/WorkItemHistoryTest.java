@@ -153,7 +153,7 @@ class WorkItemHistoryTest {
     @SuppressWarnings("null")
     @Test void qaCommentUsesCanonicalWriterBeforeReplayAndDoesNotWriteAnAnswer() {
         existing.put("type","QA");
-        when(qa.authorizeWriter(1,"pm",9)).thenReturn(new QaService.Writer(new QaService.Actor(7,true,false,false,false),existing));
+        when(qa.authorizeWriter(1,"pm",9)).thenReturn(new QaService.Writer(new QaService.Actor(7,true,false,false,false,false),existing));
         when(store.rows(contains("FROM work_item_comments"),eq(1L),eq(9L),eq("comment-key"))).thenReturn(List.of(Map.of("id",55L,"body","note","author_membership_id",7L)));
         assertThat(service.comment(1,"pm",9,new WorkItemDtos.Comment("note","INTERNAL","comment-key"))).isEqualTo(Map.of("id",55L));
         var ordered=inOrder(qa,store);
@@ -180,7 +180,7 @@ class WorkItemHistoryTest {
     @SuppressWarnings("null")
     @Test void qaCommentReplayRejectsDifferentBodyOrAuthorAndNewCommentStaysInternal() {
         existing.put("type","QA");
-        when(qa.authorizeWriter(1,"pm",9)).thenReturn(new QaService.Writer(new QaService.Actor(7,true,false,false,false),existing));
+        when(qa.authorizeWriter(1,"pm",9)).thenReturn(new QaService.Writer(new QaService.Actor(7,true,false,false,false,false),existing));
         for(var replay:List.of(Map.<String,Object>of("id",55L,"body","different","author_membership_id",7L),
                 Map.<String,Object>of("id",55L,"body","note","author_membership_id",8L))) {
             when(store.rows(contains("FROM work_item_comments"),eq(1L),eq(9L),eq("comment-key"))).thenReturn(List.of(replay));
@@ -199,7 +199,7 @@ class WorkItemHistoryTest {
         when(store.rows(contains("FROM work_item_comments"),eq(1L),eq(9L),eq("comment-key")))
                 .thenReturn(List.of(Map.of("id",55L,"body","note","author_membership_id",7L)));
         assertThat(service.comment(1,"pm",9,new WorkItemDtos.Comment("note","INTERNAL","comment-key"))).isEqualTo(Map.of("id",55L));
-        verify(qa).authorize(1,"pm",true);
+        verify(qa,atLeastOnce()).authorize(1,"pm",true);
         verify(qa,never()).authorizeWriter(anyLong(),anyString(),anyLong());
         verify(qa,never()).detail(anyLong(),anyString(),anyLong());
     }
@@ -242,7 +242,7 @@ class WorkItemHistoryTest {
     @SuppressWarnings("null")
     @Test void qaCommentRoutingAndCurrentReplayFollowCanonicalLocks() {
         existing.put("type","QA");
-        when(qa.authorizeWriter(1,"pm",9)).thenReturn(new QaService.Writer(new QaService.Actor(7,true,false,false,false),existing));
+        when(qa.authorizeWriter(1,"pm",9)).thenReturn(new QaService.Writer(new QaService.Actor(7,true,false,false,false,false),existing));
         when(store.rows(contains("FROM work_item_comments"),eq(1L),eq(9L),eq("comment-key")))
             .thenReturn(List.of(Map.of("id",55L,"body","note","author_membership_id",7L)));
         assertThat(service.comment(1,"pm",9,new WorkItemDtos.Comment("note","INTERNAL","comment-key"))).isEqualTo(Map.of("id",55L));

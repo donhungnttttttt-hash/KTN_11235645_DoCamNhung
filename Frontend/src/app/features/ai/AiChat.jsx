@@ -1,4 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
+import {createPortal} from 'react-dom';
 import {MessageCircle,Minus,Send,Copy,Plus,History,Settings2} from 'lucide-react';
 import {useAuth} from '../auth/AuthProvider';
 import {aiApi} from '../../services/api/ai';
@@ -6,6 +7,7 @@ import {projectsApi} from '../../services/api/projects';
 import {AiSourceSelector,useAiProviders,providerReady} from './AiConnections';
 import {aiError} from './aiErrors';
 import {purposeLabel} from './aiLabels';
+import {useChatLauncherHost} from './ChatLauncherSlot';
 import './ai.css';
 
 const providerLabels={OPENAI_API:'API của hệ thống',CHATGPT:'ChatGPT cá nhân',OLLAMA:'Ollama local'};
@@ -15,11 +17,13 @@ export function AiChat({api=aiApi,projectApi=projectsApi}){
 }
 function OwnerChat({api,projectApi,active}){
  const providers=useAiProviders();
+ const {host:launcherHost,provided:hasLauncherProvider}=useChatLauncherHost();
  const [open,setOpen]=useState(false),[settings,setSettings]=useState(false),[showHistory,setShowHistory]=useState(false);
  const [projects,setProjects]=useState([]),[projectId,setProjectId]=useState(''),[metadata,setMetadata]=useState(null),[purpose,setPurpose]=useState(''),[targetId,setTargetId]=useState(''),[targets,setTargets]=useState(null),[query,setQuery]=useState('');
  const [thread,setThread]=useState(null),[turns,setTurns]=useState([]),[history,setHistory]=useState([]),[historyBefore,setHistoryBefore]=useState(null),[turnBefore,setTurnBefore]=useState(null);
  const [text,setText]=useState(''),[pending,setPending]=useState(null),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[denied,setDenied]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
  const [scopeLoading,setScopeLoading]=useState(false),[detailLoading,setDetailLoading]=useState(false);
+ const [targetRetry,retryTargets]=useState(0),[targetLoading,setTargetLoading]=useState(false);
  const lifetime=useRef(null),lock=useRef(false),currentActive=useRef(active),generation=useRef(0),previousActive=useRef(active),previousOpen=useRef(false),pendingRef=useRef(null),threadRef=useRef(null),composer=useRef(null),launcher=useRef(null),transcript=useRef(null),draftRef=useRef(text);
  const sessionGeneration=useRef(0),turnRevision=useRef(0),detailReadVersion=useRef(0);
  currentActive.current=active;draftRef.current=text;threadRef.current=thread;
@@ -84,11 +88,12 @@ function OwnerChat({api,projectApi,active}){
  const selected=metadata?.purposes.find(item=>item.code===purpose);
  useEffect(()=>{
   setTargetId('');setTargets(null);
-  if(!active||!projectId||!selected||selected.target==='NONE')return;
+  if(!active||!projectId||!selected||selected.target==='NONE'){setTargetLoading(false);return;}
   const abort=new AbortController(),epoch=sessionGeneration.current;
-  api.targets(projectId,purpose,query,{signal:abort.signal}).then(rows=>{if(validScopeRead(abort.signal,epoch))setTargets(rows);}).catch(e=>{if(validScopeRead(abort.signal,epoch))setError(aiError(e.code,providers?.selection.provider,true));});
+  setTargetLoading(true);setError('');
+  api.targets(projectId,purpose,query,{signal:abort.signal}).then(rows=>{if(validScopeRead(abort.signal,epoch))setTargets(rows);}).catch(e=>{if(validScopeRead(abort.signal,epoch))setError(aiError(e.code,providers?.selection.provider,true));}).finally(()=>{if(validScopeRead(abort.signal,epoch))setTargetLoading(false);});
   return()=>abort.abort();
- },[api,active,projectId,purpose,selected?.target,query]);
+ },[api,active,projectId,purpose,selected?.target,query,targetRetry]);
  function fresh(){invalidate();detailReadVersion.current++;setDetailLoading(false);setThread(null);setTurns([]);setPending(null);pendingRef.current=null;setTurnBefore(null);setDenied(false);setError('');setNotice('');setSettings(true);}
  function changeScope(value){fresh();setProjectId(value);}
  async function perform(fn){
@@ -132,8 +137,9 @@ function OwnerChat({api,projectApi,active}){
  const canSend=active&&ready&&!busy&&!pending&&!reading&&!denied&&!archived&&(thread||scopeReady)&&!turns.some(item=>item.state==='GENERATING');
  const scopeLabel=thread?.projectId?`${projects.find(item=>item.id===thread.projectId)?.name||`Dự án #${thread.projectId}`} · ${purposeLabel(thread.purpose)}${thread.targetId?` · nguồn #${thread.targetId}`:''}`:thread?'Trao đổi chung':projectId?`${projects.find(item=>String(item.id)===projectId)?.name||`Dự án #${projectId}`} · ${selected?.label||'chưa chọn tác vụ'}${targetId?` · ${targets?.items.find(item=>String(item.id)===targetId)?.label||`nguồn #${targetId}`}`:''}`:'Trao đổi chung · không gửi dữ liệu dự án';
  if(!active)return null;
- return <div className="ai-chat-root">
-  <button ref={launcher} type="button" className="ai-chat-launcher" aria-label="Mở chat AI" aria-expanded={open} onClick={()=>setOpen(true)} hidden={open}><MessageCircle size={23} aria-hidden="true"/><span>Chat AI</span></button>
+ const launcherButton=<button ref={launcher} type="button" className="ai-chat-launcher" aria-label="Mở chat AI" aria-expanded={open} onClick={()=>setOpen(true)} hidden={open}><MessageCircle size={23} aria-hidden="true"/><span>Chat AI</span></button>;
+ return <div className={`ai-chat-root${open?' is-open':''}${hasLauncherProvider?' is-ported':''}`}>
+  {launcherHost?createPortal(launcherButton,launcherHost):!hasLauncherProvider&&launcherButton}
   {open&&<section className="ai-chat ai-page" role="dialog" aria-modal="false" aria-label="Chat AI riêng" onKeyDown={e=>{if(e.key==='Escape'&&!e.defaultPrevented&&e.target.tagName!=='SELECT'){e.stopPropagation();e.preventDefault();minimize();}}}>
    <header className="ai-chat-heading"><div><strong><MessageCircle size={18} aria-hidden="true"/>Chat AI riêng</strong><small>Lưu tạm 7 ngày · chỉ bạn xem</small></div><button className="ai-button" aria-label="Thu nhỏ chat" onClick={minimize}><Minus size={20} aria-hidden="true"/></button></header>
    <div className="ai-chat-provenance"><strong>{providerLabels[thread?.provider||providers?.selection.provider]} · {pinnedModel||'chưa chọn model'}</strong><span>{scopeLabel}</span>{thread&&<small>Hội thoại #{thread.id} · nguồn / model / phạm vi đã cố định</small>}</div>
@@ -141,7 +147,7 @@ function OwnerChat({api,projectApi,active}){
    <div className="ai-chat-scroll" ref={transcript}>
     {settings&&<div className="ai-chat-settings"><AiSourceSelector disabled={busy||!!pending}/>{thread&&<p className="ai-notice">Lựa chọn nguồn áp dụng cho phân tích và hội thoại mới. Hội thoại hiện tại giữ nguyên nguồn đã tạo.</p>}
      <label className="ai-field">Phạm vi chat<select value={projectId} disabled={busy||!!pending} onChange={e=>changeScope(e.target.value)}><option value="">Trao đổi chung</option>{projects.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-     {projectId&&<><label className="ai-field">Tác vụ cho chat<select value={purpose} disabled={busy||!!pending||!metadata} onChange={e=>{fresh();setPurpose(e.target.value);setQuery('');}}><option value="">Chọn tác vụ</option>{metadata?.purposes.map(item=><option key={item.code} value={item.code}>{item.label}</option>)}</select></label>{selected&&selected.target!=='NONE'&&<><form className="ai-search" onSubmit={e=>{e.preventDefault();setQuery(new FormData(e.currentTarget).get('search').trim());}}><label className="ai-field">Tìm nguồn chat<input name="search" maxLength={80} disabled={busy||!!pending}/></label><button className="ai-button" disabled={busy||!!pending}>Tìm</button></form><label className="ai-field">Nguồn dự án cho chat<select value={targetId} disabled={busy||!!pending||!targets} onChange={e=>{fresh();setTargetId(e.target.value);}}><option value="">Chọn file hoặc ticket</option>{targets?.items.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select></label>{targets&&!targets.items.length&&<p>Chưa có nguồn được phép. Kiểm tra phân công hoặc tìm lại.</p>}{targets?.hasMore&&<p>Đang hiển thị 50 nguồn. Tìm để thu hẹp.</p>}</>}{metadata?.archived&&<p className="ai-notice">Dự án đã lưu trữ. Chỉ đọc hội thoại cũ.</p>}</>}
+     {projectId&&<><label className="ai-field">Tác vụ cho chat<select value={purpose} disabled={busy||!!pending||!metadata} onChange={e=>{fresh();setPurpose(e.target.value);setQuery('');}}><option value="">Chọn tác vụ</option>{metadata?.purposes.map(item=><option key={item.code} value={item.code}>{item.label}</option>)}</select></label>{selected&&selected.target!=='NONE'&&<><form className="ai-search" onSubmit={e=>{e.preventDefault();setQuery(new FormData(e.currentTarget).get('search').trim());retryTargets(value=>value+1);}}><label className="ai-field">Tìm nguồn chat<input name="search" maxLength={80} disabled={busy||!!pending}/></label><button className="ai-button" disabled={busy||!!pending||targetLoading}>{targetLoading?'Đang tìm…':'Tìm'}</button></form><label className="ai-field">Nguồn dự án cho chat<select value={targetId} disabled={busy||!!pending||!targets} onChange={e=>{fresh();setTargetId(e.target.value);}}><option value="">Chọn file hoặc ticket</option>{targets?.items.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select></label>{targets&&!targets.items.length&&<p>Chưa có nguồn được phép. Kiểm tra phân công hoặc tìm lại.</p>}{targets?.hasMore&&<p>Đang hiển thị 50 nguồn. Tìm để thu hẹp.</p>}</>}{metadata?.archived&&<p className="ai-notice">Dự án đã lưu trữ. Chỉ đọc hội thoại cũ.</p>}</>}
     </div>}
     {showHistory&&<section aria-label="Lịch sử chat"><h2>Hội thoại của bạn</h2>{history.map(item=><button key={item.id} className="ai-history-item" disabled={busy} onClick={()=>selectThread(item.id)}>#{item.id} · {providerLabels[item.provider]} · {item.model}<small>{item.projectId?`${projects.find(project=>project.id===item.projectId)?.name||`Dự án #${item.projectId}`} · ${purposeLabel(item.purpose)}`:'Trao đổi chung'}</small></button>)}{!history.length&&<p>Chưa có hội thoại ở trang này.</p>}{historyBefore!=null&&<button className="ai-button" disabled={busy} onClick={()=>perform((signal,epoch)=>loadHistory(historyBefore,signal,epoch))}>Xem hội thoại cũ hơn</button>}</section>}
     {reading&&<p role="status">Đang tải hội thoại và dự án được phép…</p>}

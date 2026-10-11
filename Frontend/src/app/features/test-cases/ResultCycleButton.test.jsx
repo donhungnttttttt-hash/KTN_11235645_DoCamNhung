@@ -12,7 +12,7 @@ it('starts unexecuted and cycles through the requested order without opening a d
   const user = userEvent.setup(); render(<Harness />);
   const button = screen.getByRole('button', { name: 'Kết quả test case 1' });
   expect(button).toHaveTextContent('Unexecuted');
-  for (const value of ['OK', 'P', 'NG', 'Fixed', 'NA', 'Unexecuted']) {
+  for (const value of ['OK', 'NG', 'P', 'NA', 'Unexecuted']) {
     await user.click(button);
     expect(button).toHaveTextContent(value);
     expect(screen.queryByRole('dialog')).toBeNull();
@@ -25,7 +25,7 @@ it('supports keyboard activation and normalizes stored aliases', async () => {
   const button = screen.getByRole('button', { name: 'Kết quả test case 2' });
   expect(button).toHaveTextContent('P');
   button.focus(); await user.keyboard('{Enter}');
-  expect(change).toHaveBeenCalledWith('NG');
+  expect(change).toHaveBeenCalledWith('NA');
 });
 
 it('does not change a disabled result', async () => {

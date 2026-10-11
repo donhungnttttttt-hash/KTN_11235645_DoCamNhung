@@ -133,7 +133,7 @@ class QaServiceTest {
         org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
             org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated(principal,null,List.of()));
         doReturn(map("version",2L)).when(db).row(contains("lock_version AS version FROM identity_users"),eq("user"));
-        var guarded=new QaService(db,new FileWorkGuard(db,identities),audit,json);
+        var guarded=new QaService(db,new FileWorkGuard(db,identities,mock(vn.syp.tms.project.ProjectActorService.class)),audit,json);
         try{error("UNAUTHENTICATED",()->guarded.detail(1,"user",40));verify(db,never()).row(contains("FROM projects"),any(Object[].class));}
         finally{org.springframework.security.core.context.SecurityContextHolder.clearContext();}
     }
@@ -144,8 +144,9 @@ class QaServiceTest {
         project.remove("archivedAt");when(db.row(contains("user_id=? AND active=TRUE"),any(Object[].class))).thenThrow(new BusinessException(404,"NOT_FOUND","revoked"));
         clearInvocations(db);error("NOT_FOUND",()->answer("answer_key"));verify(db,never()).rows(contains("qa_commands"),any(Object[].class));
     }
-    @Test void memberAdminAndGlobalDevDoNotGainPmCommands(){
-        for(String globalRole:List.of("ADMIN","DEV","TESTER")){global=globalRole;role="MEMBER";error("FORBIDDEN",()->service.assign(1,"user",40,new QaDtos.Assign(8L,"reason",0L,"assign_key")));}
+    @Test void globalAdminHasFullAuthorityWhileDevAndTesterRemainRestricted(){
+        global="ADMIN";role="MEMBER";assertTrue(service.authorize(1,"user",true).admin());
+        for(String globalRole:List.of("DEV","TESTER")){global=globalRole;role="MEMBER";error("FORBIDDEN",()->service.assign(1,"user",40,new QaDtos.Assign(8L,"reason",0L,"assign_key")));}
         global="DEV";role="PM";error("FORBIDDEN",()->service.close(1,"user",40,new QaDtos.Close("reason",true,0L,"close_key")));
     }
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.

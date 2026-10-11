@@ -3,7 +3,8 @@ package vn.syp.tms.filework;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static vn.syp.tms.support.MockMvcContracts.csrf;
 import static vn.syp.tms.workitem.WorkItemStore.number;
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -12,7 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,7 +32,7 @@ import vn.syp.tms.retest.*;
 import vn.syp.tms.shared.web.BusinessException;
 import vn.syp.tms.workitem.*;
 
-/** Existing V19 isolated schema only. Every fixture and mutation rolls back with its test. */
+/** Existing V29 isolated schema only. Every fixture and mutation rolls back with its test. */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -41,9 +42,9 @@ class NativeFileWorkQaIntegrationTest {
         NativeFqDatabase.requireMode("integration");
         // This is evaluated before context refresh, not BeforeEach after Flyway has run.
         try(var c=NativeFqDatabase.connect()) {
-            assertThat(NativeFqFixture.scalar(c,"SELECT CAST(version AS UNSIGNED) FROM flyway_schema_history WHERE success=1 ORDER BY installed_rank DESC LIMIT 1")).isEqualTo(19);
+            assertThat(NativeFqFixture.scalar(c,"SELECT CAST(version AS UNSIGNED) FROM flyway_schema_history WHERE success=1 ORDER BY installed_rank DESC LIMIT 1")).isEqualTo(29);
         }
-        NativeFqDatabase.flyway("19").validate();
+        NativeFqDatabase.flyway("29").validate();
         r.add("spring.datasource.url",NativeFqDatabase::url);r.add("spring.datasource.username",NativeFqDatabase::user);r.add("spring.datasource.password",NativeFqDatabase::password);
         r.add("TMS_DB_URL",NativeFqDatabase::url);r.add("TMS_DB_USER",NativeFqDatabase::user);r.add("TMS_DB_PASSWORD",NativeFqDatabase::password);
         r.add("TMS_MIGRATION_USER",NativeFqDatabase::user);r.add("TMS_MIGRATION_PASSWORD",NativeFqDatabase::password);
@@ -55,13 +56,56 @@ class NativeFileWorkQaIntegrationTest {
     @Autowired DataSource dataSource;@Autowired JdbcTemplate jdbc;@Autowired MockMvc mvc;
     @Autowired FileWorkService groups;@Autowired FileWorkSessionService sessions;@Autowired FileWorkExecutionService files;
     @Autowired ExecutionService execution;@Autowired WorkItemService work;@Autowired RetestService retest;@Autowired QaService qa;
+    @Test void realExcelImportBecomesAssignableSourceAndKeepsItsRunAndResultLinks() throws Exception {
+        byte[] workbook;
+        try(var book=new XSSFWorkbook(new ByteArrayInputStream(f.source));var out=new java.io.ByteArrayOutputStream()) {
+            book.getSheetAt(0).getRow(1).getCell(0).setCellValue("TC-IMPORTED");
+            book.write(out);workbook=out.toByteArray();
+        }
+        String base="/api/v1/projects/"+f.project;
+        var upload=new org.springframework.mock.web.MockMultipartFile("file","linked-source.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",workbook);
+        var response=mvc.perform(multipart(base+"/import-previews").file(upload).with(actor(f.pm,"PM")).with(csrf()))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.errorRows").value(0)).andReturn();
+        long document=new com.fasterxml.jackson.databind.ObjectMapper().readTree(response.getResponse().getContentAsByteArray()).get("id").asLong();
+        mvc.perform(post(base+"/import-previews/"+document+"/commit").with(actor(f.pm,"PM")).with(csrf())).andExpect(status().isOk());
+        mvc.perform(get(base+"/test-documents").param("keyword","linked-source").with(actor(f.pm,"PM")))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(1)).andExpect(jsonPath("$.items[0].id").value(document));
+        mvc.perform(get(base+"/file-work-groups").param("documentId",Long.toString(document)).with(actor(f.pm,"PM")))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
+        long caseId=Objects.requireNonNull(jdbc.queryForObject("SELECT target_case_id FROM import_rows WHERE batch_id=?",Long.class,document));
+        long revision=Objects.requireNonNull(jdbc.queryForObject("SELECT current_revision_id FROM test_cases WHERE id=?",Long.class,caseId));
+        mvc.perform(post(base+"/test-cases/"+caseId+"/revisions/"+revision+"/approve").with(actor(f.pm,"PM")).with(csrf())).andExpect(status().isOk());
+        var assigned=groups.create(f.project,f.pm,new FileWorkDtos.Create(document,f.cycle,f.configuration,List.of(revision),f.testerMember,0L,"real-import-assign"));
+        long group=number(map(assigned,"group"),"id"),run=number(items(assigned).getFirst(),"runItemId");
+        mvc.perform(get(base+"/file-work-groups").param("documentId",Long.toString(document)).with(actor(f.pm,"PM")))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(1)).andExpect(jsonPath("$.items[0].documentId").value(document));
+        execution.activate(f.project,f.pm,f.cycle,new ExecutionDtos.Version(version("test_cycles",f.cycle)));
+        var session=sessions.start(f.project,f.tester,group,new FileWorkDtos.Start(f.allocation,f.build,number(map(assigned,"group"),"version"),"real-import-start"));
+        var result=attempt(group,run,number(session,"id"),number(session,"version"),"OK","real-import-result");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM file_work_group_items i JOIN import_rows r ON r.id=i.import_row_id JOIN run_items run ON run.id=i.run_item_id JOIN execution_attempts a ON a.id=run.latest_attempt_id WHERE i.group_id=? AND r.batch_id=? AND r.target_case_id=run.test_case_id AND run.revision_id=? AND a.id=? AND a.result_code='OK'",Long.class,group,document,revision,number(result,"id"))).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT source_workbook FROM import_batches WHERE id=?",byte[].class,document)).isEqualTo(workbook);
+    }
+    @Test void genericRunAssignmentCannotBypassAnOpenFileSession() {
+        var detail=groups.create(f.project,f.pm,new FileWorkDtos.Create(f.document,f.cycle,f.configuration,List.of(f.revision),f.testerMember,0L,"group-assignment-guard"));
+        long group=number(map(detail,"group"),"id"),run=number(items(detail).getFirst(),"runItemId");
+        execution.activate(f.project,f.pm,f.cycle,new ExecutionDtos.Version(version("test_cycles",f.cycle)));
+        var session=sessions.start(f.project,f.tester,group,new FileWorkDtos.Start(f.allocation,f.build,number(map(detail,"group"),"version"),"group-assignment-start"));
+        assertThatThrownBy(()->execution.assign(f.project,f.pm,run,new ExecutionDtos.Assignment(f.pmMember,"Bypass active file session",version("run_items",run))))
+            .isInstanceOfSatisfying(BusinessException.class,e->assertThat(e.code()).isEqualTo("FILE_GROUP_ASSIGNMENT_REQUIRED"));
+        assertThat(jdbc.queryForObject("SELECT assignee_membership_id FROM run_items WHERE id=?",Long.class,run)).isEqualTo(f.testerMember);
+        assertThat(jdbc.queryForObject("SELECT state FROM file_work_sessions WHERE id=?",String.class,number(session,"id"))).isEqualTo("DOING");
+    }
     NativeFqFixture f;
     @BeforeEach void ownFixture()throws Exception {
         var connection=DataSourceUtils.getConnection(Objects.requireNonNull(dataSource));
         try{f=NativeFqFixture.seed(connection,false);}finally{DataSourceUtils.releaseConnection(connection,dataSource);}
     }
-    @ParameterizedTest @ValueSource(strings={"FULL_CASE","BUG_ONLY"})
-    void fileSessionBugFixRetestAndClosureKeepCanonicalHistoryAndSource(String verificationScope)throws Exception {
+    @ParameterizedTest @CsvSource({"FULL_CASE,false","BUG_ONLY,false","FULL_CASE,true","BUG_ONLY,true"})
+    void fileSessionBugFixRetestAndClosureKeepCanonicalHistoryAndSource(String verificationScope,boolean adminExecutes)throws Exception {
+        if(adminExecutes) {
+            jdbc.update("UPDATE identity_users SET role_code='ADMIN' WHERE id=?",f.pm);
+            jdbc.update("UPDATE project_memberships SET active=FALSE WHERE id=?",f.pmMember);
+        }
         var create=new FileWorkDtos.Create(f.document,f.cycle,f.configuration,List.of(f.revision),f.testerMember,0L,"file-create-0001");
         assertThat(groups.preview(f.project,f.pm,create.scope())).containsEntry("valid",true);
         var detail=groups.create(f.project,f.pm,create);long group=number(map(detail,"group"),"id");
@@ -113,12 +157,18 @@ class NativeFileWorkQaIntegrationTest {
             .andExpect(jsonPath("$.totalItems").value(1)).andExpect(jsonPath("$.items[0].id").value(requestId)).andExpect(jsonPath("$.items[0].targetId").value(bugId));
         mvc.perform(get(inbox).param("kind","RETEST").with(actor(f.dev,"DEV"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
         long before=countAttempts(run);
-        var submitted=retest.submit(f.project,f.tester,requestId,new RetestDtos.Submit(List.of(new RetestDtos.Result(coverageItem,"PASS","Verified fixed",null,version("run_items",run))),number(request,"version"),version("work_items",bugId),"native-submit-01",false,null));
+        if(adminExecutes) {
+            assertThat(retest.request(f.project,f.pm,requestId)).containsEntry("canSubmit",true);
+        }
+        var submitted=retest.submit(f.project,adminExecutes?f.pm:f.tester,requestId,new RetestDtos.Submit(List.of(new RetestDtos.Result(coverageItem,"PASS","Verified fixed",null,version("run_items",run))),number(request,"version"),version("work_items",bugId),"native-submit-01",false,null));
         assertThat(submitted).containsEntry("status","SUBMITTED");
+        assertThat(jdbc.queryForObject("SELECT verified_by FROM bug_verification_attempts WHERE project_id=? AND request_id=?",Long.class,f.project,requestId)).isEqualTo(adminExecutes?f.pmMember:f.testerMember);
+        assertThat(jdbc.queryForObject("SELECT assignee_membership_id FROM run_items WHERE id=?",Long.class,run)).isEqualTo(f.testerMember);
         mvc.perform(get(inbox).param("kind","RETEST").with(actor(f.tester,"TESTER"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
         if(verificationScope.equals("FULL_CASE")) {
             assertThat(countAttempts(run)).isEqualTo(before+1);
             assertThat(jdbc.queryForObject("SELECT result_code FROM execution_attempts WHERE project_id=? AND run_item_id=? AND build_id=?",String.class,f.project,run,f.otherBuild)).isEqualTo("OK");
+            assertThat(jdbc.queryForObject("SELECT executor_membership_id FROM execution_attempts WHERE project_id=? AND run_item_id=? AND build_id=?",Long.class,f.project,run,f.otherBuild)).isEqualTo(adminExecutes?f.pmMember:f.testerMember);
             assertThat(jdbc.queryForObject("SELECT file_work_session_id FROM execution_attempts WHERE project_id=? AND run_item_id=? AND build_id=?",Long.class,f.project,run,f.otherBuild)).isNull();
         }else{
             assertThat(countAttempts(run)).isEqualTo(before);
@@ -127,6 +177,7 @@ class NativeFileWorkQaIntegrationTest {
         var closed=retest.close(f.project,f.pm,bugId,new RetestDtos.Closure("FIXED","Coverage passed",null,null,version("work_items",bugId)));
         assertThat(closed).containsEntry("status","closed");
         assertSourceUnchanged();
+        assertDocumentResult(verificationScope.equals("FULL_CASE")?"OK":"NG",verificationScope.equals("FULL_CASE")?7L:6L);
     }
     @Test void typedQaLifecyclePinsAnswerAndConfirmationThenInvalidatesOnReopenAndReassignment() {
         var created=qa.create(f.project,f.tester,new QaDtos.Create("Question","What is expected?","MEDIUM",null,null,f.document,null,null,f.revision,"qa-create-000001"));
@@ -222,6 +273,7 @@ class NativeFileWorkQaIntegrationTest {
         assertThat(map(detail,"group")).containsEntry("environmentName","QA").containsEntry("deviceName","iPad").containsEntry("selectedBuildLabel","1");
         assertThat(groups.executionSummary(f.project,f.tester,group,f.otherBuild)).containsEntry("selectedBuildLabel","2");
         assertSourceUnchanged();
+        assertDocumentResult("FIXED",3L);
     }
     private Map<String,Object> attempt(long group,long run,long session,long sv,String result,String key){return files.record(f.project,f.tester,group,run,new FileWorkExecutionService.FileAttempt(session,sv,result,f.build,"Observed","Pending dependency","native-evidence",key,version("run_items",run)));}
     private FileWorkDtos.SessionCommand sessionCommand(Map<String,Object> session,String key){return new FileWorkDtos.SessionCommand(number(session,"version"),number(session,"groupVersion"),"Native transition",key);}
@@ -245,8 +297,10 @@ class NativeFileWorkQaIntegrationTest {
         var alternate=files.view(f.project,f.tester,group,f.otherBuild);
         assertThat(items(alternate).getFirst()).containsEntry("resultCode","NOT_RUN");
         assertSourceUnchanged();
+        assertDocumentResult("NG",6L);
     }
-    private void assertSourceUnchanged(){assertThat(jdbc.queryForObject("SELECT source_workbook FROM import_batches WHERE id=?",byte[].class,f.document)).isEqualTo(f.source);assertThat(jdbc.queryForMap("SELECT result_status,result_version FROM import_rows WHERE id=?",f.row)).containsEntry("result_status","FIXED").containsEntry("result_version",3L);}
+    private void assertSourceUnchanged(){assertThat(jdbc.queryForObject("SELECT source_workbook FROM import_batches WHERE id=?",byte[].class,f.document)).isEqualTo(f.source);}
+    private void assertDocumentResult(String result,long version){assertThat(jdbc.queryForMap("SELECT result_status,result_version FROM import_rows WHERE id=?",f.row)).containsEntry("result_status",result).containsEntry("result_version",version);}
     private long version(String table,long id){if(!Set.of("test_cycles","run_items","work_items").contains(table))throw new IllegalArgumentException("Unknown version table");return Objects.requireNonNull(jdbc.queryForObject("SELECT lock_version FROM "+table+" WHERE id=?",Long.class,id));}
     private long countAttempts(long run){return Objects.requireNonNull(jdbc.queryForObject("SELECT COUNT(*) FROM execution_attempts WHERE project_id=? AND run_item_id=?",Long.class,f.project,run));}
     @SuppressWarnings("unchecked")private static Map<String,Object> map(Map<String,Object> value,String key){return (Map<String,Object>)value.get(key);}

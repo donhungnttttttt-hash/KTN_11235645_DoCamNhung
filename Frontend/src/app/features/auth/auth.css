@@ -19,6 +19,9 @@
 .auth-page button:focus-visible, .account-menu button:focus-visible { outline: 2px solid #148e7d; outline-offset: 3px; }
 .auth-help { font-size: var(--text-table); line-height: 1.8; text-align: center; color: #64748b; border-top: 1px solid #edf0f3; margin-top: 24px; padding-top: 19px; }
 .auth-footer { margin-top: 24px; color: #94a3b8; font-size: var(--text-caption); }
+.auth-footer { color:#64748b; }
+.account-popover { max-width:calc(100vw - 24px); max-height:calc(100dvh - 72px); overflow-y:auto; overflow-wrap:anywhere; }
+@media(max-width:640px) { .auth-password button { width:44px; top:0; bottom:0; }.auth-password input { min-height:44px; padding-right:52px; }.account-trigger { min-width:44px; min-height:44px; } }
 .auth-error { padding: 10px 12px; background: #fff2f2; border: 1px solid #fecaca; border-radius: 4px; color: #b42332; font-size: var(--text-table); line-height: 1.6; margin-top: 12px; }
 .auth-wait { display: grid; justify-items: center; gap: 15px; padding: 25px 0; font-size: var(--text-body); color: #64748b; }
 .auth-spin { animation: auth-spin 1s linear infinite; }

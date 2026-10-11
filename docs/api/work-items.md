@@ -2,7 +2,7 @@
 
 Contract máy đọc: [work-items.openapi.json](work-items.openapi.json), được tham chiếu từ [openapi.yaml](openapi.yaml). Policy: [defect-lifecycle](../business/defect-lifecycle.md), [ADR-006](../decisions/ADR-006-internal-work-items.md).
 
-Base: `/api/v1/projects/{projectId}/work-items`. Cookie session cùng origin; mọi mutation cần CSRF từ `/api/v1/auth/csrf`. Actor lấy từ session. Global ADMIN không tự có quyền project PM. 404 khi ngoài dự án, 403 khi thiếu quyền thao tác, 409 khi version/request key xung đột, 422 khi rule không hợp lệ. Tất cả datetime trả UTC ISO với `Z`.
+Base: `/api/v1/projects/{projectId}/work-items`. Cookie session cùng origin; mọi mutation cần CSRF từ `/api/v1/auth/csrf`. Actor lấy từ session. Theo quyết định 10/10/2026, global ADMIN có toàn quyền nghiệp vụ không cần membership, bao gồm thao tác PM/Tester/Dev. Metadata trả canCreate/canTriage và capability tương ứng; membershipId=0 trước lần ghi đầu không có nghĩa chỉ xem. 404 khi ngoài dự án, 403 khi thiếu quyền thao tác, 409 khi version/request key xung đột, 422 khi rule không hợp lệ. Tất cả datetime trả UTC ISO với `Z`.
 
 ## QA riêng — cập nhật 06/10/2026
 
@@ -55,7 +55,7 @@ Payload cũ không có formatVersion vẫn được trả nguyên trạng; khôn
 
 ## Kết thúc công việc thường — 08/10/2026
 
-Áp dụng đúng ba loại `TASK`, `REQUEST`, `IMPROVEMENT`, theo quyết định người dùng giao lựa chọn quy tắc tốt nhất cho khách hàng. Chỉ PM hiện hành của chính dự án được kết thúc hoặc mở lại; ADMIN ngoài membership, Tester và Dev không được dùng quyền này. Dự án đã lưu trữ không nhận lệnh ghi.
+Áp dụng đúng ba loại `TASK`, `REQUEST`, `IMPROVEMENT`, theo quyết định người dùng giao lựa chọn quy tắc tốt nhất cho khách hàng. PM hiện hành của chính dự án hoặc ADMIN toàn hệ thống được kết thúc/mở lại; Tester và Dev không được dùng quyền này. Dự án đã lưu trữ không nhận lệnh ghi.
 
 - Từ trạng thái chưa kết thúc, PM được chuyển sang `closed` (Hoàn thành) hoặc `wontfix` (Không xử lý). Không tự hoàn tất theo phần trăm, không dùng `unreproducible` và không nhận `fixedBuildId` cho ba loại này.
 - Khi đã kết thúc, chỉ chuyển về `open` (Chưa xử lý) để mở lại. Cần mở lại trước khi PUT sửa nội dung, phân loại hoặc phân công. Không đổi trực tiếp từ trạng thái đã kết thúc sang trạng thái trung gian/kết thúc khác.

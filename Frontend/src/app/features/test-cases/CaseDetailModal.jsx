@@ -4,6 +4,7 @@ import { X, CheckCircle2, Clock, History, Plus, FileText, Check } from 'lucide-r
 import { testCasesApi } from '../../services/api/testCases';
 import { useAuth } from '../auth/AuthProvider';
 import { useProject } from '../projects/ProjectProvider';
+import { isProjectObserver, isProjectDeveloper, canManageProjectWork } from '../projects/projectAccess';
 
 export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
   return <CaseDetailContent key={`${projectId}:${caseId}`} projectId={projectId} caseId={caseId} onClose={onClose} onUpdated={onUpdated}/>;
@@ -12,13 +13,15 @@ export function CaseDetailModal({ projectId, caseId, onClose, onUpdated }) {
 function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
   const { hasRole } = useAuth();
   const { currentProject } = useProject() || {};
-  const canApprove = currentProject?.id === projectId && currentProject.projectRole === 'PM';
-  const canEdit = canApprove || (currentProject?.id === projectId && hasRole?.('ADMIN'));
+  const writable = currentProject?.id === projectId && !currentProject.archived && !isProjectObserver(currentProject,hasRole) && !isProjectDeveloper(currentProject,hasRole);
+  const canApprove = writable && canManageProjectWork(currentProject,hasRole);
+  const canEdit = writable && (canApprove || hasRole?.('ADMIN'));
   const [selectedRevision, setSelectedRevision] = useState(null);
 
   const [caseData, setCaseData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [readError, setReadError] = useState('');
+  const [actionError, setActionError] = useState('');
   const [activeTab, setActiveTab] = useState('vi'); // 'vi' or 'jp'
   const [showAddRev, setShowAddRev] = useState(false);
   const [newRev, setNewRev] = useState({
@@ -44,7 +47,7 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
   const loadCase = async () => {
     const request = ++requestSequence.current;
     setLoading(true);
-    setError('');
+    setReadError('');
     try {
       const data = await testCasesApi.getCase(projectId, caseId);
       if (request !== requestSequence.current) return;
@@ -64,21 +67,23 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
         });
       }
     } catch (err) {
-      if (request === requestSequence.current) setError(err.message || 'Không thể tải chi tiết test case');
+      if (request === requestSequence.current) setReadError(err.message || 'Không thể tải chi tiết test case');
     } finally {
       if (request === requestSequence.current) setLoading(false);
     }
   };
 
   const handleApprove = async (revisionId) => {
+    if (submitting || readError) return;
     setSubmitting(true);
+    setActionError('');
     try {
       await testCasesApi.approveRevision(projectId, caseId, revisionId);
       setPendingApprovalId(null);
       await loadCase();
       if (onUpdated) onUpdated();
     } catch (err) {
-      setError('Lỗi phê duyệt: ' + err.message);
+      setActionError('Lỗi phê duyệt: ' + err.message);
     } finally {
       setSubmitting(false);
     }
@@ -86,16 +91,16 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
 
   const handleAddRevision = async (e) => {
     e.preventDefault();
-    if (submitting) return;
+    if (submitting || readError) return;
     setSubmitting(true);
-    setError('');
+    setActionError('');
     try {
       await testCasesApi.addRevision(projectId, caseId, {...newRev, expectedCurrentRevisionId:caseData.currentRevisionId});
       setShowAddRev(false);
       await loadCase();
       if (onUpdated) onUpdated();
     } catch (err) {
-      setError(err.message || 'Không thể tạo phiên bản mới');
+      setActionError(err.message || 'Không thể tạo phiên bản mới');
     } finally {
       setSubmitting(false);
     }
@@ -127,9 +132,8 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
         </div>
 
         <div className="tc-modal-body space-y-4">
-          {error && <div role="alert" className="p-3 bg-red-50 text-red-700 text-xs rounded border border-red-200">{error}
-            {!loading && !caseData && <button type="button" className="cat-btn ml-2" disabled={submitting} onClick={loadCase}>Thử lại</button>}
-          </div>}
+          {readError && <div role="alert" className="p-3 bg-red-50 text-red-700 text-xs rounded border border-red-200">{readError} <button type="button" className="cat-btn ml-2" disabled={loading || submitting} onClick={loadCase}>Thử lại</button></div>}
+          {actionError && <div role="alert" className="p-3 bg-red-50 text-red-700 text-xs rounded border border-red-200">{actionError}</div>}
 
           {loading ? <p role="status" className="p-4 text-center text-slate-500">Đang tải chi tiết test case...</p> : caseData && (!showAddRev ? (
             <>
@@ -156,7 +160,7 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
                   {canApprove && cur && !cur.approved && (
                     <button
                       onClick={() => setPendingApprovalId(cur.id)}
-                      disabled={submitting}
+                      disabled={submitting || !!readError}
                       className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-medium flex items-center gap-1"
                     >
                       <Check size={14} /> Phê duyệt bản này
@@ -165,7 +169,7 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
                   {canEdit && (
                     <button
                       onClick={() => setShowAddRev(true)}
-                      disabled={submitting}
+                      disabled={submitting || !!readError}
                       className="px-3 py-1 bg-slate-800 hover:bg-slate-900 text-white rounded text-xs font-medium flex items-center gap-1"
                     >
                       <Plus size={14} /> Thêm phiên bản
@@ -178,7 +182,7 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
               {pendingApprovalId && <div role="alertdialog" aria-label="Xác nhận phê duyệt" className="p-3 border border-teal-300 rounded bg-teal-50 text-sm">
                 <p>Phê duyệt phiên bản này để có thể đưa vào đợt kiểm thử? Nội dung đã lưu được giữ nguyên.</p>
                 <div className="flex gap-2 mt-2">
-                  <button disabled={submitting} className="cat-btn cat-btn-mint" onClick={()=>handleApprove(pendingApprovalId)}>Xác nhận phê duyệt</button>
+                   <button disabled={submitting || !!readError} className="cat-btn cat-btn-mint" onClick={()=>handleApprove(pendingApprovalId)}>Xác nhận phê duyệt</button>
                   <button disabled={submitting} className="cat-btn" onClick={()=>setPendingApprovalId(null)}>Hủy phê duyệt</button>
                 </div>
               </div>}
@@ -239,10 +243,10 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
                   {caseData?.revisions?.map(r => (
                     <div key={r.id} className="flex flex-wrap gap-2 items-center justify-between text-xs py-1.5 px-3 bg-white border border-slate-200 rounded">
                       <div className="flex flex-wrap min-w-0 items-center gap-2">
-                        <button disabled={submitting} className="cat-link font-bold" onClick={async () => {
-                          setSubmitting(true); setError('');
+                         <button disabled={submitting || !!readError} className="cat-link font-bold" onClick={async () => {
+                           setSubmitting(true); setActionError('');
                           try { setSelectedRevision(await testCasesApi.getRevision(projectId,caseId,r.id)); }
-                          catch (err) { setError(err.message); } finally { setSubmitting(false); }
+                           catch (err) { setActionError(err.message); } finally { setSubmitting(false); }
                         }}>Xem phiên bản {r.revisionNo}</button>
                         <span title={r.titleVi} className="text-slate-600 break-words">{r.titleVi}</span>
                       </div>
@@ -355,4 +359,3 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
     </div>
   );
 }
-

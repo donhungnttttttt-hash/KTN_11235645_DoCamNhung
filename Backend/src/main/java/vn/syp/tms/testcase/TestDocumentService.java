@@ -31,7 +31,7 @@ public class TestDocumentService {
                 WHERE ir.project_id=b.project_id AND ir.batch_id=b.id AND r.created_at>b.committed_at),b.committed_at,b.created_at) updated_at,
             COALESCE((SELECT u.display_name FROM import_rows ir JOIN test_cases c ON c.project_id=ir.project_id AND c.id=ir.target_case_id
                 JOIN test_case_revisions r ON r.project_id=c.project_id AND r.id=c.current_revision_id
-                JOIN project_memberships m ON m.project_id=r.project_id AND m.id=r.created_by JOIN identity_users u ON u.id=m.user_id
+                LEFT JOIN project_memberships m ON m.project_id=r.project_id AND m.id=r.created_by JOIN identity_users u ON u.id=COALESCE(r.created_by_user_id,m.user_id)
                 WHERE ir.project_id=b.project_id AND ir.batch_id=b.id AND r.created_at>b.committed_at ORDER BY r.created_at DESC,r.id DESC LIMIT 1),actor.display_name) updated_by,
             (b.source_workbook IS NOT NULL) has_source_file,
             (SELECT COUNT(*) FROM import_rows ir WHERE ir.project_id=b.project_id AND ir.batch_id=b.id AND ir.target_case_id IS NOT NULL) case_count
@@ -111,8 +111,16 @@ public class TestDocumentService {
             return new TestDocumentDtos.Download(summary.fileName(),source);
         }
         var detail=detail(summary,source);
-        byte[] result=DocumentWorkbook.export(source,summary.sheetName(),detail.headers(),detail.rows().stream()
-                .map(row->new DocumentWorkbook.RowCells(row.rowNumber(),row.cells())).toList());
+        List<String> exportHeaders=new ArrayList<>(detail.headers());
+        if(!detail.secondTests().isEmpty())exportHeaders.addAll(List.of("Người test lần 2","Ghi chú 2","Đợt test lần 2","Kết quả lần 2"));
+        byte[] result=DocumentWorkbook.export(source,summary.sheetName(),exportHeaders,detail.rows().stream().map(row->{
+            List<String> cells=new ArrayList<>(row.cells());
+            if(!detail.secondTests().isEmpty()) {
+                var assignment=detail.secondTests().stream().filter(t->((Number)t.get("rowId")).longValue()==row.rowId()).findFirst().orElse(Map.of());
+                for(String key:List.of("assigneeName","note","cycleName","resultCode"))cells.add(String.valueOf(assignment.getOrDefault(key,"")));
+            }
+            return new DocumentWorkbook.RowCells(row.rowNumber(),cells);
+        }).toList());
         return new TestDocumentDtos.Download(summary.fileName(),result);
     }
 
@@ -149,6 +157,10 @@ public class TestDocumentService {
                     counts.computeIfAbsent(rs.getLong("batch_id"),key->new LinkedHashMap<>()).merge(outcome(CustomerWorkbook.cell(data.sourceCells(),columns,"result")),1L,(a,b)->a+b);
             }
         },args.toArray());
+        jdbc.query("SELECT ir.batch_id,a.occurred_at,u.display_name FROM project_audit a JOIN import_rows ir ON ir.project_id=a.project_id AND ir.id=a.entity_id JOIN identity_users u ON u.id=a.actor_id WHERE a.project_id=? AND ir.batch_id IN ("+placeholders+") AND a.entity_type IN ('TEST_DOCUMENT_CELL','TEST_DOCUMENT_RETEST') ORDER BY a.id",(org.springframework.jdbc.core.RowCallbackHandler)rs->{
+            long batch=rs.getLong(1);var at=rs.getTimestamp(2).toInstant();
+            if(updated.get(batch)==null || at.isAfter(updated.get(batch))){updated.put(batch,at);actors.put(batch,rs.getString(3));}
+        },args.toArray());
         return items.stream().map(s->{
             boolean newer=updated.containsKey(s.id()) && updated.get(s.id()).isAfter(s.updatedAt());
             return new TestDocumentDtos.Summary(s.id(),s.projectId(),s.fileName(),s.sheetName(),s.format(),s.totalRows(),s.caseCount(),s.createdAt(),newer?updated.get(s.id()):s.updatedAt(),newer?actors.get(s.id()):s.updatedBy(),s.hasSourceFile(),counts.getOrDefault(s.id(),Map.of()),results.getOrDefault(s.id(),Map.of()));
@@ -170,6 +182,12 @@ public class TestDocumentService {
         boolean customer=TestCaseWorkbook.CUSTOMER.equals(summary.format());
         List<String> headers=headers(source,summary.sheetName(),customer);
         var columns=customer?CustomerWorkbook.columns(headers):Map.of("sourceId",0);
+        Map<Long,Map<Integer,String>> edits=new HashMap<>();
+        Map<Long,Map<Integer,Long>> versions=new HashMap<>();
+        jdbc.query("SELECT e.row_id,e.column_index,e.cell_value,e.lock_version FROM test_document_cell_edits e JOIN import_rows ir ON ir.project_id=e.project_id AND ir.id=e.row_id WHERE ir.project_id=? AND ir.batch_id=?",(org.springframework.jdbc.core.RowCallbackHandler)rs->{
+            edits.computeIfAbsent(rs.getLong(1),key->new HashMap<>()).put(rs.getInt(2),rs.getString(3));
+            versions.computeIfAbsent(rs.getLong(1),key->new HashMap<>()).put(rs.getInt(2),rs.getLong(4));
+        },summary.projectId(),summary.id());
         var rows=jdbc.query("""
             SELECT ir.id row_id,ir.result_status,ir.result_version,ir.result_updated_at,u.display_name result_updated_by,
                 ir.source_row_number,ir.source_case_key,ir.suite_code,ir.raw_data_json,c.id case_id,c.case_no,c.current_revision_id,
@@ -193,12 +211,31 @@ public class TestDocumentService {
                 for(int i=0;i<fields.length;i++) cells.set(i+2,text(rs,fields[i]));
             }
             if(columns.containsKey("result")) cells.set(columns.get("result"),resultLabel(rs.getString("result_status")));
+            for(var edit:edits.getOrDefault(rs.getLong("row_id"),Map.of()).entrySet()) {
+                if(edit.getKey()<cells.size())cells.set(edit.getKey(),edit.getValue());
+            }
             var updatedAt=rs.getTimestamp("result_updated_at");
             return new TestDocumentDtos.Row(rs.getInt("source_row_number"),rs.getString("source_case_key"),rs.getLong("case_id"),rs.getString("case_no"),rs.getLong("current_revision_id"),
                     rs.getTimestamp("approved_at")!=null,rs.getTimestamp("archived_at")!=null,List.copyOf(cells),List.copyOf(original),
                     rs.getLong("row_id"),rs.getString("result_status"),rs.getLong("result_version"),updatedAt==null?null:updatedAt.toInstant(),rs.getString("result_updated_by"));
         },summary.projectId(),summary.id());
-        return new TestDocumentDtos.Detail(summary,headers,rows,columns);
+        var secondTests=jdbc.queryForList("""
+            SELECT t.row_id AS rowId,t.run_item_id AS runItemId,t.note,t.lock_version AS version,
+                r.lock_version AS runVersion,r.cycle_id AS cycleId,r.configuration_id AS configurationId,
+                r.assignee_membership_id AS assigneeMembershipId,u.display_name AS assigneeName,
+                c.name AS cycleName,c.status_code AS cycleStatus,c.lock_version AS cycleVersion,
+                e.name AS environmentName,d.name AS deviceName,COALESCE(a.result_code,'NOT_RUN') AS resultCode
+            FROM test_document_retests t JOIN import_rows ir ON ir.project_id=t.project_id AND ir.id=t.row_id
+            JOIN run_items r ON r.project_id=t.project_id AND r.id=t.run_item_id
+            JOIN project_memberships m ON m.project_id=r.project_id AND m.id=r.assignee_membership_id
+            JOIN identity_users u ON u.id=m.user_id JOIN test_cycles c ON c.project_id=r.project_id AND c.id=r.cycle_id
+            JOIN cycle_configurations cf ON cf.project_id=r.project_id AND cf.id=r.configuration_id
+            JOIN environments e ON e.project_id=cf.project_id AND e.id=cf.environment_id
+            JOIN devices d ON d.project_id=cf.project_id AND d.id=cf.device_id
+            LEFT JOIN execution_attempts a ON a.project_id=r.project_id AND a.id=r.latest_attempt_id
+            WHERE ir.project_id=? AND ir.batch_id=? ORDER BY ir.source_row_number
+            """,summary.projectId(),summary.id());
+        return new TestDocumentDtos.Detail(summary,headers,rows,columns,versions,secondTests);
     }
     private byte[] source(Long projectId,Long id) {
         var values=jdbc.query("SELECT source_workbook FROM import_batches WHERE project_id=? AND id=? AND status='COMMITTED'",(rs,n)->rs.getBytes(1),projectId,id);

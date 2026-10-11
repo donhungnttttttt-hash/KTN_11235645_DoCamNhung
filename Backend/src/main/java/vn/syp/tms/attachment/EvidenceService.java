@@ -31,7 +31,6 @@ public class EvidenceService {
     public Map<String,Object> upload(long p,String actor,long workId,MultipartFile file) {
         var writer=writer(p,actor,workId);
         if(file.getSize()>EvidenceContent.MAX_BYTES) fail(413,"FILE_TOO_LARGE","Chứng cứ tối đa 20 MiB mỗi tệp.");
-        if(db.count("SELECT COUNT(*) FROM work_item_attachments WHERE project_id=? AND work_item_id=?",p,workId)>=100) fail(422,"ATTACHMENT_LIMIT","Tối đa 100 chứng cứ trên một công việc.");
         byte[] bytes;
         try(var input=file.getInputStream()) { bytes=input.readNBytes(EvidenceContent.MAX_BYTES+1); }
         catch(IOException e) { throw unavailable(); }
@@ -39,6 +38,7 @@ public class EvidenceService {
         String digest=sha256(bytes);
         var duplicate=db.rows("SELECT id,original_name AS name,media_type AS mediaType,byte_size AS size FROM work_item_attachments WHERE project_id=? AND work_item_id=? AND uploaded_by=? AND sha256=? AND original_name=? FOR UPDATE",p,workId,writer.membershipId(),digest,name);
         if(!duplicate.isEmpty()) return duplicate.getFirst();
+        if(db.count("SELECT COUNT(*) FROM work_item_attachments WHERE project_id=? AND work_item_id=?",p,workId)>=100) fail(422,"ATTACHMENT_LIMIT","Tối đa 100 chứng cứ trên một công việc.");
         String id=UUID.randomUUID().toString(); Path target=file(id);
         Path temporary=null;
         try {

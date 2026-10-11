@@ -150,7 +150,9 @@ public class ExecutionService {
     }
 
     public Map<String,Object> assign(long p,String actor,long id,ExecutionDtos.Assignment input) {
-        projects.lockWritableProject(p,actor); var r=run(p,actor,id); version(r,input.expectedVersion());
+        projects.lockWritableProject(p,actor); var r=run(p,actor,id);
+        if(r.get("fileWorkGroupId")!=null) fail(409,"FILE_GROUP_ASSIGNMENT_REQUIRED","Lượt này thuộc công việc theo file. Giao lại toàn bộ file trong chi tiết công việc theo file.");
+        version(r,input.expectedVersion());
         if("CLOSED".equals(cycle(p,actor,num(r,"cycleId")).get("statusCode"))) fail(409,"CYCLE_CLOSED","Không thay đổi phân công trong đợt đã chốt.");
         eligibleMember(p,input.assigneeMembershipId());
         if(num(r,"assigneeMembershipId")==input.assigneeMembershipId()) return r;
@@ -193,10 +195,10 @@ public class ExecutionService {
             JOIN work_items w ON w.project_id=q.project_id AND w.id=q.work_item_id
             JOIN bug_details b ON b.project_id=w.project_id AND b.work_item_id=w.id
             WHERE q.project_id=? AND q.id=? AND i.coverage_item_id=? AND i.run_item_id=?
-            AND q.verification_scope='FULL_CASE' AND q.status='OPEN' AND q.assignee_membership_id=? AND q.build_id=?
+            AND q.verification_scope='FULL_CASE' AND q.status='OPEN' AND (? OR q.assignee_membership_id=?) AND q.build_id=?
             AND s.current_coverage_id=q.coverage_revision_id AND s.round_no=q.round_no
             AND w.status_code='resolved' AND b.fixed_build_id=q.build_id FOR UPDATE
-            """,p,requestId,coverageItemId,id,executor,input.buildId());
+            """,p,requestId,coverageItemId,id,projects.isGlobalAdmin(actor),executor,input.buildId());
         return recordCanonical(p,actor,id,input,"RETEST_FULL_CASE",null,List.of(requestId,coverageItemId));
     }
 
@@ -210,8 +212,8 @@ public class ExecutionService {
         // Group authority must be checked even for a historical request key.
         var r=run(p,actor,id);
         if("LEGACY".equals(origin) && r.get("fileWorkGroupId")!=null) fail(409,"FILE_SESSION_REQUIRED","Run thuộc file cần phiên thực thi đang DOING.");
-        if(num(r,"assigneeMembershipId")!=executor) fail(403,"NOT_ASSIGNED","Chỉ người được phân công mới được ghi kết quả.");
-        eligibleMember(p,executor);
+        if(!projects.isGlobalAdmin(actor) && num(r,"assigneeMembershipId")!=executor) fail(403,"NOT_ASSIGNED","Chỉ người được phân công mới được ghi kết quả.");
+        if(!projects.isGlobalAdmin(actor)) eligibleMember(p,executor);
         if(!"ACTIVE".equals(cycle(p,actor,num(r,"cycleId")).get("statusCode"))) fail(409,"CYCLE_NOT_ACTIVE","Chỉ ghi kết quả trong đợt đang thực hiện.");
         approved(p,num(r,"revisionId"));
         if(Boolean.TRUE.equals(r.get("excluded"))) fail(409,"RUN_EXCLUDED","Lượt kiểm thử đã được PM loại khỏi phạm vi (NA).");
@@ -235,8 +237,27 @@ public class ExecutionService {
         int next=(int)count("SELECT COALESCE(MAX(attempt_no),0)+1 FROM execution_attempts WHERE project_id=? AND run_item_id=?",p,id);
         long attempt=insert("INSERT INTO execution_attempts(project_id,run_item_id,attempt_no,result_code,build_id,executor_membership_id,executed_at,actual_result,reason,evidence_reference,context_snapshot,request_key,request_checksum,file_work_session_id) VALUES(?,?,?,?,?,?,UTC_TIMESTAMP(6),?,?,?,?,?,?,?)",p,id,next,input.resultCode(),input.buildId(),executor,text(input.actualResult()),text(input.reason()),text(input.evidenceReference()),encode(snapshot),input.requestKey(),checksum,file==null?null:num(file.session(),"id"));
         db.update("UPDATE run_items SET latest_attempt_id=?,lock_version=lock_version+1 WHERE project_id=? AND id=?",attempt,p,id);
+        updateDocumentResults(p,actor,num(r,"testCaseId"),input.resultCode());
         audit.record(p,actor,"EXECUTION_ATTEMPT",attempt,"CREATE");
         return row(ATTEMPT+" WHERE a.project_id=? AND a.id=?",p,attempt);
+    }
+
+    /** The newest recorded execution updates document results; manual edits never write back to runs. */
+    private void updateDocumentResults(long p,String actor,long caseId,String result) {
+        var imported=db.queryForList("""
+            SELECT ir.id,ir.result_status FROM import_rows ir
+            JOIN import_batches b ON b.project_id=ir.project_id AND b.id=ir.batch_id
+            WHERE ir.project_id=? AND ir.target_case_id=? AND b.status='COMMITTED'
+            ORDER BY ir.id FOR UPDATE
+            """,p,caseId);
+        for(var importedRow:imported) {
+            long rowId=num(importedRow,"id");
+            db.update("""
+                UPDATE import_rows SET result_status=?,result_version=result_version+1,result_updated_at=UTC_TIMESTAMP(6),
+                    result_updated_by=?,result_request_key=NULL WHERE project_id=? AND id=?
+                """,result,actor,p,rowId);
+            audit.record(p,actor,"TEST_DOCUMENT_ROW",rowId,"RESULT_"+importedRow.get("result_status")+"_"+result);
+        }
     }
 
     @Transactional(readOnly=true)
@@ -260,7 +281,7 @@ public class ExecutionService {
     private void eligibleMember(long p,long id) {
         row("SELECT m.id FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.id=? AND m.active=TRUE AND u.enabled=TRUE AND u.role_code<>'DEV' AND m.project_role IN ('PM','TESTER')",p,id);
     }
-    private long member(long p,String actor) { return num(row("SELECT id FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE",p,actor),"id"); }
+    private long member(long p,String actor) { return projects.actorMembershipId(p,actor); }
     private void assignmentHistory(long p,long run,Long old,long assignee,long actor,String reason) {
         db.update("INSERT INTO run_item_assignments(project_id,run_item_id,previous_membership_id,assignee_membership_id,assigned_by,reason,assigned_at) VALUES(?,?,?,?,?,?,UTC_TIMESTAMP(6))",p,run,old,assignee,actor,reason);
     }

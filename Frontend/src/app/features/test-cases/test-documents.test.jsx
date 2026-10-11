@@ -32,11 +32,27 @@ it('lets Dev read document results but disables result changes',async()=>{
   render(<TestDocumentPage documentId="9" navigate={vi.fn()}/>);
   const result=await screen.findByRole('button',{name:/Kết quả.*1/i});
   expect(result).toBeDisabled();
+  expect(result).not.toHaveAttribute('title',expect.stringContaining('→'));
 });
-it('shows existing documents to an admin observer without offering import',async()=>{
+it('keeps pagination and font controls above the scrolling grid and hides empty source columns',async()=>{
+  testCasesApi.getDocument.mockResolvedValue({...detail,headers:[...headers,'',''],rows:[{...detail.rows[0],cells:[...cells,'','']}]});
+  render(<TestDocumentPage documentId="9" navigate={vi.fn()}/>);
+  const size=await screen.findByRole('combobox',{name:'Số dòng mỗi trang'});
+  expect(size.closest('.td-sheet-toolbar')).not.toBeNull();
+  expect(screen.getByRole('slider',{name:'Cỡ chữ bảng'}).closest('.td-sheet-toolbar')).not.toBeNull();
+  expect(screen.queryByRole('columnheader',{name:/Cột P/})).not.toBeInTheDocument();
+  expect(screen.getByRole('columnheader',{name:/Cột N/})).toBeVisible();
+});
+it('lets a global admin import without a project membership',async()=>{
   state.role='ADMIN';state.currentProject.projectRole=null;
   render(<TestDocumentsPage navigate={vi.fn()}/>);
   expect(await screen.findByText(doc.fileName)).toBeVisible();
+  expect(screen.getByRole('button',{name:'Nhập Excel'})).toBeEnabled();
+});
+it('does not offer import on an archived project, even for admin',async()=>{
+  state.role='ADMIN';state.currentProject={...state.currentProject,projectRole:null,archived:true};
+  render(<TestDocumentsPage navigate={vi.fn()}/>);
+  await screen.findByText(doc.fileName);
   expect(screen.queryByRole('button',{name:'Nhập Excel'})).not.toBeInTheDocument();
 });
 

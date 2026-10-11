@@ -23,7 +23,7 @@ public class QaService {
     public QaService(WorkItemStore db, FileWorkGuard identity, ProjectAudit audit, ObjectMapper json) {
         this.db=db;this.identity=identity;this.audit=audit;this.json=json;
     }
-    public record Actor(long membershipId, boolean pm, boolean tester, boolean dev, boolean archived) {}
+    public record Actor(long membershipId, boolean pm, boolean tester, boolean dev, boolean archived, boolean admin) {}
     public record Writer(Actor actor, Map<String,Object> item) {}
     private record Context(Long documentId,Long groupId,Long runItemId,Long testCaseId,Long revisionId,Map<String,Object> snapshot) {}
     private record Intent(Long version,String key,String reason,String body,String basis,Long assignee,
@@ -73,14 +73,15 @@ public class QaService {
         positive(p);
         var account=identity.lockIdentity(user);
         var project=db.row("SELECT id,code,archived_at AS archivedAt FROM projects WHERE id=? FOR UPDATE",p);
-        // Membership ID 0 is a read-only observer, never a persisted/assignable member.
-        if(!write && "ADMIN".equals(account.getRole()) && db.rows(
-            "SELECT id FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",p,user).isEmpty())
-            return new Actor(0,false,false,false,project.get("archivedAt")!=null);
+        if("ADMIN".equals(account.getRole())) {
+            boolean archived=project.get("archivedAt")!=null;
+            if(write && archived)fail(409,"ARCHIVED","Dự án đã lưu trữ.");
+            return new Actor(identity.adminActor(p,user,write),true,true,false,archived,true);
+        }
         var member=db.row("SELECT id,project_role AS projectRole FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",p,user);
         boolean globalDev="DEV".equals(account.getRole());
         var actor=new Actor(number(member,"id"),!globalDev&&"PM".equals(member.get("projectRole")),
-            !globalDev&&"TESTER".equals(member.get("projectRole")),globalDev&&"DEV".equals(member.get("projectRole")),project.get("archivedAt")!=null);
+            !globalDev&&"TESTER".equals(member.get("projectRole")),globalDev&&"DEV".equals(member.get("projectRole")),project.get("archivedAt")!=null,false);
         if(write&&actor.archived())fail(409,"ARCHIVED","Dự án đã lưu trữ.");
         return actor;
     }
@@ -99,8 +100,8 @@ public class QaService {
     public static String statusLabel(String status) {return LABELS.get(status);}
     public static Capabilities capabilities(Actor actor,Map<String,Object> item,boolean contextUsable) {
         boolean active=!actor.archived()&&ACTIVE.contains(item.get("status")),usable=active&&contextUsable;
-        boolean assigned=actor.dev()&&Objects.equals(item.get("assigneeMembershipId"),actor.membershipId());
-        boolean creator=Objects.equals(item.get("createdBy"),actor.membershipId());
+        boolean assigned=actor.admin() || actor.dev()&&Objects.equals(item.get("assigneeMembershipId"),actor.membershipId());
+        boolean creator=actor.admin() || Objects.equals(item.get("createdBy"),actor.membershipId());
         String state=String.valueOf(item.get("status"));
         return new Capabilities(usable&&actor.pm(),usable&&assigned&&Set.of("open","clarify").contains(state),
             usable&&assigned&&Set.of("open","progress").contains(state),
@@ -227,6 +228,7 @@ public class QaService {
         return result;
     }
     private void authorizeAction(Actor actor,Map<String,Object> item,String action) {
+        if(actor.admin())return;
         if(Set.of("ASSIGN","CLOSE","REOPEN").contains(action)) {
             if(!actor.pm())fail(403,"FORBIDDEN","Chỉ PM hiện hành của dự án được thực hiện lệnh này.");
         } else if(Set.of("START","REQUEST_INFO","ANSWER").contains(action)) {

@@ -1,4 +1,4 @@
-import React,{useCallback,useEffect,useId,useState} from 'react';
+import React,{useCallback,useEffect,useState} from 'react';
 import {useAdminRead,ReadState} from './shared';
 import {AdminProjectDropdown} from './AdminProjectDropdown';
 
@@ -11,7 +11,6 @@ export function AdminUserProjectFilter({api,value,onChange,label="Dự án của
   const timer=setTimeout(()=>{setKeyword(search.trim());setPage(0);},250);
   return()=>clearTimeout(timer);
  },[search,keyword]);
- const descriptionId=useId();
  const load=useCallback(signal=>api.projects({page,size:100,...(keyword?{keyword}:{})},{signal}),[api,page,keyword]);
  const state=useAdminRead(`user-project-picker:${page}:${keyword}`,load);
  const listed=state.data?.items.find(p=>String(p.id)===String(value));
@@ -31,12 +30,11 @@ export function AdminUserProjectFilter({api,value,onChange,label="Dự án của
   {searchable?<AdminProjectDropdown label={label} emptyLabel={emptyLabel} value={value} selectedLabel={selectedLabel}
    onChange={choose} search={search} onSearch={setSearch} state={state} pendingSearch={search.trim()!==keyword} pages={pages}
    onReset={()=>{setSearch('');setKeyword('');setPage(0);}}/>:
-  <label className="ui-field">{label}<select value={value} onChange={event=>choose(event.target.value)} title={value?selectedLabel:emptyLabel} aria-describedby={value?descriptionId:undefined}>
+  <label className="ui-field">{label}<select value={value} onChange={event=>choose(event.target.value)} title={value?selectedLabel:emptyLabel}>
    <option value="">{emptyLabel}</option>
    {value&&!listed&&<option value={value}>{selectedLabel}</option>}
    {state.data?.items.map(p=><option key={p.id} value={p.id}>{p.code} · {p.name}</option>)}
   </select></label>}
-  {value&&<p id={descriptionId} className="admin-picker-selected">Đã chọn: <strong>{selectedLabel}</strong></p>}
   {!searchable&&<><ReadState {...state}/>{pages}</>}
  </div>;
 }

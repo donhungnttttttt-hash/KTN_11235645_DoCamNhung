@@ -96,12 +96,12 @@ describe('grouped legacy runner navigation', () => {
     expect(navigate).toHaveBeenCalledWith('/tests/file-work/60');
   });
 
-  it('preserves PM assignment and scope decisions for a grouped run', async () => {
-    state.currentProject.projectRole = 'PM'; const user = userEvent.setup();
-    render(<ExecutionRunnerPage cycleId={8} navigate={vi.fn()} />);
-    await user.click(await screen.findByRole('button', { name: 'Phân công', exact: true }));
-    expect(await screen.findByRole('dialog', { name: 'Phân công lượt kiểm thử' })).toBeVisible();
-    await user.click(screen.getByRole('button', { name: 'Đóng' }));
+  it('routes grouped reassignment through the whole-file workflow and preserves scope decisions', async () => {
+    state.currentProject.projectRole = 'PM'; const user = userEvent.setup(), navigate = vi.fn();
+    render(<ExecutionRunnerPage cycleId={8} navigate={navigate} />);
+    await user.click(await screen.findByRole('button', { name: 'Giao lại file' }));
+    expect(navigate).toHaveBeenCalledWith('/tests/file-work/40');
+    expect(screen.queryByRole('dialog', { name: 'Phân công lượt kiểm thử' })).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Đánh dấu NA' }));
     expect(screen.getByRole('dialog', { name: 'Xác nhận NA' })).toBeVisible();
     expect(executionApi.assign).not.toHaveBeenCalled(); expect(executionApi.decideScope).not.toHaveBeenCalled();

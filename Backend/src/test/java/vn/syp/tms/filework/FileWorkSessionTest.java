@@ -15,7 +15,7 @@ class FileWorkSessionTest {
     final WorkItemStore db=mock(WorkItemStore.class);
     final IdentityService identity=mock(IdentityService.class);
     final ProjectAudit audit=mock(ProjectAudit.class);
-    final FileWorkGuard guard=new FileWorkGuard(db,identity);
+    final FileWorkGuard guard=new FileWorkGuard(db,identity,mock(vn.syp.tms.project.ProjectActorService.class));
     final FileWorkSessionService service=new FileWorkSessionService(db,guard,audit,new ObjectMapper().findAndRegisterModules());
     String role="TESTER",global="TESTER",state="DOING",cycle="ACTIVE",condition="AVAILABLE",platform="iOS";
     boolean returned=false,archived=false,archivedBuild=false,approved=true,excluded=false,active=true;
@@ -88,7 +88,7 @@ class FileWorkSessionTest {
         error("SESSION_CONTEXT_MISMATCH",()->service.start(1,"actor",40,start()));
         state="PAUSED";error("SESSION_CONTEXT_MISMATCH",()->service.resume(1,"actor",60,command()));
         state="DOING";error("SESSION_CONTEXT_MISMATCH",()->guard.fileAttempt(1,"actor",40,100,60,50,0L));
-        assertEquals(false,service.capabilities(1,new FileWorkGuard.Actor(7,false,true,false),group(),session()).get("canRecord"));
+        assertEquals(false,service.capabilities(1,new FileWorkGuard.Actor(7,false,true,false,false),group(),session()).get("canRecord"));
         verify(db,never()).insert(anyString(),any(Object[].class));verify(db,never()).update(anyString(),any(Object[].class));
     }
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
@@ -98,7 +98,7 @@ class FileWorkSessionTest {
         for(String blocked:List.of("DOING","PAUSED")) {
             state=blocked;role="TESTER";global="TESTER";error("FORBIDDEN",()->service.cancel(1,"actor",60,command()));
             role="PM";global="DEV";error("FORBIDDEN",()->service.cancel(1,"actor",60,command()));
-            global="PM";assertEquals(true,service.capabilities(1,new FileWorkGuard.Actor(7,true,false,false),group(),session()).get("canCancel"));
+            global="PM";assertEquals(true,service.capabilities(1,new FileWorkGuard.Actor(7,true,false,false,false),group(),session()).get("canCancel"));
             service.cancel(1,"actor",60,command());
         }
         verify(db,times(2)).update(contains("UPDATE file_work_sessions"),eq("CANCELLED"),eq(1L),eq(60L),eq(0L));
@@ -113,16 +113,16 @@ class FileWorkSessionTest {
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
     @SuppressWarnings("null")
     @Test void identityAndProjectLockPrecedeAllGroupReads(){guard.execution(1,"actor",60);var order=inOrder(identity,db);order.verify(identity).lockCurrent("actor");order.verify(db).row(contains("FROM projects"),eq(1L));order.verify(db).row(contains("FROM project_memberships"),eq(1L),eq("actor"));order.verify(db).row(contains("FROM file_work_sessions"),eq(1L),eq(60L));order.verify(db).row(contains("FROM file_work_groups"),eq(1L),eq(40L));order.verify(db).rows(contains("ORDER BY r.id FOR UPDATE"),eq(1L),eq(40L));}
-    @Test void historicalCompletedSessionCannotAdvertiseStartWhileAnotherSessionPaused(){state="COMPLETED";open.add(Map.of("id",61L,"state","PAUSED"));var caps=service.capabilities(1,new FileWorkGuard.Actor(7,false,true,false),group(),session());assertEquals(false,caps.get("canStart"));}
+    @Test void historicalCompletedSessionCannotAdvertiseStartWhileAnotherSessionPaused(){state="COMPLETED";open.add(Map.of("id",61L,"state","PAUSED"));var caps=service.capabilities(1,new FileWorkGuard.Actor(7,false,true,false,false),group(),session());assertEquals(false,caps.get("canStart"));}
     @Test void pmHistoricalSessionCannotAssignWhileAnotherSessionDoing(){pmHistoricalAssignmentBlocked("DOING");}
     @Test void pmHistoricalSessionCannotAssignWhileAnotherSessionPaused(){pmHistoricalAssignmentBlocked("PAUSED");}
     private void pmHistoricalAssignmentBlocked(String currentState){
-        var caller=new FileWorkGuard.Actor(7,true,false,false);open.add(Map.of("id",61L,"state",currentState));
+        var caller=new FileWorkGuard.Actor(7,true,false,false,false);open.add(Map.of("id",61L,"state",currentState));
         for(String historical:List.of("COMPLETED","CANCELLED")){state=historical;var caps=service.capabilities(1,caller,group(),session());assertEquals(false,caps.get("canAssign"),historical+" history must respect current "+currentState);assertEquals(false,caps.get("canCancel"),"Terminal history cannot be cancelled");}
         state=currentState;var currentCaps=service.capabilities(1,caller,group(),session());assertEquals(true,currentCaps.get("canCancel"));assertEquals(false,currentCaps.get("canAssign"));
     }
     @Test void pmHistoricalSessionCanAssignWhenNoSessionRemainsOpen(){
-        var caller=new FileWorkGuard.Actor(7,true,false,false);
+        var caller=new FileWorkGuard.Actor(7,true,false,false,false);
         for(String historical:List.of("COMPLETED","CANCELLED")){state=historical;var caps=service.capabilities(1,caller,group(),session());assertEquals(true,caps.get("canAssign"));assertEquals(false,caps.get("canCancel"));}
     }
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
@@ -131,7 +131,7 @@ class FileWorkSessionTest {
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
     @SuppressWarnings("null")
     @Test void exactStartReplayStillWorksWithStaleGroupVersionAndDoesNotInsert(){replay("START");groupVersion=9;assertEquals(60,service.start(1,"actor",40,start()).get("id"));verify(db,never()).insert(anyString(),any(Object[].class));verify(db,never()).update(anyString(),any(Object[].class));}
-    @Test void snapshotIncludesServerPinsAndDoesNotMutateCurrentCatalogRows(){var snapshot=guard.usable(1,new FileWorkGuard.Actor(7,false,true,false),group(),guard.runs(1,40),70,50,80L);assertEquals(40L,snapshot.get("groupId"));assertEquals(List.of(101L),snapshot.get("revisionIds"));assertEquals(80L,((Map<?,?>)snapshot.get("physicalAsset")).get("id"));assertEquals(7L,((Map<?,?>)snapshot.get("executor")).get("membershipId"));assertEquals(70L,((Map<?,?>)snapshot.get("allocation")).get("id"));assertEquals(50L,((Map<?,?>)snapshot.get("build")).get("id"));}
+    @Test void snapshotIncludesServerPinsAndDoesNotMutateCurrentCatalogRows(){var snapshot=guard.usable(1,new FileWorkGuard.Actor(7,false,true,false,false),group(),guard.runs(1,40),70,50,80L);assertEquals(40L,snapshot.get("groupId"));assertEquals(List.of(101L),snapshot.get("revisionIds"));assertEquals(80L,((Map<?,?>)snapshot.get("physicalAsset")).get("id"));assertEquals(7L,((Map<?,?>)snapshot.get("executor")).get("membershipId"));assertEquals(70L,((Map<?,?>)snapshot.get("allocation")).get("id"));assertEquals(50L,((Map<?,?>)snapshot.get("build")).get("id"));}
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
     @SuppressWarnings("null")
     @Test void completionVerdictPolicyUsesCanonicalNaAndExactAttemptBugLink(){
@@ -164,10 +164,10 @@ class FileWorkSessionTest {
         logical.put("osName","iOS");physical.put("type","IPHONE");assertDoesNotThrow(()->FileWorkGuard.compatible(logical,physical,build));
         logical.put("osName","Android");logical.put("model","");logical.put("osVersion","");physical.put("type","ANDROID");physical.put("osName","Android");assertDoesNotThrow(()->FileWorkGuard.compatible(logical,physical,Map.of("platform","Android")));
     }
-    @Test void pinnedSnapshotNamesAndCapabilityReflectCurrentBlockers(){blockers=1;var value=service.read(1,new FileWorkGuard.Actor(7,false,true,false),group(),session());assertEquals("Pinned",value.get("executorName"));assertEquals("PIN",value.get("assetCode"));assertEquals(false,((Map<?,?>)value.get("capabilities")).get("canComplete"));assertEquals(true,((Map<?,?>)value.get("capabilities")).get("canRecord"));returned=true;assertEquals(false,service.capabilities(1,new FileWorkGuard.Actor(7,false,true,false),group(),session()).get("canRecord"));}
+    @Test void pinnedSnapshotNamesAndCapabilityReflectCurrentBlockers(){blockers=1;var value=service.read(1,new FileWorkGuard.Actor(7,false,true,false,false),group(),session());assertEquals("Pinned",value.get("executorName"));assertEquals("PIN",value.get("assetCode"));assertEquals(false,((Map<?,?>)value.get("capabilities")).get("canComplete"));assertEquals(true,((Map<?,?>)value.get("capabilities")).get("canRecord"));returned=true;assertEquals(false,service.capabilities(1,new FileWorkGuard.Actor(7,false,true,false,false),group(),session()).get("canRecord"));}
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
     @SuppressWarnings("null")
-    @Test void eligibleAllocationsUseCurrentRecipientAndSkipBusyMachines(){assertEquals(1,service.eligible(1,"actor",40).size());busy.add(Map.of("id",61L));assertTrue(service.eligible(1,"actor",40).isEmpty());verify(db,atLeastOnce()).rows(contains("al.recipient_membership_id=? AND al.returned_at IS NULL"),eq(1L),eq(7L));}
+    @Test void eligibleAllocationsUseCurrentRecipientAndSkipBusyMachines(){assertEquals(1,service.eligible(1,"actor",40).size());busy.add(Map.of("id",61L));assertTrue(service.eligible(1,"actor",40).isEmpty());verify(db,atLeastOnce()).rows(contains("(? OR al.recipient_membership_id=?) AND al.returned_at IS NULL"),eq(1L),eq(false),eq(7L));}
     @Test void controllerStartReturns201AndSessionLocation(){var mocked=mock(FileWorkSessionService.class);when(mocked.start(eq(1L),eq("actor"),eq(40L),any())).thenReturn(Map.of("id",60L));var auth=org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated(new SessionPrincipal("actor",0L),null,List.of());var response=new FileWorkSessionController(mocked).start(auth,1,40,start());assertEquals(201,response.getStatusCode().value());assertEquals("/api/v1/projects/1/file-work-sessions/60",java.util.Objects.requireNonNull(response.getHeaders().getLocation(),"Created response must include Location").toString());}
     @Test void compatibilityRequiresExplicitOsAndBuildPlatform() {
         var device=Map.<String,Object>of("osName","iPadOS","model","iPad Pro","osVersion","18");

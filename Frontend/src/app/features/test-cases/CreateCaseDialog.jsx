@@ -1,5 +1,5 @@
 import { useDialogFocus } from '../../hooks/useDialogFocus';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { X, Languages } from 'lucide-react';
 import { testCasesApi } from '../../services/api/testCases';
 
@@ -20,12 +20,20 @@ export function CreateCaseDialog({ projectId, suites, onClose, onSuccess, defaul
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const errorRef = useRef(null);
   const dialogRef = useDialogFocus(onClose, loading);
+  useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
+  const reportError = message => { setError(message); errorRef.current?.focus(); };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.suiteId) {
-      setError('Vui lòng chọn nhóm Test Specification');
+      reportError('Vui lòng chọn nhóm Test Specification');
+      return;
+    }
+    if (![formData.titleVi, formData.stepsVi, formData.expectedVi].every(value => value.trim())) {
+      setActiveTab('vi');
+      reportError('Nhập tiêu đề, các bước và kết quả mong đợi bằng tiếng Việt trước khi lưu.');
       return;
     }
     setLoading(true);
@@ -38,7 +46,7 @@ export function CreateCaseDialog({ projectId, suites, onClose, onSuccess, defaul
       onSuccess();
       onClose();
     } catch (err) {
-      setError(err.message || 'Không thể tạo test case');
+      reportError(err.message || 'Không thể tạo test case');
     } finally {
       setLoading(false);
     }
@@ -59,7 +67,7 @@ export function CreateCaseDialog({ projectId, suites, onClose, onSuccess, defaul
 
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
           <div className="tc-modal-body space-y-4">
-            {error && <div className="p-3 bg-red-50 text-red-700 text-xs rounded border border-red-200">{error}</div>}
+            {error && <div ref={errorRef} tabIndex={-1} role="alert" className="p-3 bg-red-50 text-red-700 text-xs rounded border border-red-200">{error}</div>}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>

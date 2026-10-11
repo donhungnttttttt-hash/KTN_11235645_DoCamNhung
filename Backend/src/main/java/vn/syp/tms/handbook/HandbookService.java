@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.syp.tms.project.ProjectService;
 import vn.syp.tms.project.MembershipRepository;
-import vn.syp.tms.project.ProjectMembership;
 import vn.syp.tms.shared.web.BusinessException;
 import java.time.Instant;
 import java.util.List;
@@ -16,7 +15,6 @@ public class HandbookService {
     private final ResourceRepository resourceRepo;
     private final RevisionRepository revisionRepo;
     private final ProjectService projectService;
-    private final MembershipRepository membershipRepo;
     private final vn.syp.tms.project.ProjectAudit audit;
 
     public HandbookService(ResourceRepository resourceRepo, RevisionRepository revisionRepo, ProjectService projectService, MembershipRepository membershipRepo, vn.syp.tms.project.ProjectAudit audit) {
@@ -24,13 +22,10 @@ public class HandbookService {
         this.resourceRepo = resourceRepo;
         this.revisionRepo = revisionRepo;
         this.projectService = projectService;
-        this.membershipRepo = membershipRepo;
     }
 
     private Long getMembershipId(Long projectId, String userId) {
-        ProjectMembership m = membershipRepo.findByProjectIdAndUserId(projectId, userId);
-        if (m == null || !m.isActive()) throw new BusinessException(403, "FORBIDDEN", "Không có quyền thực hiện thao tác");
-        return m.getId();
+        return projectService.actorMembershipId(projectId,userId);
     }
 
     private HandbookDtos.RevisionDto mapRevision(ResourceRevision r) {

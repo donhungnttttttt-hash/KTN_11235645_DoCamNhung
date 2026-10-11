@@ -13,11 +13,13 @@ import java.util.stream.Collectors;
 public class ProjectService {
     private final ProjectRepository projectRepository;
     private final MembershipRepository membershipRepository;
+    private final ProjectActorService actors;
     private final IdentityService identityService;
     private final ProjectAudit audit;
     private final vn.syp.tms.identity.IdentityUserRepository users;
 
-    public ProjectService(ProjectRepository projectRepository, MembershipRepository membershipRepository, IdentityService identityService, ProjectAudit audit, vn.syp.tms.identity.IdentityUserRepository users) {
+    public ProjectService(ProjectRepository projectRepository, MembershipRepository membershipRepository, IdentityService identityService, ProjectAudit audit, vn.syp.tms.identity.IdentityUserRepository users, ProjectActorService actors) {
+        this.actors=actors;
         this.audit=audit; this.users=users;
         this.projectRepository = projectRepository;
         this.membershipRepository = membershipRepository;
@@ -27,10 +29,10 @@ public class ProjectService {
     public List<ProjectDtos.ProjectSummary> list(String userId) {
         boolean admin = "ADMIN".equals(identityService.current(userId).getRole());
         var roles = membershipRepository.findByUserIdAndActiveTrue(userId).stream()
-                .collect(Collectors.toMap(ProjectMembership::getProjectId, ProjectMembership::getProjectRole));
+                .collect(Collectors.toMap(member->member.getProjectId(), member->member.getProjectRole()));
         var visible = admin ? projectRepository.findAll(org.springframework.data.domain.Sort.by("id"))
-                : projectRepository.findAllById(roles.keySet()).stream()
-                    .sorted(java.util.Comparator.comparing(Project::getId)).toList();
+                : projectRepository.findAllById(java.util.Objects.requireNonNull(roles.keySet())).stream()
+                    .sorted(java.util.Comparator.comparing(project->project.getId())).toList();
         return visible.stream().map(p -> new ProjectDtos.ProjectSummary(p.getId(), p.getCode(), p.getName(),
                 p.getDescription(), p.getTimezone(), p.getArchivedAt() != null, p.getLockVersion(), roles.get(p.getId())))
                 .toList();
@@ -77,7 +79,8 @@ public class ProjectService {
         p.setUpdatedBy(actorId);
         projectRepository.saveAndFlush(p);
         audit.record(projectId,actorId,"PROJECT",projectId,"UPDATE");
-        return new ProjectDtos.ProjectSummary(p.getId(), p.getCode(), p.getName(), p.getDescription(), p.getTimezone(), p.getArchivedAt() != null, p.getLockVersion(), membershipRepository.findByProjectIdAndUserId(projectId, actorId).getProjectRole());
+        var member=membershipRepository.findByProjectIdAndUserId(projectId,actorId);
+        return new ProjectDtos.ProjectSummary(p.getId(), p.getCode(), p.getName(), p.getDescription(), p.getTimezone(), p.getArchivedAt() != null, p.getLockVersion(), member!=null && member.isActive()?member.getProjectRole():null);
     }
 
     public ProjectDtos.MemberInfo addOrUpdateMember(Long projectId, String actorId, String targetUserId, ProjectDtos.SetMember input) {
@@ -107,7 +110,7 @@ public class ProjectService {
             memberId=current.getId();version=current.getVersion()+1;
         }
         audit.record(projectId,actorId,"MEMBERSHIP",memberId,"SET_ROLE");
-        return new ProjectDtos.MemberInfo(memberId,targetUserId,targetUser.getUsername(),targetUser.getDisplayName(),targetUser.getRole(),input.projectRole(),true,version);
+        return new ProjectDtos.MemberInfo(memberId,targetUserId,targetUser.getUsername(),targetUser.getDisplayName(),targetUser.getRole(),input.projectRole(),true,version,targetUser.getEnabled());
     }
 
     public void removeMember(Long projectId, String actorId, String targetUserId, Long expectedVersion) {
@@ -137,15 +140,15 @@ public class ProjectService {
             .map(m -> {
                 try {
                     IdentityUser u = users.findById(java.util.Objects.requireNonNull(m.getUserId())).orElseThrow();
-                    return new ProjectDtos.MemberInfo(m.getId(), m.getUserId(), u.getUsername(), u.getDisplayName(), u.getRole(), m.getProjectRole(), m.isActive(), m.getVersion());
+                    return new ProjectDtos.MemberInfo(m.getId(), m.getUserId(), u.getUsername(), u.getDisplayName(), u.getRole(), m.getProjectRole(), m.isActive(), m.getVersion(), u.isEnabled());
                 } catch (java.util.NoSuchElementException e) {
-                    return new ProjectDtos.MemberInfo(m.getId(), m.getUserId(), "unavailable", "Tài khoản không còn khả dụng", "UNKNOWN", m.getProjectRole(), m.isActive(), m.getVersion());
+                    return new ProjectDtos.MemberInfo(m.getId(), m.getUserId(), "unavailable", "Tài khoản không còn khả dụng", "UNKNOWN", m.getProjectRole(), m.isActive(), m.getVersion(), false);
                 }
             })
             .collect(Collectors.toList());
     }
 
-    /** Global ADMIN can inspect every existing project without acquiring a project role. */
+    /** Global ADMIN can access every existing project without an active project membership. */
     public void requireReadAccess(Long projectId, String userId) {
         if ("ADMIN".equals(identityService.current(userId).getRole())) {
             if (!projectRepository.existsById(java.util.Objects.requireNonNull(projectId)))
@@ -154,6 +157,7 @@ public class ProjectService {
     }
 
     public void requireMembership(Long projectId, String userId) {
+        if (isGlobalAdmin(userId)) { requireReadAccess(projectId,userId); return; }
         ProjectMembership m = membershipRepository.findByProjectIdAndUserId(projectId, userId);
         if (m == null || !m.isActive()) {
             throw new BusinessException(404, "NOT_FOUND", "Dự án không tồn tại hoặc bạn không có quyền truy cập");
@@ -179,11 +183,22 @@ public class ProjectService {
     }
 
     public void lockWritableProject(Long projectId, String userId) {
+        identityService.lockCurrent(userId);
         // Locking an already managed JPA entity may retain stale archive state or raise an
         // unrelated optimistic conflict. Read the current scalar state before checking rights.
         var current=projectRepository.lockAdminState(projectId).orElseThrow(() -> new BusinessException(404, "NOT_FOUND", "Không tìm thấy dự án."));
         requirePmOrAdminRole(projectId,userId);
         if(current.getArchived()) throw new BusinessException(409,"ARCHIVED","Dự án đã được lưu trữ.");
+    }
+
+    /** Import records identity attribution directly and does not need a membership audit link. */
+    public void lockTestCaseImport(Long projectId, String userId) {
+        if ("ADMIN".equals(identityService.lockCurrent(userId).getRole())) {
+            var project=projectRepository.lockAdminState(projectId).orElseThrow(() -> new BusinessException(404,"NOT_FOUND","Không tìm thấy dự án."));
+            if (project.getArchived()) throw new BusinessException(409,"ARCHIVED","Dự án đã được lưu trữ.");
+        } else {
+            lockWritableProject(projectId,userId);
+        }
     }
 
     private void protectLastPm(Long projectId,MembershipRepository.CurrentMember member) {
@@ -195,6 +210,7 @@ public class ProjectService {
     }
 
     public void requireProjectPm(Long projectId, String userId) {
+        if (isGlobalAdmin(userId)) { requireReadAccess(projectId,userId); return; }
         requireNotDev(projectId,userId);
         requireMembership(projectId, userId);
         if (!"PM".equals(membershipRepository.findByProjectIdAndUserId(projectId, userId).getProjectRole())) {
@@ -212,6 +228,7 @@ public class ProjectService {
     }
 
     public void requireNotDev(Long projectId,String actor) {
+        if (isGlobalAdmin(actor)) return;
         var member=membershipRepository.findByProjectIdAndUserId(projectId,actor);
         if ("DEV".equals(identityService.current(actor).getRole()) || member!=null && "DEV".equals(member.getProjectRole()))
             throw new BusinessException(403,"DEV_READ_ONLY_RESULTS","Dev không được ghi kết quả kiểm thử.");
@@ -225,4 +242,6 @@ public class ProjectService {
         if (!"ADMIN".equals(identityService.lockCurrent(actor).getRole()))
             throw new BusinessException(403,"ADMIN_REQUIRED","Chỉ ADMIN được quản lý thành viên dự án.");
     }
+    public boolean isGlobalAdmin(String actor) { return "ADMIN".equals(identityService.current(actor).getRole()); }
+    public long actorMembershipId(Long project,String actor) { return actors.forWrite(project,actor); }
 }

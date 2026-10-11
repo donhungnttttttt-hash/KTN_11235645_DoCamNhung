@@ -2490,9 +2490,15 @@
             "type": "integer",
             "format": "int64",
             "minimum": 0
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Current account availability, separate from active project membership. Locked/missing accounts cannot receive new work or device allocations."
           }
         },
-        "required": []
+        "required": [
+          "enabled"
+        ]
       },
       "SetMember": {
         "type": "object",

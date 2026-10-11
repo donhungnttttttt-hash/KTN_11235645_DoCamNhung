@@ -250,6 +250,8 @@
   border-radius: 2px;
   font-size: var(--text-table);
 }
+.dashboard-board.work-items .d-modal.wb-drawer.is-expanded { width:100vw; max-width:100vw; height:100dvh; max-height:100dvh; }
+.work-items .d-modal-window-actions { display:flex; align-items:center; gap:8px; flex:none; }
 .dashboard-board.work-items .d-icon-button.outlined {
   width: 28px;
   height: 28px;
@@ -376,3 +378,7 @@
     padding: 10px;
   }
 }
+.wb-view-switch { display:inline-flex; border:1px solid #b7cdcf; border-radius:6px; overflow:hidden; }
+.wb-view-switch button { padding:7px 12px; min-height:36px; font-size:13px; color:#35535b; background:#fff; }
+.wb-view-switch button[aria-pressed="true"] { background:#087e75; color:#fff; }
+.wb-kanban-help { margin:8px 0 12px; }

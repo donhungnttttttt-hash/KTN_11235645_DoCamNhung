@@ -64,6 +64,7 @@ it('prevents editing and Escape while a result is saving, then restores controls
   executionApi.record.mockReturnValue(new Promise(done => { resolve = done; }));
   const close = vi.fn(), user = userEvent.setup();
   render(<AttemptDialog {...props} onClose={close} />);
+  await user.selectOptions(screen.getByLabelText('Kết quả'), 'NG');
   await user.type(screen.getByLabelText('Kết quả thực tế'), 'Không mở được trang');
   await user.click(screen.getByRole('button', { name: 'Ghi kết quả' }));
   expect(screen.getByLabelText('Kết quả')).toBeDisabled();

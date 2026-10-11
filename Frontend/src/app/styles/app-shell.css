@@ -75,6 +75,7 @@
   align-items: center;
   gap: 12px;
 }
+.app-chat-launcher-slot { flex:none; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
 .app-expiry {
   padding: 2px 8px;
   border: 1px solid #fecaca;
@@ -282,6 +283,12 @@
   height: calc(100dvh - 154px);
 }
 .app-shell.document-focus .app-workspace { margin-left: 0; }
+.app-shell.document-focus .app-workspace { height:100dvh; min-height:0; }
+.document-focus .app-workspace > main { display:flex; flex-direction:column; flex:1; min-height:0; }
+.document-focus .app-workspace > main > :not(.td-document) { flex-shrink:0; }
+.document-focus .app-workspace > main > .td-document { flex:1; min-height:0; height:auto; }
+.document-focus .td-document .td-grid-scroll { flex:1; height:auto; min-height:0; }
+.document-focus .app-workspace > footer { display:none; }
 .document-focus .app-sidebar { transform: translateX(-100%); visibility: hidden; }
 .app-shell.document-focus .app-mobile-menu { display: inline-flex; }
 .document-focus.mobile-open .app-sidebar { transform: none; visibility: visible; }
@@ -298,6 +305,7 @@
   }
 }
 @media (max-width: 640px) {
+  .app-chat-launcher-slot { width:44px; height:44px; }
   .app-shell,
   .app-shell.sidebar-collapsed {
     --sidebar-width: 200px;
@@ -308,7 +316,13 @@
   }
   .app-mobile-menu {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    flex: none;
   }
+  .app-header-brand,.app-header .project-selector-btn { min-height:44px; }
   .app-header-details {
     margin-left: auto;
     gap: 6px;

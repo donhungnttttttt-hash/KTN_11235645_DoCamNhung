@@ -9,7 +9,7 @@
 
 :root {
   /* One compact, readable type scale for Admin and project workspaces. */
-  --text-caption: 0.6875rem;
+  --text-caption: 0.75rem;
   --text-table: 0.75rem;
   --text-body: 0.8125rem;
   --text-section: 0.9375rem;
@@ -128,6 +128,11 @@ body {
 .ui-actions > button { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 .ui-page-title { font-size:var(--text-title); line-height:1.4; font-weight:600; }
 .ui-caption { font-size:var(--text-caption); line-height:1.5; }
+.ui-page-selection { display:flex; align-items:center; gap:8px; min-height:44px; font-size:var(--text-table); margin:8px 0; }
+.ui-page-selection input { width:18px; height:18px; flex:none; accent-color:#0f766e; }
+@media (prefers-reduced-motion:reduce) {
+ *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+}
 /* Keep narrow flex/grid children from pushing the page wider than the viewport. */
 :where(main,section,article,fieldset) { min-width:0; }
 :where(h1,h2,h3,h4,p,dt,dd) { overflow-wrap:anywhere; }

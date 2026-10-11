@@ -30,6 +30,7 @@ export default function BoardPage({
   hideControls = false,
   statuses = defaultStatuses,
   canTriage = false,
+  canCreate = false,
   onMove,
 }) {
   const { user } = useAuth();
@@ -189,7 +190,7 @@ export default function BoardPage({
                   <h2 title={status.label}>{status.label}</h2>
                   <span className="d-column-count">{cards.length}</span>
                   <span className="d-spacer" />
-                  {status.id === "open" && (
+                  {canCreate && status.id === "open" && (
                     <IconButton
                       icon={Plus}
                       label="Thêm công việc chưa xử lý"
@@ -306,10 +307,11 @@ export default function BoardPage({
             >
               Xem chi tiết
             </Button>
-            <Button primary onClick={() => moveIssue(menu.id, moveTo)}>
+            <Button primary disabled={moveTo===currentMenu.status} onClick={() => moveIssue(menu.id, moveTo)}>
               Chuyển công việc
             </Button>
           </div>
+          {moveTo===currentMenu.status&&<p className="wi-note">Chọn trạng thái khác với trạng thái hiện tại.</p>}
         </Modal>
       )}
       {saveOpen && (

@@ -24,13 +24,14 @@ export function CatalogPage() {
 
 function ProjectCatalog({ currentProject }) {
   const { hasRole } = useAuth();
-  const [activeType, setActiveType] = useState("environments");
+  const [activeType, setActiveType] = useState(()=>{const type=new URLSearchParams(window.location.hash.split('?')[1]).get('type');return CATALOG_TYPES.some(t=>t.id===type)?type:'environments';});
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [reload, setReload] = useState(0);
   const [archiving, setArchiving] = useState(null);
   const [editor, setEditor] = useState(null);
+  const [notice,setNotice] = useState('');
   
   const canEdit = canManageProjectWork(currentProject, hasRole);
 
@@ -45,10 +46,12 @@ function ProjectCatalog({ currentProject }) {
   }, [currentProject.id, activeType, reload]);
 
   const handleArchive = async (item) => {
+    if(archiving!==null || editor)return;
     if (!confirm("Bạn có chắc muốn lưu trữ mục này?")) return;
-    setArchiving(item.id);setError("");
+    setArchiving(item.id);setError("");setNotice('');
     try {
       await projectsApi.archiveCatalog(currentProject.id, activeType, item.id, item.version);
+      setNotice('Đã lưu trữ danh mục.');
       setReload(value => value + 1);
     } catch (err) {
       setError(err.message || "Lưu trữ chưa thành công.");
@@ -141,7 +144,8 @@ function ProjectCatalog({ currentProject }) {
         ))}
       </div>
 
-      {editor && <CatalogEditor projectId={currentProject.id} kind={activeType} item={editor.item} onClose={() => {setEditor(null);setReload(value=>value+1);}} onSaved={() => {setEditor(null);setReload(value=>value+1);}} />}
+      {notice && <p role="status">{notice}</p>}{archiving!==null && <p role="status">Đang lưu trữ danh mục…</p>}
+      {editor && <CatalogEditor projectId={currentProject.id} kind={activeType} item={editor.item} onClose={() => {setEditor(null);setReload(value=>value+1);}} onSaved={() => {setNotice('Đã lưu danh mục.');setEditor(null);setReload(value=>value+1);}} />}
 
       <div className="catalog-content mt-4">
         {loading ? (

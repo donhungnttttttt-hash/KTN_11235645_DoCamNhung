@@ -27,7 +27,7 @@ class ChatGptSse {
                 throw new OpenAiResponsesClient.Failure(code == null ? "AI_INCOMPLETE_RESPONSE" : code);
             }
             if(type.equals("response.incomplete")||type.contains("refusal"))throw failure();
-            if(type.equals("response.completed")){if(completed!=null)throw failure();completed=root.path("response");}
+            if(type.equals("response.completed"))completed=root.path("response");
         }
         if(completed==null)throw failure();
         return OpenAiResponsesClient.parseOutput(completed,codec.json);

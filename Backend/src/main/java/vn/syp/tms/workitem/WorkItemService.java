@@ -43,20 +43,21 @@ public class WorkItemService {
         """;
 
     public Map<String,Object> membership(long p,String actor) {
-        return db.row("SELECT m.id,CASE WHEN u.role_code='DEV' THEN 'DEV' ELSE m.project_role END AS role,u.role_code AS systemRole FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.user_id=? AND m.active=TRUE AND u.enabled=TRUE",p,actor);
+        return db.row("SELECT m.id,CASE WHEN u.role_code='ADMIN' THEN 'PM' WHEN u.role_code='DEV' THEN 'DEV' ELSE m.project_role END AS role,u.role_code AS systemRole FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.user_id=? AND (m.active=TRUE OR u.role_code='ADMIN') AND u.enabled=TRUE",p,actor);
     }
-    /** Read-only projection. ID 0 cannot authorize assignments, comments, or execution. */
+    /** Side-effect-free capability projection; global authority is independent of membership ID. */
     public Map<String,Object> readMembership(long p,String actor) {
         return db.row("""
             SELECT COALESCE(m.id,0) AS id,
-                CASE WHEN u.role_code='DEV' THEN 'DEV' ELSE m.project_role END AS role,u.role_code AS systemRole
+                CASE WHEN u.role_code='ADMIN' THEN 'PM' WHEN u.role_code='DEV' THEN 'DEV' ELSE m.project_role END AS role,u.role_code AS systemRole
             FROM identity_users u JOIN projects p ON p.id=?
-            LEFT JOIN project_memberships m ON m.project_id=p.id AND m.user_id=u.id AND m.active=TRUE
+            LEFT JOIN project_memberships m ON m.project_id=p.id AND m.user_id=u.id AND (m.active=TRUE OR u.role_code='ADMIN')
             WHERE u.id=? AND u.enabled=TRUE AND (u.role_code='ADMIN' OR m.id IS NOT NULL)
             """,p,actor);
     }
     public Map<String,Object> writable(long p,String actor) {
         // Same project lock order as execution and membership changes, before consistent reads.
+        qa.authorize(p,actor,true);
         var project=db.row("SELECT id,code,archived_at FROM projects WHERE id=? FOR UPDATE",p);
         var member=membership(p,actor);
         if(project.get("archived_at")!=null) fail(409,"ARCHIVED","Dự án đã được lưu trữ.");
@@ -65,7 +66,6 @@ public class WorkItemService {
     private Map<String,Object> writeMember(long p,String actor) {
         // Current identity -> project -> membership locks must precede the first consistent read.
         // Otherwise even type discovery can pin an old REPEATABLE READ snapshot while waiting.
-        qa.authorize(p,actor,true);
         return writable(p,actor);
     }
     public static boolean developer(Map<String,Object> member) {return "DEV".equals(member.get("role")) || "DEV".equals(member.get("systemRole"));}
@@ -110,7 +110,7 @@ public class WorkItemService {
                 .map(code -> Map.<String,Object>of("id",code,"label",QaService.statusLabel(code),"terminal","closed".equals(code))).toList();
         return Map.of("statuses",statuses,"statusesByType",Map.of("BUG",statuses,"REQUEST",statuses,"TASK",statuses,"IMPROVEMENT",statuses,"QA",qaStatuses),
             "types",List.of(Map.of("id","BUG","label","Lỗi"),Map.of("id","REQUEST","label","Yêu cầu"),Map.of("id","TASK","label","Công việc"),Map.of("id","IMPROVEMENT","label","Cải tiến"),Map.of("id","QA","label","QA")),
-            "canCreate",current.membershipId()>0&&!current.archived()&&!developer(member),"canCreateQa",!current.archived()&&(current.pm()||current.tester()),"canTriage",!current.archived()&&!developer(member) && "PM".equals(member.get("role")),"membershipId",current.membershipId(),"policyVersion","INTERNAL_V1","titlePrefix",rules.titlePrefix(p));
+            "canCreate",(current.admin() || current.membershipId()>0)&&!current.archived()&&!developer(member),"canCreateQa",!current.archived()&&(current.pm()||current.tester()),"canTriage",!current.archived()&&!developer(member) && "PM".equals(member.get("role")),"membershipId",current.membershipId(),"policyVersion","INTERNAL_V1","titlePrefix",rules.titlePrefix(p));
     }
     public WorkItemDtos.Page<Map<String,Object>> list(long p,String actor,int page,int size,String type,String status,String keyword,Long assignee,Long category,Long milestone) {
         qa.authorize(p,actor,false);
@@ -135,8 +135,8 @@ public class WorkItemService {
         var member=readMembership(p,actor);
         var item=db.row(SELECT+" WHERE w.project_id=? AND w.id=?",p,id);
         item.put("allowedTransitions",allowedTransitions(member,item));
-        item.put("canComment",number(member,"id")>0 && (!developer(member) || ownBug(member,item)));
-        item.put("canAttach",number(member,"id")>0 && (!developer(member) || ownBug(member,item)));
+        item.put("canComment",("ADMIN".equals(member.get("systemRole")) || number(member,"id")>0) && (!developer(member) || ownBug(member,item)));
+        item.put("canAttach",("ADMIN".equals(member.get("systemRole")) || number(member,"id")>0) && (!developer(member) || ownBug(member,item)));
         item.put("links",db.rows("SELECT l.attempt_id AS attemptId,l.run_item_id AS runItemId,a.attempt_no AS attemptNo,tc.case_no AS caseNo FROM work_item_execution_links l JOIN execution_attempts a ON a.project_id=l.project_id AND a.run_item_id=l.run_item_id AND a.id=l.attempt_id JOIN run_items r ON r.project_id=l.project_id AND r.id=l.run_item_id JOIN test_cases tc ON tc.project_id=r.project_id AND tc.id=r.test_case_id WHERE l.project_id=? AND l.work_item_id=? ORDER BY l.attempt_id",p,id));
         item.put("externalReferences",db.rows("SELECT id,provider,external_id AS externalId,external_url AS url,reconciliation_status AS reconciliationStatus FROM work_item_external_references WHERE project_id=? AND work_item_id=? ORDER BY id",p,id));
         item.put("clarifications",db.rows("SELECT id,source_kind AS sourceKind,source_reference AS sourceReference,confirmed_by AS confirmedBy,confirmed_at AS confirmedAt,conclusion,recorded_at AS recordedAt FROM work_item_clarifications WHERE project_id=? AND work_item_id=? ORDER BY id DESC",p,id));

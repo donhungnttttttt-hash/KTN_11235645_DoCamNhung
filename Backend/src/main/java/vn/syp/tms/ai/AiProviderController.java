@@ -6,7 +6,6 @@ import jakarta.validation.constraints.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import vn.syp.tms.identity.SessionPrincipal;
-import vn.syp.tms.shared.web.BusinessException;
 
 @RestController
 @RequestMapping("/api/v1/ai/providers")

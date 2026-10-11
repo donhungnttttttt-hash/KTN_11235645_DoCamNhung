@@ -31,11 +31,13 @@ class FileWorkExecutionTest {
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
     @SuppressWarnings("null")
     @BeforeEach void canonicalSetup() throws Exception {
-        when(guard.fileAttempt(eq(1L),eq("actor"),eq(40L),eq(100L),anyLong(),eq(50L),eq(0L))).thenAnswer(i->new FileWorkGuard.Context(new FileWorkGuard.Actor(7,false,true,false),Map.of("id",40L),List.of(),Map.of("id",i.<Long>getArgument(4)),Map.of("physicalAsset",Map.of("id",80L,"assetCode","IPAD-80"),"allocation",Map.of("id",70L),"build",Map.of("id",50L))));
+        when(projects.actorMembershipId(1L,"actor")).thenReturn(7L);
+        when(guard.fileAttempt(eq(1L),eq("actor"),eq(40L),eq(100L),anyLong(),eq(50L),eq(0L))).thenAnswer(i->new FileWorkGuard.Context(new FileWorkGuard.Actor(7,false,true,false,false),Map.of("id",40L),List.of(),Map.of("id",i.<Long>getArgument(4)),Map.of("physicalAsset",Map.of("id",80L,"assetCode","IPAD-80"),"allocation",Map.of("id",70L),"build",Map.of("id",50L))));
         when(jdbc.queryForList(anyString(),any(Object[].class))).thenAnswer(i->{String sql=i.getArgument(0);
             if(sql.contains("request_key=?"))return duplicate;
             if(sql.startsWith("SELECT c.id,c.code"))return List.of(map("statusCode","ACTIVE"));
-            if(sql.contains("FROM run_items r"))return List.of(map("id",100L,"fileWorkGroupId",40L,"assigneeMembershipId",7L,"cycleId",20L,"configurationId",30L,"revisionId",101L,"environmentId",41L,"deviceId",42L,"version",runVersion,"excluded",false));
+            if(sql.contains("FROM run_items r"))return List.of(map("id",100L,"testCaseId",102L,"fileWorkGroupId",40L,"assigneeMembershipId",7L,"cycleId",20L,"configurationId",30L,"revisionId",101L,"environmentId",41L,"deviceId",42L,"version",runVersion,"excluded",false));
+            if(sql.contains("FROM import_rows ir"))return List.of();
             if(sql.contains("FROM test_cycles c"))return List.of(map("statusCode","ACTIVE"));
             if(sql.contains("FROM test_case_revisions"))return List.of(map("approved_at","date","test_case_id",102L));
             if(sql.contains("FROM execution_attempts a"))return List.of(map("id",200L,"resultCode",inserted.getOrDefault(4,"OK"),"contextSnapshot",inserted.get(10),"fileWorkSessionId",inserted.get(13)));

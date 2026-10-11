@@ -18,6 +18,15 @@ public interface TestDocumentDtos {
             @NotNull @Pattern(regexp="[a-fA-F0-9]{8}(-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}") String requestKey) {}
     record Result(Long rowId,String status,long version,Instant updatedAt,String updatedBy) {}
     record Change(long id,String before,String after,Instant occurredAt,String actor) {}
-    record Detail(Summary document, List<String> headers, List<Row> rows, Map<String,Integer> columns) {}
+    record Detail(Summary document, List<String> headers, List<Row> rows, Map<String,Integer> columns,
+            Map<Long,Map<Integer,Long>> cellVersions, List<Map<String,Object>> secondTests) {}
+    record EditCell(@NotNull @Size(max=8000) String value, @NotNull @PositiveOrZero Long expectedVersion,
+            @NotNull @Positive Long expectedRevisionId) {}
+    record RowRevision(@NotNull @Positive Long rowId,@NotNull @Positive Long expectedRevisionId) {}
+    record ApproveRows(@NotEmpty @Size(max=500) List<@NotNull @jakarta.validation.Valid RowRevision> rows) {}
+    record AssignSecondTest(@NotNull @Positive Long cycleId, @NotNull @Positive Long configurationId,
+            @NotNull @Positive Long assigneeMembershipId, @NotNull @Size(max=2000) String note,
+            @NotNull @PositiveOrZero Long expectedVersion, @NotNull @PositiveOrZero Long expectedCycleVersion,
+            @PositiveOrZero Long expectedRunVersion, @NotNull @Positive Long expectedRevisionId) {}
     record Download(String fileName, byte[] bytes) {}
 }

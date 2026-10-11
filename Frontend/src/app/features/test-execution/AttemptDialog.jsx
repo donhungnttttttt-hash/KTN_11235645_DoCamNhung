@@ -6,12 +6,12 @@ import { NgBugActions } from './NgBugActions';
 import { useDialogFocus } from '../../hooks/useDialogFocus';
 import '../work-items/work-items-live.css';
 
-export function AttemptDialog({ projectId, run: initial, builds, active, currentUserId, onClose, onSaved, timeZone = 'UTC', readOnly = false }) {
+export function AttemptDialog({ projectId, run: initial, builds, active, currentUserId, onClose, onSaved, timeZone = 'UTC', readOnly = false, globalAdmin = false }) {
   const [run, setRun] = useState(initial), [history, setHistory] = useState(null), [page, setPage] = useState(0);
   const [error, setError] = useState(''), [busy, setBusy] = useState(false), [success, setSuccess] = useState(''), [conflict, setConflict] = useState(false);
   const [historyError, setHistoryError] = useState(''), [historyReload, setHistoryReload] = useState(0);
   const dialogRef = useDialogFocus(onClose, busy);
-  const [form, setForm] = useState({ resultCode: 'NG', buildId: String(initial.defaultBuildId), actualResult: '', reason: '', evidenceReference: '' });
+  const [form, setForm] = useState({ resultCode: ['OK','NG','P'].includes(initial.resultCode) ? initial.resultCode : '', buildId: String(initial.defaultBuildId), actualResult: '', reason: '', evidenceReference: '' });
   const requestKey = useRef(crypto.randomUUID());
   const live = useRef(true);
   useEffect(() => { live.current = true; return () => { live.current = false; }; }, []);
@@ -21,7 +21,7 @@ export function AttemptDialog({ projectId, run: initial, builds, active, current
     executionApi.attempts(projectId, run.id, page).then(x => { if (current) setHistory(x); }).catch(e => { if (current) setHistoryError(e.message); });
     return () => { current = false; };
   }, [projectId, run.id, run.version, page, historyReload]);
-  const canRecord = !readOnly && active && !run.excluded && String(run.assigneeUserId) === String(currentUserId);
+  const canRecord = !readOnly && active && !run.excluded && (globalAdmin || String(run.assigneeUserId) === String(currentUserId));
   function update(key, value) { requestKey.current = crypto.randomUUID(); setForm(prev => ({ ...prev, [key]: value })); setSuccess(''); }
   async function refresh() {
     setBusy(true);
@@ -43,16 +43,18 @@ export function AttemptDialog({ projectId, run: initial, builds, active, current
   }
   function context(attempt) { try { return (typeof attempt.contextSnapshot === 'string' ? JSON.parse(attempt.contextSnapshot) : attempt.contextSnapshot) || {}; } catch { return {}; } }
   return <div className="ex-modal"><section ref={dialogRef} tabIndex={-1} className="ex-dialog ex-attempt-dialog" role="dialog" aria-modal="true" aria-label={`Thực thi ${run.caseNo}`}>
-    <div className="ex-heading"><h3>{run.caseNo} · {run.titleVi}</h3><button className="cat-btn" disabled={busy} onClick={onClose}>Đóng</button></div>
+    <div className="ex-heading ex-attempt-header"><h3>{run.caseNo} · {run.titleVi}</h3><button type="button" className="cat-btn" disabled={busy} onClick={onClose}>Đóng</button></div>
+    <div className="ex-attempt-body">
     <p className="ex-help">Phiên bản {run.revisionNo} · {run.environmentName} / {run.deviceName} · {run.assigneeName}</p>
     <div className="ex-current-result"><span>Kết quả hiện tại</span><Result value={run.excluded ? 'NA' : run.resultCode || 'NOT_RUN'} /><span>Mỗi lần lưu tạo một bản ghi lịch sử.</span></div>
     <ErrorNotice error={error} />{conflict && <button className="cat-btn" disabled={busy} onClick={refresh}>Tải bản hiện hành, giữ bản nháp</button>}
     {success && <p className="ex-success" role="status">{success}</p>}
-    <div className="ex-detail"><article><h4>Điều kiện tiên quyết</h4>{run.preconditionsVi || '—'}<h4>Các bước thực hiện</h4>{run.stepsVi}<h4>Kết quả mong đợi</h4>{run.expectedVi}</article>
+    <div className="ex-detail"><article className="ex-attempt-instructions"><h4>Điều kiện tiên quyết</h4><p>{run.preconditionsVi || '—'}</p><h4>Các bước thực hiện</h4><p>{run.stepsVi || '—'}</p><h4>Kết quả mong đợi</h4><p>{run.expectedVi || '—'}</p></article>
       {canRecord ? <form onSubmit={submit} className="ex-result-form" aria-busy={busy}>
-        <h4>Ghi kết quả lần kiểm thử này</h4>
+        <h4>Kết quả lần chạy mới</h4>
+        <p className="ex-help">Kiểm tra build và kết quả trước khi ghi. Lần lưu mới được thêm vào lịch sử.</p>
         <fieldset disabled={busy} className="space-y-3">
-        <div className="ex-fields"><Field label="Kết quả"><select className="cat-select" value={form.resultCode} onChange={e => update('resultCode', e.target.value)}><option value="OK">OK · Đạt</option><option value="NG">NG · Không đạt</option><option value="P">P · Tạm hoãn</option></select></Field>
+        <div className="ex-fields"><Field label="Kết quả"><select className="cat-select" required value={form.resultCode} onChange={e => update('resultCode', e.target.value)}><option value="">Chọn kết quả lần chạy</option><option value="OK">OK · Đạt</option><option value="NG">NG · Không đạt</option><option value="P">P · Tạm hoãn</option></select></Field>
           <Select label="Build thực tế" items={builds} value={form.buildId} describe={x => `${x.platform} ${x.versionLabel} (${x.buildNumber || '—'})`} onChange={v => update('buildId', v)} /></div>
         <Field label="Kết quả thực tế"><textarea required={form.resultCode === 'NG'} maxLength={8000} value={form.actualResult} onChange={e => update('actualResult', e.target.value)} /></Field>
         {form.resultCode === 'NG' && <p className="ex-field-hint">Bắt buộc mô tả kết quả thực tế khi không đạt (NG).</p>}
@@ -60,7 +62,7 @@ export function AttemptDialog({ projectId, run: initial, builds, active, current
         {form.resultCode === 'P' && <p className="ex-field-hint">Bắt buộc ghi lý do tạm hoãn (P).</p>}
         <Field label="Tham chiếu chứng cứ"><input className="cat-input" maxLength={1000} value={form.evidenceReference} onChange={e => update('evidenceReference', e.target.value)} placeholder="Tên tệp hoặc đường dẫn chứng cứ" /></Field>
         </fieldset>
-        <div className="ex-attempt-actions"><button className="cat-btn cat-btn-mint" disabled={busy || conflict}>{busy ? 'Đang lưu…' : 'Ghi kết quả'}</button></div>
+        <div className="ex-attempt-actions"><button type="submit" className="cat-btn cat-btn-mint" disabled={busy || conflict}>{busy ? 'Đang lưu…' : 'Ghi kết quả'}</button></div>
       </form> : <p className="ex-help">{readOnly ? 'Chế độ chỉ xem nội dung, kết quả và lịch sử. Không ghi kết quả từ cửa sổ này.' : run.excluded ? 'NA: lượt này đã được PM loại khỏi phạm vi áp dụng.' : active ? 'Chỉ người được phân công được ghi kết quả. Bạn có thể xem nội dung và lịch sử.' : 'Đợt chưa bắt đầu hoặc đã chốt. Bạn có thể xem nội dung và lịch sử.'}</p>}
     </div>
     <DecisionHistory projectId={projectId} id={run.id} scope timeZone={timeZone} />
@@ -73,5 +75,6 @@ export function AttemptDialog({ projectId, run: initial, builds, active, current
       {!readOnly && active && a.resultCode === 'NG' && <NgBugActions projectId={projectId} attempt={a} onLinked={onSaved} />}
     </article>; })}
     {history && !history.totalItems && <p className="ex-help">Chưa có lần chạy nào.</p>}{history && <Pager data={history} onChange={setPage} />}
+    </div>
   </section></div>;
 }

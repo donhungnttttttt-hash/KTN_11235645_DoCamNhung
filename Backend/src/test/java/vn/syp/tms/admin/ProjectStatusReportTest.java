@@ -7,10 +7,31 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 import vn.syp.tms.identity.IdentityService;
 import vn.syp.tms.project.ProjectAudit;
+import vn.syp.tms.project.ProjectActorService;
 import vn.syp.tms.shared.web.BusinessException;
 import vn.syp.tms.workitem.WorkItemStore;
 
 class ProjectStatusReportTest {
+ @Test void workspaceHistoryAllowsGlobalAdminToPostButArchivedAndCentralViewsStayReadOnly() {
+  var db=mock(WorkItemStore.class);var identity=mock(IdentityService.class);var admin=mock(vn.syp.tms.identity.IdentityUser.class);
+  when(identity.current("admin")).thenReturn(admin);when(admin.getRole()).thenReturn("ADMIN");
+  when(db.row(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(new HashMap<>());
+  var service=new ProjectStatusReportService(db,identity,mock(ProjectAudit.class),mock(ProjectDeadlines.class),mock(ProjectActorService.class));
+  assertThat(service.history("admin",1,false,0,20).canPost()).isTrue();
+  assertThat(service.history("admin",1,true,0,20).canPost()).isFalse();
+  when(db.row(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(Map.of("archivedAt",Instant.now()));
+  assertThat(service.history("admin",1,false,0,20).canPost()).isFalse();
+ }
+ @Test void globalAdminCanPostWithoutAnActiveProjectMembership() {
+  var db=mock(WorkItemStore.class);var deadlines=mock(ProjectDeadlines.class);
+  var actors=mock(ProjectActorService.class);when(actors.forWrite(1L,"admin")).thenReturn(42L);
+  var service=new ProjectStatusReportService(db,mock(IdentityService.class),mock(ProjectAudit.class),deadlines,actors);
+  when(db.row(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(new HashMap<>(Map.of("id",91L)));
+  when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(c->((String)c.getArgument(0)).contains("identity_users")?List.of(Map.of("role","ADMIN")):List.of());
+  when(db.checksum(any())).thenReturn("hash");
+  assertThat(service.create("admin",1,new ProjectStatusReportService.Input("admin-report","Update","","",null))).containsEntry("id",91L);
+  verify(db).insert(java.util.Objects.requireNonNull(startsWith("INSERT INTO project_status_reports")),eq(1L),eq(42L),eq("Update"),eq(""),eq(""),isNull(),eq("admin-report"),eq("hash"),eq("admin"));
+ }
  @Test void deadlinesUseProjectDayAndRequireScopeAndUnfinishedWork() {
   Instant now=Instant.parse("2026-10-05T12:00:00Z");
   assertThat(ProjectDeadlines.status(LocalDate.parse("2026-10-05"),1,true,"Pacific/Kiritimati",now)).isEqualTo("OVERDUE");
@@ -20,7 +41,7 @@ class ProjectStatusReportTest {
   assertThat(ProjectDeadlines.status(LocalDate.MIN,1,false,"UTC",now)).isEqualTo("NO_OVERDUE_WARNING");
  }
  @Test void reportRequiresCurrentPmAndRejectsGlobalDevEvenWithPmMembership() {
-  var db=mock(WorkItemStore.class);var service=new ProjectStatusReportService(db,mock(IdentityService.class),mock(ProjectAudit.class),mock(ProjectDeadlines.class));
+  var db=mock(WorkItemStore.class);var service=new ProjectStatusReportService(db,mock(IdentityService.class),mock(ProjectAudit.class),mock(ProjectDeadlines.class),mock(ProjectActorService.class));
   when(db.row(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(new HashMap<>());
   when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(List.of(Map.of("role","DEV"))).thenReturn(List.of(Map.of("id",1L,"role","PM")));
   assertThatThrownBy(()->service.create("actor",1,new ProjectStatusReportService.Input("key","Update","","",null))).isInstanceOfSatisfying(BusinessException.class,e->assertThat(e.status()).isEqualTo(403));
@@ -28,7 +49,7 @@ class ProjectStatusReportTest {
  }
  @Test void replayIsBoundToActorAndNormalizedPayloadAndDoesNotRecheckOldDeadline() {
   var db=mock(WorkItemStore.class);var deadlines=mock(ProjectDeadlines.class);var audit=mock(ProjectAudit.class);
-  var service=new ProjectStatusReportService(db,mock(IdentityService.class),audit,deadlines);
+  var service=new ProjectStatusReportService(db,mock(IdentityService.class),audit,deadlines,mock(ProjectActorService.class));
   when(db.checksum(any())).thenReturn("hash");
   when(db.row(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(new HashMap<>(Map.of("id",9L)));
   when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(c->{String sql=c.getArgument(0);
@@ -45,7 +66,7 @@ class ProjectStatusReportTest {
  }
  @Test void overdueRequiresBothReasonAndRecoveryAndSuccessfulReportDoesNotChangeMetrics() {
   var db=mock(WorkItemStore.class);var deadlines=mock(ProjectDeadlines.class);var audit=mock(ProjectAudit.class);
-  var service=new ProjectStatusReportService(db,mock(IdentityService.class),audit,deadlines);
+  var service=new ProjectStatusReportService(db,mock(IdentityService.class),audit,deadlines,mock(ProjectActorService.class));
   when(db.row(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(new HashMap<>());
   when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(c->{String sql=c.getArgument(0);if(sql.contains("identity_users"))return List.of(Map.of("role","PM"));if(sql.contains("project_memberships"))return List.of(Map.of("id",3L,"role","PM"));return List.of();});
   when(deadlines.milestones(eq(1L),any())).thenReturn(List.of(Map.of("deadlineStatus","OVERDUE")));
@@ -57,16 +78,16 @@ class ProjectStatusReportTest {
   verify(db,never()).update(java.util.Objects.requireNonNull(anyString()),any(Object[].class));
   var order=inOrder(db,deadlines);order.verify(db).rows(java.util.Objects.requireNonNull(contains("identity_users")),eq("actor"));order.verify(db).row(java.util.Objects.requireNonNull(contains("FOR UPDATE")),eq(1L));
  }
- @Test void testerAdminWithoutPmAndProjectDevCannotPost() {
+ @Test void testerWithoutPmAndProjectDevCannotPost() {
   for(String role:List.of("TESTER","DEV","MEMBER")) {
-   var db=mock(WorkItemStore.class);var service=new ProjectStatusReportService(db,mock(IdentityService.class),mock(ProjectAudit.class),mock(ProjectDeadlines.class));
+   var db=mock(WorkItemStore.class);var service=new ProjectStatusReportService(db,mock(IdentityService.class),mock(ProjectAudit.class),mock(ProjectDeadlines.class),mock(ProjectActorService.class));
    when(db.row(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(new HashMap<>());
-   when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(List.of(Map.of("role","ADMIN"))).thenReturn(List.of(Map.of("id",1L,"role",role)));
+   when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(List.of(Map.of("role","TESTER"))).thenReturn(List.of(Map.of("id",1L,"role",role)));
    assertThatThrownBy(()->service.create("actor",1,new ProjectStatusReportService.Input("key","Update","","",null))).isInstanceOfSatisfying(BusinessException.class,e->assertThat(e.status()).isEqualTo(403));
   }
  }
  @Test void outsiderPmAndDisabledAccountCannotWrite() {
-  var db=mock(WorkItemStore.class);var service=new ProjectStatusReportService(db,mock(IdentityService.class),mock(ProjectAudit.class),mock(ProjectDeadlines.class));
+  var db=mock(WorkItemStore.class);var service=new ProjectStatusReportService(db,mock(IdentityService.class),mock(ProjectAudit.class),mock(ProjectDeadlines.class),mock(ProjectActorService.class));
   var input=new ProjectStatusReportService.Input("key","Update","","",null);
   when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(List.of(Map.of("role","PM"))).thenReturn(List.of());
   assertThatThrownBy(()->service.create("outsider",1,input)).isInstanceOfSatisfying(BusinessException.class,e->assertThat(e.status()).isEqualTo(404));

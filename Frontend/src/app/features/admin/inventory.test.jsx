@@ -6,6 +6,7 @@ import {AdminDevices} from './AdminDevices';
 import {DeviceAssetForm} from './DeviceAssetForm';
 import {DeviceAllocationDialog} from './DeviceAllocationDialog';
 import {ProjectDevices} from '../projects/ProjectDevices';
+import {ProjectDeviceAssignDialog} from '../projects/ProjectDeviceAssignDialog';
 const asset={id:8,assetCode:'IP-08',type:'IPAD',model:'iPad',conditionCode:'AVAILABLE',status:'AVAILABLE',version:2};
 const page=items=>({items,totalElements:items.length});
 async function chooseProject(label){fireEvent.click(screen.getByLabelText(label));fireEvent.click(await screen.findByRole('option',{name:'AA · Alpha'}));}
@@ -32,6 +33,33 @@ it('assignment selects named members and prevents duplicate submission',async()=
 });
 it('project inventory is read only and has retry state',async()=>{
  const api={projectDevices:vi.fn().mockRejectedValueOnce(new Error('Offline')).mockResolvedValue(page([]))};render(<ProjectDevices projectId={2} api={api}/>);await screen.findByText('Offline');fireEvent.click(screen.getByText('Thử lại'));await screen.findByText('Dự án chưa được bàn giao máy.');expect(screen.queryByText('Nhập máy')).toBeNull();expect(screen.queryByText('Xác nhận bàn giao')).toBeNull();
+});
+it('adds multiple machines directly to a fixed project, retaining only failed handovers for retry',async()=>{
+ const changed=vi.fn(),closed=vi.fn();
+ const api={assets:vi.fn().mockResolvedValue(page([asset,{...asset,id:9,assetCode:'IP-09',version:5}])),members:vi.fn().mockResolvedValue([{userId:'t',username:'tester',displayName:'Tester',active:true,enabled:true},{userId:'locked',username:'locked',displayName:'Locked',active:true,enabled:false}]),assignDevice:vi.fn().mockResolvedValueOnce({}).mockRejectedValueOnce(new Error('Máy đã được giao')).mockResolvedValue({})};
+ render(<ProjectDeviceAssignDialog projectId="2" api={api} onChanged={changed} onClose={closed}/>);
+ fireEvent.click(await screen.findByLabelText('IP-08 · iPad'));fireEvent.click(screen.getByLabelText('IP-09 · iPad'));
+ expect(screen.queryByRole('option',{name:'Locked · locked'})).toBeNull();
+ fireEvent.change(screen.getByLabelText('Người nhận IP-08'),{target:{value:'t'}});fireEvent.change(screen.getByLabelText('Người nhận IP-09'),{target:{value:'t'}});
+ fireEvent.change(screen.getByLabelText('Ghi chú bàn giao IP-09'),{target:{value:'Giữ ghi chú'}});
+ fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));
+ expect(await screen.findByRole('alert')).toHaveTextContent('IP-09: Máy đã được giao');
+ expect(changed).toHaveBeenCalledWith(1);expect(closed).not.toHaveBeenCalled();
+ expect(screen.queryByLabelText('Người nhận IP-08')).toBeNull();expect(screen.getByLabelText('Ghi chú bàn giao IP-09')).toHaveValue('Giữ ghi chú');
+ fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));await waitFor(()=>expect(closed).toHaveBeenCalledTimes(1));
+ expect(api.assignDevice.mock.calls.map(([body])=>body.assetId)).toEqual([8,9,9]);
+ expect(api.assignDevice).toHaveBeenLastCalledWith({projectId:2,assetId:9,recipientUserId:'t',expectedVersion:5,expectedReturnOn:null,handoverNote:'Giữ ghi chú'});
+ expect(api.assets).toHaveBeenCalledWith({status:'AVAILABLE',keyword:'',page:0,size:20},expect.anything());
+});
+it('refreshes project allocations after handover and blocks new allocations in archived projects',async()=>{
+ const api={allocations:vi.fn().mockResolvedValue(page([])),assets:vi.fn().mockResolvedValue(page([asset])),members:vi.fn().mockResolvedValue([{userId:'t',username:'tester',displayName:'Tester',active:true}]),assignDevice:vi.fn().mockResolvedValue({})};
+ const view=render(<ProjectDevices projectId={2} api={api} admin/>);
+ fireEvent.click(screen.getByRole('button',{name:'Bổ sung máy vào dự án'}));fireEvent.click(await screen.findByLabelText('IP-08 · iPad'));
+ fireEvent.change(screen.getByLabelText('Người nhận IP-08'),{target:{value:'t'}});fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));
+ await waitFor(()=>expect(screen.queryByRole('dialog')).toBeNull());await waitFor(()=>expect(api.allocations).toHaveBeenCalledTimes(2));
+ expect(screen.getByRole('status')).toHaveTextContent('Đã bàn giao 1 máy');
+ expect(screen.getByRole('link',{name:'Danh mục dự án'})).toHaveAttribute('href','#/settings/catalogs?workspace=1&projectId=2&type=devices');
+ view.rerender(<ProjectDevices projectId={2} api={api} admin archived/>);expect(screen.queryByRole('button',{name:'Bổ sung máy vào dự án'})).toBeNull();
 });
 it('late return lookup cannot reopen editor after page scope changed',async()=>{
  let resolve;const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),assets:vi.fn().mockResolvedValue(page([{...asset,status:'ALLOCATED'}])),allocations:vi.fn().mockReturnValue(new Promise(r=>{resolve=r;}))};render(<AdminDevices api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Thu hồi IP-08',exact:true}));await chooseProject('Dự án đang giữ máy');resolve(page([{id:10,version:0,recipientName:'Manager'}]));await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({projectId:'2'}),expect.anything()));expect(screen.queryByText('Xác nhận thu hồi')).toBeNull();

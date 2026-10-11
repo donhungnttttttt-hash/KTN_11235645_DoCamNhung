@@ -1,6 +1,6 @@
 import React from 'react';
 import { beforeEach, afterEach, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { EvidencePanel } from './EvidencePanel';
 import { workItemsApi } from '../../services/api/workItems';
 vi.mock('../../services/api/workItems',()=>({workItemsApi:{attachments:vi.fn(),upload:vi.fn(),download:vi.fn(),removeAttachment:vi.fn()}}));
@@ -55,4 +55,14 @@ it('shows a read-only list for an archived project even for its PM',async()=>{
   workItemsApi.attachments.mockResolvedValue([proof]);render(<EvidencePanel {...props} writable={false} canTriage/>);
   await screen.findByRole('button',{name:'proof.png',exact:true});expect(screen.queryByLabelText('Chọn chứng cứ')).not.toBeInTheDocument();
   expect(screen.queryByRole('button',{name:'Gỡ proof.png'})).not.toBeInTheDocument();
+});
+it('shows download progress, blocks duplicate clicks and confirms the browser handoff',async()=>{
+  let finish;workItemsApi.attachments.mockResolvedValue([proof]);workItemsApi.download.mockImplementation(()=>new Promise(resolve=>{finish=resolve;}));
+  vi.spyOn(HTMLAnchorElement.prototype,'click').mockImplementation(()=>{});URL.createObjectURL=vi.fn(()=>'blob:proof');URL.revokeObjectURL=vi.fn();
+  render(<EvidencePanel {...props}/>);fireEvent.click(await screen.findByRole('button',{name:'proof.png',exact:true}));
+  expect(screen.getByText('Đang tải proof.png…')).toBeVisible();
+  const button=screen.getByRole('button',{name:'proof.png',exact:true});expect(button).toBeDisabled();fireEvent.click(button);
+  expect(workItemsApi.download).toHaveBeenCalledTimes(1);
+  await act(async()=>finish(new Blob(['content'])));
+  expect(await screen.findByText('Đã gửi proof.png tới trình duyệt để tải xuống.')).toBeVisible();expect(button).toBeEnabled();
 });

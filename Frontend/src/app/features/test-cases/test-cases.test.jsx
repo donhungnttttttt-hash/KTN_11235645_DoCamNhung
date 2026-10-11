@@ -5,17 +5,53 @@ import userEvent from '@testing-library/user-event';
 import { ImportExcelDialog } from './ImportExcelDialog';
 import { CaseDetailModal } from './CaseDetailModal';
 import { CreateSuiteDialog } from './CreateSuiteDialog';
+import { CreateCaseDialog } from './CreateCaseDialog';
 import { TestSpecsPage } from '../../pages/TestSpecsPage';
 import { testCasesApi } from '../../services/api/testCases';
 
 const context = vi.hoisted(() => ({currentProject:{id:1,name:'Dự án A',projectRole:'PM'},systemRole:'TESTER'}));
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>context}));
 vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>role===context.systemRole})}));
-vi.mock('../../services/api/testCases',()=>({testCasesApi:{createSuite:vi.fn(),createImportPreview:vi.fn(),commitImportPreview:vi.fn(),importTemplate:vi.fn(),getCase:vi.fn(),getRevision:vi.fn(),addRevision:vi.fn(),approveRevision:vi.fn(),listCases:vi.fn(),listSuites:vi.fn()}}));
+vi.mock('../../services/api/testCases',()=>({testCasesApi:{createCase:vi.fn(),createSuite:vi.fn(),createImportPreview:vi.fn(),commitImportPreview:vi.fn(),importTemplate:vi.fn(),getCase:vi.fn(),getRevision:vi.fn(),addRevision:vi.fn(),approveRevision:vi.fn(),listCases:vi.fn(),listSuites:vi.fn()}}));
 
 beforeEach(()=> {
   vi.resetAllMocks(); context.currentProject={id:1,name:'Dự án A',projectRole:'PM'}; context.systemRole='TESTER';
   testCasesApi.listCases.mockResolvedValue({items:[],totalItems:0,totalPages:0}); testCasesApi.listSuites.mockResolvedValue([]);
+});
+it('reveals missing required Vietnamese fields when saving from the Japanese tab',async()=>{
+ const user=userEvent.setup(),onClose=vi.fn();testCasesApi.createCase.mockResolvedValue({id:1});
+ render(<CreateCaseDialog projectId={1} suites={[{id:2,code:'SPEC',name:'Login'}]} onClose={onClose} onSuccess={vi.fn()}/>);
+ await user.type(screen.getByLabelText('Mã Test Case (Case No.) *'),'TC-1');
+ await user.selectOptions(screen.getByLabelText('Nhóm Test Specification *'),'2');
+ await user.click(screen.getByRole('button',{name:/Bản gốc tiếng Nhật/}));
+ await user.click(screen.getByRole('button',{name:'Lưu Test Case'}));
+ expect(testCasesApi.createCase).not.toHaveBeenCalled();
+ const validation=screen.getByRole('alert');
+ expect(validation).toHaveTextContent(/Nhập tiêu đề, các bước và kết quả mong đợi bằng tiếng Việt/);
+ expect(validation).toHaveFocus();
+ expect(screen.getByLabelText('Tiêu đề ca kiểm thử (VI) *')).toBeVisible();
+ expect(onClose).not.toHaveBeenCalled();
+ await user.click(screen.getByRole('button',{name:/Bản gốc tiếng Nhật/}));
+ await user.click(screen.getByRole('button',{name:'Lưu Test Case'}));
+ expect(screen.getByRole('alert')).toHaveFocus();
+ await user.type(screen.getByLabelText('Tiêu đề ca kiểm thử (VI) *'),'Đăng nhập');
+ await user.type(screen.getByLabelText('Các bước thực hiện (Steps VI) *'),'Mở trang đăng nhập');
+ await user.type(screen.getByLabelText('Kết quả mong đợi (Expected Result VI) *'),'Hiển thị biểu mẫu');
+ await user.click(screen.getByRole('button',{name:/Bản gốc tiếng Nhật/}));
+ await user.click(screen.getByRole('button',{name:'Lưu Test Case'}));
+ await waitFor(()=>expect(testCasesApi.createCase).toHaveBeenCalledWith(1,expect.objectContaining({titleVi:'Đăng nhập',stepsVi:'Mở trang đăng nhập',expectedVi:'Hiển thị biểu mẫu'})));
+});
+it('focuses a server save error without losing the test case draft',async()=>{
+ const user=userEvent.setup();testCasesApi.createCase.mockRejectedValue(new Error('Không thể kết nối'));
+ render(<CreateCaseDialog projectId={1} suites={[{id:2,code:'SPEC',name:'Login'}]} onClose={vi.fn()} onSuccess={vi.fn()}/>);
+ await user.type(screen.getByLabelText('Mã Test Case (Case No.) *'),'TC-1');
+ await user.type(screen.getByLabelText('Tiêu đề ca kiểm thử (VI) *'),'Đăng nhập');
+ await user.type(screen.getByLabelText('Các bước thực hiện (Steps VI) *'),'Mở trang đăng nhập');
+ await user.type(screen.getByLabelText('Kết quả mong đợi (Expected Result VI) *'),'Hiển thị biểu mẫu');
+ await user.click(screen.getByRole('button',{name:'Lưu Test Case'}));
+ const alert=await screen.findByRole('alert');
+ expect(alert).toHaveTextContent('Không thể kết nối');expect(alert).toHaveFocus();
+ expect(screen.getByLabelText('Tiêu đề ca kiểm thử (VI) *')).toHaveValue('Đăng nhập');
 });
 async function preview(result) {
   testCasesApi.createImportPreview.mockResolvedValue(result);
@@ -89,11 +125,34 @@ describe('Project-scoped test case library',()=> {
     await user.keyboard('{Escape}');expect(onClose).not.toHaveBeenCalled();
     await act(async()=>fail(new Error('Mạng gián đoạn')));
     expect(screen.getByRole('alert')).toHaveTextContent('Mạng gián đoạn');
+    expect(screen.queryByRole('button',{name:'Thử lại'})).not.toBeInTheDocument();
     expect(screen.getByLabelText('Tiêu đề kiểm thử (VI) *')).toHaveValue('Sửa bản nháp');
     await user.click(screen.getByRole('button',{name:'Lưu phiên bản'}));
     await waitFor(()=>expect(onUpdated).toHaveBeenCalledOnce());
     expect(testCasesApi.addRevision).toHaveBeenLastCalledWith(1,1,expect.objectContaining({titleVi:'Sửa bản nháp',titleJp:'原文',expectedCurrentRevisionId:4}));
     expect(screen.queryByRole('button',{name:'Lưu phiên bản'})).toBeNull();
+  });
+  it('offers read retry and blocks stale actions after a revision saves but refresh fails',async()=>{
+    const old={id:4,revisionNo:1,titleVi:'Bản cũ',stepsVi:'Bước cũ',expectedVi:'Mong đợi cũ'};
+    const fresh={id:5,revisionNo:2,titleVi:'Bản đã lưu',stepsVi:'Bước mới',expectedVi:'Mong đợi mới'};
+    testCasesApi.getCase.mockResolvedValueOnce({caseNo:'TC-1',currentRevisionId:4,currentRevision:old,revisions:[]})
+      .mockRejectedValueOnce(new Error('Tải lại thất bại'))
+      .mockResolvedValueOnce({caseNo:'TC-1',currentRevisionId:5,currentRevision:fresh,revisions:[]});
+    testCasesApi.addRevision.mockResolvedValue({id:5});
+    const user=userEvent.setup(),onUpdated=vi.fn();
+    render(<CaseDetailModal projectId={1} caseId={1} onClose={vi.fn()} onUpdated={onUpdated}/>);
+    await user.click(await screen.findByRole('button',{name:'Thêm phiên bản'}));
+    await user.clear(screen.getByLabelText('Tiêu đề kiểm thử (VI) *'));
+    await user.type(screen.getByLabelText('Tiêu đề kiểm thử (VI) *'),'Bản đã lưu');
+    await user.click(screen.getByRole('button',{name:'Lưu phiên bản'}));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Tải lại thất bại');
+    expect(screen.getByRole('button',{name:'Thêm phiên bản'})).toBeDisabled();
+    expect(screen.getByText('Bản cũ')).toBeVisible();
+    await user.click(screen.getByRole('button',{name:'Thử lại'}));
+    expect(await screen.findByText('Bản đã lưu')).toBeVisible();
+    expect(screen.getByRole('button',{name:'Thêm phiên bản'})).toBeEnabled();
+    expect(testCasesApi.addRevision).toHaveBeenCalledOnce();
+    expect(onUpdated).toHaveBeenCalledOnce();
   });
   it('requires confirmation for PM approval and supports retry after an API failure',async()=> {
     const revision={id:4,revisionNo:1,titleVi:'Chờ phê duyệt'};
@@ -181,12 +240,19 @@ describe('Project-scoped test case library',()=> {
     await act(async()=>finish({id:1}));
     expect(onSuccess).toHaveBeenCalledOnce();expect(onClose).toHaveBeenCalledOnce();
   });
-  it('does not expose approval just because the system role is ADMIN',async()=> {
+  it('allows global ADMIN approval regardless of project role',async()=> {
     context.systemRole='ADMIN'; context.currentProject.projectRole='TESTER';
     testCasesApi.getCase.mockResolvedValue({id:1,caseNo:'TC-1',currentRevision:{id:4,titleVi:'Nội dung hiện tại'},revisions:[]});
     render(<CaseDetailModal projectId={1} caseId={1} onClose={vi.fn()}/>);
     await screen.findByText('Nội dung hiện tại');
-    expect(screen.queryByRole('button',{name:/Phê duyệt/})).not.toBeInTheDocument();
+    expect(screen.getByRole('button',{name:/Phê duyệt/})).toBeEnabled();
+  });
+  it('allows global admin revision editing without project membership',async()=> {
+    context.systemRole='ADMIN';context.currentProject.projectRole=null;
+    testCasesApi.getCase.mockResolvedValue({id:1,caseNo:'TC-1',currentRevision:{id:4,titleVi:'Chỉ xem'},revisions:[]});
+    render(<CaseDetailModal projectId={1} caseId={1} onClose={vi.fn()}/>);
+    await screen.findByText('Chỉ xem');
+    expect(screen.getByRole('button',{name:'Thêm phiên bản',exact:true})).toBeEnabled();
   });
   it('allows the project PM and reads full old revision content',async()=> {
     testCasesApi.getCase.mockResolvedValue({id:1,caseNo:'TC-1',currentRevision:{id:4,titleVi:'Bản mới'},revisions:[{id:3,revisionNo:1,createdAt:'2026-09-01'}]});

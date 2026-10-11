@@ -15,7 +15,7 @@ vi.mock('../../services/api/testCases',()=>({testCasesApi:{getCase:vi.fn(),getRe
 const project={id:1,name:'Test',projectRole:'TESTER',timezone:'Asia/Ho_Chi_Minh'};
 const row={caseId:21,sourceId:'1'};
 const run={id:77,testCaseId:21,caseNo:'TC-1',configurationId:2,defaultBuildId:3,version:0,revisionNo:1,resultCode:'NOT_RUN',assigneeUserId:'tester',assigneeName:'Tester',titleVi:'Đăng nhập',stepsVi:'Mở ứng dụng',expectedVi:'Thành công'};
-function Harness(){const e=useDocumentExecution(project,9);return <><button onClick={()=>e.show(row)}>Ô iPad</button><span data-testid="live-result">{e.byCase.get('21')?.resultCode || 'SOURCE'}</span><DocumentExecutionControls execution={e} project={project} navigate={vi.fn()}/></>;}
+function Harness({onSaved}){const e=useDocumentExecution(project,9);return <><button onClick={()=>e.show(row)}>Ô iPad</button><span data-testid="live-result">{e.byCase.get('21')?.resultCode || 'SOURCE'}</span><DocumentExecutionControls execution={e} project={project} navigate={vi.fn()} onSaved={onSaved}/></>;}
 beforeEach(()=>{
   vi.resetAllMocks();sessionStorage.clear();auth.user={id:'tester'};
   executionApi.cycles.mockResolvedValue({items:[{id:8,name:'Regression',statusCode:'ACTIVE'}],totalPages:1});
@@ -49,7 +49,7 @@ it('keeps a missing-scope explanation in the dialog and opens the run after choo
   await user.click(screen.getByRole('button',{name:'Đóng'}));expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
 it('records an actual attempt and reloads the result/history, keeping the selected context after remount',async()=>{
-  const user=userEvent.setup();const view=render(<Harness/>);await openRun(user);
+  const onSaved=vi.fn(),user=userEvent.setup();const view=render(<Harness onSaved={onSaved}/>);await openRun(user);
   await user.selectOptions(screen.getByLabelText('Kết quả'),'OK');
   executionApi.record.mockResolvedValue({id:99,attemptNo:1,resultCode:'OK'});
   executionApi.runs.mockResolvedValue({items:[{...run,version:1,resultCode:'OK'}],totalPages:1});
@@ -57,6 +57,7 @@ it('records an actual attempt and reloads the result/history, keeping the select
   await user.click(screen.getByRole('button',{name:'Ghi kết quả'}));
   await waitFor(()=>expect(executionApi.record).toHaveBeenCalledWith(1,77,expect.objectContaining({resultCode:'OK',buildId:3,expectedVersion:0})));
   expect(await screen.findByText('Đã lưu lần chạy #1.')).toBeVisible();
+  expect(onSaved).toHaveBeenCalledOnce();
   await waitFor(()=>expect(screen.getByTestId('live-result')).toHaveTextContent('OK'));
   expect(await screen.findByText('Lần #1')).toBeVisible();
   view.unmount();render(<Harness/>);await waitFor(()=>expect(screen.getByTestId('live-result')).toHaveTextContent('OK'));
@@ -88,10 +89,11 @@ it('does not use a late result from a previous cycle',async()=>{
   expect(screen.getByTestId('live-result')).toHaveTextContent('SOURCE');expect(screen.queryByRole('dialog',{name:'Thực thi TC-1'})).not.toBeInTheDocument();
 });
 it('keeps the existing result when saving is rejected and allows closing the dialog',async()=>{
-  const user=userEvent.setup();render(<Harness/>);await openRun(user);
+  const onSaved=vi.fn(),user=userEvent.setup();render(<Harness onSaved={onSaved}/>);await openRun(user);
   executionApi.record.mockRejectedValue(new Error('Lượt chạy đã thay đổi'));
   await user.selectOptions(screen.getByLabelText('Kết quả'),'OK');await user.click(screen.getByRole('button',{name:'Ghi kết quả'}));
   expect(await screen.findByRole('alert')).toHaveTextContent('Lượt chạy đã thay đổi');expect(screen.getByTestId('live-result')).toHaveTextContent('NOT_RUN');
+  expect(onSaved).not.toHaveBeenCalled();
   await user.click(screen.getByRole('button',{name:'Đóng'}));expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
 it('retries failed context loading and requires explicit selection for multiple configurations',async()=>{

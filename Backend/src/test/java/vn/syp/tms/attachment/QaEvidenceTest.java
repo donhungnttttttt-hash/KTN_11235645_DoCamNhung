@@ -29,8 +29,8 @@ class QaEvidenceTest {
     @SuppressWarnings("null")
     @BeforeEach void setup() throws Exception {
         service=new EvidenceService(db,work,audit,qa,root.toString());
-        when(qa.authorize(1,"actor",true)).thenReturn(new QaService.Actor(7,false,true,false,false));
-        when(qa.authorizeWriter(1,"actor",70)).thenReturn(new QaService.Writer(new QaService.Actor(7,false,true,false,false),Map.of("type","QA")));
+        when(qa.authorize(1,"actor",true)).thenReturn(new QaService.Actor(7,false,true,false,false,false));
+        when(qa.authorizeWriter(1,"actor",70)).thenReturn(new QaService.Writer(new QaService.Actor(7,false,true,false,false,false),Map.of("type","QA")));
         when(db.row(anyString(),any(Object[].class))).thenAnswer(i->i.<String>getArgument(0).contains("item_type")?Map.of("type","QA"):Map.of("uploaded_by",7L,"original_name","proof.pdf","media_type","application/pdf"));
         when(db.rows(anyString(),any(Object[].class))).thenReturn(List.of());
         when(work.writable(1,"actor")).thenReturn(Map.of("id",99L,"role","TESTER","globalRole","TESTER"));
@@ -54,9 +54,10 @@ class QaEvidenceTest {
         order.verify(qa).authorize(1,"actor",true);
         order.verify(db).row(contains("item_type"),eq(1L),eq(70L));
         order.verify(qa).authorizeWriter(1,"actor",70);
-        order.verify(file).getSize();order.verify(db).count(contains("COUNT(*)"),eq(1L),eq(70L));
+        order.verify(file).getSize();
         order.verify(file).getInputStream();
         order.verify(db).rows(argThat(sql->sql.contains("sha256") && sql.endsWith("FOR UPDATE")),eq(1L),eq(70L),eq(7L),anyString(),eq("proof.pdf"));
+        verify(db,never()).count(anyString(),any(Object[].class));
         verifyNoInteractions(work,audit);assertTrue(files().isEmpty());
     }
     @ParameterizedTest @CsvSource({"401,UNAUTHENTICATED","403,FORBIDDEN","409,INVALID_QA_STATE","409,ARCHIVED","404,NOT_FOUND"})
@@ -80,7 +81,7 @@ class QaEvidenceTest {
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
     @SuppressWarnings("null")
     void pmCreatorTesterAndAssignedDevUploadUsingTypedAuthor(boolean pm,boolean tester,boolean dev) throws Exception {
-        when(qa.authorizeWriter(1,"actor",70)).thenReturn(new QaService.Writer(new QaService.Actor(7,pm,tester,dev,false),Map.of("type","QA")));
+        when(qa.authorizeWriter(1,"actor",70)).thenReturn(new QaService.Writer(new QaService.Actor(7,pm,tester,dev,false,false),Map.of("type","QA")));
         var result=service.upload(1,"actor",70,file());Path blob=root.resolve(result.get("id").toString());
         assertEquals("application/pdf",result.get("mediaType"));assertArrayEquals(content,Files.readAllBytes(blob));
         verify(db).update(contains("INSERT INTO work_item_attachments"),anyString(),eq(1L),eq(70L),eq("proof.pdf"),eq("application/pdf"),eq(content.length),anyString(),eq(7L));
@@ -89,6 +90,26 @@ class QaEvidenceTest {
     @Test void successfulUploadRetainsBlobAndAuditsAfterCommit() throws Exception {
         var result=service.upload(1,"actor",70,file());commit();assertTrue(Files.exists(root.resolve(result.get("id").toString())));
         verify(audit).record(1L,"actor","WORK_ITEM",70L,"ATTACH_EVIDENCE");
+    }
+    // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
+    @SuppressWarnings("null")
+    @Test void exactRetryAtAttachmentLimitReturnsAcceptedMetadataWithoutAnotherWrite() throws Exception {
+        when(db.count(contains("COUNT(*) FROM work_item_attachments"),any(Object[].class))).thenReturn(100L);
+        var accepted=Map.<String,Object>of("id",id,"name","proof.pdf","mediaType","application/pdf","size",content.length);
+        when(db.rows(contains("sha256"),any(Object[].class))).thenReturn(List.of(accepted));
+        assertEquals(accepted,service.upload(1,"actor",70,file()));
+        verify(db,never()).update(anyString(),any(Object[].class));
+        verifyNoInteractions(audit);assertTrue(files().isEmpty());
+        assertTrue(TransactionSynchronizationManager.getSynchronizations().isEmpty());
+    }
+    // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
+    @SuppressWarnings("null")
+    @Test void genuinelyNewEvidenceAtAttachmentLimitIsRejectedWithoutStorageOrAudit() throws Exception {
+        when(db.count(contains("COUNT(*) FROM work_item_attachments"),any(Object[].class))).thenReturn(100L);
+        denied(()->service.upload(1,"actor",70,file()),"ATTACHMENT_LIMIT");
+        verify(db,never()).update(anyString(),any(Object[].class));
+        verifyNoInteractions(audit);assertTrue(files().isEmpty());
+        assertTrue(TransactionSynchronizationManager.getSynchronizations().isEmpty());
     }
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
     @SuppressWarnings("null")
@@ -109,11 +130,11 @@ class QaEvidenceTest {
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.
     @SuppressWarnings("null")
     @Test void pmMayDeleteAnotherUploaderButAssignedDevCannot() throws Exception {
-        when(qa.authorizeWriter(1,"actor",70)).thenReturn(new QaService.Writer(new QaService.Actor(7,false,false,true,false),Map.of("type","QA")));
+        when(qa.authorizeWriter(1,"actor",70)).thenReturn(new QaService.Writer(new QaService.Actor(7,false,false,true,false,false),Map.of("type","QA")));
         when(db.row(contains("uploaded_by"),any(Object[].class))).thenReturn(Map.of("uploaded_by",8L));
         Files.write(root.resolve(id),content);denied(()->service.delete(1,"actor",70,id),"FORBIDDEN");
         verify(db,never()).update(anyString(),any(Object[].class));assertTrue(Files.exists(root.resolve(id)));
-        when(qa.authorizeWriter(1,"actor",70)).thenReturn(new QaService.Writer(new QaService.Actor(7,true,false,false,false),Map.of("type","QA")));
+        when(qa.authorizeWriter(1,"actor",70)).thenReturn(new QaService.Writer(new QaService.Actor(7,true,false,false,false,false),Map.of("type","QA")));
         service.delete(1,"actor",70,id);commit();assertFalse(Files.exists(root.resolve(id)));
     }
     // Mockito matcher tokens are synthetic placeholders for non-null SQL parameters.

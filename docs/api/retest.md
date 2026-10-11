@@ -2,7 +2,7 @@
 
 [OpenAPI](retest.openapi.json), [chính sách](../business/retest-policy.md), [quyết định](../decisions/ADR-007-internal-retest.md).
 
-Mọi endpoint thuộc `/api/v1/projects/{projectId}`. Session/CSRF theo API hiện có; project membership active bắt buộc. ADMIN toàn hệ thống không thay quyền PM dự án. Project archive chỉ đọc.
+Mọi endpoint thuộc `/api/v1/projects/{projectId}`. Session/CSRF theo API hiện có; ADMIN toàn hệ thống hoặc project membership active theo quyền tương ứng. ADMIN được lập coverage/request, xác minh thay assignee và đóng/mở lại lỗi theo trạng thái hợp lệ; audit/attempt ghi đúng Admin thực hiện, không đổi người được giao. Project archive chỉ đọc.
 
 | Endpoint | Hành vi |
 | --- | --- |

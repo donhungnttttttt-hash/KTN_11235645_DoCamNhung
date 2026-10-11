@@ -3,6 +3,7 @@ package vn.syp.tms.ai;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.net.URI;
+import java.util.Objects;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class AiChatController {
     public record Send(@NotBlank @Size(max=2000) String text,@NotBlank @Pattern(regexp="[A-Za-z0-9_-]{8,64}") String requestKey) {}
     @PostMapping public ResponseEntity<AiChatStore.ThreadView> create(Authentication auth,@Valid @RequestBody Create body) {
         var thread=service.create(actor(auth),body.projectId(),body.purpose(),body.targetId(),new AiProviderGateway.Selection(body.provider(),body.model()));
-        return ResponseEntity.created(URI.create("/api/v1/ai/chats/"+thread.id())).body(thread);
+        return ResponseEntity.created(Objects.requireNonNull(URI.create("/api/v1/ai/chats/"+thread.id()))).body(thread);
     }
     @GetMapping public AiChatStore.Page list(Authentication auth,@RequestParam(defaultValue="0") long before) {return store.list(actor(auth),before);}
     @GetMapping("/{id}") public AiChatStore.Detail get(Authentication auth,@PathVariable long id,@RequestParam(defaultValue="0") long before) {return store.get(actor(auth),id,before);}

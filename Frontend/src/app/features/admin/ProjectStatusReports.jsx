@@ -28,6 +28,7 @@ function Reports({projectId,admin=false,api=adminApi}) {
  const update=(key,value)=>setDraft(old=>({...old,[key]:value}));
  return <section className="status-reports admin-card ex-panel"><h2>Báo cáo tiến độ của PM</h2>
   <p>Báo cáo được giữ nguyên trong lịch sử; đính chính bằng báo cáo mới. Không thay hạn mốc hoặc kết quả kiểm thử.</p>
+  {admin&&<p><a href={`#/progress?workspace=1&projectId=${encodeURIComponent(projectId)}`}>Mở không gian báo cáo tiến độ</a></p>}
   <ReadState {...state}/>{data&&<>
    <div aria-label="Cảnh báo hạn thực tế">{overdue.length?<ul>{overdue.map(m=><li key={m.id}>Quá hạn: {m.name} · {m.dueOn}</li>)}</ul>:<p>Không có cảnh báo quá hạn. Điều này chưa khẳng định dự án đúng tiến độ.</p>}
     {data.milestones.some(m=>m.deadlineStatus==='INSUFFICIENT_DATA')&&<p>Có mốc chưa đủ dữ liệu về hạn hoặc phạm vi.</p>}</div>

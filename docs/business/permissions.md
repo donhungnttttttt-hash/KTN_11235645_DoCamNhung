@@ -1,14 +1,28 @@
 # Quyền nội bộ
 
-## Quyền xem của quản trị tổng — 10/10/2026
+## Admin tổng toàn quyền — quyết định mới nhất 10/10/2026
+
+Người dùng xác nhận: **Admin tổng có toàn quyền nghiệp vụ**. ADMIN đang hoạt động được quản lý mọi dự án, tạo/sửa/duyệt case, phân công kể cả test lần 2, tạo/mở/chốt đợt, ghi kết quả tài liệu và thực thi/retest, xử lý công việc và các bước QA của PM/Tester/Dev. Không cần membership đang hoạt động hoặc được giao riêng. Các mục “Admin chỉ xem/ngoại lệ import” bên dưới là lịch sử và đã bị thay thế bởi quyết định này.
+
+Frontend và API cùng áp dụng. Quy tắc hợp lệ của dữ liệu vẫn giữ: đúng dự án trên URL, phiên bản hiện hành, nguồn/case đã duyệt, build/máy phù hợp, trạng thái cho phép và lịch sử. Dự án lưu trữ/đợt đóng cần mở lại bằng lệnh hiện có. Preview import riêng của người khác và hội thoại AI riêng không bị công khai bởi thay đổi này.
+
+Đọc không thêm membership. Khi lệnh ghi cần FK membership để lưu tác giả, Admin chưa có liên kết được tạo bản ghi `MEMBER`, `active=false`; không thêm vào danh sách thành viên đang hoạt động hoặc cấp quyền PM/Tester. Mọi tác giả/executor vẫn là chính Admin. Khi tài khoản bị hạ quyền hoặc khóa, liên kết này không cấp quyền truy cập. V28 giữ FK cùng dự án nhưng tách người ghi kết quả khỏi người khởi tạo phiên và người nhận máy. [Kế hoạch và kiểm chứng](../planning/2026-10-10-admin-full-authority.md).
+
+## Lịch sử: quyền nhập Excel riêng của Admin — đã thay bằng toàn quyền phía trên
+
+Theo yêu cầu mới: ADMIN đang hoạt động được tải mẫu, tạo/xem preview của mình và xác nhận nhập Excel vào mọi dự án chưa lưu trữ, không cần membership. Đây là ngoại lệ riêng cho import, không mở quyền tạo/sửa case thủ công, phê duyệt, phân công hay ghi kết quả. PM vẫn chỉ import trong dự án mình quản lý; Tester/Dev không được import. Preview chưa commit của người khác vẫn bị chặn.
+
+V26 lưu identity của người tạo revision bằng `created_by_user_id`, cho phép `created_by` (membership) rỗng khi Admin nhập. Không tạo membership giả, không mượn người tạo của PM. Lịch sử cũ giữ nguyên; nhật ký import ghi đúng Admin. Nhập nhiều file dùng preview/commit riêng cho từng file, có xác nhận và báo lỗi riêng.
+
+## Lịch sử: Admin chỉ xem — đã thay bằng toàn quyền phía trên
 
 Theo yêu cầu sửa lỗi Admin thấy dự án tại quản trị nhưng workspace trống: ADMIN đang hoạt động được liệt kê và đọc mọi dự án trong Không gian dự án, kể cả khi không có membership. Phạm vi đọc gồm công việc/QA, tài liệu đã import, case/revision, đợt/run/lịch sử, file được giao, báo cáo, danh mục, thành viên và máy bàn giao. Hàng việc cần xử lý của Admin quan sát là toàn dự án; bộ lọc cá nhân vẫn chỉ lấy đúng người.
 
-Quyền xem không tạo membership, không tự gán PM/Tester và không cho phép ghi kết quả, nhập file, phân công hoặc chuyển trạng thái nghiệp vụ. ProjectSummary.projectRole vẫn null nếu không có membership; UI thể hiện chế độ xem. ADMIN có membership thật tiếp tục theo quy tắc hiện có. Các lệnh chỉ PM, executor, Dev được giao hoặc Tester tạo QA vẫn kiểm tra vai trò/người được giao như trước.
+Quyền xem không tạo membership, không tự gán PM/Tester và không cho phép ghi kết quả, phân công hoặc chuyển trạng thái nghiệp vụ. Quyền nhập file áp dụng ngoại lệ mới phía trên. ProjectSummary.projectRole vẫn null nếu không có membership. ADMIN có membership thật tiếp tục theo quy tắc hiện có. Các lệnh chỉ PM, executor, Dev được giao hoặc Tester tạo QA vẫn kiểm tra vai trò/người được giao như trước.
 
 Tài khoản PM/Tester/Dev chỉ đọc các dự án có membership active. Resource ID vẫn phải thuộc projectId trên URL; Admin không được đọc resource của dự án B bằng URL của A. Preview import chưa commit vẫn thuộc người tạo. Tài khoản bị khóa/thu hồi quyền không được dùng quyền Admin cũ. Xem [báo cáo kiểm chứng](../reviews/2026-10-10-admin-workspace-read.md).
 
-Các mục lịch sử bên dưới áp dụng cùng cập nhật quyền đọc này; không mở rộng quyền ghi.
+Các mục lịch sử bên dưới giữ quy tắc cho vai trò khác; giới hạn quyền ADMIN đã được thay bởi quyết định toàn quyền ở đầu tài liệu.
 
 ## Thiết kế F/Q đã duyệt — 06/10/2026
 
@@ -105,3 +119,8 @@ Archive bị chặn bởi phiên DOING/PAUSED, máy chưa thu hồi, ticket chư
 PM dự án được kết thúc TASK/REQUEST/IMPROVEMENT thành closed hoặc wontfix với lý do và version, rồi mở lại chỉ về open. TESTER/DEV không được kết thúc hoặc mở lại. BUG giữ coverage/retest/closure; QA giữ xác nhận câu trả lời và PM closure. Công việc thường không nhận trạng thái unreproducible hoặc fixed build.
 
 Vai trò DEV phải khớp hai chiều: tài khoản hệ thống DEV chỉ nhận membership DEV; tài khoản không phải DEV không được gán membership DEV. Thay đổi không tự sửa dữ liệu cũ; Admin dùng màn quản lý thành viên để điều chỉnh trường hợp cũ không tương thích.
+# Bổ sung ngày 10/10/2026 — bảng tài liệu
+
+PM dự án được phân công **test lần 2** cho Tester đang hoạt động, gắn với một run thật trong đợt nháp có cấu hình. PM bắt đầu/chốt/mở lại đợt; chỉ người được giao ghi kết quả khi đợt ACTIVE. Giao lần 2 không tự tạo xác minh bug hoặc thay đổi trạng thái bug.
+
+Sửa ô nội dung dùng quyền sửa revision hiện tại: PM hoặc ADMIN có membership đang hoạt động, dự án chưa lưu trữ, không có vai trò DEV. Nội dung case tạo revision mới cần PM duyệt; ô bổ sung có lịch sử riêng. Admin tổng không có membership vẫn xem và nhập Excel nhưng không hiện nút sửa revision hoặc ghi kết quả.
