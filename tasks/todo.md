@@ -1,5 +1,40 @@
 # F/Q task list — plan tasks/plan.md
 
+## Commit/push theo yêu cầu17/10/2026
+
+- Người dùng đã cho phép commit và push audit/UI hiện hành lên `system-design`. Kiểm tra scope/index và remote trước push; không merge/deploy, không đổi S11 IN_REVIEW. Báo kết quả commit/remote sau thực hiện; giữ scratch/config local ngoài commit.
+
+## Tinh chỉnh UI/UX — 17/10/2026
+
+- [x] Đọc handoff/planning/permissions/source, snapshot working tree và kiểm runtime;8080/5173 ECONNREFUSED. Giữ S11 IN_REVIEW và các sửa audit.
+- [x] Khoanh bounded UI-R1–R5 theo source/bằng chứng, không đổi brand/navigation/API/DB; phân công rõ file.
+- [x] UI-R2: ScopeSetup/CoverageEditor kết thúc loading khi request lỗi, giữ nháp và retry; RED2→GREEN79 trong5files.
+- [x] UI-R3: role-save/remove success/focus và MemberPicker pager/nút có tên; RED3→GREEN31 trong5files.
+- [x] UI-R1: shared filter/selection clarity và modal focus; RED4/9→GREEN49/7files; thêm empty-source precedence RED1/3→GREEN trong full suite884. Giữ initial heading tabindex=-1.
+- [x] UI-R4: computed contrast nút xóa lọc12.63:1/count6.45:1; KPI thực tế11.80–12.43:1 nên giữ nguyên global.css, loại false positive thiếu scoped CSS. Không suy thành WCAG toàn hệ thống.
+- [x] UI-R5 bounded: Chrome component fixture/mock/API blocked,375/768/1440, keyboard/filter/selection/member/retest, console sau reload sạch trong cửa sổ quan sát; full FE884/82files, coverage/build PASS; review Spec+Standards, report/STATUS.
+- [ ] Zoom200%: đã thử shortcut nhưng không đổi DPR/viewport; NOT_VERIFIED. Screen reader/Safari/cảm ứng thật chưa kiểm chứng.
+- [ ] Integrated runtime/physical touch/role-data UAT: chưa chạy, backend không được tự khởi động. Không dùng mock/jsdom thay kết luận tích hợp.
+
+## Rà soát luồng hiện hữu — 16/10/2026
+
+Phạm vi do người dùng yêu cầu: khảo sát trạng thái hiện tại, sửa lỗi đã tái hiện của chức năng hiện có; một kế hoạch và một vòng RED→GREEN cho mỗi lỗi. Báo cáo tại `docs/reviews/2026-10-16-workflow-audit.md`. Không commit/push/merge/deploy/PR, không chạy script lịch sử trong `var/`, không thay dữ liệu sử dụng hoặc restart/tạo dịch vụ.
+
+- [x] Đọc yêu cầu, RTK/AGENTS, đối chiếu branch, tracked diff, phiên bản và kế hoạch; ghi baseline và giới hạn.
+- [x] Ma trận source theo9luồng và thuật ngữ đã chốt; UI→API→quyền→DB→readback, file:dòng và giới hạn trong báo cáo/3owner evidence.
+- [x] Điều tra ba nhóm nghiệp vụ độc lập;5lỗi hành vi xác nhận,3tài liệu sửa; candidate revoke-race tách khỏi finding đã chứng minh.
+- [x] R2/ADM-01: gỡ member thành công dọn đúng role draft; gỡ lỗi/nháp người khác giữ nguyên. UI RED→GREEN.
+- [x] R3/T-01/T-02:409 edit ô/test lần2 giữ nháp, reload context/token và explicit save; source/run/permission/revision đổi fail closed.13regressions RED→GREEN.
+- [x] R4/WQ-01: authoritative detail reload chờ/lỗi khóa commands, giữ nháp/file, retry/read thành công mới mở.2regressions RED→GREEN.
+- [x] R5/ADM-03 SQL: keyword Unicode cũ ERROR3854→exact final clause PASS trên SELECT readonly; guarded public HTTP regression đã viết/compile.
+- [x] R6 source review: review chéo Spec/Standards, final revision guard/Unicode/audit-output path; không finding critical/P1/P2 được xác nhận còn lại trong diff.
+- [x] FE872/79files và coverage thực đo; BE552/57unit classes và JaCoCo unit-only; build/package/contract structural/diff PASS, DB readonly76tables/185FK/10checks không violation. Lỗi môi trường/lượt trung gian ghi riêng.
+- [ ] Native/HTTP: cần preprovisioned isolated V29;3schema đang có V21/V22 không phù hợp, không tự migrate/reset/chọn tms. Public HTTP Unicode và concurrency/projection **NOT_RUN**.
+- [ ] Browser/runtime/UAT:8080/5173 ECONNREFUSED; không tự start/restart. Kiểm browser/role-data/physical-device và S11 UAT còn riêng.
+- [x] Báo cáo/STATUS/planning cập nhật scope,skill,changed files,coverage,retro/next action; S11 giữ IN_REVIEW, không commit/push.
+
+Contract/diff checkpoint cuối và artifact tổng hợp nằm trong báo cáo; không đánh dấu native/browser đã đạt bằng unit test. Fresh dependency scan/JDT **NOT_RUN**, JS lint/typecheck **NOT_CONFIGURED**.
+
 ## Mở rộng V20 — 07/10/2026
 
 - [x] Dữ liệu demo local: 5 user theo quyền, 2 dự án, membership/catalog/cycle/device/allocation; không seed case/file/result trong SQL.

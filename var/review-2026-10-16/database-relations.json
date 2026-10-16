@@ -1,0 +1,749 @@
+{
+  "checkedAt": "2026-10-16T17:06:16.956Z",
+  "readOnly": true,
+  "tableCount": 76,
+  "foreignKeys": 185,
+  "failures": [],
+  "checks": [
+    {
+      "relation": "ai_chat_threads:fk_ai_chat_owner",
+      "orphanRows": 0
+    },
+    {
+      "relation": "ai_chat_threads:fk_ai_chat_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "ai_chat_turns:fk_ai_chat_turn_owner",
+      "orphanRows": 0
+    },
+    {
+      "relation": "ai_generated_drafts:fk_ai_draft_author",
+      "orphanRows": 0
+    },
+    {
+      "relation": "ai_generated_drafts:fk_ai_draft_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_closure_decisions:bug_closure_decisions_ibfk_1",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_closure_decisions:bug_closure_decisions_ibfk_2",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_closure_decisions:bug_closure_decisions_ibfk_3",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_closure_decisions:bug_closure_decisions_ibfk_4",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_closure_decisions:bug_closure_decisions_ibfk_5",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_coverage_items:bug_coverage_items_ibfk_1",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_coverage_items:bug_coverage_items_ibfk_2",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_coverage_revisions:bug_coverage_revisions_ibfk_1",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_coverage_revisions:bug_coverage_revisions_ibfk_2",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_coverage_revisions:bug_coverage_revisions_ibfk_3",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_details:fk_bug_build",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_details:fk_bug_device",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_details:fk_bug_env",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_details:fk_bug_fixed_build",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_details:fk_bug_policy",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_details:fk_bug_revision",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_details:fk_bug_rule_version",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_details:fk_bug_work",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_retest_state:bug_retest_state_ibfk_1",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_retest_state:bug_retest_state_ibfk_2",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_verification_attempts:bug_verification_attempts_ibfk_1",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_verification_attempts:bug_verification_attempts_ibfk_2",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_verification_attempts:bug_verification_attempts_ibfk_3",
+      "orphanRows": 0
+    },
+    {
+      "relation": "bug_verification_attempts:bug_verification_attempts_ibfk_4",
+      "orphanRows": 0
+    },
+    {
+      "relation": "builds:fk_build_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "categories:fk_cat_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "cycle_configurations:fk_config_build",
+      "orphanRows": 0
+    },
+    {
+      "relation": "cycle_configurations:fk_config_cycle",
+      "orphanRows": 0
+    },
+    {
+      "relation": "cycle_configurations:fk_config_device",
+      "orphanRows": 0
+    },
+    {
+      "relation": "cycle_configurations:fk_config_env",
+      "orphanRows": 0
+    },
+    {
+      "relation": "cycle_decisions:fk_cycle_decision_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "cycle_decisions:fk_cycle_decision_cycle",
+      "orphanRows": 0
+    },
+    {
+      "relation": "device_allocations:device_allocations_ibfk_1",
+      "orphanRows": 0
+    },
+    {
+      "relation": "device_allocations:device_allocations_ibfk_2",
+      "orphanRows": 0
+    },
+    {
+      "relation": "device_allocations:device_allocations_ibfk_3",
+      "orphanRows": 0
+    },
+    {
+      "relation": "device_allocations:device_allocations_ibfk_4",
+      "orphanRows": 0
+    },
+    {
+      "relation": "device_allocations:device_allocations_ibfk_5",
+      "orphanRows": 0
+    },
+    {
+      "relation": "device_assets:device_assets_ibfk_1",
+      "orphanRows": 0
+    },
+    {
+      "relation": "device_assets:device_assets_ibfk_2",
+      "orphanRows": 0
+    },
+    {
+      "relation": "devices:fk_device_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "environments:fk_env_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "execution_attempts:fk_attempt_build",
+      "orphanRows": 0
+    },
+    {
+      "relation": "execution_attempts:fk_attempt_executor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "execution_attempts:fk_attempt_file_session_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "execution_attempts:fk_attempt_result",
+      "orphanRows": 0
+    },
+    {
+      "relation": "execution_attempts:fk_attempt_run",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_commands:fk_fw_command_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_commands:fk_fw_command_group",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_commands:fk_fw_command_session",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_group_items:fk_fw_item_group",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_group_items:fk_fw_item_run_pin",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_group_items:fk_fw_item_source",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_groups:fk_fw_group_config",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_groups:fk_fw_group_creator",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_groups:fk_fw_group_document",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_groups:fk_fw_group_editor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_history:fk_fw_history_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_history:fk_fw_history_group",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_history:fk_fw_history_session",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_sessions:fk_fw_session_asset_allocation",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_sessions:fk_fw_session_build",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_sessions:fk_fw_session_executor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "file_work_sessions:fk_fw_session_group",
+      "orphanRows": 0
+    },
+    {
+      "relation": "identity_audit:fk_audit_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "identity_audit:fk_identity_audit_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "identity_audit:fk_identity_audit_subject",
+      "orphanRows": 0
+    },
+    {
+      "relation": "identity_users:fk_identity_role",
+      "orphanRows": 0
+    },
+    {
+      "relation": "import_batches:fk_ib_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "import_batches:fk_ib_user",
+      "orphanRows": 0
+    },
+    {
+      "relation": "import_rows:fk_ir_batch",
+      "orphanRows": 0
+    },
+    {
+      "relation": "import_rows:fk_ir_case",
+      "orphanRows": 0
+    },
+    {
+      "relation": "import_rows:fk_ir_result_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "milestones:fk_ms_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_audit:fk_project_audit_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_audit:fk_project_audit_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_counters:fk_counter_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_lifecycle_decisions:fk_project_lifecycle_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_lifecycle_decisions:fk_project_lifecycle_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_memberships:fk_membership_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_memberships:fk_membership_user",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_resources:fk_res_current_revision",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_resources:fk_res_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_status_reports:project_status_reports_ibfk_1",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_status_reports:project_status_reports_ibfk_2",
+      "orphanRows": 0
+    },
+    {
+      "relation": "project_status_reports:project_status_reports_ibfk_3",
+      "orphanRows": 0
+    },
+    {
+      "relation": "projects:fk_projects_created_by",
+      "orphanRows": 0
+    },
+    {
+      "relation": "projects:fk_projects_updated_by",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_answers:fk_qa_answer_author",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_answers:fk_qa_answer_detail",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_commands:fk_qa_command_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_commands:fk_qa_command_item",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_confirmations:fk_qa_confirmation_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_confirmations:fk_qa_confirmation_answer",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_details:fk_qa_current_answer_exact",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_details:fk_qa_current_confirmation",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_details:fk_qa_document",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_details:fk_qa_group_document",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_details:fk_qa_group_exact",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_details:fk_qa_group_run",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_details:fk_qa_revision",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_details:fk_qa_run",
+      "orphanRows": 0
+    },
+    {
+      "relation": "qa_details:fk_qa_work_type",
+      "orphanRows": 0
+    },
+    {
+      "relation": "redmine_bindings:fk_redmine_binding_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "redmine_bindings:fk_redmine_binding_work",
+      "orphanRows": 0
+    },
+    {
+      "relation": "redmine_delivery_attempts:fk_redmine_attempt_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "redmine_delivery_attempts:fk_redmine_attempt_job",
+      "orphanRows": 0
+    },
+    {
+      "relation": "redmine_outbox:fk_redmine_outbox_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "redmine_outbox:fk_redmine_outbox_binding",
+      "orphanRows": 0
+    },
+    {
+      "relation": "redmine_outbox:fk_redmine_outbox_dispatch_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "resource_revisions:fk_rr_edited_by",
+      "orphanRows": 0
+    },
+    {
+      "relation": "resource_revisions:fk_rr_resource",
+      "orphanRows": 0
+    },
+    {
+      "relation": "retest_request_items:retest_request_items_ibfk_1",
+      "orphanRows": 0
+    },
+    {
+      "relation": "retest_request_items:retest_request_items_ibfk_2",
+      "orphanRows": 0
+    },
+    {
+      "relation": "retest_requests:retest_requests_ibfk_1",
+      "orphanRows": 0
+    },
+    {
+      "relation": "retest_requests:retest_requests_ibfk_2",
+      "orphanRows": 0
+    },
+    {
+      "relation": "retest_requests:retest_requests_ibfk_3",
+      "orphanRows": 0
+    },
+    {
+      "relation": "retest_requests:retest_requests_ibfk_4",
+      "orphanRows": 0
+    },
+    {
+      "relation": "retest_requests:retest_requests_ibfk_5",
+      "orphanRows": 0
+    },
+    {
+      "relation": "retest_requests:retest_requests_ibfk_6",
+      "orphanRows": 0
+    },
+    {
+      "relation": "retest_requests:retest_requests_ibfk_7",
+      "orphanRows": 0
+    },
+    {
+      "relation": "rule_versions:fk_rv_created_by",
+      "orphanRows": 0
+    },
+    {
+      "relation": "rule_versions:fk_rv_published_by",
+      "orphanRows": 0
+    },
+    {
+      "relation": "rule_versions:fk_rv_ruleset",
+      "orphanRows": 0
+    },
+    {
+      "relation": "rulesets:fk_ruleset_active_version",
+      "orphanRows": 0
+    },
+    {
+      "relation": "rulesets:fk_ruleset_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "run_item_assignments:fk_assignment_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "run_item_assignments:fk_assignment_previous",
+      "orphanRows": 0
+    },
+    {
+      "relation": "run_item_assignments:fk_assignment_run",
+      "orphanRows": 0
+    },
+    {
+      "relation": "run_item_assignments:fk_assignment_target",
+      "orphanRows": 0
+    },
+    {
+      "relation": "run_items:fk_run_assignee",
+      "orphanRows": 0
+    },
+    {
+      "relation": "run_items:fk_run_config",
+      "orphanRows": 0
+    },
+    {
+      "relation": "run_items:fk_run_latest_attempt",
+      "orphanRows": 0
+    },
+    {
+      "relation": "run_items:fk_run_revision",
+      "orphanRows": 0
+    },
+    {
+      "relation": "run_items:fk_run_scope_decision",
+      "orphanRows": 0
+    },
+    {
+      "relation": "run_scope_decisions:fk_scope_decision_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "run_scope_decisions:fk_scope_decision_run",
+      "orphanRows": 0
+    },
+    {
+      "relation": "spring_session_attributes:SPRING_SESSION_ATTRIBUTES_FK",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_case_revisions:fk_tcr_approved_by",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_case_revisions:fk_tcr_case",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_case_revisions:fk_tcr_created_by",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_case_revisions:fk_tcr_identity_author",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_case_revisions:fk_tcr_reviewer",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_case_revisions:fk_tcr_translator",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_cases:fk_tc_current_revision",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_cases:fk_tc_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_cases:fk_tc_suite",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_cycles:fk_cycle_activator",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_cycles:fk_cycle_creator",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_cycles:fk_cycle_milestone",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_cycles:fk_cycle_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_cycles:fk_cycle_status",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_document_cell_changes:fk_doc_change_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_document_cell_changes:fk_doc_change_row",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_document_cell_edits:fk_doc_cell_row",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_document_retests:fk_doc_retest_row",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_document_retests:fk_doc_retest_run",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_suites:fk_ts_parent",
+      "orphanRows": 0
+    },
+    {
+      "relation": "test_suites:fk_ts_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_attachments:fk_attachment_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_attachments:fk_attachment_work",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_clarifications:fk_clarification_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_clarifications:fk_clarification_work",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_comments:fk_comment_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_comments:fk_comment_work",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_execution_links:fk_work_link_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_execution_links:fk_work_link_attempt",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_execution_links:fk_work_link_bug",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_external_references:fk_external_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_external_references:fk_external_work",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_history:fk_work_history_actor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_history:fk_work_history_from",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_history:fk_work_history_item",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_item_history:fk_work_history_to",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_items:fk_work_assignee",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_items:fk_work_category",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_items:fk_work_creator",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_items:fk_work_editor",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_items:fk_work_milestone",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_items:fk_work_project",
+      "orphanRows": 0
+    },
+    {
+      "relation": "work_items:fk_work_status",
+      "orphanRows": 0
+    }
+  ]
+}

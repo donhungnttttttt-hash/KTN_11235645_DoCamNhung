@@ -1,0 +1,10 @@
+rtk: Failed to resolve 'python' via PATH, falling back to direct exec: Binary 'python' not found on PATH
+rtk: Failed to execute command: python: program not found
+
+python3 exit 1
+rtk: Failed to resolve 'python3' via PATH, falling back to direct exec: Binary 'python3' not found on PATH
+rtk: Failed to execute command: python3: program not found
+
+py exit 1
+rtk: Failed to resolve 'py' via PATH, falling back to direct exec: Binary 'py' not found on PATH
+rtk: Failed to execute command: py: program not found

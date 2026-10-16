@@ -1,0 +1,271 @@
+[rtk] /!\ No hook installed — run `rtk init -g` for automatic token savings
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< vn.syp:tms-backend >-------------------------
+[INFO] Building SY Partners TMS 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.15:prepare-agent (coverage-agent) @ tms-backend ---
+[INFO] argLine set to -javaagent:C:\\Users\\admin\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.15\\org.jacoco.agent-0.8.15-runtime.jar=destfile=D:\\DCN\\KTN_11235645_DoCamNhung\\Backend\\target\\jacoco.exec,append=false
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ tms-backend ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] Copying 29 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ tms-backend ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ tms-backend ---
+[INFO] skip non existing resourceDirectory D:\DCN\KTN_11235645_DoCamNhung\Backend\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ tms-backend ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ tms-backend ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running vn.syp.tms.admin.AdminAuditServiceTest
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Users\admin\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.286 s -- in vn.syp.tms.admin.AdminAuditServiceTest
+[INFO] Running vn.syp.tms.admin.AdminManagementSecurityTest
+00:16:49.445 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [vn.syp.tms.admin.AdminManagementSecurityTest]: AdminManagementSecurityTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+00:16:50.011 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration vn.syp.tms.TmsApplication for test class vn.syp.tms.admin.AdminManagementSecurityTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-17T00:16:51.051+07:00  INFO 5212 --- [syp-tms] [           main] v.s.t.admin.AdminManagementSecurityTest  : Starting AdminManagementSecurityTest using Java 21.0.9 with PID 5212 (started by admin in D:\DCN\KTN_11235645_DoCamNhung\Backend)
+2026-10-17T00:16:51.052+07:00  INFO 5212 --- [syp-tms] [           main] v.s.t.admin.AdminManagementSecurityTest  : No active profile set, falling back to 1 default profile: "default"
+2026-10-17T00:16:54.539+07:00  INFO 5212 --- [syp-tms] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-17T00:16:54.539+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-17T00:16:54.540+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-17T00:16:54.583+07:00  INFO 5212 --- [syp-tms] [           main] v.s.t.admin.AdminManagementSecurityTest  : Started AdminManagementSecurityTest in 4.408 seconds (process running for 9.878)
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.315 s -- in vn.syp.tms.admin.AdminManagementSecurityTest
+[INFO] Running vn.syp.tms.admin.AdminOverviewServiceTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.117 s -- in vn.syp.tms.admin.AdminOverviewServiceTest
+[INFO] Running vn.syp.tms.admin.AdminProjectServiceTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.252 s -- in vn.syp.tms.admin.AdminProjectServiceTest
+[INFO] Running vn.syp.tms.admin.AdminSecurityTest
+2026-10-17T00:16:55.603+07:00  INFO 5212 --- [syp-tms] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [vn.syp.tms.admin.AdminSecurityTest]: AdminSecurityTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-17T00:16:55.618+07:00  INFO 5212 --- [syp-tms] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration vn.syp.tms.TmsApplication for test class vn.syp.tms.admin.AdminSecurityTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-17T00:16:55.667+07:00  INFO 5212 --- [syp-tms] [           main] vn.syp.tms.admin.AdminSecurityTest       : Starting AdminSecurityTest using Java 21.0.9 with PID 5212 (started by admin in D:\DCN\KTN_11235645_DoCamNhung\Backend)
+2026-10-17T00:16:55.667+07:00  INFO 5212 --- [syp-tms] [           main] vn.syp.tms.admin.AdminSecurityTest       : No active profile set, falling back to 1 default profile: "default"
+2026-10-17T00:16:56.413+07:00  INFO 5212 --- [syp-tms] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-17T00:16:56.413+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-17T00:16:56.414+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-17T00:16:56.425+07:00  INFO 5212 --- [syp-tms] [           main] vn.syp.tms.admin.AdminSecurityTest       : Started AdminSecurityTest in 0.802 seconds (process running for 11.72)
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.911 s -- in vn.syp.tms.admin.AdminSecurityTest
+[INFO] Running vn.syp.tms.admin.DeveloperResultsTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.451 s -- in vn.syp.tms.admin.DeveloperResultsTest
+[INFO] Running vn.syp.tms.admin.DeviceInventoryServiceTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.071 s -- in vn.syp.tms.admin.DeviceInventoryServiceTest
+[INFO] Running vn.syp.tms.admin.InventorySecurityTest
+2026-10-17T00:16:57.042+07:00  INFO 5212 --- [syp-tms] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [vn.syp.tms.admin.InventorySecurityTest]: InventorySecurityTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-17T00:16:57.056+07:00  INFO 5212 --- [syp-tms] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration vn.syp.tms.TmsApplication for test class vn.syp.tms.admin.InventorySecurityTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-17T00:16:57.099+07:00  INFO 5212 --- [syp-tms] [           main] vn.syp.tms.admin.InventorySecurityTest   : Starting InventorySecurityTest using Java 21.0.9 with PID 5212 (started by admin in D:\DCN\KTN_11235645_DoCamNhung\Backend)
+2026-10-17T00:16:57.099+07:00  INFO 5212 --- [syp-tms] [           main] vn.syp.tms.admin.InventorySecurityTest   : No active profile set, falling back to 1 default profile: "default"
+2026-10-17T00:16:57.635+07:00  INFO 5212 --- [syp-tms] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-17T00:16:57.635+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-17T00:16:57.635+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-17T00:16:57.644+07:00  INFO 5212 --- [syp-tms] [           main] vn.syp.tms.admin.InventorySecurityTest   : Started InventorySecurityTest in 0.582 seconds (process running for 12.939)
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.691 s -- in vn.syp.tms.admin.InventorySecurityTest
+[INFO] Running vn.syp.tms.admin.ProjectStatusReportSecurityTest
+2026-10-17T00:16:57.736+07:00  INFO 5212 --- [syp-tms] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [vn.syp.tms.admin.ProjectStatusReportSecurityTest]: ProjectStatusReportSecurityTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-17T00:16:57.748+07:00  INFO 5212 --- [syp-tms] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration vn.syp.tms.TmsApplication for test class vn.syp.tms.admin.ProjectStatusReportSecurityTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-17T00:16:57.784+07:00  INFO 5212 --- [syp-tms] [           main] v.s.t.a.ProjectStatusReportSecurityTest  : Starting ProjectStatusReportSecurityTest using Java 21.0.9 with PID 5212 (started by admin in D:\DCN\KTN_11235645_DoCamNhung\Backend)
+2026-10-17T00:16:57.784+07:00  INFO 5212 --- [syp-tms] [           main] v.s.t.a.ProjectStatusReportSecurityTest  : No active profile set, falling back to 1 default profile: "default"
+2026-10-17T00:16:58.359+07:00  INFO 5212 --- [syp-tms] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-17T00:16:58.360+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-17T00:16:58.360+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-17T00:16:58.367+07:00  INFO 5212 --- [syp-tms] [           main] v.s.t.a.ProjectStatusReportSecurityTest  : Started ProjectStatusReportSecurityTest in 0.615 seconds (process running for 13.663)
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.712 s -- in vn.syp.tms.admin.ProjectStatusReportSecurityTest
+[INFO] Running vn.syp.tms.admin.ProjectStatusReportTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.205 s -- in vn.syp.tms.admin.ProjectStatusReportTest
+[INFO] Running vn.syp.tms.ai.AiAccessTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.156 s -- in vn.syp.tms.ai.AiAccessTest
+[INFO] Running vn.syp.tms.ai.AiAssistanceServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.180 s -- in vn.syp.tms.ai.AiAssistanceServiceTest
+[INFO] Running vn.syp.tms.ai.AiChatPromptTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.323 s -- in vn.syp.tms.ai.AiChatPromptTest
+[INFO] Running vn.syp.tms.ai.AiChatServiceTest
+[INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.388 s -- in vn.syp.tms.ai.AiChatServiceTest
+[INFO] Running vn.syp.tms.ai.AiContextBudgetTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 s -- in vn.syp.tms.ai.AiContextBudgetTest
+[INFO] Running vn.syp.tms.ai.AiDraftContentTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in vn.syp.tms.ai.AiDraftContentTest
+[INFO] Running vn.syp.tms.ai.AiDraftServiceTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.114 s -- in vn.syp.tms.ai.AiDraftServiceTest
+[INFO] Running vn.syp.tms.ai.AiProviderAuthorizationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.295 s -- in vn.syp.tms.ai.AiProviderAuthorizationTest
+[INFO] Running vn.syp.tms.ai.AiProviderIntegrationTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.507 s -- in vn.syp.tms.ai.AiProviderIntegrationTest
+[INFO] Running vn.syp.tms.ai.AiProviderSafetyTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in vn.syp.tms.ai.AiProviderSafetyTest
+[INFO] Running vn.syp.tms.ai.ChatGptConnectionServiceTest
+[INFO] Tests run: 28, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.486 s -- in vn.syp.tms.ai.ChatGptConnectionServiceTest
+[INFO] Running vn.syp.tms.ai.ChatGptCredentialVaultTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.052 s -- in vn.syp.tms.ai.ChatGptCredentialVaultTest
+[INFO] Running vn.syp.tms.ai.ChatGptIdentityTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.391 s -- in vn.syp.tms.ai.ChatGptIdentityTest
+[INFO] Running vn.syp.tms.ai.ChatGptOAuthClientTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.395 s -- in vn.syp.tms.ai.ChatGptOAuthClientTest
+[INFO] Running vn.syp.tms.ai.OpenAiConfigurationTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.082 s -- in vn.syp.tms.ai.OpenAiConfigurationTest
+[INFO] Running vn.syp.tms.ai.OpenAiResponsesClientTest
+[INFO] Tests run: 30, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.907 s -- in vn.syp.tms.ai.OpenAiResponsesClientTest
+[INFO] Running vn.syp.tms.attachment.EvidenceContentTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.088 s -- in vn.syp.tms.attachment.EvidenceContentTest
+[INFO] Running vn.syp.tms.attachment.QaEvidenceTest
+[INFO] Tests run: 36, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.681 s -- in vn.syp.tms.attachment.QaEvidenceTest
+[INFO] Running vn.syp.tms.catalog.CatalogInputTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s -- in vn.syp.tms.catalog.CatalogInputTest
+[INFO] Running vn.syp.tms.config.DefaultProfileSecurityTest
+2026-10-17T00:17:17.872+07:00  INFO 5212 --- [syp-tms] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [vn.syp.tms.config.DefaultProfileSecurityTest]: DefaultProfileSecurityTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-17T00:17:17.906+07:00  INFO 5212 --- [syp-tms] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration vn.syp.tms.TmsApplication for test class vn.syp.tms.config.DefaultProfileSecurityTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-17T00:17:17.952+07:00  INFO 5212 --- [syp-tms] [           main] v.s.t.config.DefaultProfileSecurityTest  : Starting DefaultProfileSecurityTest using Java 21.0.9 with PID 5212 (started by admin in D:\DCN\KTN_11235645_DoCamNhung\Backend)
+2026-10-17T00:17:17.953+07:00  INFO 5212 --- [syp-tms] [           main] v.s.t.config.DefaultProfileSecurityTest  : No active profile set, falling back to 1 default profile: "default"
+2026-10-17T00:17:18.584+07:00  INFO 5212 --- [syp-tms] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-17T00:17:18.584+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-17T00:17:18.585+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-17T00:17:18.594+07:00  INFO 5212 --- [syp-tms] [           main] v.s.t.config.DefaultProfileSecurityTest  : Started DefaultProfileSecurityTest in 0.681 seconds (process running for 33.889)
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.833 s -- in vn.syp.tms.config.DefaultProfileSecurityTest
+[INFO] Running vn.syp.tms.config.LocalDatabaseConfigurationTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.261 s -- in vn.syp.tms.config.LocalDatabaseConfigurationTest
+[INFO] Running vn.syp.tms.filework.FileWorkExecutionTest
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.684 s -- in vn.syp.tms.filework.FileWorkExecutionTest
+[INFO] Running vn.syp.tms.filework.FileWorkServiceTest
+[INFO] Tests run: 44, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.548 s -- in vn.syp.tms.filework.FileWorkServiceTest
+[INFO] Running vn.syp.tms.filework.FileWorkSessionTest
+[INFO] Tests run: 35, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.284 s -- in vn.syp.tms.filework.FileWorkSessionTest
+[INFO] Running vn.syp.tms.filework.NativeFqDatabaseGuardTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.102 s -- in vn.syp.tms.filework.NativeFqDatabaseGuardTest
+[INFO] Running vn.syp.tms.identity.IdentityPolicyTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.332 s -- in vn.syp.tms.identity.IdentityPolicyTest
+[INFO] Running vn.syp.tms.identity.SessionAccountFilterTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s -- in vn.syp.tms.identity.SessionAccountFilterTest
+[INFO] Running vn.syp.tms.integration.RedmineClientTest
+[INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.508 s -- in vn.syp.tms.integration.RedmineClientTest
+[INFO] Running vn.syp.tms.integration.RedmineConfigurationTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.051 s -- in vn.syp.tms.integration.RedmineConfigurationTest
+[INFO] Running vn.syp.tms.integration.RedmineSchedulerTest
+2026-10-17T00:17:23.610+07:00  WARN 5212 --- [syp-tms] [           main] v.syp.tms.integration.RedmineScheduler   : Redmine dispatch interrupted; persisted lease will be reconciled. Inspect local database availability.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.087 s -- in vn.syp.tms.integration.RedmineSchedulerTest
+[INFO] Running vn.syp.tms.project.AdminStateProjectionTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.399 s -- in vn.syp.tms.project.AdminStateProjectionTest
+[INFO] Running vn.syp.tms.project.CentralMembershipTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.203 s -- in vn.syp.tms.project.CentralMembershipTest
+[INFO] Running vn.syp.tms.project.ProjectTimezoneTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in vn.syp.tms.project.ProjectTimezoneTest
+[INFO] Running vn.syp.tms.qa.HandoffServiceTest
+[INFO] Tests run: 58, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.411 s -- in vn.syp.tms.qa.HandoffServiceTest
+[INFO] Running vn.syp.tms.qa.QaServiceTest
+[INFO] Tests run: 42, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.696 s -- in vn.syp.tms.qa.QaServiceTest
+[INFO] Running vn.syp.tms.reporting.ReportingLimitTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.073 s -- in vn.syp.tms.reporting.ReportingLimitTest
+[INFO] Running vn.syp.tms.retest.RetestExecutionTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.096 s -- in vn.syp.tms.retest.RetestExecutionTest
+[INFO] Running vn.syp.tms.rules.InternalRulePolicyTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in vn.syp.tms.rules.InternalRulePolicyTest
+[INFO] Running vn.syp.tms.shared.web.ApiExceptionHandlerTest
+2026-10-17T00:17:25.566+07:00  INFO 5212 --- [syp-tms] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-10-17T00:17:25.566+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-17T00:17:25.567+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-17T00:17:25.569+07:00  WARN 5212 --- [syp-tms] [           main] v.s.tms.shared.web.ApiExceptionHandler   : Database operation unavailable; requestId=75ddb4b1-73f8-4229-9e4a-af6e57d53461, type=DataAccessResourceFailureException
+2026-10-17T00:17:25.594+07:00 ERROR 5212 --- [syp-tms] [           main] v.s.tms.shared.web.ApiExceptionHandler   : Unexpected request failure; requestId=4cba5a80-7838-4772-a251-630da927b38e, type=IllegalStateException
+2026-10-17T00:17:25.607+07:00  INFO 5212 --- [syp-tms] [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-10-17T00:17:25.608+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-17T00:17:25.608+07:00  INFO 5212 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.102 s -- in vn.syp.tms.shared.web.ApiExceptionHandlerTest
+[INFO] Running vn.syp.tms.testcase.CustomerWorkbookTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.466 s -- in vn.syp.tms.testcase.CustomerWorkbookTest
+[INFO] Running vn.syp.tms.testcase.DocumentResultServiceTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.241 s -- in vn.syp.tms.testcase.DocumentResultServiceTest
+[INFO] Running vn.syp.tms.testcase.DocumentWorkbookTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.434 s -- in vn.syp.tms.testcase.DocumentWorkbookTest
+[INFO] Running vn.syp.tms.testcase.FileWorkWorkbookTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.263 s -- in vn.syp.tms.testcase.FileWorkWorkbookTest
+[INFO] Running vn.syp.tms.testcase.TestCaseWorkbookTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.238 s -- in vn.syp.tms.testcase.TestCaseWorkbookTest
+[INFO] Running vn.syp.tms.workitem.DeveloperPermissionsTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.150 s -- in vn.syp.tms.workitem.DeveloperPermissionsTest
+[INFO] Running vn.syp.tms.workitem.OrdinaryWorkItemLifecycleTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.052 s -- in vn.syp.tms.workitem.OrdinaryWorkItemLifecycleTest
+[INFO] Running vn.syp.tms.workitem.WorkItemHistoryTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.090 s -- in vn.syp.tms.workitem.WorkItemHistoryTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 552, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ tms-backend ---
+[INFO] Building jar: D:\DCN\KTN_11235645_DoCamNhung\Backend\target\tms-backend-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot:3.5.16:repackage (repackage) @ tms-backend ---
+[INFO] Replacing main artifact D:\DCN\KTN_11235645_DoCamNhung\Backend\target\tms-backend-0.1.0-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to D:\DCN\KTN_11235645_DoCamNhung\Backend\target\tms-backend-0.1.0-SNAPSHOT.jar.original
+[INFO] 
+[INFO] --- jacoco:0.8.15:report (coverage-report) @ tms-backend ---
+[INFO] Loading execution data file D:\DCN\KTN_11235645_DoCamNhung\Backend\target\jacoco.exec
+[INFO] Analyzed bundle 'SY Partners TMS' with 342 classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  50.286 s
+[INFO] Finished at: 2026-10-17T00:17:32+07:00
+[INFO] ------------------------------------------------------------------------

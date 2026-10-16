@@ -4,7 +4,7 @@ Trạng thái 30/09/2026: contract trước implementation T02/T03. Provider san
 
 ## Actor, cấu hình và dữ liệu
 
-Prefix `P=/api/v1/projects/{projectId}`. Session và active membership bắt buộc. Thành viên đọc, chỉ PM dự án yêu cầu publish/retry/reconcile; ghi cần CSRF. ADMIN toàn cục không thay PM. Dự án archive chỉ đọc. TMS giữ authority; remote đóng không tự đóng bug/pass case.
+Prefix `P=/api/v1/projects/{projectId}`. Session hiện hành bắt buộc. Thành viên đang hoạt động đọc; PM hiện hành của dự án yêu cầu publish/retry/reconcile. Theo quyết định Admin tổng toàn quyền ngày 10/10/2026, ADMIN đang hoạt động được đọc và thực hiện các lệnh này trong mọi dự án, không cần membership hoặc quyền PM riêng. Ghi cần CSRF; đúng project, version, trạng thái và các guard outbox vẫn bắt buộc. Dự án archive chỉ đọc. TMS giữ authority; remote đóng không tự đóng bug/pass case.
 
 Endpoint/API key được cấu hình tại máy chủ, không nhận URL/key trong request. Mapping theo project từ file vận hành được chỉ định, có checksum; worker kiểm tra mapping/instance lúc dispatch. File mẫu không có API key. Credentials truyền header, HTTP chỉ cho loopback sandbox; đích khác yêu cầu HTTPS; không theo redirect. Connection timeout 3 giây, request timeout 10 giây, response cap 1 MiB.
 

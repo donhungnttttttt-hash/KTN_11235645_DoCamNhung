@@ -45,3 +45,27 @@ test('does not allow lifecycle changes to discard an open project edit',async()=
  fireEvent.click(screen.getByRole('button',{name:'Hủy'}));
  expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeEnabled();
 });
+
+test('removing a member discards only that members role draft and permits lifecycle review',async()=>{
+ const project={id:7,code:'APP',name:'iPad',description:'',timezone:'UTC',version:3,archivedAt:null,metrics:{},milestones:[],verificationBugs:[]};
+ const first={userId:'first',displayName:'Tester One',username:'one',systemRole:'TESTER',projectRole:'TESTER',version:1};
+ const other={userId:'other',displayName:'Tester Two',username:'two',systemRole:'TESTER',projectRole:'TESTER',version:2};
+ let members=[first,other];
+ const api={project:vi.fn().mockResolvedValue(project),members:vi.fn(async()=>members),users:vi.fn().mockResolvedValue({items:[],totalElements:0}),archiveReadiness:vi.fn().mockResolvedValue({projectId:7,version:3,archived:false,canArchive:true,canReopen:false,blockers:[]}),removeMember:vi.fn(async()=>{members=[other];}).mockRejectedValueOnce(new Error('Membership conflict'))};
+ render(<AdminProjectDetail id="7" api={api}/>);
+ fireEvent.change(await screen.findByLabelText('Vai trò Tester One'),{target:{value:'PM'}});
+ fireEvent.change(screen.getByLabelText('Vai trò Tester Two'),{target:{value:'PM'}});
+ expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeDisabled();
+ fireEvent.click(screen.getByRole('button',{name:'Gỡ Tester One'}));
+ await screen.findByText('Membership conflict');
+ expect(await screen.findByLabelText('Vai trò Tester One')).toHaveValue('PM');
+ expect(screen.getByLabelText('Vai trò Tester Two')).toHaveValue('PM');
+ expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeDisabled();
+ fireEvent.click(screen.getByRole('button',{name:'Gỡ Tester One'}));
+ await waitFor(()=>expect(screen.queryByLabelText('Vai trò Tester One')).not.toBeInTheDocument());
+ expect(await screen.findByLabelText('Vai trò Tester Two')).toHaveValue('PM');
+ expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeDisabled();
+ fireEvent.change(screen.getByLabelText('Vai trò Tester Two'),{target:{value:'TESTER'}});
+ expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeEnabled();
+ expect(api.removeMember).toHaveBeenCalledWith('7','first',1);
+});

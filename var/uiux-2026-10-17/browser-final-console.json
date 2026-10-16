@@ -1,0 +1,27 @@
+{
+  "reloadedAt": "2026-10-16T18:04:56.568Z",
+  "checkedAt": "2026-10-16T18:05:07.890Z",
+  "url": "http://127.0.0.1:4173/@fs/D:/DCN/KTN_11235645_DoCamNhung/var/uiux-2026-10-17/preview/index.html?surface=selection",
+  "allCapturedIssues": [
+    {
+      "level": "error",
+      "message": "Error: @vitejs/plugin-react can't detect preamble. Something is wrong.\n    at http://127.0.0.1:4173/src/app/components/SelectionTable.jsx:8:11",
+      "timestamp": "2026-10-16T17:46:25.416Z",
+      "url": "http://127.0.0.1:4173/src/app/components/SelectionTable.jsx"
+    },
+    {
+      "level": "error",
+      "message": "Warning: You are calling ReactDOMClient.createRoot() on a container that has already been passed to createRoot() before. Instead, call root.render() on the existing root instead if you want to update it.",
+      "timestamp": "2026-10-16T17:56:36.863Z",
+      "url": "http://127.0.0.1:4173/node_modules/.vite/deps/chunk-EVKD6XCE.js?v=eab0ef69"
+    },
+    {
+      "level": "error",
+      "message": "Warning: You are calling ReactDOMClient.createRoot() on a container that has already been passed to createRoot() before. Instead, call root.render() on the existing root instead if you want to update it.",
+      "timestamp": "2026-10-16T18:04:53.135Z",
+      "url": "http://127.0.0.1:4173/node_modules/.vite/deps/chunk-EVKD6XCE.js?v=eab0ef69"
+    }
+  ],
+  "issuesSinceReload": [],
+  "boundary": "Frontend component fixture with synthetic data and API blocked; historical fixture bootstrap/HMR warnings retained."
+}

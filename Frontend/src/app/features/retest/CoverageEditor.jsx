@@ -14,7 +14,8 @@ export function CoverageEditor({ projectId, items, busy, onSubmit }) {
   return <form className="wi-form" onSubmit={e=>{e.preventDefault();onSubmit({runItemIds:selected,reason});}}>
     <p className="wi-note">PM chọn toàn bộ case/cấu hình cần xác minh. Xác nhận lại sẽ hủy yêu cầu đang mở và bắt đầu vòng kiểm thử mới.</p>
     {error && <p className="ex-error" role="alert">{error}<Button onClick={()=>setReload(n=>n+1)}>Thử lại</Button></p>}
-    <fieldset disabled={busy} className="rt-fieldset"><SelectionTable label="Case cho phạm vi" searchable={false} pageScope loading={!data} selected={selected} onChange={setSelected}
+    <fieldset disabled={busy} className="rt-fieldset"><SelectionTable label="Case cho phạm vi" searchable={false} pageScope loading={!data && !error} selected={selected} onChange={setSelected}
+      empty={error?'Chưa tải được danh sách lượt kiểm thử. Bấm Thử lại để tải lại.':'Không có mục phù hợp.'}
       filters={<label className="ui-field ui-filter-search">Tìm<input aria-label="Tìm case cho phạm vi" placeholder="Mã hoặc tên case…" value={keyword} onChange={e=>{setKeyword(e.target.value);setPage(0);}}/></label>}
       rows={(data?.items||[]).map(item=>({id:item.id,name:item.caseNo+' · '+item.titleVi,description:[item.cycleName,item.environmentName,item.deviceName,item.assigneeName].filter(Boolean).join(' · ')}))}/>
     {data && <Pager data={data} onChange={setPage}/>}

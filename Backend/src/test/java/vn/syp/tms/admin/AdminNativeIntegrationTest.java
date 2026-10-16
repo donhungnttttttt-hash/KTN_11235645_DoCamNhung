@@ -123,6 +123,19 @@ class AdminNativeIntegrationTest {
         assertThat(management.users(admin.getId(),null,admin.getUsername(),"ADMIN",true,0,20).totalElements()).isEqualTo(1);
         assertThat(management.users(admin.getId(),first,admin.getUsername(),null,null,0,20).totalElements()).isZero();
     }
+    @Test void userSearchAcceptsVietnameseDisplayNamesAndPreservesLiteralCaseSensitiveUsernames() throws Exception {
+        jdbc.update("UPDATE identity_users SET display_name=? WHERE id=?","Nguyễn Thị Kiểm thử 100%_",tester.getId());
+        for(String keyword:List.of("Nguyễn","Kiểm thử","100%_",tester.getUsername())) {
+            mvc.perform(get("/api/v1/admin/users").param("projectId",Long.toString(first)).param("keyword",keyword).param("size","1").with(actor(admin)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.items[0].id").value(tester.getId()))
+                .andExpect(jsonPath("$.items[0].displayName").value("Nguyễn Thị Kiểm thử 100%_"));
+        }
+        for(String keyword:List.of("không tồn tại",tester.getUsername().toUpperCase(Locale.ROOT))) {
+            mvc.perform(get("/api/v1/admin/users").param("projectId",Long.toString(first)).param("keyword",keyword).with(actor(admin)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(0));
+        }
+    }
     @Test void centralCreateDoesNotEnrollAdminAndLegacyMembershipRequiresAdmin() {
         var dev=users.saveAndFlush(new IdentityUser("a2.dev."+UUID.randomUUID().toString().substring(0,8),"Developer","SECRET","DEV"));
         var created=management.create(admin.getId(),new AdminProjectService.Create(new ProjectDtos.CreateProject("A2"+UUID.randomUUID().toString().substring(0,8),"Central","","UTC"),List.of(new AdminProjectService.InitialMember(owner.getId(),"PM"),new AdminProjectService.InitialMember(dev.getId(),"DEV"))));

@@ -1,5 +1,11 @@
 # Kế hoạch phát triển theo sprint
 
+Yêu cầu mới17/10: người dùng cho phép commit và push phần audit16–17/10 cùng tinh chỉnh UI/UX lên nhánh hiện tại `system-design`. Quyền một lần này thay giới hạn commit/push của hai đợt bên dưới; không cho phép merge/deploy hoặc thay đổi các gate kiểm chứng. Các ghi chú chưa push là trạng thái tại thời điểm kiểm tra.
+
+Tinh chỉnh UI/UX17/10: [cải tiến, ảnh trước/sau và giới hạn](../reviews/2026-10-17-uiux-refinement.md). Shared selection/filter/focus, lỗi tải/retry và phản hồi member đã sửa; full FE884/82files, coverage đo mới và build PASS. Chrome component fixture375/768/1440 dùng mock/API blocked; backend đang tắt nên chưa chứng minh tích hợp. Zoom200%/touch/AT/UAT còn mở, S11 IN_REVIEW; không commit/push.
+
+Rà soát hiện hành16–17/10: [ma trận luồng,5lỗi sửa,skill và bằng chứng](../reviews/2026-10-16-workflow-audit.md). FE872/79files, BE552unit, coverage đo mới, build và DB chỉ đọc76bảng/185FK/10liên kết không vi phạm. Native V29/browser/UAT còn gate riêng; S11 IN_REVIEW. Yêu cầu đợt này không cho commit/push/merge/deploy/PR, restart/tạo server/container hoặc chạy fixture trên database sử dụng; quyền một lần11/10 bên dưới là lịch sử.
+
 Yêu cầu mới 11/10: người dùng cho phép commit và push các thay đổi đã kiểm chứng lên nhánh hiện tại `system-design`. Quyền này chỉ áp dụng cho lần bàn giao này, không bao gồm merge/deploy. Các ghi chú “chưa push” bên dưới phản ánh thời điểm review trước yêu cầu mới.
 
 Rà soát sâu 11/10: [source, button và liên kết dữ liệu](../reviews/2026-10-11-deep-source-buttons-review.md). Đọc 354 file/29.224 dòng; sửa 12 lỗi, FE856, BE552 unit và 60 native PASS. Coverage FE 86,98/84,22/81,65/86,83; Java264 không lỗi/cảnh báo. Không đồng nhất kiểm tra source với UAT mọi trạng thái; giữ S11 IN_REVIEW, không commit/push.

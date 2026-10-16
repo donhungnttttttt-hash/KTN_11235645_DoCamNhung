@@ -1,0 +1,23 @@
+{
+  "readOnly": true,
+  "schemas": [
+    {
+      "schema": "tms_docstest_202610080023",
+      "version": [
+        "21"
+      ]
+    },
+    {
+      "schema": "tms_docstest_202610080024",
+      "version": [
+        "22"
+      ]
+    },
+    {
+      "schema": "tms_docstest_202610080025",
+      "version": [
+        "22"
+      ]
+    }
+  ]
+}

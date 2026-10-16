@@ -1,0 +1,210 @@
+{
+  "checkedAt": "2026-10-16T18:01:20.550Z",
+  "mode": "Chrome production components with synthetic data; API blocked",
+  "checks": [
+    {
+      "height": 1000,
+      "kpis": [
+        {
+          "background": "rgb(241, 245, 249)",
+          "color": "rgb(23, 50, 77)",
+          "label": "Chưa chạy"
+        },
+        {
+          "background": "rgb(255, 241, 240)",
+          "color": "rgb(23, 50, 77)",
+          "label": "NG · Không đạt"
+        },
+        {
+          "background": "rgb(255, 248, 235)",
+          "color": "rgb(23, 50, 77)",
+          "label": "P · Tạm hoãn"
+        },
+        {
+          "background": "rgb(234, 247, 243)",
+          "color": "rgb(23, 50, 77)",
+          "label": "OK · Đạt"
+        },
+        {
+          "background": "rgb(241, 243, 245)",
+          "color": "rgb(23, 50, 77)",
+          "label": "NA · Ngoài phạm vi"
+        },
+        {
+          "background": "rgb(237, 245, 252)",
+          "color": "rgb(23, 50, 77)",
+          "label": "Bug chờ xác minh"
+        }
+      ],
+      "pageWidth": 1440,
+      "state": "desktop",
+      "width": 1440
+    },
+    {
+      "alphaSelected": true,
+      "query": "",
+      "searchFocused": true,
+      "selectionText": "2 mục đã chọn1 mục ngoài phần đang hiển thị",
+      "state": "filter-reset"
+    },
+    {
+      "state": "other-page-retained",
+      "selected": ""
+    },
+    {
+      "focused": "Lịch sử và chứng cứ",
+      "state": "shift-tab-wrap",
+      "tag": "SUMMARY"
+    },
+    {
+      "dialogs": 0,
+      "focused": "Mở hộp thoại kiểm chứng",
+      "state": "escape-return"
+    },
+    {
+      "controls": [
+        {
+          "height": 44,
+          "tag": "INPUT",
+          "width": 329.6000061035156
+        },
+        {
+          "height": 44,
+          "tag": "SELECT",
+          "width": 329.6000061035156
+        },
+        {
+          "height": 44,
+          "tag": "LABEL",
+          "width": 48
+        },
+        {
+          "height": 44,
+          "tag": "LABEL",
+          "width": 48
+        },
+        {
+          "height": 44,
+          "tag": "LABEL",
+          "width": 48
+        }
+      ],
+      "pageWidth": 370,
+      "state": "mobile375",
+      "width": 375
+    },
+    {
+      "pageWidth": 768,
+      "state": "tablet768",
+      "width": 768
+    },
+    {
+      "dpr": 1.0000000149011612,
+      "height": 1000,
+      "pageWidth": 1440,
+      "state": "zoom-shortcuts",
+      "visualScale": 1,
+      "width": 1440
+    },
+    {
+      "busy": "false",
+      "empty": "Chưa tải được danh sách lượt kiểm thử. Bấm Thử lại để tải lại.",
+      "reason": "Giữ lựa chọn và lý do sau lỗi tải.",
+      "state": "read-error"
+    },
+    {
+      "busy": "true",
+      "reason": "Giữ lựa chọn và lý do sau lỗi tải.",
+      "state": "read-retry-pending"
+    },
+    {
+      "busy": "false",
+      "reason": "Giữ lựa chọn và lý do sau lỗi tải.",
+      "selected": true,
+      "state": "read-recovered"
+    },
+    {
+      "focused": "Đã lưu vai trò của Tester Alpha.",
+      "notice": "Đã lưu vai trò của Tester Alpha.",
+      "state": "member-role-saved"
+    },
+    {
+      "betaDraft": "PM",
+      "focused": "Đã gỡ Tester Alpha khỏi dự án.",
+      "notice": "Đã gỡ Tester Alpha khỏi dự án.",
+      "state": "member-removed"
+    },
+    {
+      "state": "readiness-after-draft-revert",
+      "enabled": true
+    },
+    {
+      "state": "contrast-current-context",
+      "pairs": [
+        {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(51, 51, 51)",
+          "label": "Nút xóa lọc",
+          "ratio": 12.63
+        },
+        {
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(71, 100, 95)",
+          "label": "Thông tin lựa chọn",
+          "ratio": 6.45
+        },
+        {
+          "background": "rgb(241, 245, 249)",
+          "color": "rgb(23, 50, 77)",
+          "label": "Chưa chạy",
+          "ratio": 11.98
+        },
+        {
+          "background": "rgb(255, 241, 240)",
+          "color": "rgb(23, 50, 77)",
+          "label": "NG · Không đạt",
+          "ratio": 11.93
+        },
+        {
+          "background": "rgb(255, 248, 235)",
+          "color": "rgb(23, 50, 77)",
+          "label": "P · Tạm hoãn",
+          "ratio": 12.43
+        },
+        {
+          "background": "rgb(234, 247, 243)",
+          "color": "rgb(23, 50, 77)",
+          "label": "OK · Đạt",
+          "ratio": 11.94
+        },
+        {
+          "background": "rgb(241, 243, 245)",
+          "color": "rgb(23, 50, 77)",
+          "label": "NA · Ngoài phạm vi",
+          "ratio": 11.8
+        },
+        {
+          "background": "rgb(237, 245, 252)",
+          "color": "rgb(23, 50, 77)",
+          "label": "Bug chờ xác minh",
+          "ratio": 11.92
+        }
+      ]
+    }
+  ],
+  "logs": [
+    {
+      "level": "error",
+      "message": "Error: @vitejs/plugin-react can't detect preamble. Something is wrong.\n    at http://127.0.0.1:4173/src/app/components/SelectionTable.jsx:8:11",
+      "timestamp": "2026-10-16T17:46:25.416Z",
+      "url": "http://127.0.0.1:4173/src/app/components/SelectionTable.jsx"
+    },
+    {
+      "level": "error",
+      "message": "Warning: You are calling ReactDOMClient.createRoot() on a container that has already been passed to createRoot() before. Instead, call root.render() on the existing root instead if you want to update it.",
+      "timestamp": "2026-10-16T17:56:36.863Z",
+      "url": "http://127.0.0.1:4173/node_modules/.vite/deps/chunk-EVKD6XCE.js?v=eab0ef69"
+    }
+  ],
+  "zoom200": "NOT_VERIFIED: keyboard shortcuts did not change DPR/viewport"
+}

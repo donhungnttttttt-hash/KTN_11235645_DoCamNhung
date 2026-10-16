@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 D:/DCN/KTN_11235645_DoCamNhung/Frontend
+
+
+ Test Files  7 passed (7)
+      Tests  49 passed (49)
+   Start at  00:52:37
+   Duration  8.00s (transform 833ms, setup 1.47s, import 1.67s, tests 7.53s, environment 3.80s)
+

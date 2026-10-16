@@ -1,0 +1,121 @@
+{
+  "checkedAt": "2026-10-16T17:06:26.704Z",
+  "readOnly": true,
+  "checks": [
+    {
+      "name": "GROUP_MIXED_ASSIGNEES",
+      "count": 0
+    },
+    {
+      "name": "RUN_LATEST_ATTEMPT_MISMATCH",
+      "count": 0
+    },
+    {
+      "name": "DOCUMENT_RETEST_CASE_MISMATCH",
+      "count": 0
+    },
+    {
+      "name": "CASE_CURRENT_REVISION_MISMATCH",
+      "count": 0
+    },
+    {
+      "name": "RUN_REVISION_MISMATCH",
+      "count": 0
+    },
+    {
+      "name": "GROUP_SOURCE_MISMATCH",
+      "count": 0
+    },
+    {
+      "name": "BUG_ATTEMPT_MISMATCH",
+      "count": 0
+    },
+    {
+      "name": "QA_GROUP_DOCUMENT_MISMATCH",
+      "count": 0
+    },
+    {
+      "name": "QA_RUN_REVISION_MISMATCH",
+      "count": 0
+    },
+    {
+      "name": "COMMITTED_UNMAPPED_VALID_ROW",
+      "count": 0
+    }
+  ],
+  "failures": [],
+  "projects": [
+    {
+      "runs": 2,
+      "documents": 4,
+      "projectId": 1,
+      "fileGroups": 0,
+      "sourceRows": 371,
+      "projectCode": "DEMO-S04"
+    },
+    {
+      "runs": 0,
+      "documents": 0,
+      "projectId": 2,
+      "fileGroups": 0,
+      "sourceRows": 0,
+      "projectCode": "DEMO-REVIEW-0930"
+    },
+    {
+      "runs": 240,
+      "documents": 4,
+      "projectId": 3,
+      "fileGroups": 0,
+      "sourceRows": 252,
+      "projectCode": "DEMO-PILOT"
+    },
+    {
+      "runs": 1,
+      "documents": 1,
+      "projectId": 4,
+      "fileGroups": 0,
+      "sourceRows": 1,
+      "projectCode": "DEMO-GRID-1003"
+    },
+    {
+      "runs": 88,
+      "documents": 2,
+      "projectId": 5,
+      "fileGroups": 2,
+      "sourceRows": 88,
+      "projectCode": "SYP-DEMO-20"
+    },
+    {
+      "runs": 0,
+      "documents": 0,
+      "projectId": 6,
+      "fileGroups": 0,
+      "sourceRows": 0,
+      "projectCode": "SYP-DEMO-WEB-20"
+    },
+    {
+      "runs": 0,
+      "documents": 0,
+      "projectId": 7,
+      "fileGroups": 0,
+      "sourceRows": 0,
+      "projectCode": "SYP-LAB-22-IOS"
+    },
+    {
+      "runs": 0,
+      "documents": 0,
+      "projectId": 8,
+      "fileGroups": 0,
+      "sourceRows": 0,
+      "projectCode": "SYP-LAB-22-TABLET"
+    },
+    {
+      "runs": 0,
+      "documents": 0,
+      "projectId": 9,
+      "fileGroups": 0,
+      "sourceRows": 0,
+      "projectCode": "SYP-LAB-22-PHONE"
+    }
+  ]
+}

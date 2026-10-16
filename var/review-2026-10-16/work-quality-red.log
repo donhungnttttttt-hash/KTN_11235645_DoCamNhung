@@ -1,0 +1,52 @@
+
+ RUN  v4.1.11 D:/DCN/KTN_11235645_DoCamNhung/Frontend
+
+ ❯ src/app/features/work-items/WorkItemDetail.test.jsx (17 tests | 2 failed) 1420ms
+   × blocks comment and evidence actions during an uncertain detail read and restores the retained draft after recovery 53ms
+   × blocks retained PM edit and reference forms until the authoritative ticket refresh succeeds 81ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 15 passed (17)
+   Start at  23:58:24
+   Duration  3.03s (transform 562ms, setup 242ms, import 674ms, tests 1.42s, environment 518ms)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/app/features/work-items/WorkItemDetail.test.jsx > blocks comment and evidence actions during an uncertain detail read and restores the retained draft after recovery
+Error: expect(element).toBeDisabled()
+
+Received element is not disabled:
+  <button
+  class="d-button primary  "
+  type="submit"
+/>
+ ❯ src/app/features/work-items/WorkItemDetail.test.jsx:110:61
+    108|  let rejectRead;workItemsApi.get.mockReturnValueOnce(new Promise((_res…
+    109|  fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
+    110|  expect(screen.getByRole('button',{name:'Đăng bình luận'})).toBeDisabl…
+       |                                                             ^
+    111|  expect(screen.getByRole('button',{name:'Tải chứng cứ lên'})).toBeDisa…
+    112|  expect(screen.getByRole('button',{name:'Gỡ Ảnh kết quả.png'})).toBeDi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/app/features/work-items/WorkItemDetail.test.jsx > blocks retained PM edit and reference forms until the authoritative ticket refresh succeeds
+Error: expect(element).toBeDisabled()
+
+Received element is not disabled:
+  <button
+  class="d-button primary  "
+  type="submit"
+/>
+ ❯ src/app/features/work-items/WorkItemDetail.test.jsx:133:119
+    131|  fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
+    132|  await screen.findByText('Chưa xác nhận được công việc hiện hành');
+    133|  for(const name of ['Lưu thông tin','Lưu tham chiếu','Lưu nội dung làm…
+       |                                                                                                                       ^
+    134|  expect(screen.getByLabelText('Sửa tiêu đề')).toHaveValue('Tiêu đề chư…
+    135|  expect(screen.getByLabelText('Mã bên ngoài')).toHaveValue('456');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-10-16T17:17:49.294Z",
+  "readOnly": true,
+  "keyword": "Nguyễn",
+  "cases": [
+    {
+      "clause": "original",
+      "status": "FAIL",
+      "mysqlError": "ERROR 3854"
+    },
+    {
+      "clause": "final",
+      "status": "PASS",
+      "counts": "0"
+    }
+  ]
+}

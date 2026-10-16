@@ -1,0 +1,596 @@
+diff --git a/Backend/src/main/java/vn/syp/tms/admin/AdminProjectService.java b/Backend/src/main/java/vn/syp/tms/admin/AdminProjectService.java
+index 6ce40e9..e4f716d 100644
+--- a/Backend/src/main/java/vn/syp/tms/admin/AdminProjectService.java
++++ b/Backend/src/main/java/vn/syp/tms/admin/AdminProjectService.java
+@@ -63,7 +63,8 @@ public class AdminProjectService {
+         if(page<0 || size<1 || size>100 || text(keyword).length()>100 || role!=null && !List.of("ADMIN","PM","TESTER","DEV").contains(role))fail(422,"INVALID_FILTER","Bộ lọc không hợp lệ.");
+         var args=new ArrayList<Object>();String where=" WHERE 1=1";
+         if(projectId!=null){db.row("SELECT id FROM projects WHERE id=?",projectId);where+=" AND EXISTS(SELECT 1 FROM project_memberships m WHERE m.user_id=u.id AND m.project_id=? AND m.active=TRUE)";args.add(projectId);}
+-        if(!text(keyword).isEmpty()){where+=" AND (LOCATE(?,u.username)>0 OR LOCATE(?,u.display_name)>0)";args.add(text(keyword));args.add(text(keyword));}
++        // Usernames remain ASCII and case-sensitive; accept UTF-8 display-name search terms.
++        if(!text(keyword).isEmpty()){where+=" AND (LOCATE(?,CONVERT(u.username USING utf8mb4) COLLATE utf8mb4_bin)>0 OR LOCATE(?,u.display_name)>0)";args.add(text(keyword));args.add(text(keyword));}
+         if(role!=null){where+=" AND u.role_code=?";args.add(role);}
+         if(enabled!=null){where+=" AND u.enabled=?";args.add(enabled);}
+         long count=db.count("SELECT COUNT(*) FROM identity_users u"+where,args.toArray());args.add(size);args.add((long)page*size);
+diff --git a/Backend/src/test/java/vn/syp/tms/admin/AdminNativeIntegrationTest.java b/Backend/src/test/java/vn/syp/tms/admin/AdminNativeIntegrationTest.java
+index a25e6d7..58b4dda 100644
+--- a/Backend/src/test/java/vn/syp/tms/admin/AdminNativeIntegrationTest.java
++++ b/Backend/src/test/java/vn/syp/tms/admin/AdminNativeIntegrationTest.java
+@@ -123,6 +123,19 @@ class AdminNativeIntegrationTest {
+         assertThat(management.users(admin.getId(),null,admin.getUsername(),"ADMIN",true,0,20).totalElements()).isEqualTo(1);
+         assertThat(management.users(admin.getId(),first,admin.getUsername(),null,null,0,20).totalElements()).isZero();
+     }
++    @Test void userSearchAcceptsVietnameseDisplayNamesAndPreservesLiteralCaseSensitiveUsernames() throws Exception {
++        jdbc.update("UPDATE identity_users SET display_name=? WHERE id=?","Nguyễn Thị Kiểm thử 100%_",tester.getId());
++        for(String keyword:List.of("Nguyễn","Kiểm thử","100%_",tester.getUsername())) {
++            mvc.perform(get("/api/v1/admin/users").param("projectId",Long.toString(first)).param("keyword",keyword).param("size","1").with(actor(admin)))
++                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(1))
++                .andExpect(jsonPath("$.items[0].id").value(tester.getId()))
++                .andExpect(jsonPath("$.items[0].displayName").value("Nguyễn Thị Kiểm thử 100%_"));
++        }
++        for(String keyword:List.of("không tồn tại",tester.getUsername().toUpperCase(Locale.ROOT))) {
++            mvc.perform(get("/api/v1/admin/users").param("projectId",Long.toString(first)).param("keyword",keyword).with(actor(admin)))
++                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(0));
++        }
++    }
+     @Test void centralCreateDoesNotEnrollAdminAndLegacyMembershipRequiresAdmin() {
+         var dev=users.saveAndFlush(new IdentityUser("a2.dev."+UUID.randomUUID().toString().substring(0,8),"Developer","SECRET","DEV"));
+         var created=management.create(admin.getId(),new AdminProjectService.Create(new ProjectDtos.CreateProject("A2"+UUID.randomUUID().toString().substring(0,8),"Central","","UTC"),List.of(new AdminProjectService.InitialMember(owner.getId(),"PM"),new AdminProjectService.InitialMember(dev.getId(),"DEV"))));
+diff --git a/Frontend/src/app/features/admin/AdminProjectDetail.jsx b/Frontend/src/app/features/admin/AdminProjectDetail.jsx
+index 0292eee..06b699e 100644
+--- a/Frontend/src/app/features/admin/AdminProjectDetail.jsx
++++ b/Frontend/src/app/features/admin/AdminProjectDetail.jsx
+@@ -35,10 +35,14 @@ function ProjectManagement({id,api}) {
+    }catch(e){throw new Error(`${m.displayName||m.username}: ${e.message}`);}
+   }
+  });}
++ async function removeMember(member){await mutate(async()=>{
++  await api.removeMember(id,member.userId,member.version);
++  setRoleDrafts(old=>{const next={...old};delete next[member.userId];return next;});
++ });}
+  return <>{lifecycleNotice&&<p ref={lifecycleNoticeRef} tabIndex={-1} role="status">{lifecycleNotice}</p>}<Summary key={`${id}:${revision}`} id={id} api={api} onReload={()=>setRevision(n=>n+1)}>{api.archiveReadiness&&<AdminProjectLifecycle projectId={id} api={api} pendingChanges={pendingChanges} onSaved={result=>{setLifecycleNotice(result.archived?'Đã lưu trữ dự án. Dữ liệu đã lưu vẫn có thể xem và xuất.':'Dự án đang hoạt động. Có thể tiếp tục công việc theo quyền hiện hành.');setRevision(n=>n+1);}}/>}</Summary><ReadState {...state}/>{state.data&&<>
+  {editing?<AdminProjectForm project={state.data.project} api={api} onCancel={()=>setEditing(false)} onSaved={()=>{setEditing(false);setRevision(n=>n+1);}}/>:<div className="ui-actions"><button disabled={!!state.data.project.archivedAt} onClick={()=>setEditing(true)}>Sửa dự án</button></div>}
+  <section className="admin-card"><h2>Thành viên dự án</h2><div ref={memberFeedback} tabIndex={-1}>{busy&&<p role="status">Đang lưu thành viên…</p>}{!busy&&memberNotice&&<p role="status">{memberNotice}</p>}{error&&<p role="alert">{error} <button onClick={state.retry}>Tải phiên bản hiện hành</button></p>}</div>
+- <fieldset disabled={busy||!!state.data.project.archivedAt}><TableScroll label="Thành viên dự án" className="admin-table-scroll" tabIndex={0}><table><thead><tr><th>Người dùng</th><th>Vai trò dự án</th><th>Thao tác</th></tr></thead><tbody>{state.data.members.map(m=><tr key={m.userId}><th>{m.displayName} · {m.username}</th><td><ProjectRoleSelect systemRole={m.systemRole} includeMember label={`Vai trò ${m.displayName}`} value={roleDrafts[m.userId]??m.projectRole} onChange={e=>setRoleDrafts({...roleDrafts,[m.userId]:e.target.value})}/></td><td><div className="admin-actions"><button disabled={!roleDrafts[m.userId]} onClick={()=>mutate(async()=>{await api.setMember(id,m.userId,{projectRole:roleDrafts[m.userId],expectedVersion:m.version});setRoleDrafts(old=>{const next={...old};delete next[m.userId];return next;});})}>Lưu vai trò {m.displayName}</button><button onClick={()=>mutate(()=>api.removeMember(id,m.userId,m.version))}>Gỡ {m.displayName}</button></div></td></tr>)}</tbody></table></TableScroll>
++ <fieldset disabled={busy||!!state.data.project.archivedAt}><TableScroll label="Thành viên dự án" className="admin-table-scroll" tabIndex={0}><table><thead><tr><th>Người dùng</th><th>Vai trò dự án</th><th>Thao tác</th></tr></thead><tbody>{state.data.members.map(m=><tr key={m.userId}><th>{m.displayName} · {m.username}</th><td><ProjectRoleSelect systemRole={m.systemRole} includeMember label={`Vai trò ${m.displayName}`} value={roleDrafts[m.userId]??m.projectRole} onChange={e=>setRoleDrafts({...roleDrafts,[m.userId]:e.target.value})}/></td><td><div className="admin-actions"><button disabled={!roleDrafts[m.userId]} onClick={()=>mutate(async()=>{await api.setMember(id,m.userId,{projectRole:roleDrafts[m.userId],expectedVersion:m.version});setRoleDrafts(old=>{const next={...old};delete next[m.userId];return next;});})}>Lưu vai trò {m.displayName}</button><button onClick={()=>removeMember(m)}>Gỡ {m.displayName}</button></div></td></tr>)}</tbody></table></TableScroll>
+  <h3>Thêm thành viên</h3><MemberPicker value={selected} onChange={setSelected} api={api} existingUserIds={state.data.members.map(m=>m.userId)}/><button disabled={!selected.length} onClick={saveSelected}>{busy?'Đang lưu thành viên…':'Lưu thành viên đã chọn'}</button>
+  </fieldset></section>{api.statusReports&&<ProjectStatusReports projectId={id} api={api} admin/>}<p><a href={`#/admin/audit?projectId=${id}`}>Xem nhật ký dự án</a></p>{api.allocations&&<ProjectDevices key={id} projectId={id} api={api} admin archived={!!state.data.project.archivedAt}/>}</>}</>;
+ }
+diff --git a/Frontend/src/app/features/admin/AdminProjectLifecycle.integration.test.jsx b/Frontend/src/app/features/admin/AdminProjectLifecycle.integration.test.jsx
+index e150ad8..0421f39 100644
+--- a/Frontend/src/app/features/admin/AdminProjectLifecycle.integration.test.jsx
++++ b/Frontend/src/app/features/admin/AdminProjectLifecycle.integration.test.jsx
+@@ -45,3 +45,27 @@ test('does not allow lifecycle changes to discard an open project edit',async()=
+  fireEvent.click(screen.getByRole('button',{name:'Hủy'}));
+  expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeEnabled();
+ });
++
++test('removing a member discards only that members role draft and permits lifecycle review',async()=>{
++ const project={id:7,code:'APP',name:'iPad',description:'',timezone:'UTC',version:3,archivedAt:null,metrics:{},milestones:[],verificationBugs:[]};
++ const first={userId:'first',displayName:'Tester One',username:'one',systemRole:'TESTER',projectRole:'TESTER',version:1};
++ const other={userId:'other',displayName:'Tester Two',username:'two',systemRole:'TESTER',projectRole:'TESTER',version:2};
++ let members=[first,other];
++ const api={project:vi.fn().mockResolvedValue(project),members:vi.fn(async()=>members),users:vi.fn().mockResolvedValue({items:[],totalElements:0}),archiveReadiness:vi.fn().mockResolvedValue({projectId:7,version:3,archived:false,canArchive:true,canReopen:false,blockers:[]}),removeMember:vi.fn(async()=>{members=[other];}).mockRejectedValueOnce(new Error('Membership conflict'))};
++ render(<AdminProjectDetail id="7" api={api}/>);
++ fireEvent.change(await screen.findByLabelText('Vai trò Tester One'),{target:{value:'PM'}});
++ fireEvent.change(screen.getByLabelText('Vai trò Tester Two'),{target:{value:'PM'}});
++ expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeDisabled();
++ fireEvent.click(screen.getByRole('button',{name:'Gỡ Tester One'}));
++ await screen.findByText('Membership conflict');
++ expect(await screen.findByLabelText('Vai trò Tester One')).toHaveValue('PM');
++ expect(screen.getByLabelText('Vai trò Tester Two')).toHaveValue('PM');
++ expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeDisabled();
++ fireEvent.click(screen.getByRole('button',{name:'Gỡ Tester One'}));
++ await waitFor(()=>expect(screen.queryByLabelText('Vai trò Tester One')).not.toBeInTheDocument());
++ expect(await screen.findByLabelText('Vai trò Tester Two')).toHaveValue('PM');
++ expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeDisabled();
++ fireEvent.change(screen.getByLabelText('Vai trò Tester Two'),{target:{value:'TESTER'}});
++ expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeEnabled();
++ expect(api.removeMember).toHaveBeenCalledWith('7','first',1);
++});
+diff --git a/Frontend/src/app/features/test-cases/DocumentCellEditor.jsx b/Frontend/src/app/features/test-cases/DocumentCellEditor.jsx
+index 5908580..5d39cab 100644
+--- a/Frontend/src/app/features/test-cases/DocumentCellEditor.jsx
++++ b/Frontend/src/app/features/test-cases/DocumentCellEditor.jsx
+@@ -2,17 +2,32 @@ import React,{useEffect,useRef,useState} from 'react';
+ import {useDialogFocus} from '../../hooks/useDialogFocus';
+ import {testCasesApi} from '../../services/api/testCases';
+ 
+-export function DocumentCellEditor({projectId,documentId,cell,onClose,onSaved}) {
++export function DocumentCellEditor({projectId,documentId,cell,onClose,onSaved,authorized=true}) {
+   const [value,setValue]=useState(cell.value),[busy,setBusy]=useState(false),[error,setError]=useState('');
++  const [current,setCurrent]=useState(cell),[conflict,setConflict]=useState(false),[blocked,setBlocked]=useState(false),[refreshed,setRefreshed]=useState(false);
+   const [history,setHistory]=useState(null),[historyError,setHistoryError]=useState(''),[historyLoading,setHistoryLoading]=useState(false),[historyRetry,setHistoryRetry]=useState(0);
+-  const historyRef=useRef(null);
++  const historyRef=useRef(null),live=useRef(true),lock=useRef(false);
++  useEffect(()=>{live.current=true;return()=>{live.current=false;};},[]);
+   const ref=useDialogFocus(onClose,busy);
+   useEffect(()=>{let live=true;setHistoryError('');setHistoryLoading(true);testCasesApi.documentCellHistory(projectId,documentId,cell.row.rowId,cell.index)
+     .then(x=>{if(live)setHistory(x);}).catch(()=>{if(live)setHistoryError('Chưa tải được lịch sử ô.');}).finally(()=>{if(live)setHistoryLoading(false);});return()=>{live=false;};},[projectId,documentId,cell,historyRetry]);
+   useEffect(()=>{if(historyError && historyRef.current)historyRef.current.open=true;},[historyError]);
+-  async function save(e){e.preventDefault();setBusy(true);setError('');
+-    try{await testCasesApi.editDocumentCell(projectId,documentId,cell.row.rowId,cell.index,{value,expectedVersion:cell.version,expectedRevisionId:cell.row.revisionId});await onSaved();onClose();}
+-    catch(err){setError(err.message || 'Chưa lưu được nội dung.');}finally{setBusy(false);}
++  async function reload(){if(lock.current || !authorized || blocked)return;lock.current=true;setBusy(true);setError('');
++    try {
++      const detail=await testCasesApi.getDocument(projectId,documentId);if(!live.current)return;
++      const row=detail.rows.find(r=>r.rowId===cell.row.rowId);
++      if(detail.document.id!==Number(documentId) || !row || row.caseId!==cell.row.caseId || row.archived || row.cells[cell.index]==null) {
++        setError('Case đã lưu trữ hoặc ngữ cảnh ô đã thay đổi. Giữ bản nháp và mở lại tài liệu để kiểm tra.');return;
++      }
++      setCurrent({...cell,row,value:row.cells[cell.index],version:detail.cellVersions?.[row.rowId]?.[cell.index] || 0});
++      setConflict(false);setRefreshed(true);setHistoryRetry(n=>n+1);
++    }catch(err){if(live.current){setError(err.message || 'Chưa tải được dữ liệu hiện hành.');if([401,403,404].includes(err.status))setBlocked(true);}}
++    finally{lock.current=false;if(live.current)setBusy(false);}
++  }
++  async function save(e){e.preventDefault();if(lock.current || conflict || blocked || !authorized)return;lock.current=true;setBusy(true);setError('');
++    try{await testCasesApi.editDocumentCell(projectId,documentId,cell.row.rowId,cell.index,{value,expectedVersion:current.version,expectedRevisionId:current.row.revisionId});if(!live.current)return;await onSaved();if(live.current)onClose();}
++    catch(err){if(live.current){setError(err.message || 'Chưa lưu được nội dung.');setConflict(err.status===409);if([401,403,404].includes(err.status))setBlocked(true);}}
++    finally{lock.current=false;if(live.current)setBusy(false);}
+   }
+   return <div className="ex-modal"><section className="td-case-dialog td-edit-dialog" role="dialog" aria-modal="true" aria-label={`Sửa ô · ${cell.label}`} ref={ref} tabIndex={-1}>
+     <header><h3>{cell.label} · Case {cell.row.sourceId}</h3><button className="cat-btn" disabled={busy} onClick={onClose}>Đóng</button></header>
+@@ -20,7 +35,10 @@ export function DocumentCellEditor({projectId,documentId,cell,onClose,onSaved})
+       <p className="td-muted">{cell.canonical?'Lưu thành phiên bản case mới, cần PM duyệt trước khi phân công. Các lượt đã chạy giữ phiên bản cũ.':'Lưu nội dung bổ sung của tài liệu và lịch sử thay đổi.'}</p>
+       <label className="td-edit-field">Nội dung<textarea data-dialog-initial-focus maxLength={cell.maxLength} value={value} onChange={e=>setValue(e.target.value)} disabled={busy} rows={7}/></label>
+       {error&&<p role="alert" className="td-error">{error}</p>}
+-      <div className="td-actions"><button className="cat-btn cat-btn-mint" disabled={busy || value===cell.value}>{busy?'Đang lưu…':'Lưu nội dung'}</button><button type="button" className="cat-btn" disabled={busy} onClick={onClose}>Hủy</button></div>
++      {(!authorized || blocked)&&<p role="alert">Không còn quyền lưu trong ngữ cảnh này. Bản nháp được giữ để bạn đối chiếu trước khi đóng.</p>}
++      {conflict&&<button type="button" className="cat-btn" disabled={busy || blocked || !authorized} onClick={reload}>Tải bản hiện hành, giữ bản nháp</button>}
++      {refreshed&&<div role="status"><p>Nội dung hiện hành · phiên bản case #{current.row.revisionId}. Đối chiếu với bản nháp rồi bấm Lưu nội dung.</p><p className="td-cell-text">{current.value || '(Trống)'}</p></div>}
++      <div className="td-actions"><button className="cat-btn cat-btn-mint" disabled={busy || conflict || blocked || !authorized || value===current.value}>{busy?'Đang lưu…':'Lưu nội dung'}</button><button type="button" className="cat-btn" disabled={busy} onClick={onClose}>Hủy</button></div>
+       <details ref={historyRef} className="td-edit-history"><summary>Lịch sử ô</summary>{historyLoading&&<p role="status">Đang tải lịch sử ô…</p>}{historyError&&<p role="alert">{historyError} <button type="button" className="cat-btn" disabled={historyLoading} onClick={()=>setHistoryRetry(n=>n+1)}>Thử lại lịch sử ô</button></p>}{!historyLoading&&history?.length===0&&<p>Chưa có thay đổi.</p>}
+         {history?.map((h,i)=><div key={i}><strong>{h.actor}</strong><p><del>{h.beforeValue || '(Trống)'}</del></p><p>{h.afterValue || '(Trống)'}</p></div>)}
+       </details>
+diff --git a/Frontend/src/app/features/test-cases/DocumentSecondTestDialog.jsx b/Frontend/src/app/features/test-cases/DocumentSecondTestDialog.jsx
+index 7b3ad66..69e3569 100644
+--- a/Frontend/src/app/features/test-cases/DocumentSecondTestDialog.jsx
++++ b/Frontend/src/app/features/test-cases/DocumentSecondTestDialog.jsx
+@@ -1,10 +1,14 @@
+-import React,{useEffect,useState} from 'react';
++import React,{useEffect,useRef,useState} from 'react';
+ import {useDialogFocus} from '../../hooks/useDialogFocus';
+ import {testCasesApi} from '../../services/api/testCases';
+ import {executionApi} from '../../services/api/execution';
+ import {projectsApi} from '../../services/api/projects';
+ 
+-export function DocumentSecondTestDialog({projectId,documentId,row,assignment,onClose,onSaved,onApproved,navigate}) {
++export function DocumentSecondTestDialog({projectId,documentId,row:initialRow,assignment:initialAssignment,onClose,onSaved,onApproved,navigate,authorized=true}) {
++  const [row,setRow]=useState(initialRow),[assignment,setAssignment]=useState(initialAssignment);
++  const [conflict,setConflict]=useState(false),[blocked,setBlocked]=useState(false),[refreshed,setRefreshed]=useState(false);
++  const live=useRef(true),lock=useRef(false);
++  useEffect(()=>{live.current=true;return()=>{live.current=false;};},[]);
+   const [cycles,setCycles]=useState(null),[page,setPage]=useState(0),[members,setMembers]=useState([]),[configs,setConfigs]=useState([]);
+   const [cycle,setCycle]=useState(null),[cycleId,setCycleId]=useState(String(assignment?.cycleId || ''));
+   const [configurationId,setConfigurationId]=useState(String(assignment?.configurationId || ''));
+@@ -21,28 +25,51 @@ export function DocumentSecondTestDialog({projectId,documentId,row,assignment,on
+     Promise.all([executionApi.cycle(projectId,cycleId),executionApi.configurations(projectId,cycleId)]).then(([c,cf])=>{if(live){setCycle(c);setConfigs(cf);setContextReady(true);}})
+       .catch(e=>{if(live)setError(e.message);}).finally(()=>{if(live)setContextLoading(false);});return()=>{live=false;};},[projectId,cycleId,retry]);
+   const locked=cycle?.statusCode==='CLOSED' || (!cycle && assignment?.cycleStatus==='CLOSED');
+-  const ready=!busy&&!loading&&!contextLoading&&optionsReady&&contextReady&&!locked&&!approvalRequired
++  const ready=authorized&&!blocked&&!conflict&&!row.archived&&!busy&&!loading&&!contextLoading&&optionsReady&&contextReady&&!locked&&!approvalRequired
+     && String(cycle?.id)===cycleId && (assignment || cycle?.statusCode==='DRAFT')
+     && configs.some(c=>String(c.id)===configurationId) && members.some(m=>String(m.membershipId)===assignee);
+   function changePage(next){setCycleId('');setConfigurationId('');setPage(next);}
+-  async function approve(){if(busy)return;setBusy(true);setApproving(true);setError('');
++  async function approve(){if(lock.current || busy || blocked || conflict || !authorized)return;lock.current=true;setBusy(true);setApproving(true);setError('');
+     try {await testCasesApi.approveRevision(projectId,row.caseId,row.revisionId);setApproved(true);onApproved?.();}
+     catch(err){setError(err.message || 'Chưa duyệt được phiên bản. Bạn có thể thử lại.');}
+-    finally{setBusy(false);setApproving(false);}
++    finally{lock.current=false;if(live.current){setBusy(false);setApproving(false);}}
+   }
+-  async function save(e){e.preventDefault();if(!ready)return;setBusy(true);setError('');
++  async function reload(){if(lock.current || blocked || !authorized)return;lock.current=true;setBusy(true);setError('');
++    try {
++      const detail=await testCasesApi.getDocument(projectId,documentId);if(!live.current)return;
++      const currentRow=detail.rows.find(r=>r.rowId===initialRow.rowId),currentAssignment=detail.secondTests?.find(a=>a.rowId===initialRow.rowId);
++      if(detail.document.id!==Number(documentId) || !currentRow || currentRow.caseId!==initialRow.caseId || currentRow.archived) {
++        setError('Case đã lưu trữ hoặc dòng nguồn đã thay đổi. Giữ bản nháp và mở lại tài liệu để kiểm tra.');return;
++      }
++      if(!assignment && currentRow.revisionId!==initialRow.revisionId) {
++        setError('Phiên bản case đã thay đổi. Giữ bản nháp để đối chiếu và mở lại phân công sau khi kiểm tra nội dung hiện hành.');return;
++      }
++      if((assignment && (!currentAssignment || (assignment.runItemId!=null && assignment.runItemId!==currentAssignment.runItemId))) ||
++          (currentAssignment && (String(currentAssignment.cycleId)!==cycleId || String(currentAssignment.configurationId)!==configurationId || !Number.isSafeInteger(Number(currentAssignment.runItemId)) || Number(currentAssignment.runItemId)<=0))) {
++        setError('Lượt test lần 2 đã đổi ngữ cảnh. Giữ bản nháp và mở lại phân công để kiểm tra đúng lượt.');return;
++      }
++      setRow(currentRow);setAssignment(currentAssignment);setApproved(currentRow.approved===true);setConflict(false);setRefreshed(true);
++      setOptionsReady(false);setContextReady(false);setRetry(n=>n+1);
++    }catch(err){if(live.current){setError(err.message || 'Chưa tải được phân công hiện hành.');if([401,403,404].includes(err.status))setBlocked(true);}}
++    finally{lock.current=false;if(live.current)setBusy(false);}
++  }
++  async function save(e){e.preventDefault();if(lock.current || !ready)return;lock.current=true;setBusy(true);setError('');
+     try {await testCasesApi.assignSecondTest(projectId,documentId,row.rowId,{cycleId:Number(cycleId),configurationId:Number(configurationId),assigneeMembershipId:Number(assignee),note,
+-      expectedVersion:assignment?.version || 0,expectedCycleVersion:cycle.version,expectedRunVersion:assignment?.runVersion ?? null,expectedRevisionId:row.revisionId});await onSaved();onClose();}
+-    catch(err){setError(err.message || 'Chưa lưu được phân công.');}finally{setBusy(false);}
++      expectedVersion:assignment?.version || 0,expectedCycleVersion:cycle.version,expectedRunVersion:assignment?.runVersion ?? null,expectedRevisionId:row.revisionId});if(!live.current)return;await onSaved();if(live.current)onClose();}
++    catch(err){if(live.current){setError(err.message || 'Chưa lưu được phân công.');setConflict(err.status===409);if([401,403,404].includes(err.status))setBlocked(true);}}
++    finally{lock.current=false;if(live.current)setBusy(false);}
+   }
+   return <div className="ex-modal"><section className="td-case-dialog td-edit-dialog" ref={ref} role="dialog" aria-modal="true" aria-label="Phân công test lần 2" tabIndex={-1}>
+     <header><h3>Test lần 2 · Case {row.sourceId}</h3><button className="cat-btn" disabled={busy} onClick={onClose}>Đóng</button></header>
+     <form className="td-dialog-body" onSubmit={save}>
+       <p className="td-muted">{assignment?'Cập nhật người thực hiện và ghi chú cho lượt kiểm thử đã giao.':'Chọn người kiểm thử lại, đợt nháp và cấu hình chạy. Admin hoặc PM bắt đầu đợt để Tester ghi kết quả.'}</p>
+       {!assignment&&!row.approved&&<div className="td-approval-step">
+-        {approved?<p role="status">Đã duyệt phiên bản này.</p>:<><p>Case đang là bản nháp. Admin hoặc PM cần duyệt phiên bản này trước khi lưu phân công.</p><button type="button" className="cat-btn" disabled={busy} onClick={approve}>{approving?'Đang duyệt…':'Duyệt phiên bản này'}</button></>}
++        {approved?<p role="status">Đã duyệt phiên bản này.</p>:<><p>Case đang là bản nháp. Admin hoặc PM cần duyệt phiên bản này trước khi lưu phân công.</p><button type="button" className="cat-btn" disabled={busy || conflict || blocked || !authorized} onClick={approve}>{approving?'Đang duyệt…':'Duyệt phiên bản này'}</button></>}
+       </div>}
+-      {error&&<div role="alert" className="td-error">{error} <button type="button" className="cat-btn" disabled={busy} onClick={()=>setRetry(x=>x+1)}>Tải lại lựa chọn</button></div>}
++      {error&&<div role="alert" className="td-error">{error} {!conflict&&<button type="button" className="cat-btn" disabled={busy} onClick={()=>setRetry(x=>x+1)}>Tải lại lựa chọn</button>}</div>}
++      {(!authorized || blocked)&&<p role="alert">Không còn quyền lưu trong ngữ cảnh này. Bản nháp được giữ để bạn đối chiếu trước khi đóng.</p>}
++      {conflict&&<button type="button" className="cat-btn" disabled={busy || blocked || !authorized} onClick={reload}>Tải bản hiện hành, giữ bản nháp</button>}
++      {refreshed&&<p role="status">{assignment?`Đang được giao: ${assignment.assigneeName} · ${assignment.cycleName} · ${assignment.resultCode==='NOT_RUN'?'Chưa chạy':assignment.resultCode}.`:'Hiện chưa có phân công test lần 2.'} Phiên bản case #{row.revisionId}. Đối chiếu với bản nháp rồi bấm Lưu phân công.</p>}
+       {loading&&<p role="status">Đang tải lựa chọn…</p>}
+       {!loading&&!assignment&&cycles&&!cycles.items.some(c=>c.statusCode==='DRAFT')&&<p className="td-history-note">Chưa có đợt nháp {cycles.totalPages>1?'trên trang này':''}. Mở Đợt kiểm thử để tạo đợt và cấu hình cho lần 2{cycles.totalPages>1?', hoặc xem trang đợt khác':''}.</p>}
+       {!contextLoading&&cycle&&!configs.length&&<p className="td-history-note">Đợt này chưa có cấu hình. Mở Đợt kiểm thử để thêm môi trường, thiết bị và build.</p>}
+diff --git a/Frontend/src/app/features/test-cases/TestDocumentPage.jsx b/Frontend/src/app/features/test-cases/TestDocumentPage.jsx
+index f47fc6f..37f1316 100644
+--- a/Frontend/src/app/features/test-cases/TestDocumentPage.jsx
++++ b/Frontend/src/app/features/test-cases/TestDocumentPage.jsx
+@@ -217,8 +217,8 @@ function DocumentGrid({ project, documentId, navigate }) {
+       {!rows.length && <p className="td-empty">Không có dòng phù hợp với từ khóa.</p>}
+     </div>
+ 
+-    {editing && <DocumentCellEditor projectId={project.id} documentId={documentId} cell={editing} onClose={()=>setEditing(null)} onSaved={load}/>}
+-    {secondTest && <DocumentSecondTestDialog projectId={project.id} documentId={documentId} row={secondTest} assignment={secondTests.get(secondTest.rowId)} onClose={()=>setSecondTest(null)} onSaved={load}
++    {editing && <DocumentCellEditor projectId={project.id} documentId={documentId} cell={editing} authorized={canEdit} onClose={()=>setEditing(null)} onSaved={load}/>}
++    {secondTest && <DocumentSecondTestDialog projectId={project.id} documentId={documentId} row={secondTest} assignment={secondTests.get(secondTest.rowId)} authorized={canAssign} onClose={()=>setSecondTest(null)} onSaved={load}
+       onApproved={()=>setData(current=>({...current,rows:current.rows.map(row=>row.rowId===secondTest.rowId && row.revisionId===secondTest.revisionId?{...row,approved:true}:row)}))} navigate={navigate}/>}
+     {activeCase && <CaseDetailModal key={activeCase} projectId={project.id} caseId={activeCase} onClose={() => setActiveCase(null)} onUpdated={load}/>}
+     {resultHistory && <DocumentResultHistory projectId={project.id} documentId={documentId} row={resultHistory} timeZone={project.timezone} onClose={()=>setResultHistory(null)} onExecution={()=>{execution.show({...resultHistory,historyOnly:true});setResultHistory(null);}}/>}
+diff --git a/Frontend/src/app/features/work-items/README.md b/Frontend/src/app/features/work-items/README.md
+index 7b89f2f..b73bd0f 100644
+--- a/Frontend/src/app/features/work-items/README.md
++++ b/Frontend/src/app/features/work-items/README.md
+@@ -1,13 +1,12 @@
+ # Quản lý công việc
+ 
+-Các component dùng chung của ứng dụng chính. Khu vực thiết kế độc lập đã được gỡ bỏ.
++Workspace hiện dùng API Spring Boot và dữ liệu MySQL. `ProjectData.jsx` tải danh sách, metadata quyền và danh mục qua API; lỗi tải được hiển thị, không thay bằng dữ liệu mẫu. Các component thiết kế cũ còn trong thư mục không chứng minh một route đang dùng dữ liệu mẫu.
+ 
+-- `HomePage.jsx`: hoạt động, thống kê trạng thái và mốc phát hành cho Tổng quan dự án.
+-- `BoardPage.jsx`, `IssuesPage.jsx`: hai chế độ Kanban / Danh sách.
+-- `IssueForm.jsx`, `components.jsx`: thêm công việc, chi tiết, bình luận và các thành phần giao diện.
+-- `ProjectData.jsx`: dữ liệu dùng chung; tạo mới và cập nhật trạng thái sinh hoạt động trên tổng quan.
+-- `issueFilters.js`: cùng một cách lọc cho Kanban và danh sách.
+-- `work-items.css`: CSS giới hạn trong `.work-items`.
++- `WorkItemForm.jsx`: tạo BUG/REQUEST/TASK/IMPROVEMENT qua API; QA chuyển sang `QaForm` và endpoint chuyên biệt.
++- `WorkItemDetail.jsx`: đọc chi tiết, bình luận và lịch sử; sửa/phân công, chuyển trạng thái, tham chiếu thủ công, QA, chứng cứ, retest và Redmine dùng các lệnh riêng. Trong lúc tải lại hoặc sau lỗi đọc chi tiết, khóa các thao tác và giữ bản nháp đến khi tải lại thành công.
++- `EvidencePanel.jsx`: upload, download và gỡ chứng cứ đã lưu. Backend kiểm tra quyền, dự án, định dạng và chứng cứ đã được dùng trong xác minh/đóng lỗi.
++- `BoardPage.jsx`, `IssuesPage.jsx`, `HomePage.jsx`: các phần trình bày được route/container truyền dữ liệu và lệnh; `ProjectData.jsx` là nguồn dữ liệu workspace hiện hành.
++- `TransitionDialog.jsx`: gửi trạng thái cùng lý do và expectedVersion; lỗi 409 giữ lý do để tải và đối chiếu bản hiện hành trước khi gửi lại.
+ 
+ Ứng dụng dùng menu dọc `Sidebar.jsx`, thanh thông tin `Header.jsx` và khung `MainLayout.jsx`.
+ Menu giữ đúng sáu mục: Tổng quan, Bảng công việc, Quản lý kiểm thử, Quản lý lỗi, Quản lý tiến độ, Tổng hợp & Phân tích.
+@@ -21,13 +20,15 @@ Các liên kết cũ được chuyển hướng bởi `routes/legacyRoutes.js`,
+ | `#/board` | Kanban |
+ | `#/board/list` | Danh sách công việc |
+ | `#/board/new` | Thêm công việc |
+-| `#/board/issue/SFLUTTER-6071?view=list` | Chi tiết bên phải |
++| `#/board/issue/{id}?view=list` | Chi tiết công việc theo ID số của backend |
+ | `#/tests` | Quản lý kiểm thử |
+ | `#/issues` | Quản lý lỗi |
+ | `#/progress` | Quản lý tiến độ |
+ | `#/analysis` | Tổng hợp và phân tích |
+ 
+ Danh sách hỗ trợ các tham số `status`, `milestone`, `keyword`, `assignee`, `advanced=true`.
+-Dữ liệu mẫu giữ trong bộ nhớ đến khi tải lại trang; tệp đính kèm chỉ hiển thị tên, chưa có backend.
++Dữ liệu mẫu và API double trong test không là nguồn dữ liệu workspace hiện hành. `item_key` là mã hiển thị; liên kết chi tiết dùng ID số của backend. Xem `pages/WorkBoardPage.jsx` và `routes/AppRouter.jsx` để xác định component thực tế của từng màn.
+ 
+-Trong `Frontend`, chạy `rtk npm run dev`; kiểm tra biên dịch bằng `rtk npm run build`.
++Quyền hiện hành xem [permissions.md](../../../../../docs/business/permissions.md); contract xem [work-items.md](../../../../../docs/api/work-items.md), [qa.md](../../../../../docs/api/qa.md) và [retest.md](../../../../../docs/api/retest.md). ADMIN tổng có toàn quyền nghiệp vụ theo quyết định ngày 10/10/2026; quyền và ownership của PM/Tester/Dev vẫn do backend kiểm tra. Chứng cứ, bình luận và lịch sử không thay thế câu trả lời QA hoặc kết quả retest chính thức.
++
++Trong `Frontend`, chạy `rtk proxy npm test` hoặc `rtk proxy npm run build`. Kết quả test React không đồng nghĩa đã kiểm chứng trên runtime/MySQL hoặc dịch vụ Redmine/AI thật.
+diff --git a/Frontend/src/app/features/work-items/WorkItemDetail.jsx b/Frontend/src/app/features/work-items/WorkItemDetail.jsx
+index 3b5597f..11a5fac 100644
+--- a/Frontend/src/app/features/work-items/WorkItemDetail.jsx
++++ b/Frontend/src/app/features/work-items/WorkItemDetail.jsx
+@@ -82,6 +82,7 @@ export function WorkItemDetail({ projectId, id, catalogs, canTriage, writable, m
+   return <div className="wi-detail"><WorkError error={error} retry={load}/>
+     <div className="wi-actions"><TypeBadge type={typeLabels[item.type]}/><strong className="d-issue-key">{item.key}</strong>{isQa?<span className="d-status-badge">{item.statusLabel||catalogs.statusesByType?.QA?.find(s=>s.id===item.status)?.label||item.status}</span>:<StatusBadge id={item.status}/>}<Button disabled={loading} onClick={load}>{loading?'Đang tải chi tiết…':'Tải lại chi tiết'}</Button></div>
+     <h2>{item.title}</h2>
++    <fieldset className="wi-detail-content" disabled={loading || !!error}>
+     {isQa?<QaPanel projectId={projectId} id={id} catalogs={catalogs} onChanged={qaChanged} onReadState={qaReadState}/>:<div className="wi-detail-body"><section>
+       {item.description&&<><h3>Mô tả</h3><p>{item.description}</p></>}
+       {item.type==='BUG'&&<><h3>Các bước tái hiện</h3><p>{item.steps}</p><h3>Kết quả mong đợi</h3><p>{item.expectedResult}</p><h3>Kết quả thực tế</h3><p>{item.actualResult}</p></>}
+@@ -115,6 +116,7 @@ export function WorkItemDetail({ projectId, id, catalogs, canTriage, writable, m
+       {paging.history.hasMore&&<Button disabled={loading||paging.history.loading} onClick={()=>more('history')}>Lịch sử cũ hơn</Button>}
+     </section>
+     {!isQa&&move&&<TransitionDialog projectId={projectId} items={[presentItem(item)]} status={target} catalogs={catalogs} onClose={()=>setMove(false)} onSaved={()=>{setMove(false);changed();}}/>}
++    </fieldset>
+   </div>;
+ }
+ 
+diff --git a/Frontend/src/app/features/work-items/WorkItemDetail.test.jsx b/Frontend/src/app/features/work-items/WorkItemDetail.test.jsx
+index ac8730d..2c26e1e 100644
+--- a/Frontend/src/app/features/work-items/WorkItemDetail.test.jsx
++++ b/Frontend/src/app/features/work-items/WorkItemDetail.test.jsx
+@@ -98,6 +98,46 @@ it('shows manual detail refresh progress while retaining the loaded ticket',asyn
+  await act(async()=>pending.resolve(item));
+  expect(screen.getByRole('button',{name:'Tải lại chi tiết'})).toBeEnabled();
+ });
++it('blocks comment and evidence actions during an uncertain detail read and restores the retained draft after recovery',async()=>{
++ workItemsApi.attachments.mockResolvedValue([{id:'evidence-1',name:'Ảnh kết quả.png',size:1024,uploadedBy:8}]);
++ render(<WorkItemDetail {...props}/>);
++ fireEvent.change(await screen.findByLabelText('Nội dung bình luận'),{target:{value:'Giữ nội dung đang soạn'}});
++ const selectedFile=new File(['image'],'ghi-nhan.png',{type:'image/png'});
++ fireEvent.change(screen.getByLabelText('Chọn chứng cứ'),{target:{files:[selectedFile]}});
++ await screen.findByRole('button',{name:'Gỡ Ảnh kết quả.png'});
++ let rejectRead;workItemsApi.get.mockReturnValueOnce(new Promise((_resolve,reject)=>{rejectRead=reject;}));
++ fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
++ expect(screen.getByRole('button',{name:'Đăng bình luận'})).toBeDisabled();
++ expect(screen.getByRole('button',{name:'Tải chứng cứ lên'})).toBeDisabled();
++ expect(screen.getByRole('button',{name:'Gỡ Ảnh kết quả.png'})).toBeDisabled();
++ await act(async()=>rejectRead(Object.assign(new Error('Quyền công việc đã thay đổi'),{status:403})));
++ await screen.findByText('Quyền công việc đã thay đổi');
++ expect(screen.getByRole('button',{name:'Đăng bình luận'})).toBeDisabled();
++ expect(screen.getByRole('button',{name:'Tải chứng cứ lên'})).toBeDisabled();
++ expect(screen.getByLabelText('Nội dung bình luận')).toHaveValue('Giữ nội dung đang soạn');
++ fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
++ await waitFor(()=>expect(screen.getByRole('button',{name:'Đăng bình luận'})).toBeEnabled());
++ expect(screen.getByLabelText('Nội dung bình luận')).toHaveValue('Giữ nội dung đang soạn');
++ expect(screen.getByRole('button',{name:'Tải chứng cứ lên'})).toBeEnabled();
++});
++it('blocks retained PM edit and reference forms until the authoritative ticket refresh succeeds',async()=>{
++ render(<WorkItemDetail {...props} canTriage/>);
++ fireEvent.click(await screen.findByText('Sửa thông tin và phân công'));
++ fireEvent.change(screen.getByLabelText('Sửa tiêu đề'),{target:{value:'Tiêu đề chưa lưu'}});
++ fireEvent.change(screen.getByLabelText('Lý do sửa'),{target:{value:'Đang đối chiếu thông tin'}});
++ fireEvent.click(screen.getByText('Tham chiếu tracker và nội dung làm rõ'));
++ fireEvent.change(screen.getByLabelText('Mã bên ngoài'),{target:{value:'456'}});
++ workItemsApi.get.mockRejectedValueOnce(Object.assign(new Error('Chưa xác nhận được công việc hiện hành'),{status:403}));
++ fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
++ await screen.findByText('Chưa xác nhận được công việc hiện hành');
++ for(const name of ['Lưu thông tin','Lưu tham chiếu','Lưu nội dung làm rõ'])expect(screen.getByRole('button',{name})).toBeDisabled();
++ expect(screen.getByLabelText('Sửa tiêu đề')).toHaveValue('Tiêu đề chưa lưu');
++ expect(screen.getByLabelText('Mã bên ngoài')).toHaveValue('456');
++ fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
++ await waitFor(()=>expect(screen.getByRole('button',{name:'Lưu thông tin'})).toBeEnabled());
++ expect(screen.getByLabelText('Sửa tiêu đề')).toHaveValue('Tiêu đề chưa lưu');
++ expect(screen.getByLabelText('Mã bên ngoài')).toHaveValue('456');
++});
+ it('announces pending comment submission beside the comment form',async()=>{
+  const pending=deferred();workItemsApi.comment.mockReturnValueOnce(pending.promise);
+  render(<WorkItemDetail {...props}/>);await screen.findByLabelText('Nội dung bình luận');
+diff --git a/Frontend/src/app/features/work-items/work-items-live.css b/Frontend/src/app/features/work-items/work-items-live.css
+index c8bf5c0..4ff8567 100644
+--- a/Frontend/src/app/features/work-items/work-items-live.css
++++ b/Frontend/src/app/features/work-items/work-items-live.css
+@@ -33,6 +33,7 @@
+ .wi-table .wi-date { white-space:nowrap; min-width:110px; }
+ .wi-table .d-status-badge { max-width:220px; }
+ .wi-detail { display: grid; gap: 20px; }
++.wi-detail-content { display: grid; gap: 20px; min-width: 0; margin: 0; padding: 0; border: 0; }
+ .wi-detail > *, .wi-detail-body > *, .wi-section > * { min-width: 0; }
+ .wi-detail .wi-actions > button { max-width: 100%; overflow-wrap: anywhere; white-space: normal; }
+ .wi-detail-body { display: grid; grid-template-columns: minmax(0,2fr) minmax(210px,1fr); gap: 24px; }
+diff --git a/docs/api/admin-reporting.openapi.yaml b/docs/api/admin-reporting.openapi.yaml
+index 24eafdc..247a0e1 100644
+--- a/docs/api/admin-reporting.openapi.yaml
++++ b/docs/api/admin-reporting.openapi.yaml
+@@ -10,7 +10,7 @@ paths:
+     parameters: [{$ref: '#/components/parameters/Id'}]
+     get:
+       operationId: projectStatusReportHistory
+-      description: Enabled active project members read; canPost requires current project PM, non-DEV system role and writable project.
++      description: Enabled global ADMIN or active project members read; canPost requires global ADMIN or current project PM with a non-DEV system role, and a writable project. The global ADMIN policy follows the 2026-10-10 decision in docs/business/permissions.md.
+       parameters: [{$ref: '#/components/parameters/Page'}, {$ref: '#/components/parameters/Size'}]
+       responses:
+         '200': {description: Latest first by ID; reports page plus all current milestone warnings and canPost, content: {application/json: {schema: {$ref: '#/components/schemas/History'}}}}
+@@ -19,7 +19,9 @@ paths:
+     post:
+       operationId: appendProjectStatusReport
+       description: |
+-        Current enabled project PM only. ADMIN without PM membership, project DEV and system DEV cannot post.
++        Current enabled global ADMIN or project PM with a non-DEV system role may post to a writable project.
++        Global ADMIN does not require project membership; the 2026-10-10 decision in docs/business/permissions.md supersedes the former ADMIN read-only restriction.
++        Non-ADMIN project DEV and system DEV cannot post. The report records the actual actor.
+         Reason and recovery are mandatory when any scoped nonarchived milestone is overdue by its project timezone.
+         Shared deadline query counts work items and all cycles including DRAFT; any nonterminal work or non-CLOSED cycle is unfinished.
+         Missing due date or empty scope means insufficient data, not overdue. Due today is not overdue.
+@@ -31,7 +33,7 @@ paths:
+       responses:
+         '201': {description: Original/new report, content: {application/json: {schema: {$ref: '#/components/schemas/Report'}}}}
+         '401': {description: Missing session}
+-        '403': {description: Not current project PM or missing CSRF}
++        '403': {description: Neither global ADMIN nor current eligible project PM, or missing CSRF}
+         '404': {description: Outside project membership}
+         '409': {description: IDEMPOTENCY_CONFLICT or archived project}
+         '422': {description: Invalid body or required overdue explanation missing}
+@@ -39,7 +41,7 @@ paths:
+     parameters: [{$ref: '#/components/parameters/Id'}]
+     get:
+       operationId: adminStatusReportHistory
+-      description: Current enabled ADMIN reads without membership; canPost is false on this route.
++      description: Current enabled ADMIN reads without membership; canPost is false on this read-only administrative route. ADMIN may create through POST /projects/{id}/status-reports and the project workspace.
+       parameters: [{$ref: '#/components/parameters/Page'}, {$ref: '#/components/parameters/Size'}]
+       responses:
+         '200': {description: Narrative history and automatic milestone warnings, content: {application/json: {schema: {$ref: '#/components/schemas/History'}}}}
+diff --git a/docs/api/redmine.md b/docs/api/redmine.md
+index 3bb9a64..f02717c 100644
+--- a/docs/api/redmine.md
++++ b/docs/api/redmine.md
+@@ -4,7 +4,7 @@ Trạng thái 30/09/2026: contract trước implementation T02/T03. Provider san
+ 
+ ## Actor, cấu hình và dữ liệu
+ 
+-Prefix `P=/api/v1/projects/{projectId}`. Session và active membership bắt buộc. Thành viên đọc, chỉ PM dự án yêu cầu publish/retry/reconcile; ghi cần CSRF. ADMIN toàn cục không thay PM. Dự án archive chỉ đọc. TMS giữ authority; remote đóng không tự đóng bug/pass case.
++Prefix `P=/api/v1/projects/{projectId}`. Session hiện hành bắt buộc. Thành viên đang hoạt động đọc; PM hiện hành của dự án yêu cầu publish/retry/reconcile. Theo quyết định Admin tổng toàn quyền ngày 10/10/2026, ADMIN đang hoạt động được đọc và thực hiện các lệnh này trong mọi dự án, không cần membership hoặc quyền PM riêng. Ghi cần CSRF; đúng project, version, trạng thái và các guard outbox vẫn bắt buộc. Dự án archive chỉ đọc. TMS giữ authority; remote đóng không tự đóng bug/pass case.
+ 
+ Endpoint/API key được cấu hình tại máy chủ, không nhận URL/key trong request. Mapping theo project từ file vận hành được chỉ định, có checksum; worker kiểm tra mapping/instance lúc dispatch. File mẫu không có API key. Credentials truyền header, HTTP chỉ cho loopback sandbox; đích khác yêu cầu HTTPS; không theo redirect. Connection timeout 3 giây, request timeout 10 giây, response cap 1 MiB.
+ 
+diff --git a/docs/planning/README.md b/docs/planning/README.md
+index 7383719..95a17e4 100644
+--- a/docs/planning/README.md
++++ b/docs/planning/README.md
+@@ -1,5 +1,7 @@
+ # Kế hoạch phát triển theo sprint
+ 
++Rà soát hiện hành16–17/10: [ma trận luồng,5lỗi sửa,skill và bằng chứng](../reviews/2026-10-16-workflow-audit.md). FE872/79files, BE552unit, coverage đo mới, build và DB chỉ đọc76bảng/185FK/10liên kết không vi phạm. Native V29/browser/UAT còn gate riêng; S11 IN_REVIEW. Yêu cầu đợt này không cho commit/push/merge/deploy/PR, restart/tạo server/container hoặc chạy fixture trên database sử dụng; quyền một lần11/10 bên dưới là lịch sử.
++
+ Yêu cầu mới 11/10: người dùng cho phép commit và push các thay đổi đã kiểm chứng lên nhánh hiện tại `system-design`. Quyền này chỉ áp dụng cho lần bàn giao này, không bao gồm merge/deploy. Các ghi chú “chưa push” bên dưới phản ánh thời điểm review trước yêu cầu mới.
+ 
+ Rà soát sâu 11/10: [source, button và liên kết dữ liệu](../reviews/2026-10-11-deep-source-buttons-review.md). Đọc 354 file/29.224 dòng; sửa 12 lỗi, FE856, BE552 unit và 60 native PASS. Coverage FE 86,98/84,22/81,65/86,83; Java264 không lỗi/cảnh báo. Không đồng nhất kiểm tra source với UAT mọi trạng thái; giữ S11 IN_REVIEW, không commit/push.
+diff --git a/docs/planning/STATUS.json b/docs/planning/STATUS.json
+index 242a069..32ad9f6 100644
+--- a/docs/planning/STATUS.json
++++ b/docs/planning/STATUS.json
+@@ -1,6 +1,6 @@
+ {
+   "schemaVersion": 1,
+-  "updatedAt": "2026-10-11",
++  "updatedAt": "2026-10-17",
+   "baselineCommit": "bd7e482",
+   "branchAtPlanning": "feature/Fontend-design",
+   "integrationBranch": "develop",
+@@ -789,7 +789,7 @@
+   "implementationBaseCommit": "3355cfc",
+   "lastCompletedSprint": "S09",
+   "nextSuggestedSprint": null,
+-  "nextAction": "UAT/pilot theo bốn vai trò và bộ mẫu Excel khách hàng; đo cảm ứng/thiết bị thật, Safari, tải và phục hồi production. Xem docs/reviews/2026-10-08-customer-reassessment.md; vòng đời dự án đã triển khai/kiểm chứng V21, không còn chờ quyết định archive. S11 giữ IN_REVIEW đến khi đạt DoD.",
++  "nextAction": "Rà soát16–17/10 đã sửa5lỗi hiện hữu, FE872/BE552 unit PASS. Cần isolated native V29 để chạy HTTP Unicode/affected concurrency/projection, rồi browser khi8080/5173 phục vụ; không tự restart/provision/reset. Xem docs/reviews/2026-10-16-workflow-audit.md. Giữ gate UAT/pilot bốn vai trò, mẫu Excel khách, cảm ứng/thiết bị thật, Safari, tải/phục hồi production; S11 IN_REVIEW đến đủ DoD.",
+   "executionPolicy": {
+     "continueSequentially": true,
+     "authorizedAt": "2026-09-29",
+@@ -1175,5 +1175,63 @@
+     "branch": "system-design",
+     "authorization": "User explicitly requested push of current reviewed changes. No permanent push, merge or deploy authorization.",
+     "scope": "Reviewed source, tests, migrations V26-V29, documentation and selected review artifacts; local credentials, databases, builds and scratch logs excluded."
++  },
++  "workflowAudit20261016": {
++    "status": "SOURCE_AND_LOCAL_VERIFICATION_COMPLETE_RUNTIME_GATES_OPEN",
++    "startedAt": "2026-10-16",
++    "verifiedAt": "2026-10-17",
++    "branch": "system-design",
++    "baselineCommit": "c42e3f0ab87403cf39122c85fe63bc267368b7ad",
++    "review": "docs/reviews/2026-10-16-workflow-audit.md",
++    "plan": "tasks/plan.md",
++    "checklist": "tasks/todo.md",
++    "confirmedBehaviorRepairs": 5,
++    "correctedDocumentationFiles": 3,
++    "verification": {
++      "frontendFiles": 79,
++      "frontendTests": 872,
++      "frontendNewRegressions": 16,
++      "frontendCoverage": {
++        "statements": 87.04,
++        "branches": 84.16,
++        "functions": 81.74,
++        "lines": 86.92
++      },
++      "backendSelectedUnitClasses": 57,
++      "backendUnitTests": 552,
++      "backendFailures": 0,
++      "backendErrors": 0,
++      "backendSkipped": 0,
++      "backendUnitOnlyCoverage": {
++        "instructions": 50.06,
++        "branches": 48.61,
++        "lines": 50.39,
++        "nativeCoverageGateSatisfied": false
++      },
++      "frontendBuild": "PASS_WITH_672_71_KB_BUNDLE_ADVISORY",
++      "backendVerifyPackage": "PASS",
++      "contracts": "PASS_STRUCTURAL_113_OPS_19_FILEWORK_14_QA_52_DOC_LINKS",
++      "diffCheck": "PASS",
++      "nativeSqlUnicode": "READ_ONLY_ERROR3854_OLD_TO_PASS_FINAL_CLAUSE",
++      "databaseTables": 76,
++      "databaseForeignKeys": 185,
++      "databaseSemanticChecks": 10,
++      "databaseViolations": 0,
++      "newNativeHttpRegression": "NOT_RUN_NO_PREPROVISIONED_V29_TEST_SCHEMA",
++      "browserAndRuntimeHttp": "NOT_RUN_8080_5173_ECONNREFUSED",
++      "dependencyAdvisoryScan": "NOT_RUN",
++      "jdtProblems": "NOT_RUN",
++      "lintAndJsTypecheck": "NOT_CONFIGURED"
++    },
++    "independentReview": "Spec and Standards cross-review of changed scopes; final revision guard, Unicode SQL and readonly auditor output path reviewed; no confirmed critical/P1/P2 remaining in reviewed diff.",
++    "remaining": "Native V29 affected/HTTP tests, identity-revoke race investigation, browser and existing S11 role-data/real-device/UAT/live integration gates. No blanket all-buttons/all-states guarantee.",
++    "taskAuthorization": {
++      "commit": false,
++      "push": false,
++      "mergeDeployPrIssues": false,
++      "startRestartServices": false,
++      "mainDatabaseFixtureWrites": false,
++      "executeHistoricalVarScripts": false
++    }
+   }
+ }
+diff --git a/scripts/Audit-DatabaseRelations.cjs b/scripts/Audit-DatabaseRelations.cjs
+index 90afb8f..4403c6a 100644
+--- a/scripts/Audit-DatabaseRelations.cjs
++++ b/scripts/Audit-DatabaseRelations.cjs
+@@ -13,6 +13,6 @@ try{
+  });
+  const checks=query('START TRANSACTION READ ONLY;'+statements.join(' UNION ALL ')+';COMMIT;').map(line=>{const [relation,count]=line.split('\t');return {relation,orphanRows:Number(count)};});
+  const report={checkedAt:new Date().toISOString(),readOnly:true,tableCount:Number(query('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_type=\'BASE TABLE\';')[0]),foreignKeys:checks.length,failures:checks.filter(c=>c.orphanRows),checks};
+- const output=path.join(__dirname,'../var/ui-audit/database-relations.json');fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');
++ const output=path.resolve(__dirname,'..',process.argv[2]||'var/ui-audit','database-relations.json');fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');
+  console.log(JSON.stringify({checkedAt:report.checkedAt,readOnly:true,tables:report.tableCount,foreignKeys:report.foreignKeys,failures:report.failures}));if(report.failures.length)process.exitCode=1;
+ }catch{console.error('Read-only database relationship audit failed. No credentials or row contents printed.');process.exitCode=1;}
+diff --git a/scripts/Audit-WorkflowLinks.cjs b/scripts/Audit-WorkflowLinks.cjs
+index 86e9a14..c4d05f4 100644
+--- a/scripts/Audit-WorkflowLinks.cjs
++++ b/scripts/Audit-WorkflowLinks.cjs
+@@ -20,6 +20,6 @@ try {
+  const result=query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ; START TRANSACTION READ ONLY; '+sql+'; COMMIT;').map(row=>{const [name,count]=row.split('\t');return {name,count:Number(count)};});
+  const projects=query(`SELECT JSON_OBJECT('projectId',p.id,'projectCode',p.code,'documents',(SELECT COUNT(*) FROM import_batches b WHERE b.project_id=p.id AND b.status='COMMITTED'),'fileGroups',(SELECT COUNT(*) FROM file_work_groups g WHERE g.project_id=p.id),'runs',(SELECT COUNT(*) FROM run_items r WHERE r.project_id=p.id),'sourceRows',(SELECT COUNT(*) FROM import_rows ir JOIN import_batches b ON b.id=ir.batch_id AND b.project_id=ir.project_id WHERE ir.project_id=p.id AND b.status='COMMITTED')) FROM projects p ORDER BY p.id;`).map(JSON.parse);
+  const report={checkedAt:new Date().toISOString(),readOnly:true,checks:result,failures:result.filter(r=>r.count),projects};
+- const target=path.resolve(__dirname,'../var/ui-audit/workflow-links.json');fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,JSON.stringify(report,null,2)+'\n');
++ const target=path.resolve(__dirname,'..',process.argv[2]||'var/ui-audit','workflow-links.json');fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,JSON.stringify(report,null,2)+'\n');
+  console.log(JSON.stringify(report,null,2));if(report.failures.length)process.exitCode=1;
+ }catch{console.error('Workflow audit failed; no application data was changed and no credentials were printed.');process.exitCode=1;}
+diff --git a/tasks/plan.md b/tasks/plan.md
+index 7d27205..be70e01 100644
+--- a/tasks/plan.md
++++ b/tasks/plan.md
+@@ -1,5 +1,20 @@
+ # Implementation Plan: F/Q — công việc theo file và QA
+ 
++## Đợt rà soát luồng hiện hữu 16–17/10/2026
++
++Yêu cầu mới giới hạn ở kiểm tra và sửa lỗi hiện có, trên `system-design`, baseline `c42e3f0ab87403cf39122c85fe63bc267368b7ad`. Checklist duy nhất: [todo.md](todo.md); kết quả/ma trận/bằng chứng: [review](../docs/reviews/2026-10-16-workflow-audit.md). Các quyền commit/push/restart lịch sử bên dưới không áp dụng cho đợt này.
++
++| Task | Phạm vi và phụ thuộc | Tiêu chí chấp nhận / kiểm chứng |
++| --- | --- | --- |
++| R1 — baseline và trace | Planning/product/permissions, router/API, ba nhóm module độc lập | Phân biệt source, test, runtime và UAT; quyền ADMIN 10/10 và đồng bộ kết quả 11/10 là quyết định hiện hành. Không thực thi script cũ trong `var/`. |
++| R2 — nhân sự/vòng đời | R1; AdminProjectDetail + test UI | Gỡ thất bại giữ mọi nháp; gỡ thành công xóa đúng nháp người vừa gỡ; nháp khác tiếp tục chặn lưu trữ. RED→GREEN. |
++| R3 — sửa ô và test lần 2 | R1; hai dialog, callsite + regression | Sau409 giữ nháp, đọc lại đúng document/row/case và token hiện hành, không tự gửi lại. Mất quyền/nguồn khác chặn ghi. Phân công mới gặp revision đổi phải mở lại để đối chiếu trước duyệt. RED→GREEN. |
++| R4 — chi tiết công việc | R1; detail/fieldset/CSS + test | Khi reload chờ/lỗi, giữ nháp nhưng khóa mọi lệnh ghi; nút tải lại vẫn dùng được, đọc thành công mới mở lại. RED→GREEN. |
++| R5 — tìm người dùng Unicode | R1; AdminProjectService + guarded native HTTP regression | SELECT cũ lỗi3854, biểu thức cuối chạy được; giữ tìm username phân biệt hoa/thường và `%_` literal. HTTP regression cần schema test V29, không ghi lên `tms`. |
++| R6 — review/bàn giao | R2–R5; shared scripts/docs | Review chéo Spec/Standards; FE coverage, build, offline BE unit, contract, DB SELECT; ghi rõ native/browser/UAT chưa chạy. S11 giữ IN_REVIEW. |
++
++Không đổi schema, stack, tracker hay giao diện tổng thể. `implement` triển khai các task đã rõ; không chạy thêm cơ chế `implement-spec` cạnh tranh. Root giữ shared files và Maven; ba agent chỉ sửa các nhóm file riêng. Kết thúc ở bounded source/unit/read-only verification và bàn giao blocker runtime/UAT cụ thể, không tự ký nghiệm thu.
++
+ > Checkpoint hiện hành 07/10/2026: native V19/V20 và quyền commit/push `system-design` đã được người dùng cho phép, hoàn tất theo các báo cáo native/V20. Các giới hạn và ghi chú thiếu native trong phần kế hoạch gốc bên dưới là lịch sử. Công việc responsive mở rộng theo yêu cầu mới được ghi ở cuối tài liệu; UAT/pilot vẫn riêng.
+ 
+ Spec: `docs/product/SYSTEM-SPECIFICATION.md` mục14, `docs/product/PRD.md` F01–F05/Q01–Q03. Người dùng duyệt toàn bộ ngày06/10/2026: “mình duyệt hết”. Nhánh `system-design`. Task list `tasks/todo.md`; ledger riêng `.superpowers/sdd/plan/progress.md`. Các phần ADMIN/UI đang chờ commit giữ nguyên.
+diff --git a/tasks/todo.md b/tasks/todo.md
+index d5196a4..d1f7a10 100644
+--- a/tasks/todo.md
++++ b/tasks/todo.md
+@@ -1,5 +1,24 @@
+ # F/Q task list — plan tasks/plan.md
+ 
++## Rà soát luồng hiện hữu — 16/10/2026
++
++Phạm vi do người dùng yêu cầu: khảo sát trạng thái hiện tại, sửa lỗi đã tái hiện của chức năng hiện có; một kế hoạch và một vòng RED→GREEN cho mỗi lỗi. Báo cáo tại `docs/reviews/2026-10-16-workflow-audit.md`. Không commit/push/merge/deploy/PR, không chạy script lịch sử trong `var/`, không thay dữ liệu sử dụng hoặc restart/tạo dịch vụ.
++
++- [x] Đọc yêu cầu, RTK/AGENTS, đối chiếu branch, tracked diff, phiên bản và kế hoạch; ghi baseline và giới hạn.
++- [x] Ma trận source theo9luồng và thuật ngữ đã chốt; UI→API→quyền→DB→readback, file:dòng và giới hạn trong báo cáo/3owner evidence.
++- [x] Điều tra ba nhóm nghiệp vụ độc lập;5lỗi hành vi xác nhận,3tài liệu sửa; candidate revoke-race tách khỏi finding đã chứng minh.
++- [x] R2/ADM-01: gỡ member thành công dọn đúng role draft; gỡ lỗi/nháp người khác giữ nguyên. UI RED→GREEN.
++- [x] R3/T-01/T-02:409 edit ô/test lần2 giữ nháp, reload context/token và explicit save; source/run/permission/revision đổi fail closed.13regressions RED→GREEN.
++- [x] R4/WQ-01: authoritative detail reload chờ/lỗi khóa commands, giữ nháp/file, retry/read thành công mới mở.2regressions RED→GREEN.
++- [x] R5/ADM-03 SQL: keyword Unicode cũ ERROR3854→exact final clause PASS trên SELECT readonly; guarded public HTTP regression đã viết/compile.
++- [x] R6 source review: review chéo Spec/Standards, final revision guard/Unicode/audit-output path; không finding critical/P1/P2 được xác nhận còn lại trong diff.
++- [x] FE872/79files và coverage thực đo; BE552/57unit classes và JaCoCo unit-only; build/package/contract structural/diff PASS, DB readonly76tables/185FK/10checks không violation. Lỗi môi trường/lượt trung gian ghi riêng.
++- [ ] Native/HTTP: cần preprovisioned isolated V29;3schema đang có V21/V22 không phù hợp, không tự migrate/reset/chọn tms. Public HTTP Unicode và concurrency/projection **NOT_RUN**.
++- [ ] Browser/runtime/UAT:8080/5173 ECONNREFUSED; không tự start/restart. Kiểm browser/role-data/physical-device và S11 UAT còn riêng.
++- [x] Báo cáo/STATUS/planning cập nhật scope,skill,changed files,coverage,retro/next action; S11 giữ IN_REVIEW, không commit/push.
++
++Contract/diff checkpoint cuối và artifact tổng hợp nằm trong báo cáo; không đánh dấu native/browser đã đạt bằng unit test. Fresh dependency scan/JDT **NOT_RUN**, JS lint/typecheck **NOT_CONFIGURED**.
++
+ ## Mở rộng V20 — 07/10/2026
+ 
+ - [x] Dữ liệu demo local: 5 user theo quyền, 2 dự án, membership/catalog/cycle/device/allocation; không seed case/file/result trong SQL.

@@ -98,6 +98,46 @@ it('shows manual detail refresh progress while retaining the loaded ticket',asyn
  await act(async()=>pending.resolve(item));
  expect(screen.getByRole('button',{name:'Tải lại chi tiết'})).toBeEnabled();
 });
+it('blocks comment and evidence actions during an uncertain detail read and restores the retained draft after recovery',async()=>{
+ workItemsApi.attachments.mockResolvedValue([{id:'evidence-1',name:'Ảnh kết quả.png',size:1024,uploadedBy:8}]);
+ render(<WorkItemDetail {...props}/>);
+ fireEvent.change(await screen.findByLabelText('Nội dung bình luận'),{target:{value:'Giữ nội dung đang soạn'}});
+ const selectedFile=new File(['image'],'ghi-nhan.png',{type:'image/png'});
+ fireEvent.change(screen.getByLabelText('Chọn chứng cứ'),{target:{files:[selectedFile]}});
+ await screen.findByRole('button',{name:'Gỡ Ảnh kết quả.png'});
+ let rejectRead;workItemsApi.get.mockReturnValueOnce(new Promise((_resolve,reject)=>{rejectRead=reject;}));
+ fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
+ expect(screen.getByRole('button',{name:'Đăng bình luận'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Tải chứng cứ lên'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Gỡ Ảnh kết quả.png'})).toBeDisabled();
+ await act(async()=>rejectRead(Object.assign(new Error('Quyền công việc đã thay đổi'),{status:403})));
+ await screen.findByText('Quyền công việc đã thay đổi');
+ expect(screen.getByRole('button',{name:'Đăng bình luận'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Tải chứng cứ lên'})).toBeDisabled();
+ expect(screen.getByLabelText('Nội dung bình luận')).toHaveValue('Giữ nội dung đang soạn');
+ fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
+ await waitFor(()=>expect(screen.getByRole('button',{name:'Đăng bình luận'})).toBeEnabled());
+ expect(screen.getByLabelText('Nội dung bình luận')).toHaveValue('Giữ nội dung đang soạn');
+ expect(screen.getByRole('button',{name:'Tải chứng cứ lên'})).toBeEnabled();
+});
+it('blocks retained PM edit and reference forms until the authoritative ticket refresh succeeds',async()=>{
+ render(<WorkItemDetail {...props} canTriage/>);
+ fireEvent.click(await screen.findByText('Sửa thông tin và phân công'));
+ fireEvent.change(screen.getByLabelText('Sửa tiêu đề'),{target:{value:'Tiêu đề chưa lưu'}});
+ fireEvent.change(screen.getByLabelText('Lý do sửa'),{target:{value:'Đang đối chiếu thông tin'}});
+ fireEvent.click(screen.getByText('Tham chiếu tracker và nội dung làm rõ'));
+ fireEvent.change(screen.getByLabelText('Mã bên ngoài'),{target:{value:'456'}});
+ workItemsApi.get.mockRejectedValueOnce(Object.assign(new Error('Chưa xác nhận được công việc hiện hành'),{status:403}));
+ fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
+ await screen.findByText('Chưa xác nhận được công việc hiện hành');
+ for(const name of ['Lưu thông tin','Lưu tham chiếu','Lưu nội dung làm rõ'])expect(screen.getByRole('button',{name})).toBeDisabled();
+ expect(screen.getByLabelText('Sửa tiêu đề')).toHaveValue('Tiêu đề chưa lưu');
+ expect(screen.getByLabelText('Mã bên ngoài')).toHaveValue('456');
+ fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
+ await waitFor(()=>expect(screen.getByRole('button',{name:'Lưu thông tin'})).toBeEnabled());
+ expect(screen.getByLabelText('Sửa tiêu đề')).toHaveValue('Tiêu đề chưa lưu');
+ expect(screen.getByLabelText('Mã bên ngoài')).toHaveValue('456');
+});
 it('announces pending comment submission beside the comment form',async()=>{
  const pending=deferred();workItemsApi.comment.mockReturnValueOnce(pending.promise);
  render(<WorkItemDetail {...props}/>);await screen.findByLabelText('Nội dung bình luận');

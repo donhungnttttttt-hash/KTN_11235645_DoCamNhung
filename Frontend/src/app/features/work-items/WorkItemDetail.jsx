@@ -82,6 +82,7 @@ export function WorkItemDetail({ projectId, id, catalogs, canTriage, writable, m
   return <div className="wi-detail"><WorkError error={error} retry={load}/>
     <div className="wi-actions"><TypeBadge type={typeLabels[item.type]}/><strong className="d-issue-key">{item.key}</strong>{isQa?<span className="d-status-badge">{item.statusLabel||catalogs.statusesByType?.QA?.find(s=>s.id===item.status)?.label||item.status}</span>:<StatusBadge id={item.status}/>}<Button disabled={loading} onClick={load}>{loading?'Đang tải chi tiết…':'Tải lại chi tiết'}</Button></div>
     <h2>{item.title}</h2>
+    <fieldset className="wi-detail-content" disabled={loading || !!error}>
     {isQa?<QaPanel projectId={projectId} id={id} catalogs={catalogs} onChanged={qaChanged} onReadState={qaReadState}/>:<div className="wi-detail-body"><section>
       {item.description&&<><h3>Mô tả</h3><p>{item.description}</p></>}
       {item.type==='BUG'&&<><h3>Các bước tái hiện</h3><p>{item.steps}</p><h3>Kết quả mong đợi</h3><p>{item.expectedResult}</p><h3>Kết quả thực tế</h3><p>{item.actualResult}</p></>}
@@ -115,6 +116,7 @@ export function WorkItemDetail({ projectId, id, catalogs, canTriage, writable, m
       {paging.history.hasMore&&<Button disabled={loading||paging.history.loading} onClick={()=>more('history')}>Lịch sử cũ hơn</Button>}
     </section>
     {!isQa&&move&&<TransitionDialog projectId={projectId} items={[presentItem(item)]} status={target} catalogs={catalogs} onClose={()=>setMove(false)} onSaved={()=>{setMove(false);changed();}}/>}
+    </fieldset>
   </div>;
 }
 

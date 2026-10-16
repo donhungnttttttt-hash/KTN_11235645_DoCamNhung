@@ -1,0 +1,323 @@
+
+ RUN  v4.1.11 D:/DCN/KTN_11235645_DoCamNhung/Frontend
+
+ ❯ src/app/hooks/useDialogFocus.test.jsx (7 tests | 2 failed) 429ms
+   × wraps to the visible summary instead of content inside a closed disclosure 68ms
+   × skips hidden and inert controls and an unavailable initial-focus target 18ms
+ ❯ src/app/components/selection-ux.test.jsx (2 tests | 2 failed) 159ms
+   × explains offscreen selections and resets local filters without dropping them 54ms
+   × makes the selected view page-scoped and resets only the view inside a parent form 103ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/app/hooks/useDialogFocus.test.jsx > wraps to the visible summary instead of content inside a closed disclosure
+Error: expect(element).toHaveFocus()
+
+Expected element with focus:
+  <summary>
+  Lịch sử kiểm thử
+</summary>
+Received element with focus:
+  <button>
+  Nội dung đang ẩn
+</button>
+ ❯ src/app/hooks/useDialogFocus.test.jsx:48:76
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/app/hooks/useDialogFocus.test.jsx > skips hidden and inert controls and an unavailable initial-focus target
+Error: expect(element).toHaveFocus()
+
+Expected element with focus:
+  <button>
+  Đầu đang hiện
+</button>
+Received element with focus:
+  <body
+  style="overflow: hidden;"
+>
+  <div>
+    <section
+      role="dialog"
+      tabindex="-1"
+    >
+      <button
+        data-dialog-initial-focus="true"
+        disabled=""
+      >
+        Đang khóa
+      </button>
+      <button>
+        Đầu đang hiện
+      </button>
+      <div
+        hidden=""
+      >
+        <button>
+          Đang ẩn
+        </button>
+      </div>
+      <div
+        inert=""
+      >
+        <button>
+          Không tương tác
+        </button>
+      </div>
+      <button>
+        Cuối đang hiện
+      </button>
+      <div
+        style="display: none;"
+      >
+        <button>
+          Ẩn bằng CSS
+        </button>
+      </div>
+    </section>
+  </div>
+</body>
+ ❯ src/app/hooks/useDialogFocus.test.jsx:54:60
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/app/components/selection-ux.test.jsx > explains offscreen selections and resets local filters without dropping them
+TestingLibraryElementError: Unable to find an element with the text: 1 mục ngoài phần đang hiển thị. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-busy[39m=[32m"false"[39m
+      [33maria-label[39m=[32m"Tester"[39m
+      [33mclass[39m=[32m"ui-selection"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"ui-selection-filters"[39m
+      [36m>[39m
+        [36m<label[39m
+          [33mclass[39m=[32m"ui-field ui-filter-search"[39m
+        [36m>[39m
+          [0mTìm[0m
+          [36m<input[39m
+            [33maria-label[39m=[32m"Tìm trong Tester"[39m
+            [33mplaceholder[39m=[32m"Tìm trên trang…"[39m
+            [33mtype[39m=[32m"search"[39m
+            [33mvalue[39m=[32m""[39m
+          [36m/>[39m
+        [36m</label>[39m
+        [36m<label[39m
+          [33mclass[39m=[32m"ui-field ui-filter-view"[39m
+        [36m>[39m
+          [0mHiển thị[0m
+          [36m<select[39m
+            [33maria-label[39m=[32m"Hiển thị · Tester"[39m
+          [36m>[39m
+            [36m<option[39m
+              [33mvalue[39m=[32m""[39m
+            [36m>[39m
+              [0mTất cả[0m
+            [36m</option>[39m
+            [36m<option[39m
+              [33mvalue[39m=[32m"selected"[39m
+            [36m>[39m
+              [0mĐã chọn[0m
+            [36m</option>[39m
+            [36m<option[39m
+              [33mvalue[39m=[32m"unselected"[39m
+            [36m>[39m
+              [0mChưa chọn[0m
+            [36m</option>[39m
+          [36m</select>[39m
+        [36m</label>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"ui-selection-summary"[39m
+      [36m>[39m
+        [36m<label[39m
+          [33mclass[39m=[32m"ui-selection-all"[39m
+        [36m>[39m
+          [36m<input[39m
+            [33maria-label[39m=[32m"Chọn tất cả đang hiển thị · Tester"[39m
+            [33mtype[39m=[32m"checkbox"[39m
+          [36m/>[39m
+          [36m<span>[39m
+            [0mChọn tất cả [0m
+            [0mtrên trang[0m
+            [0m ([0m
+            [0m2[0m
+            [0m)[0m
+          [36m</span>[39m
+        [36m</label>[39m
+        [36m<span>[39m
+          [0m1[0m
+          [0m mục đã chọn[0m
+        [36m</span>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33maria-labelledby[39m=[32m":r0:"[39m
+        [33mclass[39m=[32m"ui-selection-scroll"[39m
+        [33mrole[39m=[32m"region"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m>[39m
+        [36m<table[39m
+          [33mclass[39m=[32m"ui-selection-table"[39m
+        [36m>[39m
+          [36m<caption[39m
+            [33mclass[39m=[32m"sr-only"[39m
+            [33mid[39m=[32m":r0:"[39m
+          [36m>[39m
+            [0mTester[0m
+          [36m</caption>[39m
+          [36m<thead>[39m
+            [36m<tr>[39m
+              [36m<th[39m
+                [33mclass[39m=[32m"ui-selection-check"[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mÔ chọn[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mTên[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody>[39m
+            [36m<tr[39m
+              [33mdata-selected[39m=[32m"false"[39m
+            [36m>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"ui-selection-check"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"ui-selection-target"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33maria-label[39m=[32m"Chọn Alpha"[39m
+                    [33mtype[39m=[32m"checkbox"[39m
+                  [36m/>[39m
+                [36m</label>[39m
+              [36m</td>[39m
+              [36m<td>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"ui-selection-name"[39m
+                [36m>[39m
+                  [0mAlpha[0m
+                [36m</span>[39m
+              [36m</td>[39m
+            [36m</tr>[39m
+            [36m<tr[39m
+              [33mdata-selected[39m=[32m"false"[39m
+            [36m>[39m
+              [36m<td[39m
+                [33mclass[39m=[32m"ui-selection-check"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"ui-selection-target"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33maria-label[39m=[32m"Chọn Beta"[39m
+                    [33mtype[39m=[32m"checkbox"[39m
+                  [36m/>[39m
+                [36m</label>[39m
+              [36m</td>[39m
+              [36m<td>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"ui-selection-name"[39m
+                [36m>[39m
+                  [0mBeta[0m
+                [36m</span>[39m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/app/components/selection-ux.test.jsx:11:16
+      9| it('explains offscreen selections and resets local filters without dro…
+     10|  const user=userEvent.setup();render(<Picker/>);
+     11|  expect(screen.getByText('1 mục ngoài phần đang hiển thị')).toBeVisibl…
+       |                ^
+     12|  await user.click(screen.getByRole('checkbox',{name:'Chọn Alpha'}));
+     13|  await user.type(screen.getByLabelText('Tìm trong Tester'),'missing');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/app/components/selection-ux.test.jsx > makes the selected view page-scoped and resets only the view inside a parent form
+TestingLibraryElementError: Unable to find an accessible element with the role "option" and name "Đã chọn trên trang"
+
+Here are the accessible roles:
+
+  option:
+
+  Name "Tất cả":
+  [36m<option[39m
+    [33mvalue[39m=[32m""[39m
+  [36m/>[39m
+
+  --------------------------------------------------option:
+
+  Name "Đã chọn":
+  [36m<option[39m
+    [33mvalue[39m=[32m"selected"[39m
+  [36m/>[39m
+
+  --------------------------------------------------option:
+
+  Name "Chưa chọn":
+  [36m<option[39m
+    [33mvalue[39m=[32m"unselected"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<select[39m
+  [33maria-label[39m=[32m"Hiển thị · Tester"[39m
+[36m>[39m
+  [36m<option[39m
+    [33mvalue[39m=[32m""[39m
+  [36m>[39m
+    [0mTất cả[0m
+  [36m</option>[39m
+  [36m<option[39m
+    [33mvalue[39m=[32m"selected"[39m
+  [36m>[39m
+    [0mĐã chọn[0m
+  [36m</option>[39m
+  [36m<option[39m
+    [33mvalue[39m=[32m"unselected"[39m
+  [36m>[39m
+    [0mChưa chọn[0m
+  [36m</option>[39m
+[36m</select>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/app/components/selection-ux.test.jsx:25:22
+     23|  render(<form onSubmit={submit}><Picker/></form>);
+     24|  const view=screen.getByLabelText('Hiển thị · Tester');
+     25|  expect(within(view).getByRole('option',{name:'Đã chọn trên trang'})).…
+       |                      ^
+     26|  await user.selectOptions(view,'selected');
+     27|  await user.click(screen.getByRole('button',{name:'Xóa bộ lọc · Tester…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 5 passed (9)
+   Start at  00:48:12
+   Duration  2.93s (transform 267ms, setup 483ms, import 461ms, tests 588ms, environment 1.02s)
+

@@ -1,0 +1,16 @@
+{
+  "readOnly": true,
+  "keyword": "Nguyễn",
+  "cases": [
+    {
+      "convert": false,
+      "status": "FAIL",
+      "mysqlError": "ERROR 3854"
+    },
+    {
+      "convert": true,
+      "status": "PASS",
+      "counts": "0"
+    }
+  ]
+}

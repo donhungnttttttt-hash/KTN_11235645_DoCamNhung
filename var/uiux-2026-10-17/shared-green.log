@@ -1,0 +1,56 @@
+
+ RUN  v4.1.11 D:/DCN/KTN_11235645_DoCamNhung/Frontend
+
+ ❯ src/app/features/admin/button-recheck.test.jsx (5 tests | 1 failed) 607ms
+   × keeps Shift+Tab inside a form dialog when its initial focus is the heading 20ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/app/features/admin/button-recheck.test.jsx > keeps Shift+Tab inside a form dialog when its initial focus is the heading
+Error: expect(element).toHaveFocus()
+
+Expected element with focus:
+  <h2
+  data-dialog-initial-focus="true"
+  id=":r5:"
+  tabindex="-1"
+>
+  Hộp kiểm tra
+</h2>
+Received element with focus:
+  <button
+  aria-label="Đóng"
+  type="button"
+>
+  <svg
+    aria-hidden="true"
+    class="lucide lucide-x"
+    fill="none"
+    height="20"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="20"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M18 6 6 18"
+    />
+    <path
+      d="m6 6 12 12"
+    />
+  </svg>
+</button>
+ ❯ src/app/features/admin/button-recheck.test.jsx:23:223
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 6 passed (7)
+      Tests  1 failed | 48 passed (49)
+   Start at  00:51:06
+   Duration  8.53s (transform 874ms, setup 1.70s, import 1.87s, tests 7.88s, environment 4.08s)
+

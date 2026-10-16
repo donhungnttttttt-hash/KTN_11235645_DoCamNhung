@@ -63,7 +63,8 @@ public class AdminProjectService {
         if(page<0 || size<1 || size>100 || text(keyword).length()>100 || role!=null && !List.of("ADMIN","PM","TESTER","DEV").contains(role))fail(422,"INVALID_FILTER","Bộ lọc không hợp lệ.");
         var args=new ArrayList<Object>();String where=" WHERE 1=1";
         if(projectId!=null){db.row("SELECT id FROM projects WHERE id=?",projectId);where+=" AND EXISTS(SELECT 1 FROM project_memberships m WHERE m.user_id=u.id AND m.project_id=? AND m.active=TRUE)";args.add(projectId);}
-        if(!text(keyword).isEmpty()){where+=" AND (LOCATE(?,u.username)>0 OR LOCATE(?,u.display_name)>0)";args.add(text(keyword));args.add(text(keyword));}
+        // Usernames remain ASCII and case-sensitive; accept UTF-8 display-name search terms.
+        if(!text(keyword).isEmpty()){where+=" AND (LOCATE(?,CONVERT(u.username USING utf8mb4) COLLATE utf8mb4_bin)>0 OR LOCATE(?,u.display_name)>0)";args.add(text(keyword));args.add(text(keyword));}
         if(role!=null){where+=" AND u.role_code=?";args.add(role);}
         if(enabled!=null){where+=" AND u.enabled=?";args.add(enabled);}
         long count=db.count("SELECT COUNT(*) FROM identity_users u"+where,args.toArray());args.add(size);args.add((long)page*size);

@@ -33,6 +33,7 @@
 .wi-table .wi-date { white-space:nowrap; min-width:110px; }
 .wi-table .d-status-badge { max-width:220px; }
 .wi-detail { display: grid; gap: 20px; }
+.wi-detail-content { display: grid; gap: 20px; min-width: 0; margin: 0; padding: 0; border: 0; }
 .wi-detail > *, .wi-detail-body > *, .wi-section > * { min-width: 0; }
 .wi-detail .wi-actions > button { max-width: 100%; overflow-wrap: anywhere; white-space: normal; }
 .wi-detail-body { display: grid; grid-template-columns: minmax(0,2fr) minmax(210px,1fr); gap: 24px; }

@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-10-16T18:09:39.319Z",
+  "ownedPreviewPort": 4173,
+  "state": "CLOSED_ECONNREFUSED",
+  "previewSessionStopped": true,
+  "stopResult": "Ctrl+C of owned session80800; exit1 from explicit cancellation",
+  "browserTabClosed": true,
+  "viewportOverrideReset": true,
+  "backendStartRestart": false,
+  "mainDatabaseWrites": false
+}

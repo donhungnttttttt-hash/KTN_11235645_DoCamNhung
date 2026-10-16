@@ -217,8 +217,8 @@ function DocumentGrid({ project, documentId, navigate }) {
       {!rows.length && <p className="td-empty">Không có dòng phù hợp với từ khóa.</p>}
     </div>
 
-    {editing && <DocumentCellEditor projectId={project.id} documentId={documentId} cell={editing} onClose={()=>setEditing(null)} onSaved={load}/>}
-    {secondTest && <DocumentSecondTestDialog projectId={project.id} documentId={documentId} row={secondTest} assignment={secondTests.get(secondTest.rowId)} onClose={()=>setSecondTest(null)} onSaved={load}
+    {editing && <DocumentCellEditor projectId={project.id} documentId={documentId} cell={editing} authorized={canEdit} onClose={()=>setEditing(null)} onSaved={load}/>}
+    {secondTest && <DocumentSecondTestDialog projectId={project.id} documentId={documentId} row={secondTest} assignment={secondTests.get(secondTest.rowId)} authorized={canAssign} onClose={()=>setSecondTest(null)} onSaved={load}
       onApproved={()=>setData(current=>({...current,rows:current.rows.map(row=>row.rowId===secondTest.rowId && row.revisionId===secondTest.revisionId?{...row,approved:true}:row)}))} navigate={navigate}/>}
     {activeCase && <CaseDetailModal key={activeCase} projectId={project.id} caseId={activeCase} onClose={() => setActiveCase(null)} onUpdated={load}/>}
     {resultHistory && <DocumentResultHistory projectId={project.id} documentId={documentId} row={resultHistory} timeZone={project.timezone} onClose={()=>setResultHistory(null)} onExecution={()=>{execution.show({...resultHistory,historyOnly:true});setResultHistory(null);}}/>}

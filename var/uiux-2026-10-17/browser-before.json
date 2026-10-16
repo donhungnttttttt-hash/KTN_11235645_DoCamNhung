@@ -1,0 +1,40 @@
+{
+  "kpis": [
+    {
+      "background": "rgb(224, 242, 241)",
+      "color": "rgb(0, 77, 64)",
+      "label": "Chưa chạy"
+    },
+    {
+      "background": "rgb(255, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "label": "NG · Không đạt"
+    },
+    {
+      "background": "rgb(230, 161, 0)",
+      "color": "rgb(255, 255, 255)",
+      "label": "P · Tạm hoãn"
+    },
+    {
+      "background": "rgb(0, 112, 243)",
+      "color": "rgb(255, 255, 255)",
+      "label": "OK · Đạt"
+    },
+    {
+      "background": "rgb(69, 90, 100)",
+      "color": "rgb(255, 255, 255)",
+      "label": "NA · Ngoài phạm vi"
+    },
+    {
+      "background": "rgb(0, 200, 83)",
+      "color": "rgb(255, 255, 255)",
+      "label": "Bug chờ xác minh"
+    }
+  ],
+  "pageWidth": 1440,
+  "viewport": {
+    "dpr": 1.0000000149011612,
+    "height": 1000,
+    "width": 1440
+  }
+}

@@ -1,0 +1,7 @@
+/* Fixture framing only. Production components retain their own styles. */
+.review-shell{max-width:1240px;margin:auto;padding:20px;min-width:0}
+.review-header{margin-bottom:24px}.review-header h1{font-size:var(--text-title);font-weight:600}.review-header p{margin:8px 0;color:#405c57}
+.review-header nav{display:flex;flex-wrap:wrap;gap:16px}.review-header a{color:#0f766e;text-decoration:underline}
+.review-section{margin:24px 0}.review-section h2{font-size:var(--text-section);font-weight:600;margin-bottom:12px}
+.review-section details{margin:12px 0}.review-section .ui-field{margin:12px 0}
+.review-section.dashboard-board.work-items{min-height:0;height:auto;display:block;background:transparent}

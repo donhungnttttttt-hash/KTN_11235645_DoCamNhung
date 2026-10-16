@@ -10,7 +10,7 @@ paths:
     parameters: [{$ref: '#/components/parameters/Id'}]
     get:
       operationId: projectStatusReportHistory
-      description: Enabled active project members read; canPost requires current project PM, non-DEV system role and writable project.
+      description: Enabled global ADMIN or active project members read; canPost requires global ADMIN or current project PM with a non-DEV system role, and a writable project. The global ADMIN policy follows the 2026-10-10 decision in docs/business/permissions.md.
       parameters: [{$ref: '#/components/parameters/Page'}, {$ref: '#/components/parameters/Size'}]
       responses:
         '200': {description: Latest first by ID; reports page plus all current milestone warnings and canPost, content: {application/json: {schema: {$ref: '#/components/schemas/History'}}}}
@@ -19,7 +19,9 @@ paths:
     post:
       operationId: appendProjectStatusReport
       description: |
-        Current enabled project PM only. ADMIN without PM membership, project DEV and system DEV cannot post.
+        Current enabled global ADMIN or project PM with a non-DEV system role may post to a writable project.
+        Global ADMIN does not require project membership; the 2026-10-10 decision in docs/business/permissions.md supersedes the former ADMIN read-only restriction.
+        Non-ADMIN project DEV and system DEV cannot post. The report records the actual actor.
         Reason and recovery are mandatory when any scoped nonarchived milestone is overdue by its project timezone.
         Shared deadline query counts work items and all cycles including DRAFT; any nonterminal work or non-CLOSED cycle is unfinished.
         Missing due date or empty scope means insufficient data, not overdue. Due today is not overdue.
@@ -31,7 +33,7 @@ paths:
       responses:
         '201': {description: Original/new report, content: {application/json: {schema: {$ref: '#/components/schemas/Report'}}}}
         '401': {description: Missing session}
-        '403': {description: Not current project PM or missing CSRF}
+        '403': {description: Neither global ADMIN nor current eligible project PM, or missing CSRF}
         '404': {description: Outside project membership}
         '409': {description: IDEMPOTENCY_CONFLICT or archived project}
         '422': {description: Invalid body or required overdue explanation missing}
@@ -39,7 +41,7 @@ paths:
     parameters: [{$ref: '#/components/parameters/Id'}]
     get:
       operationId: adminStatusReportHistory
-      description: Current enabled ADMIN reads without membership; canPost is false on this route.
+      description: Current enabled ADMIN reads without membership; canPost is false on this read-only administrative route. ADMIN may create through POST /projects/{id}/status-reports and the project workspace.
       parameters: [{$ref: '#/components/parameters/Page'}, {$ref: '#/components/parameters/Size'}]
       responses:
         '200': {description: Narrative history and automatic milestone warnings, content: {application/json: {schema: {$ref: '#/components/schemas/History'}}}}

@@ -1,0 +1,163 @@
+
+ RUN  v4.1.11 D:/DCN/KTN_11235645_DoCamNhung/Frontend
+
+ ❯ src/app/components/selection-ux.test.jsx (3 tests | 1 failed) 605ms
+   × keeps the callers failed-read message when there are no source rows to filter 80ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/app/components/selection-ux.test.jsx > keeps the callers failed-read message when there are no source rows to filter
+TestingLibraryElementError: Unable to find an element with the text: Chưa tải được danh sách. Bấm Thử lại.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-busy[39m=[32m"false"[39m
+      [33maria-label[39m=[32m"Phạm vi"[39m
+      [33mclass[39m=[32m"ui-selection"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"ui-selection-filters"[39m
+      [36m>[39m
+        [36m<label[39m
+          [33mclass[39m=[32m"ui-field ui-filter-search"[39m
+        [36m>[39m
+          [0mTìm[0m
+          [36m<input[39m
+            [33maria-label[39m=[32m"Tìm trong Phạm vi"[39m
+            [33mplaceholder[39m=[32m"Tìm trên trang…"[39m
+            [33mtype[39m=[32m"search"[39m
+            [33mvalue[39m=[32m""[39m
+          [36m/>[39m
+        [36m</label>[39m
+        [36m<label[39m
+          [33mclass[39m=[32m"ui-field ui-filter-view"[39m
+        [36m>[39m
+          [0mHiển thị[0m
+          [36m<select[39m
+            [33maria-label[39m=[32m"Hiển thị · Phạm vi"[39m
+          [36m>[39m
+            [36m<option[39m
+              [33mvalue[39m=[32m""[39m
+            [36m>[39m
+              [0mTất cả[0m
+            [36m</option>[39m
+            [36m<option[39m
+              [33mvalue[39m=[32m"selected"[39m
+            [36m>[39m
+              [0mĐã chọn trên trang[0m
+            [36m</option>[39m
+            [36m<option[39m
+              [33mvalue[39m=[32m"unselected"[39m
+            [36m>[39m
+              [0mChưa chọn trên trang[0m
+            [36m</option>[39m
+          [36m</select>[39m
+        [36m</label>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"Xóa bộ lọc trong bảng · Phạm vi"[39m
+          [33mclass[39m=[32m"cat-btn ui-selection-reset"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0mXóa bộ lọc trong bảng[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"ui-selection-summary"[39m
+      [36m>[39m
+        [36m<label[39m
+          [33mclass[39m=[32m"ui-selection-all"[39m
+        [36m>[39m
+          [36m<input[39m
+            [33maria-label[39m=[32m"Chọn tất cả đang hiển thị · Phạm vi"[39m
+            [33mdisabled[39m=[32m""[39m
+            [33mtype[39m=[32m"checkbox"[39m
+          [36m/>[39m
+          [36m<span>[39m
+            [0mChọn tất cả [0m
+            [0mtrên trang[0m
+            [0m ([0m
+            [0m0[0m
+            [0m)[0m
+          [36m</span>[39m
+        [36m</label>[39m
+        [36m<span[39m
+          [33maria-atomic[39m=[32m"true"[39m
+          [33maria-live[39m=[32m"polite"[39m
+          [33mclass[39m=[32m"ui-selection-counts"[39m
+        [36m>[39m
+          [36m<span>[39m
+            [0m1[0m
+            [0m mục đã chọn[0m
+          [36m</span>[39m
+          [36m<span>[39m
+            [0m1[0m
+            [0m mục ngoài phần đang hiển thị[0m
+          [36m</span>[39m
+        [36m</span>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33maria-labelledby[39m=[32m":r2:"[39m
+        [33mclass[39m=[32m"ui-selection-scroll"[39m
+        [33mrole[39m=[32m"region"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m>[39m
+        [36m<table[39m
+          [33mclass[39m=[32m"ui-selection-table"[39m
+        [36m>[39m
+          [36m<caption[39m
+            [33mclass[39m=[32m"sr-only"[39m
+            [33mid[39m=[32m":r2:"[39m
+          [36m>[39m
+            [0mPhạm vi[0m
+          [36m</caption>[39m
+          [36m<thead>[39m
+            [36m<tr>[39m
+              [36m<th[39m
+                [33mclass[39m=[32m"ui-selection-check"[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mÔ chọn[0m
+              [36m</th>[39m
+              [36m<th[39m
+                [33mscope[39m=[32m"col"[39m
+              [36m>[39m
+                [0mTên[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody>[39m
+            [36m<tr>[39m
+              [36m<td[39m
+                [33mcolspan[39m=[32m"2"[39m
+              [36m>[39m
+                [0mKhông có mục khớp bộ lọc trên trang này. Xóa bộ lọc trong bảng hoặc xem trang khác.[0m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/app/components/selection-ux.test.jsx:34:16
+     32|  const user=userEvent.setup();render(<SelectionTable label="Phạm vi" r…
+     33|  await user.selectOptions(screen.getByLabelText('Hiển thị · Phạm vi'),…
+     34|  expect(screen.getByText('Chưa tải được danh sách. Bấm Thử lại.')).toB…
+       |                ^
+     35| });
+     36|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  00:56:01
+   Duration  1.91s (transform 246ms, setup 241ms, import 301ms, tests 605ms, environment 567ms)
+

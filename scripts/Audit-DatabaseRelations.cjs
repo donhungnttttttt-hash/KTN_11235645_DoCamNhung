@@ -13,6 +13,6 @@ try{
  });
  const checks=query('START TRANSACTION READ ONLY;'+statements.join(' UNION ALL ')+';COMMIT;').map(line=>{const [relation,count]=line.split('\t');return {relation,orphanRows:Number(count)};});
  const report={checkedAt:new Date().toISOString(),readOnly:true,tableCount:Number(query('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_type=\'BASE TABLE\';')[0]),foreignKeys:checks.length,failures:checks.filter(c=>c.orphanRows),checks};
- const output=path.join(__dirname,'../var/ui-audit/database-relations.json');fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');
+ const output=path.resolve(__dirname,'..',process.argv[2]||'var/ui-audit','database-relations.json');fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');
  console.log(JSON.stringify({checkedAt:report.checkedAt,readOnly:true,tables:report.tableCount,foreignKeys:report.foreignKeys,failures:report.failures}));if(report.failures.length)process.exitCode=1;
 }catch{console.error('Read-only database relationship audit failed. No credentials or row contents printed.');process.exitCode=1;}

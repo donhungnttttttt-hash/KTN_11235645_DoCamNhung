@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-16T17:28:18.429Z",
+  "readOnly": true,
+  "availability": [
+    {
+      "url": "http://127.0.0.1:8080/actuator/health",
+      "reachable": false,
+      "error": "ECONNREFUSED"
+    },
+    {
+      "url": "http://127.0.0.1:5173/",
+      "reachable": false,
+      "error": "ECONNREFUSED"
+    }
+  ]
+}

@@ -20,6 +20,6 @@ try {
  const result=query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ; START TRANSACTION READ ONLY; '+sql+'; COMMIT;').map(row=>{const [name,count]=row.split('\t');return {name,count:Number(count)};});
  const projects=query(`SELECT JSON_OBJECT('projectId',p.id,'projectCode',p.code,'documents',(SELECT COUNT(*) FROM import_batches b WHERE b.project_id=p.id AND b.status='COMMITTED'),'fileGroups',(SELECT COUNT(*) FROM file_work_groups g WHERE g.project_id=p.id),'runs',(SELECT COUNT(*) FROM run_items r WHERE r.project_id=p.id),'sourceRows',(SELECT COUNT(*) FROM import_rows ir JOIN import_batches b ON b.id=ir.batch_id AND b.project_id=ir.project_id WHERE ir.project_id=p.id AND b.status='COMMITTED')) FROM projects p ORDER BY p.id;`).map(JSON.parse);
  const report={checkedAt:new Date().toISOString(),readOnly:true,checks:result,failures:result.filter(r=>r.count),projects};
- const target=path.resolve(__dirname,'../var/ui-audit/workflow-links.json');fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,JSON.stringify(report,null,2)+'\n');
+ const target=path.resolve(__dirname,'..',process.argv[2]||'var/ui-audit','workflow-links.json');fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,JSON.stringify(report,null,2)+'\n');
  console.log(JSON.stringify(report,null,2));if(report.failures.length)process.exitCode=1;
 }catch{console.error('Workflow audit failed; no application data was changed and no credentials were printed.');process.exitCode=1;}

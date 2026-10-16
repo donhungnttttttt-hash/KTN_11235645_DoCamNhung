@@ -41,3 +41,16 @@ it('does not close the result dialog behind a work-item modal', async () => {
   expect(childClose).toHaveBeenCalledOnce();
   expect(parentClose).not.toHaveBeenCalled();
 });
+
+it('wraps to the visible summary instead of content inside a closed disclosure',async()=>{
+ function Disclosure(){const ref=useDialogFocus(()=>{});return <section role="dialog" ref={ref} tabIndex={-1}><button>Đầu hộp thoại</button><details><summary>Lịch sử kiểm thử</summary><button>Nội dung đang ẩn</button></details></section>;}
+ const user=userEvent.setup();render(<Disclosure/>);
+ await user.tab({shift:true});expect(screen.getByText('Lịch sử kiểm thử')).toHaveFocus();
+ await user.tab();expect(screen.getByRole('button',{name:'Đầu hộp thoại'})).toHaveFocus();
+});
+it('skips hidden and inert controls and an unavailable initial-focus target',async()=>{
+ function HiddenControls(){const ref=useDialogFocus(()=>{});return <section role="dialog" ref={ref} tabIndex={-1}><button disabled data-dialog-initial-focus>Đang khóa</button><button>Đầu đang hiện</button><div hidden><button>Đang ẩn</button></div><div inert=""><button>Không tương tác</button></div><button>Cuối đang hiện</button><div style={{display:'none'}}><button>Ẩn bằng CSS</button></div></section>;}
+ const user=userEvent.setup();render(<HiddenControls/>);
+ expect(screen.getByRole('button',{name:'Đầu đang hiện'})).toHaveFocus();
+ await user.tab({shift:true});expect(screen.getByRole('button',{name:'Cuối đang hiện'})).toHaveFocus();
+});

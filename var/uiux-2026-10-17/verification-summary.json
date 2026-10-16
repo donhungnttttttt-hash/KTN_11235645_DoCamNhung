@@ -1,0 +1,210 @@
+{
+  "recordedAt": "2026-10-16T18:10:03.157Z",
+  "date": "2026-10-17",
+  "timezone": "Asia/Saigon",
+  "branch": "system-design",
+  "head": "c42e3f0ab87403cf39122c85fe63bc267368b7ad",
+  "baselineHeadPreserved": true,
+  "baselineBranchPreserved": true,
+  "phase": "IN_REVIEW",
+  "activeSprint": "S11",
+  "frontend": {
+    "status": "PASS",
+    "files": 82,
+    "tests": 884,
+    "newTests": 12,
+    "exitCode": 0,
+    "durationSeconds": 130.41,
+    "coverage": {
+      "lines": {
+        "total": 3990,
+        "covered": 3470,
+        "skipped": 0,
+        "pct": 86.96
+      },
+      "statements": {
+        "total": 7523,
+        "covered": 6552,
+        "skipped": 0,
+        "pct": 87.09
+      },
+      "functions": {
+        "total": 2689,
+        "covered": 2199,
+        "skipped": 0,
+        "pct": 81.77
+      },
+      "branches": {
+        "total": 7335,
+        "covered": 6178,
+        "skipped": 0,
+        "pct": 84.22
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 100
+      }
+    }
+  },
+  "build": {
+    "status": "PASS",
+    "exitCode": 0,
+    "bundleKb": 674.42,
+    "gzipKb": 192.16,
+    "advisory": "Existing >500KB chunk warning; no measured performance claim"
+  },
+  "contracts": {
+    "status": "PASS_STRUCTURAL",
+    "log": "contracts-final.log"
+  },
+  "diffCheck": {
+    "status": "PASS_WITH_EOL_WARNINGS",
+    "exitCode": 0,
+    "log": "diff-check-final.log"
+  },
+  "priorTrackedBaseline": {
+    "checked": 19,
+    "unchanged": 14,
+    "expectedNewEdits": [
+      "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "docs/planning/README.md",
+      "docs/planning/STATUS.json",
+      "tasks/plan.md",
+      "tasks/todo.md"
+    ],
+    "unexpectedChanges": [],
+    "details": [
+      {
+        "file": "Backend/src/main/java/vn/syp/tms/admin/AdminProjectService.java",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "Backend/src/test/java/vn/syp/tms/admin/AdminNativeIntegrationTest.java",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+        "unchanged": false,
+        "allowedUiOrPlanningEdit": true
+      },
+      {
+        "file": "Frontend/src/app/features/admin/AdminProjectLifecycle.integration.test.jsx",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "Frontend/src/app/features/test-cases/DocumentCellEditor.jsx",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "Frontend/src/app/features/test-cases/DocumentSecondTestDialog.jsx",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "Frontend/src/app/features/work-items/README.md",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "Frontend/src/app/features/work-items/WorkItemDetail.jsx",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "Frontend/src/app/features/work-items/WorkItemDetail.test.jsx",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "Frontend/src/app/features/work-items/work-items-live.css",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "docs/api/admin-reporting.openapi.yaml",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "docs/api/redmine.md",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "docs/planning/README.md",
+        "unchanged": false,
+        "allowedUiOrPlanningEdit": true
+      },
+      {
+        "file": "docs/planning/STATUS.json",
+        "unchanged": false,
+        "allowedUiOrPlanningEdit": true
+      },
+      {
+        "file": "scripts/Audit-DatabaseRelations.cjs",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "scripts/Audit-WorkflowLinks.cjs",
+        "unchanged": true,
+        "allowedUiOrPlanningEdit": false
+      },
+      {
+        "file": "tasks/plan.md",
+        "unchanged": false,
+        "allowedUiOrPlanningEdit": true
+      },
+      {
+        "file": "tasks/todo.md",
+        "unchanged": false,
+        "allowedUiOrPlanningEdit": true
+      }
+    ]
+  },
+  "browser": {
+    "status": "SCOPED_MOCK_COMPONENT_VERIFIED",
+    "tool": "CUA Chrome",
+    "viewports": [
+      375,
+      768,
+      1440
+    ],
+    "apiBlocked": true,
+    "backendIntegration": "NOT_RUN",
+    "zoom200": "NOT_VERIFIED_SHORTCUT_NO_EFFECT",
+    "touchAtSafariUat": "NOT_RUN",
+    "stateEvidence": "browser-after.json",
+    "consoleEvidence": "browser-final-console.json"
+  },
+  "notRun": [
+    "Backend/native suites (UI only)",
+    "Dependency advisory scan",
+    "JDT",
+    "Real backend/API role-data browser verification",
+    "Screen reader/Safari/physical touch/UAT"
+  ],
+  "notConfigured": [
+    "JS lint/typecheck scripts"
+  ],
+  "noNewBackendApiSchemaChanges": true,
+  "noCommitPushMergeDeploy": true,
+  "noMainDatabaseWrites": true,
+  "noBackendStartRestart": true,
+  "reportLinks": {
+    "checked": 49,
+    "missing": []
+  },
+  "independentReview": "independent-review.md: bounded Spec + Standards, no confirmed critical/P1/P2; not whole-system acceptance"
+}

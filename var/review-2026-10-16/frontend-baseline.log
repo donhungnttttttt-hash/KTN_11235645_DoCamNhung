@@ -1,0 +1,18 @@
+
+> system@1.0.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v4.1.11 D:/DCN/KTN_11235645_DoCamNhung/Frontend
+
+
+ Test Files  78 passed (78)
+      Tests  856 passed (856)
+   Start at  23:51:06
+   Duration  99.18s (transform 3.48s, setup 19.28s, import 12.48s, tests 101.79s, environment 47.98s)
+
+npm notice
+npm notice New minor version of npm available! 11.9.0 -> 11.21.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.21.1
+npm notice To update run: npm install -g npm@11.21.1
+npm notice

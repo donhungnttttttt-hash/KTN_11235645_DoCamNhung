@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-11",
+  "updatedAt": "2026-10-17",
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
@@ -789,7 +789,7 @@
   "implementationBaseCommit": "3355cfc",
   "lastCompletedSprint": "S09",
   "nextSuggestedSprint": null,
-  "nextAction": "UAT/pilot theo bốn vai trò và bộ mẫu Excel khách hàng; đo cảm ứng/thiết bị thật, Safari, tải và phục hồi production. Xem docs/reviews/2026-10-08-customer-reassessment.md; vòng đời dự án đã triển khai/kiểm chứng V21, không còn chờ quyết định archive. S11 giữ IN_REVIEW đến khi đạt DoD.",
+  "nextAction": "UI/UX17/10 đã sửa shared selection/focus, lỗi tải/retry và member feedback; FE884/82files, coverage/build PASS, Chrome component mock375/768/1440 verified. Xem docs/reviews/2026-10-17-uiux-refinement.md. Backend8080/5173 không phục vụ: integrated role-data, zoom200%, screen reader/Safari/touch/UAT còn mở. Native HTTP Unicode/affected concurrency/projection cần isolated V29 như audit16/10; không tự restart/provision/reset. Giữ S11 IN_REVIEW và gate mẫu Excel khách/live integration/tải/phục hồi production.",
   "executionPolicy": {
     "continueSequentially": true,
     "authorizedAt": "2026-09-29",
@@ -1171,9 +1171,102 @@
     "pushed": false
   },
   "currentBranchPushRequest": {
-    "date": "2026-10-11",
+    "date": "2026-10-17",
     "branch": "system-design",
     "authorization": "User explicitly requested push of current reviewed changes. No permanent push, merge or deploy authorization.",
-    "scope": "Reviewed source, tests, migrations V26-V29, documentation and selected review artifacts; local credentials, databases, builds and scratch logs excluded."
+    "scope": "Reviewed workflow audit16-17/10 and UI/UX changes, regression tests, documentation and selected audit/browser evidence. No new migration. Local credentials, databases, build outputs and unrelated historical scratch files excluded; prior no-push verification snapshots remain historical."
+  },
+  "uiuxRefinement20261017": {
+    "status": "IMPLEMENTED_AUTOMATED_AND_SCOPED_MOCK_BROWSER_VERIFIED_INTEGRATION_GATES_OPEN",
+    "verifiedAt": "2026-10-17",
+    "timezone": "Asia/Saigon",
+    "branch": "system-design",
+    "baselineCommit": "c42e3f0ab87403cf39122c85fe63bc267368b7ad",
+    "baseline": "Preserved dirty working tree from workflowAudit20261016; var/uiux-2026-10-17/baseline.json and baseline.patch",
+    "review": "docs/reviews/2026-10-17-uiux-refinement.md",
+    "plan": "tasks/plan.md",
+    "checklist": "tasks/todo.md",
+    "scope": ["SelectionTable local filters and offscreen selection clarity", "useDialogFocus available targets and summary", "ScopeSetup/CoverageEditor read failure and retry", "Admin awaited member feedback and picker page/accessible names"],
+    "verification": {
+      "frontendFiles": 82,
+      "frontendTests": 884,
+      "newBehaviorTests": 12,
+      "frontendCoverage": {"statements": 87.09, "branches": 84.22, "functions": 81.77, "lines": 86.96},
+      "frontendBuild": "PASS_674_42_KB_BUNDLE_ADVISORY",
+      "contracts": "PASS_STRUCTURAL_113_OPS_19_FILEWORK_14_QA_52_DOC_LINKS",
+      "diffCheck": "PASS_WITH_LF_CRLF_WARNINGS_EXIT_0",
+      "baselinePreservation": "19 prior tracked dirty files hashed:14 unchanged,5 expected UI/planning edits; no unexpected change; branch and HEAD preserved",
+      "browser": "Chrome via CUA; production components/styles in frontend-only fixture4173, synthetic data/API blocked; not backend integration",
+      "viewports": [375, 768, 1440],
+      "viewportScope": "Shared selection fixture: no horizontal page overflow; scoped member/retest/keyboard states at desktop",
+      "textContrast": {"resetButton": 12.63, "selectionSummary": 6.45, "unchangedReportsKpiRange": [11.8, 12.43]},
+      "console": "Three historical fixture bootstrap/HMR entries retained; zero new warn/error after final reload in observed window; not whole-app console certification",
+      "zoom200": "NOT_VERIFIED_SHORTCUT_NO_EFFECT",
+      "integratedRuntime": "NOT_RUN_8080_5173_ECONNREFUSED_NO_BACKEND_START",
+      "physicalTouchScreenReaderSafariUat": "NOT_RUN",
+      "backendNativeDependencyScanJdt": "NOT_RUN_UI_ONLY_CHANGE",
+      "lintAndJsTypecheck": "NOT_CONFIGURED"
+    },
+    "independentReview": "Spec + Standards and final empty-source precedence reviewed; no confirmed critical/P1/P2 in bounded new diff. Not a whole-system guarantee.",
+    "remaining": "Integrated role-data and current backend/API visual verification; zoom200%, touch/AT/Safari and existing native/UAT/live integration gates. Additional source-only candidates listed in owner reports were not all implemented.",
+    "taskAuthorization": {"commitPushMergeDeployPrIssues": false, "backendStartRestart": false, "mainDatabaseWrites": false, "historicalScratchExecution": false, "isolatedFrontendMockPreview": true}
+  },
+  "workflowAudit20261016": {
+    "status": "SOURCE_AND_LOCAL_VERIFICATION_COMPLETE_RUNTIME_GATES_OPEN",
+    "startedAt": "2026-10-16",
+    "verifiedAt": "2026-10-17",
+    "branch": "system-design",
+    "baselineCommit": "c42e3f0ab87403cf39122c85fe63bc267368b7ad",
+    "review": "docs/reviews/2026-10-16-workflow-audit.md",
+    "plan": "tasks/plan.md",
+    "checklist": "tasks/todo.md",
+    "confirmedBehaviorRepairs": 5,
+    "correctedDocumentationFiles": 3,
+    "verification": {
+      "frontendFiles": 79,
+      "frontendTests": 872,
+      "frontendNewRegressions": 16,
+      "frontendCoverage": {
+        "statements": 87.04,
+        "branches": 84.16,
+        "functions": 81.74,
+        "lines": 86.92
+      },
+      "backendSelectedUnitClasses": 57,
+      "backendUnitTests": 552,
+      "backendFailures": 0,
+      "backendErrors": 0,
+      "backendSkipped": 0,
+      "backendUnitOnlyCoverage": {
+        "instructions": 50.06,
+        "branches": 48.61,
+        "lines": 50.39,
+        "nativeCoverageGateSatisfied": false
+      },
+      "frontendBuild": "PASS_WITH_672_71_KB_BUNDLE_ADVISORY",
+      "backendVerifyPackage": "PASS",
+      "contracts": "PASS_STRUCTURAL_113_OPS_19_FILEWORK_14_QA_52_DOC_LINKS",
+      "diffCheck": "PASS",
+      "nativeSqlUnicode": "READ_ONLY_ERROR3854_OLD_TO_PASS_FINAL_CLAUSE",
+      "databaseTables": 76,
+      "databaseForeignKeys": 185,
+      "databaseSemanticChecks": 10,
+      "databaseViolations": 0,
+      "newNativeHttpRegression": "NOT_RUN_NO_PREPROVISIONED_V29_TEST_SCHEMA",
+      "browserAndRuntimeHttp": "NOT_RUN_8080_5173_ECONNREFUSED",
+      "dependencyAdvisoryScan": "NOT_RUN",
+      "jdtProblems": "NOT_RUN",
+      "lintAndJsTypecheck": "NOT_CONFIGURED"
+    },
+    "independentReview": "Spec and Standards cross-review of changed scopes; final revision guard, Unicode SQL and readonly auditor output path reviewed; no confirmed critical/P1/P2 remaining in reviewed diff.",
+    "remaining": "Native V29 affected/HTTP tests, identity-revoke race investigation, browser and existing S11 role-data/real-device/UAT/live integration gates. No blanket all-buttons/all-states guarantee.",
+    "taskAuthorization": {
+      "commit": false,
+      "push": false,
+      "mergeDeployPrIssues": false,
+      "startRestartServices": false,
+      "mainDatabaseFixtureWrites": false,
+      "executeHistoricalVarScripts": false
+    }
   }
 }

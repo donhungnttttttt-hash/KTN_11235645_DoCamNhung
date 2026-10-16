@@ -1,5 +1,36 @@
 # Implementation Plan: F/Q — công việc theo file và QA
 
+## Tinh chỉnh UI/UX — 17/10/2026
+
+Nguồn bàn giao: audit16/10; baseline là working tree đã có sửa chữa, HEAD vẫn `c42e3f0`, snapshot tại `var/uiux-2026-10-17/baseline.json` và `baseline.patch`. Giữ mọi thay đổi trước đó; không backend/API/schema/commit/push. Đây là bounded refinement của TMS tiếng Việt, giữ teal/density/navigation, không redesign/discovery lại nghiệp vụ. User đã cho trình bày phương án nhỏ rồi triển khai, không yêu cầu duyệt chung lại.
+
+| Task | Màn/component và cải tiến | Rủi ro / acceptance |
+| --- | --- | --- |
+| UI-R1 | Shared SelectionTable: local clear/filter scope, ngoài phần hiển thị, empty reason; useDialogFocus: bỏ hidden/inert/closed-details và giữ summary/valid initial focus | Phạm vi callers đã tìm bằng rg. RED hành vi trước sửa; clear không submit/xóa selection ngoài trang; Tab/Shift+Tab/Escape/return-focus và audit regressions giữ nguyên. |
+| UI-R2 | ScopeSetup + CoverageEditor: request lỗi kết thúc loading, error/retry rõ | Không đổi dữ liệu/permission; retry busy→data, giữ selection/reason/draft. Targeted RED→GREEN. |
+| UI-R3 | AdminProjectDetail success feedback/focus sau awaited role-save/remove; MemberPicker pagination context và tên nút bỏ chọn | Giữ roleDraft cleanup/partial/error semantics, không báo success trước API; page selection không đổi; targeted RED→GREEN. |
+| UI-R4 | Đo contrast control thay đổi và KPI với đầy đủ scoped CSS | Browser xác nhận ReportsPage đã override palette global bằng cặp màu đọc được; loại false positive từ fixture thiếu context, giữ nguyên global.css. Target>=4.5:1 cho text được kiểm, không WCAG toàn hệ thống. |
+| UI-R5 | Bounded review, browser/viewport/keyboard, full frontend/coverage/build, handoff | Source component fixture dùng fake data/API bị chặn, khác integrated app.375/768/1440 và zoom200% khi tool cho phép; không tự start backend/ghi DB/UAT. |
+
+Root giữ shared CSS/hooks/browser và tài liệu. Hai owner phạm vi riêng Admin và read-state, tối đa2Vitestworker cùng lúc; review chéo sau freeze. Không chạy backend/native suite không liên quan. Báo cáo duy nhất: `docs/reviews/2026-10-17-uiux-refinement.md`.
+
+Checkpoint cuối: UI-R1–R4 đã triển khai/đo trong phạm vi trên; UI-R5 có review độc lập, full FE **884/82 files**, coverage thực đo và build PASS. Chrome component fixture đã kiểm selection/filter, modal keyboard, retest lỗi/retry và member feedback;375/768/1440 không tràn ngang trong fixture shared picker. Đây là dữ liệu mô phỏng/API bị chặn. Zoom200% **NOT_VERIFIED** vì shortcut không đổi viewport/DPR; tích hợp backend, cảm ứng/AT và UAT còn mở. Không đổi KPI palette theo nhận định từ fixture thiếu CSS. [Báo cáo/bằng chứng](../docs/reviews/2026-10-17-uiux-refinement.md); S11 IN_REVIEW.
+
+## Đợt rà soát luồng hiện hữu 16–17/10/2026
+
+Yêu cầu mới giới hạn ở kiểm tra và sửa lỗi hiện có, trên `system-design`, baseline `c42e3f0ab87403cf39122c85fe63bc267368b7ad`. Checklist duy nhất: [todo.md](todo.md); kết quả/ma trận/bằng chứng: [review](../docs/reviews/2026-10-16-workflow-audit.md). Các quyền commit/push/restart lịch sử bên dưới không áp dụng cho đợt này.
+
+| Task | Phạm vi và phụ thuộc | Tiêu chí chấp nhận / kiểm chứng |
+| --- | --- | --- |
+| R1 — baseline và trace | Planning/product/permissions, router/API, ba nhóm module độc lập | Phân biệt source, test, runtime và UAT; quyền ADMIN 10/10 và đồng bộ kết quả 11/10 là quyết định hiện hành. Không thực thi script cũ trong `var/`. |
+| R2 — nhân sự/vòng đời | R1; AdminProjectDetail + test UI | Gỡ thất bại giữ mọi nháp; gỡ thành công xóa đúng nháp người vừa gỡ; nháp khác tiếp tục chặn lưu trữ. RED→GREEN. |
+| R3 — sửa ô và test lần 2 | R1; hai dialog, callsite + regression | Sau409 giữ nháp, đọc lại đúng document/row/case và token hiện hành, không tự gửi lại. Mất quyền/nguồn khác chặn ghi. Phân công mới gặp revision đổi phải mở lại để đối chiếu trước duyệt. RED→GREEN. |
+| R4 — chi tiết công việc | R1; detail/fieldset/CSS + test | Khi reload chờ/lỗi, giữ nháp nhưng khóa mọi lệnh ghi; nút tải lại vẫn dùng được, đọc thành công mới mở lại. RED→GREEN. |
+| R5 — tìm người dùng Unicode | R1; AdminProjectService + guarded native HTTP regression | SELECT cũ lỗi3854, biểu thức cuối chạy được; giữ tìm username phân biệt hoa/thường và `%_` literal. HTTP regression cần schema test V29, không ghi lên `tms`. |
+| R6 — review/bàn giao | R2–R5; shared scripts/docs | Review chéo Spec/Standards; FE coverage, build, offline BE unit, contract, DB SELECT; ghi rõ native/browser/UAT chưa chạy. S11 giữ IN_REVIEW. |
+
+Không đổi schema, stack, tracker hay giao diện tổng thể. `implement` triển khai các task đã rõ; không chạy thêm cơ chế `implement-spec` cạnh tranh. Root giữ shared files và Maven; ba agent chỉ sửa các nhóm file riêng. Kết thúc ở bounded source/unit/read-only verification và bàn giao blocker runtime/UAT cụ thể, không tự ký nghiệm thu.
+
 > Checkpoint hiện hành 07/10/2026: native V19/V20 và quyền commit/push `system-design` đã được người dùng cho phép, hoàn tất theo các báo cáo native/V20. Các giới hạn và ghi chú thiếu native trong phần kế hoạch gốc bên dưới là lịch sử. Công việc responsive mở rộng theo yêu cầu mới được ghi ở cuối tài liệu; UAT/pilot vẫn riêng.
 
 Spec: `docs/product/SYSTEM-SPECIFICATION.md` mục14, `docs/product/PRD.md` F01–F05/Q01–Q03. Người dùng duyệt toàn bộ ngày06/10/2026: “mình duyệt hết”. Nhánh `system-design`. Task list `tasks/todo.md`; ledger riêng `.superpowers/sdd/plan/progress.md`. Các phần ADMIN/UI đang chờ commit giữ nguyên.

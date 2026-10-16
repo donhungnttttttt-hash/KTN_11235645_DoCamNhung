@@ -17,9 +17,22 @@ export function useDialogFocus(onClose, busy = false, ready = true) {
       document.body.style.overflow = 'hidden';
     }
     openDialogs.push(dialog);
-    const controls = () => [...dialog.querySelectorAll('button, input, select, textarea, a[href], [tabindex]')]
-      .filter(element => element.tabIndex >= 0 && !element.matches(':disabled') && !element.closest('[hidden]'));
-    (dialog.querySelector('[data-dialog-initial-focus]') || controls()[0] || dialog).focus();
+    const available = element => {
+      if(element.matches(':disabled, input[type="hidden"]') || element.closest('[hidden], [inert], [aria-hidden="true"]')) return false;
+      for(let ancestor=element;ancestor && ancestor!==dialog.parentElement;ancestor=ancestor.parentElement) {
+        const style=getComputedStyle(ancestor);
+        if(style.display==='none' || style.visibility==='hidden' || style.visibility==='collapse') return false;
+        if(ancestor.tagName==='DETAILS' && !ancestor.open) {
+          const summary=[...ancestor.children].find(child=>child.tagName==='SUMMARY');
+          if(!summary?.contains(element)) return false;
+        }
+      }
+      return true;
+    };
+    const controls = () => [...dialog.querySelectorAll('button, input, select, textarea, a[href], summary, [tabindex]')]
+      .filter(element => element.tabIndex >= 0 && available(element));
+    const initial=dialog.querySelector('[data-dialog-initial-focus]'),items=controls();
+    (initial && available(initial)?initial:items[0] || dialog).focus();
     function keydown(event) {
       if (dialog.closest('[hidden], [inert]')) return;
       // A nested work-item dialog may appear above the execution dialog.

@@ -52,9 +52,9 @@ export function ScopeSetup({ projectId, cycle, configs, catalogs, members, onSav
         <button className="cat-btn cat-btn-mint" disabled={busy || !Object.keys(selected).length || Object.keys(selected).length > 100}>Thêm case vào phạm vi</button>
         <p className="ex-help" role={Object.keys(selected).length>100?'status':undefined}>{Object.keys(selected).length}/100 case tối đa cho mỗi lần thêm.{Object.keys(selected).length>100?' Bỏ chọn bớt case để tiếp tục.':''}</p>
       </div>
-      <SelectionTable label="Phạm vi test case" pageScope loading={!cases} selected={Object.keys(selected).map(Number)}
+      <SelectionTable label="Phạm vi test case" pageScope loading={!cases && !readError} selected={Object.keys(selected).map(Number)}
         rows={(cases?.items||[]).map(c=>({id:c.currentRevisionId||('case-'+c.id),name:c.caseNo+' · '+c.titleVi,selectLabel:'Chọn '+c.caseNo,description:c.approved?'Đã duyệt':'Chờ PM duyệt',disabled:!c.approved||!c.currentRevisionId}))}
-        onChange={ids=>setSelected(Object.fromEntries(ids.map(id=>[id,true])))} empty="Chưa có test case. Tạo hoặc nhập tại Thư viện test case."/>
+        onChange={ids=>setSelected(Object.fromEntries(ids.map(id=>[id,true])))} empty={readError?'Chưa tải được danh sách test case. Bấm Thử lại để tải lại.':'Chưa có test case. Tạo hoặc nhập tại Thư viện test case.'}/>
     </form>
     {cases && <Pager data={cases} onChange={setPage} />}</>}
   </section>;
