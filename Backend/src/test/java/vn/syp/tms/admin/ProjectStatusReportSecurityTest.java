@@ -18,6 +18,7 @@ import vn.syp.tms.identity.*;
 import vn.syp.tms.shared.web.RequestIdFilter;
 @WebMvcTest({ProjectStatusReportController.class,AdminAuditController.class}) @Import({SecurityConfig.class,RequestIdFilter.class})
 class ProjectStatusReportSecurityTest {
+ @MockitoBean vn.syp.tms.feature.LegacyTestingWrites legacyTestingWrites;
  @Autowired MockMvc mvc;@MockitoBean ProjectStatusReportService reports;@MockitoBean AdminAuditService audit;@MockitoBean IdentityService identity;
  @org.springframework.lang.NonNull RequestPostProcessor actor(String role){var user=new IdentityUser("person","Person","hash",role);when(identity.current(user.getId())).thenReturn(user);return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),0),null,List.of(new SimpleGrantedAuthority("ROLE_"+role)))));}
  @Test void adminAuditAndHistoryRejectNonAdminsAndReportPostRequiresCsrf()throws Exception {
@@ -26,7 +27,9 @@ class ProjectStatusReportSecurityTest {
   mvc.perform(post("/api/v1/projects/1/status-reports").with(actor("PM")).contentType("application/json").content("{}")).andExpect(status().isForbidden());
   verifyNoInteractions(reports,audit);
  }
- @Test void blankNarrativeAndInvalidIdempotencyKeyRejected()throws Exception {
-  mvc.perform(post("/api/v1/projects/1/status-reports").with(actor("PM")).with(Objects.requireNonNull(csrf())).contentType("application/json").content("{\"requestKey\":\"invalid key\",\"summary\":\"\"}")).andExpect(status().isUnprocessableEntity());verifyNoInteractions(reports);
+ @Test void retiredEndpointDefersToServiceAuthorizationBeforeInterpretingOldPayload()throws Exception {
+  when(reports.create(anyString(),eq(1L),isNull())).thenThrow(new vn.syp.tms.shared.web.BusinessException(410,"USE_FEATURE_REPORTS","Use Feature reports"));
+  mvc.perform(post("/api/v1/projects/1/status-reports").with(actor("PM")).with(Objects.requireNonNull(csrf())).contentType("application/json").content("{}")).andExpect(status().isGone());
+  verify(reports).create(anyString(),eq(1L),isNull());
  }
 }

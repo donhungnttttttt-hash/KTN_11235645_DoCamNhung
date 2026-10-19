@@ -4,24 +4,28 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import { WorkBoardPage } from '../../pages/WorkBoardPage';
 import { NewWorkItemForm } from '../work-items/WorkItemForm';
 import { WorkItemDetail } from '../work-items/WorkItemDetail';
-import { presentItem } from '../work-items/ProjectData';
 import { workItemsApi } from '../../services/api/workItems';
 import { qaApi } from '../../services/api/qa';
-const shared = vi.hoisted(() => ({ data: null }));
-vi.mock('../work-items/ProjectData', async original => ({ ...await original(), useProjectData: () => {
-  const [query, setQuery] = React.useState({ page: 0, size: 50 });
-  return { ...shared.data, query, setQuery };
-} }));
+import { FeatureIssueForm } from '../work-items/FeatureIssueForm';
+import { CaseIssueAction } from '../work-items/CaseIssueAction';
+import { featureIssuesApi } from '../../services/api/featureIssues';
+import { featuresApi } from '../../services/api/features';
 vi.mock('../../services/api/workItems', () => ({ workItemsApi: Object.fromEntries(['get', 'comments', 'history', 'comment', 'attachments', 'upload', 'create', 'source', 'transition', 'batch'].map(key => [key, vi.fn()])) }));
 vi.mock('../../services/api/qa', () => ({ qaApi: Object.fromEntries(['create', 'get', 'answers', 'confirmations', 'answer', 'confirm'].map(key => [key, vi.fn()])) }));
 vi.mock('../../services/api/testCases', () => ({ testCasesApi: { listCases: vi.fn().mockResolvedValue({ items: [] }) } }));
-vi.mock('../work-items/BoardPage', () => ({ default: ({ onMove }) => <button onClick={() => onMove('DEMO-7', 'progress')}>Drop QA</button> }));
+vi.mock('../projects/ProjectProvider',()=>({useProject:()=>({currentProject:{id:1,name:'Actual project',projectRole:'PM'}})}));
+vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:r=>r==='PM'})}));
+vi.mock('../../services/api/featureIssues',()=>({featureIssuesApi:{list:vi.fn(),context:vi.fn(),create:vi.fn()}}));
+vi.mock('../../services/api/features',()=>({featuresApi:{list:vi.fn()}}));
 const qa = { id: 7, projectId: 1, key: 'DEMO-7', type: 'QA', title: 'Câu hỏi nguồn', question: 'Quy tắc nào?', status: 'open', statusLabel: 'Câu hỏi mới', version: 2, generation: 1, priority: 'MEDIUM', capabilities: { canComment: false, canUploadEvidence: false, canAnswer: true } };
 const detail = { item: qa, contextSnapshot: {}, currentAnswer: null, currentConfirmation: null };
 const catalogs = { members: [], categories: [], milestones: [], builds: [] };
 beforeEach(() => {
   vi.clearAllMocks();
-  shared.data = { projectId: 1, issues: [presentItem(qa)], metadata: { canCreate: true, canCreateQa: true, types: [{ id: 'QA', label: 'QA' }], statuses: [{ id: 'open', label: 'Chưa xử lý' }], statusesByType: { QA: [{ id: 'open', label: 'Câu hỏi mới' }, { id: 'resolved', label: 'Đã trả lời' }] } }, catalogs, canTriage: true, writable: true, loading: false, error: '', refresh: vi.fn() };
+  // Clear queued legacy reads too: an earlier rejected test must not poison the next test.
+  qaApi.get.mockReset();
+  featureIssuesApi.list.mockResolvedValue({items:[],totalItems:0,totalPages:0});
+  featuresApi.list.mockResolvedValue({items:[],totalPages:0});
   qaApi.get.mockResolvedValue(detail); qaApi.create.mockResolvedValue(detail);
   qaApi.answers.mockResolvedValue({ items: [], page: 0, totalPages: 0, totalItems: 0 }); qaApi.confirmations.mockResolvedValue({ items: [], page: 0, totalPages: 0, totalItems: 0 });
   workItemsApi.get.mockResolvedValue({ ...qa, description: qa.question, links: [], externalReferences: [], clarifications: [], canComment: false, canAttach: false, allowedTransitions: [{ id: 'progress', label: 'Đang xử lý' }] });
@@ -31,38 +35,11 @@ function fillQa() {
   fireEvent.change(screen.getByLabelText('Tiêu đề QA'), { target: { value: 'Nguồn cần xác minh' } });
   fireEvent.change(screen.getByLabelText('Câu hỏi'), { target: { value: 'Quy tắc mong đợi?' } });
 }
-it('context route sends exact typed source IDs and navigates only using fresh .item identity', async () => {
-  const navigate = vi.fn();
-  render(<WorkBoardPage activeRoute="/board/list?create=QA&documentId=10&groupId=20&runItemId=30&revisionId=40&keyword=nguon" navigate={navigate} />);
-  fillQa(); fireEvent.click(screen.getByRole('button', { name: 'Tạo QA' }));
-  await waitFor(() => expect(navigate).toHaveBeenCalledWith('/board/issue/7?view=list'));
-  expect(qaApi.create).toHaveBeenCalledWith(1, expect.objectContaining({ documentId: 10, groupId: 20, runItemId: 30, revisionId: 40, question: 'Quy tắc mong đợi?' }));
-  expect(workItemsApi.create).not.toHaveBeenCalled(); expect(shared.data.refresh).toHaveBeenCalledOnce();
-  fireEvent.click(screen.getByRole('button', { name: 'Đóng hộp thoại' }));
-  expect(navigate).toHaveBeenLastCalledWith('/board/list?keyword=nguon');
-});
-it.each([{ loading: true }, { error: 'Mất kết nối' }, { writable: false }, { metadata: { canCreate: true, canCreateQa: false } }])('context creation fails closed with current metadata %j', override => {
-  Object.assign(shared.data, override);
-  render(<WorkBoardPage activeRoute="/board/list?create=QA&documentId=10" navigate={vi.fn()} />);
-  expect(screen.queryByLabelText('Tiêu đề QA')).not.toBeInTheDocument();
-  expect(screen.getByRole('dialog')).toHaveTextContent(/quyền tạo QA|tải quyền tạo QA/i);
-});
-it.each(['documentId=1e2', 'revisionId=0', 'groupId=01', 'runItemId=9007199254740992', 'documentId=1&documentId=2', 'attempt=9&revisionId=4'])('invalid/contradictory source URL fails visibly: %s', source => {
-  render(<WorkBoardPage activeRoute={'/board/list?create=QA&' + source} navigate={vi.fn()} />);
-  expect(within(screen.getByRole('dialog')).getByRole('alert')).toHaveTextContent(/ngữ cảnh QA/i);
-  expect(screen.queryByLabelText('Tiêu đề QA')).not.toBeInTheDocument(); expect(qaApi.create).not.toHaveBeenCalled();
-});
-it.each(['create=QA&create=BUG', 'create=BUG&create=QA'])('duplicate QA create markers fail visibly in either order: %s', markers => {
-  render(<WorkBoardPage activeRoute={'/board/list?' + markers + '&documentId=10'} navigate={vi.fn()} />);
-  expect(within(screen.getByRole('dialog')).getByRole('alert')).toHaveTextContent('Ngữ cảnh QA mâu thuẫn. Kiểm tra lại liên kết nguồn.');
-  expect(screen.queryByLabelText('Tiêu đề QA')).not.toBeInTheDocument();
-  expect(qaApi.create).not.toHaveBeenCalled(); expect(workItemsApi.create).not.toHaveBeenCalled();
-});
-it('ordinary BUG create marker retains the board list without a contextual QA form or writes', () => {
-  render(<WorkBoardPage activeRoute="/board/list?create=BUG&documentId=10" navigate={vi.fn()} />);
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument(); expect(screen.queryByLabelText('Tiêu đề QA')).not.toBeInTheDocument();
-  expect(qaApi.create).not.toHaveBeenCalled(); expect(workItemsApi.create).not.toHaveBeenCalled();
-});
+
+
+
+
+
 it('generic chooser dispatches standalone QA with no nested forms and preserves it on capability downgrade', async () => {
   const onCreated = vi.fn(); const { container, rerender } = render(<NewWorkItemForm projectId={1} catalogs={catalogs} canCreateQa onCreated={onCreated} />);
   fireEvent.change(screen.getByLabelText('Loại công việc'), { target: { value: 'QA' } });
@@ -70,14 +47,7 @@ it('generic chooser dispatches standalone QA with no nested forms and preserves 
   rerender(<NewWorkItemForm projectId={1} catalogs={catalogs} canCreateQa={false} onCreated={onCreated} />);
   expect(screen.getByLabelText('Câu hỏi')).toHaveValue('Quy tắc mong đợi?'); expect(screen.getByRole('button', { name: 'Tạo QA' })).toBeDisabled();
 });
-it('accepted contextual creation retains GET-only recovery when current creation permission is removed', async () => {
-  qaApi.get.mockRejectedValueOnce(new Error('Lỗi đọc sau tạo')).mockResolvedValueOnce(detail);
-  const navigate = vi.fn(); const props = { activeRoute: '/board/list?create=QA&documentId=10', navigate };
-  const { rerender } = render(<WorkBoardPage {...props} />); fillQa(); fireEvent.click(screen.getByRole('button', { name: 'Tạo QA' }));
-  await screen.findByText('Lỗi đọc sau tạo'); shared.data.metadata = { ...shared.data.metadata, canCreateQa: false }; shared.data.loading = true; rerender(<WorkBoardPage {...props} />);
-  expect(screen.getByLabelText('Câu hỏi')).toHaveValue('Quy tắc mong đợi?'); fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA đã tạo' }));
-  await waitFor(() => expect(navigate).toHaveBeenCalledWith('/board/issue/7?view=list')); expect(qaApi.create).toHaveBeenCalledOnce();
-});
+
 it('QA detail hides generic mutators/BUG properties and retains typed draft during shared reload', async () => {
   render(<WorkItemDetail projectId={1} id={7} catalogs={catalogs} canTriage writable membershipId={8} onChanged={vi.fn()} />);
   fireEvent.click(await screen.findByRole('button', { name: 'Trả lời QA' })); fireEvent.change(screen.getByLabelText('Nội dung trả lời'), { target: { value: 'Bản nháp đang giữ' } });
@@ -86,22 +56,8 @@ it('QA detail hides generic mutators/BUG properties and retains typed draft duri
   fireEvent.click(screen.getByRole('button', { name: 'Tải lại chi tiết' }));
   await waitFor(() => expect(workItemsApi.get).toHaveBeenCalledTimes(2)); expect(screen.getByLabelText('Nội dung trả lời')).toHaveValue('Bản nháp đang giữ'); expect(qaApi.get).toHaveBeenCalledOnce();
 });
-it('QA canonical labels/filter and batch/drag boundary preserve original code without generic writes', () => {
-  expect(presentItem(qa)).toMatchObject({ type: 'QA', typeCode: 'QA', statusLabel: 'Câu hỏi mới' });
-  const { rerender } = render(<WorkBoardPage activeRoute="/board/list" navigate={vi.fn()} />);
-  expect(screen.getByText('Câu hỏi mới')).toBeVisible(); expect(screen.queryByLabelText('Chọn DEMO-7')).not.toBeInTheDocument();
-  fireEvent.change(screen.getByLabelText('Loại'), { target: { value: 'QA' } }); expect(within(screen.getByLabelText('Trạng thái')).getByText('Đã trả lời')).toBeInTheDocument();
-  rerender(<WorkBoardPage activeRoute="/board" navigate={vi.fn()} />); fireEvent.click(screen.getByRole('button', { name: 'Drop QA' }));
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument(); expect(workItemsApi.transition).not.toHaveBeenCalled(); expect(workItemsApi.batch).not.toHaveBeenCalled();
-});
-it('a mixed selection that acquires QA cannot open a generic batch command', () => {
-  shared.data.issues = [presentItem({ ...qa, type: 'BUG' }), presentItem({ ...qa, id: 8, key: 'DEMO-8', type: 'TASK' })];
-  const props = { activeRoute: '/board/list', navigate: vi.fn() }; const { rerender } = render(<WorkBoardPage {...props} />);
-  fireEvent.click(screen.getByLabelText('Chọn DEMO-7')); fireEvent.click(screen.getByLabelText('Chọn DEMO-8'));
-  shared.data.issues = [presentItem(qa), shared.data.issues[1]]; rerender(<WorkBoardPage {...props} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Cập nhật hàng loạt' }));
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument(); expect(screen.getByText('QA phải xử lý qua chi tiết QA.')).toBeVisible(); expect(workItemsApi.batch).not.toHaveBeenCalled();
-});
+
+
 it('NG-derived creation stays BUG and cannot select QA even with QA permission', async () => {
   workItemsApi.source.mockResolvedValue({ type: 'BUG', title: 'NG cần sửa', attemptId: 9 });
   render(<NewWorkItemForm projectId={1} catalogs={catalogs} canCreateQa attemptId={9} onCreated={vi.fn()} />);
@@ -114,14 +70,7 @@ it('generic QA dispatch adapts the fresh DTO to the existing item callback', asy
   fireEvent.change(screen.getByLabelText('Loại công việc'), { target: { value: 'QA' } }); fillQa(); fireEvent.click(screen.getByRole('button', { name: 'Tạo QA' }));
   await waitFor(() => expect(onCreated).toHaveBeenCalledWith(qa)); expect(workItemsApi.create).not.toHaveBeenCalled();
 });
-it('server source consistency rejection preserves all URL pins and entered question for exact retry', async () => {
-  qaApi.create.mockRejectedValueOnce(new Error('Nguồn khác dự án')).mockResolvedValueOnce(detail);
-  render(<WorkBoardPage activeRoute="/board/list?create=QA&documentId=10&groupId=99&revisionId=40" navigate={vi.fn()} />);
-  fillQa(); fireEvent.click(screen.getByRole('button', { name: 'Tạo QA' })); await screen.findByText('Nguồn khác dự án');
-  expect(screen.getByLabelText('Câu hỏi')).toHaveValue('Quy tắc mong đợi?'); fireEvent.click(screen.getByRole('button', { name: 'Tạo QA' }));
-  await waitFor(() => expect(qaApi.create).toHaveBeenCalledTimes(2)); expect(qaApi.create.mock.calls[1]).toEqual(qaApi.create.mock.calls[0]);
-  expect(qaApi.create.mock.calls[1][1]).toMatchObject({ documentId: 10, groupId: 99, revisionId: 40 });
-});
+
 it.each([
   { status: 'closed', canComment: true, canAttach: true, capabilities: { canComment: true, canUploadEvidence: true } },
   { canComment: true, canAttach: true, capabilities: {} },
@@ -274,13 +223,7 @@ it('typed successful callback refreshes shared identity/caps without remounting 
   fireEvent.click(screen.getByRole('button', { name: 'Gửi câu trả lời' }));
   await waitFor(() => expect(onChanged).toHaveBeenCalledOnce()); expect(screen.getByRole('heading', { name: 'QA hiện hành' })).toBeVisible(); expect(screen.queryByLabelText('Nội dung bình luận')).not.toBeInTheDocument(); expect(workItemsApi.get).toHaveBeenCalledTimes(2);
 });
-it('generic-route accepted QA keeps GET-only recovery after all creation caps downgrade', async () => {
-  qaApi.get.mockRejectedValueOnce(new Error('Lỗi đọc đã tạo')).mockResolvedValueOnce(detail);
-  const navigate = vi.fn(), props = { activeRoute: '/board/new?view=list', navigate }; const { rerender } = render(<WorkBoardPage {...props} />);
-  fireEvent.change(screen.getByLabelText('Loại công việc'), { target: { value: 'QA' } }); fillQa(); fireEvent.click(screen.getByRole('button', { name: 'Tạo QA' })); await screen.findByText('Lỗi đọc đã tạo');
-  shared.data.metadata = { ...shared.data.metadata, canCreate: false, canCreateQa: false }; rerender(<WorkBoardPage {...props} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA đã tạo' })); await waitFor(() => expect(navigate).toHaveBeenCalledWith('/board/issue/7?view=list')); expect(qaApi.create).toHaveBeenCalledOnce();
-});
+
 it('same-QA failed generic reload preserves the typed draft while shared comments/evidence fail closed', async () => {
   workItemsApi.get.mockResolvedValue({ ...qa, canComment: true, canAttach: true });
   render(<WorkItemDetail projectId={1} id={7} catalogs={catalogs} writable onChanged={vi.fn()} />);
@@ -295,4 +238,83 @@ it('a late generic identity read cannot render the departed QA in the current pr
   workItemsApi.get.mockResolvedValue(next); qaApi.get.mockResolvedValue({ ...detail, item: next }); rerender(<WorkItemDetail {...props} projectId={2} id={8} />);
   await screen.findByRole('heading', { name: 'Dự án hiện tại' }); await act(async () => resolveOld(qa));
   expect(screen.queryByRole('heading', { name: 'Câu hỏi nguồn' })).not.toBeInTheDocument(); expect(screen.getByRole('heading', { name: 'Dự án hiện tại' })).toBeVisible();
+});
+
+// FR11: the historical direct components above remain compatibility coverage.
+// Active QA creation now belongs to a copied Feature case, never to old run/group URLs.
+const copiedCase={featureName:'Feature copied A',fileName:'A.xlsx',caseNo:'CASE-2',title:'Imported condition',steps:'Open drawing',expectedResult:'Icon visible'};
+function currentApi(){return {context:vi.fn().mockResolvedValue(copiedCase),create:vi.fn().mockResolvedValue({id:77,type:'QA',key:'REAL-77'}),list:vi.fn().mockResolvedValue({items:[],totalItems:0,totalPages:0})};}
+const sourceProps={projectId:1,featureId:42,documentId:7,row:{rowId:1001,caseId:501}};
+async function fillCurrentQa(){
+ await waitFor(()=>expect(screen.getByLabelText('Tiêu đề')).toHaveValue(copiedCase.title));
+ fireEvent.change(screen.getByLabelText('Loại Issue'),{target:{value:'QA'}});
+ fireEvent.change(screen.getByLabelText('Tiêu đề'),{target:{value:'Question from copied case'}});
+ fireEvent.change(screen.getByLabelText('Nội dung câu hỏi'),{target:{value:'Expected rule for icon?'}});
+}
+it('current case QA sends exact Feature/document/row identity and only Bug/QA types, without old execution IDs',async()=>{
+ const api=currentApi(),saved=vi.fn();render(<FeatureIssueForm {...sourceProps} api={api} onSaved={saved}/>);await fillCurrentQa();
+ expect(Array.from(screen.getByLabelText('Loại Issue').options).map(option=>option.value)).toEqual(['BUG','QA']);
+ expect(api.context).toHaveBeenCalledWith(1,42,7,1001,expect.objectContaining({signal:expect.any(AbortSignal)}));
+ fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(saved).toHaveBeenCalledWith({id:77,type:'QA',key:'REAL-77'}));
+ const payload=api.create.mock.calls[0][1];expect(payload).toMatchObject({featureId:42,documentId:7,rowId:1001,type:'QA',monkey:false,title:'Question from copied case',description:'Expected rule for icon?',steps:copiedCase.steps,expectedResult:copiedCase.expectedResult});
+ for(const key of ['groupId','runItemId','revisionId','attemptId','caseId'])expect(payload).not.toHaveProperty(key);
+ expect(qaApi.create).not.toHaveBeenCalled();expect(workItemsApi.create).not.toHaveBeenCalled();
+});
+it('current QA failure keeps its draft and retries the same command identity and copied source',async()=>{
+ const api=currentApi(),saved=vi.fn();api.create.mockRejectedValueOnce(new Error('Source rejected by server'));
+ render(<FeatureIssueForm {...sourceProps} api={api} onSaved={saved}/>);await fillCurrentQa();fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));
+ expect(await screen.findByRole('alert')).toHaveTextContent('Source rejected by server');expect(screen.getByLabelText('Nội dung câu hỏi')).toHaveValue('Expected rule for icon?');expect(saved).not.toHaveBeenCalled();
+ fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(saved).toHaveBeenCalledOnce());expect(api.create.mock.calls[1]).toEqual(api.create.mock.calls[0]);
+});
+it('editing a rejected QA draft creates a new request identity while retaining source pins',async()=>{
+ const api=currentApi();api.create.mockRejectedValueOnce(new Error('Retryable failure'));render(<FeatureIssueForm {...sourceProps} api={api}/>);await fillCurrentQa();fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await screen.findByRole('alert');
+ const first=api.create.mock.calls[0][1];fireEvent.change(screen.getByLabelText('Nội dung câu hỏi'),{target:{value:'Revised question'}});fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(api.create).toHaveBeenCalledTimes(2));
+ expect(api.create.mock.calls[1][1]).toMatchObject({featureId:42,documentId:7,rowId:1001,description:'Revised question'});expect(api.create.mock.calls[1][1].requestKey).not.toBe(first.requestKey);
+});
+it('QA cannot submit while the current case context is pending or failed',async()=>{
+ const api=currentApi(),pending=deferredRead();api.context.mockReturnValue(pending.promise);const view=render(<FeatureIssueForm {...sourceProps} api={api}/>);
+ expect(screen.getByRole('button',{name:'Lưu Issue'})).toBeDisabled();fireEvent.submit(view.container.querySelector('form'));expect(api.create).not.toHaveBeenCalled();
+ await act(async()=>pending.resolve(Promise.reject(new Error('Case context forbidden'))));expect(screen.getByRole('alert')).toHaveTextContent('Case context forbidden');expect(screen.getByRole('button',{name:'Lưu Issue'})).toBeDisabled();fireEvent.submit(view.container.querySelector('form'));expect(api.create).not.toHaveBeenCalled();
+});
+it('an old copied-case response cannot prefill the newly selected project/case',async()=>{
+ const api=currentApi(),pending=deferredRead();api.context.mockReturnValueOnce(pending.promise);const view=render(<FeatureIssueForm {...sourceProps} api={api}/>);const oldSignal=api.context.mock.calls[0][4].signal;
+ api.context.mockResolvedValue({...copiedCase,title:'Current B case'});view.rerender(<FeatureIssueForm {...sourceProps} projectId={2} featureId={99} documentId={8} row={{rowId:2002}} api={api}/>);await waitFor(()=>expect(screen.getByLabelText('Tiêu đề')).toHaveValue('Current B case'));
+ await act(async()=>pending.resolve(copiedCase));expect(oldSignal.aborted).toBe(true);expect(screen.getByLabelText('Tiêu đề')).toHaveValue('Current B case');
+});
+it('pending QA submits are locked and a departed project cannot accept late save callbacks',async()=>{
+ const api=currentApi(),pending=deferredRead(),saved=vi.fn();api.create.mockReturnValue(pending.promise);const view=render(<FeatureIssueForm {...sourceProps} api={api} onSaved={saved}/>);await fillCurrentQa();const form=view.container.querySelector('form');
+ fireEvent.submit(form);fireEvent.submit(form);expect(api.create).toHaveBeenCalledOnce();expect(screen.getByRole('button',{name:'Đang lưu…'})).toBeDisabled();expect(screen.getByLabelText('Nội dung câu hỏi')).toBeDisabled();
+ view.rerender(<FeatureIssueForm {...sourceProps} projectId={2} api={api} onSaved={saved}/>);await act(async()=>pending.resolve({id:77,type:'QA'}));expect(saved).not.toHaveBeenCalled();
+});
+it('the current case Issue action creates QA then closes to the same case and refreshes only that context',async()=>{
+ const api=currentApi(),refresh=vi.fn();api.list.mockResolvedValueOnce({items:[],totalItems:0,totalPages:0}).mockResolvedValue({items:[{id:77,key:'REAL-77',title:'Question',type:'QA',status:'closed'}],totalItems:1,totalPages:1});
+ render(<CaseIssueAction {...sourceProps} api={api} refresh={refresh}/>);const badge=await screen.findByRole('button',{name:'Issue (0)'});fireEvent.click(badge);await fillCurrentQa();fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));
+ await waitFor(()=>expect(screen.queryByRole('dialog',{name:'Tạo Issue từ case'})).toBeNull());expect(refresh).toHaveBeenCalledOnce();expect(badge).toHaveFocus();await screen.findByRole('button',{name:'Issue (1)'});
+ expect(api.list).toHaveBeenLastCalledWith(1,{featureId:42,documentId:7,rowId:1001,page:0,size:20},expect.anything());expect(qaApi.create).not.toHaveBeenCalled();
+});
+it('DEV case Issue preview remains readable with closed QA and no create form/action',async()=>{
+ const api=currentApi();api.list.mockResolvedValue({items:[{id:77,key:'REAL-77',title:'Closed QA',type:'QA',status:'closed'}],totalItems:1,totalPages:1});render(<CaseIssueAction {...sourceProps} api={api} canCreate={false}/>);
+ fireEvent.click(await screen.findByRole('button',{name:'Issue (1)'}));expect(screen.getByRole('button',{name:'REAL-77 · Closed QA'})).toBeVisible();expect(screen.queryByRole('button',{name:'Tạo Issue từ case'})).toBeNull();expect(api.create).not.toHaveBeenCalled();
+ expect(api.list.mock.calls[0][1]).not.toHaveProperty('status');
+});
+it('a failed Issue badge read retries in place without creating QA',async()=>{
+ const api=currentApi();api.list.mockRejectedValueOnce(new Error('Badge temporarily unavailable')).mockResolvedValue({items:[],totalItems:0,totalPages:0});render(<CaseIssueAction {...sourceProps} api={api} canCreate={false}/>);
+ const badge=await screen.findByRole('button',{name:'Issue (?)'});fireEvent.click(badge);await screen.findByRole('button',{name:'Issue (0)'});expect(api.list).toHaveBeenCalledTimes(2);expect(api.create).not.toHaveBeenCalled();expect(api.context).not.toHaveBeenCalled();
+});
+it('Monkey creation stays Bug with its chosen Feature and no case/run source, while its title is free',async()=>{
+ const api=currentApi(),saved=vi.fn();render(<FeatureIssueForm projectId={1} featureId={42} featureName='Feature copied A' monkey api={api} onSaved={saved}/>);
+ const type=screen.getByLabelText('Loại Issue');expect(type).toHaveValue('BUG');expect(type).toBeDisabled();expect(Array.from(type.options).map(option=>option.value)).toEqual(['BUG','QA']);
+ for(const [label,value]of [['Tiêu đề','Free Monkey title'],['Các bước thực hiện','Explore'],['Kết quả mong đợi','Expected'],['Kết quả thực tế','Observed']])fireEvent.change(screen.getByLabelText(label),{target:{value}});
+ fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(saved).toHaveBeenCalledOnce());expect(api.context).not.toHaveBeenCalled();expect(api.create).toHaveBeenCalledWith(1,expect.objectContaining({type:'BUG',title:'Free Monkey title',featureId:42,documentId:null,rowId:null,monkey:true}),expect.anything());expect(workItemsApi.create).not.toHaveBeenCalled();
+});
+it.each([
+ 'create=QA&documentId=10&groupId=20&runItemId=30&revisionId=40',
+ 'create=QA&documentId=1e2','create=QA&revisionId=0','create=QA&groupId=01',
+ 'create=QA&runItemId=9007199254740992','create=QA&documentId=1&documentId=2',
+ 'create=QA&attempt=9&revisionId=4','create=QA&create=BUG','create=BUG&create=QA',
+ 'create=BUG&documentId=10','create=TASK',
+])('retired contextual marker gives explicit guidance without inferring copied-case identity: %s',query=>{
+ const navigate=vi.fn();render(<WorkBoardPage activeRoute={'/board/list?'+query} navigate={navigate}/>);
+ expect(screen.getByRole('heading',{name:'Tạo Issue tại ngữ cảnh kiểm thử'})).toBeVisible();expect(screen.queryByRole('dialog')).toBeNull();expect(screen.queryByLabelText('Loại công việc')).toBeNull();fireEvent.click(screen.getByRole('button',{name:'Mở Quản lý kiểm thử'}));expect(navigate).toHaveBeenCalledWith('/board/testing?projectId=1');
+ expect(featureIssuesApi.list).not.toHaveBeenCalled();expect(featureIssuesApi.context).not.toHaveBeenCalled();expect(featureIssuesApi.create).not.toHaveBeenCalled();expect(qaApi.create).not.toHaveBeenCalled();expect(workItemsApi.create).not.toHaveBeenCalled();
 });

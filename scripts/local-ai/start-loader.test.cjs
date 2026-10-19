@@ -19,7 +19,8 @@ test('Start-Backend pre-launch setup retains native file API credentials without
    'TMS_MYSQL_HOST=127.0.0.1', 'TMS_MYSQL_PORT=3307', 'TMS_DB_NAME=synthetic_only',
    'TMS_DB_USER=fixture_app', 'TMS_MIGRATION_USER=fixture_migrator',
    'TMS_DB_PASSWORD=fake-db-secret', 'TMS_MIGRATION_PASSWORD=fake-migration-secret',
-   'TMS_OPENAI_ENABLED=true', 'OPENAI_API_KEY=fake-api-secret', 'TMS_OPENAI_MODEL=file-model'
+   'TMS_OPENAI_ENABLED=true', 'OPENAI_API_KEY=fake-api-secret', 'TMS_OPENAI_MODEL=file-model',
+   'TMS_OPENAI_BASE_URL=https://caheoai.com/v1'
   ].join('\n'));
   // Execute the actual startup configuration prefix; exclude Maven/runtime launch.
   const split = source.indexOf('Push-Location');
@@ -36,7 +37,7 @@ function Set-TmsAiVariable([string]$Name,[string]$Value,[string]$Scope) {
 }
 Import-TmsLocalAiEnvironment -ConfigFile $envFile`);
   const verify = `
-if ($env:TMS_OPENAI_ENABLED -cne 'true' -or $env:OPENAI_API_KEY -cne 'fake-api-secret' -or $env:TMS_OPENAI_MODEL -cne 'file-model') {
+if ($env:TMS_OPENAI_ENABLED -cne 'true' -or $env:OPENAI_API_KEY -cne 'fake-api-secret' -or $env:TMS_OPENAI_MODEL -cne 'file-model' -or $env:TMS_OPENAI_BASE_URL -cne 'https://caheoai.com/v1') {
  throw 'Behavioral RED: existing native file API configuration was dropped during startup.'
 }
 Write-Output 'PASS native file API configuration retained; no backend/database/provider start.'

@@ -1,5 +1,32 @@
 # API công việc — S06
 
+## FixReports — Issue theo Feature/case ngày 19/10/2026
+
+Luồng hiện hành trong source dùng `P=/api/v1/projects/{projectId}/issues`, thay public writes generic `/work-items` và typed `/qa`. [Contract chung](fixreports-contract.md), [quyền](../business/permissions.md), [case/Status](test-documents.md). Những phần S06/FQ bên dưới là lịch sử, không cấp lại quyền tạo loại cũ hay áp gate retest/build cho Issue mới. Chưa xác nhận main DB cutover/UAT từ tài liệu này.
+
+| Method/path sau P | Input/kết quả hiện hành |
+| --- | --- |
+| GET `/` | `{items,totalItems,page,size,totalPages}`; lọc featureId/documentId/rowId/type/status/keyword, query/count cùng scope |
+| GET `/context?featureId=&documentId=&rowId=` | Prefill title/steps/expectedResult từ đúng bản case; kiểm quan hệ project→Feature→file→row tại server |
+| POST `/` | `{type,featureId,documentId?,rowId?,monkey,title,description?,steps?,expectedResult?,actualResult?,requestKey:UUID}`; type BUG hoặc QA;201 bản đã lưu |
+| GET `/{id}` | Chi tiết với canEdit/canAssign/canTransition/canComment/canDelete và allowedStatuses hiện hành |
+| PUT `/{id}` | Nội dung; manager có assigneeMembershipId/priority; expectedVersion; không đổi status qua đây |
+| PUT `/{id}/status` | `{status,reason,expectedVersion}`; chỉ allowedStatuses của actor/Issue hiện tại |
+| DELETE `/{id}?expectedVersion=` |204 xóa mềm Bug Monkey theo ownership/quyền; không hard delete case/lịch sử |
+| GET `/{id}/history`; GET/POST `/{id}/comments` | Comment POST `{body,expectedVersion,requestKey:UUID}`;201; history và actor lấy từ server |
+
+Issue mới chỉ **BUG/QA**; không generic Task/Request/Improvement. Case context không cần NG/run/attempt/build/device/QA lifecycle cũ. Monkey là Bug chọn Feature, documentId/rowId null, tiêu đề tự do. Title tối đa300; các trường nội dung tối đa20.000. Bug cần steps/expected/actual; QA cần câu hỏi trong description. Không tự ghép prefix hoặc dùng groupId/runItemId/revisionId cũ làm context mới.
+
+PM dự án/ADMIN quản lý; Tester tạo trong dự án và sửa/xóa mềm Bug Monkey do mình tạo; DEV chỉ xử lý Issue được giao theo capability, không tạo/triage/phân công. Assignee khi manager giao phải là DEV còn active/enabled của dự án. Capability được server tính lại; không dùng quyền/nút từ response cũ để bỏ qua version/scope/archive. Retest thủ công bằng case/Issue và Status, không cần chạy state machine retest/typed QA cũ; chuyển Issue không tự thay Status test.
+
+Badge Issue của case gồm cả Issue đã đóng, query không tự lọc status; tương tác bàn phím/touch mở preview/modal. Lưu thành công đóng về đúng case; lỗi giữ draft và context, pending khóa gửi lặp, exact retry dùng cùng requestKey. Các hành vi UI cần được kiểm browser riêng với HTTP thật.
+
+Public non-GET `/work-items/**` và `/qa/**` trả410 `USE_FEATURE_ISSUES` sau session/CSRF áp dụng; GET lịch sử vẫn theo guard cũ. Không đổi tên loại cũ hoặc bịa mapping bản ghi để đủ BUG/QA. `/board/new` và `?create=QA|BUG` chỉ hướng dẫn tới case/Monkey mới, không dựng form tạo generic.
+
+## Lịch sử S06/FQ trước FixReports
+
+Contract/OpenAPI và mô tả dưới đây giữ bằng chứng lịch sử, không phải public write contract mới.
+
 Contract máy đọc: [work-items.openapi.json](work-items.openapi.json), được tham chiếu từ [openapi.yaml](openapi.yaml). Policy: [defect-lifecycle](../business/defect-lifecycle.md), [ADR-006](../decisions/ADR-006-internal-work-items.md).
 
 Base: `/api/v1/projects/{projectId}/work-items`. Cookie session cùng origin; mọi mutation cần CSRF từ `/api/v1/auth/csrf`. Actor lấy từ session. Theo quyết định 10/10/2026, global ADMIN có toàn quyền nghiệp vụ không cần membership, bao gồm thao tác PM/Tester/Dev. Metadata trả canCreate/canTriage và capability tương ứng; membershipId=0 trước lần ghi đầu không có nghĩa chỉ xem. 404 khi ngoài dự án, 403 khi thiếu quyền thao tác, 409 khi version/request key xung đột, 422 khi rule không hợp lệ. Tất cả datetime trả UTC ISO với `Z`.

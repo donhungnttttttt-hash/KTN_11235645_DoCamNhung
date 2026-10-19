@@ -41,7 +41,7 @@ export function ExcelImportPreview({ previewData }) {
                     {previewData?.rows?.filter(r => !errorsOnly || !r.valid).map(r => (
                       <tr key={r.rowNumber} className={r.valid ? 'hover:bg-slate-50' : 'bg-red-50/50'}>
                         <td className="py-2 px-3 text-center font-mono text-slate-400">{r.rowNumber}</td>
-                        <td className="py-2 px-3 font-mono font-medium">{r.sourceCaseKey}</td>
+                        <td className="py-2 px-3 font-mono font-medium">{r.sourceCaseKey??r.caseNo}</td>
                         <td className="py-2 px-3 font-mono">{r.suiteCode || '-'}</td>
                         <td className="py-2 px-3">
                           <div>{r.titleVi}</div>

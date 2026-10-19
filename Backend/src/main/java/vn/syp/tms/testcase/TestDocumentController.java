@@ -12,6 +12,8 @@ import java.util.List;
 @RequestMapping("/api/v1/projects/{projectId}/test-documents")
 public class TestDocumentController {
     private final TestDocumentService documents;
+    @org.springframework.beans.factory.annotation.Autowired(required=false)
+    private vn.syp.tms.feature.FeatureService features;
     public TestDocumentController(TestDocumentService documents) { this.documents=documents; }
     private String actor(Authentication auth) { return ((SessionPrincipal)auth.getPrincipal()).id(); }
     @GetMapping
@@ -20,12 +22,14 @@ public class TestDocumentController {
         return documents.list(projectId,actor(auth),page,size,keyword);
     }
     @GetMapping("/{id}")
-    public TestDocumentDtos.Detail get(Authentication auth,@PathVariable Long projectId,@PathVariable Long id) {
+    public Object get(Authentication auth,@PathVariable Long projectId,@PathVariable Long id) {
+        if(features!=null && features.owns(projectId,id))return features.detail(projectId,actor(auth),id);
         return documents.get(projectId,actor(auth),id);
     }
     @PutMapping("/{id}/rows/{rowId}/result")
     public TestDocumentDtos.Result updateResult(Authentication auth,@PathVariable Long projectId,@PathVariable Long id,
             @PathVariable Long rowId,@Valid @RequestBody TestDocumentDtos.UpdateResult input) {
+        if(features!=null && features.owns(projectId,id))return features.updateResult(projectId,actor(auth),id,rowId,input);
         return documents.updateResult(projectId,actor(auth),id,rowId,input);
     }
     @GetMapping("/{id}/rows/{rowId}/result-history")

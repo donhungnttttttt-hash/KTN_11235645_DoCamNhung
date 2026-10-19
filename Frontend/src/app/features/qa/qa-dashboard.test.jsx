@@ -9,7 +9,8 @@ import { qaApi } from '../../services/api/qa';
 
 const state = vi.hoisted(() => ({ projectId: 1, writable: true, loading: false, error: '', metadata: { canCreate: true, canTriage: true } }));
 vi.mock('../work-items/ProjectData', async original => ({ ...await original(), useProjectData: () => state }));
-vi.mock('../auth/AuthProvider', () => ({ useAuth: () => ({ user: { id: 2, displayName: 'PM' } }) }));
+vi.mock('../auth/AuthProvider', () => ({ useAuth: () => ({ user: { id: 2, displayName: 'PM' }, hasRole:r=>r===state.role }) }));
+vi.mock('../projects/ProjectProvider',()=>({useProject:()=>({currentProject:state.project})}));
 vi.mock('../../services/api/workItems', () => ({ workItemsApi: { overview: vi.fn() } }));
 vi.mock('../../services/api/qa', () => ({ qaApi: { handoff: vi.fn() } }));
 const overview = { items: [{ id: 7, key: 'BUG-7', type: 'BUG', title: 'Existing bug', status: 'resolved', priority: 'MEDIUM', creator: 'Tester', createdAt: '2026-10-06T00:00:00Z' }], statuses: [{ status: 'open', count: 40 }, { status: 'closed', count: 60 }], milestones: [] };
@@ -19,54 +20,14 @@ beforeEach(() => {
   workItemsApi.overview.mockResolvedValue(overview); qaApi.handoff.mockResolvedValue(handoff);
 });
 
-describe('current PM dashboard handoff', () => {
-  it('mounts the real current queue, canonical BUG target and file navigation while preserving all-item totals', async () => {
-    const navigate = vi.fn(); render(<ProjectOverview navigate={navigate} />);
-    const queue = await screen.findByRole('region', { name: 'Hàng chờ bàn giao' });
-    await within(queue).findByText('Yêu cầu hiện tại: #71');
-    expect(qaApi.handoff).toHaveBeenCalledWith(1, { page: 0, size: 20, state: '', keyword: '' }, expect.anything());
-    expect(within(queue).getByText('Đang xác minh / PM đối chiếu · Vòng 3 · Build #6')).toBeVisible();
-    expect(within(queue).getByText(/Hiện chưa được phép kết thúc/)).toBeVisible();
-    const bug = within(queue).getByRole('link', { name: 'BUG-7' }); expect(bug).toHaveAttribute('href', '#/board/issue/7');
-    fireEvent.click(bug); expect(navigate).toHaveBeenLastCalledWith('/board/issue/7');
-    expect(screen.queryByRole('link', { name: 'Công việc theo file' })).not.toBeInTheDocument();
-    expect(screen.getByText('60/100 công việc hoàn thành · 60%')).toBeVisible();
-    expect(within(queue).queryByRole('button', { name: /kết thúc|chuẩn bị/i })).toBeNull();
-  });
-  it.each([
-    ['DEV', { metadata: { canCreate: false, canTriage: false } }],
-    ['missing flag', { metadata: {} }], ['truthy flag', { metadata: { canTriage: 'true' } }],
-    ['loading', { loading: true }], ['failed metadata', { error: 'Membership revoked' }],
-  ])('does not mount or fetch a queue for current %s but retains member file navigation', async (_, change) => {
-    Object.assign(state, change); render(<ProjectOverview navigate={vi.fn()} />);
-    await screen.findByText('60/100 công việc hoàn thành · 60%');
-    expect(screen.queryByRole('region', { name: 'Hàng chờ bàn giao' })).toBeNull(); expect(qaApi.handoff).not.toHaveBeenCalled();
-    expect(screen.queryByRole('link', { name: 'Công việc theo file' })).not.toBeInTheDocument();
-    if (state.loading || state.error) expect(screen.getByRole('button', { name: 'Thêm công việc' })).toBeDisabled();
-  });
-  it('keeps archived PM queue read-only while creation stays disabled', async () => {
-    state.writable = false; qaApi.handoff.mockResolvedValue({ ...handoff, items: [{ ...handoff.items[0], state: 'READY_TO_CLOSE' }] });
-    render(<ProjectOverview navigate={vi.fn()} />);
-    await screen.findByText(/Đủ kết quả xác minh · Vòng 3/);
-    expect(screen.getByRole('button', { name: 'Thêm công việc' })).toBeDisabled();
-    expect(screen.getByText(/Hiện chưa được phép kết thúc/)).toBeVisible();
-  });
-  it('unmounts on authority loss and clears old queue/project filters before a new current read', async () => {
-    const { rerender } = render(<ProjectOverview navigate={vi.fn()} />);
-    await screen.findByText('Yêu cầu hiện tại: #71');
-    fireEvent.change(screen.getByLabelText('Tìm BUG bàn giao'), { target: { value: 'old filter' } });
-    await waitFor(() => expect(qaApi.handoff).toHaveBeenCalledWith(1, expect.objectContaining({ keyword: 'old filter' }), expect.anything()));
-    state.loading = true; rerender(<ProjectOverview navigate={vi.fn()} />);
-    expect(screen.queryByRole('region', { name: 'Hàng chờ bàn giao' })).toBeNull();
-    let finish; qaApi.handoff.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
-    state.projectId = 2; state.loading = false; rerender(<ProjectOverview navigate={vi.fn()} />);
-    expect(screen.queryByText('Yêu cầu hiện tại: #71')).toBeNull();
-    expect(screen.getByLabelText('Tìm BUG bàn giao')).toHaveValue('');
-    await waitFor(() => expect(qaApi.handoff).toHaveBeenLastCalledWith(2, expect.objectContaining({ keyword: '', page: 0 }), expect.anything()));
-    state.metadata = { canTriage: false }; rerender(<ProjectOverview navigate={vi.fn()} />);
-    finish(handoff); await waitFor(() => expect(screen.queryByText('Yêu cầu hiện tại: #71')).toBeNull());
-    state.projectId = null; rerender(<ProjectOverview navigate={vi.fn()} />);
-    expect(screen.queryByRole('link', { name: 'Công việc theo file' })).toBeNull();
+describe('FR05 read-only project overview replaces the retired handoff dashboard',()=>{
+  it.each(['PM','TESTER','DEV','ADMIN','archived'])('does not fetch hidden management/queue data for %s',role=>{
+    state.role=role;state.project={id:1,code:'ACTUAL',name:'Dự án thật',description:'Mô tả đã lưu',projectRole:role,archived:role==='archived'};
+    render(<ProjectOverview navigate={vi.fn()}/>);
+    expect(screen.getByText('Mô tả đã lưu')).toBeVisible();
+    expect(screen.queryByRole('region',{name:'Hàng chờ bàn giao'})).toBeNull();
+    expect(screen.queryByRole('button',{name:'Thêm công việc'})).toBeNull();
+    expect(workItemsApi.overview).not.toHaveBeenCalled();expect(qaApi.handoff).not.toHaveBeenCalled();
   });
 });
 

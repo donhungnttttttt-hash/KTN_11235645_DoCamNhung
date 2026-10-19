@@ -1,0 +1,43 @@
+.case-issue-preview{z-index:1200;width:min(320px,calc(100vw - 16px));max-height:280px;overflow:auto;overscroll-behavior:contain;padding:12px;background:var(--color-surface,#fff);border:1px solid var(--color-border,#c7dcd9);border-radius:8px;box-shadow:0 6px 20px #163c3029;font-size:var(--text-table,14px);line-height:1.5}
+.case-issue-preview>div{margin-block:8px}.case-issue-preview small{display:block}.case-issue-preview button{min-height:36px;text-align:left;white-space:normal;overflow-wrap:anywhere}.feature-issue-form fieldset{display:grid;gap:12px;min-width:0;border:0;padding:0}.feature-issue-form .wi-field{display:grid;gap:4px}.feature-issue-form input,.feature-issue-form select,.feature-issue-form textarea{width:100%;min-width:0;min-height:44px;padding:8px;border:1px solid var(--color-border,#c7dcd9);border-radius:6px;font:inherit}.feature-issue-form textarea{resize:vertical}.wi-pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.feature-issue-filters{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-block:16px}.feature-issue-filters label{display:grid;gap:4px;flex:1 1 180px}.feature-issue-filters input,.feature-issue-filters select,.feature-status-board select{min-height:44px;max-width:100%;padding:8px;border:1px solid var(--color-border,#c7dcd9);border-radius:6px;font:inherit}.feature-status-board{display:flex;gap:12px;overflow:auto;overscroll-behavior:contain;padding-block:8px 16px;max-width:100%}.feature-status-board>section{flex:0 0 260px;background:var(--color-bg,#f1f6f5);border-radius:8px;padding:12px;min-width:0}.feature-status-board h2{font-size:var(--text-table,14px);font-weight:650;margin-bottom:12px;display:flex;justify-content:space-between}.feature-status-board article{display:grid;gap:8px;padding:12px;margin-bottom:12px;background:var(--color-surface,#fff);border:1px solid var(--color-border,#c7dcd9);border-radius:6px;overflow-wrap:anywhere}.feature-issues-page small{display:block}.feature-issues-page{min-width:0;max-width:100%}
+.feature-issue-detail{display:grid;gap:12px;min-width:0;max-width:100%;overflow-wrap:anywhere}
+.feature-issue-detail>header{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.feature-issue-detail h3,.feature-issue-detail h4,.feature-issue-detail p{margin:0}
+.feature-issue-detail>section,.feature-issue-detail form,.feature-issue-detail fieldset{display:grid;gap:12px;min-width:0}
+.feature-issue-detail fieldset{padding:12px;border:1px solid var(--color-border,#c7dcd9);border-radius:6px}
+.feature-issue-detail .wi-field{display:grid;gap:4px;min-width:0}
+.feature-issue-detail input,.feature-issue-detail textarea,.feature-issue-detail select{width:100%;min-width:0;min-height:44px;padding:8px;border:1px solid var(--color-border,#c7dcd9);border-radius:6px;font:inherit}
+.feature-issue-detail textarea{resize:vertical}.feature-issue-detail button{min-height:44px;justify-self:start}
+.feature-issue-detail .feature-issue-event,.feature-issue-detail .feature-issue-confirm{display:grid;gap:8px;padding:12px;border:1px solid var(--color-border,#c7dcd9);border-radius:6px}
+.feature-issue-detail time{font-size:var(--text-table,14px);color:var(--color-text-secondary,#4e6662)}
+.feature-issue-detail details{max-height:360px;overflow:auto;overscroll-behavior:contain}.feature-issue-detail summary{cursor:pointer;min-height:36px}
+.case-issue-preview[hidden]{display:none!important}
+
+/* The current Feature flow can render outside the legacy .work-items shell. */
+.case-issue-preview{box-sizing:border-box;animation:fi-preview-enter var(--motion-fast,140ms) var(--ease-out,ease-out)}
+.case-issue-preview button:focus-visible,.feature-issue-source a:focus-visible{outline:2px solid #0f766e;outline-offset:3px;border-radius:4px}
+.feature-issue-form{display:grid;gap:16px;min-width:0;line-height:1.55}
+.feature-issue-form .wi-note{margin:0;padding:10px 12px;border:1px solid #d5e7e1;border-radius:var(--radius-control,8px);background:#f4faf8;overflow-wrap:anywhere}
+.feature-issue-form .wi-actions,.feature-issue-detail .wi-actions,.case-issue-preview .wi-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.feature-issue-form .wi-btn{display:inline-flex;justify-content:center;align-items:center;min-height:44px;padding:9px 16px;border:1px solid #aac8c0;border-radius:var(--radius-control,8px);background:#fff;color:#28584d;font:inherit;font-weight:600;cursor:pointer;transition:background var(--motion-fast,140ms),border-color var(--motion-fast,140ms)}
+.feature-issue-form .wi-btn:hover:not(:disabled){background:#edf7f3;border-color:#5c9c8c}
+.feature-issue-form .wi-btn-primary{background:#147e75;border-color:#147e75;color:#fff}
+.feature-issue-form .wi-btn-primary:hover:not(:disabled){background:#106a63;border-color:#106a63}
+.feature-issue-form .wi-btn:disabled{opacity:.55;cursor:not-allowed}
+.feature-issue-form .wi-btn:focus-visible,.feature-issue-form input:focus-visible,.feature-issue-form select:focus-visible,.feature-issue-form textarea:focus-visible,.feature-issue-detail input:focus-visible,.feature-issue-detail select:focus-visible,.feature-issue-detail textarea:focus-visible,.feature-issue-filters input:focus-visible,.feature-issue-filters select:focus-visible{outline:2px solid #0f766e;outline-offset:2px}
+.feature-issue-form input,.feature-issue-form select,.feature-issue-form textarea,.feature-issue-detail input,.feature-issue-detail select,.feature-issue-detail textarea,.feature-issue-filters input,.feature-issue-filters select{border-radius:var(--radius-control,8px);background:#fff;color:#29434c}
+.feature-issue-form .wi-error{padding:12px;border:1px solid #efc4c6;border-radius:var(--radius-control,8px);background:#fff6f6;color:#a73440}
+.feature-issue-detail{line-height:1.55}
+.feature-issue-detail>section{padding-top:16px;border-top:1px solid #d5e7e1}
+.feature-issue-source{display:flex;flex-wrap:wrap;gap:8px 16px;padding:10px 12px;border-radius:var(--radius-control,8px);background:#f4faf8}
+.feature-issue-source a{color:#096d62;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+.feature-issue-detail .feature-issue-event,.feature-issue-detail .feature-issue-confirm{border-radius:var(--radius-control,8px);background:#fbfdfc}
+.feature-issues-page .td-file-table td{overflow-wrap:anywhere}
+.feature-issues-page .d-status-badge{display:inline-flex;padding:3px 8px;border-radius:4px;color:#0f172a;font-size:var(--text-caption,12px);line-height:1.4;white-space:normal}
+.feature-issues-page .td-file-table .d-issue-key{color:#096d62;text-align:left;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere;white-space:normal}
+.feature-issue-filters label{min-width:0;max-width:100%}
+.feature-issue-filters input,.feature-issue-filters select{width:100%;min-width:0;box-sizing:border-box}
+.feature-issue-form .wi-field input,.feature-issue-form .wi-field select,.feature-issue-form .wi-field textarea,.feature-issue-detail .wi-field input,.feature-issue-detail .wi-field select,.feature-issue-detail .wi-field textarea{min-height:44px;border-radius:var(--radius-control,8px)}
+@keyframes fi-preview-enter{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.case-issue-preview{animation:none}.feature-issue-form .wi-btn{transition:none}}

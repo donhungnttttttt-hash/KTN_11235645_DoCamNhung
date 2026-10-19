@@ -8,13 +8,13 @@ const props = { activeRoute: '/issues', navigate: vi.fn(), collapsed: false, onT
 
 describe('sidebar page groups', () => {
   it.each([
-    ['Tổng quan', 'Tổng quan kiểm thử', '/dashboard/testing'],
-    ['Quản lý kiểm thử', 'Thư viện test case', '/tests'],
-    ['Quản lý kiểm thử', 'Đợt kiểm thử', '/tests/cycles'],
-    ['Quản lý kiểm thử', 'Kiểm thử lại', '/tests/retests'],
-    ['Cài đặt dự án', 'Thành viên', '/settings/members'],
-    ['Cài đặt dự án', 'Quy tắc báo lỗi', '/settings/rules'],
-    ['Cài đặt dự án', 'Sổ tay dự án', '/settings/handbook'],
+    ['Bảng công việc', 'Bảng trạng thái', '/board'],
+    ['Bảng công việc', 'Quản lý kiểm thử', '/board/testing'],
+    ['Thông tin chung', 'Thông tin dự án', '/settings'],
+    ['Thông tin chung', 'Thành viên', '/settings/members'],
+    ['Thông tin chung', 'Note', '/settings/notes'],
+    ['Thông tin chung', 'Quy tắc báo lỗi', '/settings/rules'],
+    ['Thông tin chung', 'Sổ tay dự án', '/settings/handbook'],
   ])('opens %s before selecting %s', async (parent, child, route) => {
     const user = userEvent.setup();
     const navigate = vi.fn(), onClose = vi.fn();
@@ -30,17 +30,15 @@ describe('sidebar page groups', () => {
   });
 
   it.each([
-    ['/dashboard', 'Tổng quan dự án'],
-    ['/dashboard/testing', 'Tổng quan kiểm thử'],
-    ['/board/issue/7', 'Bảng Kanban'],
-    ['/board/new', 'Bảng Kanban'],
-    ['/tests', 'Thư viện test case'],
-    ['/tests/cycles/15?caseId=2', 'Đợt kiểm thử'],
-    ['/tests/15?caseId=2', 'Đợt kiểm thử'],
-    ['/tests/retests', 'Kiểm thử lại'],
-    ['/settings', 'Thông tin chung'],
+    ['/dashboard', 'Tổng quan'],
+    ['/board/issue/7', 'Bảng trạng thái'],
+    ['/board/list', 'Bảng trạng thái'],
+    ['/board?view=list', 'Bảng trạng thái'],
+    ['/board/testing/features/42/documents/7?caseId=2', 'Quản lý kiểm thử'],
+    ['/board/testing', 'Quản lý kiểm thử'],
+    ['/settings', 'Thông tin dự án'],
     ['/settings/members', 'Thành viên'],
-    ['/settings/catalogs', 'Danh mục'],
+    ['/settings/notes', 'Note'],
     ['/settings/rules', 'Quy tắc báo lỗi'],
     ['/settings/handbook', 'Sổ tay dự án'],
   ])('restores the selected page for %s', (route, label) => {
@@ -51,11 +49,11 @@ describe('sidebar page groups', () => {
 
   it('follows Back navigation and can close an active group using the keyboard', async () => {
     const user = userEvent.setup();
-    const view = render(<Sidebar {...props} activeRoute='/tests/retests' />);
+    const view = render(<Sidebar {...props} activeRoute='/board/testing' />);
     view.rerender(<Sidebar {...props} activeRoute='/settings/rules' />);
     expect(screen.getByRole('button', { name: 'Quy tắc báo lỗi' })).toHaveAttribute('aria-current', 'page');
-    expect(screen.queryByRole('button', { name: 'Kiểm thử lại' })).not.toBeInTheDocument();
-    const parent = screen.getByRole('button', { name: 'Cài đặt dự án' });
+    expect(screen.queryByRole('button', { name: 'Quản lý kiểm thử' })).not.toBeInTheDocument();
+    const parent = screen.getByRole('button', { name: 'Thông tin chung' });
     parent.focus();
     await user.keyboard('{Enter}');
     expect(parent).toHaveAttribute('aria-expanded', 'false');
@@ -65,9 +63,9 @@ describe('sidebar page groups', () => {
   it('expands a collapsed sidebar before displaying children', async () => {
     const user = userEvent.setup(), onToggle = vi.fn();
     const view = render(<Sidebar {...props} collapsed onToggle={onToggle} />);
-    await user.click(screen.getByRole('button', { name: 'Quản lý kiểm thử' }));
+    await user.click(screen.getByRole('button', { name: 'Bảng công việc' }));
     expect(onToggle).toHaveBeenCalledOnce();
     view.rerender(<Sidebar {...props} collapsed={false} onToggle={onToggle} />);
-    expect(screen.getByRole('button', { name: 'Đợt kiểm thử' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Quản lý kiểm thử' })).toBeInTheDocument();
   });
 });

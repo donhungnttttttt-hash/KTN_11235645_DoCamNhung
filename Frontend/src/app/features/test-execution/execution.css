@@ -13,8 +13,8 @@
 .ex-error { padding:10px; background:#fff1f2; color:#9f1239; border:1px solid #fecdd3; margin:10px 0; }
 .ex-success { padding:10px; background:#ecfdf5; color:#047857; margin:10px 0; }
 .ex-pager { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin:12px 0; }
-.ex-result { display:inline-block; padding:3px 9px; border-radius:12px; background:#e8edf3; color:#64748b; white-space:nowrap; }
-.ex-result-OK { color:#047857; background:#d1fae5; }.ex-result-NG { color:#be123c; background:#ffe4e6; }.ex-result-P { color:#a16207; background:#fef3c7; }
+.ex-result { display:inline-block; padding:3px 9px; border-radius:12px; background:var(--color-result-not-run); color:var(--color-result-not-run-text); white-space:nowrap; }
+.ex-result-OK { color:var(--color-result-ok-text); background:var(--color-result-ok); }.ex-result-NG { color:var(--color-result-ng-text); background:var(--color-result-ng); }.ex-result-P { color:var(--color-result-pending-text); background:var(--color-result-pending); }
 .ex-table-wrap { overflow:auto; background:#fff; border:1px solid #dae4ed; }
 .ex-table { min-width:780px; width:100%; border-collapse:collapse; }
 .ex-table th { color:#0f766e; background:#f2f8f7; text-align:left; font-weight:600; padding:10px; }
@@ -77,3 +77,5 @@
   .ex-attempt-body { padding:14px; }
   .ex-pager { flex-wrap:wrap; }
 }
+.ex-result-NOT_RUN { background:var(--color-result-not-run); color:var(--color-result-not-run-text); }
+.ex-result-NA { background:var(--color-result-na); color:var(--color-result-na-text); }

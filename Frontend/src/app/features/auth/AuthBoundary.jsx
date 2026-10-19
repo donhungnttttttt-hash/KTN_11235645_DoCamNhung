@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, LockKeyhole, ArrowRight, LoaderCircle } from "lucide-react";
 import { useAuth } from "./AuthProvider";
+import {DialogVisibilityContext} from './DialogVisibilityContext';
 import "./auth.css";
 
 export function LoginForm() {
@@ -43,7 +44,7 @@ export function AuthBoundary({ children }) {
   const authenticated = status === "authenticated";
   return <>
     {/* Retain drafts for the same user, but make the entire app inaccessible while locked. */}
-    {user && <div key={user.id} hidden={!authenticated} inert={!authenticated ? "" : undefined}>{children}</div>}
+    {user && <div key={user.id} hidden={!authenticated} inert={!authenticated ? "" : undefined}><DialogVisibilityContext.Provider value={authenticated}>{children}</DialogVisibilityContext.Provider></div>}
     {!authenticated && <main className="auth-page">
       <div className="auth-brand"><span>S+</span><strong>TMS</strong><small>Quản lý dự án & kiểm thử</small></div>
       <section className="auth-card" aria-label="Tài khoản nội bộ">

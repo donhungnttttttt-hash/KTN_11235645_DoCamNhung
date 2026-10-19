@@ -68,6 +68,17 @@ class AiChatServiceTest {
         verify(store).markFailed("owner",2,"AI_INVALID_RESPONSE");
         verify(store,never()).complete(anyString(),anyLong(),any());
     }
+    @Test void generatedCitationOutsideServerProvidedSourcesNeverCompletes() {
+        when(gateway.generate(anyString(),any(),anyString(),any(),anyString(),any())).thenReturn(new OpenAiResponsesClient.Output(json.createObjectNode().put("text","Thông tin từ project:999"),"resp_test","test-model",1,1));
+        service.send("owner",1,"Hello","same-key-001");
+        verify(store).markFailed("owner",2,"AI_INVALID_RESPONSE");
+        verify(store,never()).complete(anyString(),anyLong(),any());
+    }
+    @Test void legacyFileGroupConversationCannotResolveItsIdAsANewDocument() {
+        when(store.thread("owner",1)).thenReturn(new AiChatStore.ThreadView(1,7L,"PM_ASSIGNMENT_SUGGESTION",42L,"file:42","OPENAI_API","m",null,null));
+        assertThatThrownBy(()->service.send("owner",1,"Suggest assignment","legacy-scope-001")).isInstanceOfSatisfying(BusinessException.class,e->assertThat(e.status()).isEqualTo(410));
+        verifyNoInteractions(contexts,gateway);
+    }
     @Test void invalidInputIsRejectedBeforeAnyRead() {
         assertThatThrownBy(()->service.send("owner",1,"x".repeat(2001),"same-key-001")).isInstanceOf(BusinessException.class);
         verifyNoInteractions(store,gateway);
@@ -76,6 +87,35 @@ class AiChatServiceTest {
         service.send("owner",1,"Hello","same-key-001");
         verify(gateway).withCurrent(eq("owner"),eq(selection),any());
         verify(store).complete(eq("owner"),eq(2L),any());
+    }
+    @Test void portfolioUsesTheServerBoundContextAndItsOwnInstructions() {
+        var portfolio=mock(AiPortfolioContext.class);
+        var scopedThread=new AiChatStore.ThreadView(1,null,"MY_PROJECTS",null,"portfolio-v1:bound","OPENAI_API","test-model",Instant.now(),Instant.now().plusSeconds(604800));
+        when(store.thread("owner",1)).thenReturn(scopedThread);
+        var facts=json.createObjectNode().put("scope","MY_PROJECTS").put("totalProjects",1);facts.putArray("sources").addObject().put("ref","project:1");
+        when(portfolio.prepare("owner","portfolio-v1:bound","portfolio-service-key","My projects")).thenReturn(new AiDraftService.Task("MY_PROJECTS","portfolio-v1:bound","portfolio-v1","portfolio-service-key","unused",facts,json.createObjectNode(),List.of(new AiDraftService.Source("project:1","Project 1","/dashboard",null))));
+        new AiChatService(store,contexts,gateway,json,portfolio).send("owner",1,"My projects","portfolio-service-key");
+        verify(gateway).generate(eq("owner"),eq(selection),contains("MY_PROJECTS"),argThat(data->data.path("scope").asText().equals("MY_PROJECTS")&&data.path("snapshot").path("includedProjects").asInt()==1),eq("tms_chat"),any());
+        verifyNoInteractions(contexts);
+    }
+    @Test void modelReceivesTheChatFieldContractInInstructionsAsWellAsTheSchema() {
+        service.send("owner",1,"Helo","chat-contract-001");
+        var instructions=org.mockito.ArgumentCaptor.forClass(String.class);
+        var schema=org.mockito.ArgumentCaptor.forClass(com.fasterxml.jackson.databind.JsonNode.class);
+        verify(gateway).generate(eq("owner"),eq(selection),instructions.capture(),any(),eq("tms_chat"),schema.capture());
+        // Some compatible providers do not forward text.format; never rely on its presence alone.
+        assertThat(instructions.getValue()).contains("\"text\"", "single", "JSON");
+        assertThat(schema.getValue().path("required").get(0).asText()).isEqualTo("text");
+        assertThat(schema.getValue().path("additionalProperties").asBoolean(true)).isFalse();
+    }
+    @Test void projectChatUsesAutomaticProjectContextWithoutRoleTaskOrTarget() {
+        var projectContext=mock(AiPortfolioContext.class);
+        when(store.thread("owner",1)).thenReturn(new AiChatStore.ThreadView(1,7L,"PROJECT_CHAT",null,"project-chat-v1:bound","OPENAI_API","m",null,null));
+        var facts=json.createObjectNode().put("scope","PROJECT_CHAT").put("totalProjects",1);facts.putArray("sources").addObject().put("ref","project:7");
+        when(projectContext.prepareProject("owner",7,null,"project-chat-v1:bound","project-chat-key","Project summary")).thenReturn(new AiDraftService.Task("PROJECT_CHAT","project-chat-v1:bound","project-chat-v1","project-chat-key","unused",facts,json.createObjectNode(),List.of()));
+        new AiChatService(store,contexts,gateway,json,projectContext).send("owner",1,"Project summary","project-chat-key");
+        verify(gateway).generate(eq("owner"),eq(selection),contains("PROJECT_CHAT"),argThat(data->data.path("scope").asText().equals("PROJECT_CHAT")&&data.path("snapshot").path("includedProjects").asInt()==1),eq("tms_chat"),any());
+        verifyNoInteractions(contexts);
     }
     @Test void reservationRaceLoserNeverGenerates() {
         when(store.reserve(eq("owner"),eq(1L),anyString(),anyString(),eq(selection),any(),anyBoolean())).thenReturn(new AiChatStore.Reservation(2,false));
@@ -101,6 +141,7 @@ class AiChatServiceTest {
         return java.util.stream.Stream.of(null,
                 new OpenAiResponsesClient.Output(null,"resp_test","model",1,1),
                 new OpenAiResponsesClient.Output(json.createArrayNode(),"resp_test","model",1,1),
+                new OpenAiResponsesClient.Output(json.createObjectNode().put("answer","Wrong field"),"resp_test","model",1,1),
                 new OpenAiResponsesClient.Output(valid.deepCopy().put("tool","run SQL"),"resp_test","model",1,1),
                 new OpenAiResponsesClient.Output(json.createObjectNode().put("text",12),"resp_test","model",1,1),
                 new OpenAiResponsesClient.Output(json.createObjectNode().put("text"," "),"resp_test","model",1,1),

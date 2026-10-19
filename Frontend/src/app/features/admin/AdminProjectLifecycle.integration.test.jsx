@@ -43,6 +43,12 @@ test('does not allow lifecycle changes to discard an open project edit',async()=
  expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeDisabled();
  expect(screen.getByLabelText('Tên dự án')).toHaveValue('Bản nháp chưa lưu');
  fireEvent.click(screen.getByRole('button',{name:'Hủy'}));
+ fireEvent.click(screen.getByRole('button',{name:'Tiếp tục soạn'}));
+ expect(screen.getByLabelText('Tên dự án')).toHaveValue('Bản nháp chưa lưu');
+ expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeDisabled();
+ fireEvent.click(screen.getByRole('button',{name:'Hủy'}));
+ fireEvent.click(screen.getByRole('button',{name:'Bỏ bản nháp'}));
+ expect(screen.queryByLabelText('Tên dự án')).not.toBeInTheDocument();
  expect(screen.getByRole('button',{name:'Kiểm tra lưu trữ'})).toBeEnabled();
 });
 

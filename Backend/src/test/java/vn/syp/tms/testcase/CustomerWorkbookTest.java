@@ -8,6 +8,11 @@ import org.springframework.mock.web.MockMultipartFile;
 
 class CustomerWorkbookTest {
     final TestCaseWorkbook parser = new TestCaseWorkbook();
+    @Test void currentFeatureExportHeadersRetainStatusAndSeparateAssignmentColumns() throws Exception {
+        byte[] data=change(book->{var header=book.getSheetAt(0).getRow(0);header.getCell(8).setCellValue("Status");header.getCell(11).setCellValue("Người test đầu tiên");header.createCell(14).setCellValue("Người test lại gần nhất");});
+        var parsed=parser.parse(file(data));
+        assertThat(parsed.rows().getFirst().sourceColumns()).containsEntry("result",8).containsEntry("tester",11).containsEntry("latestTester",14);
+    }
     @Test void acceptsPresentationMergeWithoutChangingCaseOrSourceCells() throws Exception {
         byte[] data=change(b->{
             var sheet=b.getSheetAt(0);sheet.getRow(1).getCell(12).setBlank();sheet.getRow(1).getCell(13).setBlank();

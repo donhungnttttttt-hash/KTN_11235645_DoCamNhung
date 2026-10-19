@@ -41,4 +41,14 @@ class TestCaseWorkbookTest {
         assertThat(result.rows().getFirst().stepsVi()).isEqualTo("Bước 1, dấu phẩy\n\nBước 2\tNhật: 原文");
         assertThat(result.checksum()).hasSize(64);
     }
+    @Test void selfExportDoesNotAllowUnknownOrAdditionalMetadataColumns()throws Exception{
+        for(boolean extra:java.util.List.of(false,true)){
+            byte[] bytes=mutate(book->{var header=book.getSheetAt(0).getRow(0);header.createCell(11).setCellValue("Status");header.createCell(12).setCellValue("Người test đầu tiên");header.createCell(13).setCellValue(extra?"Người test lại gần nhất":"Unknown");if(extra)header.createCell(14).setCellValue("Unknown");});
+            assertThatThrownBy(()->parser.parse(file(bytes))).isInstanceOf(BusinessException.class);
+        }
+    }
+    @Test void selfExportMetadataIsIgnoredForCanonicalDataButNeverEvaluatesFormula()throws Exception{
+        byte[] bytes=mutate(book->{var sheet=book.getSheetAt(0);var headers=java.util.List.of("Status","Người test đầu tiên","Người test lại gần nhất");for(int i=0;i<3;i++){sheet.getRow(0).createCell(11+i).setCellValue(headers.get(i));sheet.getRow(1).createCell(11+i).setCellValue("Imported metadata");}sheet.getRow(1).getCell(13).setCellFormula("1+1");});
+        assertThatThrownBy(()->parser.parse(file(bytes))).isInstanceOf(BusinessException.class).hasMessageContaining("công thức");
+    }
 }

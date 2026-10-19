@@ -1,0 +1,52 @@
+.testing-page{padding:1rem;min-width:0;max-width:100%}.testing-page .td-filter-row{flex-wrap:wrap}.testing-page label{display:flex;align-items:center;gap:.5rem}.testing-page input,.testing-page select,.testing-page textarea{border:1px solid var(--border-color,#cbd5e1);border-radius:.375rem;padding:.5rem;max-width:100%}.testing-fields{display:grid;gap:1rem;padding:1rem}.testing-fields label{display:grid;gap:.375rem}.testing-form{max-width:42rem;width:calc(100% - 2rem)}.testing-page .td-file-table{min-width:42rem;width:100%}.testing-page .td-file-table th,.testing-page .td-file-table td{padding:.75rem;text-align:left}.testing-progress{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}.testing-progress progress{max-width:12rem}.testing-assignment-scope{display:grid;grid-template-columns:minmax(10rem,1fr) minmax(10rem,2fr);gap:.75rem}.testing-assignment-scope textarea{width:100%}.testing-document .td-grid-scroll{max-height:65vh}.testing-document .td-case-grid{min-width:90rem}.testing-document .td-case-grid td{min-width:9rem;max-width:20rem;white-space:pre-wrap}.testing-document .td-case-grid th{min-width:9rem}.testing-document .td-result-cell{min-width:10rem}.testing-document .td-result-cell button{display:block;margin:.25rem 0}.testing-document .testing-case-text{border:0;background:none;text-align:left;white-space:pre-wrap;cursor:pointer;color:inherit;width:100%}.testing-document .testing-case-text:focus-visible{outline:2px solid currentColor;outline-offset:2px}@media(max-width:600px){.testing-page{padding:.75rem}.testing-assignment-scope{grid-template-columns:1fr}.testing-page .td-heading-row{align-items:flex-start;flex-direction:column}.testing-page .td-pagination{flex-wrap:wrap;gap:.75rem}.testing-page .td-filter-row input[type=search]{width:100%}}
+
+.testing-document tr[aria-current=true]{outline:2px solid #2563eb;outline-offset:-2px;background:#eff6ff;}
+
+/* New testing routes reuse document dialogs without mounting legacy execution. */
+.testing-page .ex-modal{position:fixed;inset:0;z-index:1000;background:#0f172a88;display:flex;align-items:center;justify-content:center;padding:1rem;box-sizing:border-box}
+.testing-page .ex-modal .td-case-dialog{max-height:calc(100dvh - 2rem)}
+.testing-page .ex-modal .td-case-dialog>header{flex-shrink:0}
+.testing-page .testing-form .testing-fields{overflow-y:auto;min-height:0}
+
+/* Scoped finishing for the active Feature and document routes. */
+.testing-page .td-heading-row h1,.testing-page .td-heading-row h2{line-height:1.35;overflow-wrap:anywhere}
+.testing-page .td-heading-row{padding-bottom:12px;border-bottom:1px solid #d8e6e1;gap:12px}
+.testing-page .td-filter-row{gap:12px;padding:12px;border:1px solid #d8e6e1;border-radius:var(--radius-panel,12px);background:#f8fbfa}
+.testing-page input,.testing-page select,.testing-page textarea{border-radius:var(--radius-control,8px);font:inherit;color:inherit}
+.testing-page input:focus-visible,.testing-page select:focus-visible,.testing-page textarea:focus-visible{outline:2px solid #0f766e;outline-offset:2px}
+.testing-page .td-file-table th{padding-block:12px;line-height:1.4}
+.testing-page .td-file-table td{line-height:1.5;overflow-wrap:anywhere}
+.testing-progress{padding:12px 14px;border:1px solid #d8e6e1;border-radius:var(--radius-control,8px);background:#f4faf8;line-height:1.5}
+.testing-progress progress{accent-color:#147e75;flex:1 1 100px;min-width:0}
+.testing-document .td-case-grid .testing-case-text{overflow-wrap:anywhere;line-height:1.55}
+.testing-document .td-case-grid .testing-case-text:hover{color:#096d62;text-decoration:underline;text-underline-offset:3px}
+.testing-document .td-case-grid tbody .td-sticky-id{top:auto;z-index:1;max-width:20rem;vertical-align:top;padding:5px 6px;background:#fff;font-weight:400;white-space:pre-wrap}
+.testing-document .td-case-grid tbody tr:nth-child(even)>.td-sticky-id{background:#f3f9f8}
+.testing-document .td-case-grid tbody tr:hover>.td-sticky-id{background:#edf7f5}
+.testing-page .td-case-dialog{border-radius:var(--radius-panel,12px);overflow:hidden}
+.testing-page .td-case-dialog>header{gap:12px;flex-wrap:wrap}
+.testing-page .td-case-dialog>header h2{min-width:0;overflow-wrap:anywhere;font-size:var(--text-section,18px)}
+.testing-page .testing-fields{gap:16px;line-height:1.5}
+.testing-page .testing-fields>section{padding:12px;border:1px solid #bfd9d0;border-radius:var(--radius-control,8px);background:#f5faf8;overflow-wrap:anywhere}
+.testing-page .td-assignment-history td:nth-child(2),.testing-page .td-assignment-history td:nth-child(3){background:transparent;color:inherit}
+.testing-page .td-assignment-history tbody tr:nth-child(even){background:#f5faf8}
+@media(max-width:600px){.testing-page .td-filter-row{padding:10px}.testing-page .td-case-dialog>header{padding:12px}.testing-page .testing-form{width:100%}.testing-progress{gap:8px}}
+
+/* The active document consumes the workspace remainder; only its grid scrolls vertically. */
+.document-focus .testing-document{display:flex;flex-direction:column;min-height:0;height:auto}
+.document-focus .testing-document>:not(.td-grid-scroll){flex-shrink:0}
+.document-focus .testing-document>.td-grid-scroll{flex:1 1 auto;min-height:0;height:auto;max-height:none}
+.document-focus .testing-document>.td-sheet-toolbar{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;max-width:100%;gap:12px}
+.document-focus .testing-document>.td-sheet-toolbar>*{flex-shrink:0}
+.document-focus .testing-document .testing-progress{flex-wrap:nowrap;padding:8px 10px}
+.document-focus .testing-document .testing-progress strong{white-space:nowrap}
+.document-focus .testing-document .td-filter-row{flex-wrap:nowrap;margin:0;padding:8px 10px}
+.document-focus .testing-document .td-filter-row label{flex-shrink:0;white-space:nowrap}
+.document-focus .testing-document .td-filter-row input[type=search]{width:180px}
+.document-focus .testing-document .td-toolbar-pagination{flex-wrap:nowrap;width:auto;margin:0;padding:0;border:0}
+.document-focus .testing-document .td-toolbar-pagination>span{margin:0;white-space:nowrap}
+.document-focus .testing-document .td-toolbar-pagination label{white-space:nowrap}
+@media(max-height:500px){
+ .document-focus .testing-document>.td-grid-scroll{flex:none;min-height:240px;height:60dvh;max-height:none}
+}
+

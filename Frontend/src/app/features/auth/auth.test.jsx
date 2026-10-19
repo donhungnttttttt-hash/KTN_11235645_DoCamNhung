@@ -1,5 +1,5 @@
 import React from "react";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { AuthProvider, useAuth } from "./AuthProvider";
@@ -8,6 +8,7 @@ import { AccountMenu } from "./AccountMenu";
 import { ApiError, createApiClient } from "../../services/api/client";
 import { Header } from "../../components/Header";
 import { Modal } from "../work-items/components";
+import {AdminFormDialog} from '../admin/AdminFormDialog';
 
 const unauthorized = () => new ApiError("Phiên không hợp lệ", { status: 401 });
 const profile = (overrides = {}) => ({ id: "user-1", username: "tester.test", displayName: "Tester nội bộ", roles: ["TESTER"], permissions: ["profile:read"], sessionExpiresAt: new Date(Date.now() + 1800000).toISOString(), ...overrides });
@@ -20,10 +21,11 @@ function setup(api, children = <ProtectedApp/>) {
   return userEvent.setup();
 }
 async function signIn(user) {
-  const username = screen.getByLabelText("Tên đăng nhập");
+  const login=within(screen.getByRole('form',{name:'Đăng nhập'}));
+  const username = login.getByLabelText("Tên đăng nhập");
   if (!username.value) await user.type(username, "tester.test");
-  await user.type(screen.getByLabelText("Mật khẩu"), "test-password");
-  await user.click(screen.getByRole("button", { name: "Đăng nhập", exact: true }));
+  await user.type(login.getByLabelText("Mật khẩu"), "test-password");
+  await user.click(login.getByRole("button", { name: "Đăng nhập", exact: true }));
 }
 async function rejectSession() {
   const client = createApiClient({ fetchImpl: vi.fn().mockResolvedValue(new Response(JSON.stringify({ message: "Hết phiên" }), { status: 401, headers: { "Content-Type": "application/json" } })) });
@@ -103,12 +105,45 @@ describe("internal authentication", () => {
 
   it("does not close a retained draft modal when Escape is pressed on the login screen", async () => {
     const close = vi.fn();
-    const user = setup({ me: vi.fn().mockResolvedValue(profile()) }, <Modal title="Bản nháp" onClose={close}><input aria-label="Nội dung nháp" /></Modal>);
+    const user = setup({ me: vi.fn().mockResolvedValue(profile()), login: vi.fn().mockResolvedValue(profile()) }, <Modal title="Bản nháp" onClose={close}><input aria-label="Nội dung nháp" /></Modal>);
     await screen.findByRole("dialog", { name: "Bản nháp" });
+    await user.type(screen.getByLabelText('Nội dung nháp'),'Nội dung giữ khi đăng nhập lại');
     await rejectSession();
+    expect(screen.getByLabelText('Nội dung nháp')).not.toBeVisible();
+    expect(screen.getByLabelText('Nội dung nháp').closest('[inert]')).not.toBeNull();
     await user.keyboard("{Escape}");
     expect(close).not.toHaveBeenCalled();
     expect(screen.getByRole("heading", { name: "Đăng nhập lại" })).toBeVisible();
+    await signIn(user);
+    expect(await screen.findByRole('dialog',{name:'Bản nháp'})).toBeVisible();
+    expect(screen.getByLabelText('Nội dung nháp')).toHaveValue('Nội dung giữ khi đăng nhập lại');
+  });
+
+  it('retains a delegated Tester creation draft while the same PM reauthenticates',async()=>{
+    const account=profile({roles:['PM'],permissions:['profile:read','users:create']});
+    const user=setup({me:vi.fn().mockResolvedValue(account),login:vi.fn().mockResolvedValue(account)});
+    await user.click(await screen.findByRole('button',{name:'Tài khoản: Tester nội bộ'}));
+    await user.click(screen.getByRole('button',{name:'Tạo tài khoản Tester'}));
+    await user.type(screen.getByLabelText('Tên hiển thị'),'Tên còn đang nhập');
+    await rejectSession();
+    expect(screen.getByLabelText('Tên hiển thị')).not.toBeVisible();
+    await signIn(user);
+    expect(await screen.findByRole('dialog',{name:'Tạo tài khoản Tester'})).toBeVisible();
+    expect(screen.getByLabelText('Tên hiển thị')).toHaveValue('Tên còn đang nhập');
+  });
+
+  it('releases a retained Admin dialog scroll lock during reauthentication',async()=>{
+    const user=setup({me:vi.fn().mockResolvedValue(profile()),login:vi.fn().mockResolvedValue(profile())},<AdminFormDialog title="Thông tin đang sửa" onClose={vi.fn()}><input aria-label="Nháp Admin"/></AdminFormDialog>);
+    await screen.findByRole('dialog',{name:'Thông tin đang sửa'});
+    await user.type(screen.getByLabelText('Nháp Admin'),'Bản nháp Admin giữ lại');
+    expect(document.body.style.overflow).toBe('hidden');
+    await rejectSession();
+    expect(screen.getByLabelText('Nháp Admin')).not.toBeVisible();
+    expect(document.body.style.overflow).not.toBe('hidden');
+    await signIn(user);
+    expect(await screen.findByRole('dialog',{name:'Thông tin đang sửa'})).toBeVisible();
+    expect(screen.getByLabelText('Nháp Admin')).toHaveValue('Bản nháp Admin giữ lại');
+    expect(document.body.style.overflow).toBe('hidden');
   });
 
   it("reports logout failure and removes all private state after successful retry", async () => {

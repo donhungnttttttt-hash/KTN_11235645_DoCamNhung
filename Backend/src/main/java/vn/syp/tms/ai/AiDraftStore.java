@@ -51,7 +51,7 @@ public class AiDraftStore {
     public Reservation reserve(long projectId, String actor, AiDraftService.Task task) {
         var caller = access.authorize(projectId, actor, true);
         validate(task);
-        access.requireSource(projectId,caller,AiPurpose.parse(task.purpose()),task.sourceReference());
+        access.requireSource(projectId,caller,AiPurpose.parse(task.purpose()),task.sourceReference(),true);
         var selection=task.selection();
         String hash = selection==null?db.checksum(List.of(task.purpose(),task.sourceReference())):
                 db.checksum(Arrays.asList(task.purpose(),task.sourceReference(),selection.provider(),selection.model(),selection.connectionId(),selection.connectionVersion()));
@@ -81,7 +81,7 @@ public class AiDraftStore {
     public Draft complete(long projectId, String actor, long id, OpenAiResponsesClient.Output output) {
         var caller = access.authorize(projectId, actor, true);
         var prior = db.row(SELECT + " WHERE project_id=? AND created_by=? AND id=?", projectId, actor, id);
-        access.requireSource(projectId,caller,AiPurpose.parse((String)prior.get("purpose")),(String)prior.get("sourceReference"));
+        access.requireSource(projectId,caller,AiPurpose.parse((String)prior.get("purpose")),(String)prior.get("sourceReference"),true);
         if (output == null || output.value() == null || !output.value().isObject()
                 || output.responseId() == null || !output.responseId().matches("[A-Za-z0-9_-]{1,100}")
                 || output.model() == null || !output.model().matches("[A-Za-z0-9][A-Za-z0-9._:/-]{0,99}")
@@ -142,6 +142,7 @@ public class AiDraftStore {
     public Draft edit(long p,String actor,long id,String text,long version) {
         access.authorize(p,actor,true);
         var draft=get(p,actor,id);
+        access.requireSource(p,access.authorize(p,actor,true),AiPurpose.parse(draft.purpose()),draft.sourceReference(),true);
         if(text==null||text.length()>12000||version<0)fail(422,"AI_INVALID_INPUT","Bản chỉnh sửa tối đa 12000 ký tự.");
         if(!"READY".equals(draft.state()))fail(409,"AI_DRAFT_NOT_READY","Bản nháp chưa có nội dung để sửa.");
         if(db.update("UPDATE ai_generated_drafts SET edited_text=?,lock_version=lock_version+1 WHERE project_id=? AND created_by=? AND id=? AND lock_version=? AND expires_at>UTC_TIMESTAMP(6)",text,p,actor,id,version)!=1)

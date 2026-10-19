@@ -30,7 +30,7 @@ function OwnerProviders({children,api,active}){
  useEffect(()=>{
   if(!active)return;
   const abort=new AbortController();setLoading(true);setCatalogs({});
-  api.providers({signal:abort.signal}).then(data=>{if(abort.signal.aborted||!current.current)return;setProviders(data.providers);setSelection(old=>({...old,model:old.model||data.providers.find(p=>p.code===old.provider)?.models?.[0]?.id||''}));})
+  api.providers({signal:abort.signal}).then(data=>{if(abort.signal.aborted||!current.current)return;setError('');setProviders(data.providers);setSelection(old=>({...old,model:old.model||data.providers.find(p=>p.code===old.provider)?.models?.[0]?.id||''}));})
    .catch(e=>{if(!abort.signal.aborted&&current.current){setError(aiError(e.code));setProviders([]);}}).finally(()=>{if(!abort.signal.aborted&&current.current)setLoading(false);});
   return()=>abort.abort();
  },[api,active,revision]);

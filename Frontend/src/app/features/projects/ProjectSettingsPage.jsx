@@ -8,6 +8,7 @@ import '../admin/admin.css';
 import { ProjectMembers } from './ProjectMembers';
 import { RulesPanel } from './RulesPanel';
 import { HandbookPanel } from './HandbookPanel';
+import { ProjectNotes } from './ProjectNotes';
 import './projects.css';
 
 export function ProjectSettingsPage({ activeRoute = '/settings' }) {
@@ -19,13 +20,14 @@ export function ProjectSettingsPage({ activeRoute = '/settings' }) {
 }
 
 function Settings({ project, refresh, canEdit, tab, admin }) {
-  const title = { general: 'Thông tin chung', members: 'Thành viên', rules: 'Quy tắc báo lỗi', handbook: 'Sổ tay dự án' }[tab];
+  const title = { general: 'Thông tin chung', members: 'Thành viên', notes: 'Note', rules: 'Quy tắc báo lỗi', handbook: 'Sổ tay dự án' }[tab];
   return <section className="page-container project-settings-page">
     <h1>{title} <span className="settings-project-name">· {project.name}</span></h1>
     {tab==='general' && <General project={project} refresh={refresh} canEdit={canEdit}/>}
     {tab==='members' && <>{admin&&<p><a className="cat-btn" href={`#/admin/projects/${project.id}`}>Quản lý thành viên tại khu Admin</a></p>}<ProjectMembers projectId={project.id} canEdit={false}/><ProjectDevices key={project.id} projectId={project.id} admin={admin} archived={!!project.archived}/></>}
     {tab==='rules' && <RulesPanel projectId={project.id} canEdit={canEdit}/>}
     {tab==='handbook' && <HandbookPanel projectId={project.id} canEdit={canEdit}/>}
+    {tab==='notes' && <ProjectNotes projectId={project.id} canEdit={canEdit}/>}
   </section>;
 }
 

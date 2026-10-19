@@ -1,5 +1,54 @@
 # F/Q task list — plan tasks/plan.md
 
+## Chat chỉ chọn phạm vi dự án — 18/10/2026
+
+- [x] Contract và RED2FE/4native cho chat một dự án không task/target, mặc định toàn phạm vi; thêm2regression history/General RED→GREEN.
+- [x] Snapshot/quyền một dự án; rút gọn panel và prompt đúng phạm vi, giữ lịch sử cũ và retry; chỉ COMMITTED file metadata.
+- [x] FullFE896 rồi finalAI60,165BE AI/13native/coverage/build PASS; Chrome fixture và app thật1combo/320px. Backup rồi restart8080 PID28580/V30/UP, hash dữ liệu giữ nguyên; [bằng chứng/giới hạn](../docs/reviews/2026-10-18-ai-chat-scope.md). Không migration/live mới hoặc commit/push, S11 IN_REVIEW.
+
+## Câu hỏi AI có sẵn gửi ngay — 18/10/2026
+
+- [x] RED7 hành vi bốn gợi ý gửi ngay/chống trùng, giữ nháp, retry và provider không sẵn sàng; GREEN35 AiChat.
+- [x] Dùng luồng send chung, cập nhật mô tả UI và hướng dẫn; hồi quy AI60/4file, coverage/build PASS, Chrome fixture giả lập1click/1request và bản nháp giữ nguyên. [Báo cáo](../docs/reviews/2026-10-18-ai-preset-send.md); fixture đã gỡ, không backend/native/live mới hoặc commit/push, S11 IN_REVIEW.
+
+## AI tổng hợp các dự án của tôi — 18/10/2026
+
+- [x] User chốt tổng hợp các dự án; đối chiếu quyền, schema chat V25, KPI và luồng gửi hiện tại; giữ các sửa đã kiểm chứng trong working tree.
+- [x] Contract/scope fingerprint, dữ liệu theo membership/Admin và bốn prompt có sẵn; TDD RED→GREEN, giữ General/Project cũ và private owner.
+- [x] Native fresh/upgrade/quyền/fence/idempotency trên schema riêng; 893FE/162BE AI/9native/14runner/live1 PASS, coverage/build và browser320px. Backup rồi restart8080/V30, dữ liệu cũ giữ nguyên; [báo cáo/giới hạn](../docs/reviews/2026-10-18-ai-my-projects.md). Không commit/push, S11 IN_REVIEW.
+
+## Sửa chat Caheo và phản hồi gửi — 18/10/2026
+
+- [x] Tái hiện đúng prompt/schema chat với câu chào tổng hợp: HTTP200, JSON `answer` không đúng trường `text`; không dữ liệu dự án, không log key/payload.
+- [x] RED FE3/BE1→GREEN; chỉ dẫn nêu rõ field `text`, giữ validation; UI gửi ngay trước await, compose mới, phục hồi lỗi/gửi lại/same-key timeout/network/5xx. 890FE/82file, 151BE AI PASS; coverage thực đo, FE build PASS.
+- [x] Live đúng contract chat1PASS; Chrome câu chào→READY/thread3, ô nhập rỗng ngay, câu hỏi/pending hiện ngay, bản nháp mới giữ qua trả lời/mở lại. Backend đã restart PID7000/readiness200; [báo cáo](../docs/reviews/2026-10-18-caheo-chat-send.md). Không snapshot dự án/fixture tms/commit/push; giữ S11 IN_REVIEW.
+
+## Kết nối Caheo AI — 18/10/2026
+
+- [x] Xác nhận nhà cung cấp qua ảnh người dùng và docs chính thức; key xác thực GET /v1/models HTTP 200, có `gpt-5.6-luna`. Không đưa key vào source/log.
+- [x] TDD endpoint: RED12→GREEN16, loader RED1→GREEN1; nối vào client hiện có, giữ default OpenAI. Maven hồi quy AI149 PASS; wrapper redirect log trả1 được ghi riêng, probe explicit exit0.
+- [x] Cấu hình Caheo local owner-only/có backup ngoài Git; live probe schema PASS (2.428 input/22 output token, không dữ liệu dự án). Backend đã restart PID27440, readiness200, metadata ADMIN trả API của hệ thống/gpt-5.6-luna available=true; logout204. Scan893file không thấy key trong source/frontend/log mới. [Báo cáo](../docs/reviews/2026-10-18-caheo-ai-connection.md); không commit/push, giữ S11 IN_REVIEW.
+
+## Đồng nhất màu kết quả — 18/10/2026
+
+- [x] Rà soát selector và xác nhận 5 màu người dùng đã sửa trong Admin; phân biệt kết quả test với trạng thái BUG/QA và thông báo.
+- [x] Tạo biến màu dùng chung tại global.css; cập nhật 7 file CSS ở Admin, KPI/báo cáo, thư viện/bảng Excel, đợt/file và verdict retest; giữ tương phản chữ và màu của ô bị khóa.
+- [x] 425 test/39 file và build PASS; Chrome Dashboard đủ 5 màu đúng, 42 mẫu không lệch màu, tương phản chữ thấp nhất 4,90:1. Đã lưu ảnh và dọn trang mẫu; xem docs/reviews/2026-10-18-result-colors.md. Chưa đo coverage/UAT toàn trang, không commit/push.
+
+## Chẩn đoán backend startup — 18/10/2026
+
+- [x] Tái hiện `mvn spring-boot:run` exit 1; stack trace chỉ `ChatGptCredentialVault.read` / `AI_CREDENTIAL_STORE_FAILED`, không phải MySQL/Flyway.
+- [x] File kho AI có 3 ALLOW ngoài owner; sửa ACL owner-only/chặn kế thừa, giữ nguyên nội dung mã hóa và khóa. Metadata/hash trước/sau được lưu cục bộ.
+- [x] Maven startup thành công, Flyway validate 29/up-to-date, readiness/liveness HTTP 200 UP; dừng bản chạy kiểm tra và giải phóng 8080. Không thay source nghiệp vụ, không chạy suite/đo coverage hoặc commit/push; S11 IN_REVIEW. Xem docs/reviews/2026-10-18-backend-startup-vault.md.
+
+## Đối chiếu tài liệu KL.zip — 17/10/2026
+
+- [x] KL-R1: inventory/hash và giải nén50file/2folder;5Word,22cặpdrawio/SVG và1guide. D2/D4 trùng byte.
+- [x] KL-R2: trích văn bản/bảng/media; đọc bản hoàn chỉnh theo phần,14UC/25bảng; phân loại Bản gốc ngoài đề tài, bản nháp và nguồn quy trình.
+- [x] KL-R3: đối chiếu source/decision hiện hành,75CREATE TABLE trong migration; không introspect DB đang dùng hoặc coi source là bằng chứng nghiệm thu.
+- [x] KL-R4: báo cáo24nhóm sai lệch, ma trận14UC/22sơđồ/25bảng; tách ưu điểm, mâu thuẫn nội bộ và9đề xuất đáng giữ. Không biến ý tưởng ban đầu thành tính năng đã triển khai.
+- [x] KL-R5: ZIP/5Word giữ nguyên hash; kiểm link/diff và bàn giao. Source nghiệp vụ không đổi; không test/runtime/DB/commit/push mới, S11 IN_REVIEW. Xem docs/reviews/2026-10-17-kl-documents-review.md.
+
 ## Commit/push theo yêu cầu17/10/2026
 
 - Người dùng đã cho phép commit và push audit/UI hiện hành lên `system-design`. Kiểm tra scope/index và remote trước push; không merge/deploy, không đổi S11 IN_REVIEW. Báo kết quả commit/remote sau thực hiện; giữ scratch/config local ngoài commit.
@@ -63,3 +112,30 @@ Contract/diff checkpoint cuối và artifact tổng hợp nằm trong báo cáo;
 Kết quả mới nhất, thay thế các nhãn native NOT_RUN tại checkpoint lịch sử phía trên: [nghiệm thu native V19](../docs/reviews/2026-10-06-native-completion.md).
 
 Đã duyệt nghiệp vụ F/Q ngày06/10/2026. Không đánh dấu checklist chỉ vì đã viết tài liệu hoặc thấy source; bằng chứng chạy/review lưu ledger và docs/reviews.
+
+## FixReports — checkpoint 19/10/2026
+
+Phạm vi mở rộng theo yêu cầu người dùng; kế hoạch duy nhất là [FR-00–FR-12](../docs/planning/2026-10-19-fixreports-implementation-plan.md), [báo cáo/skills/A01–A20](../docs/reviews/2026-10-19-fixreports-implementation-review.md). Không làm lại các mục PASS trong lịch sử.
+
+- [x] FR00–11 source/contract/migration và test cô lập theo R01–R08; FR12 finalreview/test/browsercheckpoint có giới hạn rõ.
+- [x] FE975/105files +coverage/build; BE645/74classes+verify/package; native/HTTP/coreAI/Admin/Note/report/Issue vàsnapshot mainV30→33 PASS theo scope, không cộng test trùng.
+- [x] Bảo toàn7.362 row cũ/76bảng;10file/711case đối chiếu;replay0. Tạo thật project12SPIDER-PLUS/PM syp.lab.pm03 theo user cho phép; main vẫnV30/UP.
+- [x] Browser4role/320–1440px, actual reportdownload110bytes, bàn giao2máy/lưu1member/Status/Issue/Note/archive; preview5174/8081 riêng.
+- [ ] Browser upload: extension fileURL permission chặn, không autoenable; workbook gốc download chưa xác nhận.
+- [ ] Dữ liệu trước cutover: source1 thiếu workbook và120case không file giữ nguyên; cần chứng minh nguồn/quan hệ nếu muốn chuyển.
+- [ ] Hoàn tất manual trước/sau mọi trạng thái/liveAI/UAT/thiết bị thật/pilot/NFR. S11 giữIN_REVIEW.
+- [x] Main cutoverV31–33/restart8080 đã thực hiện sau quyền người dùng; xem checkpoint19/10 bên dưới. Không commit/push/merge hoặc triển khai ngoài local.
+
+### FR-12 follow-up UI/Chrome 19/10/2026
+
+- [x] Main5173/8080V30 authenticated404 được tái hiện; preview8081 trả200.
+- [x] Bảy lỗi sourceUI sửa,980FE/105files+coverage/build; browser390/768/1440/reload/range/focus.
+- [x] Báo cáo và skill/evidence: [follow-up](../docs/reviews/2026-10-19-fixreports-ui-followup.md), kế hoạch duy nhất vẫnFR12.
+- [x] User cho phép main cutoverV30→33/restart8080; backup mới khi writer dừng,7.374row giữ nguyên,711case,12GET200 và Chrome5173 kiểm xong.
+- [ ] Toolfilechooser vẫn lỗi sau user xác nhận fileURLaccessON; không autochange/bypass quyềnChrome; manual/UAT/live riêng.
+
+### FR-12 main cutover được cho phép19/10/2026
+
+- [x] Dừng đúng7016/start30588; mainV33/UP;5173/5174/8081 không đổi process.
+- [x] Backup mới,7.374 hàng cũ ngoài session giữ nguyên;10file/711case khớp nguồn; validate33/pending0; HTTP12/12 và Chrome5173 PASS.
+- [ ] Giữ FR12/S11 IN_REVIEW cho các mục chưa kiểm đầy đủ, upload/download browser chưa xác nhận, liveAI/UAT và ngoại lệ nguồn; xem [báo cáo cập nhật](../docs/reviews/2026-10-19-fixreports-ui-followup.md). Không commit/push/merge.

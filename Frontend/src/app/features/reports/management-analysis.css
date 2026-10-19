@@ -1,0 +1,86 @@
+.management-analysis { min-width:0; color:var(--color-text-main); overflow-wrap:anywhere; }
+.management-analysis h1 { font-size:var(--text-title); font-weight:600; }
+.management-analysis h2 { font-size:var(--text-section); font-weight:600; margin:24px 0 12px; }
+.management-analysis h3 { font-size:var(--text-body); font-weight:600; margin:20px 0 12px; }
+.management-analysis p { margin:8px 0 12px; line-height:1.7; }
+.management-heading, .management-actions, .management-pager { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.management-actions { justify-content:flex-start; margin-top:12px; }
+.management-scope { display:flex; flex-direction:column; gap:8px; margin:20px 0; max-width:420px; font-weight:600; }
+.management-scope select { width:100%; }
+.management-progress-text { font-weight:600; font-variant-numeric:tabular-nums; }
+.management-status-bar { display:flex; height:16px; width:100%; background:var(--color-bg-sub); border-radius:4px; overflow:hidden; }
+.management-status-bar span { height:100%; }
+.management-status-ok { background:var(--color-result-ok); }
+.management-status-ng { background:var(--color-result-ng); }
+.management-status-pending { background:var(--color-result-pending); }
+.management-status-na { background:var(--color-result-na); }
+.management-status-notRun { background:var(--color-result-not-run); }
+.management-status-legend { display:flex; flex-wrap:wrap; gap:12px 20px; padding:12px 0; list-style:none; }
+.management-status-legend li { display:flex; align-items:center; gap:8px; }
+.management-status-legend span { width:12px; height:12px; border-radius:2px; }
+.management-as-of { font-size:var(--text-caption); }
+.management-analysis table { width:100%; border-collapse:collapse; text-align:left; }
+.management-analysis th,.management-analysis td { padding:12px; border-bottom:1px solid var(--color-border); vertical-align:top; }
+.management-analysis th { background:var(--color-bg-sub); }
+.management-analysis .management-feature-table { min-width:42rem; table-layout:fixed; }
+.management-feature-table th { overflow-wrap:normal; word-break:normal; }
+.management-feature-table th:nth-child(1) { width:30%; }
+.management-feature-table th:nth-child(2) { width:28%; }
+.management-feature-table th:nth-child(3) { width:22%; }
+.management-feature-table th:nth-child(4) { width:20%; }
+.management-feature-table td:nth-child(3),.management-feature-table td:nth-child(4) { white-space:nowrap; }
+.management-feature-progress { width:140px; max-width:100%; height:8px; background:var(--color-bg-sub); border-radius:4px; overflow:hidden; margin:4px 0; }
+.management-feature-progress span { display:block; height:100%; background:var(--color-mint); }
+.management-report-workspace { border-top:1px solid var(--color-border); margin-top:28px; padding-top:8px; }
+.management-report-columns { display:grid; grid-template-columns:minmax(200px,1fr) minmax(0,3fr); gap:24px; align-items:start; }
+.management-report-list ul { padding:0; list-style:none; }
+.management-report-list li { margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--color-border-light); }
+.management-report-list li:last-child { border-bottom:0; }
+.management-report-list .cat-btn { width:100%; text-align:left; justify-content:flex-start; overflow-wrap:anywhere; max-width:100%; white-space:normal; line-height:1.5; }
+.management-report-list .cat-btn[aria-current=page] { border-color:var(--color-mint); background:var(--color-mint-light); }
+.management-report-list small { display:block; font-size:var(--text-caption); margin-top:4px; }
+.management-pager { gap:8px; }
+.management-report-editor { min-width:0; padding:20px; border:1px solid var(--color-border-light); border-radius:var(--radius-panel,12px); background:var(--color-bg-main); }
+.management-report-editor fieldset { min-width:0; padding:0; border:0; }
+.management-report-editor label { display:flex; flex-direction:column; gap:8px; margin:16px 0; font-weight:600; }
+.management-report-editor input,.management-report-editor textarea { width:100%; min-width:0; border:1px solid var(--color-border); border-radius:var(--radius-control,8px); padding:10px 12px; font:inherit; font-weight:400; line-height:1.6; color:var(--color-text-main); background:var(--color-bg-main); transition:border-color var(--motion-fast,140ms) var(--ease-out,ease-out),box-shadow var(--motion-fast,140ms) var(--ease-out,ease-out); }
+.management-report-editor textarea { resize:vertical; }
+.management-markdown-preview,.management-ai-proposal { padding:16px; margin-top:20px; border:1px solid var(--color-border-light); border-radius:var(--radius-panel,12px); background:var(--color-bg-sub); }
+.management-analysis :is(button,input,textarea,select,a):focus-visible { outline:2px solid var(--color-mint); outline-offset:3px; }
+.management-analysis [role=alert] { padding:12px; border:1px solid var(--color-border); border-radius:6px; }
+.safe-markdown { min-width:0; overflow-wrap:anywhere; line-height:1.7; }
+.safe-markdown p { white-space:pre-line; max-width:75ch; }
+.safe-markdown ul,.safe-markdown ol { padding-left:24px; margin:12px 0; }
+.safe-markdown ul { list-style:disc; }.safe-markdown ol { list-style:decimal; }
+.safe-markdown pre { white-space:pre-wrap; overflow-wrap:anywhere; padding:12px; background:var(--color-bg-sub); border:1px solid var(--color-border); border-radius:6px; }
+.safe-markdown a { color:var(--color-mint); text-decoration:underline; text-underline-offset:3px; }
+@media(max-width:1024px) { .management-report-columns { grid-template-columns:minmax(0,1fr); } .management-report-list ul { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; } }
+@media(max-width:640px) { .management-analysis .cat-btn,.management-analysis select { min-height:44px; } .management-analysis th,.management-analysis td { padding:12px 8px; } .management-markdown-preview,.management-ai-proposal { padding:12px; } }
+
+.management-analysis .cat-btn { border-radius:var(--radius-control,8px); transition:background-color var(--motion-fast,140ms) var(--ease-out,ease-out),border-color var(--motion-fast,140ms) var(--ease-out,ease-out),color var(--motion-fast,140ms) var(--ease-out,ease-out); }
+.management-analysis .cat-btn:not(:disabled):hover { border-color:var(--color-mint); }
+.management-analysis .cat-btn:disabled { cursor:default; }
+.management-summary { padding:20px; border:1px solid var(--color-border-light); border-radius:var(--radius-panel,12px); background:var(--color-bg-main); }
+.management-summary>h2,.management-report-editor>h3,.management-report-list>h3,.management-markdown-preview>h3,.management-ai-proposal>h3 { margin-top:0; }
+.management-analysis th { font-weight:600; }
+.management-analysis td { overflow-wrap:anywhere; }
+.management-analysis tbody tr { transition:background-color var(--motion-fast,140ms) var(--ease-out,ease-out); }
+.management-analysis tbody tr:hover { background:var(--color-bg-sub); }
+.management-report-list { min-width:0; padding:16px; border:1px solid var(--color-border-light); border-radius:var(--radius-panel,12px); background:var(--color-bg-sub); }
+.management-report-list .management-pager .cat-btn { width:auto; }
+.management-report-list small { line-height:1.6; }
+.management-ai-preview { padding:12px 16px; border:1px solid var(--color-border-light); border-radius:var(--radius-panel,12px); background:var(--color-bg-sub); }
+.management-ai-preview p { font-size:var(--text-table); }
+.management-ai-proposal { background:var(--color-mint-light); }
+.management-mode-notice,.management-analysis p[aria-label="Thao tác báo cáo"] { padding:12px 16px; border:1px solid var(--color-border-light); border-radius:var(--radius-control,8px); background:var(--color-bg-sub); }
+.management-report-editor fieldset:disabled input,.management-report-editor fieldset:disabled textarea { background:var(--color-bg-sub); }
+.management-report-editor textarea { min-height:240px; }
+@media(max-width:640px) {
+ .management-summary,.management-report-editor,.management-report-list { padding:16px 12px; }
+ .management-report-editor input,.management-report-editor textarea { font-size:16px; }
+ .management-actions .cat-btn { flex:1 1 auto; }
+ .management-pager .cat-btn { flex:1; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .management-analysis .cat-btn,.management-analysis tbody tr,.management-report-editor input,.management-report-editor textarea { transition:none; }
+}

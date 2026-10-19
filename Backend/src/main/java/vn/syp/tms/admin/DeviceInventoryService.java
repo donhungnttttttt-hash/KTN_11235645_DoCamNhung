@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.syp.tms.identity.IdentityService;
 import vn.syp.tms.project.*;
 import vn.syp.tms.workitem.WorkItemStore;
+import vn.syp.tms.shared.search.MultiWordSearch;
 import static vn.syp.tms.workitem.WorkItemStore.*;
 import static vn.syp.tms.admin.DeviceInventoryDtos.*;
 
@@ -23,7 +24,7 @@ public class DeviceInventoryService {
   admin(actor);page(page,size);if(text(keyword).length()>100)fail(422,"INVALID_FILTER","Từ khóa quá dài.");
   var args=new ArrayList<Object>();String where=" WHERE 1=1";
   if(projectId!=null){where+=" AND l.project_id=?";args.add(projectId);}
-  if(!text(keyword).isEmpty()){where+=" AND (LOCATE(?,a.asset_code)>0 OR LOCATE(?,a.model)>0 OR LOCATE(?,a.serial)>0)";for(int i=0;i<3;i++)args.add(text(keyword));}
+  var search=MultiWordSearch.sql(keyword,"a.asset_code","a.model","a.serial");where+=search.sql();args.addAll(search.args());
   if(!text(status).isEmpty()){if(!List.of("AVAILABLE","ALLOCATED","MAINTENANCE","RETIRED").contains(status))fail(422,"INVALID_FILTER","Tình trạng không hợp lệ.");where+=" AND (CASE WHEN l.id IS NOT NULL THEN 'ALLOCATED' ELSE a.condition_code END)=?";args.add(status);}
   long total=db.count("SELECT COUNT(*) FROM device_assets a LEFT JOIN device_allocations l ON l.active_asset_id=a.id"+where,args.toArray());args.add(size);args.add((long)page*size);
   return new AdminDtos.Page<>(db.rows(ASSET+where+" ORDER BY a.asset_code,a.id LIMIT ? OFFSET ?",args.toArray()),page,size,total);
@@ -47,8 +48,8 @@ public class DeviceInventoryService {
  private Map<String,Object> assignLocked(String actor,Assign input,Map<String,Object> project,Map<String,Object> asset){
   if(project.get("archivedAt")!=null)fail(409,"ARCHIVED","Dự án lưu trữ không thể nhận máy.");version(asset,input.expectedVersion());
   if(!"AVAILABLE".equals(asset.get("conditionCode"))||!db.rows("SELECT id FROM device_allocations WHERE active_asset_id=? FOR UPDATE",input.assetId()).isEmpty())fail(409,"ASSET_UNAVAILABLE","Máy không còn sẵn sàng để bàn giao.");
-  var members=db.rows("SELECT id FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",input.projectId(),input.recipientUserId());
-  if(members.isEmpty())fail(422,"INVALID_RECIPIENT","Người nhận phải là thành viên đang hoạt động của dự án.");
+  var members=db.rows("SELECT id,project_role AS projectRole FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",input.projectId(),input.recipientUserId());
+  if(members.isEmpty()||!"PM".equals(members.getFirst().get("projectRole")))fail(422,"INVALID_RECIPIENT","Người nhận phải là PM đang hoạt động của dự án.");
   validateDate(input.expectedReturnOn(),(String)project.get("timezone"),Instant.now());
   long id=db.insert("INSERT INTO device_allocations(asset_id,project_id,recipient_membership_id,assigned_at,assigned_by,expected_return_on,handover_note) VALUES(?,?,?,UTC_TIMESTAMP(6),?,?,?)",input.assetId(),input.projectId(),number(members.getFirst(),"id"),actor,input.expectedReturnOn(),text(input.handoverNote()));
   touch(input.assetId(),actor);audit.record(input.projectId(),actor,"DEVICE_ALLOCATION",id,"ASSIGN");return db.row(ALLOCATION+" WHERE l.id=?",id);
@@ -56,6 +57,7 @@ public class DeviceInventoryService {
  /** Shared identity locks -> project -> sorted assets -> memberships. FK identity locks use the same shared mode. */
  public void allocateInitial(String actor,long projectId,List<Initial> selections,Set<String> selectedUsers){
   admin(actor);if(selections==null||selections.isEmpty())return;
+  if(selections.stream().map(Initial::recipientUserId).distinct().count()!=1)fail(422,"SINGLE_PM_REQUIRED","Bàn giao tất cả máy đã chọn cho cùng một PM.");
   var unique=new HashSet<Long>();for(var s:selections){if(!unique.add(s.assetId()))fail(422,"DUPLICATE_ASSET","Không chọn trùng máy.");if(!selectedUsers.contains(s.recipientUserId()))fail(422,"INVALID_RECIPIENT","Người nhận phải thuộc danh sách nhân sự ban đầu.");}
   selections.stream().map(s->s.recipientUserId()).distinct().sorted().forEach(user->lockRecipient(user));
   var project=lockProject(projectId);var sorted=selections.stream().sorted(Comparator.comparingLong(s->s.assetId())).toList();var locked=new HashMap<Long,Map<String,Object>>();

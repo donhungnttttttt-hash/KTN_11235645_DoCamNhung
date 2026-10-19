@@ -16,6 +16,12 @@ import vn.syp.tms.project.ProjectService;
 import vn.syp.tms.shared.web.BusinessException;
 
 class DocumentResultServiceTest {
+    @Test void fixedIsNotAStatusForNewTestingWorkflow() {
+        try(var factory=jakarta.validation.Validation.buildDefaultValidatorFactory()) {
+            assertThat(factory.getValidator().validate(new TestDocumentDtos.UpdateResult("FIXED",0L,"12345678-1234-1234-1234-123456789abc")))
+                .as("R03: FIXED is an old annotation, never current case Status").isNotEmpty();
+        }
+    }
     JdbcTemplate jdbc;ProjectService projects;TestDocumentService service;
     String status="UNEXECUTED",lastKey=null,actor=null;long version=0;boolean archived=false,missing=false;
     final String key="12345678-1234-1234-1234-123456789abc";

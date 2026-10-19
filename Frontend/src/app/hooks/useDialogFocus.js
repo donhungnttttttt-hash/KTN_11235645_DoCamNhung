@@ -1,22 +1,27 @@
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
+import { DialogVisibilityContext } from '../features/auth/DialogVisibilityContext';
 
 const openDialogs = [];
 let previousOverflow;
 
 /** Keep keyboard navigation in an open modal and return focus to its trigger. */
-export function useDialogFocus(onClose, busy = false, ready = true) {
+export function useDialogFocus(onClose, busy = false, ready = true, returnFocusRef = null) {
+  const scopeVisible = useContext(DialogVisibilityContext);
+  const active = ready && scopeVisible;
   const ref = useRef(null);
   const latest = useRef({ onClose, busy });
   latest.current = { onClose, busy };
   useEffect(() => {
     const dialog = ref.current;
-    if (!ready || !dialog) return;
-    const previous = document.activeElement;
+    if (!active || !dialog) return;
+    // A nested caller may capture focus before making its parent inert, which
+    // otherwise blurs the original control before this effect can read it.
+    const entry = { dialog, previous: returnFocusRef?.current || document.activeElement };
     if (!openDialogs.length) {
       previousOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
     }
-    openDialogs.push(dialog);
+    openDialogs.push(entry);
     const available = element => {
       if(element.matches(':disabled, input[type="hidden"]') || element.closest('[hidden], [inert], [aria-hidden="true"]')) return false;
       for(let ancestor=element;ancestor && ancestor!==dialog.parentElement;ancestor=ancestor.parentElement) {
@@ -35,10 +40,16 @@ export function useDialogFocus(onClose, busy = false, ready = true) {
     (initial && available(initial)?initial:items[0] || dialog).focus();
     function keydown(event) {
       if (dialog.closest('[hidden], [inert]')) return;
-      // A nested work-item dialog may appear above the execution dialog.
-      const visibleDialogs = [...document.querySelectorAll('[role="dialog"]')]
-        .filter(element => element.getAttribute('aria-modal') !== 'false' && !element.closest('[hidden], [inert]'));
-      if (visibleDialogs.at(-1) !== dialog) return;
+      // Opening order determines the active dialog; Header dialogs can appear
+      // earlier in the DOM than an already-open mobile navigation drawer.
+      const topmost = openDialogs.findLast(item => item.dialog.isConnected
+        && !item.dialog.closest('[hidden], [inert]'));
+      if (topmost !== entry) return;
+      // An embedded search picker owns Escape without registering a modal trap.
+      // Let it close first so its parent editor and draft remain mounted.
+      const localDialog = event.target?.closest?.('[role="dialog"]');
+      if (event.key === 'Escape' && localDialog && localDialog !== dialog
+        && dialog.contains(localDialog) && !openDialogs.some(item => item.dialog === localDialog)) return;
       if (event.key === 'Escape') {
         event.preventDefault(); event.stopPropagation();
         if (!latest.current.busy) latest.current.onClose();
@@ -58,11 +69,18 @@ export function useDialogFocus(onClose, busy = false, ready = true) {
     document.addEventListener('keydown', keydown, true);
     return () => {
       document.removeEventListener('keydown', keydown, true);
-      const wasTopmost = openDialogs.at(-1) === dialog;
-      openDialogs.splice(openDialogs.indexOf(dialog), 1);
+      const wasTopmost = openDialogs.at(-1) === entry;
+      const index = openDialogs.indexOf(entry);
+      // A parent and its confirmation can unmount together. Preserve the
+      // opener chain before removing the parent, whose controls will disappear.
+      for (const child of openDialogs.slice(index + 1)) {
+        if (dialog.contains(child.previous)) child.previous = entry.previous;
+      }
+      if (index !== -1) openDialogs.splice(index, 1);
       if (!openDialogs.length) document.body.style.overflow = previousOverflow;
-      if (wasTopmost && previous?.isConnected) previous.focus();
+      const previous = entry.previous;
+      if (wasTopmost && previous?.isConnected && !previous.closest('[hidden], [inert], [aria-hidden="true"]')) previous.focus();
     };
-  }, [ready]);
+  }, [active]);
   return ref;
 }

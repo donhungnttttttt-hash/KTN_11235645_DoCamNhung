@@ -52,7 +52,14 @@ it('updates the browser title after navigation and browser Back', () => {
   render(<App/>);
   expect(document.title).toBe('Tổng quan dự án · TMS');
   fireEvent.click(screen.getByRole('button', {name:'Đổi màn'}));
-  expect(document.title).toBe('Thư viện test case · TMS');
+  expect(document.title).toBe('Luồng kiểm thử đã thay đổi · TMS');
   window.location.hash = '#/tests/cycles'; fireEvent(window, new Event('hashchange'));
-  expect(document.title).toBe('Đợt kiểm thử · TMS');
+  expect(document.title).toBe('Luồng kiểm thử đã thay đổi · TMS');
+});
+
+it.each([true,false])('respects reduced motion (%s) when scrolling after navigation', reduced => {
+  window.matchMedia=vi.fn(() => ({matches:reduced,addEventListener:vi.fn(),removeEventListener:vi.fn()}));
+  render(<App/>);
+  fireEvent.click(screen.getByRole('button',{name:'Đổi màn'}));
+  expect(window.scrollTo).toHaveBeenLastCalledWith({top:0,behavior:reduced?'auto':'smooth'});
 });

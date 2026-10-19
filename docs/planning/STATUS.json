@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-17",
+  "updatedAt": "2026-10-19",
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
@@ -8,6 +8,11 @@
   "phase": "IN_REVIEW",
   "implementationStarted": true,
   "notes": [
+    "18/10/2026 user yêu cầu chat chỉ chọn phạm vi, bỏ tác vụ/tìm nguồn/file-ticket. PROJECT_CHAT tự lấy ngữ cảnh đúng dự án với fingerprint riêng, MY_PROJECTS mặc định; giữ chat cũ/private owner/gợi ý gửi ngay/nhập tự do, cấu hình AI ở màn Trợ lý AI. RED2FE/4native và2regression history/General→GREEN; fullFE896/82file trước2sửa nhỏ cuối, finalAI60/4file,165BE AI/13native/coverage/build PASS. Chrome app thật1combo/320px và fixture gửi hai scope đúng. Backup/restart8080 PID28580/tmsV30/UP,65INSERT nghiệp vụ trước/sau cùnghash; không migration mới/fixture tms/live call/commit/push. S11 IN_REVIEW. docs/reviews/2026-10-18-ai-chat-scope.md.",
+    "18/10/2026 user yêu cầu bấm prompt có sẵn gửi ngay. Dùng send chung/canSend, không cần Enter, giữ nháp tự viết, khóa khi pending/chưa sẵn sàng. RED7→GREEN35; hồi quy AI frontend60/4file, coverage AiChat92.45/87.26/91.20/93.98 và build PASS. Chrome component thật/API giả lập xác nhận1click/1request, pending/khóa và nháp giữ nguyên, Enter gửi tiếp cùng thread; fixture/tab đã dọn. Không backend/schema/key/native/live call mới, không commit/push. docs/reviews/2026-10-18-ai-preset-send.md; S11 IN_REVIEW.",
+    "18/10/2026 user chọn Tổng hợp các dự án của tôi. Scope MY_PROJECTS mặc định với4gợi ý điền nháp; backend lọc membership/Admin và fingerprint xuyên list/read/reserve/complete, giữ General/Project/private owner. 893FE/82file+coverage/build,162BE AI/verify+coverage,9native HTTP,14runner và1live Luna hai dự án giả lập PASS; fresh/upgrade V30 schema riêng. Chrome default/preset/General/320px PASS, không gửi dữ liệu dự án thật trong kiểm thử. Backup rồi restart8080 PID26956/tmsV30/healthUP;65 INSERT nghiệp vụ trước/sau cùngSHA256, không fixture tms. Chất lượng dữ liệu thật/role-browser/UAT riêng chưa nghiệm thu; không commit/push, S11 IN_REVIEW. docs/reviews/2026-10-18-ai-my-projects.md.",
+    "18/10/2026 user thử chat Caheo gặp AI_INVALID_RESPONSE và composer giữ chữ tới response. Tái hiện đúng chat prompt/schema trả HTTP200 nhưng field answer thay text; nêu contract rõ trong instructions, giữ strict validation. UI câu hỏi/pending hiện và composer rỗng trước await, giữ draft mới, same-key timeout/network/5xx và nút gửi lại FAILED. RED FE3/BE1→GREEN; full FE890/82file+coverage, BE AI151/verify+coverage, build và live contract1PASS. Chrome1536x730 thread3 câu Helo trả lời, đọc lại được và draft mới không mất; backend restart PID7000/readiness200. Ba provider call tổng hợp/UI, không dữ liệu dự án/fixture tms/commit/push. Chưa streaming/mobile/AT/chất lượng tác vụ dài; S11 IN_REVIEW. docs/reviews/2026-10-18-caheo-chat-send.md.",
+    "18/10/2026 user cung cấp key/xác nhận Caheo https://caheoai.com/v1 và muốn thử GPT5.6Luna. Thêm endpoint server-only allowlist OpenAI/Caheo và startup loader; TDD endpoint RED12→GREEN16, loader RED1→GREEN1, Maven AI149 PASS (wrapper redirect trả1 được ghi riêng), live probe Java/schema PASS explicit exit0 không dữ liệu dự án (2428 input/22 output). Cấu hình local owner-only/có backup ngoài Git, model gpt-5.6-luna; backend đã restart PID27440/readiness200, metadata ADMIN model available=true/logout204. Scan893file không key trong source/frontend/log mới, JaCoCo hai class đã đo. Chưa browser UI/chất lượng nghiệp vụ riêng, giữ S11 IN_REVIEW; không commit/push/merge/deploy. docs/reviews/2026-10-18-caheo-ai-connection.md.",
     "11/10/2026 user chốt lần ghi thực thi mới nhất của case cập nhật iPad một chiều, sửa iPad không đổi run/test lần 2. Sửa popup cố định NG, nhãn/bố cục và refresh tài liệu; projection cùng transaction/version/audit, replay không ghi đè chỉnh sửa mới. FE846/76file PASS (giảm worker sau timeout), native32 và BEfocused127 có test trùng PASS, JDT263source0errors0warnings, build/contract PASS. Browser đúng XLSX-8-2 mở OK; desktop có ảnh,390px DOM/keyboard PASS nhưng screenshot timeout. Backend8080 đã chạy lại native3307/tmsV29; hash7268 dòng/72bảng cũ gồm workbook giữ nguyên, chỉ thêm1identity_audit do login. Không migration/backfill/commit/push. docs/reviews/2026-10-11-execution-document-results.md; S11 IN_REVIEW.",
     "11/10/2026 rà lại nút theo yêu cầu mới: sửa submit nhầm khi phân trang, stock cũ sau bàn giao một phần, callback tạo dự án đổi route muộn, focus popup/retetst, phản hồi ticket/bình luận, X pending, retry nguồn AI/Redmine, lý do khóa/100-case limit và retry lịch sử ô. Full FE842/76file PASS, build/contract/diff PASS; coverage statements86.85 branches83.95 functions81.35 lines86.65. Kiểm kê370native+81custom declarations/42forms không thiếu đường handler/submit; không tương đương bấm mọi tổ hợp. Chrome20máy/keyboard390/ticket/Redmine read PASS, có ảnh; không fixturetms/productionJava/migration/restart/commit/push. Báo cáo docs/reviews/2026-10-11-button-recheck.md; S11 IN_REVIEW.",
     "11/10/2026 phản hồi mới nút Bàn giao máy đã chọn không bấm được: xác nhận thiếu người nhận ở dưới fold và nút khóa im lặng. Thêm người nhận chung/áp dụng N máy, thiếu-count/jump/focus, prevalidation toàn batch, pending/error cạnh nút; giữ phần chưa lưu. Rà140fileFE/132trongcâyimport/368button và luồng admin/project/test/execution/file/retest/work/QA/report/auth/AI; sửa các lỗi validation, phản hồi save, paging hết dữ liệu, retry cùng từ khóa AI, Kanban và tải quyền. FullFE822/75files/build PASS; BEunit547, native+inventory16 gồm bàn giao20máy/readback/chặntrùng trên schema riêng PASS; JDT262sources0errors0warnings. Browser20selection/thiếu-thông-tin/jump/ápdụngngườinhận/viewport1366và390 xác nhận bằng DOM; chụpảnhtooltimeout, không có ảnh mới. Coverage9componentadmin 87.97/85.42/87.73/95.45, không suy toànapp. Báo cáo docs/reviews/2026-10-11-action-buttons-audit.md; không sửaproductionJava/migration, không fixturetms/restart/commit/push. S11 IN_REVIEW.",
@@ -789,7 +794,7 @@
   "implementationBaseCommit": "3355cfc",
   "lastCompletedSprint": "S09",
   "nextSuggestedSprint": null,
-  "nextAction": "UI/UX17/10 đã sửa shared selection/focus, lỗi tải/retry và member feedback; FE884/82files, coverage/build PASS, Chrome component mock375/768/1440 verified. Xem docs/reviews/2026-10-17-uiux-refinement.md. Backend8080/5173 không phục vụ: integrated role-data, zoom200%, screen reader/Safari/touch/UAT còn mở. Native HTTP Unicode/affected concurrency/projection cần isolated V29 như audit16/10; không tự restart/provision/reset. Giữ S11 IN_REVIEW và gate mẫu Excel khách/live integration/tải/phục hồi production.",
+  "nextAction": "FixReports main tmsV33/backend8080PID30588/UP đã cutover theo user xác nhận19/10;5173 dùng đúng API mới,12GET200 và Chrome smokePASS. FR12/S11 IN_REVIEW cho browserupload/download chưa xác nhận, manual/liveAI/UAT/thiết bị/pilot/NFR và nguồn dữ liệu ngoại lệ; không commit/push/merge nếu chưa có yêu cầu mới.",
   "executionPolicy": {
     "continueSequentially": true,
     "authorizedAt": "2026-09-29",
@@ -1171,10 +1176,13 @@
     "pushed": false
   },
   "currentBranchPushRequest": {
-    "date": "2026-10-17",
+    "date": "2026-10-19",
     "branch": "system-design",
-    "authorization": "User explicitly requested push of current reviewed changes. No permanent push, merge or deploy authorization.",
-    "scope": "Reviewed workflow audit16-17/10 and UI/UX changes, regression tests, documentation and selected audit/browser evidence. No new migration. Local credentials, databases, build outputs and unrelated historical scratch files excluded; prior no-push verification snapshots remain historical."
+    "authorization": "User explicitly requested committing all current source changes and pushing the current branch after completion. This authorizes this handover only; no merge/deploy or permanent push authorization.",
+    "scope": "All current tracked and new application source, tests, migrations, scripts, repository requirements and documentation outside var. Keep local credentials, database copies, build outputs, logs and raw var evidence at the workstation. Historical no-push and verification snapshots remain historical.",
+    "verification": "Frontend final frozen source:1100/1100 tests in120 files and build exit0; current hashes match all320 verified source/config files. Existing backend/native results remain in the FixReports review; no new backend tests run solely for commit. S11/FR-12 IN_REVIEW and UAT gaps unchanged.",
+    "remote": "origin/system-design",
+    "resultLocation": "Git commit history and origin/system-design after push; authorization entry does not itself assert push success."
   },
   "uiuxRefinement20261017": {
     "status": "IMPLEMENTED_AUTOMATED_AND_SCOPED_MOCK_BROWSER_VERIFIED_INTEGRATION_GATES_OPEN",
@@ -1186,20 +1194,41 @@
     "review": "docs/reviews/2026-10-17-uiux-refinement.md",
     "plan": "tasks/plan.md",
     "checklist": "tasks/todo.md",
-    "scope": ["SelectionTable local filters and offscreen selection clarity", "useDialogFocus available targets and summary", "ScopeSetup/CoverageEditor read failure and retry", "Admin awaited member feedback and picker page/accessible names"],
+    "scope": [
+      "SelectionTable local filters and offscreen selection clarity",
+      "useDialogFocus available targets and summary",
+      "ScopeSetup/CoverageEditor read failure and retry",
+      "Admin awaited member feedback and picker page/accessible names"
+    ],
     "verification": {
       "frontendFiles": 82,
       "frontendTests": 884,
       "newBehaviorTests": 12,
-      "frontendCoverage": {"statements": 87.09, "branches": 84.22, "functions": 81.77, "lines": 86.96},
+      "frontendCoverage": {
+        "statements": 87.09,
+        "branches": 84.22,
+        "functions": 81.77,
+        "lines": 86.96
+      },
       "frontendBuild": "PASS_674_42_KB_BUNDLE_ADVISORY",
       "contracts": "PASS_STRUCTURAL_113_OPS_19_FILEWORK_14_QA_52_DOC_LINKS",
       "diffCheck": "PASS_WITH_LF_CRLF_WARNINGS_EXIT_0",
       "baselinePreservation": "19 prior tracked dirty files hashed:14 unchanged,5 expected UI/planning edits; no unexpected change; branch and HEAD preserved",
       "browser": "Chrome via CUA; production components/styles in frontend-only fixture4173, synthetic data/API blocked; not backend integration",
-      "viewports": [375, 768, 1440],
+      "viewports": [
+        375,
+        768,
+        1440
+      ],
       "viewportScope": "Shared selection fixture: no horizontal page overflow; scoped member/retest/keyboard states at desktop",
-      "textContrast": {"resetButton": 12.63, "selectionSummary": 6.45, "unchangedReportsKpiRange": [11.8, 12.43]},
+      "textContrast": {
+        "resetButton": 12.63,
+        "selectionSummary": 6.45,
+        "unchangedReportsKpiRange": [
+          11.8,
+          12.43
+        ]
+      },
       "console": "Three historical fixture bootstrap/HMR entries retained; zero new warn/error after final reload in observed window; not whole-app console certification",
       "zoom200": "NOT_VERIFIED_SHORTCUT_NO_EFFECT",
       "integratedRuntime": "NOT_RUN_8080_5173_ECONNREFUSED_NO_BACKEND_START",
@@ -1209,7 +1238,13 @@
     },
     "independentReview": "Spec + Standards and final empty-source precedence reviewed; no confirmed critical/P1/P2 in bounded new diff. Not a whole-system guarantee.",
     "remaining": "Integrated role-data and current backend/API visual verification; zoom200%, touch/AT/Safari and existing native/UAT/live integration gates. Additional source-only candidates listed in owner reports were not all implemented.",
-    "taskAuthorization": {"commitPushMergeDeployPrIssues": false, "backendStartRestart": false, "mainDatabaseWrites": false, "historicalScratchExecution": false, "isolatedFrontendMockPreview": true}
+    "taskAuthorization": {
+      "commitPushMergeDeployPrIssues": false,
+      "backendStartRestart": false,
+      "mainDatabaseWrites": false,
+      "historicalScratchExecution": false,
+      "isolatedFrontendMockPreview": true
+    }
   },
   "workflowAudit20261016": {
     "status": "SOURCE_AND_LOCAL_VERIFICATION_COMPLETE_RUNTIME_GATES_OPEN",
@@ -1268,5 +1303,518 @@
       "mainDatabaseFixtureWrites": false,
       "executeHistoricalVarScripts": false
     }
+  },
+  "aiMyProjects20261018": {
+    "status": "IMPLEMENTED_LOCAL_VERIFIED_UAT_OPEN",
+    "date": "2026-10-18",
+    "branch": "system-design",
+    "review": "docs/reviews/2026-10-18-ai-my-projects.md",
+    "design": "docs/planning/2026-10-18-ai-my-projects.md",
+    "scope": "MY_PROJECTS: current active memberships; ADMIN all projects; immutable thread scope fingerprint and private owner",
+    "verification": {
+      "frontendTests": 893,
+      "frontendFiles": 82,
+      "backendAiUnitTests": 162,
+      "nativeHttpTests": 9,
+      "nativeRunnerTests": 14,
+      "liveSyntheticTests": 1,
+      "frontendCoverage": {
+        "statements": 87.16,
+        "branches": 84.32,
+        "functions": 81.86,
+        "lines": 87.03
+      },
+      "backendCoverage": "Measured separately in unit-coverage.xml and native-coverage.xml; no merged/global coverage claim",
+      "build": "PASS_EXISTING_BUNDLE_ADVISORY",
+      "migration": "isolated V29->V30 preservation/idempotency and fresh28 migrations to V30 PASS",
+      "browser": "Chrome Admin default/presets fill draft only/General selectable;320px dialog no horizontal overflow;viewport reset;test tab closed",
+      "mainProjectDataSentToProvider": false,
+      "liveProvider": "Caheo gpt-5.6-luna; two synthetic projects;3031 input/291 output tokens",
+      "diffCheck": "PASS",
+      "contracts": "PASS_STRUCTURAL",
+      "secretScan": {
+        "files": 1049,
+        "keyMatches": 0
+      }
+    },
+    "runtime": {
+      "backendPid": 26956,
+      "port": 8080,
+      "schemaVersion": 30,
+      "health": "UP",
+      "businessInsertStatementsBefore": 65,
+      "businessInsertStatementsAfter": 65,
+      "dataHashUnchanged": true,
+      "evidence": "var/ai-portfolio-2026-10-18/main-data-preservation.json"
+    },
+    "limits": [
+      "Initial30-project cap plus16KB compaction;5 own work and5 case samples/project",
+      "Permission-set changes require a new portfolio conversation",
+      "Real-project answer quality and all role/browser UAT remain open; no streaming"
+    ],
+    "skills": [
+      "api-design",
+      "security-review",
+      "tdd-workflow"
+    ],
+    "pushed": false,
+    "presetBehavior": "Superseded draft-only selection by immediate send per follow-up18/10; see aiPresetSend20261018",
+    "scopeSelection": "Follow-up scope-only UI with PROJECT_CHAT; see aiChatScope20261018"
+  },
+  "aiPresetSend20261018": {
+    "status": "IMPLEMENTED_SCOPED_VERIFIED",
+    "review": "docs/reviews/2026-10-18-ai-preset-send.md",
+    "behavior": "Preset clicks immediately submit through existing send; custom drafts preserved; canSend guards",
+    "verification": {
+      "redFailed": 7,
+      "greenChatTests": 35,
+      "aiRegressionTests": 60,
+      "files": 4,
+      "coverageScope": "AiChat.jsx",
+      "coverage": {
+        "statements": 92.45,
+        "branches": 87.26,
+        "functions": 91.2,
+        "lines": 93.98
+      },
+      "build": "PASS_EXISTING_BUNDLE_ADVISORY",
+      "browser": "Chrome synthetic API fixture; one preset click/one request; pending guards and custom draft send verified; no paid call or main DB write",
+      "fullFrontendBackendNativeRerun": false,
+      "lintTypes": "NOT_CONFIGURED"
+    },
+    "skills": [
+      "frontend-patterns",
+      "tdd-workflow",
+      "verification-loop"
+    ],
+    "pushed": false
+  },
+  "aiChatScope20261018": {
+    "status": "IMPLEMENTED_LOCAL_VERIFIED_UAT_OPEN",
+    "review": "docs/reviews/2026-10-18-ai-chat-scope.md",
+    "scope": "Panel only selects all authorized projects or one project; PROJECT_CHAT has no task/target and binds that project permission fingerprint",
+    "verification": {
+      "frontendFullTests": 896,
+      "frontendFullFiles": 82,
+      "frontendFullRevision": "Before final two small history/General repairs",
+      "frontendFinalAiTests": 60,
+      "frontendFinalAiFiles": 4,
+      "frontendFullCoverage": {
+        "statements": 87.12,
+        "branches": 84.3,
+        "functions": 81.8,
+        "lines": 87
+      },
+      "frontendFinalAiChatCoverage": {
+        "statements": 92.61,
+        "branches": 87.89,
+        "functions": 91.66,
+        "lines": 93.33
+      },
+      "backendAiTests": 165,
+      "nativeTests": 13,
+      "backendCoverage": "Separate unit/native XML; no merged/global claim",
+      "build": "PASS_EXISTING_BUNDLE_ADVISORY",
+      "browser": "Chrome real app: one selector and320px nooverflow; synthetic API fixture sends selected/all scope, no paid calls",
+      "databaseFixtures": "Only owned isolated V30 schema tms_docstest_bab5ba2349be",
+      "mainProjectDataSentToProvider": false,
+      "contracts": "PASS_STRUCTURAL",
+      "diffCheck": "PASS",
+      "secretScan": {
+        "files": 1058,
+        "keyMatches": 0
+      }
+    },
+    "runtime": {
+      "pid": 28580,
+      "port": 8080,
+      "schemaVersion": 30,
+      "newMigration": false,
+      "health": "UP",
+      "businessInsertStatements": 65,
+      "dataHashUnchanged": true
+    },
+    "limits": [
+      "Bounded snapshot, not retrieval over every document cell",
+      "Real-data answer quality, role-browser/real-device UAT remain open"
+    ],
+    "skills": [
+      "api-design",
+      "security-review",
+      "frontend-patterns",
+      "tdd-workflow",
+      "verification-loop"
+    ],
+    "pushed": false
+  },
+  "fixReports20261019": {
+    "status": "IN_REVIEW_MANUAL_AND_LIVE_GATES",
+    "plan": "docs/planning/2026-10-19-fixreports-implementation-plan.md",
+    "contract": "docs/api/fixreports-contract.md",
+    "scope": "FR-00–FR-12 / R01–R08; Feature-owned files/cases, assignments/Status, Bug/QA, Admin/search, Note, management reports and role-scoped AI",
+    "baseline": {
+      "branch": "system-design",
+      "head": "caf075af7231f207259b6a62808bff5c8445f6af",
+      "preexistingFilesOutsideVar": 53,
+      "preserved": true
+    },
+    "runtime": {
+      "mainSchema": "tms",
+      "mainPort": 3307,
+      "mainFlywayObserved": 33,
+      "mainMigrationApplied": true,
+      "mainRestarted": true,
+      "mainBackup": "var/mysql-native/backups/2026-10-19T02-04-46-677Z-tms.sql.json",
+      "oldTestSchemasPreserved": true,
+      "authorizedBusinessAddition": {
+        "projectId": 12,
+        "code": "SPIDER-PLUS",
+        "pmUsername": "syp.lab.pm03",
+        "proof": "var/fixreports-2026-10-19/spider-plus-project.json"
+      },
+      "isolatedTargetManifest": "var/fixreports-2026-10-19/isolated-targets.json",
+      "finalMigrationTargets": "var/fixreports-2026-10-19/final-migration-targets.json",
+      "mainReadOnlyCheckpoint": "var/fixreports-ui-followup-2026-10-19/main-preflight.json",
+      "isolatedPreview": {
+        "frontend": "http://127.0.0.1:5174",
+        "backend": "http://127.0.0.1:8081",
+        "schema": "tms_docstest_2060e04c986c",
+        "version": 33,
+        "manifest": "var/fixreports-2026-10-19/isolated-runtime.json"
+      },
+      "newFeatureIssueReportEndpointsOnMain": "PASS_AUTHENTICATED_HTTP200_12_GETS_3_PROJECTS",
+      "mainBackendPid": 30588,
+      "mainBackendHealth": "UP",
+      "mainCutoverProof": "var/fixreports-main-cutover-2026-10-19/main-after-proof.json",
+      "mainRuntimeProof": "var/fixreports-main-cutover-2026-10-19/main-runtime-final.json"
+    },
+    "verification": {
+      "coreNativeV32": "PASS_6",
+      "issueNativeV32": "PASS_6",
+      "reportNativeV32": "SUPERSEDED_BY_V33_FINAL_3_WITH_ACTUAL_EXPIRED_DRAFT_PURGE",
+      "restoreV32": "PASS_86_TABLE_ROW_HASHES_ON_OWNED_MIGRATION_FIXTURE",
+      "freshV33": "PASS_1_PADDING_AND_BEYOND_HEADER_FIXTURES",
+      "finalBackendNative": "PASS_CORE_AI_102_PLUS_GUARD16_ADMIN14_ROOT14_SCOPE_OVERLAPS",
+      "finalFrontendCoverageBuild": "PASS_980_TESTS_105_FILES_BUILD_AFTER_UI_FOLLOWUP",
+      "snapshotOfMainMigration": "PASS_V30_TO_V33_76_OLD_TABLES_7362_OLD_ROWS_IDENTICAL_10_COPIES_711_CASES_REPLAY0",
+      "browserFourRoles": "PASS_MAIN_JOURNEYS_320_390_768_1440_UPLOAD_NOT_RUN_EXTENSION_PERMISSION",
+      "liveAi": "NOT_RUN_NO_REAL_PROJECT_DATA_SENT",
+      "uat": "NOT_RUN",
+      "lintTypecheck": "NOT_CONFIGURED",
+      "finalBackendOffline": "PASS_645_TESTS_74_CLASSES_ZERO_SKIP_VERIFY_PACKAGE",
+      "finalBackendOfflineCoverage": {
+        "instructions": 46.04,
+        "branches": 45.57,
+        "lines": 49.6,
+        "methods": 42.93,
+        "mergedWithNative": false
+      },
+      "finalFrontendCoverage": {
+        "statements": 86.17,
+        "branches": 82.78,
+        "functions": 80.42,
+        "lines": 86.77
+      },
+      "snapshotExceptions": {
+        "missingWorkbook": {
+          "projectId": 1,
+          "sourceDocumentId": 1,
+          "retained": true
+        },
+        "unfiledCasesRetained": 120
+      },
+      "snapshotProof": "var/fixreports-2026-10-19/snapshot-proof.json",
+      "browserOriginalWorkbookDownload": "NOT_CONFIRMED_TOOL_DOWNLOAD_TIMEOUT_KERNEL_RESET",
+      "browserMarkdownDownload": "PASS_110_BYTES_EXACT_SHA",
+      "fullManualUiMatrix": "NOT_EXHAUSTIVE_PREPOST_SCREENSHOTS_AND_ALL_CONTROL_STATES",
+      "browserUpload": "NOT_RUN_TOOL_STILL_REJECTS_SETFILES_USER_CONFIRMS_FILE_URL_ACCESS_ENABLED",
+      "followupUi": "PASS_390_768_1440_ANALYSIS_ADMIN_RELOAD_RANGE_FIRST_TESTER_AFTER_ESCAPE_FOCUS",
+      "mainCutover": "PASS_V30_TO_V33_7374_ORIGINAL_ROWS_74_NON_SESSION_TABLES_10_COPIES_711_CASES_VALIDATE33_PENDING0",
+      "mainHttp": "PASS_12_GET200_EXISTING_ADMIN_PROJECTS1_3_12",
+      "mainBrowser": "PASS_5173_FEATURE_FILES_CASES_ASSIGNMENT_FORM_ISSUES_ANALYSIS_RELOAD_MOBILE391"
+    },
+    "review": {
+      "core": "var/fixreports-2026-10-19/core-independent-review.md",
+      "reports": "var/fixreports-2026-10-19/fr10-backend-independent-review.md",
+      "findings": "Confirmed core/Issue/AI/report/Admin/Unicode/modal/numeric0 findings fixed with regression. No confirmed critical/P1/P2 left open in reviewed source scope; external/manual/real-data exceptions remain explicit."
+    },
+    "pending": [
+      "Browser upload tool still rejects despite user confirmation fileURL access ON; original-workbook download wait timed out; no browser permission changed or bypassed",
+      "Source1/project1 lacks original workbook and120 unfiled cases remain preserved in legacy graph; no fabricated source or mapping",
+      "Manual exhaustive control/state matrix, liveAI/UAT/physical devices/pilot/NFR remain separate and are not proven by980 frontend tests"
+    ],
+    "pushed": false,
+    "committed": false,
+    "report": "docs/reviews/2026-10-19-fixreports-implementation-review.md",
+    "updatedAt": "2026-10-19T02:10:25.263Z",
+    "tasks": {
+      "FR-00": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-01": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-02": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-03": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-04": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-05": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-06": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-07": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-08": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-09": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-10": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-11": "DONE_SOURCE_AND_ISOLATED_SCOPE",
+      "FR-12": "IN_REVIEW_MANUAL_BROWSER_UPLOAD_DOWNLOAD_LIVE_UAT_GAPS"
+    },
+    "followupReport": "docs/reviews/2026-10-19-fixreports-ui-followup.md",
+    "subsequentUiuxAudit": "docs/reviews/2026-10-19-uiux-system-audit.md",
+    "followupFindings": {
+      "sourceUiFixed": 7,
+      "runtimeMismatchUnresolved": 0,
+      "browserPermissionClaimCorrected": true,
+      "mainRestartPermissionRequested": true,
+      "mainDomainWrites": 0,
+      "mainRestartPermissionState": "EXPLICIT_USER_APPROVAL_APPLIED",
+      "mainMigrationDataWrites": "REVIEWED_V31_V32_V33_ONLY",
+      "testFixturesAddedToMain": false
+    }
+  },
+  "uiuxAudit20261019": {
+    "status": "DOCUMENTED_WITH_EXPLICIT_GAPS",
+    "scope": "Audit only: whole active route/component inventory, browser representative journeys and source/API cross-checks; no product implementation",
+    "report": "docs/reviews/2026-10-19-uiux-system-audit.md",
+    "coverage": "docs/reviews/2026-10-19-uiux-system-coverage.md",
+    "repairPlan": "docs/reviews/2026-10-19-uiux-system-repair-plan.md",
+    "inventoryEntries": 92,
+    "inventoryCountMeaning": "Route/variant/shared-component/adapter entries, not 92 unique screens; one inactive legacy-component row is explicitly not applicable",
+    "findings": {
+      "total": 14,
+      "p1": 2,
+      "p2": 11,
+      "p3": 1,
+      "sourceRiskGroupsNotCountedAsReproducedDefects": 12,
+      "fixedDuringAudit": 0
+    },
+    "verification": {
+      "freshFocusedComponentTests": "PASS_78_TESTS_3_FILES_MOCK_ONLY",
+      "coverage": "NOT_MEASURED",
+      "build": "NOT_RUN_NO_PRODUCT_CODE_CHANGE",
+      "browser": "PARTIAL_FOUR_ROLES_320_390_768_1440_AND_CHAT320x568_WITH_EXPLICIT_PER_VARIANT_GAPS",
+      "browserUpload": "NOT_RUN_TOOL_SETFILES_REFUSED_DESPITE_USER_CONFIRMED_FILE_URL_ACCESS_ON",
+      "browserReportDownload": "NOT_CONFIRMED_TIMEOUT_HTTP140_BYTES_EXACT_IS_SEPARATE",
+      "liveAiOauthProbe": "NOT_RUN_NO_REAL_PROJECT_DATA_SENT",
+      "screenReaderPhysicalTouchZoom200": "NOT_RUN",
+      "detector": "12_ENTRIES_REVIEWED_6_ACTIVE_ACCEPTABLE_6_RETIRED_UNMATCHED_0_NEW_DEFECTS"
+    },
+    "approvedPolicyForFutureRepair": "ADMIN may explicitly confirm an exception with a reason for retained legacy cycles/retests blocking project archive, preserving history; no blanket bypass of current blockers",
+    "preservation": {
+      "mainDomainWrites": 0,
+      "isolatedFixture": "Feature261/document267/IssueSPIDER-PLUS-7/report6/Note9 plus one comment on an existing synthetic assigned Issue",
+      "noMigrationRestartConfigChange": true,
+      "committed": false,
+      "pushed": false
+    },
+    "evidenceDirectory": "var/uiux-audit-2026-10-19",
+    "next": "Repair plan remains unexecuted; FR-12/S11 remain IN_REVIEW and all NOT_RUN/manual/live/UAT gaps stay open",
+    "recheckReport": "docs/reviews/2026-10-19-uiux-recheck-and-overview-correction.md"
+  },
+  "uiuxRecheck20261019": {
+    "status": "OVERVIEW_FIXED_RECHECK_FINDINGS_OPEN",
+    "report": "docs/reviews/2026-10-19-uiux-recheck-and-overview-correction.md",
+    "scopeDecision": "Only replace recent-work block with project information inside project overview; preserve status and milestone sections, not replace the entire page",
+    "overview": {
+      "finding": "UX-015",
+      "status": "FIXED_SCOPED_VERIFIED",
+      "data": "Current Feature Bug/QA server counts through existing reader APIs; configured milestone names/dates, no fabricated legacy progress or unsupported filter action",
+      "red": "5_EXPECTED_FAILURES_BEFORE_SOURCE_CHANGE",
+      "green": "10_TESTS_3_FILES",
+      "browser": "MAIN_ADMIN_5173_AND_ISOLATED_TESTER_5174_320_390_768_1440_STATUS_CLICK_AND_ENTER_LINK_TO_CORRECT_PROJECT"
+    },
+    "review": {
+      "originalFindingsStillOpen": 14,
+      "originalRisksRetained": 12,
+      "newSourceNotes": "Feature edit409 recovery; Issue source-case navigation; priority/assignment-history presentation; management hidden-document count scope",
+      "fullFrontend": "PASS_985_TESTS_106_FILES_ZERO_SKIP",
+      "build": "PASS_VITE_EXIT0",
+      "coverage": "NOT_MEASURED",
+      "testInstability": "One initial focused linked-row focus assertion failed; unchanged isolated rerun4/4 and final full985/985 passed. Failure receipt retained; root cause unconfirmed",
+      "backendNative": "NOT_RERUN_NO_BACKEND_OR_SCHEMA_CHANGE",
+      "allButtonsOrLiveUatPassed": false
+    },
+    "preservation": {
+      "branch": "system-design",
+      "backendSourceChanged": false,
+      "domainWrites": 0,
+      "migrationOrRestart": false,
+      "liveProviderCalls": 0,
+      "committed": false,
+      "pushed": false
+    },
+    "evidence": "var/uiux-recheck-2026-10-19",
+    "remaining": "UX-001..014 and all per-state NOT_RUN gaps remain open; S11/FR-12 remain IN_REVIEW"
+  },
+  "uiuxPolish20261019": {
+    "status": "IMPLEMENTED_WITH_EXPLICIT_GAPS",
+    "report": "docs/reviews/2026-10-19-uiux-polish.md",
+    "plan": "docs/planning/2026-10-19-uiux-polish.md",
+    "evidence": "var/uiux-polish-2026-10-19",
+    "sourceInventory": {
+      "controls": 997,
+      "controlFiles": 111,
+      "stylesheets": 28,
+      "parseErrors": 0,
+      "transitionAll": 0,
+      "runtimeClickCoverage": false
+    },
+    "verification": {
+      "capturedAt": "2026-10-19T04:22:12.263Z",
+      "tests": {
+        "passed": 1048,
+        "failed": 0,
+        "pending": 0,
+        "files": 116,
+        "receipt": "var/uiux-polish-2026-10-19/frontend-stable-final-tests.json"
+      },
+      "build": {
+        "exitCode": 0,
+        "receipt": "var/uiux-polish-2026-10-19/build-final.json"
+      },
+      "sourceStable": {
+        "files": 316,
+        "changed": [],
+        "missing": [],
+        "before": "2026-10-19T04:16:07.454Z",
+        "after": "2026-10-19T04:22:01.276Z"
+      },
+      "coverage": {
+        "lines": {
+          "total": 4661,
+          "covered": 4090,
+          "skipped": 0,
+          "pct": 87.74
+        },
+        "statements": {
+          "total": 9289,
+          "covered": 8084,
+          "skipped": 0,
+          "pct": 87.02
+        },
+        "functions": {
+          "total": 3205,
+          "covered": 2608,
+          "skipped": 0,
+          "pct": 81.37
+        },
+        "branches": {
+          "total": 8997,
+          "covered": 7504,
+          "skipped": 0,
+          "pct": 83.4
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": 100
+        },
+        "note": "Measured full-source checkpoint1047 tests/115 files. During that run hook Escape guard, its new test, and modal radius changed; final frozen source is separately verified by the full suite above. Do not describe percentages as remeasured after freeze."
+      },
+      "browser": {
+        "matrix": "var/uiux-polish-2026-10-19/browser-matrix.md",
+        "allButtonsPassed": false,
+        "liveProviderCalls": 0,
+        "domainWrites": 0,
+        "authAuditEventsExpected": true
+      },
+      "remaining": {
+        "oldFindingsFixedSourceMock": 11,
+        "partial": 1,
+        "open": [
+          "UX-002",
+          "UX-011"
+        ],
+        "uat": "PARTIAL"
+      }
+    },
+    "scope": "Frontend UI/UX and state recovery; preserve overview status/milestones and five result colors; no business contract changes",
+    "preservation": {
+      "backendChanged": false,
+      "dependenciesChanged": false,
+      "domainWrites": 0,
+      "migration": false,
+      "restart": false,
+      "commit": false,
+      "push": false,
+      "merge": false,
+      "deploy": false
+    },
+    "nextAction": "Continue residual and browser/UAT gaps from report; implement approved archive legacy exception and clarify Rules contract through their separate plan. Do not mark FR-12/S11 complete."
+  },
+  "uiuxAdminEntry20261019": {
+    "status": "SCOPED_FIXES_VERIFIED_WHOLE_SYSTEM_UAT_GAPS_OPEN",
+    "report": "docs/reviews/2026-10-19-admin-entry-uiux.md",
+    "plan": "docs/planning/2026-10-19-admin-entry-uiux.md",
+    "evidence": "var/uiux-admin-entry-2026-10-19",
+    "scope": [
+      "Admin first-login layout and desktop/mobile navigation",
+      "Workspace focus contrast, testing grid and low-height chat",
+      "Admin unsaved drafts, inert focus restoration and scrollport dropdown",
+      "Explicit read recovery and device conflict feedback"
+    ],
+    "verification": {
+      "capturedAt": "2026-10-19T04:56:49.138Z",
+      "tests": {
+        "passed": 1100,
+        "failed": 0,
+        "pending": 0,
+        "files": 120,
+        "success": true,
+        "exitCode": 0,
+        "receipt": "frontend-verified-final-tests.json"
+      },
+      "build": {
+        "exitCode": 0,
+        "receipt": "build-verified-final.json"
+      },
+      "sourceStable": {
+        "files": 320,
+        "changed": [],
+        "missing": [],
+        "added": [],
+        "buildComparison": {
+          "changed": [],
+          "missing": [],
+          "added": []
+        },
+        "before": "2026-10-19T04:50:52.749Z",
+        "after": "2026-10-19T04:56:47.728Z"
+      },
+      "coverage": "NOT_MEASURED_THIS_TURN",
+      "browser": {
+        "allButtonsPassed": false,
+        "main": "localhost:5173",
+        "fixture": "localhost:5174",
+        "domainWrites": 0,
+        "liveAiCalls": 0,
+        "authAuditEventsExpected": true,
+        "cleanup": "browser-cleanup.json"
+      },
+      "preservationReceipt": "preservation-and-links.json",
+      "sprintStatus": "S11_IN_REVIEW_FR12_IN_REVIEW"
+    },
+    "remaining": [
+      "UX-002 legacy archive exception implementation",
+      "UX-011 Rules contract",
+      "Per-role/per-state UAT and real touch/IME/zoom200/screen-reader/live-provider/upload/download gaps"
+    ],
+    "preservation": {
+      "backendChanged": false,
+      "configurationChanged": false,
+      "dependenciesChanged": false,
+      "mainDomainWrites": 0,
+      "migration": false,
+      "restart": false,
+      "commit": false,
+      "push": false,
+      "merge": false,
+      "deploy": false
+    },
+    "nextAction": "Keep FR-12/S11 IN_REVIEW; retain previous coverage matrix NOT_RUN entries and scoped evidence. No claim all buttons passed."
   }
 }

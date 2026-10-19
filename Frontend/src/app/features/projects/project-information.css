@@ -1,0 +1,16 @@
+.project-information { min-width:0; color:var(--color-text-main); line-height:1.75; }
+.project-information section { margin:0 0 28px; }
+.project-information :is(h2,h3) { font-size:var(--text-section); font-weight:600; line-height:1.5; margin:0 0 12px; }
+.project-information p { max-width:75ch; margin:0 0 12px; overflow-wrap:anywhere; }
+.project-information-description { white-space:pre-wrap; }
+.project-information ul { padding-left:24px; max-width:75ch; list-style:disc; }
+.project-information li { margin-bottom:8px; }
+.project-information a { color:var(--color-mint); text-decoration:underline; text-underline-offset:3px; overflow-wrap:anywhere; }
+.project-information a:hover { color:var(--color-mint-hover); }
+.project-information a:focus-visible { outline:2px solid var(--color-mint); outline-offset:3px; }
+.project-information-documents { max-width:900px; margin-top:16px; }
+.project-information table { width:100%; border-collapse:collapse; text-align:left; }
+.project-information th, .project-information td { padding:12px 16px; border:1px solid var(--color-border); vertical-align:top; }
+.project-information thead { background:var(--color-bg-sub); }
+.project-information tbody th { font-weight:500; }
+@media (max-width:640px) { .project-information th,.project-information td { padding:12px 8px; } .project-information a { display:inline-flex; align-items:center; min-height:44px; } }

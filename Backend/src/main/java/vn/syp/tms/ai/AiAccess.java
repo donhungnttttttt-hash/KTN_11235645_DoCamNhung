@@ -26,9 +26,10 @@ public class AiAccess {
         var project=db.row("SELECT archived_at AS archivedAt FROM projects WHERE id=? FOR UPDATE",projectId);
         var members=db.rows("SELECT id,project_role AS role FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",projectId,actor);
         boolean admin="ADMIN".equals(account.getRole());
-        if(!admin && members.isEmpty())fail(404,"NOT_FOUND","Bạn không có quyền truy cập dự án này.");
+        boolean pm="PM".equals(account.getRole());
+        if(!admin && !pm && members.isEmpty())fail(404,"NOT_FOUND","Bạn không có quyền truy cập dự án này.");
         Long memberId=members.isEmpty()?null:number(members.getFirst(),"id");
-        String role=admin?"ADMIN":(String)members.getFirst().get("role");
+        String role=admin?"ADMIN":pm?"PM":(String)members.getFirst().get("role");
         if("DEV".equals(account.getRole()) && !"DEV".equals(role))role="NONE";
         boolean archived=project.get("archivedAt")!=null;
         if(write && archived)fail(409,"ARCHIVED","Dự án đã được lưu trữ.");
@@ -36,11 +37,25 @@ public class AiAccess {
     }
 
     public void require(Context context,AiPurpose purpose) {
-        if(!purpose.role().equals(context.role()))fail(403,"FORBIDDEN","Tác vụ AI không thuộc vai trò hiện hành của bạn trong dự án.");
+        if(!"ADMIN".equals(context.role())&&!purpose.role().equals(context.role()))fail(403,"FORBIDDEN","Tác vụ AI không thuộc vai trò hiện hành của bạn trong dự án.");
     }
 
     public void requireSource(long p,Context caller,AiPurpose purpose,String source) {
+        requireSource(p,caller,purpose,source,false);
+    }
+    public void requireSource(long p,Context caller,AiPurpose purpose,String source,boolean write) {
         require(caller,purpose);
+        if(purpose==AiPurpose.PM_ASSIGNMENT_SUGGESTION){
+            if(source!=null&&source.startsWith("file:")){
+                if(write)fail(410,"AI_LEGACY_SCOPE","Nguồn file cũ chỉ đọc lịch sử. Chọn file thuộc Feature cho yêu cầu mới.");
+                return;
+            }
+            if(source==null||!source.matches("document:[1-9][0-9]{0,17}"))fail(422,"AI_INVALID_TARGET","Chọn file thuộc Feature.");
+            var document=db.row("SELECT b.id,b.archived_at AS documentArchivedAt,f.archived_at AS featureArchivedAt FROM import_batches b JOIN testing_features f ON f.project_id=b.project_id AND f.id=b.feature_id WHERE b.project_id=? AND b.id=? AND b.status='COMMITTED'",p,Long.parseLong(source.substring(9)));
+            if(write&&(document.get("documentArchivedAt")!=null||document.get("featureArchivedAt")!=null))fail(409,"ARCHIVED","File/Feature đã lưu trữ; chỉ đọc lịch sử.");
+            return;
+        }
+        if("ADMIN".equals(caller.role()))return;
         if(purpose!=AiPurpose.DEV_TICKET_REVIEW&&purpose!=AiPurpose.TESTER_BUG_DRAFT)return;
         if(source==null||!source.matches("ticket:[1-9][0-9]{0,17}"))throw new vn.syp.tms.shared.web.BusinessException(422,"AI_INVALID_TARGET","Ticket không hợp lệ.");
         long id=Long.parseLong(source.substring(7));

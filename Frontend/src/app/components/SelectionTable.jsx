@@ -1,4 +1,5 @@
 import React,{useEffect,useId,useRef,useState} from 'react';
+import {matchesSearch} from '../utils/multiWordSearch';
 import './selection-table.css';
 
 /** Selection changes only affect visible, eligible rows; selections on other pages survive. */
@@ -6,7 +7,7 @@ export function SelectionTable({label,rows,selected,onChange,searchable=true,loa
  extraTitle,empty='Không có mục phù hợp.',pageScope=false,filters}) {
  const [query,setQuery]=useState(''),[view,setView]=useState('');
  const id=useId(),allRef=useRef(null),searchRef=useRef(null),viewRef=useRef(null);
- const visible=rows.filter(row=>(!searchable || `${row.name} ${row.searchText||''}`.toLocaleLowerCase('vi').includes(query.trim().toLocaleLowerCase('vi')))
+ const visible=rows.filter(row=>(!searchable || matchesSearch([row.name,row.searchText],query))
   && (!view || (view==='selected')===selected.includes(row.id)));
  const eligible=visible.filter(row=>!row.disabled);
  const count=eligible.filter(row=>selected.includes(row.id)).length;

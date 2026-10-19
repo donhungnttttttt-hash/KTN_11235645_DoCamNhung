@@ -17,7 +17,7 @@ beforeEach(() => { vi.clearAllMocks(); context.auth.hasRole = () => false; conte
 
 it('labels archived projects and explains their read-only workspace while keeping history accessible',async()=>{
  context.project.currentProject={id:1,name:'Dự án A',archived:true};context.project.projects=[context.project.currentProject];
- const user=userEvent.setup();render(<MainLayout activeRoute="/tests" navigate={vi.fn()}><button>Xem lịch sử</button></MainLayout>);
+ const user=userEvent.setup();render(<MainLayout activeRoute="/board/testing" navigate={vi.fn()}><button>Xem lịch sử</button></MainLayout>);
  expect(screen.getByRole('status')).toHaveTextContent('Dự án đã lưu trữ');
  expect(screen.getByRole('status')).toHaveTextContent('Admin');
  expect(screen.getByRole('button',{name:'Xem lịch sử'})).toBeEnabled();
@@ -76,18 +76,18 @@ it('restores focus after Escape from the account popup', async () => {
 
 it('opens a full navigation drawer after desktop collapse and closes it using Escape', async () => {
   const user = userEvent.setup();
-  render(<MainLayout activeRoute="/tests" navigate={vi.fn()}><button>Nội dung trang</button></MainLayout>);
+  render(<MainLayout activeRoute="/board/testing" navigate={vi.fn()}><button>Nội dung trang</button></MainLayout>);
   await user.click(screen.getByRole('button',{name:'Thu gọn menu'}));
   await user.click(screen.getByRole('button',{name:'Mở menu dự án'}));
   const drawer = screen.getByRole('dialog',{name:'Menu dự án'});
-  expect(within(drawer).getByRole('button',{name:'Thư viện test case',exact:true})).toBeVisible();
+  expect(within(drawer).getByRole('button',{name:'Quản lý kiểm thử',exact:true})).toBeVisible();
   expect(drawer.contains(document.activeElement)).toBe(true);
   await user.keyboard('{Escape}'); expect(screen.queryByRole('dialog')).toBeNull();
   expect(screen.getByRole('button',{name:'Mở menu dự án'})).toHaveFocus();
 });
 
 it('recognizes a document focus route with a case deep link', () => {
-  const { container } = render(<MainLayout activeRoute="/tests/documents/5?caseId=405" navigate={vi.fn()}/>);
+  const { container } = render(<MainLayout activeRoute="/board/testing/features/42/documents/5?caseId=405" navigate={vi.fn()}/>);
   expect(container.querySelector('.app-shell')).toHaveClass('document-focus');
 });
 

@@ -37,7 +37,8 @@ class AiAccessTest {
         var context=access.authorize(1,"actor",false);
         assertThat(context.role()).isEqualTo("ADMIN");
         assertThat(AiPurpose.forRole(context.role())).containsExactly(AiPurpose.ADMIN_PROJECT_REVIEW);
-        assertThatThrownBy(()->access.require(context,AiPurpose.PM_PROGRESS_REPORT)).isInstanceOf(BusinessException.class);
+        assertThatCode(()->access.require(context,AiPurpose.PM_PROGRESS_REPORT)).doesNotThrowAnyException();
+        assertThat(context.membershipId()).isNull();
     }
     @Test void devGlobalRoleCannotEscalateThroughOldPmMembership() {
         role("DEV","PM");

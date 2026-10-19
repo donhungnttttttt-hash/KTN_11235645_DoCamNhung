@@ -30,9 +30,37 @@
   --color-border: #D9DEDE;
   --color-border-light: #E5E8E8;
   --color-text-main: #333333;
-  --color-text-sub: #777777;
-  --color-text-muted: #999999;
+  --color-text-sub: #526460;
+  --color-text-muted: #60716c;
+  /* Shared geometry and motion: keep dense data readable and controls steady. */
+  --radius-control: 8px;
+  --radius-panel: 12px;
+  --motion-fast: 140ms;
+  --motion-normal: 200ms;
+  --motion-enter: 240ms;
+  --ease-out: cubic-bezier(.2,.8,.2,1);
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f6f9f8;
+  --color-control-border: #8ba39e;
+  --color-focus-ring: var(--color-mint);
+  --shadow-panel: 0 1px 3px rgb(15 55 48 / .04);
+  /* Shared test-result palette. Change these five colors to update every result view. */
+  --color-result-ok: #0dd44c;
+  --color-result-ok-text: #000000;
+  --color-result-ng: #b60202;
+  --color-result-ng-text: #ffffff;
+  --color-result-pending: #f8f835;
+  --color-result-pending-text: #000000;
+  --color-result-not-run: #161c25;
+  --color-result-not-run-text: #ffffff;
+  --color-result-na: #7a7a7c;
+  --color-result-na-text: #000000;
 }
+
+html { scrollbar-gutter: stable; scroll-padding-top:64px; }
+button:not(:disabled),[role=button]:not([aria-disabled=true]) { cursor:pointer; }
+button,a,input,select,textarea { -webkit-tap-highlight-color:rgb(15 118 110 / .12); }
+button,a { touch-action:manipulation; }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -61,18 +89,19 @@ body {
   line-height: 1.5;
   color: #333333;
   background-color: #FFFFFF;
-  border: 1px solid #D7DCDC;
-  border-radius: 2px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
   outline: none;
-  transition: border-color 0.15s ease;
+  transition: border-color var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
 }
 
 .cat-input:focus, .cat-select:focus {
   border-color: var(--color-mint);
+  box-shadow:0 0 0 3px rgb(15 118 110 / .10);
 }
 
 :where(button, a, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid #0f766e;
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
 
@@ -85,7 +114,7 @@ body {
   font-size: var(--text-table);
   line-height: 1.5;
   font-weight: 500;
-  border-radius: 2px;
+  border-radius: var(--radius-control);
   border: 1px solid #D7DCDC;
   background-color: #FFFFFF;
   color: #333333;
@@ -96,10 +125,10 @@ body {
   gap: 4px;
   white-space: normal;
   overflow-wrap: anywhere;
-  transition: all 0.15s ease;
+  transition: background-color var(--motion-fast) ease, border-color var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
 }
 
-.cat-btn:hover {
+.cat-btn:hover:not(:disabled) {
   background-color: #F7F8F8;
   border-color: #C0C5C5;
 }
@@ -110,12 +139,13 @@ body {
   color: #FFFFFF;
 }
 
-.cat-btn-mint:hover {
+.cat-btn-mint:hover:not(:disabled) {
   background-color: var(--color-mint-hover);
   border-color: var(--color-mint-hover);
 }
 
 .cat-btn:disabled { cursor: not-allowed; opacity: .55; }
+.cat-btn:active:not(:disabled) { box-shadow:inset 0 1px 3px rgb(15 55 48 / .16); }
 
 @media (max-width: 640px) {
   .cat-btn, .cat-input, .cat-select { min-height: 44px; font-size: var(--text-body); }
@@ -130,6 +160,14 @@ body {
 .ui-caption { font-size:var(--text-caption); line-height:1.5; }
 .ui-page-selection { display:flex; align-items:center; gap:8px; min-height:44px; font-size:var(--text-table); margin:8px 0; }
 .ui-page-selection input { width:18px; height:18px; flex:none; accent-color:#0f766e; }
+@keyframes ui-surface-enter {
+ from { opacity:0; transform:translateY(6px); }
+ to { opacity:1; transform:translateY(0); }
+}
+@keyframes ui-disclosure-enter {
+ from { opacity:0; }
+ to { opacity:1; }
+}
 @media (prefers-reduced-motion:reduce) {
  *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
 }
@@ -186,11 +224,11 @@ body {
 }
 
 /* Status Colors */
-.cat-status-ok { color: #20B7A6; font-weight: 600; }
-.cat-status-ng { color: #E53935; font-weight: 600; }
+.cat-status-ok { color: var(--color-result-ok-text); font-weight: 600; background: var(--color-result-ok); border-radius: 3px; padding: 1px 4px; }
+.cat-status-ng { color: var(--color-result-ng-text); font-weight: 600; background: var(--color-result-ng); border-radius: 3px; padding: 1px 4px; }
 .cat-status-fixed { color: #8E24AA; font-weight: 600; }
-.cat-status-unexec { color: #757575; }
-.cat-status-pending { color: #FB8C00; font-weight: 600; }
+.cat-status-unexec { color: var(--color-result-not-run-text); background: var(--color-result-not-run); font-weight: 600; border-radius: 3px; padding: 1px 4px; }
+.cat-status-pending { color: var(--color-result-pending-text); font-weight: 600; background: var(--color-result-pending); border-radius: 3px; padding: 1px 4px; }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
@@ -223,12 +261,12 @@ body {
   justify-content: center;
 }
 
-.cat-kpi-block-unexec { background-color: #E0F2F1; color: #004D40; border: 1px solid #B2DFDB; }
-.cat-kpi-block-ng { background-color: #FF0000; color: #FFFFFF; }
-.cat-kpi-block-pending { background-color: #E6A100; color: #FFFFFF; }
+.cat-kpi-block-unexec { background-color: var(--color-result-not-run); color: var(--color-result-not-run-text); border: 1px solid var(--color-result-not-run); }
+.cat-kpi-block-ng { background-color: var(--color-result-ng); color: var(--color-result-ng-text); }
+.cat-kpi-block-pending { background-color: var(--color-result-pending); color: var(--color-result-pending-text); }
 .cat-kpi-block-fixed { background-color: #00C853; color: #FFFFFF; }
-.cat-kpi-block-ok { background-color: #0070F3; color: #FFFFFF; }
-.cat-kpi-block-na { background-color: #455A64; color: #FFFFFF; }
+.cat-kpi-block-ok { background-color: var(--color-result-ok); color: var(--color-result-ok-text); }
+.cat-kpi-block-na { background-color: var(--color-result-na); color: var(--color-result-na-text); }
 
 /* CAT Handbook Box */
 .cat-handbook-box {
@@ -253,4 +291,11 @@ body {
   color: #20B7A6;
   margin-top: 8px;
   margin-bottom: 4px;
+}
+.cat-status-na{
+  background: var(--color-result-na);
+  color: var(--color-result-na-text);
+  font-weight: 600;
+  border-radius: 3px;
+  padding: 1px 4px;
 }

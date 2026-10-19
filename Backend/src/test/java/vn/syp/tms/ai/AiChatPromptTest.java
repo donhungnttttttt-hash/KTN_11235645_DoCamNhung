@@ -46,14 +46,29 @@ class AiChatPromptTest {
             assertThat(prompt.data().path("text").asText()).isEqualTo(latest);assertEnvelopes("model",prompt.data());
         }
     }
+    @Test void portfolioTruncationKeepsIncludedCountSourcesAndPaidRequestConsistent() throws Exception {
+        var snapshot=json.createObjectNode().put("scope","MY_PROJECTS").put("totalProjects",30).put("includedProjects",30);
+        var facts=snapshot.putArray("sources");var sources=new ArrayList<AiDraftService.Source>();
+        for(int i=1;i<=30;i++) {
+            var item=facts.addObject().put("ref","project:"+i);var values=item.putObject("facts").putArray("numericFacts");
+            for(int n=0;n<200;n++)values.add(n);
+            sources.add(new AiDraftService.Source("project:"+i,"Project "+i,"/dashboard",null));
+        }
+        var task=new AiDraftService.Task("MY_PROJECTS","portfolio-v1:bound","v1","portfolio-budget","unused",snapshot,json.createObjectNode(),sources);
+        var prompt=service.prompt("model","Tổng hợp dự án",task,List.of());
+        assertThat(prompt.truncated()).isTrue();assertThat(prompt.data().path("scope").asText()).isEqualTo("MY_PROJECTS");
+        int included=prompt.data().path("snapshot").path("sources").size();
+        assertThat(prompt.data().path("snapshot").path("includedProjects").asInt()).isEqualTo(included);
+        assertThat(prompt.sources()).hasSize(included);assertEnvelopes("model",prompt.data());
+    }
     void assertEnvelopes(String model,JsonNode data) throws Exception {
-        var api=json.createObjectNode().put("model",model).put("store",false).put("max_output_tokens",2048).put("instructions",AiChatService.INSTRUCTIONS).put("input",data.toString());
+        var api=json.createObjectNode().put("model",model).put("store",false).put("max_output_tokens",2048).put("instructions",AiChatService.instructions(data)).put("input",data.toString());
         api.putObject("text").putObject("format").put("type","json_schema").put("name","tms_chat").put("strict",true).set("schema",AiChatService.schema(json));
         assertThat(json.writeValueAsBytes(api).length).isLessThanOrEqualTo(AiChatService.requestUpperBound(json,model,data));
         api.remove("max_output_tokens");api.put("stream",true);
         assertThat(json.writeValueAsBytes(api).length).isLessThanOrEqualTo(AiChatService.requestUpperBound(json,model,data));
         var ollama=json.createObjectNode().put("model",model).put("stream",false);ollama.set("format",AiChatService.schema(json));
-        var messages=ollama.putArray("messages");messages.addObject().put("role","system").put("content",AiChatService.INSTRUCTIONS);
+        var messages=ollama.putArray("messages");messages.addObject().put("role","system").put("content",AiChatService.instructions(data));
         messages.addObject().put("role","user").put("content",data.toString());ollama.putObject("options").put("num_predict",2048);
         assertThat(json.writeValueAsBytes(ollama).length).isLessThanOrEqualTo(AiChatService.requestUpperBound(json,model,data));
     }

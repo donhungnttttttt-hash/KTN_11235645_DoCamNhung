@@ -7,7 +7,7 @@ import vn.syp.tms.shared.web.BusinessException;
 public enum AiPurpose {
     ADMIN_PROJECT_REVIEW("ADMIN", "Rà soát dự án", "NONE"),
     PM_PROGRESS_REPORT("PM", "Soạn báo cáo tiến độ", "NONE"),
-    PM_ASSIGNMENT_SUGGESTION("PM", "Gợi ý phân công file", "FILE_GROUP"),
+    PM_ASSIGNMENT_SUGGESTION("PM", "Gợi ý phân công file", "DOCUMENT"),
     TESTER_WORK_REPORT("TESTER", "Tổng hợp công việc của tôi", "NONE"),
     TESTER_BUG_DRAFT("TESTER", "Hoàn thiện mô tả bug", "TICKET"),
     DEV_TICKET_REVIEW("DEV", "Rà soát ticket được giao", "TICKET");

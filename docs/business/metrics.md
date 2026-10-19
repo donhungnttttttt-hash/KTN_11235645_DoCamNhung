@@ -1,4 +1,32 @@
-# Số liệu nội bộ — phiên bản internal-v1
+# Số liệu Feature và lịch sử internal-v1
+
+## FixReports — contract hiện hành trong source ngày 19/10/2026
+
+Phần này thay công thức run/cycle bên dưới cho luồng Feature mới. Xem [contract FixReports](../api/fixreports-contract.md), [tài liệu test](../api/test-documents.md) và [báo cáo quản lý](../api/reporting.md). Đây là mô tả source/contract, không xác nhận migration đã áp dụng vào database sử dụng hoặc UAT đạt.
+
+| Đại lượng Feature/file | Định nghĩa hiện hành |
+| --- | --- |
+| total | Số case của file COMMITTED, đang hoạt động trong Feature đang hoạt động, đúng project; không nhân theo người được giao |
+| OK / NG / P / NA / Unexecuted | Năm Status hiện hành, loại trừ nhau trên từng bản case độc lập; không có Fixed trong luồng mới |
+| tested | OK + NG + P + NA, tương đương Status khác Unexecuted |
+| executionPercent | tested / total ×100; mẫu số **bao gồm NA** |
+| File rỗng | total=0, tested=0, tiến độ0; UI ghi chưa có case, không suy ra hoàn thành hoặc nghiệm thu |
+
+Ví dụ **2 Unexecuted +1 OK +1 P +1 NA =3/5 =60%**. P và NA đều là kết quả đã ghi; NA không còn là quyết định loại run khỏi mẫu số của luồng mới. Không dùng tỷ lệ đạt hoặc số lần đổi Status làm tiến độ. 100% thực thi không đồng nghĩa toàn bộ OK, khách hàng nghiệm thu hay đủ điều kiện phát hành.
+
+Status, nội dung, phân công và lịch sử thuộc đúng bản file/case trong Feature. Cùng workbook tại A/B không chia sẻ mutable case. Đổi assignee giữ Status; hai cột người test đầu/gần nhất phản ánh phân công, còn actor ghi kết quả lấy từ lịch sử. File/Feature/report/AI dùng cùng công thức và identity hiện hành. Retest thủ công theo case/Issue, không thêm cycle/run/build/device/session làm gate ghi; không tự biến NG thành OK khi Issue chuyển trạng thái.
+
+Sửa báo cáo Markdown từ “10 lỗi” thành “8 lỗi” chỉ sửa văn bản đã lưu; tổng Issue, Status và phân công vẫn lấy dữ liệu nghiệp vụ. Không dùng nội dung báo cáo đã chỉnh làm nguồn thống kê. Dữ liệu chuyển đổi có reset Status/phân công theo quyết định đã chốt; không suy ra người test hay lịch sử mới từ nhãn nguồn Excel. Migration/repair và chứng minh bảo toàn dữ liệu được theo dõi riêng, không suy số phiên bản hoặc trạng thái main DB từ tài liệu này.
+
+### Bổ sung 19/10/2026 — R03/R07: KPI Admin hiện hành
+
+Admin overview và bảng dự án dùng `metricDefinitionVersion=feature-cases-v1`: đếm mỗi import row có case trong file COMMITTED/Feature chưa lưu trữ đúng một lần, từ Status hiện tại. Không dùng run/cycle/attempt làm nguồn KPI hiện hành. Bug mở/chờ xác minh chỉ lấy Issue context chưa xóa mềm, Feature và file tùy chọn còn hoạt động; work-item lịch sử không có context không vào KPI mới.
+
+Milestone giữ metadata/lịch sử; phạm vi cảnh báo hiện hành chỉ gồm BUG/QA còn hoạt động đã có `work_items.milestone_id` rõ ràng. Không tự gán milestone cho Feature hoặc suy ra hạn mới; cycle/Task cũ không tạo cảnh báo quá hạn đang hoạt động. [Báo cáo và quyền lịch sử](../api/reporting.md).
+
+## Lịch sử trước FixReports — internal-v1/run-cycle
+
+Phần dưới giữ định nghĩa và bằng chứng các sprint cũ; không phải công thức cho Feature mới. Public legacy writes bị nghỉ dùng theo [file-work](../api/file-work.md); báo cáo run cũ chuyển sang thông báo410 sau kiểm tra quyền quản lý, không tiếp tục cung cấp tổng hợp cho Tester/DEV.
 
 Áp dụng ADR-008. Đơn vị là lượt case/cấu hình trong đợt (run item), không phải số test case duy nhất hoặc số attempt.
 

@@ -20,6 +20,8 @@ export const aiApi={
  probe:(id,body,o)=>write(`/ai/providers/CHATGPT/connections/${encodeURIComponent(id)}/probes`,'POST',body,o),
  disconnect:(id,version,o)=>write(`/ai/providers/CHATGPT/connections/${encodeURIComponent(id)}?expectedVersion=${version}`,'DELETE',null,o),
  chatCreate:(body,o)=>write('/ai/chats','POST',body,o),
+ chatProjects:o=>aiRequest('/ai/projects',o),
+ chatFeatures:(projectId,o)=>aiRequest(`/ai/projects/${encodeURIComponent(projectId)}/features`,o),
  chatList:(before=0,o)=>aiRequest(`/ai/chats?before=${before}`,o),
  chatGet:(id,before=0,o)=>aiRequest(`/ai/chats/${id}?before=${before}`,o),
  chatSend:(id,body,o)=>write(`/ai/chats/${id}/messages`,'POST',body,o),

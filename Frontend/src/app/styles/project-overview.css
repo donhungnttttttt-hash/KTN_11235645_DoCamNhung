@@ -129,6 +129,9 @@
 .project-overview.work-items .d-summary-box {
   padding: 16px;
   margin-bottom: 22px;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-panel);
+  box-shadow:var(--shadow-panel);
 }
 .project-overview.work-items .d-progress-track {
   background: #f1f5f9;
@@ -156,7 +159,12 @@
 .project-overview.work-items .d-status-summary b {
   font-size: var(--text-caption);
   padding: 3px 5px;
+  color:#0f172a;
+  font-variant-numeric:tabular-nums;
 }
+.project-overview.work-items .d-status-summary button { border-radius:var(--radius-control); transition:background-color var(--motion-fast) ease,box-shadow var(--motion-fast) ease; }
+.project-overview.work-items .d-status-summary button:hover { background:var(--color-surface-subtle); box-shadow:0 0 0 4px var(--color-surface-subtle); }
+.project-overview.work-items .d-status-summary button:active { box-shadow:0 0 0 4px var(--color-mint-light); }
 .project-overview.work-items .d-milestone-panel > button {
   min-height: 100px;
   height: auto;
@@ -197,13 +205,32 @@
   padding: 12px;
   text-align: center;
 }
+.project-overview .overview-information-panel {
+  min-width: 0;
+  padding: 16px;
+  background: var(--color-bg-main, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  box-shadow:var(--shadow-panel);
+}
+.project-overview .d-home-aside section > h2 {
+  font-size: var(--text-title);
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+.project-overview .overview-milestone {
+  min-width: 0;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--color-border);
+  overflow-wrap: anywhere;
+}
+.project-overview .overview-milestone:last-child { border-bottom: 0; }
+.project-overview .overview-milestone h3 { font-size: var(--text-section); font-weight: 600; margin: 0 0 6px; }
+.project-overview .overview-milestone p { font-size: var(--text-caption); margin: 0; }
 @media (max-width: 960px) {
   .project-overview.work-items .d-home-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: 22px;
-  }
-  .project-overview.work-items .d-home-aside {
-    grid-row: 1;
   }
   .project-overview.work-items .d-status-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -211,6 +238,8 @@
   .project-overview.work-items .d-milestone-panel {
     max-height: 235px;
     overflow-y: auto;
+    overscroll-behavior:contain;
+    scrollbar-gutter:stable;
   }
 }
 @media (max-width: 480px) {

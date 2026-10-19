@@ -8,7 +8,7 @@ import vn.syp.tms.reporting.ReportMetrics;
 import vn.syp.tms.workitem.WorkItemStore;
 import static vn.syp.tms.workitem.WorkItemStore.*;
 
-/** One query and calendar rule shared by overview and PM narrative validation. */
+/** Historical milestone metadata; active scope includes only explicitly linked current Issues. */
 @Component
 public class ProjectDeadlines {
  private final WorkItemStore db;
@@ -20,10 +20,18 @@ public class ProjectDeadlines {
  public List<Map<String,Object>> milestones(Long projectId,Instant asOf) {
   var rows=db.rows("""
    SELECT ms.id,ms.project_id AS projectId,p.name AS projectName,p.archived_at AS projectArchivedAt,p.timezone,ms.name,ms.due_on AS dueOn,
-   (SELECT COUNT(*) FROM work_items w WHERE w.project_id=ms.project_id AND w.milestone_id=ms.id) +
-   (SELECT COUNT(*) FROM test_cycles c WHERE c.project_id=ms.project_id AND c.milestone_id=ms.id) AS scopeCount,
-   EXISTS(SELECT 1 FROM work_items w JOIN work_item_statuses s ON s.code=w.status_code WHERE w.project_id=ms.project_id AND w.milestone_id=ms.id AND NOT s.terminal) OR
-   EXISTS(SELECT 1 FROM test_cycles c WHERE c.project_id=ms.project_id AND c.milestone_id=ms.id AND c.status_code<>'CLOSED') AS unfinished
+   (SELECT COUNT(*) FROM work_items w
+    JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id
+    JOIN testing_features f ON f.project_id=x.project_id AND f.id=x.feature_id
+    LEFT JOIN import_batches d ON d.project_id=x.project_id AND d.id=x.document_id
+    WHERE w.project_id=ms.project_id AND w.milestone_id=ms.id AND w.item_type IN ('BUG','QA')
+    AND x.deleted_at IS NULL AND f.archived_at IS NULL AND d.archived_at IS NULL) AS scopeCount,
+   EXISTS(SELECT 1 FROM work_items w JOIN work_item_statuses s ON s.code=w.status_code
+    JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id
+    JOIN testing_features f ON f.project_id=x.project_id AND f.id=x.feature_id
+    LEFT JOIN import_batches d ON d.project_id=x.project_id AND d.id=x.document_id
+    WHERE w.project_id=ms.project_id AND w.milestone_id=ms.id AND w.item_type IN ('BUG','QA')
+    AND x.deleted_at IS NULL AND f.archived_at IS NULL AND d.archived_at IS NULL AND NOT s.terminal) AS unfinished
    FROM milestones ms JOIN projects p ON p.id=ms.project_id WHERE ms.archived_at IS NULL
    """+(projectId==null?"":" AND p.id=?")+" ORDER BY ms.due_on,ms.id",projectId==null?new Object[0]:new Object[]{projectId});
   rows.forEach(row->{

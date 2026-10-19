@@ -2,6 +2,12 @@ import {it,expect,vi,afterEach} from 'vitest';
 import {aiApi} from './ai';
 const response=body=>new Response(JSON.stringify(body),{headers:{'content-type':'application/json'}});
 afterEach(()=>{vi.unstubAllGlobals();vi.useRealTimers();});
+it('reads AI-authorized project and Feature catalogs through scoped same-origin endpoints',async()=>{
+ const fetch=vi.fn().mockImplementation(async()=>response([]));vi.stubGlobal('fetch',fetch);const abort=new AbortController();
+ await aiApi.chatProjects({signal:abort.signal});await aiApi.chatFeatures('project / one',{signal:abort.signal});
+ expect(fetch.mock.calls.map(call=>call[0])).toEqual(['/api/v1/ai/projects','/api/v1/ai/projects/project%20%2F%20one/features']);
+ expect(fetch.mock.calls.every(call=>call[1].credentials==='same-origin')).toBe(true);abort.abort();
+});
 it('writes only after obtaining CSRF and sends same-origin credentials',async()=>{
  const fetch=vi.fn().mockResolvedValueOnce(response({headerName:'X-CSRF-TOKEN',token:'synthetic-token'})).mockResolvedValueOnce(response({id:1,state:'READY'}));
  vi.stubGlobal('fetch',fetch);const controller=new AbortController();

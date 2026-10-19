@@ -1,3 +1,3 @@
 import React from 'react';
-import { ReportsPage } from '../features/reports/ReportsPage';
-export function AnalysisPage() { return <ReportsPage mode="quality" />; }
+import { ManagementAnalysisPage } from '../features/reports/ManagementAnalysisPage';
+export function AnalysisPage() { return <ManagementAnalysisPage />; }

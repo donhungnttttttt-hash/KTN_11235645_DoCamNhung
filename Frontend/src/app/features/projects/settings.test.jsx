@@ -6,12 +6,14 @@ import { ProjectMembers } from './ProjectMembers';
 import { HandbookPanel } from './HandbookPanel';
 import { RulesPanel } from './RulesPanel';
 import { projectsApi } from '../../services/api/projects';
+import { notesApi } from '../../services/api/notes';
 let project;
 let admin=false;
 const refresh=vi.fn();
 vi.mock('./ProjectProvider',()=>({useProject:()=>({currentProject:project,refreshProjects:refresh})}));
 vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>admin&&role==='ADMIN'})}));
 vi.mock('../../services/api/projects',()=>({projectsApi:{get:vi.fn(),update:vi.fn(),listMembers:vi.fn(),memberCandidate:vi.fn(),addMember:vi.fn(),removeMember:vi.fn(),listHandbook:vi.fn(),getHandbook:vi.fn(),createHandbook:vi.fn(),addRevision:vi.fn(),listRules:vi.fn(),listRuleVersions:vi.fn(),createRuleset:vi.fn(),createRuleVersion:vi.fn(),publishRule:vi.fn()}}));
+vi.mock('../../services/api/notes',()=>({notesApi:{list:vi.fn(),create:vi.fn(),update:vi.fn(),remove:vi.fn()}}));
 const member={userId:'tester',displayName:'Lan',username:'lan',projectRole:'TESTER',version:4};
 const revision={id:7,revisionNo:1,contentHtml:'<img src=x onerror=alert(1)>',createdAt:'2026-09-30T00:00:00Z',editedBy:1};
 const document={id:1,code:'GUIDE',name:'Hướng dẫn A',currentRevision:revision,history:[revision]};
@@ -21,11 +23,22 @@ beforeEach(()=>{
   projectsApi.get.mockResolvedValue({...project,timezone:'Asia/Ho_Chi_Minh',version:3});projectsApi.listMembers.mockResolvedValue([member]);
   projectsApi.listHandbook.mockResolvedValue([document]);projectsApi.getHandbook.mockResolvedValue(document);
   projectsApi.listRules.mockResolvedValue([{id:1,code:'INTERNAL_DEMO',activeVersion:null}]);projectsApi.listRuleVersions.mockResolvedValue([version]);
+  notesApi.list.mockResolvedValue({items:[],totalItems:0,totalPages:0,page:0,size:20});
+});
+it('opens Note in settings with PM/Admin writes and member read only',async()=>{
+ const view=render(<ProjectSettingsPage activeRoute='/settings/notes'/>);await screen.findByText('Chưa có Note trong dự án.');expect(screen.getByRole('button',{name:'Thêm Note'})).toBeVisible();
+ project={...project,projectRole:'TESTER'};view.rerender(<ProjectSettingsPage activeRoute='/settings/notes'/>);await screen.findByText('Chưa có Note trong dự án.');expect(screen.queryByRole('button',{name:'Thêm Note'})).toBeNull();
+ admin=true;view.rerender(<ProjectSettingsPage activeRoute='/settings/notes'/>);await screen.findByText('Chưa có Note trong dự án.');expect(screen.getByRole('button',{name:'Thêm Note'})).toBeVisible();
+ project={...project,archived:true};view.rerender(<ProjectSettingsPage activeRoute='/settings/notes'/>);await screen.findByText('Chưa có Note trong dự án.');expect(screen.queryByRole('button',{name:'Thêm Note'})).toBeNull();
 });
 it('loads the latest project version and submits only the displayed version',async()=>{
   projectsApi.update.mockResolvedValue({version:4});render(<ProjectSettingsPage/>);
-  fireEvent.change(await screen.findByLabelText('Tên dự án'),{target:{value:'Tên mới'}});fireEvent.click(screen.getByRole('button',{name:'Lưu thay đổi'}));
-  await screen.findByText('Đã lưu thông tin dự án.');expect(projectsApi.update).toHaveBeenCalledWith(1,{name:'Tên mới',description:'',timezone:'Asia/Ho_Chi_Minh',expectedVersion:3});expect(refresh).toHaveBeenCalled();
+  fireEvent.change(await screen.findByLabelText('Tên dự án'),{target:{value:'Tên mới'}});fireEvent.change(screen.getByLabelText('Mô tả'),{target:{value:'Mô tả đã sửa'}});fireEvent.change(screen.getByLabelText('Múi giờ'),{target:{value:'UTC'}});fireEvent.click(screen.getByRole('button',{name:'Lưu thay đổi'}));
+  await screen.findByText('Đã lưu thông tin dự án.');expect(projectsApi.update).toHaveBeenCalledWith(1,{name:'Tên mới',description:'Mô tả đã sửa',timezone:'UTC',expectedVersion:3});expect(refresh).toHaveBeenCalled();
+});
+it('retries general information loading failures without showing an editable stale form',async()=>{
+  projectsApi.get.mockRejectedValueOnce(new Error('Chưa tải được thông tin'));render(<ProjectSettingsPage/>);
+  await screen.findByRole('alert');expect(screen.queryByLabelText('Tên dự án')).toBeNull();fireEvent.click(screen.getByRole('button',{name:'Tải lại thông tin'}));await screen.findByLabelText('Tên dự án');
 });
 it('keeps general edits after conflict and allows explicitly reloading',async()=>{
   projectsApi.update.mockRejectedValue(new Error('Phiên bản cũ'));render(<ProjectSettingsPage/>);

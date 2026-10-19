@@ -1,40 +1,15 @@
 import React from 'react';
-import { beforeEach, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { ProjectOverview } from './ProjectOverview';
-import { useProjectData } from '../features/work-items/ProjectData';
-import { workItemsApi } from '../services/api/workItems';
-
-vi.mock('../features/work-items/ProjectData', () => ({ useProjectData: vi.fn(), presentItem: x => x }));
-vi.mock('../services/api/workItems', () => ({ workItemsApi: { overview: vi.fn() } }));
-vi.mock('../features/work-items/HomePage', () => ({ default: () => <div>Overview loaded</div> }));
-beforeEach(() => {
-  useProjectData.mockReturnValue({ projectId: 1, writable: true, metadata: { canCreate: false } });
-  workItemsApi.overview.mockResolvedValue({ items: [], statuses: [], milestones: [] });
-});
-
-it('does not offer Dev a creation action rejected by the API', async () => {
-  const navigate = vi.fn(), user = userEvent.setup();
-  render(<ProjectOverview navigate={navigate} />);
-  await screen.findByText('Overview loaded');
-  const create = screen.getByRole('button', { name: 'Thêm công việc' });
-  expect(create).toBeDisabled();
-  await user.click(create);
-  expect(navigate).not.toHaveBeenCalled();
-});
-
-it('permits creation after server metadata grants permission', async () => {
-  useProjectData.mockReturnValue({ projectId: 1, writable: true, metadata: { canCreate: true } });
-  const navigate = vi.fn(), user = userEvent.setup();
-  render(<ProjectOverview navigate={navigate} />);
-  await screen.findByText('Overview loaded');
-  await user.click(screen.getByRole('button', { name: 'Thêm công việc' }));
-  expect(navigate).toHaveBeenCalledWith('/board/new');
-});
-it('surfaces a permission-load error with recovery instead of a silently disabled creation button',async()=>{
-  const refresh=vi.fn();useProjectData.mockReturnValue({projectId:1,writable:false,loading:false,error:'Không tải được quyền dự án',metadata:null,refresh});
-  const user=userEvent.setup();render(<ProjectOverview navigate={vi.fn()}/>);
-  await screen.findByText('Overview loaded');expect(screen.getByRole('alert')).toHaveTextContent('Không tải được quyền dự án');
-  await user.click(screen.getByRole('button',{name:'Thử lại'}));expect(refresh).toHaveBeenCalledOnce();
+import {expect,it,vi} from 'vitest';
+import {fireEvent,render,screen} from '@testing-library/react';
+import {ProjectOverview} from './ProjectOverview';
+const state=vi.hoisted(()=>({value:{},retry:vi.fn()}));
+vi.mock('../features/projects/ProjectProvider',()=>({useProject:()=>state.value}));
+vi.mock('../services/api/featureIssues',()=>({featureIssuesApi:{list:async()=>({items:[],totalItems:0,page:0,size:1,totalPages:0})}}));
+vi.mock('../services/api/projects',()=>({projectsApi:{listCatalog:async()=>[]}}));
+it('does not show stale authorized content while the next project is loading or denied',()=>{
+ state.value={currentProject:{id:1,code:'SPIDER-PLUS',name:'Spider Plus'}};const view=render(<ProjectOverview/>);expect(screen.getByRole('heading',{name:'Tài liệu làm việc'})).toBeVisible();
+ state.value={...state.value,loading:true};view.rerender(<ProjectOverview/>);expect(screen.queryByRole('heading',{name:'Tài liệu làm việc'})).toBeNull();
+ state.value={currentProject:null,error:'Dự án không còn truy cập được',refreshProjects:state.retry};view.rerender(<ProjectOverview/>);
+ expect(screen.getByRole('alert')).toHaveTextContent(state.value.error);expect(screen.queryByRole('heading',{name:'Tài liệu làm việc'})).toBeNull();
+ fireEvent.click(screen.getByRole('button',{name:'Tải lại dự án'}));expect(state.retry).toHaveBeenCalledOnce();
 });

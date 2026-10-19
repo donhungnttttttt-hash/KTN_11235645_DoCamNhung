@@ -35,3 +35,11 @@
 .account-popover > button { display: flex; gap: 8px; align-items: center; border: 1px solid #dce5eb; border-radius: 3px; background: #f8fafc; padding: 8px; margin-top: 5px; color: #334155; }
 @media (max-width: 850px) { .account-trigger strong { display: none; } }
 @media (max-width: 400px) { .auth-card { padding: 24px; } }
+
+.auth-card { border-radius:var(--radius-panel,12px); }
+.auth-card input,.auth-submit,.account-popover > button { border-radius:var(--radius-control,8px); transition:border-color var(--motion-fast,140ms) var(--ease-out,ease-out),background-color var(--motion-fast,140ms) var(--ease-out,ease-out),box-shadow var(--motion-fast,140ms) var(--ease-out,ease-out); }
+.auth-card input:focus { outline:2px solid var(--color-mint,#0f766e); outline-offset:2px; border-color:var(--color-mint,#0f766e); }
+.account-popover { border-radius:var(--radius-panel,12px); }
+.account-popover > button:not(:disabled):hover { background:var(--color-bg-sub,#edf7f4); border-color:var(--color-mint,#0f766e); }
+.account-action-notice { margin:4px 0; padding:10px; border:1px solid var(--color-border,#dce5eb); border-radius:var(--radius-control,8px); background:var(--color-bg-sub,#f8fafc); font-size:var(--text-caption); line-height:1.6; }
+@media(prefers-reduced-motion:reduce) { .auth-spin { animation:none; }.auth-card input,.auth-submit,.account-popover > button { transition:none; } }

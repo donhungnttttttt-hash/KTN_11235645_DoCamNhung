@@ -1,5 +1,35 @@
 # API đợt và báo cáo nội bộ — S08
 
+## FixReports — phân tích và báo cáo quản lý ngày 19/10/2026
+
+Contract hiện hành trong source dùng `P=/api/v1/projects/{projectId}/management-reports`; chỉ PM **của chính dự án** hoặc ADMIN, kể cả ADMIN không membership. Tester/DEV bị403, PM ngoài scope404; quyền AI đọc toàn hệ thống không mở quyền CRUD/xem API management-reports ngoài membership. [Contract chung](fixreports-contract.md), [metrics Feature](../business/metrics.md), [quyền](../business/permissions.md). Session, CSRF cho ghi, version và archive guard giữ hiện hành. Không xác nhận migration main DB/UAT từ source này.
+
+| Method/path sau P | Contract |
+| --- | --- |
+| GET `/summary?featureId=` | Bỏ tham số cho toàn dự án; trả project{id,code,name,description},feature hoặc null,metrics{total,tested,ok,ng,pending,na,notRun,executionPercent},features,issues{type,status,total}[],asOf,timeZone=`Asia/Ho_Chi_Minh` |
+| GET `/?page=0&size=20` | items/totalItems/page/size/totalPages; đúng scope, size1–100 |
+| GET `/{id}` | id/projectId/featureId/title/markdown/version/createdAt/updatedAt |
+| POST `/` | `{featureId?,title,markdown}`;201; không nhận draftId như liên kết sống với AI |
+| PUT `/{id}` | `{title,markdown,expectedVersion}`;409 version cũ; chỉ sửa báo cáo |
+| GET `/{id}/download` | bytes UTF8 `text/markdown` **đúng văn bản đã lưu**, attachment filename an toàn, private/no-store |
+| POST `/preview` | `{featureId?,provider?,model?,requestKey}` → state READY/FAILED/GENERATING,draftId,failureCode,markdown khi READY; chưa lưu báo cáo |
+
+Feature tùy chọn là target thật của report; server kiểm Feature thuộc project và đang hoạt động. metrics không dựa cycle/build/NA exclusion: tested=OK+NG+P+NA, denominator gồm NA, total0 cho progress0. Danh sách Feature có environment/caseCount/testedCaseCount/progressPercent; Issue counts gồm Bug/QA theo scope. Dữ liệu cũ bị reset không được bịa lịch sử người test hoặc kết luận nghiệm thu.
+
+AI preview kiểm quyền trước cache/provider, dùng nguồn/mô hình hiện có; inference có giới hạn30s, client35s. Khi kết quả chưa chắc chắn/pending, lặp lại **cùng requestKey và provider/model/Feature**; thay nội dung scope/nguồn cần request mới. Preview giữ draft riêng, không autosave/overwrite buffer. UI cho áp dụng gợi ý rồi sửa/lưu rõ ràng. Provider facts giới hạn20 Feature và10kB; chọn Feature lọc trước limit. Nội dung nguồn là untrusted data, không lời lệnh; không gửi secret/private chat.
+
+Saved report lưu độc lập trong project_management_reports, không có TTL/FK tới AI draft/chat. Cleanup draft/chat không được xóa bản đã lưu. Markdown giữ nguyên text khi save/update/download; HTML không chạy trong UI (escaped React renderer, link chỉ HTTP(S)). Sửa “10 lỗi” thành “8 lỗi” không sửa Issue10, case Status, phân công hoặc lịch sử. Xung đột/mạng lỗi giữ bản đang soạn; tải xuống lấy bản server đã lưu, không giả lưu bản editor chưa submit.
+
+`GET /reports/summary` và `/reports/export.xlsx` cũ kiểm quyền management rồi410 `USE_FEATURE_REPORTS`; không tiếp tục expose totals cho Tester/DEV. `/analysis` tiếp nhận tiến độ/biểu đồ Feature và báo cáo, menu progress độc lập bị bỏ. Các mô tả S08/internal-v1 bên dưới là lịch sử, không công thức hoặc API hiện hành của Feature. Native persistence/cleanup và browser có bằng chứng riêng, không suy từ test API mock.
+
+### Bổ sung 19/10/2026 — R01/R03/R07: status-report cũ chỉ đọc
+
+`POST /api/v1/projects/{projectId}/status-reports` kiểm identity và quyền PM của chính dự án/ADMIN rồi trả410 `USE_FEATURE_REPORTS`, không kiểm narrative cũ, replay hay ghi báo cáo/membership. Session và CSRF vẫn áp dụng. Tester/DEV bị403, PM ngoài dự án404; quyền AI toàn cục không thay các quyền này.
+
+`GET /api/v1/projects/{projectId}/status-reports?page=0&size=20` giữ lịch sử tác giả/nội dung và milestone metadata, trả `reports,milestones,canPost:false`; chỉ PM dự án/ADMIN. `GET /api/v1/admin/projects/{projectId}/status-reports` vẫn ADMIN-only. Composer cũ được thay bằng CTA tới Tổng hợp & Phân tích trong đúng dự án; Tester/DEV không fetch lịch sử quản lý. Đây là luồng khác với `management-reports` lưu Markdown mới ở trên. [Quyền](../business/permissions.md), [KPI Admin hiện hành](../business/metrics.md).
+
+## Lịch sử S08 trước FixReports
+
 Contract: [reporting.openapi.json](reporting.openapi.json). Nghiệp vụ: [metrics.md](../business/metrics.md), [ADR-008](../decisions/ADR-008-internal-reporting.md).
 
 S10 tối ưu cách đọc: tổng hợp theo đợt/người phụ trách bằng SQL, chi tiết `source` phân trang trong DB (50 dòng). Tổng số, công thức, bộ lọc build/NA và cap 10.000 lượt giữ nguyên; trang ngoài phạm vi trả mảng rỗng và tổng số đúng. Export vẫn đọc snapshot tối đa 5.000 lượt để ghi đủ workbook. Tất cả truy vấn trong một transaction repeatable-read, không cache lẫn project/quyền.

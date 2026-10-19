@@ -54,13 +54,13 @@ class DeviceInventoryServiceTest {
   assertEquals("INVALID_RECIPIENT",assertThrows(BusinessException.class,()->service.allocateInitial("admin",1,List.of(a),Set.of("other"))).code());
   assertEquals("DUPLICATE_ASSET",assertThrows(BusinessException.class,()->service.allocateInitial("admin",1,List.of(a,a),Set.of("member"))).code());
   when(db.row(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(i->((String)i.getArgument(0)).contains("FROM projects")?Map.of("timezone","UTC"):Map.of("version",0L,"conditionCode","AVAILABLE"));
-  when(db.rows(java.util.Objects.requireNonNull(contains("project_memberships")),any(Object[].class))).thenReturn(List.of(Map.of("id",3L)));
+  when(db.rows(java.util.Objects.requireNonNull(contains("project_memberships")),any(Object[].class))).thenReturn(List.of(Map.of("id",3L,"projectRole","PM")));
   service.allocateInitial("admin",1,List.of(a,b),Set.of("member"));
   var order=inOrder(db);order.verify(db).row(java.util.Objects.requireNonNull(contains("FROM projects")),eq(1L));order.verify(db).row(java.util.Objects.requireNonNull(contains("FROM device_assets")),eq(2L));order.verify(db).row(java.util.Objects.requireNonNull(contains("FROM device_assets")),eq(9L));
  }
  @Test void membershipReadIsLockingAndFollowsProjectAndAssetLocks(){
   admin();when(db.row(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(i->((String)i.getArgument(0)).contains("FROM projects")?Map.of("timezone","UTC"):Map.of("version",0L,"conditionCode","AVAILABLE"));
-  when(db.rows(java.util.Objects.requireNonNull(contains("project_memberships")),any(Object[].class))).thenReturn(List.of(Map.of("id",3L)));
+  when(db.rows(java.util.Objects.requireNonNull(contains("project_memberships")),any(Object[].class))).thenReturn(List.of(Map.of("id",3L,"projectRole","PM")));
   service.assign("admin",new DeviceInventoryDtos.Assign(1,2,"member",null,"",0L));
   var order=inOrder(db);order.verify(db).rows(java.util.Objects.requireNonNull(contains("enabled=TRUE FOR SHARE")),eq("member"));order.verify(db).row(java.util.Objects.requireNonNull(contains("FROM projects")),eq(2L));order.verify(db).row(java.util.Objects.requireNonNull(contains("FROM device_assets")),eq(1L));order.verify(db).rows(java.util.Objects.requireNonNull(contains("active=TRUE FOR UPDATE")),eq(2L),eq("member"));
  }

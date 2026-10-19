@@ -320,3 +320,12 @@
   .dialog-actions { flex-wrap: wrap; }
   .dialog-close { min-height: 40px; min-width: 40px; display: grid; place-items: center; }
 }
+
+/* General descriptions use the same controls as the other settings editors. */
+.settings-form fieldset { min-width:0; margin:0; padding:0; border:0; }
+.settings-form textarea,.settings-form select { display:block; width:100%; min-width:0; padding:8px; border:1px solid var(--color-border,#cbd5e1); background:var(--color-bg-main,#fff); color:inherit; font:inherit; }
+.settings-form textarea,.settings-editor textarea { resize:vertical; }
+.settings-form :is(input,textarea,select),.settings-editor :is(input,textarea,select) { border-radius:var(--radius-control,8px); }
+.settings-form :is(input,textarea,select):focus-visible { outline:2px solid var(--color-mint,#0f766e); outline-offset:2px; }
+.settings-editor,.handbook-detail { border-radius:var(--radius-panel,12px); }
+.handbook-list button[aria-current=page] { border-color:var(--color-mint,#0f766e); box-shadow:inset 3px 0 var(--color-mint,#0f766e); }

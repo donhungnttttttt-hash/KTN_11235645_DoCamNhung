@@ -16,8 +16,8 @@ export function DocumentResultHistory({projectId,documentId,row,timeZone,onClose
   },[projectId,documentId,row.rowId,before,retry]);
   return <div className="tc-modal-overlay"><section ref={ref} tabIndex={-1} role="dialog" aria-modal="true" aria-label={`Lịch sử kết quả tài liệu ${row.sourceId}`} className="td-case-dialog">
     <header><h3>Lịch sử kết quả · Case {row.sourceId}</h3><button className="cat-btn" aria-label="Đóng lịch sử kết quả" onClick={onClose}>Đóng</button></header>
-    <div className="td-dialog-body"><p>Kết quả ghi trên tài liệu. Lịch sử đợt kiểm thử và chứng cứ được quản lý riêng.</p>
-      <button className="cat-btn" onClick={onExecution}>Lịch sử / chứng cứ đợt kiểm thử</button>
+    <div className="td-dialog-body"><p>Kết quả ghi trên tài liệu, cùng tài khoản thực sự cập nhật.</p>
+      {onExecution&&<button className="cat-btn" onClick={onExecution}>Lịch sử / chứng cứ đợt kiểm thử</button>}
       {error && <div role="alert" className="td-error">{error} <button className="cat-btn" onClick={()=>setRetry(n=>n+1)}>Thử lại</button></div>}
       {busy && <p role="status">Đang tải lịch sử…</p>}
       {!busy && !error && !items.length && <p>Chưa có thay đổi kết quả trên tài liệu.</p>}

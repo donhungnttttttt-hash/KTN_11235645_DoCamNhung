@@ -18,6 +18,7 @@ import vn.syp.tms.identity.*;
 import vn.syp.tms.shared.web.RequestIdFilter;
 @WebMvcTest(DeviceInventoryController.class) @Import({SecurityConfig.class,RequestIdFilter.class})
 class InventorySecurityTest {
+    @org.springframework.test.context.bean.override.mockito.MockitoBean vn.syp.tms.feature.LegacyTestingWrites legacyTestingWrites;
  @Autowired MockMvc mvc;@MockitoBean DeviceInventoryService service;@MockitoBean IdentityService identity;
  @org.springframework.lang.NonNull RequestPostProcessor actor(String role){var user=new IdentityUser("person","Person","hash",role);when(identity.current(user.getId())).thenReturn(user);return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),0),null,List.of(new SimpleGrantedAuthority("ROLE_"+role)))));}
  @Test void readsAndWritesRequireAdminAndCsrf() throws Exception {

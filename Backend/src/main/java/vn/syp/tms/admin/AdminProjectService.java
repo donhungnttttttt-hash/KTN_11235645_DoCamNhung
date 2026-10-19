@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.syp.tms.identity.IdentityService;
 import vn.syp.tms.project.*;
 import vn.syp.tms.workitem.WorkItemStore;
+import vn.syp.tms.shared.search.MultiWordSearch;
 import static vn.syp.tms.workitem.WorkItemStore.*;
 
 @Service @Transactional
@@ -59,12 +60,16 @@ public class AdminProjectService {
 
     @Transactional(readOnly=true)
     public AdminDtos.Page<Map<String,Object>> users(String actor,Long projectId,String keyword,String role,Boolean enabled,int page,int size) {
+        return users(actor,projectId,keyword,role,enabled,false,page,size);
+    }
+    @Transactional(readOnly=true)
+    public AdminDtos.Page<Map<String,Object>> users(String actor,Long projectId,String keyword,String role,Boolean enabled,boolean unassignedOnly,int page,int size) {
         admin(actor);
         if(page<0 || size<1 || size>100 || text(keyword).length()>100 || role!=null && !List.of("ADMIN","PM","TESTER","DEV").contains(role))fail(422,"INVALID_FILTER","Bộ lọc không hợp lệ.");
         var args=new ArrayList<Object>();String where=" WHERE 1=1";
+        if(unassignedOnly)where+=" AND NOT EXISTS(SELECT 1 FROM project_memberships unassigned WHERE unassigned.user_id=u.id AND unassigned.active=TRUE)";
         if(projectId!=null){db.row("SELECT id FROM projects WHERE id=?",projectId);where+=" AND EXISTS(SELECT 1 FROM project_memberships m WHERE m.user_id=u.id AND m.project_id=? AND m.active=TRUE)";args.add(projectId);}
-        // Usernames remain ASCII and case-sensitive; accept UTF-8 display-name search terms.
-        if(!text(keyword).isEmpty()){where+=" AND (LOCATE(?,CONVERT(u.username USING utf8mb4) COLLATE utf8mb4_bin)>0 OR LOCATE(?,u.display_name)>0)";args.add(text(keyword));args.add(text(keyword));}
+        var search=MultiWordSearch.sql(keyword,"u.username","u.display_name");where+=search.sql();args.addAll(search.args());
         if(role!=null){where+=" AND u.role_code=?";args.add(role);}
         if(enabled!=null){where+=" AND u.enabled=?";args.add(enabled);}
         long count=db.count("SELECT COUNT(*) FROM identity_users u"+where,args.toArray());args.add(size);args.add((long)page*size);

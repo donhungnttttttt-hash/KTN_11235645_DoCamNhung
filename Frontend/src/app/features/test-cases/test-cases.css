@@ -79,7 +79,7 @@
   background: none;
   border-bottom: 2px solid transparent;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: color var(--motion-fast,140ms), background-color var(--motion-fast,140ms), border-color var(--motion-fast,140ms);
 }
 
 .tc-tab-btn.active {

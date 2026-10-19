@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.*;
 import vn.syp.tms.identity.IdentityService;
 import vn.syp.tms.reporting.ReportMetrics;
 import vn.syp.tms.workitem.WorkItemStore;
+import vn.syp.tms.shared.search.MultiWordSearch;
 import static vn.syp.tms.workitem.WorkItemStore.*;
 
 @Service
@@ -35,16 +36,19 @@ public class AdminOverviewService {
         LEFT JOIN (SELECT m.project_id,COUNT(*) AS members,SUM(m.project_role='PM') AS pmCount,
             GROUP_CONCAT(CASE WHEN m.project_role='PM' THEN u.display_name END ORDER BY u.display_name SEPARATOR ', ') AS pmNames
             FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.active=TRUE AND u.enabled=TRUE GROUP BY m.project_id) m ON m.project_id=p.id
-        LEFT JOIN (SELECT r.project_id,COUNT(*) AS total,SUM(COALESCE(sd.excluded,FALSE)) AS na,
-            SUM(IF(NOT COALESCE(sd.excluded,FALSE) AND a.result_code='OK',1,0)) AS ok,
-            SUM(IF(NOT COALESCE(sd.excluded,FALSE) AND a.result_code='NG',1,0)) AS ng,
-            SUM(IF(NOT COALESCE(sd.excluded,FALSE) AND a.result_code='P',1,0)) AS pending
-            FROM run_items r JOIN test_cycles c ON c.project_id=r.project_id AND c.id=r.cycle_id
-            LEFT JOIN run_scope_decisions sd ON sd.project_id=r.project_id AND sd.id=r.scope_decision_id
-            LEFT JOIN execution_attempts a ON a.project_id=r.project_id AND a.id=r.latest_attempt_id
-            WHERE c.status_code<>'DRAFT' GROUP BY r.project_id) r ON r.project_id=p.id
+        LEFT JOIN (SELECT r.project_id,COUNT(*) AS total,SUM(r.result_status='NA') AS na,
+            SUM(r.result_status='OK') AS ok,SUM(r.result_status='NG') AS ng,SUM(r.result_status='P') AS pending
+            FROM import_rows r JOIN import_batches d ON d.project_id=r.project_id AND d.id=r.batch_id
+            JOIN testing_features f ON f.project_id=d.project_id AND f.id=d.feature_id
+            WHERE r.target_case_id IS NOT NULL AND d.status='COMMITTED' AND d.archived_at IS NULL AND f.archived_at IS NULL
+            GROUP BY r.project_id) r ON r.project_id=p.id
         LEFT JOIN (SELECT w.project_id,SUM(NOT s.terminal) AS openBugs,SUM(w.status_code='resolved') AS awaitingVerification
-            FROM work_items w JOIN work_item_statuses s ON s.code=w.status_code WHERE w.item_type='BUG' GROUP BY w.project_id) b ON b.project_id=p.id
+            FROM work_items w JOIN work_item_statuses s ON s.code=w.status_code
+            JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id
+            JOIN testing_features f ON f.project_id=x.project_id AND f.id=x.feature_id
+            LEFT JOIN import_batches d ON d.project_id=x.project_id AND d.id=x.document_id
+            WHERE w.item_type='BUG' AND x.deleted_at IS NULL AND f.archived_at IS NULL AND d.archived_at IS NULL
+            GROUP BY w.project_id) b ON b.project_id=p.id
         WHERE 1=1
         """;
     private Map<String,Object> enrich(Map<String,Object> row) {
@@ -57,14 +61,11 @@ public class AdminOverviewService {
         authorize(actor);
         if(page<0 || size<1 || size>100 || keyword!=null && keyword.length()>100) fail(422,"VALIDATION_ERROR","Bộ lọc hoặc phân trang không hợp lệ.");
         scope(projectId);
-        // Code is stored as ASCII; convert the column so a Vietnamese search term
-        // is never coerced to ASCII. Keep code matching case-sensitive and literal.
-        String search=" AND (?='' OR LOCATE(?,CONVERT(p.code USING utf8mb4) COLLATE utf8mb4_bin)>0 OR LOCATE(?,p.name)>0)";
-        var params=new ArrayList<Object>(Arrays.asList(args(projectId)));String term=text(keyword);
-        params.add(term);params.add(term);params.add(term);
-        long count=db.count("SELECT COUNT(*) FROM projects p WHERE 1=1"+filter(projectId)+search,params.toArray());
+        var search=MultiWordSearch.sql(keyword,"p.code","p.name");
+        var params=new ArrayList<Object>(Arrays.asList(args(projectId)));params.addAll(search.args());
+        long count=db.count("SELECT COUNT(*) FROM projects p WHERE 1=1"+filter(projectId)+search.sql(),params.toArray());
         params.add(size);params.add((long)page*size);
-        var rows=db.rows(PROJECTS+filter(projectId)+search+" ORDER BY p.id LIMIT ? OFFSET ?",params.toArray());
+        var rows=db.rows(PROJECTS+filter(projectId)+search.sql()+" ORDER BY p.id LIMIT ? OFFSET ?",params.toArray());
         rows.forEach(this::enrich);
         addDeadlineCounts(rows,milestones(projectId,Instant.now()));
         return new AdminDtos.Page<>(rows,page,size,count);
@@ -98,7 +99,7 @@ public class AdminOverviewService {
         var inventory=inventory(projectId,asOf);
         attention.put("overdueReturns",inventory.get("overdueReturns"));
         attention.put("overdueReturnCount",inventory.get("overdueReturnCount"));
-        return new AdminDtos.Overview(asOf,"internal-v1",projectId,projects.size(),projects.stream().filter(p->p.get("archivedAt")==null).count(),totalUsers,enabledUsers,
+        return new AdminDtos.Overview(asOf,"feature-cases-v1",projectId,projects.size(),projects.stream().filter(p->p.get("archivedAt")==null).count(),totalUsers,enabledUsers,
             projects.stream().mapToLong(p->number(p,"openBugs")).sum(),projects.stream().mapToLong(p->number(p,"awaitingVerification")).sum(),metrics,roles,
             projects.stream().limit(10).toList(),attention,inventory);
     }
@@ -117,7 +118,7 @@ public class AdminOverviewService {
         return new ProjectDeadlines(db).milestones(projectId,asOf);
     }
     private List<Map<String,Object>> awaitingBugs(Long projectId) {
-        return db.rows("SELECT w.id,w.project_id AS projectId,p.name AS projectName,w.item_key AS itemKey,w.title FROM work_items w JOIN projects p ON p.id=w.project_id WHERE w.item_type='BUG' AND w.status_code='resolved'"+filter(projectId)+" ORDER BY w.id LIMIT 20",args(projectId));
+        return db.rows("SELECT w.id,w.project_id AS projectId,p.name AS projectName,w.item_key AS itemKey,w.title FROM work_items w JOIN projects p ON p.id=w.project_id JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id JOIN testing_features f ON f.project_id=x.project_id AND f.id=x.feature_id LEFT JOIN import_batches d ON d.project_id=x.project_id AND d.id=x.document_id WHERE w.item_type='BUG' AND w.status_code='resolved' AND x.deleted_at IS NULL AND f.archived_at IS NULL AND d.archived_at IS NULL"+filter(projectId)+" ORDER BY w.id LIMIT 20",args(projectId));
     }
     private void addDeadlineCounts(List<Map<String,Object>> projects,List<Map<String,Object>> milestones) {
         var overdue=new HashMap<Long,Long>();var missing=new HashMap<Long,Long>();

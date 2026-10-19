@@ -22,7 +22,8 @@ class OpenAiLiveConnectionTest {
         }
         String key = setting(properties, "OPENAI_API_KEY", "");
         var config = new OpenAiConfiguration(true, key,
-                setting(properties, "TMS_OPENAI_MODEL", "gpt-4.1-mini"), 20, 32, 1);
+                setting(properties, "TMS_OPENAI_MODEL", "gpt-4.1-mini"), 30, 128, 1,
+                setting(properties, "TMS_OPENAI_BASE_URL", "https://api.openai.com/v1"));
         var json = new ObjectMapper();
         var schema = json.readTree("""
             {"type":"object","properties":{"ok":{"type":"boolean","enum":[true]}},

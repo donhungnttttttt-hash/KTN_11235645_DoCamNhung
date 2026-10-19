@@ -1,4 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from 'react-dom';
+import './work-item-modal.css';
+import {DialogVisibilityContext} from '../auth/DialogVisibilityContext';
+import {matchesSearch} from '../../utils/multiWordSearch';
 import {
   X,
   Maximize2,
@@ -185,6 +189,14 @@ export function StatusSelect({ value, onChange }) {
     </div>
   );
 }
+const ModalActivityContext=createContext(null);
+export const useModalState=()=>useContext(ModalActivityContext);
+export function useModalActivity(busy,dirty){
+  const context=useContext(ModalActivityContext),report=context?.report;
+  useEffect(()=>{report?.({busy,dirty});return()=>report?.({busy:false,dirty:false});},[report,busy,dirty]);
+  return context?.requestClose;
+}
+
 export function Modal({
   title,
   children,
@@ -193,12 +205,16 @@ export function Modal({
   drawer = false,
   busy = false,
 }) {
-  const ref = useDialogFocus(onClose, busy);
+  const visible=useContext(DialogVisibilityContext);
+  const [activity,setActivity]=useState({busy:false,dirty:false}),[discard,setDiscard]=useState(false);
+  const blocked=busy||activity.busy;
+  function requestClose(){if(blocked)return;if(activity.dirty)setDiscard(true);else onClose();}
+  const ref = useDialogFocus(requestClose, blocked, visible);
   const [expanded,setExpanded]=useState(false);
-  return (
+  return createPortal(<div className="wi-modal-host" hidden={!visible} inert={!visible?'':undefined}>
     <div
       className={`d-modal-backdrop ${drawer ? "wb-drawer-backdrop" : ""}`}
-      onClick={busy ? undefined : onClose}
+      onClick={blocked ? undefined : requestClose}
     >
       <section
         ref={ref}
@@ -213,12 +229,12 @@ export function Modal({
           <h2>{title}</h2>
           <div className="d-modal-window-actions">
             {drawer&&<IconButton icon={expanded?Minimize2:Maximize2} label={expanded?'Thu nhỏ ticket':'Phóng to ticket'} aria-pressed={expanded} onClick={()=>setExpanded(value=>!value)}/>}
-            <IconButton icon={X} label="Đóng hộp thoại" disabled={busy} onClick={onClose} />
+            <IconButton icon={X} label="Đóng hộp thoại" disabled={blocked} onClick={requestClose} />
           </div>
         </header>
-        <div className="d-modal-body">{children}</div>
+        <div className="d-modal-body"><ModalActivityContext.Provider value={{report:setActivity,requestClose,busy:blocked,dirty:activity.dirty}}>{children}</ModalActivityContext.Provider></div>
       </section>
-    </div>
+    </div>{discard&&<Modal title="Bỏ nội dung chưa lưu?" onClose={()=>setDiscard(false)}><p>Nội dung đang soạn chưa được lưu. Bạn có thể tiếp tục soạn hoặc bỏ bản nháp này.</p><div className="wi-actions"><button type="button" className="cat-btn cat-btn-mint" onClick={()=>setDiscard(false)}>Tiếp tục soạn</button><button type="button" className="cat-btn" onClick={onClose}>Bỏ bản nháp</button></div></Modal>}</div>, document.body
   );
 }
 export function MarkdownView({ text }) {
@@ -413,11 +429,7 @@ export function MultiSelect({
         )}
         <div className="d-multi-options">
           {options
-            .filter((o) =>
-              (o.label || o)
-                .toLocaleLowerCase("vi")
-                .includes(query.toLocaleLowerCase("vi")),
-            )
+            .filter((o) => matchesSearch([o.label || o],query))
             .map((o) => {
               const id = o.id || o;
               const chosen = selected.includes(id);

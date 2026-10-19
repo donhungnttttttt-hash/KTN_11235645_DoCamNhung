@@ -17,6 +17,7 @@ public class TestCaseWorkbook {
     public static final List<String> HEADERS = List.of("caseNo", "suiteCode", "titleVi", "preconditionsVi", "stepsVi", "expectedVi", "titleJp", "preconditionsJp", "stepsJp", "expectedJp", "sourceReference");
     public static final String INTERNAL = "INTERNAL_V1";
     public static final String CUSTOMER = "CUSTOMER_V1";
+    private static final List<String> EXPORT_SUFFIX=List.of("Status","Người test đầu tiên","Người test lại gần nhất");
     public record Parsed(String fileName, String checksum, List<TestCaseDtos.ImportRowInput> rows,
             String format, String sheetName, byte[] sourceBytes) {}
 
@@ -41,7 +42,10 @@ public class TestCaseWorkbook {
                     return new Parsed(name, sha256(bytes), rows, CUSTOMER, sheet.getSheetName(), bytes);
                 }
                 if (sheet.getNumMergedRegions() != 0) throw invalid("Mẫu TestCases nội bộ không hỗ trợ gộp ô: " + sheet.getMergedRegion(0).formatAsString() + ".");
-                if (header == null || header.getLastCellNum() != HEADERS.size()) throw invalid("Thiếu hoặc thừa cột trong file mẫu.");
+                boolean ownExport=header.getLastCellNum()==HEADERS.size()+EXPORT_SUFFIX.size();
+                if(ownExport)for(int index=0;index<EXPORT_SUFFIX.size();index++)
+                    if(!EXPORT_SUFFIX.get(index).equals(text(header.getCell(HEADERS.size()+index),1)))ownExport=false;
+                if (header.getLastCellNum()!=HEADERS.size()&&!ownExport) throw invalid("Thiếu hoặc thừa cột trong file mẫu.");
                 for (int col=0; col<HEADERS.size(); col++) {
                     if (!HEADERS.get(col).equals(text(header.getCell(col),1))) throw invalid("Tên hoặc thứ tự cột không khớp file mẫu.");
                 }
@@ -49,7 +53,9 @@ public class TestCaseWorkbook {
                 for (int i=1; i<=sheet.getLastRowNum(); i++) {
                     Row row=sheet.getRow(i);
                     if (row==null) continue;
-                    if (row.getLastCellNum()>HEADERS.size()) throw invalid("Dòng " + (i+1) + " có cột ngoài mẫu.");
+                    if (row.getLastCellNum()>(ownExport?HEADERS.size()+EXPORT_SUFFIX.size():HEADERS.size())) throw invalid("Dòng " + (i+1) + " có cột ngoài mẫu.");
+                    // Validate untrusted metadata cells without importing execution or assignment responsibility.
+                    if(ownExport)for(int col=HEADERS.size();col<HEADERS.size()+EXPORT_SUFFIX.size();col++)text(row.getCell(col),i+1);
                     String[] v=new String[HEADERS.size()];
                     for (int c=0;c<v.length;c++) v[c]=text(row.getCell(c),i+1);
                     if (Arrays.stream(v).allMatch(value -> value.isBlank())) continue;
@@ -111,6 +117,10 @@ public class TestCaseWorkbook {
         var example=List.of("1","1","Đăng nhập","Có tài khoản nội bộ","1. Mở ứng dụng\n2. Đăng nhập bằng tài khoản hợp lệ",
                 "Chức năng","Mở màn tổng quan","Hiển thị màn tổng quan","","","","","");
         return DocumentWorkbook.export(null,"タブレット",headers,List.of(new DocumentWorkbook.RowCells(2,example)));
+    }
+    /** Shared by additive recovery migration; identical padding/trailing-cell rules to normal import. */
+    public static int effectiveCustomerWidth(org.apache.poi.ss.usermodel.Sheet sheet) {
+        return CustomerWorkbook.headers(sheet).size();
     }
 
     public static String sha256(byte[] value) {

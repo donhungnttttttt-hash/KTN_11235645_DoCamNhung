@@ -1,0 +1,20 @@
+/* Component-owned scope: dialogs also open from document cells and new Issue routes. */
+.wi-modal-host[hidden]{display:none!important}
+.wi-modal-host .d-modal-backdrop{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;padding:24px;background:#0f172a66;box-sizing:border-box;isolation:isolate}
+.wi-modal-host .d-modal{display:flex;flex-direction:column;min-width:0;width:min(500px,100%);max-width:100%;max-height:calc(100dvh - 48px);overflow:hidden;background:var(--color-surface,#fff);color:var(--color-text,#29434c);border:1px solid var(--color-border,#c7dcd9);border-radius:var(--radius-panel,12px);box-shadow:0 20px 60px #0f172a33;font-size:var(--text-table,14px);line-height:1.5;outline:none;animation:wi-dialog-enter var(--motion-enter,240ms) var(--ease-out,ease-out)}
+.wi-modal-host .d-modal.wide{width:min(1040px,100%)}
+.wi-modal-host .d-modal>header{display:flex;align-items:center;justify-content:space-between;flex:none;gap:16px;padding:16px 20px;border-bottom:1px solid var(--color-border,#d6e5e2);background:#f4faf8}
+.wi-modal-host .d-modal>header h2{margin:0;min-width:0;overflow-wrap:anywhere;font-size:var(--text-section,18px);font-weight:650;line-height:1.4}
+.wi-modal-host .d-modal-body{min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;padding:20px;scrollbar-gutter:stable}
+.wi-modal-host .wi-field input:not([type="checkbox"]):not([type="radio"]),.wi-modal-host .wi-field select,.wi-modal-host .wi-field textarea{border-radius:var(--radius-control,8px)}
+.wi-modal-host .d-modal-window-actions{display:flex;align-items:center;gap:8px;flex:none}
+.wi-modal-host .d-icon-button{display:inline-flex;justify-content:center;align-items:center;width:40px;height:40px;flex:none;border:1px solid #c7dcd9;border-radius:var(--radius-control,8px);background:#fff;color:#315e56;cursor:pointer;transition:background var(--motion-fast,140ms),border-color var(--motion-fast,140ms)}
+.wi-modal-host .d-icon-button:hover:not(:disabled){background:#e7f4ef;border-color:#7aafa4}
+.wi-modal-host .d-icon-button:focus-visible{outline:2px solid #0f766e;outline-offset:2px}
+.wi-modal-host .d-icon-button:disabled{opacity:.5;cursor:wait}
+.wi-modal-host .wb-drawer-backdrop{justify-content:flex-end;padding:0}
+.wi-modal-host .d-modal.wb-drawer{width:min(1040px,94vw);height:100dvh;max-height:100dvh;border-radius:var(--radius-panel,12px) 0 0 var(--radius-panel,12px)}
+.wi-modal-host .d-modal.wb-drawer.is-expanded{width:100vw;max-width:100vw;height:100dvh;border-radius:0}
+@keyframes wi-dialog-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.wi-modal-host .d-modal-backdrop{padding:8px}.wi-modal-host .d-modal{max-height:calc(100dvh - 16px)}.wi-modal-host .d-modal>header{padding:12px;gap:8px}.wi-modal-host .d-modal-body{padding:16px}.wi-modal-host .d-icon-button{width:44px;height:44px}.wi-modal-host .wb-drawer-backdrop{padding:0}.wi-modal-host .d-modal.wb-drawer{width:100vw;border-radius:0}}
+@media(prefers-reduced-motion:reduce){.wi-modal-host .d-modal{animation:none}.wi-modal-host .d-icon-button{transition:none}}

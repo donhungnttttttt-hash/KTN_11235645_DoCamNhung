@@ -30,10 +30,11 @@ final class CustomerWorkbook {
                 case "hangmucxacnhan", "mucxacnhan" -> "confirmation";
                 case "ketquamongdoi" -> "expectedVi";
                 case "ghichuthietke" -> "designNote";
-                case "ipad" -> "result";
+                case "ipad", "status" -> "result";
                 case "ghichuthucthi" -> "executionNote";
                 case "idredmine" -> "sourceReference";
-                case "nguoitest" -> "tester";
+                case "nguoitest", "nguoitestdautien" -> "tester";
+                case "nguoitestlaigannhat" -> "latestTester";
                 default -> "";
             };
             if(!key.isEmpty() && columns.putIfAbsent(key,i)!=null)

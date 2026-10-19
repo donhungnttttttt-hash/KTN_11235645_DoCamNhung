@@ -44,11 +44,11 @@ test('bulk member selection preserves other pages and sends the role filter to t
 test('bulk device selection retains handover drafts when display filters change',async()=>{
  const user=userEvent.setup();
  const api={assets:vi.fn().mockResolvedValue({items:[{id:1,assetCode:'IPAD-01',model:'iPad',version:3}],totalElements:1})};
- function Picker(){const [value,setValue]=React.useState([]);return <InitialDevicePicker value={value} onChange={setValue} api={api} members={[{userId:'tester',displayName:'Tester',username:'tester'}]}/>;}
+ function Picker(){const [value,setValue]=React.useState([]);return <InitialDevicePicker value={value} onChange={setValue} api={api} members={[{userId:'tester',projectRole:'PM',displayName:'Tester',username:'tester'}]}/>;}
  render(<Picker/>);
  await screen.findByLabelText('IPAD-01 · iPad');
  await user.click(screen.getByLabelText('Chọn tất cả đang hiển thị · Máy sẵn sàng'));
- await user.selectOptions(screen.getByLabelText('Người nhận IPAD-01'),'tester');
+ await user.selectOptions(screen.getByLabelText('Người nhận chung'),'tester');
  await user.type(screen.getByLabelText('Ghi chú bàn giao IPAD-01'),'Kiểm thử iPad');
  await user.selectOptions(screen.getByLabelText('Hiển thị · Máy sẵn sàng'),'unselected');
  expect(screen.queryByLabelText('IPAD-01 · iPad')).not.toBeInTheDocument();

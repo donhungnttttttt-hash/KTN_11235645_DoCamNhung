@@ -2,6 +2,20 @@ import React,{useEffect,useId,useLayoutEffect,useRef,useState} from 'react';
 import {Check,ChevronDown,Search} from 'lucide-react';
 import {ReadState} from './shared';
 
+function visibleBounds(trigger){
+ const viewport=window.visualViewport;
+ let top=viewport?.offsetTop||0,bottom=top+(viewport?.height||window.innerHeight);
+ const scrollers=[];
+ for(let ancestor=trigger.parentElement;ancestor;ancestor=ancestor.parentElement){
+  const style=getComputedStyle(ancestor),overflow=style.overflowY||style.overflow;
+  if(!/auto|scroll|hidden|clip|overlay/.test(overflow))continue;
+  const rect=ancestor.getBoundingClientRect();
+  if(rect.height>0){const edge=rect.top+ancestor.clientTop;top=Math.max(top,edge);bottom=Math.min(bottom,edge+ancestor.clientHeight);}
+  if(/auto|scroll|overlay/.test(overflow)&&ancestor.scrollHeight>ancestor.clientHeight)scrollers.push(ancestor);
+ }
+ return {top,bottom,scrollers};
+}
+
 /** Searchable project chooser. Typing never changes the caller's project scope. */
 export function AdminProjectDropdown({label,emptyLabel,value,selectedLabel,onChange,search,onSearch,state,pendingSearch,pages,onReset}) {
  const [open,setOpen]=useState(false),[active,setActive]=useState(-1);
@@ -34,22 +48,38 @@ export function AdminProjectDropdown({label,emptyLabel,value,selectedLabel,onCha
  },[open]);
  useLayoutEffect(()=>{
   if(!open)return;
-  // Keep the popup inside the visible viewport, including the mobile keyboard.
-  function position(){
-   const rect=trigger.current?.getBoundingClientRect();if(!rect)return;
-   const viewport=window.visualViewport;
-   const top=viewport?.offsetTop||0,bottom=top+(viewport?.height||window.innerHeight);
-   const below=bottom-rect.bottom-12,above=rect.top-top-12;
-   const useAbove=below<240&&above>below;
-   setPlacement({above:useAbove,height:Math.max(80,Math.min(380,useAbove?above:below))});
+  // The independently scrolling main/dialog can clip a popup before the viewport edge.
+  // Make room once on open; subsequent user scrolling only remeasures placement.
+  function position(makeRoom=false){
+   const element=trigger.current;if(!element)return;
+   let rect=element.getBoundingClientRect(),bounds=visibleBounds(element);
+   const spaces=()=>({below:bounds.bottom-rect.bottom-12,above:rect.top-bounds.top-12});
+   let room=spaces();
+   const target=Math.min(240,Math.max(0,bounds.bottom-bounds.top-rect.height-24));
+   if(makeRoom&&target>=136&&Math.max(room.above,room.below)+1<136){
+    for(const ancestor of bounds.scrollers){
+     const before=ancestor.scrollTop,max=Math.max(0,ancestor.scrollHeight-ancestor.clientHeight);
+     const down=Math.min(Math.max(0,target-room.below),Math.max(0,max-before));
+     const up=Math.min(Math.max(0,target-room.above),Math.max(0,before));
+     // Prefer below when it can fit; otherwise use the side with more attainable room.
+     const delta=room.below+down+1>=target?down:room.above+up+1>=target?-up:room.below+down>=room.above+up?down:-up;
+     if(Math.abs(delta)<1)continue;
+     ancestor.scrollTop=Math.max(0,Math.min(max,before+delta));
+     rect=element.getBoundingClientRect();bounds=visibleBounds(element);room=spaces();
+     if(Math.max(room.above,room.below)+1>=target)break;
+    }
+   }
+   const useAbove=room.below<240&&room.above>room.below;
+   setPlacement({above:useAbove,height:Math.max(0,Math.min(380,useAbove?room.above:room.below))});
   }
-  position();window.addEventListener('resize',position);window.addEventListener('scroll',position,true);
-  window.visualViewport?.addEventListener('resize',position);
-  window.visualViewport?.addEventListener('scroll',position);
+  const remeasure=()=>position();
+  position(true);window.addEventListener('resize',remeasure);window.addEventListener('scroll',remeasure,true);
+  window.visualViewport?.addEventListener('resize',remeasure);
+  window.visualViewport?.addEventListener('scroll',remeasure);
   return()=>{
-   window.removeEventListener('resize',position);window.removeEventListener('scroll',position,true);
-   window.visualViewport?.removeEventListener('resize',position);
-   window.visualViewport?.removeEventListener('scroll',position);
+   window.removeEventListener('resize',remeasure);window.removeEventListener('scroll',remeasure,true);
+   window.visualViewport?.removeEventListener('resize',remeasure);
+   window.visualViewport?.removeEventListener('scroll',remeasure);
   };
  },[open]);
 

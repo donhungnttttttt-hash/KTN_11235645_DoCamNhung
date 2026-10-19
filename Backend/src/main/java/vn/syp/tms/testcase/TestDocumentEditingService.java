@@ -13,6 +13,8 @@ import vn.syp.tms.shared.web.BusinessException;
 @Service
 @Transactional
 public class TestDocumentEditingService {
+    @org.springframework.beans.factory.annotation.Autowired(required=false)
+    private vn.syp.tms.feature.FeatureService features;
     private final JdbcTemplate db;
     private final ProjectService projects;
     private final TestDocumentService documents;
@@ -39,6 +41,7 @@ public class TestDocumentEditingService {
         return selected.size();
     }
     public void edit(long p,String actor,long document,long rowId,int column,TestDocumentDtos.EditCell input) {
+        if(features!=null && features.owns(p,document))features.requireDocumentWritable(p,actor,document,true);
         projects.lockWritableProject(p,actor);
         var detail=documents.get(p,actor,document);var row=row(detail,rowId);
         if(row.archived()) fail(409,"ARCHIVED","Test case đã được lưu trữ.");

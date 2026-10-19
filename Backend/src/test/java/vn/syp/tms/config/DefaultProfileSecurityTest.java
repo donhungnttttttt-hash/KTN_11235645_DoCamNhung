@@ -19,6 +19,7 @@ import vn.syp.tms.shared.web.RequestIdFilter;
 @WebMvcTest(FoundationController.class)
 @Import({SecurityConfig.class, RequestIdFilter.class})
 class DefaultProfileSecurityTest {
+    @org.springframework.test.context.bean.override.mockito.MockitoBean vn.syp.tms.feature.LegacyTestingWrites legacyTestingWrites;
     @Autowired MockMvc mvc;
     @Autowired ApplicationContext context;
     @MockitoBean FoundationService service;

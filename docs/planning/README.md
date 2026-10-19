@@ -1,5 +1,27 @@
 # Kế hoạch phát triển theo sprint
 
+Yêu cầu bàn giao 19/10: người dùng cho phép commit toàn bộ thay đổi source hiện tại và push `system-design`. Phạm vi gồm backend/frontend, tests, migration, scripts và tài liệu; giữ `var/` (log, dữ liệu/bằng chứng thô, file tạm) ở máy local. Báo cáo có tóm tắt kiểm chứng trong Git; đường dẫn bằng chứng `var/` chưa được xuất bản cùng source. Không merge/deploy; FR-12/S11 vẫn IN_REVIEW. Các ghi chú chưa commit/push bên dưới là snapshot trước yêu cầu bàn giao này.
+
+Admin entry/UIUX19/10: [sửa menu sau đăng nhập, popup/focus/form và responsive](../reviews/2026-10-19-admin-entry-uiux.md), [checklist](2026-10-19-admin-entry-uiux.md). 1100/1100 frontend test (120 file), build PASS trên hash 320 file ổn định; Chrome desktop/mobile/low-height theo từng receipt. Coverage chưa đo mới; không nghiệm thu mọi button/trạng thái. Bảo toàn baseline 3.374 file, không sửa backend/schema/config, không ghi nghiệp vụ/commit/push. UX-002/011 và UAT còn mở; FR-12/S11 IN_REVIEW. Các ghi chú cũ bên dưới là checkpoint lịch sử, trạng thái main hiện hành xem STATUS.json.
+
+Follow-up UI/Chrome19/10: [main5173/API404,7lỗi UI sửa và980FE](../reviews/2026-10-19-fixreports-ui-followup.md). Công cụ upload lỗi dù user xác nhận quyền bật; không quy lỗi user. MainV30 chưa đồng bộ, cần quyền restart cụ thể theo prompt; vẫn S11 IN_REVIEW.
+
+FixReports19/10: [kế hoạch FR-00–FR-12](2026-10-19-fixreports-implementation-plan.md), [kết quả/skills/A01–A20](../reviews/2026-10-19-fixreports-implementation-review.md). Source và kiểm thử cô lập đã chốt:975FE/645offlineBE, các native suites vàsnapshot mainV30→33 bảo toàn7.362row cũ PASS; browser4vai trò có upload/kiểm manual còn riêng. Main8080V30 chưa nâng cấp/restart; project12SPIDER-PLUS/PM syp.lab.pm03 được thêm theo user cho phép. LiveAI/UAT/cutover chưa thực hiện, S11 IN_REVIEW; không commit/push.
+
+Chat chỉ chọn phạm vi18/10: [bỏ tác vụ/tìm nguồn/file-ticket, tự lấy ngữ cảnh dự án](../reviews/2026-10-18-ai-chat-scope.md). Mặc định toàn bộ dự án được phép; chọn riêng dùng PROJECT_CHAT, gợi ý gửi ngay và giữ nhập tự do/lịch sử cũ. FullFE896 rồi finalAI60,165BE AI/13native/coverage/build PASS; Chrome app thật1combo/320px và fixture gửi đúng scope. Local8080 PID28580/tmsV30/UP, dữ liệu cũ giữ nguyên, không migration mới/live call/commit/push. S11 IN_REVIEW.
+
+Điều chỉnh AI tiếp theo18/10: [bấm câu hỏi có sẵn gửi ngay](../reviews/2026-10-18-ai-preset-send.md). Dùng cùng send/lock/retry; giữ nháp tự viết, khóa khi chưa đủ điều kiện gửi. RED7→GREEN35; hồi quy AI60/4file, coverage AiChat và build PASS; Chrome fixture giả lập xác nhận1click/1request, pending và nháp còn nguyên. Không backend/schema/live call mới hoặc commit/push; S11 IN_REVIEW.
+
+AI tổng hợp dự án18/10: [Các dự án của tôi và bốn câu hỏi có sẵn](../reviews/2026-10-18-ai-my-projects.md). Backend lọc membership/Admin, fingerprint kiểm tra xuyên vòng đời chat; KPI theo ReportMetrics và mẫu việc/case của chính người hỏi. 893FE/162BE AI/9native/14runner/live synthetic1 PASS, coverage/build và browser320px; local8080/V30/healthUP, dữ liệu trước/sau giữ nguyên. Chất lượng nghiệp vụ thực tế/UAT còn mở, S11 IN_REVIEW; không commit/push.
+
+Sửa chat AI18/10: [contract Caheo và Enter gửi tức thời](../reviews/2026-10-18-caheo-chat-send.md). Tái hiện HTTP200 nhưng field `answer` sai schema `text`; làm rõ instructions, giữ validation. UI xóa composer/hiện câu hỏi ngay, giữ bản nháp và same-key khi chưa rõ kết quả. 890FE/151BE AI/build/live chat PASS; Chrome thread3 trả lời câu chào, backend PID7000/readiness200. Coverage đã đo; giữ S11 IN_REVIEW, không commit/push.
+
+Kết nối AI 18/10: [Caheo/gpt-5.6-luna](../reviews/2026-10-18-caheo-ai-connection.md). Endpoint server-only có allowlist, key local được bảo vệ/backup ngoài Git; probe Java thành công không dữ liệu dự án. 149 test AI và loader PASS, backend đã restart/readiness200, metadata ADMIN có model sẵn sàng. Chất lượng tác vụ AI cần đánh giá riêng; S11 IN_REVIEW, không commit/push.
+
+Đồng nhất màu 18/10: [bộ màu kết quả kiểm thử](../reviews/2026-10-18-result-colors.md). 5 biến màu dùng chung, 7 file CSS; 425 test FE và build PASS, Chrome kiểm tra 42 mẫu/0 lệch màu. Màu theo lựa chọn của người dùng; giữ S11 IN_REVIEW, chưa commit/push.
+
+Review tài liệu17/10: [KL.zip so với source TMS](../reviews/2026-10-17-kl-documents-review.md).24nhóm sai lệch, ma trận14UC/22sơđồ/25bảng và hướng biên tập; không sửa Word/source nghiệp vụ, không chạy test/DB hoặc commit/push trong tác vụ review này. Các ý tưởng khách/BrSE được tách khỏi chức năng nội bộ đã triển khai; giữ S11 IN_REVIEW.
+
 Yêu cầu mới17/10: người dùng cho phép commit và push phần audit16–17/10 cùng tinh chỉnh UI/UX lên nhánh hiện tại `system-design`. Quyền một lần này thay giới hạn commit/push của hai đợt bên dưới; không cho phép merge/deploy hoặc thay đổi các gate kiểm chứng. Các ghi chú chưa push là trạng thái tại thời điểm kiểm tra.
 
 Tinh chỉnh UI/UX17/10: [cải tiến, ảnh trước/sau và giới hạn](../reviews/2026-10-17-uiux-refinement.md). Shared selection/filter/focus, lỗi tải/retry và phản hồi member đã sửa; full FE884/82files, coverage đo mới và build PASS. Chrome component fixture375/768/1440 dùng mock/API blocked; backend đang tắt nên chưa chứng minh tích hợp. Zoom200%/touch/AT/UAT còn mở, S11 IN_REVIEW; không commit/push.
@@ -122,3 +144,21 @@ Chưa có câu trả lời không chặn lập kế hoạch hoặc foundation đ
 S02 đã hoàn thành trên `feature/sprint-02-auth`, mang nền S01 chưa commit từ checkpoint stash; chưa merge vào develop. **Tạo tài khoản chỉ cho Admin hoặc PM được Admin cấp quyền; Tester không có quyền.** PM được cấp ở S02 chỉ tạo Tester; chỉ Admin tạo Admin/PM hoặc cấp/thu hồi quyền. Chưa mở khách hàng; quyền dự án S03 không thay quyền hệ thống này. Chi tiết [ADR-002](../decisions/ADR-002-internal-auth.md).
 
 Giao diện tiếng Việt; sáu menu đã thống nhất và Bảng công việc có Bảng Kanban/Danh sách bên trong. Backend do Codex phụ trách; React hiện dùng JavaScript. MySQL/Flyway quản lý dữ liệu/schema; V1 của S01 đã kiểm tra trên MySQL thật. Blueprint SQL/API nghiệp vụ vẫn là proposal đến khi từng task triển khai/kiểm tra hoàn thành. Nhánh tích hợp là `develop`; phải kiểm tra lại trạng thái nhánh ở mỗi lần làm. Việc hoàn thành S01 không tự cho phép commit/push/merge hoặc bắt đầu S02.
+
+### Checkpoint main FixReports19/10/2026
+
+Người dùng đã cho phép nâng mainV30→33 và restart8080. Hoàn tất backup mới khi writer dừng, kiểm7.374 hàng cũ ngoài session giữ nguyên,10file/711case và12GET200; Chrome5173 mở được các màn mới, reload giữ workspace. FR12/S11 còn IN_REVIEW cho các gate manual/tool/live/UAT và ngoại lệ nguồn, không còn chờ quyền cutover. Xem [báo cáo](../reviews/2026-10-19-fixreports-ui-followup.md). Không commit/push/merge.
+
+### Checkpoint audit UI/UX toàn hệ thống 19/10/2026
+
+Đợt audit mới kiểm kê 92 mục route/biến thể/component/adapter và ghi trạng thái riêng cho từng mục; không phải 92 màn hình độc lập hoặc mọi nút đã PASS. Kết quả cuối có 14 finding (2 P1, 11 P2, 1 P3) và 12 nhóm rủi ro/chưa tái hiện; UX-014 được bổ sung sau đối chiếu cuối quyền tạo Tester của PM. Xem [báo cáo](../reviews/2026-10-19-uiux-system-audit.md), [coverage](../reviews/2026-10-19-uiux-system-coverage.md), [kế hoạch sửa chưa thực hiện](../reviews/2026-10-19-uiux-system-repair-plan.md). 78 test component hiện có vừa chạy đạt, không thay thế browser/runtime coverage. Không sửa source ứng dụng, không restart/migration/commit/push; các write chỉ thuộc fixture cô lập.
+
+Người dùng chốt trong audit: Admin được xác nhận ngoại lệ có lý do đối với đợt kiểm thử/retest cũ đang chặn lưu trữ dự án, giữ nguyên lịch sử; không suy thành bỏ qua blocker hiện hành khác. Quyết định này được đưa vào kế hoạch RX-02, chưa triển khai. FR-12/S11 tiếp tục IN_REVIEW, mọi gate manual/tool/live/UAT còn mở.
+
+### Rà lại và sửa đúng phạm vi Tổng quan — 19/10/2026
+
+Theo người dùng đính chính, chỉ thay khối Công việc gần đây bằng Thông tin dự án trong Tổng quan; giữ trạng thái công việc và mốc phát hành. Đã sửa UX-015 theo đúng phạm vi, dùng số Issue hiện hành và metadata mốc, không khôi phục workflow cũ. RED5→GREEN10; full frontend985/985/106file và build PASS, Chrome main/fixture320/390/768/1440 có bằng chứng. Rà lại toàn bộ nhóm source/control:14finding cũ cònOPEN, không dùng testPASS để đóng; giữ lỗi focus thoáng qua và các sourcegap mới trong [báo cáo lần hai](../reviews/2026-10-19-uiux-recheck-and-overview-correction.md). Không backend/migration/restart/ghi nghiệp vụ/commit/push; S11/FR-12 vẫnIN_REVIEW.
+
+### Hoàn thiện UI/UX và trạng thái thao tác — 19/10/2026
+
+Đã áp dụng skill UI/UX và sửa frontend theo ba nhóm: Admin/Auth/General, Testing/Issue, Reports/AI; thống nhất bo góc, chuyển động và focus, sửa hộp thoại, giữ nháp, xử lý xung đột và đăng nhập lại. AST kiểm kê 997 control ở 111 file; đây không phải 997 nút đã bấm. Lượt toàn frontend trên source cuối đạt 1.048/1.048 test và build PASS; coverage dòng tại checkpoint là 87,74%. Chrome đã kiểm bốn role và các kích thước đại diện, chưa hoàn tất UAT. Trong 14 finding cũ, 11 có sửa source và test giả lập, 1 còn một phần, 2 còn mở; xem [báo cáo chi tiết](../reviews/2026-10-19-uiux-polish.md). Giữ dữ liệu và source cũ; không thay backend, migration, restart, commit hoặc push. FR-12/S11 vẫn IN_REVIEW.

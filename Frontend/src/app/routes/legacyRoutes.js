@@ -1,4 +1,5 @@
-// Preserve bookmarks while retiring the standalone design application.
+// Preserve deterministic design aliases. Old test/cycle/file IDs stay intact so
+// AppRouter can explain retirement; none of them is a Feature ID mapping.
 export function normalizeRoute(route) {
   if (!route.startsWith("/design")) return route;
   const [path, query = ""] = route.split("?");

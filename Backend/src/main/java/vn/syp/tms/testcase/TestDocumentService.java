@@ -111,6 +111,8 @@ public class TestDocumentService {
             return new TestDocumentDtos.Download(summary.fileName(),source);
         }
         var detail=detail(summary,source);
+        if(Boolean.TRUE.equals(jdbc.queryForObject("SELECT feature_id IS NOT NULL FROM import_batches WHERE project_id=? AND id=?",Boolean.class,projectId,id)))
+            return featureExport(summary,detail,source);
         List<String> exportHeaders=new ArrayList<>(detail.headers());
         if(!detail.secondTests().isEmpty())exportHeaders.addAll(List.of("Người test lần 2","Ghi chú 2","Đợt test lần 2","Kết quả lần 2"));
         byte[] result=DocumentWorkbook.export(source,summary.sheetName(),exportHeaders,detail.rows().stream().map(row->{
@@ -122,6 +124,26 @@ public class TestDocumentService {
             return new DocumentWorkbook.RowCells(row.rowNumber(),cells);
         }).toList());
         return new TestDocumentDtos.Download(summary.fileName(),result);
+    }
+
+    private TestDocumentDtos.Download featureExport(TestDocumentDtos.Summary summary,TestDocumentDtos.Detail detail,byte[] source) {
+        var names=new HashMap<Long,Map<String,Object>>();
+        for(var assignment:jdbc.queryForList("SELECT a.row_id,f.display_name AS first_name,l.display_name AS latest_name FROM test_document_assignments a LEFT JOIN project_memberships fm ON fm.project_id=a.project_id AND fm.id=a.first_tester_membership_id LEFT JOIN identity_users f ON f.id=fm.user_id LEFT JOIN project_memberships lm ON lm.project_id=a.project_id AND lm.id=a.latest_tester_membership_id LEFT JOIN identity_users l ON l.id=lm.user_id WHERE a.project_id=? AND a.document_id=?",summary.projectId(),summary.id()))
+            names.put(((Number)assignment.get("row_id")).longValue(),assignment);
+        var headers=new ArrayList<>(detail.headers());
+        Integer status=detail.columns().get("result"),tester=detail.columns().get("tester"),latestColumn=detail.columns().get("latestTester");
+        if(status==null)headers.add("Status");else headers.set(status,"Status");
+        if(tester==null)headers.add("Người test đầu tiên");else headers.set(tester,"Người test đầu tiên");
+        if(latestColumn==null)headers.add("Người test lại gần nhất");else headers.set(latestColumn,"Người test lại gần nhất");
+        var rows=detail.rows().stream().map(row->{
+            var cells=new ArrayList<>(row.cells());var assignment=names.getOrDefault(row.rowId(),Map.of());
+            if(status==null)cells.add(resultLabel(row.resultStatus()));else cells.set(status,resultLabel(row.resultStatus()));
+            String first=Objects.toString(assignment.get("first_name"),""),latest=Objects.toString(assignment.get("latest_name"),"");
+            if(tester==null)cells.add(first);else cells.set(tester,first);
+            if(latestColumn==null)cells.add(latest);else cells.set(latestColumn,latest);
+            return new DocumentWorkbook.RowCells(row.rowNumber(),cells);
+        }).toList();
+        return new TestDocumentDtos.Download(summary.fileName(),DocumentWorkbook.export(source,summary.sheetName(),headers,rows));
     }
 
     private TestDocumentDtos.Summary summary(Long projectId,Long id) {
@@ -206,7 +228,8 @@ public class TestDocumentService {
                 cells=CustomerWorkbook.currentCells(input,columns,Map.of("titleVi",text(rs,"title_vi"),"preconditionsVi",text(rs,"preconditions_vi"),
                         "stepsVi",text(rs,"steps_vi"),"expectedVi",text(rs,"expected_vi"),"sourceReference",text(rs,"source_reference")));
             } else {
-                cells.set(0,text(rs,"case_no")); cells.set(1,text(rs,"suite_code"));
+                String sourceKey=text(rs,"source_case_key");
+                cells.set(0,sourceKey.isBlank()?text(rs,"case_no"):sourceKey); cells.set(1,text(rs,"suite_code"));
                 String[] fields={"title_vi","preconditions_vi","steps_vi","expected_vi","title_jp","preconditions_jp","steps_jp","expected_jp","source_reference"};
                 for(int i=0;i<fields.length;i++) cells.set(i+2,text(rs,fields[i]));
             }

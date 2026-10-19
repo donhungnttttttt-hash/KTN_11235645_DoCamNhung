@@ -15,32 +15,32 @@ it('creates project with selected physical machine and clears recipient after me
  render(<AdminProjectForm api={api} onSaved={()=>{}}/>);
  fireEvent.change(screen.getByLabelText('Mã dự án'),{target:{value:'AA'}});fireEvent.change(screen.getByLabelText('Tên dự án'),{target:{value:'Alpha'}});
  fireEvent.click(await screen.findByLabelText('Chọn Manager'));fireEvent.click(screen.getByLabelText('Chọn Developer'));fireEvent.click(await screen.findByLabelText('IP-08 · iPad'));
- fireEvent.change(screen.getByLabelText('Người nhận IP-08'),{target:{value:'dev'}});
- fireEvent.click(screen.getByLabelText('Chọn Developer'));expect(screen.getByLabelText('Người nhận IP-08')).toHaveValue('');
- fireEvent.change(screen.getByLabelText('Người nhận IP-08'),{target:{value:'pm'}});fireEvent.click(screen.getByRole('button',{name:'Tạo dự án'}));
+ fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'pm'}});
+ fireEvent.click(screen.getByLabelText('Chọn Manager'));expect(screen.getByLabelText('Người nhận chung')).toHaveValue('');fireEvent.click(screen.getByLabelText('Chọn Manager'));
+ fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'pm'}});fireEvent.click(screen.getByRole('button',{name:'Tạo dự án'}));
  await screen.findByText('Máy đã được giao');expect(screen.getByLabelText('Tên dự án')).toHaveValue('Alpha');
  expect(api.createProject).toHaveBeenCalledWith(expect.objectContaining({devices:[{assetId:8,recipientUserId:'pm',expectedVersion:2,expectedReturnOn:null,handoverNote:''}]}));
 });
 it('preserves edited asset draft and reloads version on conflict',async()=>{
- const api={updateAsset:vi.fn().mockRejectedValueOnce(new Error('Conflict')).mockResolvedValue({}),asset:vi.fn().mockResolvedValue({...asset,version:3})};const saved=vi.fn();render(<DeviceAssetForm asset={asset} api={api} onSaved={saved} onCancel={()=>{}}/>);
+ const api={updateAsset:vi.fn().mockRejectedValueOnce(Object.assign(new Error('Conflict'),{status:409,code:'VERSION_CONFLICT'})).mockResolvedValue({}),asset:vi.fn().mockResolvedValue({...asset,version:3})};const saved=vi.fn();render(<DeviceAssetForm asset={asset} api={api} onSaved={saved} onCancel={()=>{}}/>);
  fireEvent.change(screen.getByLabelText('Hãng / model'),{target:{value:'New iPad'}});fireEvent.click(screen.getByText('Lưu máy'));await screen.findByText('Conflict');fireEvent.click(screen.getByText('Tải phiên bản hiện hành, giữ bản nháp'));await screen.findByText(/Đã tải phiên bản hiện hành/);expect(screen.getByLabelText('Hãng / model')).toHaveValue('New iPad');fireEvent.click(screen.getByText('Lưu máy'));await waitFor(()=>expect(saved).toHaveBeenCalled());expect(api.updateAsset).toHaveBeenLastCalledWith(8,expect.objectContaining({model:'New iPad',expectedVersion:3}));
 });
 it('named local project filter resets paging and history is explicit',async()=>{
  const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),assets:vi.fn().mockResolvedValue({...page([asset]),totalElements:30}),allocations:vi.fn().mockResolvedValue(page([]))};render(<AdminDevices api={api}/>);await screen.findByText('IP-08');fireEvent.click(screen.getByText('Trang sau'));await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({page:1}),expect.anything()));await chooseProject('Dự án đang giữ máy');await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({page:0,projectId:'2'}),expect.anything()));fireEvent.click(screen.getByLabelText('Xem lịch sử bàn giao'));await screen.findByText('Chưa có dữ liệu phù hợp.');expect(api.allocations).toHaveBeenCalledWith(expect.objectContaining({history:true,projectId:'2'}),expect.anything());
 });
 it('assignment selects named members and prevents duplicate submission',async()=>{
- let resolve;const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),members:vi.fn().mockResolvedValue([{userId:'pm',displayName:'Manager',username:'manager',active:true}]),assignDevice:vi.fn().mockReturnValue(new Promise(r=>{resolve=r;}))};render(<DeviceAllocationDialog asset={asset} api={api} onSaved={()=>{}} onCancel={()=>{}}/>);await chooseProject('Dự án nhận máy');await screen.findByText('Manager · manager');fireEvent.change(screen.getByLabelText('Người nhận'),{target:{value:'pm'}});fireEvent.click(screen.getByText('Xác nhận bàn giao'));expect(screen.getByText('Xác nhận bàn giao')).toBeDisabled();expect(api.assignDevice).toHaveBeenCalledTimes(1);resolve({});
+ let resolve;const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),members:vi.fn().mockResolvedValue([{userId:'pm',displayName:'Manager',username:'manager',projectRole:'PM',active:true}]),assignDevice:vi.fn().mockReturnValue(new Promise(r=>{resolve=r;}))};render(<DeviceAllocationDialog asset={asset} api={api} onSaved={()=>{}} onCancel={()=>{}}/>);await chooseProject('Dự án nhận máy');await screen.findByText('Manager · manager');fireEvent.change(screen.getByLabelText('Người nhận'),{target:{value:'pm'}});fireEvent.click(screen.getByText('Xác nhận bàn giao'));expect(screen.getByText('Xác nhận bàn giao')).toBeDisabled();expect(api.assignDevice).toHaveBeenCalledTimes(1);resolve({});
 });
 it('project inventory is read only and has retry state',async()=>{
  const api={projectDevices:vi.fn().mockRejectedValueOnce(new Error('Offline')).mockResolvedValue(page([]))};render(<ProjectDevices projectId={2} api={api}/>);await screen.findByText('Offline');fireEvent.click(screen.getByText('Thử lại'));await screen.findByText('Dự án chưa được bàn giao máy.');expect(screen.queryByText('Nhập máy')).toBeNull();expect(screen.queryByText('Xác nhận bàn giao')).toBeNull();
 });
 it('adds multiple machines directly to a fixed project, retaining only failed handovers for retry',async()=>{
  const changed=vi.fn(),closed=vi.fn();
- const api={assets:vi.fn().mockResolvedValue(page([asset,{...asset,id:9,assetCode:'IP-09',version:5}])),members:vi.fn().mockResolvedValue([{userId:'t',username:'tester',displayName:'Tester',active:true,enabled:true},{userId:'locked',username:'locked',displayName:'Locked',active:true,enabled:false}]),assignDevice:vi.fn().mockResolvedValueOnce({}).mockRejectedValueOnce(new Error('Máy đã được giao')).mockResolvedValue({})};
+ const api={assets:vi.fn().mockResolvedValue(page([asset,{...asset,id:9,assetCode:'IP-09',version:5}])),members:vi.fn().mockResolvedValue([{userId:'t',username:'tester',displayName:'Tester',projectRole:'PM',active:true,enabled:true},{userId:'locked',username:'locked',displayName:'Locked',projectRole:'PM',active:true,enabled:false}]),assignDevice:vi.fn().mockResolvedValueOnce({}).mockRejectedValueOnce(new Error('Máy đã được giao')).mockResolvedValue({})};
  render(<ProjectDeviceAssignDialog projectId="2" api={api} onChanged={changed} onClose={closed}/>);
  fireEvent.click(await screen.findByLabelText('IP-08 · iPad'));fireEvent.click(screen.getByLabelText('IP-09 · iPad'));
  expect(screen.queryByRole('option',{name:'Locked · locked'})).toBeNull();
- fireEvent.change(screen.getByLabelText('Người nhận IP-08'),{target:{value:'t'}});fireEvent.change(screen.getByLabelText('Người nhận IP-09'),{target:{value:'t'}});
+ fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'t'}});fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'t'}});
  fireEvent.change(screen.getByLabelText('Ghi chú bàn giao IP-09'),{target:{value:'Giữ ghi chú'}});
  fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));
  expect(await screen.findByRole('alert')).toHaveTextContent('IP-09: Máy đã được giao');
@@ -52,13 +52,14 @@ it('adds multiple machines directly to a fixed project, retaining only failed ha
  expect(api.assets).toHaveBeenCalledWith({status:'AVAILABLE',keyword:'',page:0,size:20},expect.anything());
 });
 it('refreshes project allocations after handover and blocks new allocations in archived projects',async()=>{
- const api={allocations:vi.fn().mockResolvedValue(page([])),assets:vi.fn().mockResolvedValue(page([asset])),members:vi.fn().mockResolvedValue([{userId:'t',username:'tester',displayName:'Tester',active:true}]),assignDevice:vi.fn().mockResolvedValue({})};
+ const api={allocations:vi.fn().mockResolvedValue(page([])),assets:vi.fn().mockResolvedValue(page([asset])),members:vi.fn().mockResolvedValue([{userId:'t',username:'tester',displayName:'Tester',projectRole:'PM',active:true}]),assignDevice:vi.fn().mockResolvedValue({})};
  const view=render(<ProjectDevices projectId={2} api={api} admin/>);
  fireEvent.click(screen.getByRole('button',{name:'Bổ sung máy vào dự án'}));fireEvent.click(await screen.findByLabelText('IP-08 · iPad'));
- fireEvent.change(screen.getByLabelText('Người nhận IP-08'),{target:{value:'t'}});fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));
+ fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'t'}});fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));
  await waitFor(()=>expect(screen.queryByRole('dialog')).toBeNull());await waitFor(()=>expect(api.allocations).toHaveBeenCalledTimes(2));
  expect(screen.getByRole('status')).toHaveTextContent('Đã bàn giao 1 máy');
- expect(screen.getByRole('link',{name:'Danh mục dự án'})).toHaveAttribute('href','#/settings/catalogs?workspace=1&projectId=2&type=devices');
+ expect(screen.getByText(/PM tự phân phối nội bộ bên ngoài phần mềm/)).toBeInTheDocument();
+ expect(screen.queryByRole('link',{name:'Danh mục dự án'})).not.toBeInTheDocument();
  view.rerender(<ProjectDevices projectId={2} api={api} admin archived/>);expect(screen.queryByRole('button',{name:'Bổ sung máy vào dự án'})).toBeNull();
 });
 it('late return lookup cannot reopen editor after page scope changed',async()=>{
@@ -71,7 +72,7 @@ it.each(['asset','assign','return'])('late %s save preserves replacement editor 
  const api={
   projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),
   assets:vi.fn().mockResolvedValue(page([{...asset,status:kind==='return'?'ALLOCATED':'AVAILABLE'}])),
-  members:vi.fn().mockResolvedValue([{userId:'pm',displayName:'Manager',username:'manager',active:true}]),
+  members:vi.fn().mockResolvedValue([{userId:'pm',displayName:'Manager',username:'manager',projectRole:'PM',active:true}]),
   allocations:vi.fn().mockResolvedValue(page([{id:10,version:0,recipientName:'Manager'}])),
   updateAsset:vi.fn().mockReturnValue(pending),
   assignDevice:vi.fn().mockReturnValue(pending),

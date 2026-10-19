@@ -1,5 +1,29 @@
 # Công việc theo file: contract F01–F05
 
+## FixReports — ngừng ghi luồng cũ ngày 19/10/2026
+
+Contract source mới ở [Feature/file/case](test-documents.md), [Issue](work-items.md), [report](reporting.md), [AI chat](ai-chat.md) và [contract chung](fixreports-contract.md). Luồng mới không dùng file-work group/session/cycle/run làm gate; các phần F01–F05 dưới đây giữ lịch sử. Không suy rằng runtime/main DB đã chuyển đổi hoặc UAT đạt.
+
+| Public HTTP cũ | Disposition trong source FixReports |
+| --- | --- |
+| Mutation của import không Feature |410 `FEATURE_REQUIRED`; dùng `/features/{f}/import-previews` và commit đúng Feature |
+| Mutation cycle/run/scope-decision/file-work group/session/execution/retest/suite |410 `LEGACY_WORKFLOW_RETIRED`; không tạo run/session mới qua URL cũ |
+| Legacy test-case/document mutation | Chặn legacy-only resource; approvals/second-test cũ nghỉ dùng. Sửa revision/cell/result của bản Feature-owned đi qua guard đường mới, không dùng old resource ID để lách |
+| Non-GET `/work-items/**`, `/qa/**` |410 `USE_FEATURE_ISSUES`; ghi qua `/issues` mới |
+| GET `/reports/summary`, `/reports/export.xlsx` | PM dự án/ADMIN được kiểm quyền trước rồi410 `USE_FEATURE_REPORTS`; Tester/DEV không được nhận dữ liệu quản trị qua URL cũ |
+| GET lịch sử cycle/run/file-work/retest/work-item/QA | Giữ đọc theo quyền/context hiện hành; không cấp lại lệnh ghi hoặc sinh workflow mới |
+| Hội thoại file-group cũ | Giữ private history theo owner/quyền; generation mới bị410 `AI_LEGACY_SCOPE` |
+
+401/CSRF403/404/quyền có thể xảy ra trước410 theo security/handler hiện hành;410 không là endpoint bỏ kiểm quyền. Migration/fixture nội bộ và lịch sử lưu trữ tách khỏi public write retirement. Không xóa graph cũ trong bước copy, không bịa mapping cycle/group/run IDs sang Feature trên client. `/tests/...` hiển thị thông báo và nút tới danh sách Feature đúng project; không đoán context.
+
+Thay thế thao tác: PM/ADMIN tạo Feature/import file; PM phân công toàn file, Tester tự nhận/sửa phần mình; ghi Status trên row hiện hành; Issue từ case hoặc Bug Monkey của Feature; retest thủ công. Máy vật lý bàn giao cho PM để phân phối ngoài phần mềm, không là điều kiện bắt đầu/kết thúc một phiên test mới. Công thức tiến độ gồm P/NA tại [metrics](../business/metrics.md).
+
+Migration/repair được owner core/root quản lý riêng; repair đang chuẩn bị/kiểm chứng và không được coi đã apply vào database sử dụng. Không gán số Flyway hoặc trạng thái runtime từ phần tài liệu này.
+
+Bổ sung19/10/2026 — R01/R07: `POST /api/v1/projects/{p}/status-reports` cũng đã nghỉ, kiểm PM dự án/ADMIN rồi410 `USE_FEATURE_REPORTS`, không ghi/replay narrative cũ. GET lịch sử giữ tác giả/nội dung/milestone nhưng `canPost:false`; Tester/DEV bị403, PM ngoài scope404 và Admin history route vẫn ADMIN-only. [API báo cáo](reporting.md).
+
+## Lịch sử F01–F05 trước FixReports
+
 Contract máy đọc đã đối chiếu controller/DTO: [file-work OpenAPI](file-work.openapi.json). Bộ checker là kiểm tra cấu trúc/source, không thay kiểm chứng API/MySQL thực tế.
 
 Ngày 06/10/2026; F/Q đã được người dùng duyệt. Task2–5 đã có implementation/source review và các scoped test PASS; native/HTTP/UAT vẫn có gate riêng tại [báo cáo triển khai](../reviews/2026-10-06-fq-implementation.md). Prefix `P=/api/v1/projects/{projectId}`. Session, CSRF, error envelope và JSON UTC theo [execution](execution.md). GET yêu cầu enabled account/current session và ADMIN hoặc active same-project membership; archive khóa writes theo policy. Theo quyết định 10/10/2026, ADMIN có toàn quyền tạo/giao file, thao tác phiên và ghi kết quả không cần được giao. ADMIN được dùng máy đang bàn giao hợp lệ trong dự án; V28 tách executor khỏi người nhận máy/người khởi tạo phiên, giữ FK cùng dự án và tác giả thực. Các vai trò khác giữ kiểm tra current project PM hoặc TESTER assignee; global DEV chỉ đọc.

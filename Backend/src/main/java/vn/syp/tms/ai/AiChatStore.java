@@ -28,13 +28,14 @@ public class AiChatStore {
     private final LocalAiAccess sessions;
     private final ObjectMapper json;
     private final int dailyLimit;
+    private final AiPortfolioContext portfolio;
     private static final String THREAD = "SELECT id,project_id AS projectId,purpose,target_id AS targetId,source_reference AS sourceReference,provider,model,created_at AS createdAt,expires_at AS expiresAt FROM ai_chat_threads";
     private static final String TURN = "SELECT id,thread_id AS threadId,request_key AS requestKey,user_text AS text,state,content_json AS content,failure_code AS failureCode,provider,requested_model AS requestedModel,model,connection_id AS connectionId,connection_version AS connectionVersion,context_truncated AS contextTruncated,created_at AS createdAt,completed_at AS completedAt,expires_at AS expiresAt FROM ai_chat_turns";
 
     public AiChatStore(WorkItemStore db,AiAccess access,LocalAiAccess sessions,ObjectMapper json,
-                       @Value("${TMS_AI_CHAT_USER_DAILY_LIMIT:20}") int dailyLimit) {
+                       @Value("${TMS_AI_CHAT_USER_DAILY_LIMIT:20}") int dailyLimit,AiPortfolioContext portfolio) {
         if(dailyLimit<1||dailyLimit>100)throw new IllegalArgumentException("Invalid chat daily limit.");
-        this.db=db;this.access=access;this.sessions=sessions;this.json=json;this.dailyLimit=dailyLimit;
+        this.db=db;this.access=access;this.sessions=sessions;this.json=json;this.dailyLimit=dailyLimit;this.portfolio=portfolio;
     }
     private void owner(String actor) {
         var principal=sessions.current(actor);
@@ -43,19 +44,32 @@ public class AiChatStore {
             fail(401,"UNAUTHENTICATED","The session is no longer valid.");
     }
     private void scope(String actor,ThreadView thread,boolean write) {
+        if(AiPortfolioContext.PURPOSE.equals(thread.purpose())){portfolio.assertCurrent(actor,thread.sourceReference());return;}
+        if(AiPortfolioContext.PROJECT_PURPOSE.equals(thread.purpose())){portfolio.assertProjectCurrent(actor,thread.projectId(),thread.targetId(),thread.sourceReference(),write);return;}
         if(thread.projectId()==null)return;
         var caller=access.authorize(thread.projectId(),actor,write);
         var purpose=AiPurpose.parse(thread.purpose());
+        if(purpose==AiPurpose.PM_ASSIGNMENT_SUGGESTION&&thread.sourceReference().startsWith("file:")) {
+            if(write)fail(410,"AI_LEGACY_SCOPE","Nguồn phân công cũ chỉ đọc lịch sử. Tạo hội thoại mới với file trong Feature.");
+            db.row("SELECT id FROM file_work_groups WHERE project_id=? AND id=? FOR SHARE",thread.projectId(),thread.targetId());
+            access.require(caller,purpose);return;
+        }
         if("TICKET".equals(purpose.target()))
             db.row("SELECT id FROM work_items WHERE project_id=? AND id=? FOR SHARE",thread.projectId(),thread.targetId());
         access.requireSource(thread.projectId(),caller,purpose,thread.sourceReference());
-        if("FILE_GROUP".equals(purpose.target()))
-            db.row("SELECT g.id FROM file_work_groups g JOIN test_cycles c ON c.project_id=g.project_id AND c.id=g.cycle_id WHERE g.project_id=? AND g.id=? AND (?=FALSE OR c.status_code<>'CLOSED') FOR SHARE",thread.projectId(),thread.targetId(),write);
+        if("DOCUMENT".equals(purpose.target()))
+            db.row("SELECT b.id FROM import_batches b JOIN testing_features f ON f.project_id=b.project_id AND f.id=b.feature_id WHERE b.project_id=? AND b.id=? AND b.status='COMMITTED' AND (?=FALSE OR (b.archived_at IS NULL AND f.archived_at IS NULL)) FOR SHARE",thread.projectId(),thread.targetId(),write);
     }
     public ThreadView create(String actor,Long project,String purpose,Long target,AiProviderGateway.Selection selection) {
         owner(actor);
         String source=null;
-        if(project==null) {
+        if(AiPortfolioContext.PURPOSE.equals(purpose)) {
+            if(project!=null||target!=null)fail(422,"AI_INVALID_TARGET","Phạm vi các dự án của tôi không nhận project hoặc target từ client.");
+            source=portfolio.current(actor).reference();
+        } else if(AiPortfolioContext.PROJECT_PURPOSE.equals(purpose)) {
+            if(project==null||project<1)fail(422,"AI_INVALID_TARGET","Chat dự án cần một dự án hợp lệ; nguồn tùy chọn là Feature của dự án.");
+            source=portfolio.currentProject(actor,project,target).reference();
+        } else if(project==null) {
             if(purpose!=null||target!=null)fail(422,"AI_INVALID_TARGET","General chat has no project target.");
         } else {
             var parsed=AiPurpose.parse(purpose);AiContextService.validateTarget(parsed,target);
@@ -77,11 +91,24 @@ public class AiChatStore {
     public Page list(String actor,long before) {
         owner(actor);page(before);
         var visible=new ArrayList<ThreadView>();
+        String portfolioReference=null;
+        var projectScopes=new HashMap<Long,AiPortfolioContext.Scope>();
         // Bound scans, and return the scanned cursor even when a page only contains revoked sources.
         var rows=db.rows(THREAD+" WHERE created_by=? AND expires_at>UTC_TIMESTAMP(6) AND (?=0 OR id<?) ORDER BY id DESC LIMIT 50",actor,before,before);
         for(var row:rows) {
             var candidate=threadView(row);
-            try {scope(actor,candidate,false);visible.add(candidate);}
+            try {
+                if(AiPortfolioContext.PURPOSE.equals(candidate.purpose())) {
+                    // Filter revoked scopes without throwing through a nested transaction;
+                    // an expected invisible row must not poison the whole page's transaction.
+                    if(portfolioReference==null)portfolioReference=portfolio.current(actor).reference();
+                    if(!Objects.equals(portfolioReference,candidate.sourceReference()))continue;
+                } else if(AiPortfolioContext.PROJECT_PURPOSE.equals(candidate.purpose())) {
+                    var current=candidate.targetId()==null?projectScopes.computeIfAbsent(candidate.projectId(),p->portfolio.currentProject(actor,p)):portfolio.currentProject(actor,candidate.projectId(),candidate.targetId());
+                    if(current.projects().isEmpty()||!Objects.equals(current.reference(),candidate.sourceReference()))continue;
+                } else scope(actor,candidate,false);
+                visible.add(candidate);
+            }
             catch(BusinessException e) {if(!Set.of("NOT_FOUND","FORBIDDEN","ARCHIVED").contains(e.code()))throw e;}
         }
         return new Page(List.copyOf(visible),rows.size()==50?number(rows.getLast(),"id"):null);
@@ -132,6 +159,9 @@ public class AiChatStore {
         var prior=db.row("SELECT thread_id AS threadId,sources_json AS sources FROM ai_chat_turns WHERE created_by=? AND id=?",actor,id);
         long threadId=number(prior,"threadId");scope(actor,thread(actor,threadId),true);
         AiChatService.validateOutput(output);
+        var allowed=new ArrayList<AiDraftService.Source>();
+        for(var source:parse(prior.get("sources")))allowed.add(new AiDraftService.Source(source.path("ref").asText(),"","",null));
+        AiChatService.validateReferences(output.value().path("text").asText(),allowed);
         var content=json.createObjectNode().put("text",output.value().path("text").textValue());content.set("sources",parse(prior.get("sources")));
         if(db.update("UPDATE ai_chat_turns SET state='READY',content_json=?,model=?,response_id=?,input_tokens=?,output_tokens=?,completed_at=UTC_TIMESTAMP(6) WHERE created_by=? AND id=? AND state='GENERATING' AND expires_at>UTC_TIMESTAMP(6) AND created_at>UTC_TIMESTAMP(6)-INTERVAL 2 MINUTE",
                 db.encode(content),output.model(),output.responseId(),output.inputTokens(),output.outputTokens(),actor,id)!=1)

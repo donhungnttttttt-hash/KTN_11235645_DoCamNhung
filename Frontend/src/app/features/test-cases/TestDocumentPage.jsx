@@ -1,4 +1,5 @@
 import { isProjectObserver, isProjectDeveloper, canManageProjectWork } from '../projects/projectAccess';
+import {matchesSearch} from '../../utils/multiWordSearch';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Download, FileSpreadsheet, Search, ClipboardList, RefreshCw, Table2, Highlighter, ChevronLeft, ChevronRight, List } from 'lucide-react';
 import { useProject } from '../projects/ProjectProvider';
@@ -96,7 +97,7 @@ function DocumentGrid({ project, documentId, navigate }) {
   }),[data,resultColumn,results.overrides]);
   const rows = useMemo(() => displayRows.filter(row =>
     (!resultFilter || resultKey(row.cells[resultColumn])===resultFilter) &&
-    row.cells.some(cell => String(cell).toLocaleLowerCase('vi').includes(search.toLocaleLowerCase('vi')))), [displayRows, search, resultFilter, resultColumn]);
+    matchesSearch(row.cells,search)), [displayRows, search, resultFilter, resultColumn]);
   const totalPages = Math.max(1,Math.ceil(rows.length/pageSize));
   const currentPage = Math.min(page,totalPages-1);
   const visibleRows = rows.slice(currentPage*pageSize,(currentPage+1)*pageSize);

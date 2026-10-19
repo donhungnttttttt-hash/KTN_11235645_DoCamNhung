@@ -1,4 +1,5 @@
 import { apiRequest } from './client';
+import { featuresApi } from './features';
 
 async function writeWithCsrf(path, body, method = 'POST') {
   const csrf = await apiRequest('/auth/csrf');
@@ -10,6 +11,8 @@ async function writeWithCsrf(path, body, method = 'POST') {
 }
 
 export const testCasesApi = {
+  createFeatureImportPreview: featuresApi.preview,
+  commitFeatureImportPreview: featuresApi.commit,
   listDocuments: (projectId, {page=0,keyword=''}={}) => apiRequest(`/projects/${projectId}/test-documents?${new URLSearchParams({page:String(page),size:'20',keyword})}`),
   getDocument: (projectId,id) => apiRequest(`/projects/${projectId}/test-documents/${id}`),
   approveDocumentRows: (p,id,data) => writeWithCsrf(`/projects/${p}/test-documents/${id}/approvals`,data),

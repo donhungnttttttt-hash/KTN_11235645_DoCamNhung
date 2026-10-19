@@ -41,11 +41,11 @@ it('retries an API error and does not replace it with prototype metrics',async()
   await userEvent.click(screen.getByRole('button',{name:'Thử lại'}));
   expect(await screen.findByText('60%')).toBeVisible();
 });
-it('uses the same reporting data in the three actual menu screens',async()=>{
+it('retains standalone legacy report widgets but the actual Analysis entry denies a Tester without loading legacy reports',async()=>{
   const view=render(<TestingOverview/>);expect(await screen.findByText('Tổng quan kiểm thử')).toBeVisible();
   view.rerender(<ProgressPage/>);expect(await screen.findByText('Lịch sử thực thi trong 14 ngày gần nhất')).toBeVisible();
-  view.rerender(<AnalysisPage/>);expect(await screen.findByText('Lỗi liên quan phạm vi · mọi build')).toBeVisible();
-  expect(reportsApi.summary).toHaveBeenCalledTimes(3);
+  view.rerender(<AnalysisPage/>);expect(screen.getByRole('heading',{name:'Không có quyền truy cập'})).toBeVisible();
+  expect(reportsApi.summary).toHaveBeenCalledTimes(2);
 });
 it('renders grouped progress, daily attempts and source rows with traceable links',async()=>{
   const m={...snapshot.metrics,id:3,name:'Đợt 3'}, user=userEvent.setup();

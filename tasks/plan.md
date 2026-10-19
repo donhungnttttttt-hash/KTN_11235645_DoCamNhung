@@ -1,5 +1,57 @@
 # Implementation Plan: F/Q — công việc theo file và QA
 
+## Chat chỉ chọn phạm vi dự án — 18/10/2026
+
+Người dùng yêu cầu panel chỉ chọn Phạm vi chat, bỏ tác vụ/tìm nguồn/file-ticket. Mặc định tổng hợp dự án được phép; chọn một dự án dùng ngữ cảnh riêng tự động, giữ prompt gửi ngay và nhập tự do. Thiết lập nguồn/model dùng màn Trợ lý AI hiện có; không bắt người dùng chọn task/target để chat. Thêm scope `PROJECT_CHAT` với projectId và target null, quyền/fingerprint chỉ của dự án đã chọn; giữ hội thoại cũ đọc/gửi theo contract đã ghim. Không đổi schema vì V30 đã cho purpose dự án với source reference. Test RED→GREEN FE và native cho scope/chống lộ/thu hồi quyền/archived, unit/coverage/build và browser; không fixture vào tms, không live call hoặc commit/push.
+
+Hoàn tất local: fullFE896/82file trước hai sửa nhỏ cuối, finalAI60/4file,165BE AI/13native và coverage/build PASS. Chrome app thật chỉ1combo và320px, fixture xác nhận hai scope gửi đúng; source file chỉ COMMITTED. Backend mới PID28580/V30/healthUP, dữ liệu trước/sau giống nhau; [báo cáo/giới hạn](../docs/reviews/2026-10-18-ai-chat-scope.md). Không migration/live/commit/push mới, S11 IN_REVIEW.
+
+## Câu hỏi AI có sẵn gửi ngay — 18/10/2026
+
+Người dùng đổi hành vi: bấm một câu hỏi có sẵn phải gửi ngay, không cần Enter/Gửi lần nữa. Dùng `send` hiện tại để giữ scope/quyền/idempotency/phản hồi tức thời; khóa gợi ý khi nguồn chưa sẵn sàng, đang đọc, đang gửi hoặc còn yêu cầu pending. Cho phép bấm gợi ý khi có bản nháp tự viết và giữ nguyên bản nháp đó. TDD cho đủ bốn gợi ý, chống gửi trùng, bảo toàn nháp, timeout cùng key và nguồn chưa sẵn sàng; regression AI/coverage/build, browser nếu khả dụng, cập nhật hướng dẫn. Không thay backend/schema/credential hoặc tự commit/push.
+
+Hoàn tất: RED7→GREEN35; hồi quy toàn AI frontend60/4file, coverage AiChat92,45/87,26/91,20/93,98 và build PASS. Chrome component thật/API giả lập xác nhận gửi ngay1request, pending/khóa, giữ nháp và Enter gửi tiếp; đã gỡ fixture/đóng tab. [Bằng chứng và giới hạn](../docs/reviews/2026-10-18-ai-preset-send.md); không backend/native/live mới, không commit/push, S11 IN_REVIEW.
+
+## AI tổng hợp các dự án của tôi — 18/10/2026
+
+User đã chọn tổng hợp nhiều dự án trong một câu trả lời. Thêm scope `MY_PROJECTS`, mặc định cho hội thoại mới ở UI, giữ General/Project cũ và provider/model cố định. Backend lấy membership đang hoạt động (Admin toàn bộ dự án); dùng KPI ReportMetrics hiện có, danh sách công việc/case chỉ của người hỏi, số liệu và giới hạn snapshot rõ. Bộ câu hỏi có sẵn điền composer, người dùng vẫn bấm Gửi.
+
+Quyền của portfolio được ghim bằng fingerprint server trên tập project/role/membership-version; kiểm tra lúc tạo, đọc/list/history, reserve và complete. Thay đổi phạm vi quyền yêu cầu tạo hội thoại mới; không gửi lịch sử ngoài quyền hiện tại. Flyway V30 chỉ mở rộng constraint scope, giữ dữ liệu cũ. TDD frontend/backend, native fresh/upgrade và quyền trên schema riêng nếu có; không fixture vào `tms`, không commit/push. Chỉ probe synthetic/live không dữ liệu dự án thật trong kiểm thử tự động; ghi giới hạn UAT riêng.
+
+Hoàn tất local: 893FE/82file, 162BE AI, 9native và14runner PASS; fresh/upgrade V30 và live hai dự án giả lập PASS. Coverage thực đo/build PASS, Chrome scope/gợi ý/General và320px xác nhận. Backend mới PID26956/8080/V30/healthUP, hash dữ liệu trước/sau giống nhau; [bằng chứng và giới hạn](../docs/reviews/2026-10-18-ai-my-projects.md). Chất lượng câu hỏi trên dữ liệu thật/UAT chưa nghiệm thu; không commit/push, S11 IN_REVIEW.
+
+## Sửa chat Caheo và phản hồi gửi — 18/10/2026
+
+Ảnh người dùng cho thấy `AI_INVALID_RESPONSE`, ô nhập giữ chữ tới lúc response kết thúc. Tái hiện một câu chào với đúng prompt/schema chat: Caheo HTTP200 nhưng JSON có `answer` thay vì `text`. Làm rõ output contract trong chỉ dẫn, giữ strict validation; kiểm chứng chat thật thay vì chỉ probe `{ok:true}`. Frontend đưa câu hỏi lên ngay trước await tạo hội thoại/gửi, xóa composer ngay, hiển thị AI đang trả lời, giữ bản đang soạn mới và giữ cùng request key khi chưa biết kết quả; FAILED có gửi lại tường minh. TDD regressions, build/coverage phạm vi thay đổi, kiểm browser và backend runtime. Không đổi quyền/schema, không commit/push.
+
+Hoàn tất: 890FE/82file và151BE AI PASS, coverage thực đo/build PASS, live contract chat PASS. Chrome/DB qua luồng chat thật thread3 trả lời câu chào, xác nhận Enter tức thời và bản nháp tiếp theo không mất; backend PID7000/readiness200. Không streaming token hoặc nghiệm thu toàn bộ tác vụ AI dài; [bằng chứng/giới hạn](../docs/reviews/2026-10-18-caheo-chat-send.md). S11 giữ IN_REVIEW.
+
+## Kết nối Caheo AI — 18/10/2026
+
+Người dùng cung cấp key và xác nhận Base URL `https://caheoai.com/v1`, model muốn dùng thuộc dòng GPT 5.6 Luna. Kiểm tra model thật bằng API trước khi chọn; thêm endpoint server-only có allowlist OpenAI/Caheo, giữ chặn redirect và bảo vệ key. TDD validation/config; giữ cấu hình cũ ngoài Git, lưu key mới chỉ ở cấu hình local, chạy probe ngắn không có dữ liệu dự án và kiểm tra backend. Không tự thay cấu hình Codex hoặc ChatGPT cá nhân, không commit/push.
+
+Hoàn tất kết nối: model thật `gpt-5.6-luna`, probe Java/schema PASS, backend đã restart/readiness200 và metadata ADMIN xác nhận model sẵn sàng. 149 regression AI và loader PASS; JaCoCo hai class được sửa đã đo, key scan893file không match. Chất lượng nghiệp vụ/browser UI riêng chưa nghiệm thu; [báo cáo và bằng chứng](../docs/reviews/2026-10-18-caheo-ai-connection.md). Giữ S11 IN_REVIEW.
+
+## Đồng nhất màu kết quả — 18/10/2026
+
+Áp dụng bộ màu người dùng chọn: OK `#0dd44c`, NG `#b60202`, P `#f8f835`, Chưa chạy `#161c25`, NA `#7a7a7c`. Gom biến CSS dùng chung và cập nhật các biểu đồ/KPI/huy hiệu/ô kết quả ở Admin, báo cáo, đợt, file, tài liệu và retest. Giữ nguyên giá trị trạng thái, quyền, API và màu nghiệp vụ khác. Kiểm tra build, regression liên quan và màu/độ tương phản thực tế nếu có browser; không commit/push.
+
+## Chẩn đoán backend startup — 18/10/2026
+
+Tái hiện Maven exit 1; kiểm tra Java/MySQL/Flyway rồi xác định `AI_CREDENTIAL_STORE_FAILED` do ACL của file kho AI. Sửa quyền owner-only của đúng file, giữ nguyên hash và key; chạy lại Maven và kiểm tra health. Không đổi source nghiệp vụ hoặc migration; giữ S11 IN_REVIEW. Bằng chứng tại [review startup](../docs/reviews/2026-10-18-backend-startup-vault.md).
+
+## Đối chiếu tài liệu KL.zip — 17/10/2026
+
+Yêu cầu hiện hành chỉ đọc/đánh giá tài liệu và lập báo cáo chi tiết; không sửa source nghiệp vụ, file Word/ZIP gốc hoặc tự commit/push. Baseline `system-design`/`caf075a`, S11 IN_REVIEW.
+
+| Task | Đầu ra / tiêu chí |
+| --- | --- |
+| KL-R1 | Kiểm kê/hash ZIP, xác định bản trùng và vai trò từng tài liệu; giải nén an toàn vào artifact riêng, không chạy nội dung nhúng. |
+| KL-R2 | Đọc văn bản/bảng/sơ đồ; tách hiện trạng công ty, ý tưởng, thiết kế và tính năng đã có; không suy trang Word hoặc chất lượng in từ XML. |
+| KL-R3 | Đối chiếu quyền, vòng đời, import, kết quả/retest/QA, KPI, schema và stack với source/decision mới nhất; ghi vị trí và hướng sửa. |
+| KL-R4 | Báo cáo ưu điểm, sai lệch, mâu thuẫn nội bộ, đề xuất đáng giữ và phần chưa xác minh; có ma trận14UC/22sơđồ/25bảng. |
+| KL-R5 | Kiểm tra liên kết, tính toàn vẹn file gốc, phạm vi Git và bàn giao. Không dùng số test lịch sử làm kết quả chạy mới. |
+
 ## Tinh chỉnh UI/UX — 17/10/2026
 
 Nguồn bàn giao: audit16/10; baseline là working tree đã có sửa chữa, HEAD vẫn `c42e3f0`, snapshot tại `var/uiux-2026-10-17/baseline.json` và `baseline.patch`. Giữ mọi thay đổi trước đó; không backend/API/schema/commit/push. Đây là bounded refinement của TMS tiếng Việt, giữ teal/density/navigation, không redesign/discovery lại nghiệp vụ. User đã cho trình bày phương án nhỏ rồi triển khai, không yêu cầu duyệt chung lại.
@@ -144,3 +196,24 @@ Native test/UAT/pilot/productionNFR remain separate gates. Latest user approval 
 - [x] RED→GREEN cho tên dự án khi phân trang, đổi ID lúc lookup chờ và Xóa bộ lọc (PM/Tester) giữ document/My work.
 - [x] Admin/File-work141/141, frontend618/618, build PASS; Chrome23 trạng thái bộ chọn + 4 viewport file-work; không có mutation dữ liệu nghiệp vụ.
 - [x] Báo cáo khách hàng và backlog có tiêu chí: `docs/reviews/2026-10-07-project-scope-customer-followup.md`. Không suy đã làm notification/checklist/closure mới từ yêu cầu đánh giá.
+
+## FixReports — checkpoint 19/10/2026
+
+Phạm vi mở rộng theo yêu cầu người dùng; kế hoạch duy nhất là [FR-00–FR-12](../docs/planning/2026-10-19-fixreports-implementation-plan.md), [báo cáo/skills/A01–A20](../docs/reviews/2026-10-19-fixreports-implementation-review.md). Không làm lại các mục PASS trong lịch sử.
+
+- [x] FR00–11 source/contract/migration và test cô lập theo R01–R08; FR12 finalreview/test/browsercheckpoint có giới hạn rõ.
+- [x] FE975/105files +coverage/build; BE645/74classes+verify/package; native/HTTP/coreAI/Admin/Note/report/Issue vàsnapshot mainV30→33 PASS theo scope, không cộng test trùng.
+- [x] Bảo toàn7.362 row cũ/76bảng;10file/711case đối chiếu;replay0. Tạo thật project12SPIDER-PLUS/PM syp.lab.pm03 theo user cho phép; main vẫnV30/UP.
+- [x] Browser4role/320–1440px, actual reportdownload110bytes, bàn giao2máy/lưu1member/Status/Issue/Note/archive; preview5174/8081 riêng.
+- [ ] Browser upload: extension fileURL permission chặn, không autoenable; workbook gốc download chưa xác nhận.
+- [ ] Dữ liệu trước cutover: source1 thiếu workbook và120case không file giữ nguyên; cần chứng minh nguồn/quan hệ nếu muốn chuyển.
+- [ ] Hoàn tất manual trước/sau mọi trạng thái/liveAI/UAT/thiết bị thật/pilot/NFR. S11 giữIN_REVIEW.
+- [x] Main cutoverV31–33/restart8080 đã thực hiện sau xác nhận người dùng19/10: backup khi writer dừng,7.374 hàng cũ giữ nguyên,12GET200 và Chrome5173 kiểm xong. FR12/S11 còn IN_REVIEW cho các gate chưa kiểm; không commit/push/merge.
+
+### FR-12 follow-up UI/Chrome 19/10/2026
+
+- [x] Main5173/8080V30 authenticated404 được tái hiện; preview8081 trả200.
+- [x] Bảy lỗi sourceUI sửa,980FE/105files+coverage/build; browser390/768/1440/reload/range/focus.
+- [x] Báo cáo và skill/evidence: [follow-up](../docs/reviews/2026-10-19-fixreports-ui-followup.md), kế hoạch duy nhất vẫnFR12.
+- [x] User cho phép main cutoverV30→33/restart8080; đã hoàn tất với backup mới và proof riêng trong [báo cáo](../docs/reviews/2026-10-19-fixreports-ui-followup.md).
+- [ ] Toolfilechooser vẫn lỗi sau user xác nhận fileURLaccessON; không autochange/bypass quyềnChrome; manual/UAT/live riêng.

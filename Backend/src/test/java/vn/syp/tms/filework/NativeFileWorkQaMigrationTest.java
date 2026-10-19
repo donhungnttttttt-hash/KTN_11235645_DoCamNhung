@@ -124,7 +124,8 @@ class NativeFileWorkQaMigrationTest {
     record Snapshot(List<String> columns,List<List<String>> rows){}
     static Snapshot snapshot(Connection c,String table,List<String> selected)throws SQLException {
         var columns=new ArrayList<String>();var rows=new ArrayList<List<String>>();
-        try(var s=c.createStatement();var r=s.executeQuery("SELECT "+(selected==null?"*":String.join(",",selected))+" FROM "+table+" ORDER BY 1,2")){
+        long columnCount=selected==null?NativeFqFixture.scalar(c,"SELECT COUNT(*) FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name=?",table):selected.size();
+        try(var s=c.createStatement();var r=s.executeQuery("SELECT "+(selected==null?"*":String.join(",",selected))+" FROM "+table+" ORDER BY "+(columnCount<2?"1":"1,2"))){
             for(int n=1;n<=r.getMetaData().getColumnCount();n++)columns.add(r.getMetaData().getColumnName(n));
             while(r.next()){var row=new ArrayList<String>();for(int n=1;n<=columns.size();n++){Object value=r.getObject(n);row.add(value instanceof byte[] bytes?Base64.getEncoder().encodeToString(bytes):Objects.toString(value,null));}rows.add(row);}
         }return new Snapshot(columns,rows);
@@ -135,7 +136,7 @@ class NativeFileWorkQaMigrationTest {
 final class NativeFqDatabase {
     private static final String OPTIONS="?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&allowPublicKeyRetrieval=true&sslMode=DISABLED";
     static void requireMode(String mode){requireMode(mode,System.getenv());}
-    static void requireMode(String mode,Map<String,String> env){if(!Set.of("integration","fresh-migration","lifecycle-integration").contains(mode)||!mode.equals(env.get("TMS_TEST_FQ_MODE")))throw new IllegalStateException("Explicit native F/Q mode required");url(env);credentials(env);}
+    static void requireMode(String mode,Map<String,String> env){if(!Set.of("integration","fresh-migration","lifecycle-integration","portfolio-migration","portfolio-integration").contains(mode)||!mode.equals(env.get("TMS_TEST_FQ_MODE")))throw new IllegalStateException("Explicit native F/Q mode required");url(env);credentials(env);}
     static String url(){return url(System.getenv());}
     static String url(Map<String,String> env){
         String value=env.get("TMS_TEST_DB_URL");

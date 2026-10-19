@@ -15,6 +15,17 @@ vi.mock('../../services/api/admin',()=>({adminApi:{projects:mocks.projects,overv
 const empty={asOf:'2026-10-05T00:00:00Z',totalProjects:0,activeProjects:0,totalUsers:0,enabledUsers:0,openBugs:0,awaitingVerification:0,metrics:{total:0,na:0,applicable:0,ok:0,ng:0,pending:0,notRun:0,executionPercent:null,passPercent:null},byRole:[],byProject:[],attention:{overdueMilestones:[],withoutPm:[],awaitingVerification:[]}};
 afterEach(()=>{window.history.replaceState(null,'','#');mocks.projectProvider.mockClear();mocks.role='ADMIN';mocks.id='a';});
 describe('admin route boundary',()=>{
+ test('Admin keeps the chosen project screen after a full workspace remount',async()=>{
+  window.history.replaceState(null,'','#/dashboard?workspace=1');
+  const first=render(<RoleApp/>);expect(screen.getByText('Project workspace')).toBeInTheDocument();
+  await act(async()=>{window.location.hash='/board/testing/features/42?projectId=7&caseId=9';window.dispatchEvent(new HashChangeEvent('hashchange'));});
+  expect(new URLSearchParams(window.location.hash.split('?')[1]).get('workspace')).toBe('1');
+  first.unmount();render(<RoleApp/>);
+  expect(screen.getByText('Project workspace')).toBeInTheDocument();
+  expect(window.location.hash).toContain('/board/testing/features/42');
+  expect(new URLSearchParams(window.location.hash.split('?')[1]).get('projectId')).toBe('7');
+  expect(new URLSearchParams(window.location.hash.split('?')[1]).get('caseId')).toBe('9');
+ });
  test('project scope keeps the named selection when browsing another page of projects',async()=>{
   const api={projects:vi.fn(({page})=>Promise.resolve({items:page?[{id:2,code:'P2',name:'Second'}]:[{id:1,code:'P1',name:'First'}],totalElements:101})),project:vi.fn().mockResolvedValue({id:1,code:'P1',name:'First'})};
   render(<AdminLayout path="/admin/projects/1" projectId="1" navigate={vi.fn()} api={api}/>);

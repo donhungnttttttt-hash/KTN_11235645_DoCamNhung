@@ -143,6 +143,7 @@ public class WorkItemService {
         return item;
     }
     public Map<String,Object> create(long p,String actor,WorkItemDtos.Create input) {
+        if(!Set.of("BUG","QA").contains(input.type()))fail(422,"INVALID_ISSUE_TYPE","Chỉ tạo Bug hoặc QA trong Feature.");
         QaService.rejectGenericMutation(input.type());
         var member=writeMember(p,actor); long author=number(member,"id"); String checksum=db.checksum(input);
         if(developer(member))fail(403,"FORBIDDEN","Dev chỉ xử lý bug được giao.");

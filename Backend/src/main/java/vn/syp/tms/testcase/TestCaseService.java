@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class TestCaseService {
+    @org.springframework.beans.factory.annotation.Autowired(required=false)
+    private vn.syp.tms.feature.FeatureService features;
 
     private final TestCaseRepositories.TestSuiteRepository suiteRepository;
     private final TestCaseRepositories.TestCaseRepository caseRepository;
@@ -232,6 +234,8 @@ public class TestCaseService {
 
     public TestCaseDtos.RevisionDetail addRevision(Long projectId, String userId, Long caseId, TestCaseDtos.CreateRevision input) {
         projectService.lockWritableProject(projectId, userId);
+        Long owningDocument=features==null?null:features.owningDocument(projectId,caseId);
+        if(owningDocument!=null)features.requireDocumentWritable(projectId,userId,owningDocument,true);
         TestCaseEntities.TestCase tc = caseRepository.findByProjectIdAndId(projectId, caseId)
                 .orElseThrow(() -> new BusinessException(404, "NOT_FOUND", "Không tìm thấy test case."));
 
@@ -242,7 +246,8 @@ public class TestCaseService {
                 .map(revision -> revision.getRevisionNo())
                 .orElse(0);
 
-        Long memberId = getMemberId(projectId, userId);
+        var member=membershipRepository.findByProjectIdAndUserId(projectId,userId);
+        Long memberId = owningDocument==null?getMemberId(projectId,userId):member!=null&&member.isActive()?member.getId():null;
 
         TestCaseEntities.TestCaseRevision rev = new TestCaseEntities.TestCaseRevision();
         rev.setProjectId(projectId);

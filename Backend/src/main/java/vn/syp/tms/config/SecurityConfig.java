@@ -64,6 +64,7 @@ public class SecurityConfig {
             // Chat ownership, current account and source scope are enforced by AiChatStore.
             auth.requestMatchers("/api/v1/ai/chats", "/api/v1/ai/chats/**").authenticated();
             auth.requestMatchers("/api/v1/ai/providers", "/api/v1/ai/providers/**").authenticated();
+            auth.requestMatchers(HttpMethod.GET,"/api/v1/ai/projects","/api/v1/ai/projects/**").authenticated();
             // Future business APIs require an explicit project policy in their sprint.
             auth.anyRequest().denyAll();
         });

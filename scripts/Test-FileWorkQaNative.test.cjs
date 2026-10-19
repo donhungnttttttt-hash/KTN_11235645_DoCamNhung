@@ -3,6 +3,21 @@ const assert=require('node:assert/strict');
 const {testPlan,testConfiguration,run}=require('./Test-FileWorkQaNative.cjs');
 const schema='tms_docstest_012345abcdef';
 const config={TMS_MYSQL_HOST:'127.0.0.1',TMS_MYSQL_PORT:'3307',TMS_MIGRATION_USER:'fixture',TMS_MIGRATION_PASSWORD:'never-log-this'};
+test('portfolio migration requires its exact selector and a preprovisioned V29 schema',()=>{
+ assert.equal(testPlan('portfolio-migration','NativeAiPortfolioTest').selector,'NativeAiPortfolioTest');
+ assert.throws(()=>testPlan('integration','NativeAiPortfolioTest'));
+ for(const version of ['25','30']){
+  let spawned=false;
+  assert.throws(()=>run([schema,'portfolio-migration','NativeAiPortfolioTest'],{readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:[version],spawn:()=>{spawned=true;}}));
+  assert.equal(spawned,false);
+ }
+});
+test('portfolio HTTP continuation requires V30 and never silently migrates an older schema',()=>{
+ assert.equal(testPlan('portfolio-integration','NativeAiPortfolioTest').selector,'NativeAiPortfolioTest');
+ let spawned=false;
+ assert.throws(()=>run([schema,'portfolio-integration','NativeAiPortfolioTest'],{readConfig:()=>config,query:sql=>sql==='SELECT DATABASE();'?[schema]:['29'],spawn:()=>{spawned=true;}}));
+ assert.equal(spawned,false);
+});
 test('AI chat requires a fresh isolated schema and exact selector',()=>{
  assert.equal(testPlan('fresh-migration','NativeAiChatTest').selector,'NativeAiChatTest');
  assert.throws(()=>testPlan('integration','NativeAiChatTest'));

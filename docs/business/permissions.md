@@ -1,5 +1,32 @@
 # Quyền nội bộ
 
+## FixReports — quyền hiện hành trong source ngày 19/10/2026
+
+Phần này ưu tiên khi khác mô tả cycle/run/file-session/typed-QA lịch sử bên dưới. Nguồn: [contract FixReports](../api/fixreports-contract.md), [Issue](../api/work-items.md), [AI chat](../api/ai-chat.md), [báo cáo](../api/reporting.md). Contract/source không chứng minh main DB đã được chuyển đổi hoặc UAT hoàn tất.
+
+| Hành động mới | ADMIN | PM của chính dự án | TESTER thành viên | DEV thành viên |
+| --- | --- | --- | --- | --- |
+| Đọc Feature/file/case/Status/history | Có, không cần membership | Có | Có | Có |
+| Tạo/sửa/archive/restore Feature; import/ẩn file; sửa nội dung case | Có | Có | Không | Không |
+| Phân công case | Có | Quản lý toàn file | Tự nhận/sửa phần mình, không đè phần người khác | Không |
+| Ghi Status | Có | Có | Case thuộc trách nhiệm hiện hành | Không |
+| Tạo Bug/QA từ case; tạo Bug Monkey theo Feature | Có | Có | Có trong dự án | Không |
+| Sửa/phân công/chuyển Issue | Theo capability quản lý | Theo capability quản lý | Sửa/xóa mềm Bug Monkey do mình tạo; chuyển/comment theo capability | Xử lý Issue được giao theo capability, không triage/phân công |
+| CRUD Note | Có | Có | Chỉ đọc | Chỉ đọc |
+| Xem/tạo/sửa/tải management report | Có | Có | Không, kể cả gọi API trực tiếp | Không, kể cả gọi API trực tiếp |
+
+Global DEV không được hưởng quyền PM/Tester từ membership cũ bất nhất; ADMIN toàn cục là ngoại lệ toàn quyền. Actor lấy từ session và identity hiện hành, không từ client hoặc người được phân công. Luồng Feature/Note/report lưu identity tác giả trực tiếp; quyền ADMIN không cần được bổ sung membership giả. Resource vẫn phải thuộc projectId URL; sai scope404, thiếu quyền403, version cũ409. Dự án/Feature/file lưu trữ giữ đọc lịch sử nhưng chặn các lệnh ghi tương ứng; server kiểm lại trước replay.
+
+PM/ADMIN có **quyền AI đọc liên dự án** kể cả ngoài membership; đây không phải quyền CRUD Feature/Note/Issue/report hoặc quyền quản lý dự án ngoài phạm vi. TESTER/DEV chỉ có chi tiết dự án/case/Issue trong quyền, không management totals/report/bulk export; ngoài phạm vi chỉ kinh nghiệm tổng hợp ẩn danh theo whitelist. Private chat và credential không thuộc context hay quyền đọc của ADMIN khác chủ sở hữu.
+
+Không có luồng tạo TASK/REQUEST/IMPROVEMENT mới; Issue mới chỉ BUG/QA. Retest thực hiện thủ công trên case/Issue, không đòi run/session/build/máy/cycle để ghi Status hay tạo Issue. Các public legacy writes trả410 sau session/CSRF và các guard áp dụng; GET lịch sử vẫn theo quyền, không phải lối ghi thay thế. [Các API đã nghỉ](../api/file-work.md#fixreports--ngừng-ghi-luồng-cũ-ngày-19102026). Quản trị tài khoản/membership và bàn giao máy vật lý cho PM vẫn dùng quyền ADMIN hiện có, không gán máy nội bộ cho từng Tester.
+
+Bổ sung19/10/2026 — R01/R07: status-report narrative cũ chỉ còn GET lịch sử cho PM của chính dự án/ADMIN (`canPost:false`); POST đã nghỉ trả410 `USE_FEATURE_REPORTS` sau kiểm quyền, không tạo membership cho Admin. Tester/DEV không được GET lịch sử quản lý; PM ngoài membership không dùng quyền AI để truy cập. Route Admin lịch sử vẫn ADMIN-only. [API báo cáo](../api/reporting.md).
+
+## Lịch sử các quyết định trước FixReports
+
+Các phần sau giữ nguyên quyết định/bằng chứng tại thời điểm ghi; điều kiện cycle/run/session/NA/QA cũ không áp vào luồng Feature mới nếu trái phần19/10 phía trên.
+
 ## Admin tổng toàn quyền — quyết định mới nhất 10/10/2026
 
 Người dùng xác nhận: **Admin tổng có toàn quyền nghiệp vụ**. ADMIN đang hoạt động được quản lý mọi dự án, tạo/sửa/duyệt case, phân công kể cả test lần 2, tạo/mở/chốt đợt, ghi kết quả tài liệu và thực thi/retest, xử lý công việc và các bước QA của PM/Tester/Dev. Không cần membership đang hoạt động hoặc được giao riêng. Các mục “Admin chỉ xem/ngoại lệ import” bên dưới là lịch sử và đã bị thay thế bởi quyết định này.

@@ -4,6 +4,20 @@
   min-height: 100dvh;
   background: #f8fafc;
 }
+.app-skip-link {
+  position:fixed;
+  left:12px;
+  top:8px;
+  z-index:10000;
+  padding:10px 16px;
+  border:2px solid var(--color-mint);
+  border-radius:var(--radius-control);
+  color:var(--color-mint-hover);
+  background:var(--color-surface);
+  transform:translateY(-160%);
+  transition:transform var(--motion-fast) var(--ease-out);
+}
+.app-skip-link:focus { transform:translateY(0); }
 .project-access-notice {
   margin: 0 20px 12px;
   padding: 10px 14px;
@@ -26,7 +40,7 @@
   height: var(--header-height);
   z-index: 60;
   background: white;
-  border-bottom: 1px solid #cbd5e1;
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -147,7 +161,12 @@
   background: transparent;
   border: 0;
   color: #d9f0e9;
+  min-width:36px;
+  min-height:36px;
+  border-radius:var(--radius-control);
+  transition:background-color var(--motion-fast) ease;
 }
+.app-sidebar-toggle button:hover { background:var(--color-sidebar-hover); }
 .app-sidebar nav {
   flex: 1;
   overflow-y: auto;
@@ -166,6 +185,7 @@
   font-weight: 600;
   font-size: var(--text-table);
   text-align: left;
+  transition:background-color var(--motion-fast) ease,color var(--motion-fast) ease;
 }
 .app-nav-item svg {
   flex-shrink: 0;
@@ -182,7 +202,7 @@
 }
 .app-nav-chevron {
   margin-left: auto;
-  transition: transform 150ms ease;
+  transition: transform var(--motion-normal) var(--ease-out);
 }
 .app-nav-chevron.open {
   transform: rotate(180deg);
@@ -190,6 +210,7 @@
 .app-submenu {
   padding: 5px 0 7px;
   background: #258f7a25;
+  animation:ui-disclosure-enter var(--motion-normal) var(--ease-out);
 }
 .app-submenu > button {
   display: flex;
@@ -203,14 +224,16 @@
   color: #fff;
   font-size: var(--text-caption);
   text-align: left;
+  transition:background-color var(--motion-fast) ease,color var(--motion-fast) ease;
 }
 .app-submenu > button:hover {
   background: #ffffff1c;
 }
 .app-submenu > button svg { flex-shrink: 0; }
 .app-submenu > button span { line-height: 1.5; }
-.app-nav-item:focus-visible, .app-submenu > button:focus-visible {
-  outline: 2px solid #fff;
+.app-sidebar .app-nav-item:focus-visible,
+.app-sidebar .app-submenu > button:focus-visible {
+  outline: 2px solid currentColor;
   outline-offset: -3px;
 }
 .app-submenu > button[aria-current="page"] {
@@ -251,6 +274,10 @@
 .app-workspace > main {
   min-width: 0;
 }
+.app-workspace > main > .page-container > header,
+.app-workspace > main > .fw-page > header {
+  animation:ui-surface-enter var(--motion-enter) var(--ease-out);
+}
 .app-footer {
   min-height: 32px;
   padding: 6px 16px;
@@ -285,10 +312,15 @@
 .app-shell.document-focus .app-workspace { margin-left: 0; }
 .app-shell.document-focus .app-workspace { height:100dvh; min-height:0; }
 .document-focus .app-workspace > main { display:flex; flex-direction:column; flex:1; min-height:0; }
-.document-focus .app-workspace > main > :not(.td-document) { flex-shrink:0; }
-.document-focus .app-workspace > main > .td-document { flex:1; min-height:0; height:auto; }
-.document-focus .td-document .td-grid-scroll { flex:1; height:auto; min-height:0; }
+.document-focus .app-workspace > main > :not(.td-document):not(.testing-document) { flex-shrink:0; }
+.document-focus .app-workspace > main > :is(.td-document,.testing-document) { flex:1; min-height:0; height:auto; }
+.document-focus :is(.td-document,.testing-document) .td-grid-scroll { flex:1; height:auto; min-height:0; }
 .document-focus .app-workspace > footer { display:none; }
+@media (max-height:500px) {
+  /* Keep case rows usable when landscape/zoom leaves no room below the controls. */
+  .document-focus .app-workspace > main { overflow-y:auto; overscroll-behavior:contain; }
+  .document-focus .app-workspace > main > .testing-document { flex:0 0 auto; min-height:0; height:auto; }
+}
 .document-focus .app-sidebar { transform: translateX(-100%); visibility: hidden; }
 .app-shell.document-focus .app-mobile-menu { display: inline-flex; }
 .document-focus.mobile-open .app-sidebar { transform: none; visibility: visible; }
@@ -299,6 +331,9 @@
   display: none;
 }
 .mobile-open .sidebar-mobile-close { display: flex; }
+/* The drawer stays interactive throughout its short entrance; no delayed mount. */
+.mobile-open .app-sidebar { animation:ui-disclosure-enter var(--motion-normal) var(--ease-out); }
+.app-sidebar-backdrop { animation:ui-disclosure-enter var(--motion-normal) ease; }
 @media (max-width: 1450px) {
   .app-user-details {
     display: none;

@@ -21,6 +21,7 @@ import vn.syp.tms.workitem.WorkItemStore;
 @WebMvcTest(AdminController.class)
 @Import({SecurityConfig.class,AdminOverviewService.class,RequestIdFilter.class})
 class AdminSecurityTest {
+    @org.springframework.test.context.bean.override.mockito.MockitoBean vn.syp.tms.feature.LegacyTestingWrites legacyTestingWrites;
     private static @org.springframework.lang.NonNull org.springframework.test.web.servlet.request.RequestPostProcessor authenticated(org.springframework.security.core.Authentication auth) {return java.util.Objects.requireNonNull(authentication(auth));}
     @Autowired MockMvc mvc;
     @MockitoBean IdentityService identity;

@@ -1,43 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Home, Columns3, FlaskConical, Bug, ChartGantt, ChartNoAxesCombined,
-  Menu, X, ChevronDown, List, Settings, LayoutDashboard, BookOpen,
-  ClipboardList, RotateCcw, Users, SlidersHorizontal, Layers, FileCheck, Sparkles,
+  Home, Columns3, FlaskConical, Bug, ChartNoAxesCombined,
+  Menu, X, ChevronDown, Settings, BookOpen,
+  Users, SlidersHorizontal, FileCheck,
 } from 'lucide-react';
+import { useProject } from '../features/projects/ProjectProvider';
+import { useAuth } from '../features/auth/AuthProvider';
 
 const navigation = [
-  { label: 'Tổng quan', route: '/dashboard', icon: Home, id: 'dashboard', children: [
-    { label: 'Việc cần xử lý', route: '/dashboard/actions', icon: ClipboardList },
-    { label: 'Tổng quan dự án', route: '/dashboard', icon: LayoutDashboard },
-    { label: 'Tổng quan kiểm thử', route: '/dashboard/testing', icon: ChartNoAxesCombined },
-  ] },
+  { label: 'Tổng quan', route: '/dashboard', icon: Home, id: 'dashboard' },
   { label: 'Bảng công việc', route: '/board', icon: Columns3, id: 'board', children: [
-    { label: 'Bảng Kanban', route: '/board', icon: Columns3 },
-    { label: 'Danh sách', route: '/board/list', icon: List },
-  ] },
-  { label: 'Quản lý kiểm thử', route: '/tests', icon: FlaskConical, id: 'tests', children: [
-    { label: 'Thư viện test case', route: '/tests', icon: BookOpen },
-    { label: 'Công việc theo file', route: '/tests/file-work', icon: FileCheck },
-    { label: 'Đợt kiểm thử', route: '/tests/cycles', icon: ClipboardList },
-    { label: 'Kiểm thử lại', route: '/tests/retests', icon: RotateCcw },
+    { label: 'Bảng trạng thái', route: '/board', icon: Columns3 },
+    { label: 'Quản lý kiểm thử', route: '/board/testing', icon: FlaskConical },
   ] },
   { label: 'Quản lý lỗi', route: '/issues', icon: Bug, id: 'issues' },
-  { label: 'Quản lý tiến độ', route: '/progress', icon: ChartGantt, id: 'progress' },
   { label: 'Tổng hợp & Phân tích', route: '/analysis', icon: ChartNoAxesCombined, id: 'analysis' },
-  { label: 'Trợ lý AI', route: '/ai', icon: Sparkles, id: 'ai' },
-  { label: 'Cài đặt dự án', route: '/settings', icon: Settings, id: 'settings', children: [
-    { label: 'Thông tin chung', route: '/settings', icon: SlidersHorizontal },
+  { label: 'Thông tin chung', route: '/settings', icon: Settings, id: 'settings', children: [
+    { label: 'Thông tin dự án', route: '/settings', icon: SlidersHorizontal },
     { label: 'Thành viên', route: '/settings/members', icon: Users },
-    { label: 'Danh mục', route: '/settings/catalogs', icon: Layers },
+    { label: 'Note', route: '/settings/notes', icon: BookOpen },
     { label: 'Quy tắc báo lỗi', route: '/settings/rules', icon: FileCheck },
     { label: 'Sổ tay dự án', route: '/settings/handbook', icon: BookOpen },
   ] },
 ];
 
 function selectedPage(activeRoute) {
-  const [path, query] = activeRoute.split('?');
+  const [path] = activeRoute.split('?');
+  if (path === '/board/testing' || path.startsWith('/board/testing/')) return '/board/testing';
   if (path === '/board' || path.startsWith('/board/')) {
-    return path === '/board/list' || new URLSearchParams(query).get('view') === 'list' ? '/board/list' : '/board';
+    return '/board';
   }
   if (path === '/tests/file-work' || /^\/tests\/file-work\/[1-9]\d*$/.test(path)) return '/tests/file-work';
   if (/^\/tests\/(?:cycles\/)?\d+$/.test(path)) return '/tests/cycles';
@@ -46,6 +37,9 @@ function selectedPage(activeRoute) {
 }
 
 export function Sidebar({ activeRoute, navigate, collapsed, onToggle, onClose, panelRef, overlayOpen = false }) {
+  const {currentProject} = useProject() || {}, auth = useAuth();
+  const hasRole = role => auth?.hasRole?.(role) || auth?.user?.roles?.includes(role);
+  const canAnalyze = hasRole('ADMIN') || (currentProject?.projectRole === 'PM' && !hasRole('DEV'));
   const active = activeRoute.split('?')[0].split('/')[1];
   const [openGroup, setOpenGroup] = useState(active);
   const selected = selectedPage(activeRoute);
@@ -53,7 +47,7 @@ export function Sidebar({ activeRoute, navigate, collapsed, onToggle, onClose, p
 
   function openPage(route) {
     navigate(route);
-    onClose();
+    onClose?.();
   }
 
   return <aside ref={panelRef} id="project-navigation" className="app-sidebar" aria-label="Menu dự án"
@@ -66,7 +60,7 @@ export function Sidebar({ activeRoute, navigate, collapsed, onToggle, onClose, p
       {overlayOpen && <button className="sidebar-mobile-close" onClick={onClose} aria-label="Đóng menu"><X size={21} /></button>}
     </div>
     <nav aria-label="Điều hướng dự án">
-      {navigation.map(({ label, route, icon: Icon, id, children }) => children ? (
+      {navigation.filter(item=>item.id!=='analysis'||canAnalyze).map(({ label, route, icon: Icon, id, children }) => children ? (
         <div key={id} className="app-nav-group">
           <button title={label} className={'app-nav-item ' + (active === id ? 'active' : '')}
             aria-expanded={openGroup === id && !collapsed} aria-controls={id + '-submenu'}

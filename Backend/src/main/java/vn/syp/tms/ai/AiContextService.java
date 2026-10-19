@@ -41,13 +41,7 @@ public class AiContextService {
         String q=query.strip();List<Map<String,Object>> rows;
         if("NONE".equals(purpose.target()))return new Targets(List.of(),false);
         if(purpose==AiPurpose.PM_ASSIGNMENT_SUGGESTION) {
-            rows=db.rows("""
-                SELECT g.id,CONCAT(b.file_name,' · ',c.name,' · #',g.id) AS label
-                FROM file_work_groups g JOIN import_batches b ON b.project_id=g.project_id AND b.id=g.document_id
-                JOIN test_cycles c ON c.project_id=g.project_id AND c.id=g.cycle_id
-                WHERE g.project_id=? AND c.status_code<>'CLOSED' AND (?='' OR LOCATE(?,b.file_name)>0)
-                ORDER BY g.id DESC LIMIT 51
-                """,p,q,q);
+            rows=db.rows("SELECT b.id,CONCAT(f.name,' · ',b.file_name) AS label FROM import_batches b JOIN testing_features f ON f.project_id=b.project_id AND f.id=b.feature_id WHERE b.project_id=? AND b.status='COMMITTED' AND b.archived_at IS NULL AND f.archived_at IS NULL AND (?='' OR LOCATE(?,b.file_name)>0 OR LOCATE(?,f.name)>0) ORDER BY b.id DESC LIMIT 51",p,q,q,q);
         } else {
             String scope=purpose==AiPurpose.DEV_TICKET_REVIEW?
                     "w.item_type IN ('BUG','QA') AND w.assignee_membership_id=?":
@@ -115,78 +109,24 @@ public class AiContextService {
             fail(422,"AI_INVALID_TARGET","Chọn đúng file hoặc ticket cho tác vụ.");
     }
     static String source(long p,AiPurpose purpose,Long target) {
-        return switch(purpose.target()) { case "TICKET" -> "ticket:"+target;case "FILE_GROUP" -> "file:"+target;default -> "project:"+p; };
+        return switch(purpose.target()) { case "TICKET" -> "ticket:"+target;case "DOCUMENT" -> "document:"+target;default -> "project:"+p; };
     }
     private void project(long p,AiPurpose purpose,List<AiDraftService.Source> sources,List<Map<String,Object>> facts) {
         var project=db.row("SELECT code,name,lock_version AS version FROM projects WHERE id=?",p);
-        var totals=new LinkedHashMap<String,Object>();totals.put("name",project.get("name"));totals.put("code",project.get("code"));
-        totals.put("membersByRole",db.rows("SELECT project_role AS role,COUNT(*) AS total FROM project_memberships WHERE project_id=? AND active=TRUE GROUP BY project_role",p));
-        totals.put("workItems",db.rows("SELECT item_type AS type,status_code AS status,COUNT(*) AS total FROM work_items WHERE project_id=? GROUP BY item_type,status_code ORDER BY item_type,status_code",p));
-        totals.put("activeCycleResults",db.rows("""
-            SELECT COALESCE(a.result_code,'NOT_RUN') AS result,COUNT(*) AS total FROM run_items r
-            JOIN test_cycles c ON c.project_id=r.project_id AND c.id=r.cycle_id
-            LEFT JOIN execution_attempts a ON a.project_id=r.project_id AND a.id=r.latest_attempt_id
-            WHERE r.project_id=? AND c.status_code='ACTIVE' GROUP BY COALESCE(a.result_code,'NOT_RUN')
-            """,p));
-        totals.put("allocatedDevices",db.count("SELECT COUNT(*) FROM device_allocations WHERE project_id=? AND returned_at IS NULL",p));
-        String path=purpose==AiPurpose.ADMIN_PROJECT_REVIEW?"/admin/projects/"+p:"/dashboard";
-        add(sources,facts,"project:"+p,"Tổng quan dự án",path,number(project,"version"),totals);
-        for(var milestone:deadlines.milestones(p,Instant.now()).stream().limit(8).toList()) {
-            add(sources,facts,"milestone:"+number(milestone,"id"),(String)milestone.get("name"),path,null,
-                    select(milestone,"name","dueOn","scopeCount","unfinished","deadlineStatus"));
-        }
+        var current=new LinkedHashMap<String,Object>(new FeatureFacts(db).snapshot(p,null,null,true,null));
+        current.put("name",project.get("name"));current.put("code",project.get("code"));
+        add(sources,facts,"project:"+p,"Tổng quan dự án","/board/testing",number(project,"version"),current);
     }
-    private void assignment(long p,long group,List<AiDraftService.Source> sources,List<Map<String,Object>> facts) {
-        var file=db.row("""
-            SELECT g.id,g.lock_version AS version,b.file_name AS fileName,c.status_code AS cycleStatus,
-            d.os_name AS os,d.os_version AS osVersion,d.model,bu.platform,
-            (SELECT COUNT(*) FROM file_work_group_items i WHERE i.project_id=g.project_id AND i.group_id=g.id) AS cases
-            FROM file_work_groups g JOIN import_batches b ON b.project_id=g.project_id AND b.id=g.document_id
-            JOIN test_cycles c ON c.project_id=g.project_id AND c.id=g.cycle_id
-            JOIN cycle_configurations cf ON cf.project_id=g.project_id AND cf.id=g.configuration_id
-            JOIN devices d ON d.project_id=cf.project_id AND d.id=cf.device_id
-            JOIN builds bu ON bu.project_id=cf.project_id AND bu.id=cf.default_build_id
-            WHERE g.project_id=? AND g.id=? AND c.status_code<>'CLOSED'
-            """,p,group);
-        add(sources,facts,"file:"+group,(String)file.get("fileName"),"/tests/file-work/"+group,number(file,"version"),file);
-        var candidates=db.rows("""
-            SELECT m.id,u.display_name AS displayName,
-            (SELECT COUNT(*) FROM run_items r JOIN test_cycles c ON c.project_id=r.project_id AND c.id=r.cycle_id
-             WHERE r.project_id=m.project_id AND r.assignee_membership_id=m.id AND c.status_code='ACTIVE') AS assignedActiveCases,
-            (SELECT COUNT(*) FROM file_work_sessions s WHERE s.project_id=m.project_id AND s.executor_membership_id=m.id AND s.state='DOING') AS doingFiles
-            FROM project_memberships m JOIN identity_users u ON u.id=m.user_id
-            WHERE m.project_id=? AND m.active=TRUE AND m.project_role='TESTER' AND u.enabled=TRUE AND u.role_code<>'DEV'
-            ORDER BY assignedActiveCases,m.id LIMIT 10
-            """,p);
-        for(var candidate:candidates) {
-            long id=number(candidate,"id");
-            var detail=select(candidate,"assignedActiveCases","doingFiles");
-            detail.put("allocatedDevices",db.rows("""
-                SELECT a.type,a.model,a.os_name AS os,a.os_version AS osVersion,a.condition_code AS deviceCondition,
-                EXISTS(SELECT 1 FROM file_work_sessions s WHERE s.asset_id=a.id AND s.state='DOING') AS busy
-                FROM device_allocations da JOIN device_assets a ON a.id=da.asset_id
-                WHERE da.project_id=? AND da.recipient_membership_id=? AND da.returned_at IS NULL ORDER BY a.id LIMIT 3
-                """,p,id));
-            add(sources,facts,"member:"+id,(String)candidate.get("displayName"),"/settings/members",null,detail);
-        }
+    private void assignment(long p,long document,List<AiDraftService.Source> sources,List<Map<String,Object>> facts) {
+        var file=db.row("SELECT b.id,b.lock_version AS version,b.file_name AS fileName,b.feature_id AS featureId,f.name AS featureName,f.environment FROM import_batches b JOIN testing_features f ON f.project_id=b.project_id AND f.id=b.feature_id WHERE b.project_id=? AND b.id=? AND b.status='COMMITTED' AND b.archived_at IS NULL AND f.archived_at IS NULL",p,document);
+        var projection=new FeatureFacts(db);
+        file.put("candidates",db.rows("SELECT m.id AS membershipId,u.display_name AS displayName,COUNT(CASE WHEN f.id IS NOT NULL THEN a.row_id END) AS assignedCases,COALESCE(SUM(f.id IS NOT NULL AND r.result_status='UNEXECUTED'),0) AS remainingCases FROM project_memberships m JOIN identity_users u ON u.id=m.user_id LEFT JOIN test_document_assignments a ON a.project_id=m.project_id AND a.assignee_membership_id=m.id LEFT JOIN import_rows r ON r.project_id=a.project_id AND r.id=a.row_id LEFT JOIN import_batches b ON b.project_id=r.project_id AND b.id=r.batch_id AND b.status='COMMITTED' AND b.archived_at IS NULL LEFT JOIN testing_features f ON f.project_id=b.project_id AND f.id=b.feature_id AND f.archived_at IS NULL WHERE m.project_id=? AND m.active=TRUE AND m.project_role='TESTER' AND u.enabled=TRUE AND u.role_code<>'DEV' GROUP BY m.id,u.display_name ORDER BY assignedCases,m.id LIMIT 10",p));
+        file.put("recordedHistory",projection.experience(p,number(file,"featureId")));
+        add(sources,facts,"document:"+document,Objects.toString(file.get("fileName")),"/board/testing/features/"+number(file,"featureId")+"/documents/"+document,number(file,"version"),file);
     }
-    private void ownWork(long p,long member,List<AiDraftService.Source> sources,List<Map<String,Object>> facts) {
-        var stats=new LinkedHashMap<String,Object>();
-        stats.put("period","14 ngày gần nhất (UTC), không phải toàn bộ lịch sử");
-        stats.put("attempts",db.rows("SELECT result_code AS result,COUNT(*) AS total FROM execution_attempts WHERE project_id=? AND executor_membership_id=? AND executed_at>=UTC_TIMESTAMP()-INTERVAL 14 DAY GROUP BY result_code",p,member));
-        stats.put("tickets",db.rows("SELECT item_type AS type,status_code AS status,COUNT(*) AS total FROM work_items WHERE project_id=? AND created_by=? AND created_at>=UTC_TIMESTAMP()-INTERVAL 14 DAY GROUP BY item_type,status_code",p,member));
-        add(sources,facts,"my-work","Công việc của tôi","/dashboard/actions",null,stats);
-        for(var session:db.rows("""
-            SELECT s.id,s.group_id AS groupId,s.state,s.started_at AS startedAt,s.last_transition_at AS updatedAt,
-            s.lock_version AS version,b.file_name AS fileName,bu.version_label AS build,a.model,a.os_version AS osVersion
-            FROM file_work_sessions s JOIN file_work_groups g ON g.project_id=s.project_id AND g.id=s.group_id
-            JOIN import_batches b ON b.project_id=g.project_id AND b.id=g.document_id
-            JOIN builds bu ON bu.project_id=s.project_id AND bu.id=s.build_id JOIN device_assets a ON a.id=s.asset_id
-            WHERE s.project_id=? AND s.executor_membership_id=? AND s.last_transition_at>=UTC_TIMESTAMP()-INTERVAL 14 DAY
-            ORDER BY s.id DESC LIMIT 8
-            """,p,member)) {
-            add(sources,facts,"session:"+number(session,"id"),(String)session.get("fileName"),"/tests/file-work/"+number(session,"groupId"),number(session,"version"),session);
-        }
+    private void ownWork(long p,Long member,List<AiDraftService.Source> sources,List<Map<String,Object>> facts) {
+        Object own=member==null?Map.of("limitation","Không có phân công thành viên dự án; không tạo thành viên giả."):new FeatureFacts(db).personal(p,member);
+        add(sources,facts,"my-work","Công việc của tôi","/board/testing",null,own);
     }
     private void ticket(long p,long id,AiPurpose purpose,List<AiDraftService.Source> sources,List<Map<String,Object>> facts) {
         var row=db.row("""
@@ -224,11 +164,11 @@ public class AiContextService {
     }
     private static String limitations(AiPurpose purpose) {
         return "Snapshot giới hạn, nội dung văn bản có thể được rút gọn. Không có dữ liệu năng lực cá nhân hoặc mã nguồn. "+switch(purpose) {
-            case PM_ASSIGNMENT_SUGGESTION -> "Tối đa 10 tester đang hoạt động, ưu tiên số case đang được giao ít hơn, tối đa 3 máy/người. Máy phải được PM kiểm tra tương thích trước khi giao. Đây không phải xếp hạng năng lực; thiếu lịch rảnh và kinh nghiệm thực tế.";
-            case TESTER_WORK_REPORT -> "Chỉ công việc của người yêu cầu trong 14 ngày; tối đa 8 phiên gần nhất. Số attempt có thể gồm test lại, không phải số case duy nhất.";
+            case PM_ASSIGNMENT_SUGGESTION -> "Tối đa 10 tester đang hoạt động, workload từ phân công case hiện tại và kinh nghiệm từ actor trong audit Status. Số thay đổi được ghi không phải số lần thực thi thực tế hoặc xếp hạng năng lực. Thiếu lịch rảnh và độ khó; gợi ý không tự phân công.";
+            case TESTER_WORK_REPORT -> "Chỉ phân công hiện hành và thay đổi Status do người yêu cầu thực sự ghi; tối đa 5 case cá nhân. Thay đổi Status không phải số lần thực thi thực tế.";
             case DEV_TICKET_REVIEW -> "Tối đa 3 ticket cùng dự án có một từ khóa trong tiêu đề; không tìm Internet. Kết quả tìm chỉ là gợi ý, không chứng minh cùng nguyên nhân.";
             case TESTER_BUG_DRAFT -> "Không có ảnh/video đính kèm trong ngữ cảnh; không được bịa bước tái hiện, expected, actual hoặc bằng chứng.";
-            default -> "Kết quả kiểm thử lấy lần thực thi mới nhất của từng run-item ở đợt ACTIVE. Tối đa 8 mốc; dùng deadlineStatus do hệ thống tính. Không suy nhanh/chậm từ phần trăm hoặc dữ liệu demo.";
+            default -> "Kết quả từ Status hiện tại của case trong Feature/file chưa lưu trữ; P/NA tính đã test và NA giữ trong tổng số case. Không suy nhanh/chậm hoặc nghiệm thu chỉ từ phần trăm.";
         };
     }
     private static String instructions(AiPurpose purpose) {

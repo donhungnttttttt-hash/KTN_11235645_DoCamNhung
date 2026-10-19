@@ -10,10 +10,10 @@ const fileError = file => !file.name.toLowerCase().endsWith('.xlsx') || !file.si
 const ready = entry => entry.preview?.status === 'PREVIEW' && entry.preview.validRows > 0 && !entry.preview.errorRows && !entry.committed;
 
 export function ImportExcelDialog(props) {
-  return <ExcelImportDialog key={props.projectId} {...props} />;
+  return <ExcelImportDialog key={`${props.projectId}/${props.featureId||''}`} {...props} />;
 }
 
-function ExcelImportDialog({ projectId, onClose, onSuccess }) {
+function ExcelImportDialog({ projectId, featureId, onClose, onSuccess }) {
   const [step, setStep] = useState('input');
   const [files, setFiles] = useState([]);
   const [entries, setEntries] = useState([]);
@@ -50,7 +50,7 @@ function ExcelImportDialog({ projectId, onClose, onSuccess }) {
         try {
           const invalid = fileError(queue[i].file);
           if (invalid) throw new Error(invalid);
-          const preview = await testCasesApi.createImportPreview(projectId, queue[i].file);
+          const preview = featureId ? await testCasesApi.createFeatureImportPreview(projectId,featureId,queue[i].file) : await testCasesApi.createImportPreview(projectId, queue[i].file);
           if (request !== generation.current) return;
           update(i, { preview, error: '', committed: preview.status === 'COMMITTED' ? preview : null });
           setStep('preview');
@@ -77,7 +77,7 @@ function ExcelImportDialog({ projectId, onClose, onSuccess }) {
         if (!ready(entries[i])) continue;
         setProgress(`Đang nhập ${i + 1}/${entries.length}: ${entries[i].file.name}`);
         try {
-          const committed = await testCasesApi.commitImportPreview(projectId, entries[i].preview.id);
+          const committed = featureId ? await testCasesApi.commitFeatureImportPreview(projectId,featureId,entries[i].preview.id) : await testCasesApi.commitImportPreview(projectId, entries[i].preview.id);
           if (request !== generation.current) return;
           update(i, { committed, error: '' });
           if (!multiple) { onSuccess(committed); onClose(); return; }

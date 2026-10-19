@@ -1,22 +1,33 @@
 import React from 'react';
-import { beforeEach, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { ProjectOverview } from './ProjectOverview';
-import { workItemsApi } from '../services/api/workItems';
-const state=vi.hoisted(()=>({projectId:1,writable:true,metadata:{canCreate:true}}));
-vi.mock('../features/work-items/ProjectData',async original=>({...await original(),useProjectData:()=>state}));
-vi.mock('../services/api/workItems',()=>({workItemsApi:{overview:vi.fn()}}));
-const result={items:[{id:7,key:'DEMO-7',title:'Lỗi đăng nhập',type:'BUG',priority:'MEDIUM',status:'open',creator:'Tester',createdAt:'2026-09-29T05:00:00Z'}],statuses:[{status:'open',count:40},{status:'closed',count:60}],milestones:[]};
-beforeEach(()=>{vi.resetAllMocks();state.projectId=1;state.writable=true;state.metadata={canCreate:true};});
-it('uses project totals rather than the recent page and opens the canonical detail',async()=>{
-  workItemsApi.overview.mockResolvedValue(result);const navigate=vi.fn();render(<ProjectOverview navigate={navigate}/>);
-  fireEvent.click(await screen.findByRole('button',{name:/DEMO-7 Lỗi đăng nhập/}));expect(navigate).toHaveBeenCalledWith('/board/issue/7');
-  expect(screen.getByText('60/100 công việc hoàn thành · 60%')).toBeVisible();fireEvent.click(screen.getByRole('button',{name:'Thêm công việc'}));expect(navigate).toHaveBeenLastCalledWith('/board/new');
+import {beforeEach,expect,it,vi} from 'vitest';
+import {render,screen} from '@testing-library/react';
+import {ProjectOverview} from './ProjectOverview';
+const state=vi.hoisted(()=>({project:null,loading:false,error:''}));
+const forbidden=vi.hoisted(()=>({overview:vi.fn(),handoff:vi.fn()}));
+vi.mock('../features/projects/ProjectProvider',()=>({useProject:()=>({currentProject:state.project,loading:state.loading,error:state.error})}));
+vi.mock('../features/work-items/ProjectData',()=>({useProjectData:()=>({projectId:1}),presentItem:x=>x}));
+vi.mock('../services/api/workItems',()=>({workItemsApi:{overview:forbidden.overview}}));
+vi.mock('../services/api/qa',()=>({qaApi:{handoff:forbidden.handoff}}));
+vi.mock('../services/api/featureIssues',()=>({featureIssuesApi:{list:async()=>({items:[],totalItems:0,page:0,size:1,totalPages:0})}}));
+vi.mock('../services/api/projects',()=>({projectsApi:{listCatalog:async()=>[]}}));
+beforeEach(()=>{state.project={id:1,code:'SPIDER-PLUS',name:'Spider Plus',description:'Mô tả'};state.loading=false;state.error='';vi.clearAllMocks();forbidden.overview.mockResolvedValue({items:[],statuses:[],milestones:[]});});
+it('shows approved project information only for exact Spider Plus identity',()=>{
+ const view=render(<ProjectOverview/>);expect(screen.getByRole('heading',{name:'Mục tiêu và phạm vi'})).toBeVisible();
+ expect(screen.getByText(/Thực hiện System Test/)).toBeVisible();expect(screen.getAllByRole('link',{name:/Google Drive/})).toHaveLength(2);
+ state.project={id:2,code:'DEMO',name:'Flutter',description:'Mô tả thật của demo'};view.rerender(<ProjectOverview/>);
+ expect(screen.queryByText(/Thực hiện System Test/)).toBeNull();expect(screen.getByText('Mô tả thật của demo')).toBeVisible();
 });
-it('retries a failed overview and discards an earlier project response',async()=>{
-  let finish;workItemsApi.overview.mockImplementationOnce(()=>new Promise(resolve=>{finish=resolve;})).mockRejectedValueOnce(new Error('Lỗi dự án B')).mockResolvedValueOnce({...result,items:[]});
-  const {rerender}=render(<ProjectOverview navigate={()=>{}}/>);state.projectId=2;rerender(<ProjectOverview navigate={()=>{}}/>);
-  await screen.findByText('Lỗi dự án B');finish(result);await waitFor(()=>expect(screen.queryByText('DEMO-7')).not.toBeInTheDocument());
-  fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));await screen.findByText('60/100 công việc hoàn thành · 60%');expect(workItemsApi.overview).toHaveBeenLastCalledWith(2);
-  state.projectId=null;rerender(<ProjectOverview navigate={()=>{}}/>);expect(screen.getByText('Chọn dự án để xem tổng quan.')).toBeVisible();
+it('handles loading, denied project and missing descriptions without inventing content',()=>{
+ state.project=null;state.loading=true;const view=render(<ProjectOverview/>);expect(screen.getByRole('status')).toHaveTextContent('Đang tải');
+ state.loading=false;state.error='Không có quyền dự án';view.rerender(<ProjectOverview/>);expect(screen.getByRole('alert')).toHaveTextContent(state.error);
+ state.error='';view.rerender(<ProjectOverview/>);expect(screen.getByText('Chọn dự án để xem thông tin.')).toBeVisible();
+ state.project={id:4,code:'spider-plus',name:'Dự án khác',description:''};view.rerender(<ProjectOverview/>);expect(screen.getByText('Dự án chưa có mô tả.')).toBeVisible();expect(screen.queryByText(/Thực hiện System Test/)).toBeNull();
+});
+it('renders other project descriptions as safe literal text',()=>{
+ state.project={id:3,code:'OTHER',name:'Dự án khác',description:'<script>alert(1)</script>'};const view=render(<ProjectOverview/>);
+ expect(screen.getByText(state.project.description)).toBeVisible();expect(view.container.querySelector('script')).toBeNull();
+});
+it('is read-only and never retrieves management or legacy retest data',()=>{
+ render(<ProjectOverview/>);expect(screen.queryByRole('button',{name:'Thêm công việc'})).toBeNull();expect(screen.queryByText('Công việc tạo gần đây')).toBeNull();expect(screen.queryByText('Hàng chờ bàn giao BUG')).toBeNull();
+ expect(forbidden.overview).not.toHaveBeenCalled();expect(forbidden.handoff).not.toHaveBeenCalled();
 });

@@ -9,6 +9,16 @@ import vn.syp.tms.shared.web.BusinessException;
 import vn.syp.tms.workitem.WorkItemStore;
 
 class AdminOverviewServiceTest {
+    @Test void currentKpisUseActiveFeatureRowsAndIssueContextsInsteadOfExecutionHistory() {
+        var db=mock(WorkItemStore.class);var identity=mock(IdentityService.class);var service=new AdminOverviewService(db,identity);
+        when(identity.current("actor")).thenReturn(new IdentityUser("admin","Admin","SECRET","ADMIN"));
+        when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{String sql=call.getArgument(0);
+            if(!sql.contains("COALESCE(m.members"))return List.of();
+            assertThat(sql).contains("import_rows","import_batches","testing_features","result_status='NA'","result_status='P'","work_item_feature_context","deleted_at IS NULL","archived_at IS NULL").doesNotContain("FROM run_items","execution_attempts");
+            return List.of(project(1,5,1,1,0,1));
+        });
+        assertThat(service.overview("actor",null).metrics()).containsEntry("total",5L).containsEntry("tested",3L).containsEntry("executionPercent",60.0);
+    }
     @Test void inventoryCountsPhysicalStateAndUnreturnedOverdueFromRealRows() {
         var db=mock(WorkItemStore.class);var identity=mock(IdentityService.class);var service=new AdminOverviewService(db,identity);
         when(identity.current("actor")).thenReturn(new IdentityUser("admin","Admin","SECRET","ADMIN"));
@@ -20,12 +30,12 @@ class AdminOverviewServiceTest {
         assertThat(result.inventory()).containsEntry("allocated",3L).containsEntry("maintenance",2L).containsEntry("available",0L).containsEntry("overdueReturnCount",1);
         assertThat(result.attention()).containsEntry("overdueReturnCount",1);
     }
-    @Test void plannedDraftCycleIsUnfinishedScheduleScopeAndMissingDueOrScopeIsUnknown() {
+    @Test void explicitlyLinkedCurrentIssueIsScheduleScopeAndMissingDueOrScopeIsUnknown() {
         var db=mock(WorkItemStore.class);var identity=mock(IdentityService.class);var service=new AdminOverviewService(db,identity);
         when(identity.current("actor")).thenReturn(new IdentityUser("admin","Admin","SECRET","ADMIN"));
         when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{String sql=call.getArgument(0);
             if(!sql.contains("FROM milestones ms"))return List.of();
-            assertThat(sql).contains("c.status_code<>'CLOSED'").doesNotContain("c.status_code<>'DRAFT'");
+            assertThat(sql).contains("work_item_feature_context","w.milestone_id=ms.id","NOT s.terminal").doesNotContain("test_cycles");
             var overdue=new LinkedHashMap<String,Object>(Map.of("id",1L,"projectId",1L,"timezone","Pacific/Kiritimati","dueOn",java.sql.Date.valueOf("2000-01-01"),"scopeCount",1L,"unfinished",true));
             var missing=new LinkedHashMap<String,Object>(overdue);missing.put("id",2L);missing.put("dueOn",null);
             var noScope=new LinkedHashMap<String,Object>(overdue);noScope.put("id",3L);noScope.put("scopeCount",0L);
@@ -72,7 +82,7 @@ class AdminOverviewServiceTest {
         var p=new LinkedHashMap<String,Object>();p.put("id",id);p.put("code","P"+id);p.put("name","Project "+id);p.put("activePmCount",0L);p.put("archivedAt",null);
         p.put("total",total);p.put("na",na);p.put("ok",ok);p.put("ng",ng);p.put("pending",pending);p.put("openBugs",1L);p.put("awaitingVerification",1L);return p;
     }
-    @Test void aggregatesRunCountsBeforeDividingAndKeepsNaPendingAndDistinctRoleCounts() {
+    @Test void aggregatesCaseStatusCountsBeforeDividingAndIncludesPAndNaInProgress() {
         var db=mock(WorkItemStore.class);var identity=mock(IdentityService.class);var service=new AdminOverviewService(db,identity);
         when(identity.current("actor")).thenReturn(new IdentityUser("admin","Admin","SECRET","ADMIN"));
         when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{String sql=call.getArgument(0);
@@ -80,7 +90,8 @@ class AdminOverviewServiceTest {
             if(sql.contains("u.role_code AS role")) return List.of(Map.of("role","TESTER","total",3L,"enabled",2L));
             return List.of();});
         var all=service.overview("actor",null);
-        assertThat(all.metrics()).containsEntry("executionPercent",60.0).containsEntry("passPercent",40.0).containsEntry("na",2L).containsEntry("pending",3L).containsEntry("notRun",1L);
+        // R03/C05: total=12; tested=4 OK+2 NG+3 P+2 NA=11; pass=4/12.
+        assertThat(all.metrics()).containsEntry("executionPercent",91.67).containsEntry("passPercent",33.33).containsEntry("applicable",12L).containsEntry("na",2L).containsEntry("pending",3L).containsEntry("notRun",1L);
         assertThat(all.totalUsers()).isEqualTo(3);assertThat(all.enabledUsers()).isEqualTo(2);
         assertThat(all.openBugs()).isEqualTo(2);assertThat(all.awaitingVerification()).isEqualTo(2);
         verify(db,never()).update(java.util.Objects.requireNonNull(anyString()),any(Object[].class));
@@ -91,7 +102,7 @@ class AdminOverviewServiceTest {
         when(identity.current("actor")).thenReturn(new IdentityUser("other.admin","Admin","SECRET","ADMIN"));
         when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenReturn(List.of());
         var result=service.overview("actor",null);
-        assertThat(result.metrics().get("executionPercent")).isNull();
+        assertThat(result.metrics().get("executionPercent")).isEqualTo(0.0);
         assertThat(result.totalProjects()).isZero();
         verify(db,never()).update(java.util.Objects.requireNonNull(anyString()),any(Object[].class));
         when(identity.current("actor")).thenReturn(new IdentityUser("same","PM","SECRET","PM"));

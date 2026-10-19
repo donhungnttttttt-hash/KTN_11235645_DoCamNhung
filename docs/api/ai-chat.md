@@ -1,8 +1,34 @@
 # Private AI chat API
 
-Implemented on `system-design`, 2026-10-10. Uses the [provider gateway](ai-providers.md); no second credential or provider implementation. All endpoints require an active TMS session. POST requires the existing CSRF token. General chats contain no project snapshot. Project chats pin the project, role-specific purpose and target. Changing provider, model or scope requires a new thread.
+## FixReports update — 2026-10-19
+
+This dated section supersedes the project-only target/background and run-based metric descriptions below. It preserves the10/18 October owner-private history, provider gateway, local pending composer, request-key, retention and connection/session rules except where explicitly changed here. [FixReports contract](fixreports-contract.md), [permissions](../business/permissions.md), [Feature metrics](../business/metrics.md), [management reports](reporting.md). Source documentation does not assert main-database migration/cutover or UAT.
+
+`GET /api/v1/ai/projects` returns the server-authorized selector list `{id,code,name,archived,myRole}[]`: global PM/ADMIN may read all projects for AI; Tester/DEV only authorized memberships. `GET /api/v1/ai/projects/{projectId}/features` returns `{id,name,archived}[]` under the same read policy. The frontend must not substitute the normal project CRUD catalog to infer broader AI grants. Broader PM AI reads do **not** grant Feature/Issue/Note/report/project writes outside ordinary project authority.
+
+Selected-project thread creation is now:
+
+```json
+{"provider":"OPENAI_API","model":"gpt-4.1-mini","projectId":123,"purpose":"PROJECT_CHAT","targetId":456}
+```
+
+`targetId` is an optional **Feature ID** belonging to selected project123; null means the whole project. The client cannot send group/run/document IDs as a Feature mapping. MY_PROJECTS keeps projectId=null,targetId=null; the server determines its project set. Changing project/Feature/provider/model starts a fresh future thread while retaining a newer unsent composer draft. Existing thread/in-flight provider/model/scope remain pinned. Server source references/permission fingerprints remain authoritative and are not browser-supplied grants.
+
+The chosen project/Feature is the target; background context is independently server-policy controlled. PM/ADMIN can receive authorized cross-project management facts. Tester/DEV can ask about case/Issue details in their authorized scope and personal file/case/Issue work; management totals/reports and bulk export remain denied by API/retrieval/output policy. Outside their scope, only whitelisted anonymized experience may be returned, without project/person IDs, names, raw documents or exact private counts. Private chat, provider credentials and other users' connections are never facts. Model output cannot change assignment, Status, Issue or report records.
+
+Current facts use Feature-owned case identity and Status: tested=OK+NG+P+NA, total includes NA, empty total gives0 progress; 2Unexecuted+OK+P+NA is3/5. Do not reconstruct reset history or infer actual testers from old workbook labels; record-based experience must identify its limitations. The old cycle/run/NA-exclusion portfolio formula below is historical for retained data, not current Feature reporting.
+
+The old workspace/Admin AI menu is retired. The existing Chat toolbar **Cấu hình AI** reuses the shared source/model/connection selector; no second provider implementation or credential store. Scope/config/settings/history controls respect pending/thread locks, project/Feature catalog responses are canceled or ignored after scope changes, and source configuration errors open the in-chat panel. `/ai` and `/admin/ai` explain the move and open the existing launcher.
+
+Legacy file-group threads retain authorized owner-private history; new generation through retired file scope returns410 `AI_LEGACY_SCOPE`. Saved management reports are separate durable text records, not chat/draft rows, and are not removed by seven-day chat cleanup. Live provider/output behavior and actual isolated HTTP/browser evidence remain separate from frontend API mocks and source inspection.
+
+## Original10/18 October contract and verification history
+
+Implemented on `system-design`, 2026-10-10 and extended18/10. Uses the [provider gateway](ai-providers.md); no second credential or provider implementation. All endpoints require an active TMS session. POST requires the existing CSRF token. General chats contain no project snapshot. Selected-project chats pin PROJECT_CHAT with no target; legacy role-purpose chats retain their task/target. Changing provider, model or scope requires a new thread.
 
 ## DTOs
+
+Follow-up18/10: chat selection is scope-only. New selected-project conversations use `projectId=<authorized id>,purpose="PROJECT_CHAT",targetId=null`; server constructs a `project-chat-v1:<SHA256>` reference for that project's active membership/global authority. No file/ticket/task selection is needed. Missing project selection in the UI maps to existing MY_PROJECTS. Old General and role-purpose conversations retain their original contract. The selected-project context is checked at read/reserve/complete, does not include other projects, and is invalidated when that project's permission/version changes; an unrelated project's membership change does not invalidate it. Archived project conversations are readonly. V30's project constraint already permits this combination, so no migration is introduced.
 
 `POST /api/v1/ai/chats` body:
 
@@ -10,7 +36,13 @@ Implemented on `system-design`, 2026-10-10. Uses the [provider gateway](ai-provi
 {"provider":"OPENAI_API","model":"gpt-4.1-mini","projectId":null,"purpose":null,"targetId":null}
 ```
 
-Provider/model defaults follow the gateway. Project context uses the exact purpose/target options from the existing project AI metadata/targets endpoints. General context requires all three scope fields to be null/omitted. Thread creation validates TMS scope but does not call inference or require an active provider connection.
+Provider/model defaults follow the gateway. Legacy role-purpose project context uses the exact purpose/target options from the existing project AI metadata/targets endpoints. PROJECT_CHAT needs only its project ID. General context requires all three scope fields to be null/omitted. Thread creation validates TMS scope but does not call inference or require an active provider connection.
+
+From 2026-10-18, multi-project context accepts `{"provider":"OPENAI_API","model":"gpt-5.6-luna","projectId":null,"purpose":"MY_PROJECTS","targetId":null}`. The server selects active memberships; global ADMIN includes all projects. `sourceReference` is generated server-side as `portfolio-v1:<SHA256>` over the ordered project/role/membership-version grants and global role. A browser cannot supply a project list or reference to grant access. Existing General/Project threads keep their original scope.
+
+Portfolio scope is fixed to the permission set at creation. List/detail/history/reservation/completion recheck it; any addition/removal/role or membership-version change requires a new thread. Old portfolio threads are omitted from lists and return404, including same-key replay, while the current scope differs. This deliberately prevents reading an answer or feeding model history from a project the user no longer may access. Each chat is still owner-private; ADMIN's project authority does not grant access to someone else's chat.
+
+Portfolio snapshots disclose `asOf`, `totalProjects`, `includedProjects`, and `truncated`; at most30 projects enter the initial snapshot, with further reduction to the existing16000-byte provider budget. Metrics reuse ReportMetrics, counting run items from non-DRAFT cycles, latest result, NA scope exclusions and pending P. Own-case metrics use ACTIVE cycles; own-case and own-work samples contain up to5 records per project and are filtered by the actor's membership ID. General project KPI aggregates remain within the same member reporting permission already used by ReportingService. Archived projects contribute identifying metadata only. Model output cannot change business records.
 
 Returns **201**, Location header, and `Thread`:
 
@@ -35,6 +67,8 @@ Returns a persisted `Turn`, **200** for READY/FAILED or **202** for an already p
 ```
 
 Each source is `{ref,label,path,version}` from the authorized server snapshot. General chats have `sources:[]`. `content`, `model` and `completedAt` are null while GENERATING. FAILED has null `content` and `model`, a completed timestamp and a fixed `AI_*` failure code. User text remains unchanged, including whitespace, on READY and FAILED turns. Render both model and source labels as plain text; never inject HTML. Copy only `content.text` of a READY turn. No endpoint executes tools or changes business data.
+
+UI update 2026-10-18: submitting clears the composer and shows a local pending question immediately, before thread creation/inference completes. This preview is not evidence of persistence or a READY result. Replace it with the returned turn without duplication; preserve a newer composer draft. After an unknown transport/server outcome, inspect using the original key. A persisted FAILED turn can be explicitly resent with a new key. The provider instructions now name the required single `text` field as well as the JSON schema; malformed `answer` objects remain rejected. See [live chat verification](../reviews/2026-10-18-caheo-chat-send.md).
 
 ## Persistence, authorization and limits
 

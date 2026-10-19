@@ -1,5 +1,38 @@
 # Tài liệu test từ Excel
 
+## FixReports — Feature/file độc lập ngày 19/10/2026
+
+Đây là contract source mới, ưu tiên so với mô tả import/run/Fixed/duyệt/lần2 bên dưới. [Contract chung](fixreports-contract.md), [quyền](../business/permissions.md), [metrics](../business/metrics.md). Chưa đồng nghĩa migration/repair đã áp dụng vào main DB hay UAT đạt.
+
+Prefix `P=/api/v1/projects/{projectId}`. Actor từ session; ghi cần CSRF, scope cùng dự án và phiên bản. Member đọc, PM dự án/ADMIN quản lý Feature/import/nội dung; ADMIN không cần membership. Môi trường/server của Feature là text tự do, không bắt buộc catalog build/device/cycle.
+
+| Method/path sau P | Input/kết quả |
+| --- | --- |
+| GET/POST `/features`; GET/PUT `/features/{f}` | Create `{name,environment,description,requestKey:UUID}`; update thêm expectedVersion, không requestKey; list page/size/keyword/archived với items/totalItems/page/size/totalPages |
+| POST `/features/{f}/archive` hoặc `/restore` | `{expectedVersion,requestKey:UUID}`; giữ dữ liệu, không hard delete |
+| GET `/features/{f}/documents` | page/size/keyword; fileName/sheetName, caseCount/testedCaseCount/progressPercent, assignees |
+| POST `/features/{f}/import-previews`; GET `/features/{f}/import-previews/{id}`; POST `/features/{f}/import-previews/{id}/commit` | Multipart file và preview/commit hiện có trong đúng Feature; commit dùng ID response, không đoán từ tên/checksum |
+| POST `/features/{f}/documents/{d}/archive` | `{expectedVersion,requestKey:UUID}`; ẩn file khỏi danh sách hoạt động, giữ case/Issue/workbook/lịch sử cần giữ |
+| GET `/test-documents/{d}`; GET `/test-documents/{d}/export?original=false` hoặc `original=true` | Chi tiết và XLSX của đúng bản Feature-owned; original=true giữ bytes nguồn |
+| PUT `/test-documents/{d}/rows/{r}/cells/{column}` | Sửa nội dung/overlay theo quyền PM/ADMIN, expectedVersion và expectedRevisionId; không ghi raw workbook |
+| PUT `/test-documents/{d}/rows/{r}/result` | `{status,expectedVersion,requestKey:UUID}`; chỉ UNEXECUTED/OK/NG/P/NA; result-history GET giữ actor/time/version |
+| GET/PUT `/test-documents/{d}/assignments` | PUT `{expectedVersion,requestKey:UUID,changes:[{assigneeMembershipId,rowIds:[]}]}`; một transaction; dùng rowId thật, range UI phải resolve ra các row của file |
+| GET `/test-documents/{d}/assignment-history?before=0` | Lịch sử phân công, actor và first/latest tester; không thêm cột người test thứ3 |
+
+Cùng file Excel được import ở Feature A/B thành các bản case/revision/row/edits **độc lập**. Không lấy ID nguồn hiển thị hay tên file làm identity liên Feature. PM/ADMIN quản lý phạm vi; Tester tự nhận/sửa phần mình nhưng overlap hoặc version cũ phải bị chặn, không ghi đè người khác. Ghi Status cần trách nhiệm hiện hành hoặc PM/ADMIN; DEV chỉ đọc. Đổi người được giao không reset Status. tested=OK+NG+P+NA; total gồm NA; file rỗng0/0 hiển thị chưa có case.
+
+Không cần duyệt case/chạy đợt/run/session/build/máy trước ghi của luồng mới; không tự tạo execution/retest. Import/đọc/export vẫn giữ giới hạn parser, bytes nguồn và overlay an toàn đã có. [Public legacy writes](file-work.md#fixreports--ngừng-ghi-luồng-cũ-ngày-19102026) trả410; không gọi endpoint import thiếu Feature để lách đường mới. Migration/repair được owner theo dõi riêng, chưa gán số phiên bản hoặc xác nhận runtime tại đây.
+
+### Bổ sung 19/10/2026 — R02/R03/R08: export và import lại
+
+Với file thuộc Feature, current export dùng revision/overlay/Status hiện hành, thay cột kết quả bằng `Status`, tái sử dụng hoặc thêm đúng hai cột `Người test đầu tiên` và `Người test lại gần nhất`. Các tên này phản ánh lịch sử phân công, không thay actor ghi Status. Export lặp không nối thêm các cột trùng. `original=true` luôn trả nguyên bytes đã nhập của chính bản file đó.
+
+Parser nhận current export mẫu khách theo alias tiêu đề đã hỗ trợ; mẫu nội bộ nhận đúng11 cột gốc hoặc14 cột gồm11 cột gốc + ba tiêu đề export trên theo đúng thứ tự. Không mở parser cho cột tùy ý. Import current export vào Feature khác tạo bản case độc lập với Status `UNEXECUTED`, phân công/lịch sử mới trống; dữ liệu tester/Status nguồn không tự trở thành actor audit, kinh nghiệm AI hay phân công mới. Bản nguồn và bytes workbook nguồn vẫn được giữ. [Quyền và metrics chung](fixreports-contract.md).
+
+## Lịch sử trước FixReports
+
+Các format/parser/export và bằng chứng lịch sử dưới đây được giữ; điều kiện run/cycle, Fixed, đồng bộ attempt và quota theo đợt không còn là contract cho bản Feature mới.
+
 Ngày 03/10/2026. Mở rộng S04 trong S11 theo [thiết kế đã duyệt](../superpowers/specs/2026-10-03-test-documents-design.md). Code đã triển khai; bằng chứng và gate database tại [báo cáo](../reviews/2026-10-03-test-documents.md).
 
 ## Luồng nhập

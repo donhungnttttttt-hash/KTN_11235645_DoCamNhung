@@ -106,7 +106,8 @@ class FileWorkServiceTest {
         assertEquals("2026-10-06",value.get("milestoneDueOn"));assertEquals(6L,value.get("milestoneId"));assertEquals("Release",value.get("milestoneName"));
         assertEquals(projection.get("latestActivityAt"),value.get("latestActivityAt"));assertEquals(projection.get("updatedAt"),value.get("updatedAt"));
         assertEquals(sessions.getFirst().get("startedAt"),value.get("startedAt"));assertEquals(50L,value.get("selectedBuildId"));
-        assertNull(((Map<?,?>)value.get("counts")).get("executionRate"));assertNull(((Map<?,?>)value.get("counts")).get("passRate"));
+        // R03/C05: the shared metrics contract represents an empty scope as 0%.
+        assertEquals(0d,((Map<?,?>)value.get("counts")).get("executionRate"));assertEquals(0d,((Map<?,?>)value.get("counts")).get("passRate"));
         verify(db,atLeastOnce()).row(argThat(sql->sql.contains("LEFT JOIN milestones ms ON ms.project_id=c.project_id AND ms.id=c.milestone_id") && sql.contains("DATE_FORMAT(ms.due_on,'%Y-%m-%d') AS milestoneDueOn") && sql.contains("MAX(a.executed_at)") && sql.contains("MAX(s.last_transition_at)") && sql.contains("GREATEST(g.updated_at") && sql.contains("AS latestActivityAt")),eq(1L),eq(40L));
         verify(db).rows(contains("a.build_id=?"),eq(50L),eq(50L),eq(1L),eq(40L));
     }

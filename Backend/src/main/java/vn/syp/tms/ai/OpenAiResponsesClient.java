@@ -24,7 +24,6 @@ public class OpenAiResponsesClient {
         public String code() { return getMessage(); }
     }
 
-    private static final URI ENDPOINT = URI.create("https://api.openai.com/v1/responses");
     static final int MAX_REQUEST_BYTES = 16000;
     private final OpenAiConfiguration config;
     private final ObjectMapper json;
@@ -37,10 +36,10 @@ public class OpenAiResponsesClient {
     @Autowired
     public OpenAiResponsesClient(OpenAiConfiguration config, ObjectMapper json) {
         this(config, json, HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(3))
-                .followRedirects(HttpClient.Redirect.NEVER).build(), ENDPOINT);
+                .followRedirects(HttpClient.Redirect.NEVER).build(), config.responsesEndpoint());
     }
 
-    // Package-private injection supports a localhost fake; runtime endpoint is not configurable.
+    // Package-private injection supports localhost tests; runtime destinations are server-configured and allowlisted.
     OpenAiResponsesClient(OpenAiConfiguration config, ObjectMapper json, HttpClient http, URI endpoint) {
         this(config,json,http,endpoint,Clock.systemUTC());
     }

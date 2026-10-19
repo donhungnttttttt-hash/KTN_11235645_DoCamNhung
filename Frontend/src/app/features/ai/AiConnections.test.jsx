@@ -51,3 +51,17 @@ it('discards late provider metadata after an account switch',async()=>{
  await screen.findByLabelText('Nguồn AI');await act(async()=>finish({providers:[{code:'CHATGPT',label:'old private identity',connection:{accountLabel:'old-private'}}]}));
  expect(screen.queryByText(/old-private|old private/)).toBeNull();
 });
+it.each(['expired','unavailable'])('clears an obsolete provider error after successful same-owner recovery from %s',async status=>{
+ api.providers.mockRejectedValueOnce(Object.assign(new Error('private transport detail'),{code:'AI_UNAVAILABLE'}));
+ const view=render(<AiProviderProvider api={api}><AiSourceSelector/></AiProviderProvider>);
+ expect(await screen.findByRole('alert')).toHaveTextContent('Nguồn AI chưa phản hồi');
+ identity.status=status;
+ view.rerender(<AiProviderProvider api={api}><AiSourceSelector/></AiProviderProvider>);
+ expect(screen.queryByLabelText('Nguồn AI')).toBeNull();
+ identity.status='authenticated';
+ view.rerender(<AiProviderProvider api={api}><AiSourceSelector/></AiProviderProvider>);
+ await screen.findByText('Đã cấu hình API · chưa xác nhận live');
+ expect(screen.getByLabelText('Model AI')).toHaveValue('api-model');
+ expect(screen.queryByRole('alert')).toBeNull();
+ expect(screen.queryByText('private transport detail')).toBeNull();
+});
