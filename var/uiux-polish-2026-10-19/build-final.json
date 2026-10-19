@@ -1,0 +1,7 @@
+{
+  "capturedAt": "2026-10-19T04:19:19.491Z",
+  "command": "rtk proxy npm.cmd run build",
+  "cwd": "Frontend",
+  "exitCode": 0,
+  "output": "[rtk] /!\\ No hook installed — run `rtk init -g` for automatic token savings\n\n> system@1.0.0 build\n> vite build\n\nvite v6.4.3 building for production...\ntransforming...\n✓ 1701 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.53 kB │ gzip:   0.37 kB\ndist/assets/index-Bi-5LBjh.css  183.64 kB │ gzip:  32.89 kB\ndist/assets/index-BpUcvysO.js   480.82 kB │ gzip: 139.73 kB\n✓ built in 7.28s\n"
+}

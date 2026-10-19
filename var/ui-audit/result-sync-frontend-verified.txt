@@ -1,0 +1,12 @@
+Command: rtk proxy npm exec -- vitest run --maxWorkers=2
+Working directory: Frontend
+Terminal session: 30294
+Exit code: 0
+Test Files 76 passed (76)
+Tests 846 passed (846)
+Start at 09:44:59
+Duration 139.44s
+
+Summary transcribed from the terminal result; not a full test log.
+Earlier parallel full run timed out in test-cases/result-grid and contaminated the following form test. Re-run above limited workers and passed without changing those tests or their timeouts.
+The earlier result-sync-frontend-final.log was incomplete and is not used as proof of a successful run.

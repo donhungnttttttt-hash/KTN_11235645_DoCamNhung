@@ -1,0 +1,18 @@
+const fs=require('fs'),path=require('path'),crypto=require('crypto'),cp=require('child_process');
+const root=path.resolve(__dirname,'../..');
+const readJson=file=>JSON.parse(fs.readFileSync(path.join(__dirname,file),'utf8').replace(/^\uFEFF/,''));
+const hash=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex').toUpperCase();
+const archive=readJson('archive-inventory.json'),documents=readJson('document-index.json');
+const report='docs/reviews/2026-10-17-kl-documents-review.md';
+const reportText=fs.readFileSync(path.join(root,report),'utf8');
+const links=[...reportText.matchAll(/!?\[[^\]]*\]\(([^)]+)\)/g)].map(m=>m[1]).filter(link=>!/^https?:|^#/.test(link));
+const missing=links.filter(link=>!fs.existsSync(path.resolve(root,path.dirname(report),link.split('#')[0])));
+const sourceDocuments=documents.map(doc=>({file:doc.file,unchanged:hash(path.join(__dirname,'extracted/KL',doc.file))===doc.sha256}));
+const archivePreserved=hash(archive.archive)===archive.sha256;
+const diagramRecords=readJson('diagrams.json'),d3=readJson('text/D3.json');
+const git=(...args)=>cp.execFileSync('rtk',['proxy','git',...args],{cwd:root,encoding:'utf8'}).trim();
+const businessDiff=git('diff','--name-only','HEAD','--','Backend','Frontend','scripts','infra');
+const result={checkedAt:new Date().toISOString(),date:'2026-10-17',timezone:'Asia/Saigon',branch:git('branch','--show-current'),head:git('rev-parse','HEAD'),archiveSha256:archive.sha256,archivePreserved,sourceDocuments,archiveFiles:archive.entries.filter(e=>!/[\\/]$/.test(e.name)).length,archiveDirectories:archive.entries.filter(e=>/[\\/]$/.test(e.name)).length,diagrams:diagramRecords.length,sourceDdlTables:readJson('source-schema.json').tableCount,doc3:{tables:d3.tables.length,ucTables:d3.tables.filter(t=>t.rows[0][0]==='Use Case ID').length,entityTables:25,placeholders:d3.paragraphs.filter(p=>p.text.includes('[[ CHÈN ẢNH:')).length,literalNewlineParagraphs:d3.paragraphs.filter(p=>p.text.includes(String.fromCharCode(92,110))).length},reportLinks:{checked:links.length,missing},businessSourceUnchanged:businessDiff==='',businessDiff:businessDiff.split('\n').filter(Boolean),limits:{wordPdfPagination:'NOT_VERIFIED',svgVisualRendering:'NOT_RUN_FILE_PROTOCOL_BLOCKED',runtimeTestBuildDatabase:'NOT_RUN_DOCUMENT_REVIEW_ONLY',externalCompanyFacts:'NOT_VERIFIED',commitPush:'NOT_PERFORMED_FOR_THIS_TASK'}};
+fs.writeFileSync(path.join(__dirname,'verification.json'),JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify(result,null,2));
+if(!archivePreserved||sourceDocuments.some(d=>!d.unchanged)||missing.length||businessDiff)process.exitCode=1;

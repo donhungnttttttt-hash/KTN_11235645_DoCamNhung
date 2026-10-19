@@ -1,0 +1,15 @@
+{
+  "invalidMigrations" : [ {
+    "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED",
+    "version" : "31"
+  }, {
+    "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED",
+    "version" : "32"
+  }, {
+    "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED",
+    "version" : "33"
+  } ],
+  "validationSuccessful" : false,
+  "overallCode" : "VALIDATE_ERROR",
+  "validatedMigrationCount" : 0
+}

@@ -1,0 +1,18 @@
+{
+  "createdAt": "2026-10-18T18:12:35.775Z",
+  "server": "existing native loopback",
+  "port": "3307",
+  "mainUntouched": true,
+  "targets": [
+    {
+      "purpose": "migration",
+      "schema": "tms_docstest_7cb4aee200db",
+      "empty": true
+    },
+    {
+      "purpose": "integration",
+      "schema": "tms_docstest_2060e04c986c",
+      "empty": true
+    }
+  ]
+}

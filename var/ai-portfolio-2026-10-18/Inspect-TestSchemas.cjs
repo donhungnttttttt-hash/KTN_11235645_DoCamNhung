@@ -1,0 +1,14 @@
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'../..');
+const {parseConfig,query}=require('../../scripts/database/mysql-client.cjs');
+const cfg=parseConfig(fs.readFileSync(path.join(root,'.env.mysql.local'),'utf8'));
+const testReader={...cfg,TMS_DB_USER:cfg.TMS_MIGRATION_USER,TMS_DB_PASSWORD:cfg.TMS_MIGRATION_PASSWORD};
+const rows=query("SELECT s.SCHEMA_NAME,COUNT(t.TABLE_NAME) FROM INFORMATION_SCHEMA.SCHEMATA s LEFT JOIN INFORMATION_SCHEMA.TABLES t ON t.TABLE_SCHEMA=s.SCHEMA_NAME WHERE s.SCHEMA_NAME REGEXP '^tms_docstest_[a-f0-9]{12}$' GROUP BY s.SCHEMA_NAME ORDER BY s.SCHEMA_NAME;",testReader);
+console.log(JSON.stringify({isolatedSchemas:rows.map(row=>{const [name,tables]=row.split('\t');return {name,tables:Number(tables)};})}));
+const chosen={...testReader,TMS_DB_NAME:'tms_docstest_202610100016'};
+console.log(JSON.stringify({chosen:chosen.TMS_DB_NAME,version:query('SELECT version FROM flyway_schema_history WHERE success=1 ORDER BY installed_rank DESC LIMIT 1;',chosen)[0]}));
+const upgrade={...testReader,TMS_DB_NAME:'tms_docstest_202610102245'};
+console.log(JSON.stringify({upgrade:upgrade.TMS_DB_NAME,version:query('SELECT version FROM flyway_schema_history WHERE success=1 ORDER BY installed_rank DESC LIMIT 1;',upgrade)[0]}));
+const upgrade2={...testReader,TMS_DB_NAME:'tms_docstest_bab5ba2349be'};
+console.log(JSON.stringify({upgrade:upgrade2.TMS_DB_NAME,version:query('SELECT version FROM flyway_schema_history WHERE success=1 ORDER BY installed_rank DESC LIMIT 1;',upgrade2)[0]}));

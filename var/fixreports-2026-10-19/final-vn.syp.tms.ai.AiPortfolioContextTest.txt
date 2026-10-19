@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: vn.syp.tms.ai.AiPortfolioContextTest
+-------------------------------------------------------------------------------
+Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.877 s -- in vn.syp.tms.ai.AiPortfolioContextTest

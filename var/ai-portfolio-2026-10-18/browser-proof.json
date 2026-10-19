@@ -1,0 +1,42 @@
+{
+  "scope": "Tất cả dự án · Admin tổng",
+  "presetOnlyDraft": true,
+  "generalScopeSelectable": true,
+  "sentMainDatabaseToProvider": false,
+  "mobile320": {
+    "buttons": [
+      {
+        "enabled": true,
+        "label": "Dự án tôi tham gia",
+        "left": 28,
+        "right": 275.1999969482422,
+        "width": 247.1999969482422
+      },
+      {
+        "enabled": true,
+        "label": "Tiến độ kiểm thử",
+        "left": 28,
+        "right": 275.1999969482422,
+        "width": 247.1999969482422
+      },
+      {
+        "enabled": true,
+        "label": "Việc và case còn lại",
+        "left": 28,
+        "right": 275.1999969482422,
+        "width": 247.1999969482422
+      },
+      {
+        "enabled": true,
+        "label": "Bug cần xử lý",
+        "left": 28,
+        "right": 275.1999969482422,
+        "width": 247.1999969482422
+      }
+    ],
+    "clientWidth": 302,
+    "dialogWidth": 304,
+    "scrollWidth": 302
+  },
+  "viewportReset": true
+}

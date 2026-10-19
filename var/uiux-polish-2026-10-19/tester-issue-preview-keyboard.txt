@@ -1,0 +1,166 @@
+- link "Đến nội dung chính":
+  - /url: "#main-viewport"
+- banner:
+  - button "Mở menu dự án":
+  - button "Tổng quan TMS":
+    - generic: S+
+    - strong: TMS
+  - 'button "Dự án: SPIDER PLUS · FR12 cô lập"':
+    - text: "Dự án:"
+    - strong: SPIDER PLUS · FR12 cô lập
+  - button "Mở chat AI":
+  - 'button "Tài khoản: FR12 Đỗ Cẩm Nhung"':
+    - generic: CN
+    - strong: FR12 Đỗ Cẩm Nhung
+- main "Nội dung chính":
+  - navigation "Các khu vực Bảng công việc":
+    - button "Bảng trạng thái"
+    - button "Quản lý kiểm thử"
+  - button "← File trong Feature"
+  - heading "ux-audit-input.xlsx" [level=2]
+  - strong: 3/5 case · 60%
+  - progressbar "Tiến độ file"
+  - button "Tự nhận / sửa phạm vi"
+  - button "Lịch sử phân công"
+  - text: Tìm trong file
+  - searchbox "Tìm trong file"
+  - text: Status
+  - combobox "Status":
+    - option "Tất cả" [selected]
+    - option "Unexecuted"
+    - option "OK"
+    - option "NG"
+    - option "P"
+    - option "NA"
+  - button "Xuất Excel"
+  - button "Tải file gốc"
+  - button "Làm mới"
+  - button "Trang trước" [disabled]
+  - generic: Trang 1/1 · 5 case
+  - button "Trang sau" [disabled]
+  - text: Số dòng
+  - combobox "Số dòng":
+    - option "20" [selected]
+    - option "50"
+    - option "100"
+  - paragraph: Status lưu riêng cho từng Feature. Hai cột người test thể hiện phân công; người ghi kết quả có trong lịch sử.
+  - status
+  - region "Bảng test case của Feature":
+    - table:
+      - rowgroup:
+        - row "caseNo suiteCode titleVi preconditionsVi stepsVi expectedVi titleJp preconditionsJp stepsJp expectedJp sourceReference Status / Issue Người test đầu tiên Người test lại gần nhất":
+          - columnheader "caseNo"
+          - columnheader "suiteCode"
+          - columnheader "titleVi"
+          - columnheader "preconditionsVi"
+          - columnheader "stepsVi"
+          - columnheader "expectedVi"
+          - columnheader "titleJp"
+          - columnheader "preconditionsJp"
+          - columnheader "stepsJp"
+          - columnheader "expectedJp"
+          - columnheader "sourceReference"
+          - columnheader "Status / Issue"
+          - columnheader "Người test đầu tiên"
+          - columnheader "Người test lại gần nhất"
+      - rowgroup:
+        - row "1 XLSX-267 FR12 · Đỗ Cẩm Nhung · Case 1 Dữ liệu thử Các bước 1 Kết quả mong đợi 1 — — — — FR12 reference 1 Kết quả test case 1 Issue (1) Lịch sử Status FR12 Đỗ Cẩm Nhung —":
+          - cell "1":
+            - button "1"
+          - cell "XLSX-267"
+          - cell "FR12 · Đỗ Cẩm Nhung · Case 1"
+          - cell "Dữ liệu thử"
+          - cell "Các bước 1"
+          - cell "Kết quả mong đợi 1"
+          - cell "—"
+          - cell "—"
+          - cell "—"
+          - cell "—"
+          - cell "FR12 reference 1"
+          - cell "Kết quả test case 1 Issue (1) Lịch sử Status":
+            - button "Kết quả test case 1": OK
+            - button "Issue (1)" [expanded]
+            - button "Lịch sử Status"
+          - cell "FR12 Đỗ Cẩm Nhung"
+          - cell "—"
+        - row "2 XLSX-267 FR12 · Đỗ Cẩm Nhung · Case 2 Dữ liệu thử Các bước 2 Kết quả mong đợi 2 — — — — FR12 reference 2 Kết quả test case 2 Issue (0) Lịch sử Status FR12 Đỗ Cẩm Nhung —":
+          - cell "2":
+            - button "2"
+          - cell "XLSX-267"
+          - cell "FR12 · Đỗ Cẩm Nhung · Case 2"
+          - cell "Dữ liệu thử"
+          - cell "Các bước 2"
+          - cell "Kết quả mong đợi 2"
+          - cell "—"
+          - cell "—"
+          - cell "—"
+          - cell "—"
+          - cell "FR12 reference 2"
+          - cell "Kết quả test case 2 Issue (0) Lịch sử Status":
+            - button "Kết quả test case 2": P
+            - button "Issue (0)"
+            - button "Lịch sử Status"
+          - cell "FR12 Đỗ Cẩm Nhung"
+          - cell "—"
+        - row "3 XLSX-267 FR12 · Đỗ Cẩm Nhung · Case 3 Dữ liệu thử Các bước 3 Kết quả mong đợi 3 — — — — FR12 reference 3 Kết quả test case 3 Issue (0) Lịch sử Status FR12 Đỗ Cẩm Nhung —":
+          - cell "3":
+            - button "3"
+          - cell "XLSX-267"
+          - cell "FR12 · Đỗ Cẩm Nhung · Case 3"
+          - cell "Dữ liệu thử"
+          - cell "Các bước 3"
+          - cell "Kết quả mong đợi 3"
+          - cell "—"
+          - cell "—"
+          - cell "—"
+          - cell "—"
+          - cell "FR12 reference 3"
+          - cell "Kết quả test case 3 Issue (0) Lịch sử Status":
+            - button "Kết quả test case 3": NA
+            - button "Issue (0)"
+            - button "Lịch sử Status"
+          - cell "FR12 Đỗ Cẩm Nhung"
+          - cell "—"
+        - row "4 XLSX-267 FR12 · Đỗ Cẩm Nhung · Case 4 Dữ liệu thử Các bước 4 Kết quả mong đợi 4 — — — — FR12 reference 4 Kết quả test case 4 Issue (0) Lịch sử Status — —":
+          - cell "4":
+            - button "4"
+          - cell "XLSX-267"
+          - cell "FR12 · Đỗ Cẩm Nhung · Case 4"
+          - cell "Dữ liệu thử"
+          - cell "Các bước 4"
+          - cell "Kết quả mong đợi 4"
+          - cell "—"
+          - cell "—"
+          - cell "—"
+          - cell "—"
+          - cell "FR12 reference 4"
+          - cell "Kết quả test case 4 Issue (0) Lịch sử Status":
+            - button "Kết quả test case 4" [disabled]: Unexecuted
+            - button "Issue (0)"
+            - button "Lịch sử Status"
+          - cell "—"
+          - cell "—"
+        - row "5 XLSX-267 FR12 · Đỗ Cẩm Nhung · Case 5 Dữ liệu thử Các bước 5 Kết quả mong đợi 5 — — — — FR12 reference 5 Kết quả test case 5 Issue (0) Lịch sử Status — —":
+          - cell "5":
+            - button "5"
+          - cell "XLSX-267"
+          - cell "FR12 · Đỗ Cẩm Nhung · Case 5"
+          - cell "Dữ liệu thử"
+          - cell "Các bước 5"
+          - cell "Kết quả mong đợi 5"
+          - cell "—"
+          - cell "—"
+          - cell "—"
+          - cell "—"
+          - cell "FR12 reference 5"
+          - cell "Kết quả test case 5 Issue (0) Lịch sử Status":
+            - button "Kết quả test case 5" [disabled]: Unexecuted
+            - button "Issue (0)"
+            - button "Lịch sử Status"
+          - cell "—"
+          - cell "—"
+- region "Issue của case":
+  - strong: Issue của case · 1
+  - button "SPIDER-PLUS-7 · UX-AUDIT · Bug từ case1" [active]
+  - generic: BUG · Chưa xử lý
+  - button "Tạo Issue từ case"

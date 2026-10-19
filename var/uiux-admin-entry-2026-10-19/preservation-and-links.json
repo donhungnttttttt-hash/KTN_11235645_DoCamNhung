@@ -1,0 +1,1489 @@
+{
+  "capturedAt": "2026-10-19T04:56:52.085Z",
+  "baseline": {
+    "path": "var/uiux-admin-entry-2026-10-19/baseline.json",
+    "capturedAt": "2026-10-19T04:25:59.178Z",
+    "branch": "system-design",
+    "fileCount": 3374,
+    "sha256": "1bec591e902e18b7d405f5989f3b06d8e32394b95825c39ab0efc2513970d748",
+    "preserved": true
+  },
+  "discovery": "Same git ls-files -co --exclude-standard enumeration as Capture-Baseline.cjs; ignored build/node_modules/runtime files are outside this snapshot. File bytes are hashed, never printed.",
+  "summary": {
+    "baselineFiles": 3374,
+    "unchangedExisting": 3349,
+    "changedExisting": 25,
+    "newFiles": 107,
+    "missing": 0,
+    "currentEnumerated": 3481
+  },
+  "protected": {
+    "backend": {
+      "baselineCount": 359,
+      "unchanged": true,
+      "changed": [],
+      "missing": [],
+      "added": []
+    },
+    "configuration": {
+      "baselineCount": 32,
+      "unchanged": true,
+      "changed": [],
+      "missing": [],
+      "added": []
+    },
+    "packages": {
+      "baselineCount": 3,
+      "unchanged": true,
+      "changed": [],
+      "missing": [],
+      "added": []
+    }
+  },
+  "changedExisting": [
+    {
+      "path": "Frontend/src/app/features/admin/UserCreateDialog.jsx",
+      "baselineSha256": "a9b4fbd87ffe6afd1e3c78193daa423a83d043111be80c278a7f1a4d2432ac6a",
+      "currentSha256": "93c9b253f3165ab002f847a7a8091730b1c8db1d1c7d5069091842b64fa1a533"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/nested-project-picker.test.jsx",
+      "baselineSha256": "aa7da80e17b87f64f11369bd59f543f0371063da482e569f3e4afbf92d4421d8",
+      "currentSha256": "14b37abc00c457d8645c5487c5eeb5cd2cf4e083afa48f7361875a3fa8220104"
+    },
+    {
+      "path": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "baselineSha256": "c1fd831216797ce9a7240de1908ef639e7b51e3bd01c43e33f59caf7bddd00d7",
+      "currentSha256": "3474f49f26ab06e24201ab3f9084d9426adc2eb52eb3b04de2a616464110f733"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "baselineSha256": "e8c0192b08bb6df2ca784567af4b3ba964db040d0194efd58468fcd781f30c15",
+      "currentSha256": "50173b2d034e139aeb2b2ad70a904b6b21614c22dacb80cc4c230d108b60f708"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingDocumentPage.test.jsx",
+      "baselineSha256": "5b94e7383de7c3eb5bf2add1f49da325acbdd36d7ce0415b08c7207d343a7cf8",
+      "currentSha256": "87998813c2b6620017895fc8afa4e21b46ec5306896c8215a0aeb1fb54035e73"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "baselineSha256": "bd8e68f2a5d139123341030539a14a4348ff42c06a32a6c58efc236f10102e64",
+      "currentSha256": "eb13d7fa3a7639000ead7c7a9ce9300960c513aace38896375dacef3f21b858b"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "baselineSha256": "fc6f792400879d507290913a28212a364b1c0a8ca61c6774435e3a5e80cf8a88",
+      "currentSha256": "c508b53ebeee46c4f0769b8b819e41419df8600b154efc42f980a176be428574"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/testing.css",
+      "baselineSha256": "0335f2ee3a40d3d341f9fa55711253ad59c65fa4fb9c9f8ea98a3f8b4cfb59c1",
+      "currentSha256": "63425081a04cda13cc35ce089bcd0478d7deb0f6e478dfbe8b33af1e3296dcc6"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+      "baselineSha256": "6a0e17349b3e0ac71abbb71f81fa75a1c84c2d1db3421c2a1e51f69a481c80fb",
+      "currentSha256": "40b47b249f8eef5c9b2665762407f93cc21ed9d57435e20e000ec7839c4f8396"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminLayout.jsx",
+      "baselineSha256": "06d80782d8cde1e7abdabcd8711e0c1b6012e6220922ed8fee6e45802c9b6d93",
+      "currentSha256": "38fccdeadbd0857cb6f1ccebe777ddb7965d000c35e8ec04a9265d39dbdea04e"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectDropdown.jsx",
+      "baselineSha256": "26802a44fa56db21caba5f930597b1a6f2a5d1a352b7397f408fabb29baff727",
+      "currentSha256": "b0219bdf97a71fe72bae5d958538427bc8b93042fb327b3792fba99a634af166"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+      "baselineSha256": "505dc4b2bdb7a2ca4ddf166088a923ac7dd1fe4ba78e44b6480a289a7fb72380",
+      "currentSha256": "ac47df1aba16ade59b8eebb29dd96e118be0996aa1f25a51b0fcc7a4db4ba4f0"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectLifecycle.integration.test.jsx",
+      "baselineSha256": "582e15cd0ae8b3d3c26c8543e5e00de76658729408b57e35607d33f106623d07",
+      "currentSha256": "56aba75802923227b9ce4943e989260bdb1024e743bd4c103453fe854f5a8119"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+      "baselineSha256": "a194b1f1d1f2cb5499e71c7e6df75a3bf80349f9ed9aefe2b7de93e040c9a884",
+      "currentSha256": "04627486dd91f57433692ba7646ee5b384a1ea724bf3d0253d3ab8bbe4909d54"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/DeviceAssetForm.jsx",
+      "baselineSha256": "7169366fbe364a22509128174495c2c6761d2f44ba104ec62e57a263a5e68298",
+      "currentSha256": "6115ad49e63c8ce3a88104ce3741e3dae5cfe4f4f5d9f92a6bd4f52df94a9544"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin.css",
+      "baselineSha256": "2f4356c1c16186567507a9b8f1cc376090378e6bc345a017cce45d89fd4993e0",
+      "currentSha256": "a68aa5f9c785796d26358cb21c69d0a235dffc43f28d6cfc991a1b71f18b507a"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/inventory.test.jsx",
+      "baselineSha256": "35e81692feb947645c8f3c53833a2b0a897c43a5bb78afcbf573c8ea50854dd5",
+      "currentSha256": "fabf92ea5e937e35d5b235c96fdfef5a13ddbeac5d42ab1c538369c7f4602e56"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/project-picker.test.jsx",
+      "baselineSha256": "18aa204d59978d94a0ca86e4a68b8e9ccfae5e94455eeb2c5123676ca818e905",
+      "currentSha256": "39696a893bf6e8f2f454311478a3935b32b9d56ce6116ffb7c482e2fdb38552d"
+    },
+    {
+      "path": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "baselineSha256": "9819de6c3e87ad486f65a143878e095e4b634be3d8a88a57d5d3813955945b8c",
+      "currentSha256": "2e67580e9b72347e64f8f4f3bc9d0558f3cc17632df1f28f051d39e37f3b1288"
+    },
+    {
+      "path": "Frontend/src/app/features/ai/AiConnections.test.jsx",
+      "baselineSha256": "ede218c02a3d10f75e285df16af2ad4610648b4effc9376a2bb0d2bb186d660b",
+      "currentSha256": "c18739e5b447e20913d4087a396d4cad3f065bfe88b5ce2b93f4ebdd19285391"
+    },
+    {
+      "path": "Frontend/src/app/features/ai/ai.css",
+      "baselineSha256": "891c8f1578ffc3509bd34cae41d0c17fd4cf604034de3f23f3fe869b15917951",
+      "currentSha256": "5f49929f5c812b969a485562e3e9d01f5e9e706d8ad924253c229c23daaafd5f"
+    },
+    {
+      "path": "Frontend/src/app/hooks/useDialogFocus.js",
+      "baselineSha256": "94aac08b1c8a025ef1f898ddf375837dec2b10793984dfc84b70e21d782dd881",
+      "currentSha256": "2886ad7f5fc70362c7b2bf198131fab00f60f636b8579d9041a8577e2f885e9e"
+    },
+    {
+      "path": "Frontend/src/app/styles/app-shell.css",
+      "baselineSha256": "da3e82566928e79fc5352d14070692675219bbbb0944242f82f80a46600f1472",
+      "currentSha256": "bd250067420ec6e0d911fdc9b2acd39567e03e2f48c454e9930f8a400fc722ba"
+    },
+    {
+      "path": "docs/planning/README.md",
+      "baselineSha256": "d127049c8376b963fec68f03e1817223c3f16d413b2a3fe527d9a803423c7387",
+      "currentSha256": "38aadebdb176c94ee71efe4a147ce7c33bf10500a80d6077b78b608c641e5de8"
+    },
+    {
+      "path": "docs/planning/STATUS.json",
+      "baselineSha256": "0bd95cc051d18e50ca476333fcdada757ccfc0ef55731920105d7b1439e7d99b",
+      "currentSha256": "cd2efc51f757a6a73ad76dac8cf8ae45adb3203df24a70e958a2a467d49448a1"
+    }
+  ],
+  "newFiles": [
+    {
+      "path": "Frontend/src/app/features/admin/AdminLayout.navigation.test.jsx",
+      "sha256": "3dcb4310ce7518c384d685810fc8fddd51c442da2ad7ba1ec5b13c7dc2190def"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin-dirty-close.test.jsx",
+      "sha256": "164450761a491a694c444ea337616dd5882fedc480d45080a1dfcd252903c7ee"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/device-error-recovery.test.jsx",
+      "sha256": "6c36bd855c32726360b10ffdad400e1029ff8e79db2fe1e282fd93999c9e266c"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingListRecovery.test.jsx",
+      "sha256": "ada819ae2342d9430bb2d7c2e85fb6840d3aa6bd114c8cee491d6f8d9378b5b2"
+    },
+    {
+      "path": "docs/planning/2026-10-19-admin-entry-uiux.md",
+      "sha256": "ab38dc7631fd588e34d347d70030d734539c932b9d63c83f61d1794053840c10"
+    },
+    {
+      "path": "docs/reviews/2026-10-19-admin-entry-uiux.md",
+      "sha256": "5aa5ccb31ac5d6b588906468c71641d0f150b6b79f9da43e65015731016b75a8"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/Audit-Surfaces.cjs",
+      "sha256": "da6857d5036a3097776529970986e1441146eff2c1c115642d10d39be9d799fc"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/Finalize-Review.cjs",
+      "sha256": "e47374d7f946f68fa083b3a06aa50a135f5b632b2b32a2fa689f0c1530f06bc6"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/Inspect-Test-Processes.ps1",
+      "sha256": "4a4e6ecefeb84fa71da7efd90ffebabb77aeb9016c6f55d4a72bafedea9c3e3b"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/Snapshot-Source.cjs",
+      "sha256": "a5d35955f5520adb7f041617d376c6e0ba4be4d79096e936abaee234c6338e77"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/Trace-Admin-Entry.cjs",
+      "sha256": "c4d65711f695edaf10ecea9db9c22faac5f6e2c0f8c9532e7e7ec15e5f5335b3"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/Verify-Preservation.cjs",
+      "sha256": "9d50282a454fa46adf038751f9cb4f336085e92f80421ba27c0a799837478f28"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-backdrop-scroll.json",
+      "sha256": "eec7df398395980690f1b37621490064ed614c426ceeecfc2dd4927c5c4d2c99"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-collapsed-after.jpg",
+      "sha256": "448b3eaa4caba72b233a18fc80aa8bff71eda029bbf2dce71c8af656cea1ae61"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-dirty-close-green.json",
+      "sha256": "1b360fb4cce636d6a6f77c00ee95a78a225753708c2fdea494a96ba6c0cea85c"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-dirty-close-independent-review.json",
+      "sha256": "64b96dce2134d4dc2dedb2461600ce42e80d2cc939b5416eecdab95000f40c03"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-dirty-close-red.json",
+      "sha256": "9ce965a6318c558c45137c0f864491b96e1087bca442244c25ac9756009ef788"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-discard-focus-after.json",
+      "sha256": "041b4d775b8170decbfed6b91afeaef012be97708edf605c86f5b884c821fba2"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-discard-focus-before.json",
+      "sha256": "29292844ce47664f3d96bcd1ec01a747188df8a53c1021651214e81977b9e382"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-discard-mobile.jpg",
+      "sha256": "23f967eeaabd50eedd3f9f9b19f9f114cc9a66f0b9a07356e71b3713dcc9e139"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-discard-mobile.json",
+      "sha256": "7599f74bc5f402fcc558e44173bf024b732601ac908523fb96df7a8bb950ddb8"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-discard-result.json",
+      "sha256": "b29fc391da9d854be8495bb15d1db695bc68b4d5806bab5582a1d9d8df2b9cec"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-drawer-320.jpg",
+      "sha256": "61e60183292f57618d37562616c4f2055608e25ff879c14b7cd6f9c7f708a619"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-drawer-320.json",
+      "sha256": "61c179506521141c47ad3e0e9e1bb0ad041f33edd969828eace5affbc642430a"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-entry-before.jpg",
+      "sha256": "6e1827f25302f4f12afd3db97a145e31a34b0ba9cd62ed2abe59e9403e279ab3"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-entry-before.json",
+      "sha256": "f54a6ce430624eef89b4f5766ada835f93dbb14cd9915cbf1bdbec203d00b152"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-entry-source-after.json",
+      "sha256": "0b5d17abfb3f2b1c60cdd4b08c1e7ce92d6697663dbbdca019d090e038c5661b"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-entry-source.json",
+      "sha256": "8a1422a69710c595b786a5b100004388634e3ef136bcc0f5e3921b5fcf08c967"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-final-desktop.jpg",
+      "sha256": "4b4dd079fa8481bac3c45d05a5c6b059446c4e028c664f9a8d150b3a597189fd"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-final-desktop.json",
+      "sha256": "dd9eb20d9acde95ef15bd7547c888c732e63685dd389aafde09ce50ae5ca9af3"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-final-desktop.png",
+      "sha256": "a83b1b456c62efcfcd0bfd000bc585253aca27e40f1d741afa4d63119b95d0d6"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-forms-regression-green.json",
+      "sha256": "388f686436fd1950126248e3aaedb33542e1cdd319cf680b3a2fddb4b69682b9"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-forms-regression.json",
+      "sha256": "90952e964d8f89c5a8f5ca55196437c08f9d0862e2e5ba98593956f81b52ba4b"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-fresh-login-after.jpg",
+      "sha256": "6e161e9532182d0d03f00771ef852c5cd7086211627d0e649167ee12abc432cb"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-fresh-login-after.json",
+      "sha256": "82e94b7d0522bd85ec940f265f3dd96fb0bba9fef826b2efd17b75cfb486e96e"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-inapp-discard-green.json",
+      "sha256": "0a3cd28b9c9aa74c27ef4e90c422342a10f945052acc6008add057540a37505b"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-inapp-discard-red.json",
+      "sha256": "73e3d4a265471c3b759568299c402580bf38cfa932cad102401558811f269726"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-inapp-regression.json",
+      "sha256": "a1d0a7855baa3c34a52a50e0baffc7b9a910c3e1d72ad5c54f5ad31eeff68358"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-inert-focus-green.json",
+      "sha256": "a6ea28109bba60a7047e3bbfed67f953060a0568498e98e31ab0ea7c1c016c15"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-inert-focus-red.json",
+      "sha256": "f03df4220b34da40f27ca191e460eb0f4cc3e9e507e1a303d5d0ba286e75c221"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-layout-green.json",
+      "sha256": "24fd62807e6d042913f595e4d8affc3db1043327361acb1d3ea99fb09769fc7e"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-layout-red.json",
+      "sha256": "c226dfd71ea951654e39c36bd9dd963d9e3d0512a7d3411d760634f555e691a0"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-layout-regression.json",
+      "sha256": "c2d670d6115ee8b550bf43aa3f3ea4950cad88e1050a811bd9f87d1bb0dad867"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-layout.md",
+      "sha256": "3c71dc9d6f78a1e2606dd20bcfe5e3077ae8244d22b8026a0716cac14a1fb119"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-modal-scroll-check.json",
+      "sha256": "a35e91c988b56c7317284501b0fc49cee3415bb7fe99f17cacc68870592ad20c"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-picker-interaction-after.json",
+      "sha256": "a4dd3ec440da0ab02596cfe6c07a08ada1e3302d97e25bd6fb0d5d4d7b3a2054"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-picker-regression.json",
+      "sha256": "115dd21044a98a1567c931cf6af62ff65fe41abd86b086760013c6e2fad511ee"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-green.json",
+      "sha256": "930c1515362e9725739d37c3b9f419ed6901e3037040cc9128b4c45d256e1e75"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-intermediate.json",
+      "sha256": "501a18e4ad06cdb081cc44a135f794517f7838e237555f88a2b01d0c02c6f930"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-red.json",
+      "sha256": "52217893949d7f10f63fc48307b462a5aebe0c136b238dc07a6a055cc2c90c64"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-picker-short-after.jpg",
+      "sha256": "7fdc2caed1368b24d2e368bce7fc0bc534b2b5da3847e94056b4cd95ce663e81"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-picker-short-after.json",
+      "sha256": "f27be1afb3b1a702c71917e7e57821e5daa0767813faa3da4646b786e646a298"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-picker-short-check.jpg",
+      "sha256": "bef179c125f4bf7dfd8be19df31a1c3abc724598ff60cecbced028f10a90d5b7"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-picker-short-check.json",
+      "sha256": "2e4c004d5e4aa7e54040ebcd22748dc601de9efeb2f0e3c3192028572d29861a"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-route-links.json",
+      "sha256": "0393bfc64be2a1b615e61de5993e6aefcc2efc6e1f7a311c7c665a670003199a"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/admin-short-desktop.json",
+      "sha256": "838b621d8f3fd65fd19b71a58e96ef0687727af0816ff8b2409ca5c30d435ff3"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/ai-provider-recovery-red.json",
+      "sha256": "1fc5be6b5c44f72436d910447052fcb00aed4483d56b7b42b3ea919a01aa19ea"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/baseline.json",
+      "sha256": "1bec591e902e18b7d405f5989f3b06d8e32394b95825c39ab0efc2513970d748"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/browser-cleanup.json",
+      "sha256": "9a307c78ca8c0ff57bdfdaaf2bd9905b8d4b2b65cd85fadb1de391487a212826"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/build-verified-final.json",
+      "sha256": "2f5865ac6dbd9472e1da314307a0bf584627f1d65c974a9c4c58a9906447c775"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/chat-320x480.jpg",
+      "sha256": "5af9d6022838835103b9f1497d50fd290de24c8df96097aa67c0472390818153"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/chat-short-after.jpg",
+      "sha256": "0879d25f9e794112c51cb22973dbd52e8966798e8626368893a2affc585678e5"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/chat-short-after.json",
+      "sha256": "c5a978a644d4c7555c02d1ee76f0abeae95c8790ca5790ab54688d6a478952b5"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/chat-short-before.jpg",
+      "sha256": "2f388d1bf301e93eb489d633f30fd5821daef8a32827f44cb68a00d7a8613e72"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/chat-short-before.json",
+      "sha256": "fcc3092ae89e397d3675dfbde8ad8807b9764a80a3a7b463577171e84c208a21"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/device-drafts-browser.json",
+      "sha256": "991c00beb476ae7b84bbf71fa52ea8a7144503bcd8e1c2a6b29fecc3c8e819b7"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/device-error-recovery-final.json",
+      "sha256": "6b789242c8b888603397def29765165da22a30335f55b67ddc68255eec626e0e"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/device-error-recovery-green.json",
+      "sha256": "8b21c4736f081c2cec076ba0aae57fa2d0f0d99bd3a7bc18f5f69ab58561ee83"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/device-error-recovery-red.json",
+      "sha256": "c0c33cd67abbced8545bc722e4b365066609fa8e48f181899e169dc807921553"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/device-handover-validation-after.json",
+      "sha256": "8940b6f148e3cdc0ce16592471a03c78eca5c5c6f85d53e45fc45c4fb55bde8c"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/device-handover-validation-before.json",
+      "sha256": "8a7f55216402e71adefd98a15091c43edacde12e15d63f75f85f2b35482203e6"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/device-reload-focus-red.json",
+      "sha256": "5401e4cd18f093d0a29a01ed11efa98be313356f8ec11d0e2cb9296d44654083"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/final-independent-review.md",
+      "sha256": "8766f2da539079f5ffdc48a365414085458443042ae390936a3f9c3a87af0a2e"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/final-tab-console.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/final-validation.json",
+      "sha256": "4c6d3b74e440a8e1a7b4cc904680be2b936cec4f386de758f8d75dde9a613791"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/frontend-final-tests.json",
+      "sha256": "70e9755556243cc2b27c482da0060b7b6befff2bb9d0e56eb41b11c147a58242"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/frontend-stable-final-tests.json",
+      "sha256": "a042c46cb7baea76fea9400cec84a061b5b71dbe96ebfa635df8f4b60d23e4d3"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/frontend-verified-final-tests.json",
+      "sha256": "0e45e27ea7c0031964bd4ef685bde3c277d06fdf08745fd01baa5e13fb7bac67"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/grid-height-after.jpg",
+      "sha256": "1bd74fc3aeb56305bbf5d50e60a52045d0193fcd461db2dd8ff3f36504d2000f"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/grid-height-after.json",
+      "sha256": "d69543d5937b70df3a952c4e0f2eeff58007fec104eb6d43435a702fa5b9dc66"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/grid-height-before.json",
+      "sha256": "9c5b04f99233fafe1a4d4d145a56e5f41b6b75bcb9257c488c195acc702ff866"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/grid-landscape-after.json",
+      "sha256": "968d146f31d33143d9de453906d0d36a2fd8a6ec58ac01e1c99f4355c5e5aae3"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/grid-low-height-fixed.jpg",
+      "sha256": "7ceb0896c3066bc5898fbc405d5965f895d5c66b30081cf408d556a7e6ed981f"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/grid-low-height-fixed.json",
+      "sha256": "a3c007f458c705e699d026b95d9711adc8a9c05ad47747e505a1610b02ca480b"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/grid-mobile-after.json",
+      "sha256": "e4700dd8a5eb5f98c34bdf615e11653fc386973f921246ffa71b9c52df6f82f8"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/preservation-and-links.json",
+      "sha256": null,
+      "note": "Self-report hash intentionally omitted."
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/project-draft-browser.json",
+      "sha256": "7c20877bd13afb6fee26be12b547e69ee2e257073feb21a0030d6e733f621ce7"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/reports-ai-final.json",
+      "sha256": "60786fa53abb1f539c190fa315062a5d0f27e52a3f07a87542a79ab07ff73c58"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/reports-ai-green.json",
+      "sha256": "bd616890dc52f230fd540bf941018122d87850be430a8f1261a021fd8db4dd5f"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/reports-source-review.md",
+      "sha256": "7243ab06d3c931f7d2e81de81bed5c2edcf6f2195573d5df0f4e78da84c4c25f"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/source-final-before.json",
+      "sha256": "7222dfd253a5fb8f97b2d01ec4b5ea5e101db374ca4ca954714b6fc53e30fd7f"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/source-surfaces.json",
+      "sha256": "82b737fc6569e7fb68de1286db12df6f2376e830f55066c38bab1bb87054423b"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/source-verified-after-build.json",
+      "sha256": "4a7423a549baf6b4bfcb27bb75bd68cc9b78f04a78023ab7b4ea1f68011f5b79"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/source-verified-after.json",
+      "sha256": "ff1de270520c9311a892bca7819a619515cadebcb099690baf6b5ebfddb30aea"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/source-verified-before.json",
+      "sha256": "16d68161d288e0ac8b51f1607443373f40ed05e63f1e2bc0213273f5cd24da29"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/tester-grid-sticky-after.jpg",
+      "sha256": "56614d8408e9950ba06dd6cb469de46f4fe6a2ca6d563376cecb9629a86beea6"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/tester-grid-sticky-after.json",
+      "sha256": "936773b8768f6b95a4b4ded8e60ae4ef541548e7bd2bcde67a2e9d1b71aaa64e"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/testing-final-regression.json",
+      "sha256": "d84cd623fc1a2d7653952e05a5d54a2a32bb56707e12ee79d1ffe1f2291cbb44"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/testing-recovery-grid-green.json",
+      "sha256": "81ed8a0efab3f2102d8fc58b14dd3d4dd589b7c2ae0f6c0d643b08cdf8507869"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/testing-recovery-grid-red.json",
+      "sha256": "951a3b6bc61b2d205e113392504218eedc40ce7d91e5e448e91ce647968a3835"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/testing-source-review.md",
+      "sha256": "6203ebc8b9599ee06cd790b100617e4b1b2610330c0d45143cd0bd8e9f7c917e"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/workspace-active-focus-after.json",
+      "sha256": "a1060d3ff6352a4ff7b52bd488f83c99c7cbab6125be50d4a46e2452957dea5b"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/workspace-focus-before.jpg",
+      "sha256": "d246f7045a21bb8745bf2213c9973fc630043bb47e4236271e475d4740495b2d"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/workspace-focus-before.json",
+      "sha256": "cfbf2f2685b94dfc72b589a3ddfe7430043f968101e73883f1ec920025ce260b"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/workspace-inactive-focus-after.json",
+      "sha256": "ddea5d753a5c67767fd9363cd901310a97d2915a16204ccf04343d0a8e735b95"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/workspace-inactive-focus-before.json",
+      "sha256": "e09cf44172f93e18f0ceece3790d47dfdecec09008e2f0bd3823eb6e43071542"
+    },
+    {
+      "path": "var/uiux-admin-entry-2026-10-19/workspace-submenu-focus-after.json",
+      "sha256": "b65174776d73413c387117744d543ca9508bb53424c0d89f528ecb1537b2b824"
+    }
+  ],
+  "missing": [],
+  "changesByCategory": {
+    "UI_SOURCE": [
+      "Frontend/src/app/features/admin/UserCreateDialog.jsx",
+      "Frontend/src/app/features/admin/nested-project-picker.test.jsx",
+      "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "Frontend/src/app/features/testing/TestingDocumentPage.test.jsx",
+      "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "Frontend/src/app/features/testing/testing.css",
+      "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+      "Frontend/src/app/features/admin/AdminLayout.jsx",
+      "Frontend/src/app/features/admin/AdminProjectDropdown.jsx",
+      "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+      "Frontend/src/app/features/admin/AdminProjectLifecycle.integration.test.jsx",
+      "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+      "Frontend/src/app/features/admin/DeviceAssetForm.jsx",
+      "Frontend/src/app/features/admin/admin.css",
+      "Frontend/src/app/features/admin/inventory.test.jsx",
+      "Frontend/src/app/features/admin/project-picker.test.jsx",
+      "Frontend/src/app/features/ai/AiConnections.jsx",
+      "Frontend/src/app/features/ai/AiConnections.test.jsx",
+      "Frontend/src/app/features/ai/ai.css",
+      "Frontend/src/app/hooks/useDialogFocus.js",
+      "Frontend/src/app/styles/app-shell.css",
+      "Frontend/src/app/features/admin/AdminLayout.navigation.test.jsx",
+      "Frontend/src/app/features/admin/admin-dirty-close.test.jsx",
+      "Frontend/src/app/features/admin/device-error-recovery.test.jsx",
+      "Frontend/src/app/features/testing/TestingListRecovery.test.jsx"
+    ],
+    "DOCS": [
+      "docs/planning/README.md",
+      "docs/planning/STATUS.json",
+      "docs/planning/2026-10-19-admin-entry-uiux.md",
+      "docs/reviews/2026-10-19-admin-entry-uiux.md"
+    ],
+    "EVIDENCE": [
+      "var/uiux-admin-entry-2026-10-19/Audit-Surfaces.cjs",
+      "var/uiux-admin-entry-2026-10-19/Finalize-Review.cjs",
+      "var/uiux-admin-entry-2026-10-19/Inspect-Test-Processes.ps1",
+      "var/uiux-admin-entry-2026-10-19/Snapshot-Source.cjs",
+      "var/uiux-admin-entry-2026-10-19/Trace-Admin-Entry.cjs",
+      "var/uiux-admin-entry-2026-10-19/Verify-Preservation.cjs",
+      "var/uiux-admin-entry-2026-10-19/admin-backdrop-scroll.json",
+      "var/uiux-admin-entry-2026-10-19/admin-collapsed-after.jpg",
+      "var/uiux-admin-entry-2026-10-19/admin-dirty-close-green.json",
+      "var/uiux-admin-entry-2026-10-19/admin-dirty-close-independent-review.json",
+      "var/uiux-admin-entry-2026-10-19/admin-dirty-close-red.json",
+      "var/uiux-admin-entry-2026-10-19/admin-discard-focus-after.json",
+      "var/uiux-admin-entry-2026-10-19/admin-discard-focus-before.json",
+      "var/uiux-admin-entry-2026-10-19/admin-discard-mobile.jpg",
+      "var/uiux-admin-entry-2026-10-19/admin-discard-mobile.json",
+      "var/uiux-admin-entry-2026-10-19/admin-discard-result.json",
+      "var/uiux-admin-entry-2026-10-19/admin-drawer-320.jpg",
+      "var/uiux-admin-entry-2026-10-19/admin-drawer-320.json",
+      "var/uiux-admin-entry-2026-10-19/admin-entry-before.jpg",
+      "var/uiux-admin-entry-2026-10-19/admin-entry-before.json",
+      "var/uiux-admin-entry-2026-10-19/admin-entry-source-after.json",
+      "var/uiux-admin-entry-2026-10-19/admin-entry-source.json",
+      "var/uiux-admin-entry-2026-10-19/admin-final-desktop.jpg",
+      "var/uiux-admin-entry-2026-10-19/admin-final-desktop.json",
+      "var/uiux-admin-entry-2026-10-19/admin-final-desktop.png",
+      "var/uiux-admin-entry-2026-10-19/admin-forms-regression-green.json",
+      "var/uiux-admin-entry-2026-10-19/admin-forms-regression.json",
+      "var/uiux-admin-entry-2026-10-19/admin-fresh-login-after.jpg",
+      "var/uiux-admin-entry-2026-10-19/admin-fresh-login-after.json",
+      "var/uiux-admin-entry-2026-10-19/admin-inapp-discard-green.json",
+      "var/uiux-admin-entry-2026-10-19/admin-inapp-discard-red.json",
+      "var/uiux-admin-entry-2026-10-19/admin-inapp-regression.json",
+      "var/uiux-admin-entry-2026-10-19/admin-inert-focus-green.json",
+      "var/uiux-admin-entry-2026-10-19/admin-inert-focus-red.json",
+      "var/uiux-admin-entry-2026-10-19/admin-layout-green.json",
+      "var/uiux-admin-entry-2026-10-19/admin-layout-red.json",
+      "var/uiux-admin-entry-2026-10-19/admin-layout-regression.json",
+      "var/uiux-admin-entry-2026-10-19/admin-layout.md",
+      "var/uiux-admin-entry-2026-10-19/admin-modal-scroll-check.json",
+      "var/uiux-admin-entry-2026-10-19/admin-picker-interaction-after.json",
+      "var/uiux-admin-entry-2026-10-19/admin-picker-regression.json",
+      "var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-green.json",
+      "var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-intermediate.json",
+      "var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-red.json",
+      "var/uiux-admin-entry-2026-10-19/admin-picker-short-after.jpg",
+      "var/uiux-admin-entry-2026-10-19/admin-picker-short-after.json",
+      "var/uiux-admin-entry-2026-10-19/admin-picker-short-check.jpg",
+      "var/uiux-admin-entry-2026-10-19/admin-picker-short-check.json",
+      "var/uiux-admin-entry-2026-10-19/admin-route-links.json",
+      "var/uiux-admin-entry-2026-10-19/admin-short-desktop.json",
+      "var/uiux-admin-entry-2026-10-19/ai-provider-recovery-red.json",
+      "var/uiux-admin-entry-2026-10-19/baseline.json",
+      "var/uiux-admin-entry-2026-10-19/browser-cleanup.json",
+      "var/uiux-admin-entry-2026-10-19/build-verified-final.json",
+      "var/uiux-admin-entry-2026-10-19/chat-320x480.jpg",
+      "var/uiux-admin-entry-2026-10-19/chat-short-after.jpg",
+      "var/uiux-admin-entry-2026-10-19/chat-short-after.json",
+      "var/uiux-admin-entry-2026-10-19/chat-short-before.jpg",
+      "var/uiux-admin-entry-2026-10-19/chat-short-before.json",
+      "var/uiux-admin-entry-2026-10-19/device-drafts-browser.json",
+      "var/uiux-admin-entry-2026-10-19/device-error-recovery-final.json",
+      "var/uiux-admin-entry-2026-10-19/device-error-recovery-green.json",
+      "var/uiux-admin-entry-2026-10-19/device-error-recovery-red.json",
+      "var/uiux-admin-entry-2026-10-19/device-handover-validation-after.json",
+      "var/uiux-admin-entry-2026-10-19/device-handover-validation-before.json",
+      "var/uiux-admin-entry-2026-10-19/device-reload-focus-red.json",
+      "var/uiux-admin-entry-2026-10-19/final-independent-review.md",
+      "var/uiux-admin-entry-2026-10-19/final-tab-console.json",
+      "var/uiux-admin-entry-2026-10-19/final-validation.json",
+      "var/uiux-admin-entry-2026-10-19/frontend-final-tests.json",
+      "var/uiux-admin-entry-2026-10-19/frontend-stable-final-tests.json",
+      "var/uiux-admin-entry-2026-10-19/frontend-verified-final-tests.json",
+      "var/uiux-admin-entry-2026-10-19/grid-height-after.jpg",
+      "var/uiux-admin-entry-2026-10-19/grid-height-after.json",
+      "var/uiux-admin-entry-2026-10-19/grid-height-before.json",
+      "var/uiux-admin-entry-2026-10-19/grid-landscape-after.json",
+      "var/uiux-admin-entry-2026-10-19/grid-low-height-fixed.jpg",
+      "var/uiux-admin-entry-2026-10-19/grid-low-height-fixed.json",
+      "var/uiux-admin-entry-2026-10-19/grid-mobile-after.json",
+      "var/uiux-admin-entry-2026-10-19/preservation-and-links.json",
+      "var/uiux-admin-entry-2026-10-19/project-draft-browser.json",
+      "var/uiux-admin-entry-2026-10-19/reports-ai-final.json",
+      "var/uiux-admin-entry-2026-10-19/reports-ai-green.json",
+      "var/uiux-admin-entry-2026-10-19/reports-source-review.md",
+      "var/uiux-admin-entry-2026-10-19/source-final-before.json",
+      "var/uiux-admin-entry-2026-10-19/source-surfaces.json",
+      "var/uiux-admin-entry-2026-10-19/source-verified-after-build.json",
+      "var/uiux-admin-entry-2026-10-19/source-verified-after.json",
+      "var/uiux-admin-entry-2026-10-19/source-verified-before.json",
+      "var/uiux-admin-entry-2026-10-19/tester-grid-sticky-after.jpg",
+      "var/uiux-admin-entry-2026-10-19/tester-grid-sticky-after.json",
+      "var/uiux-admin-entry-2026-10-19/testing-final-regression.json",
+      "var/uiux-admin-entry-2026-10-19/testing-recovery-grid-green.json",
+      "var/uiux-admin-entry-2026-10-19/testing-recovery-grid-red.json",
+      "var/uiux-admin-entry-2026-10-19/testing-source-review.md",
+      "var/uiux-admin-entry-2026-10-19/workspace-active-focus-after.json",
+      "var/uiux-admin-entry-2026-10-19/workspace-focus-before.jpg",
+      "var/uiux-admin-entry-2026-10-19/workspace-focus-before.json",
+      "var/uiux-admin-entry-2026-10-19/workspace-inactive-focus-after.json",
+      "var/uiux-admin-entry-2026-10-19/workspace-inactive-focus-before.json",
+      "var/uiux-admin-entry-2026-10-19/workspace-submenu-focus-after.json"
+    ]
+  },
+  "unexpectedOutsideUiDocsEvidence": [],
+  "gitDiffCheck": {
+    "exitCode": 0,
+    "pass": true,
+    "diagnostics": []
+  },
+  "documentLinks": {
+    "checkedReports": 6,
+    "missingReports": [],
+    "localLinks": 115,
+    "missingLocalLinks": [],
+    "anchorExistenceChecked": false,
+    "externalLinksFetched": false,
+    "reports": [
+      {
+        "report": "docs/reviews/2026-10-19-admin-entry-uiux.md",
+        "localCount": 73,
+        "missing": [],
+        "links": [
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/baseline.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/baseline.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-entry-before.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-entry-before.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-entry-before.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-entry-before.jpg",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-fresh-login-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-fresh-login-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-fresh-login-after.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-fresh-login-after.jpg",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-route-links.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-route-links.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-collapsed-after.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-collapsed-after.jpg",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-short-desktop.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-short-desktop.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-drawer-320.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-drawer-320.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-drawer-320.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-drawer-320.jpg",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-modal-scroll-check.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-modal-scroll-check.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-entry-source.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-entry-source.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-entry-source-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-entry-source-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/workspace-inactive-focus-before.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/workspace-inactive-focus-before.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/workspace-inactive-focus-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/workspace-inactive-focus-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/workspace-active-focus-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/workspace-active-focus-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/workspace-submenu-focus-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/workspace-submenu-focus-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/tester-grid-sticky-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/tester-grid-sticky-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/grid-height-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/grid-height-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/grid-mobile-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/grid-mobile-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/grid-low-height-fixed.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/grid-low-height-fixed.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/grid-low-height-fixed.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/grid-low-height-fixed.jpg",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/chat-short-before.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/chat-short-before.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/chat-short-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/chat-short-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-discard-mobile.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-discard-mobile.jpg",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-discard-focus-before.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-discard-focus-before.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-discard-focus-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-discard-focus-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-picker-short-check.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-short-check.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-picker-short-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-short-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-picker-interaction-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-interaction-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/device-handover-validation-before.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/device-handover-validation-before.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/device-handover-validation-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/device-handover-validation-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/project-draft-browser.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/project-draft-browser.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/device-drafts-browser.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/device-drafts-browser.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-backdrop-scroll.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-backdrop-scroll.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-final-desktop.png",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-final-desktop.png",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-final-desktop.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-final-desktop.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-layout-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-layout-red.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-layout-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-layout-green.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-layout-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-layout-regression.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/testing-recovery-grid-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/testing-recovery-grid-red.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/testing-recovery-grid-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/testing-recovery-grid-green.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/testing-final-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/testing-final-regression.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/reports-ai-final.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/reports-ai-final.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-dirty-close-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-dirty-close-red.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-dirty-close-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-dirty-close-green.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-forms-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-forms-regression.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-forms-regression-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-forms-regression-green.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-inapp-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-inapp-regression.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-inert-focus-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-inert-focus-green.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-red.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-green.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-picker-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-regression.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/device-error-recovery-final.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/device-error-recovery-final.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-dirty-close-independent-review.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-dirty-close-independent-review.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/final-independent-review.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/final-independent-review.md",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/admin-layout.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-layout.md",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/testing-source-review.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/testing-source-review.md",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/reports-source-review.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/reports-source-review.md",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/source-surfaces.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/source-surfaces.json",
+            "exists": true
+          },
+          {
+            "target": "2026-10-19-uiux-system-coverage.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "docs/reviews/2026-10-19-uiux-system-coverage.md",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/frontend-verified-final-tests.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/frontend-verified-final-tests.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/build-verified-final.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/build-verified-final.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/final-validation.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/final-validation.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/source-verified-before.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/source-verified-before.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/source-verified-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/source-verified-after.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/frontend-final-tests.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/frontend-final-tests.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/frontend-stable-final-tests.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/frontend-stable-final-tests.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/preservation-and-links.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/preservation-and-links.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/browser-cleanup.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/browser-cleanup.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-admin-entry-2026-10-19/final-tab-console.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/final-tab-console.json",
+            "exists": true
+          },
+          {
+            "target": "2026-10-19-uiux-polish.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "docs/reviews/2026-10-19-uiux-polish.md",
+            "exists": true
+          },
+          {
+            "target": "2026-10-19-uiux-system-coverage.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "docs/reviews/2026-10-19-uiux-system-coverage.md",
+            "exists": true
+          }
+        ]
+      },
+      {
+        "report": "docs/planning/2026-10-19-admin-entry-uiux.md",
+        "localCount": 2,
+        "missing": [],
+        "links": [
+          {
+            "target": "../reviews/2026-10-19-admin-entry-uiux.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "docs/reviews/2026-10-19-admin-entry-uiux.md",
+            "exists": true
+          },
+          {
+            "target": "../reviews/2026-10-19-uiux-polish.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "docs/reviews/2026-10-19-uiux-polish.md",
+            "exists": true
+          }
+        ]
+      },
+      {
+        "report": "var/uiux-admin-entry-2026-10-19/admin-layout.md",
+        "localCount": 10,
+        "missing": [],
+        "links": [
+          {
+            "target": "admin-entry-before.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-entry-before.json",
+            "exists": true
+          },
+          {
+            "target": "admin-entry-before.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-entry-before.jpg",
+            "exists": true
+          },
+          {
+            "target": "Trace-Admin-Entry.cjs",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/Trace-Admin-Entry.cjs",
+            "exists": true
+          },
+          {
+            "target": "admin-entry-source.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-entry-source.json",
+            "exists": true
+          },
+          {
+            "target": "admin-entry-source-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-entry-source-after.json",
+            "exists": true
+          },
+          {
+            "target": "workspace-inactive-focus-before.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/workspace-inactive-focus-before.json",
+            "exists": true
+          },
+          {
+            "target": "workspace-inactive-focus-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/workspace-inactive-focus-after.json",
+            "exists": true
+          },
+          {
+            "target": "admin-layout-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-layout-red.json",
+            "exists": true
+          },
+          {
+            "target": "admin-layout-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-layout-green.json",
+            "exists": true
+          },
+          {
+            "target": "admin-layout-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-layout-regression.json",
+            "exists": true
+          }
+        ]
+      },
+      {
+        "report": "var/uiux-admin-entry-2026-10-19/final-independent-review.md",
+        "localCount": 0,
+        "missing": [],
+        "links": []
+      },
+      {
+        "report": "var/uiux-admin-entry-2026-10-19/reports-source-review.md",
+        "localCount": 20,
+        "missing": [],
+        "links": [
+          {
+            "target": "chat-short-before.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/chat-short-before.json",
+            "exists": true
+          },
+          {
+            "target": "chat-short-before.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/chat-short-before.jpg",
+            "exists": true
+          },
+          {
+            "target": "admin-discard-focus-before.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-discard-focus-before.json",
+            "exists": true
+          },
+          {
+            "target": "admin-discard-focus-after.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-discard-focus-after.json",
+            "exists": true
+          },
+          {
+            "target": "ai-provider-recovery-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/ai-provider-recovery-red.json",
+            "exists": true
+          },
+          {
+            "target": "reports-ai-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/reports-ai-green.json",
+            "exists": true
+          },
+          {
+            "target": "reports-ai-final.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/reports-ai-final.json",
+            "exists": true
+          },
+          {
+            "target": "admin-dirty-close-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-dirty-close-red.json",
+            "exists": true
+          },
+          {
+            "target": "admin-dirty-close-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-dirty-close-green.json",
+            "exists": true
+          },
+          {
+            "target": "admin-forms-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-forms-regression.json",
+            "exists": true
+          },
+          {
+            "target": "admin-forms-regression-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-forms-regression-green.json",
+            "exists": true
+          },
+          {
+            "target": "admin-inapp-discard-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-inapp-discard-red.json",
+            "exists": true
+          },
+          {
+            "target": "admin-inapp-discard-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-inapp-discard-green.json",
+            "exists": true
+          },
+          {
+            "target": "admin-inapp-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-inapp-regression.json",
+            "exists": true
+          },
+          {
+            "target": "frontend-final-tests.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/frontend-final-tests.json",
+            "exists": true
+          },
+          {
+            "target": "admin-inert-focus-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-inert-focus-red.json",
+            "exists": true
+          },
+          {
+            "target": "admin-inert-focus-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-inert-focus-green.json",
+            "exists": true
+          },
+          {
+            "target": "device-error-recovery-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/device-error-recovery-red.json",
+            "exists": true
+          },
+          {
+            "target": "device-reload-focus-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/device-reload-focus-red.json",
+            "exists": true
+          },
+          {
+            "target": "device-error-recovery-final.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/device-error-recovery-final.json",
+            "exists": true
+          }
+        ]
+      },
+      {
+        "report": "var/uiux-admin-entry-2026-10-19/testing-source-review.md",
+        "localCount": 10,
+        "missing": [],
+        "links": [
+          {
+            "target": "testing-recovery-grid-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/testing-recovery-grid-red.json",
+            "exists": true
+          },
+          {
+            "target": "testing-recovery-grid-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/testing-recovery-grid-green.json",
+            "exists": true
+          },
+          {
+            "target": "testing-final-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/testing-final-regression.json",
+            "exists": true
+          },
+          {
+            "target": "grid-height-before.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/grid-height-before.json",
+            "exists": true
+          },
+          {
+            "target": "admin-picker-short-check.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-short-check.json",
+            "exists": true
+          },
+          {
+            "target": "admin-picker-short-check.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-short-check.jpg",
+            "exists": true
+          },
+          {
+            "target": "admin-picker-scrollport-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-red.json",
+            "exists": true
+          },
+          {
+            "target": "admin-picker-scrollport-intermediate.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-intermediate.json",
+            "exists": true
+          },
+          {
+            "target": "admin-picker-scrollport-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-scrollport-green.json",
+            "exists": true
+          },
+          {
+            "target": "admin-picker-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-admin-entry-2026-10-19/admin-picker-regression.json",
+            "exists": true
+          }
+        ]
+      }
+    ]
+  }
+}

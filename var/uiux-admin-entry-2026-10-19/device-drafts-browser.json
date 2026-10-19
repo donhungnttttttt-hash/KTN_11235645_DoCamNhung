@@ -1,0 +1,10 @@
+{
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "deviceDraftRetained": "ui-draft-device",
+  "handoverDraftRetained": "Nháp kiểm tra giao diện",
+  "afterDiscardDialogs": 0,
+  "domainWrite": false
+}

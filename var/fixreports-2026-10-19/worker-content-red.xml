@@ -1,0 +1,2110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="vn.syp.tms.testcase.FeatureAiIntegrationTest" time="41.485" tests="2" errors="0" skipped="0" failures="2" flakes="0">
+  <properties>
+    <property name="java.specification.version" value="21"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.class.path" value="D:\DCN\KTN_11235645_DoCamNhung\Backend\target\test-classes;D:\DCN\KTN_11235645_DoCamNhung\Backend\target\classes;C:\Users\admin\.m2\repository\org\apache\poi\poi-ooxml\5.5.1\poi-ooxml-5.5.1.jar;C:\Users\admin\.m2\repository\org\apache\poi\poi\5.5.1\poi-5.5.1.jar;C:\Users\admin\.m2\repository\commons-codec\commons-codec\1.18.0\commons-codec-1.18.0.jar;C:\Users\admin\.m2\repository\org\apache\commons\commons-math3\3.6.1\commons-math3-3.6.1.jar;C:\Users\admin\.m2\repository\com\zaxxer\SparseBitSet\1.3\SparseBitSet-1.3.jar;C:\Users\admin\.m2\repository\org\apache\poi\poi-ooxml-lite\5.5.1\poi-ooxml-lite-5.5.1.jar;C:\Users\admin\.m2\repository\org\apache\xmlbeans\xmlbeans\5.3.0\xmlbeans-5.3.0.jar;C:\Users\admin\.m2\repository\org\apache\commons\commons-compress\1.28.0\commons-compress-1.28.0.jar;C:\Users\admin\.m2\repository\org\apache\commons\commons-lang3\3.18.0\commons-lang3-3.18.0.jar;C:\Users\admin\.m2\repository\commons-io\commons-io\2.21.0\commons-io-2.21.0.jar;C:\Users\admin\.m2\repository\com\github\virtuald\curvesapi\1.08\curvesapi-1.08.jar;C:\Users\admin\.m2\repository\org\apache\logging\log4j\log4j-api\2.25.5\log4j-api-2.25.5.jar;C:\Users\admin\.m2\repository\org\apache\commons\commons-collections4\4.5.0\commons-collections4-4.5.0.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-web\3.5.16\spring-boot-starter-web-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter\3.5.16\spring-boot-starter-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot\3.5.16\spring-boot-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-autoconfigure\3.5.16\spring-boot-autoconfigure-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-logging\3.5.16\spring-boot-starter-logging-3.5.16.jar;C:\Users\admin\.m2\repository\ch\qos\logback\logback-classic\1.5.34\logback-classic-1.5.34.jar;C:\Users\admin\.m2\repository\ch\qos\logback\logback-core\1.5.34\logback-core-1.5.34.jar;C:\Users\admin\.m2\repository\org\apache\logging\log4j\log4j-to-slf4j\2.25.5\log4j-to-slf4j-2.25.5.jar;C:\Users\admin\.m2\repository\org\slf4j\jul-to-slf4j\2.0.18\jul-to-slf4j-2.0.18.jar;C:\Users\admin\.m2\repository\jakarta\annotation\jakarta.annotation-api\2.1.1\jakarta.annotation-api-2.1.1.jar;C:\Users\admin\.m2\repository\org\yaml\snakeyaml\2.4\snakeyaml-2.4.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-json\3.5.16\spring-boot-starter-json-3.5.16.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.21.7\jackson-databind-2.21.7.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jdk8\2.21.7\jackson-datatype-jdk8-2.21.7.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\module\jackson-module-parameter-names\2.21.7\jackson-module-parameter-names-2.21.7.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-tomcat\3.5.16\spring-boot-starter-tomcat-3.5.16.jar;C:\Users\admin\.m2\repository\org\apache\tomcat\embed\tomcat-embed-core\10.1.60\tomcat-embed-core-10.1.60.jar;C:\Users\admin\.m2\repository\org\apache\tomcat\embed\tomcat-embed-websocket\10.1.60\tomcat-embed-websocket-10.1.60.jar;C:\Users\admin\.m2\repository\org\springframework\spring-web\6.2.19\spring-web-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-beans\6.2.19\spring-beans-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-webmvc\6.2.19\spring-webmvc-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-expression\6.2.19\spring-expression-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-data-jpa\3.5.16\spring-boot-starter-data-jpa-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-jdbc\3.5.16\spring-boot-starter-jdbc-3.5.16.jar;C:\Users\admin\.m2\repository\com\zaxxer\HikariCP\6.3.3\HikariCP-6.3.3.jar;C:\Users\admin\.m2\repository\org\hibernate\orm\hibernate-core\6.6.53.Final\hibernate-core-6.6.53.Final.jar;C:\Users\admin\.m2\repository\jakarta\persistence\jakarta.persistence-api\3.1.0\jakarta.persistence-api-3.1.0.jar;C:\Users\admin\.m2\repository\jakarta\transaction\jakarta.transaction-api\2.0.1\jakarta.transaction-api-2.0.1.jar;C:\Users\admin\.m2\repository\org\jboss\logging\jboss-logging\3.6.3.Final\jboss-logging-3.6.3.Final.jar;C:\Users\admin\.m2\repository\org\hibernate\common\hibernate-commons-annotations\7.0.3.Final\hibernate-commons-annotations-7.0.3.Final.jar;C:\Users\admin\.m2\repository\io\smallrye\jandex\3.2.0\jandex-3.2.0.jar;C:\Users\admin\.m2\repository\com\fasterxml\classmate\1.7.3\classmate-1.7.3.jar;C:\Users\admin\.m2\repository\net\bytebuddy\byte-buddy\1.17.8\byte-buddy-1.17.8.jar;C:\Users\admin\.m2\repository\org\glassfish\jaxb\jaxb-runtime\4.0.9\jaxb-runtime-4.0.9.jar;C:\Users\admin\.m2\repository\org\glassfish\jaxb\jaxb-core\4.0.9\jaxb-core-4.0.9.jar;C:\Users\admin\.m2\repository\org\eclipse\angus\angus-activation\2.0.3\angus-activation-2.0.3.jar;C:\Users\admin\.m2\repository\org\glassfish\jaxb\txw2\4.0.9\txw2-4.0.9.jar;C:\Users\admin\.m2\repository\com\sun\istack\istack-commons-runtime\4.1.2\istack-commons-runtime-4.1.2.jar;C:\Users\admin\.m2\repository\jakarta\inject\jakarta.inject-api\2.0.1\jakarta.inject-api-2.0.1.jar;C:\Users\admin\.m2\repository\org\antlr\antlr4-runtime\4.13.2\antlr4-runtime-4.13.2.jar;C:\Users\admin\.m2\repository\org\springframework\data\spring-data-jpa\3.5.13\spring-data-jpa-3.5.13.jar;C:\Users\admin\.m2\repository\org\springframework\data\spring-data-commons\3.5.13\spring-data-commons-3.5.13.jar;C:\Users\admin\.m2\repository\org\springframework\spring-orm\6.2.19\spring-orm-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-tx\6.2.19\spring-tx-6.2.19.jar;C:\Users\admin\.m2\repository\org\slf4j\slf4j-api\2.0.18\slf4j-api-2.0.18.jar;C:\Users\admin\.m2\repository\org\springframework\spring-aspects\6.2.19\spring-aspects-6.2.19.jar;C:\Users\admin\.m2\repository\org\aspectj\aspectjweaver\1.9.25.1\aspectjweaver-1.9.25.1.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-validation\3.5.16\spring-boot-starter-validation-3.5.16.jar;C:\Users\admin\.m2\repository\org\apache\tomcat\embed\tomcat-embed-el\10.1.60\tomcat-embed-el-10.1.60.jar;C:\Users\admin\.m2\repository\org\hibernate\validator\hibernate-validator\8.0.3.Final\hibernate-validator-8.0.3.Final.jar;C:\Users\admin\.m2\repository\jakarta\validation\jakarta.validation-api\3.0.2\jakarta.validation-api-3.0.2.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-security\3.5.16\spring-boot-starter-security-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\spring-aop\6.2.19\spring-aop-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\security\spring-security-config\6.5.11\spring-security-config-6.5.11.jar;C:\Users\admin\.m2\repository\org\springframework\security\spring-security-web\6.5.11\spring-security-web-6.5.11.jar;C:\Users\admin\.m2\repository\org\springframework\session\spring-session-jdbc\3.5.7\spring-session-jdbc-3.5.7.jar;C:\Users\admin\.m2\repository\org\springframework\session\spring-session-core\3.5.7\spring-session-core-3.5.7.jar;C:\Users\admin\.m2\repository\org\springframework\spring-jcl\6.2.19\spring-jcl-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-context\6.2.19\spring-context-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-jdbc\6.2.19\spring-jdbc-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-actuator\3.5.16\spring-boot-starter-actuator-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-actuator-autoconfigure\3.5.16\spring-boot-actuator-autoconfigure-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-actuator\3.5.16\spring-boot-actuator-3.5.16.jar;C:\Users\admin\.m2\repository\io\micrometer\micrometer-observation\1.15.12\micrometer-observation-1.15.12.jar;C:\Users\admin\.m2\repository\io\micrometer\micrometer-commons\1.15.12\micrometer-commons-1.15.12.jar;C:\Users\admin\.m2\repository\io\micrometer\micrometer-jakarta9\1.15.12\micrometer-jakarta9-1.15.12.jar;C:\Users\admin\.m2\repository\io\micrometer\micrometer-core\1.15.12\micrometer-core-1.15.12.jar;C:\Users\admin\.m2\repository\org\hdrhistogram\HdrHistogram\2.2.2\HdrHistogram-2.2.2.jar;C:\Users\admin\.m2\repository\org\latencyutils\LatencyUtils\2.0.3\LatencyUtils-2.0.3.jar;C:\Users\admin\.m2\repository\org\flywaydb\flyway-core\11.7.2\flyway-core-11.7.2.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-toml\2.21.7\jackson-dataformat-toml-2.21.7.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.21.7\jackson-core-2.21.7.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.21.7\jackson-datatype-jsr310-2.21.7.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.21\jackson-annotations-2.21.jar;C:\Users\admin\.m2\repository\org\flywaydb\flyway-mysql\11.7.2\flyway-mysql-11.7.2.jar;C:\Users\admin\.m2\repository\com\mysql\mysql-connector-j\9.7.0\mysql-connector-j-9.7.0.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-test\3.5.16\spring-boot-starter-test-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-test\3.5.16\spring-boot-test-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-test-autoconfigure\3.5.16\spring-boot-test-autoconfigure-3.5.16.jar;C:\Users\admin\.m2\repository\com\jayway\jsonpath\json-path\2.9.0\json-path-2.9.0.jar;C:\Users\admin\.m2\repository\jakarta\xml\bind\jakarta.xml.bind-api\4.0.5\jakarta.xml.bind-api-4.0.5.jar;C:\Users\admin\.m2\repository\jakarta\activation\jakarta.activation-api\2.1.4\jakarta.activation-api-2.1.4.jar;C:\Users\admin\.m2\repository\net\minidev\json-smart\2.5.2\json-smart-2.5.2.jar;C:\Users\admin\.m2\repository\net\minidev\accessors-smart\2.5.2\accessors-smart-2.5.2.jar;C:\Users\admin\.m2\repository\org\ow2\asm\asm\9.7.1\asm-9.7.1.jar;C:\Users\admin\.m2\repository\org\assertj\assertj-core\3.27.7\assertj-core-3.27.7.jar;C:\Users\admin\.m2\repository\org\awaitility\awaitility\4.2.2\awaitility-4.2.2.jar;C:\Users\admin\.m2\repository\org\hamcrest\hamcrest\3.0\hamcrest-3.0.jar;C:\Users\admin\.m2\repository\org\junit\jupiter\junit-jupiter\5.12.2\junit-jupiter-5.12.2.jar;C:\Users\admin\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.12.2\junit-jupiter-api-5.12.2.jar;C:\Users\admin\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\admin\.m2\repository\org\junit\platform\junit-platform-commons\1.12.2\junit-platform-commons-1.12.2.jar;C:\Users\admin\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\admin\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.12.2\junit-jupiter-params-5.12.2.jar;C:\Users\admin\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.12.2\junit-jupiter-engine-5.12.2.jar;C:\Users\admin\.m2\repository\org\junit\platform\junit-platform-engine\1.12.2\junit-platform-engine-1.12.2.jar;C:\Users\admin\.m2\repository\org\mockito\mockito-core\5.17.0\mockito-core-5.17.0.jar;C:\Users\admin\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar;C:\Users\admin\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\admin\.m2\repository\org\mockito\mockito-junit-jupiter\5.17.0\mockito-junit-jupiter-5.17.0.jar;C:\Users\admin\.m2\repository\org\skyscreamer\jsonassert\1.5.3\jsonassert-1.5.3.jar;C:\Users\admin\.m2\repository\com\vaadin\external\google\android-json\0.0.20131108.vaadin1\android-json-0.0.20131108.vaadin1.jar;C:\Users\admin\.m2\repository\org\springframework\spring-core\6.2.19\spring-core-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-test\6.2.19\spring-test-6.2.19.jar;C:\Users\admin\.m2\repository\org\xmlunit\xmlunit-core\2.10.4\xmlunit-core-2.10.4.jar;C:\Users\admin\.m2\repository\org\springframework\security\spring-security-test\6.5.11\spring-security-test-6.5.11.jar;C:\Users\admin\.m2\repository\org\springframework\security\spring-security-core\6.5.11\spring-security-core-6.5.11.jar;C:\Users\admin\.m2\repository\org\springframework\security\spring-security-crypto\6.5.11\spring-security-crypto-6.5.11.jar;C:\Users\admin\.m2\repository\org\testcontainers\junit-jupiter\1.21.4\junit-jupiter-1.21.4.jar;C:\Users\admin\.m2\repository\org\testcontainers\testcontainers\1.21.4\testcontainers-1.21.4.jar;C:\Users\admin\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\admin\.m2\repository\org\hamcrest\hamcrest-core\3.0\hamcrest-core-3.0.jar;C:\Users\admin\.m2\repository\org\rnorth\duct-tape\duct-tape\1.0.8\duct-tape-1.0.8.jar;C:\Users\admin\.m2\repository\org\jetbrains\annotations\17.0.0\annotations-17.0.0.jar;C:\Users\admin\.m2\repository\com\github\docker-java\docker-java-api\3.4.2\docker-java-api-3.4.2.jar;C:\Users\admin\.m2\repository\com\github\docker-java\docker-java-transport-zerodep\3.4.2\docker-java-transport-zerodep-3.4.2.jar;C:\Users\admin\.m2\repository\com\github\docker-java\docker-java-transport\3.4.2\docker-java-transport-3.4.2.jar;C:\Users\admin\.m2\repository\net\java\dev\jna\jna\5.13.0\jna-5.13.0.jar;C:\Users\admin\.m2\repository\org\testcontainers\mysql\1.21.4\mysql-1.21.4.jar;C:\Users\admin\.m2\repository\org\testcontainers\jdbc\1.21.4\jdbc-1.21.4.jar;C:\Users\admin\.m2\repository\org\testcontainers\database-commons\1.21.4\database-commons-1.21.4.jar;"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://java.oracle.com/"/>
+    <property name="user.timezone" value="Asia/Saigon"/>
+    <property name="org.jboss.logging.provider" value="slf4j"/>
+    <property name="os.name" value="Windows 11"/>
+    <property name="java.vm.specification.version" value="21"/>
+    <property name="APPLICATION_NAME" value="syp-tms"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-21\bin"/>
+    <property name="sun.java.command" value="C:\Users\admin\AppData\Local\Temp\surefire13165892152664211049\surefirebooter-20261019021734982_3.jar C:\Users\admin\AppData\Local\Temp\surefire13165892152664211049 2026-10-19T02-17-34_661-jvmRun1 surefire-20261019021734982_1tmp surefire_0-20261019021734982_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="test" value="FeatureAiIntegrationTest#workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples+archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts,AiPortfolioContextTest"/>
+    <property name="surefire.test.class.path" value="D:\DCN\KTN_11235645_DoCamNhung\Backend\target\test-classes;D:\DCN\KTN_11235645_DoCamNhung\Backend\target\classes;C:\Users\admin\.m2\repository\org\apache\poi\poi-ooxml\5.5.1\poi-ooxml-5.5.1.jar;C:\Users\admin\.m2\repository\org\apache\poi\poi\5.5.1\poi-5.5.1.jar;C:\Users\admin\.m2\repository\commons-codec\commons-codec\1.18.0\commons-codec-1.18.0.jar;C:\Users\admin\.m2\repository\org\apache\commons\commons-math3\3.6.1\commons-math3-3.6.1.jar;C:\Users\admin\.m2\repository\com\zaxxer\SparseBitSet\1.3\SparseBitSet-1.3.jar;C:\Users\admin\.m2\repository\org\apache\poi\poi-ooxml-lite\5.5.1\poi-ooxml-lite-5.5.1.jar;C:\Users\admin\.m2\repository\org\apache\xmlbeans\xmlbeans\5.3.0\xmlbeans-5.3.0.jar;C:\Users\admin\.m2\repository\org\apache\commons\commons-compress\1.28.0\commons-compress-1.28.0.jar;C:\Users\admin\.m2\repository\org\apache\commons\commons-lang3\3.18.0\commons-lang3-3.18.0.jar;C:\Users\admin\.m2\repository\commons-io\commons-io\2.21.0\commons-io-2.21.0.jar;C:\Users\admin\.m2\repository\com\github\virtuald\curvesapi\1.08\curvesapi-1.08.jar;C:\Users\admin\.m2\repository\org\apache\logging\log4j\log4j-api\2.25.5\log4j-api-2.25.5.jar;C:\Users\admin\.m2\repository\org\apache\commons\commons-collections4\4.5.0\commons-collections4-4.5.0.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-web\3.5.16\spring-boot-starter-web-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter\3.5.16\spring-boot-starter-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot\3.5.16\spring-boot-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-autoconfigure\3.5.16\spring-boot-autoconfigure-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-logging\3.5.16\spring-boot-starter-logging-3.5.16.jar;C:\Users\admin\.m2\repository\ch\qos\logback\logback-classic\1.5.34\logback-classic-1.5.34.jar;C:\Users\admin\.m2\repository\ch\qos\logback\logback-core\1.5.34\logback-core-1.5.34.jar;C:\Users\admin\.m2\repository\org\apache\logging\log4j\log4j-to-slf4j\2.25.5\log4j-to-slf4j-2.25.5.jar;C:\Users\admin\.m2\repository\org\slf4j\jul-to-slf4j\2.0.18\jul-to-slf4j-2.0.18.jar;C:\Users\admin\.m2\repository\jakarta\annotation\jakarta.annotation-api\2.1.1\jakarta.annotation-api-2.1.1.jar;C:\Users\admin\.m2\repository\org\yaml\snakeyaml\2.4\snakeyaml-2.4.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-json\3.5.16\spring-boot-starter-json-3.5.16.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.21.7\jackson-databind-2.21.7.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jdk8\2.21.7\jackson-datatype-jdk8-2.21.7.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\module\jackson-module-parameter-names\2.21.7\jackson-module-parameter-names-2.21.7.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-tomcat\3.5.16\spring-boot-starter-tomcat-3.5.16.jar;C:\Users\admin\.m2\repository\org\apache\tomcat\embed\tomcat-embed-core\10.1.60\tomcat-embed-core-10.1.60.jar;C:\Users\admin\.m2\repository\org\apache\tomcat\embed\tomcat-embed-websocket\10.1.60\tomcat-embed-websocket-10.1.60.jar;C:\Users\admin\.m2\repository\org\springframework\spring-web\6.2.19\spring-web-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-beans\6.2.19\spring-beans-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-webmvc\6.2.19\spring-webmvc-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-expression\6.2.19\spring-expression-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-data-jpa\3.5.16\spring-boot-starter-data-jpa-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-jdbc\3.5.16\spring-boot-starter-jdbc-3.5.16.jar;C:\Users\admin\.m2\repository\com\zaxxer\HikariCP\6.3.3\HikariCP-6.3.3.jar;C:\Users\admin\.m2\repository\org\hibernate\orm\hibernate-core\6.6.53.Final\hibernate-core-6.6.53.Final.jar;C:\Users\admin\.m2\repository\jakarta\persistence\jakarta.persistence-api\3.1.0\jakarta.persistence-api-3.1.0.jar;C:\Users\admin\.m2\repository\jakarta\transaction\jakarta.transaction-api\2.0.1\jakarta.transaction-api-2.0.1.jar;C:\Users\admin\.m2\repository\org\jboss\logging\jboss-logging\3.6.3.Final\jboss-logging-3.6.3.Final.jar;C:\Users\admin\.m2\repository\org\hibernate\common\hibernate-commons-annotations\7.0.3.Final\hibernate-commons-annotations-7.0.3.Final.jar;C:\Users\admin\.m2\repository\io\smallrye\jandex\3.2.0\jandex-3.2.0.jar;C:\Users\admin\.m2\repository\com\fasterxml\classmate\1.7.3\classmate-1.7.3.jar;C:\Users\admin\.m2\repository\net\bytebuddy\byte-buddy\1.17.8\byte-buddy-1.17.8.jar;C:\Users\admin\.m2\repository\org\glassfish\jaxb\jaxb-runtime\4.0.9\jaxb-runtime-4.0.9.jar;C:\Users\admin\.m2\repository\org\glassfish\jaxb\jaxb-core\4.0.9\jaxb-core-4.0.9.jar;C:\Users\admin\.m2\repository\org\eclipse\angus\angus-activation\2.0.3\angus-activation-2.0.3.jar;C:\Users\admin\.m2\repository\org\glassfish\jaxb\txw2\4.0.9\txw2-4.0.9.jar;C:\Users\admin\.m2\repository\com\sun\istack\istack-commons-runtime\4.1.2\istack-commons-runtime-4.1.2.jar;C:\Users\admin\.m2\repository\jakarta\inject\jakarta.inject-api\2.0.1\jakarta.inject-api-2.0.1.jar;C:\Users\admin\.m2\repository\org\antlr\antlr4-runtime\4.13.2\antlr4-runtime-4.13.2.jar;C:\Users\admin\.m2\repository\org\springframework\data\spring-data-jpa\3.5.13\spring-data-jpa-3.5.13.jar;C:\Users\admin\.m2\repository\org\springframework\data\spring-data-commons\3.5.13\spring-data-commons-3.5.13.jar;C:\Users\admin\.m2\repository\org\springframework\spring-orm\6.2.19\spring-orm-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-tx\6.2.19\spring-tx-6.2.19.jar;C:\Users\admin\.m2\repository\org\slf4j\slf4j-api\2.0.18\slf4j-api-2.0.18.jar;C:\Users\admin\.m2\repository\org\springframework\spring-aspects\6.2.19\spring-aspects-6.2.19.jar;C:\Users\admin\.m2\repository\org\aspectj\aspectjweaver\1.9.25.1\aspectjweaver-1.9.25.1.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-validation\3.5.16\spring-boot-starter-validation-3.5.16.jar;C:\Users\admin\.m2\repository\org\apache\tomcat\embed\tomcat-embed-el\10.1.60\tomcat-embed-el-10.1.60.jar;C:\Users\admin\.m2\repository\org\hibernate\validator\hibernate-validator\8.0.3.Final\hibernate-validator-8.0.3.Final.jar;C:\Users\admin\.m2\repository\jakarta\validation\jakarta.validation-api\3.0.2\jakarta.validation-api-3.0.2.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-security\3.5.16\spring-boot-starter-security-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\spring-aop\6.2.19\spring-aop-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\security\spring-security-config\6.5.11\spring-security-config-6.5.11.jar;C:\Users\admin\.m2\repository\org\springframework\security\spring-security-web\6.5.11\spring-security-web-6.5.11.jar;C:\Users\admin\.m2\repository\org\springframework\session\spring-session-jdbc\3.5.7\spring-session-jdbc-3.5.7.jar;C:\Users\admin\.m2\repository\org\springframework\session\spring-session-core\3.5.7\spring-session-core-3.5.7.jar;C:\Users\admin\.m2\repository\org\springframework\spring-jcl\6.2.19\spring-jcl-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-context\6.2.19\spring-context-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-jdbc\6.2.19\spring-jdbc-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-actuator\3.5.16\spring-boot-starter-actuator-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-actuator-autoconfigure\3.5.16\spring-boot-actuator-autoconfigure-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-actuator\3.5.16\spring-boot-actuator-3.5.16.jar;C:\Users\admin\.m2\repository\io\micrometer\micrometer-observation\1.15.12\micrometer-observation-1.15.12.jar;C:\Users\admin\.m2\repository\io\micrometer\micrometer-commons\1.15.12\micrometer-commons-1.15.12.jar;C:\Users\admin\.m2\repository\io\micrometer\micrometer-jakarta9\1.15.12\micrometer-jakarta9-1.15.12.jar;C:\Users\admin\.m2\repository\io\micrometer\micrometer-core\1.15.12\micrometer-core-1.15.12.jar;C:\Users\admin\.m2\repository\org\hdrhistogram\HdrHistogram\2.2.2\HdrHistogram-2.2.2.jar;C:\Users\admin\.m2\repository\org\latencyutils\LatencyUtils\2.0.3\LatencyUtils-2.0.3.jar;C:\Users\admin\.m2\repository\org\flywaydb\flyway-core\11.7.2\flyway-core-11.7.2.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-toml\2.21.7\jackson-dataformat-toml-2.21.7.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.21.7\jackson-core-2.21.7.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.21.7\jackson-datatype-jsr310-2.21.7.jar;C:\Users\admin\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.21\jackson-annotations-2.21.jar;C:\Users\admin\.m2\repository\org\flywaydb\flyway-mysql\11.7.2\flyway-mysql-11.7.2.jar;C:\Users\admin\.m2\repository\com\mysql\mysql-connector-j\9.7.0\mysql-connector-j-9.7.0.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-starter-test\3.5.16\spring-boot-starter-test-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-test\3.5.16\spring-boot-test-3.5.16.jar;C:\Users\admin\.m2\repository\org\springframework\boot\spring-boot-test-autoconfigure\3.5.16\spring-boot-test-autoconfigure-3.5.16.jar;C:\Users\admin\.m2\repository\com\jayway\jsonpath\json-path\2.9.0\json-path-2.9.0.jar;C:\Users\admin\.m2\repository\jakarta\xml\bind\jakarta.xml.bind-api\4.0.5\jakarta.xml.bind-api-4.0.5.jar;C:\Users\admin\.m2\repository\jakarta\activation\jakarta.activation-api\2.1.4\jakarta.activation-api-2.1.4.jar;C:\Users\admin\.m2\repository\net\minidev\json-smart\2.5.2\json-smart-2.5.2.jar;C:\Users\admin\.m2\repository\net\minidev\accessors-smart\2.5.2\accessors-smart-2.5.2.jar;C:\Users\admin\.m2\repository\org\ow2\asm\asm\9.7.1\asm-9.7.1.jar;C:\Users\admin\.m2\repository\org\assertj\assertj-core\3.27.7\assertj-core-3.27.7.jar;C:\Users\admin\.m2\repository\org\awaitility\awaitility\4.2.2\awaitility-4.2.2.jar;C:\Users\admin\.m2\repository\org\hamcrest\hamcrest\3.0\hamcrest-3.0.jar;C:\Users\admin\.m2\repository\org\junit\jupiter\junit-jupiter\5.12.2\junit-jupiter-5.12.2.jar;C:\Users\admin\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.12.2\junit-jupiter-api-5.12.2.jar;C:\Users\admin\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\admin\.m2\repository\org\junit\platform\junit-platform-commons\1.12.2\junit-platform-commons-1.12.2.jar;C:\Users\admin\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\admin\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.12.2\junit-jupiter-params-5.12.2.jar;C:\Users\admin\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.12.2\junit-jupiter-engine-5.12.2.jar;C:\Users\admin\.m2\repository\org\junit\platform\junit-platform-engine\1.12.2\junit-platform-engine-1.12.2.jar;C:\Users\admin\.m2\repository\org\mockito\mockito-core\5.17.0\mockito-core-5.17.0.jar;C:\Users\admin\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar;C:\Users\admin\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\admin\.m2\repository\org\mockito\mockito-junit-jupiter\5.17.0\mockito-junit-jupiter-5.17.0.jar;C:\Users\admin\.m2\repository\org\skyscreamer\jsonassert\1.5.3\jsonassert-1.5.3.jar;C:\Users\admin\.m2\repository\com\vaadin\external\google\android-json\0.0.20131108.vaadin1\android-json-0.0.20131108.vaadin1.jar;C:\Users\admin\.m2\repository\org\springframework\spring-core\6.2.19\spring-core-6.2.19.jar;C:\Users\admin\.m2\repository\org\springframework\spring-test\6.2.19\spring-test-6.2.19.jar;C:\Users\admin\.m2\repository\org\xmlunit\xmlunit-core\2.10.4\xmlunit-core-2.10.4.jar;C:\Users\admin\.m2\repository\org\springframework\security\spring-security-test\6.5.11\spring-security-test-6.5.11.jar;C:\Users\admin\.m2\repository\org\springframework\security\spring-security-core\6.5.11\spring-security-core-6.5.11.jar;C:\Users\admin\.m2\repository\org\springframework\security\spring-security-crypto\6.5.11\spring-security-crypto-6.5.11.jar;C:\Users\admin\.m2\repository\org\testcontainers\junit-jupiter\1.21.4\junit-jupiter-1.21.4.jar;C:\Users\admin\.m2\repository\org\testcontainers\testcontainers\1.21.4\testcontainers-1.21.4.jar;C:\Users\admin\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\admin\.m2\repository\org\hamcrest\hamcrest-core\3.0\hamcrest-core-3.0.jar;C:\Users\admin\.m2\repository\org\rnorth\duct-tape\duct-tape\1.0.8\duct-tape-1.0.8.jar;C:\Users\admin\.m2\repository\org\jetbrains\annotations\17.0.0\annotations-17.0.0.jar;C:\Users\admin\.m2\repository\com\github\docker-java\docker-java-api\3.4.2\docker-java-api-3.4.2.jar;C:\Users\admin\.m2\repository\com\github\docker-java\docker-java-transport-zerodep\3.4.2\docker-java-transport-zerodep-3.4.2.jar;C:\Users\admin\.m2\repository\com\github\docker-java\docker-java-transport\3.4.2\docker-java-transport-3.4.2.jar;C:\Users\admin\.m2\repository\net\java\dev\jna\jna\5.13.0\jna-5.13.0.jar;C:\Users\admin\.m2\repository\org\testcontainers\mysql\1.21.4\mysql-1.21.4.jar;C:\Users\admin\.m2\repository\org\testcontainers\jdbc\1.21.4\jdbc-1.21.4.jar;C:\Users\admin\.m2\repository\org\testcontainers\database-commons\1.21.4\database-commons-1.21.4.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\admin"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2025-10-21"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk-21"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="D:\DCN\KTN_11235645_DoCamNhung\Backend"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
+    <property name="java.awt.headless" value="true"/>
+    <property name="surefire.real.class.path" value="C:\Users\admin\AppData\Local\Temp\surefire13165892152664211049\surefirebooter-20261019021734982_3.jar"/>
+    <property name="user.script" value=""/>
+    <property name="polyglot.engine.WarnInterpreterOnly" value="false"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="21.0.9+7-LTS-338"/>
+    <property name="user.name" value="admin"/>
+    <property name="stdout.encoding" value="Cp1252"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="localRepository" value="C:\Users\admin\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+    <property name="java.io.tmpdir" value="C:\Users\admin\AppData\Local\Temp\"/>
+    <property name="com.zaxxer.hikari.pool_number" value="1"/>
+    <property name="java.version" value="21.0.9"/>
+    <property name="user.dir" value="D:\DCN\KTN_11235645_DoCamNhung\Backend"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="PID" value="26476"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
+    <property name="native.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-21\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Users\admin\.codex\tmp\arg0\codex-arg09Z0StB;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Users\admin\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\Git LFS;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\dotnet\;C:\Program Files (x86)\Microsoft SQL Server\160\Tools\Binn\;C:\Program Files\Microsoft SQL Server\160\Tools\Binn\;C:\Program Files\Microsoft SQL Server\160\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\160\DTS\Binn\;C:\Program Files\NVIDIA Corporation\Nsight Compute 2022.3.0\;C:\Dev Flutter\flutter\bin;C:\Program Files\nodejs\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\WSL\;C:\Users\admin\AppData\Local\Programs\Jan;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Users\admin\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\Git LFS;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\dotnet\;C:\Program Files (x86)\Microsoft SQL Server\160\Tools\Binn\;C:\Program Files\Microsoft SQL Server\160\Tools\Binn\;C:\Program Files\Microsoft SQL Server\160\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\160\DTS\Binn\;C:\Program Files\NVIDIA Corporation\Nsight Compute 2022.3.0\;C:\Dev Flutter\flutter\bin;C:\Program Files\nodejs\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Users\admin\AppData\Local\Microsoft\Wind;C:\Users\admin\AppData\Local\Pub\Cache\bin;C:\Users\admin\AppData\Roaming\npm;C:\Users\admin\.dotnet\tools;C:\Program Files\JetBrains\IntelliJ IDEA 2025.3.2\plugins\maven\lib\maven3\bin;C:\Users\admin\Downloads\rtk-x86_64-pc-windows-msvc;C:\Users\admin\AppData\Local\Programs\Antigravity IDE\bin;c:\Users\admin\.vscode\extensions\openai.chatgpt-26.1007.21434-win32-x64\bin\windows-x86_64;."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="Cp1252"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="java.vm.version" value="21.0.9+7-LTS-338"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="65.0"/>
+    <property name="LOGGED_APPLICATION_NAME" value="[syp-tms] "/>
+  </properties>
+  <testcase name="workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples" classname="vn.syp.tms.testcase.FeatureAiIntegrationTest" time="11.175">
+    <failure message="&#10;Multiple Failures (12 failures)&#10;-- failure 1 --&#10;Expecting value to be true but was false&#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:122)&#10;-- failure 2 --&#10;expected: 12&#10; but was: 0&#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:122)&#10;-- failure 3 --&#10;expected: 7&#10; but was: 0&#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:122)&#10;-- failure 4 --&#10;expected: 1&#10; but was: 0&#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:123)&#10;-- failure 5 --&#10;Expecting actual:&#10;  []&#10;to contain exactly in any order:&#10;  [&quot;b7d46e04f&quot;, &quot;pm7d46e04f&quot;]&#10;but could not find the following elements:&#10;  [&quot;b7d46e04f&quot;, &quot;pm7d46e04f&quot;]&#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:124)&#10;-- failure 6 --&#10;expected: &quot;TC12&quot;&#10; but was: &quot;TC1&quot;&#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:127)&#10;-- failure 7 --&#10;Expecting actual:&#10;  &quot;[{&quot;documentId&quot;:193,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:192,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:191,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:190,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:189,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:188,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:187,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:186,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:185,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:184,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;}]&quot;&#10;to contain:&#10;  &quot;Long file.xlsx&quot; &#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:128)&#10;-- failure 8 --&#10;Expecting value to be true but was false&#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:122)&#10;-- failure 9 --&#10;expected: 1&#10; but was: 0&#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:123)&#10;-- failure 10 --&#10;Expecting actual:&#10;  []&#10;to contain exactly in any order:&#10;  [&quot;b7d46e04f&quot;, &quot;pm7d46e04f&quot;]&#10;but could not find the following elements:&#10;  [&quot;b7d46e04f&quot;, &quot;pm7d46e04f&quot;]&#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:124)&#10;-- failure 11 --&#10;expected: &quot;TC12&quot;&#10; but was: &quot;TC1&quot;&#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:127)&#10;-- failure 12 --&#10;Expecting actual:&#10;  &quot;[{&quot;documentId&quot;:193,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:192,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:191,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:190,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:189,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:188,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:187,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:186,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:185,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;},{&quot;documentId&quot;:184,&quot;featureId&quot;:198,&quot;featureName&quot;:&quot;Worker facts&quot;,&quot;fileName&quot;:&quot;cases.xlsx&quot;}]&quot;&#10;to contain:&#10;  &quot;Long file.xlsx&quot; &#10;at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:128)" type="org.assertj.core.error.AssertJMultipleFailuresError"><![CDATA[org.assertj.core.error.AssertJMultipleFailuresError: 
+
+Multiple Failures (12 failures)
+-- failure 1 --
+Expecting value to be true but was false
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:122)
+-- failure 2 --
+expected: 12
+ but was: 0
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:122)
+-- failure 3 --
+expected: 7
+ but was: 0
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:122)
+-- failure 4 --
+expected: 1
+ but was: 0
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:123)
+-- failure 5 --
+Expecting actual:
+  []
+to contain exactly in any order:
+  ["b7d46e04f", "pm7d46e04f"]
+but could not find the following elements:
+  ["b7d46e04f", "pm7d46e04f"]
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:124)
+-- failure 6 --
+expected: "TC12"
+ but was: "TC1"
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:127)
+-- failure 7 --
+Expecting actual:
+  "[{"documentId":193,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":192,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":191,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":190,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":189,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":188,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":187,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":186,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":185,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":184,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"}]"
+to contain:
+  "Long file.xlsx" 
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:128)
+-- failure 8 --
+Expecting value to be true but was false
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:122)
+-- failure 9 --
+expected: 1
+ but was: 0
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:123)
+-- failure 10 --
+Expecting actual:
+  []
+to contain exactly in any order:
+  ["b7d46e04f", "pm7d46e04f"]
+but could not find the following elements:
+  ["b7d46e04f", "pm7d46e04f"]
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:124)
+-- failure 11 --
+expected: "TC12"
+ but was: "TC1"
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:127)
+-- failure 12 --
+Expecting actual:
+  "[{"documentId":193,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":192,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":191,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":190,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":189,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":188,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":187,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":186,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":185,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"},{"documentId":184,"featureId":198,"featureName":"Worker facts","fileName":"cases.xlsx"}]"
+to contain:
+  "Long file.xlsx" 
+at FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:128)
+	at vn.syp.tms.testcase.FeatureAiIntegrationTest.workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples(FeatureAiIntegrationTest.java:130)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+]]></failure>
+    <system-out><![CDATA[02:17:48.989 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [vn.syp.tms.testcase.FeatureAiIntegrationTest]: FeatureAiIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+02:17:50.391 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration vn.syp.tms.TmsApplication for test class vn.syp.tms.testcase.FeatureAiIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-19T02:17:53.920+07:00  INFO 26476 --- [syp-tms] [           main] v.s.t.testcase.FeatureAiIntegrationTest  : Starting FeatureAiIntegrationTest using Java 21.0.9 with PID 26476 (started by admin in D:\DCN\KTN_11235645_DoCamNhung\Backend)
+2026-10-19T02:17:53.924+07:00  INFO 26476 --- [syp-tms] [           main] v.s.t.testcase.FeatureAiIntegrationTest  : No active profile set, falling back to 1 default profile: "default"
+2026-10-19T02:17:58.208+07:00  INFO 26476 --- [syp-tms] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-19T02:17:58.554+07:00  INFO 26476 --- [syp-tms] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 300 ms. Found 18 JPA repository interfaces.
+2026-10-19T02:18:02.552+07:00  INFO 26476 --- [syp-tms] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3307/tms_docstest_2060e04c986c?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&allowPublicKeyRetrieval=true&sslMode=DISABLED (MySQL 9.7)
+2026-10-19T02:18:03.191+07:00  WARN 26476 --- [syp-tms] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 9.7 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-10-19T02:18:03.398+07:00  INFO 26476 --- [syp-tms] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 31 migrations (execution time 00:00.169s)
+2026-10-19T02:18:03.434+07:00  INFO 26476 --- [syp-tms] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `tms_docstest_2060e04c986c`: 33
+2026-10-19T02:18:03.441+07:00  INFO 26476 --- [syp-tms] [           main] o.f.core.internal.command.DbMigrate      : Schema `tms_docstest_2060e04c986c` is up to date. No migration necessary.
+2026-10-19T02:18:03.744+07:00  INFO 26476 --- [syp-tms] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-19T02:18:03.942+07:00  INFO 26476 --- [syp-tms] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.53.Final
+2026-10-19T02:18:04.033+07:00  INFO 26476 --- [syp-tms] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-19T02:18:04.386+07:00  INFO 26476 --- [syp-tms] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-19T02:18:04.472+07:00  INFO 26476 --- [syp-tms] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-19T02:18:04.503+07:00  INFO 26476 --- [syp-tms] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6e5e8adf
+2026-10-19T02:18:04.507+07:00  INFO 26476 --- [syp-tms] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-19T02:18:04.711+07:00  INFO 26476 --- [syp-tms] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 9.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-19T02:18:07.782+07:00  INFO 26476 --- [syp-tms] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-19T02:18:07.917+07:00  INFO 26476 --- [syp-tms] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-19T02:18:08.726+07:00  INFO 26476 --- [syp-tms] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-19T02:18:14.827+07:00  INFO 26476 --- [syp-tms] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-19T02:18:15.903+07:00  INFO 26476 --- [syp-tms] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-19T02:18:15.904+07:00  INFO 26476 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-19T02:18:15.905+07:00  INFO 26476 --- [syp-tms] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-19T02:18:16.057+07:00  INFO 26476 --- [syp-tms] [           main] v.s.t.testcase.FeatureAiIntegrationTest  : Started FeatureAiIntegrationTest in 24.684 seconds (process running for 40.819)
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features
+       Parameters = {_csrf=[nnNpQk_GsNFC6fdrs64wn7lmxJLqiy5FwQugwBVXdcp-cywzqUAMdXvwheBvj8INi4MErYxR6fOPs0ho826Uo3c2F_5HRxlQ]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"144"]
+             Body = {"requestKey":"2b3d69b8-5f6f-459a-9d9e-4ad1bcdf4a05","name":"Worker facts","environment":"server nhập tự do / URL","description":"Mô tả"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=95af91ff-f24d-490a-b006-8ef06cddc45a, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_ADMIN]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#create(Authentication, long, Create)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 201
+    Error message = null
+          Headers = [X-Request-ID:"96302ebc-40db-4dde-be39-2ecf389a2fc2", Location:"/api/v1/projects/214/features/198", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":198,"projectId":214,"name":"Worker facts","environment":"server nhập tự do / URL","description":"Mô tả","archivedAt":null,"version":0,"createdAt":"2026-10-18T19:18:18.814064","updatedAt":"2026-10-18T19:18:18.814064","documentCount":0,"caseCount":0,"testedCaseCount":0,"progressPercent":0.0}
+    Forwarded URL = null
+   Redirected URL = /api/v1/projects/214/features/198
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[yuuZQ9ASOGvvU6a4cMun94YtPuijr7AiP8FBwT34ti3afZ1Jr9ivIbYrWQnCa5KMRuaTluUcE9CXnIgPDfQlpw3Bh0_oSfl5]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"5f767420-064f-4008-a62b-396a27a72021", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":181,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":12,"validRows":12,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":984,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-181","titleVi":"Title1","valid":true,"errorMessage":null},{"id":985,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-181","titleVi":"Title2","valid":true,"errorMessage":null},{"id":986,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-181","titleVi":"Title3","valid":true,"errorMessage":null},{"id":987,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-181","titleVi":"Title4","valid":true,"errorMessage":null},{"id":988,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-181","titleVi":"Title5","valid":true,"errorMessage":null},{"id":989,"rowNumber":7,"caseNo":"TC6","suiteCode":"XLSX-181","titleVi":"Title6","valid":true,"errorMessage":null},{"id":990,"rowNumber":8,"caseNo":"TC7","suiteCode":"XLSX-181","titleVi":"Title7","valid":true,"errorMessage":null},{"id":991,"rowNumber":9,"caseNo":"TC8","suiteCode":"XLSX-181","titleVi":"Title8","valid":true,"errorMessage":null},{"id":992,"rowNumber":10,"caseNo":"TC9","suiteCode":"XLSX-181","titleVi":"Title9","valid":true,"errorMessage":null},{"id":993,"rowNumber":11,"caseNo":"TC10","suiteCode":"XLSX-181","titleVi":"Title10","valid":true,"errorMessage":null},{"id":994,"rowNumber":12,"caseNo":"TC11","suiteCode":"XLSX-181","titleVi":"Title11","valid":true,"errorMessage":null},{"id":995,"rowNumber":13,"caseNo":"TC12","suiteCode":"XLSX-181","titleVi":"Title12","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/181/commit
+       Parameters = {_csrf=[sjKvubpuqIzx6hV8LDay2hSCyfCZ_sPg43-1YFe057VfIEGnhFGWi44KyrzcjyAeGxuG6HWy5JGgxqLN00rQAmTRhodqRSKS]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"516c871b-8640-4eca-9c45-c717a784e820", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":181,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":12,"caseCount":12,"createdAt":"2026-10-18T19:18:19.038817Z","updatedAt":"2026-10-18T19:18:19.360104Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":12},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/projects/214/test-documents/181
+       Parameters = {}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=9dd0402c-6dd2-4301-a765-7c012a2ad9e7, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_TESTER]]]}
+
+Handler:
+             Type = vn.syp.tms.testcase.TestDocumentController
+           Method = vn.syp.tms.testcase.TestDocumentController#get(Authentication, Long, Long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"9989f193-ed4a-408f-a8fe-e1eb33035798", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"document":{"id":181,"projectId":214,"fileName":"Long file.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":12,"caseCount":12,"createdAt":"2026-10-18T19:18:19.038817Z","updatedAt":"2026-10-18T19:18:19.360104Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":12},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true},"headers":["caseNo","suiteCode","titleVi","preconditionsVi","stepsVi","expectedVi","titleJp","preconditionsJp","stepsJp","expectedJp","sourceReference"],"rows":[{"rowNumber":2,"sourceId":"TC1","caseId":959,"caseNo":"XLSX-181-2","revisionId":984,"approved":false,"archived":false,"cells":["TC1","XLSX-181","Title1","","Steps1","Expected1","","","","","reference"],"sourceCells":["TC1","UNREGISTERED-SUITE","Title1","","Steps1","Expected1","","","","","reference"],"rowId":984,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":3,"sourceId":"TC2","caseId":960,"caseNo":"XLSX-181-3","revisionId":985,"approved":false,"archived":false,"cells":["TC2","XLSX-181","Title2","","Steps2","Expected2","","","","","reference"],"sourceCells":["TC2","UNREGISTERED-SUITE","Title2","","Steps2","Expected2","","","","","reference"],"rowId":985,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":4,"sourceId":"TC3","caseId":961,"caseNo":"XLSX-181-4","revisionId":986,"approved":false,"archived":false,"cells":["TC3","XLSX-181","Title3","","Steps3","Expected3","","","","","reference"],"sourceCells":["TC3","UNREGISTERED-SUITE","Title3","","Steps3","Expected3","","","","","reference"],"rowId":986,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":5,"sourceId":"TC4","caseId":962,"caseNo":"XLSX-181-5","revisionId":987,"approved":false,"archived":false,"cells":["TC4","XLSX-181","Title4","","Steps4","Expected4","","","","","reference"],"sourceCells":["TC4","UNREGISTERED-SUITE","Title4","","Steps4","Expected4","","","","","reference"],"rowId":987,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":6,"sourceId":"TC5","caseId":963,"caseNo":"XLSX-181-6","revisionId":988,"approved":false,"archived":false,"cells":["TC5","XLSX-181","Title5","","Steps5","Expected5","","","","","reference"],"sourceCells":["TC5","UNREGISTERED-SUITE","Title5","","Steps5","Expected5","","","","","reference"],"rowId":988,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":7,"sourceId":"TC6","caseId":964,"caseNo":"XLSX-181-7","revisionId":989,"approved":false,"archived":false,"cells":["TC6","XLSX-181","Title6","","Steps6","Expected6","","","","",""],"sourceCells":["TC6","SUITE","Title6","","Steps6","Expected6","","","","",""],"rowId":989,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":8,"sourceId":"TC7","caseId":965,"caseNo":"XLSX-181-8","revisionId":990,"approved":false,"archived":false,"cells":["TC7","XLSX-181","Title7","","Steps7","Expected7","","","","",""],"sourceCells":["TC7","SUITE","Title7","","Steps7","Expected7","","","","",""],"rowId":990,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":9,"sourceId":"TC8","caseId":966,"caseNo":"XLSX-181-9","revisionId":991,"approved":false,"archived":false,"cells":["TC8","XLSX-181","Title8","","Steps8","Expected8","","","","",""],"sourceCells":["TC8","SUITE","Title8","","Steps8","Expected8","","","","",""],"rowId":991,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":10,"sourceId":"TC9","caseId":967,"caseNo":"XLSX-181-10","revisionId":992,"approved":false,"archived":false,"cells":["TC9","XLSX-181","Title9","","Steps9","Expected9","","","","",""],"sourceCells":["TC9","SUITE","Title9","","Steps9","Expected9","","","","",""],"rowId":992,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":11,"sourceId":"TC10","caseId":968,"caseNo":"XLSX-181-11","revisionId":993,"approved":false,"archived":false,"cells":["TC10","XLSX-181","Title10","","Steps10","Expected10","","","","",""],"sourceCells":["TC10","SUITE","Title10","","Steps10","Expected10","","","","",""],"rowId":993,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":12,"sourceId":"TC11","caseId":969,"caseNo":"XLSX-181-12","revisionId":994,"approved":false,"archived":false,"cells":["TC11","XLSX-181","Title11","","Steps11","Expected11","","","","",""],"sourceCells":["TC11","SUITE","Title11","","Steps11","Expected11","","","","",""],"rowId":994,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":13,"sourceId":"TC12","caseId":970,"caseNo":"XLSX-181-13","revisionId":995,"approved":false,"archived":false,"cells":["TC12","XLSX-181","Title12","","Steps12","Expected12","","","","",""],"sourceCells":["TC12","SUITE","Title12","","Steps12","Expected12","","","","",""],"rowId":995,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false}],"columns":{"sourceId":0},"cellVersions":{},"secondTests":[],"assignments":[{"rowId":984,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":985,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":986,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":987,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":988,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":989,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":990,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":991,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":992,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":993,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":994,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":995,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null}],"canManage":false,"canAssign":true,"canCreateIssue":true,"selfMembershipId":894}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = PUT
+      Request URI = /api/v1/projects/214/test-documents/181/assignments
+       Parameters = {_csrf=[iy3Lz8NlosuO0St10cRKJxaHOm-r1JYWrHgwV25us7ldlafzshj49_sBm6qj5B8Qsul-RCHkFw3Nt6E7nBoIb15egdtlpZDC]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"173"]
+             Body = {"changes":[{"assigneeMembershipId":891,"rowIds":[984,985,986,987,988,989,990,991,992,993,994,995]}],"expectedVersion":0,"requestKey":"e448060b-685e-4452-8fb5-fdf3c6b54dc3"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#assignments(Authentication, long, long, Assignments)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"32221c08-1a40-4119-ada5-428541c2938f", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":181,"featureId":198,"version":1,"documentId":181,"items":[{"rowId":984,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null},{"rowId":985,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null},{"rowId":986,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null},{"rowId":987,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null},{"rowId":988,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null},{"rowId":989,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null},{"rowId":990,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null},{"rowId":991,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null},{"rowId":992,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null},{"rowId":993,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null},{"rowId":994,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null},{"rowId":995,"assigneeMembershipId":891,"assigneeName":"b7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = PUT
+      Request URI = /api/v1/projects/214/test-documents/181/rows/995/result
+       Parameters = {_csrf=[7rCJntrZoRGH2pZ84HjVjEohB3-AIM8k0UveNyCDi1Vc-VKijYS__L-_kCiq66RP1FXhvSkWKkbjQakJ4ynsABOz72M4mGWW]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"87"]
+             Body = {"status":"NG","expectedVersion":0,"requestKey":"d9334d6d-a2de-497a-b535-b73a285042b5"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=c2f15d3b-79d4-466e-a577-be075f2f7c85, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_TESTER]]]}
+
+Handler:
+             Type = vn.syp.tms.testcase.TestDocumentController
+           Method = vn.syp.tms.testcase.TestDocumentController#updateResult(Authentication, Long, Long, Long, UpdateResult)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"ac2152ed-eb54-4311-873d-b481917393f0", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"rowId":995,"status":"NG","version":1,"updatedAt":"2026-10-18T19:18:20.005058Z","updatedBy":"b7d46e04f"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = PUT
+      Request URI = /api/v1/projects/214/test-documents/181/assignments
+       Parameters = {_csrf=[QwF2yV1OBSYmG7UgcDuzRBcmkU12lqNg0jJiLIPo_tcgPdrwejdP_2svMBQLeNdDFhaHcnUWvHVH8pFN5gNRHebeyucSWejJ]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"214"]
+             Body = {"changes":[{"assigneeMembershipId":891,"rowIds":[]},{"assigneeMembershipId":894,"rowIds":[984,985,986,987,988,989,990,991,992,993,994,995]}],"expectedVersion":1,"requestKey":"f67e495b-559e-4099-9e71-22bc487a82b9"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#assignments(Authentication, long, long, Assignments)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"44b44d8a-6d35-468f-b6cc-facd2ff0de2a", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":181,"featureId":198,"version":2,"documentId":181,"items":[{"rowId":984,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"},{"rowId":985,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"},{"rowId":986,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"},{"rowId":987,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"},{"rowId":988,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"},{"rowId":989,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"},{"rowId":990,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"},{"rowId":991,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"},{"rowId":992,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"},{"rowId":993,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"},{"rowId":994,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"},{"rowId":995,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"b7d46e04f","latestTesterName":"a7d46e04f"}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = PUT
+      Request URI = /api/v1/projects/214/test-documents/181/rows/995/result
+       Parameters = {_csrf=[WnEH3SG7jxk8BwBla57uoK-bPoo5BXYpVdB2kkDW3QfEZAMsaxVmv0LZt3gRZTVTW7PawZirE7IOPEUEZLYTpCK07zCiVmUb]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"87"]
+             Body = {"status":"OK","expectedVersion":1,"requestKey":"4a0672c6-7ac6-4e52-a5bd-01e8c93bc250"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.testcase.TestDocumentController
+           Method = vn.syp.tms.testcase.TestDocumentController#updateResult(Authentication, Long, Long, Long, UpdateResult)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"276881c5-d7ad-4d9e-8b02-ba69327860ca", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"rowId":995,"status":"OK","version":2,"updatedAt":"2026-10-18T19:18:20.224500Z","updatedBy":"pm7d46e04f"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = PUT
+      Request URI = /api/v1/projects/214/test-documents/181/rows/984/result
+       Parameters = {_csrf=[nJcsDyqBQ5Y2ELAWABGdUKkx3AFuWX8k6kFsdjUp7OKVfco5_6EVPEiye_IbcdYjNDypaZ8D8WBYYRwJjCINE1NM3NSnSfkL]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"87"]
+             Body = {"status":"NA","expectedVersion":0,"requestKey":"1211625a-0d02-4c42-af69-d8b33b877a32"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=9dd0402c-6dd2-4301-a765-7c012a2ad9e7, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_TESTER]]]}
+
+Handler:
+             Type = vn.syp.tms.testcase.TestDocumentController
+           Method = vn.syp.tms.testcase.TestDocumentController#updateResult(Authentication, Long, Long, Long, UpdateResult)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"b5380c1e-5ac6-47a8-a03f-4745c1c0a8cd", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"rowId":984,"status":"NA","version":1,"updatedAt":"2026-10-18T19:18:20.309649Z","updatedBy":"a7d46e04f"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = PUT
+      Request URI = /api/v1/projects/214/test-documents/181/rows/985/result
+       Parameters = {_csrf=[GY0t78MjjJKsgKCsqno73cMVDXnYIWq9o0lhxy5sehB2vSXqK78f3PQb6qWB4saemFcPv6AlIBu9FVuQx3tQ9EpZG3EUhRaM]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"86"]
+             Body = {"status":"P","expectedVersion":0,"requestKey":"51d4caeb-deea-400e-b6c3-755306e5aa28"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=9dd0402c-6dd2-4301-a765-7c012a2ad9e7, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_TESTER]]]}
+
+Handler:
+             Type = vn.syp.tms.testcase.TestDocumentController
+           Method = vn.syp.tms.testcase.TestDocumentController#updateResult(Authentication, Long, Long, Long, UpdateResult)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"585a846c-f60d-4bb2-bcd2-dfb8f39b57a2", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"rowId":985,"status":"P","version":1,"updatedAt":"2026-10-18T19:18:20.416351Z","updatedBy":"a7d46e04f"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = PUT
+      Request URI = /api/v1/projects/214/test-documents/181/rows/986/result
+       Parameters = {_csrf=[Ly3fdcbNPcK0aZAL91IPnyQQDhpFJOl8_YMM5Dhu9AO1dJFNS0vpQPH1C_WZDaFuln87rRAnI3t8QYpRz-Y10QpcxDKBTagp]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"87"]
+             Body = {"status":"OK","expectedVersion":0,"requestKey":"99db0935-f442-40b2-a13f-b261907d9218"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=9dd0402c-6dd2-4301-a765-7c012a2ad9e7, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_TESTER]]]}
+
+Handler:
+             Type = vn.syp.tms.testcase.TestDocumentController
+           Method = vn.syp.tms.testcase.TestDocumentController#updateResult(Authentication, Long, Long, Long, UpdateResult)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"82c33fad-72dd-4a89-81b5-54e7e67315b8", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"rowId":986,"status":"OK","version":1,"updatedAt":"2026-10-18T19:18:20.510140Z","updatedBy":"a7d46e04f"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = PUT
+      Request URI = /api/v1/projects/214/test-documents/181/rows/987/result
+       Parameters = {_csrf=[FhON1GcUDGQVOBI-5m45PgPvN8_cdcmONpF-WhKFEZnxPvIxc3e-tQIsNVw4DnNdgkMNBmDWGva-F6qjV_VKOyW8cKzIWsYH]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"87"]
+             Body = {"status":"OK","expectedVersion":0,"requestKey":"51597e78-eb32-491d-9f67-1ed3ccb01a77"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=9dd0402c-6dd2-4301-a765-7c012a2ad9e7, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_TESTER]]]}
+
+Handler:
+             Type = vn.syp.tms.testcase.TestDocumentController
+           Method = vn.syp.tms.testcase.TestDocumentController#updateResult(Authentication, Long, Long, Long, UpdateResult)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"1f675861-72ad-482e-beb0-c07473d279b8", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"rowId":987,"status":"OK","version":1,"updatedAt":"2026-10-18T19:18:20.607199Z","updatedBy":"a7d46e04f"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = PUT
+      Request URI = /api/v1/projects/214/test-documents/181/rows/988/result
+       Parameters = {_csrf=[8J88sTuSfN0f_LLPr0hiiNMoJ4HXkGBnDtjDboKVKDq0drYslP5Y1wzzHesynoT8nmVW7LEfCuPlpwRKO-zzWLD3SwmET9Qb]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"87"]
+             Body = {"status":"OK","expectedVersion":0,"requestKey":"1f7f4f46-0a55-4388-8b7b-45476c5d060d"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=9dd0402c-6dd2-4301-a765-7c012a2ad9e7, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_TESTER]]]}
+
+Handler:
+             Type = vn.syp.tms.testcase.TestDocumentController
+           Method = vn.syp.tms.testcase.TestDocumentController#updateResult(Authentication, Long, Long, Long, UpdateResult)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"e4c7ef6e-bde9-4457-89e3-7faf0a46bebb", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"rowId":988,"status":"OK","version":1,"updatedAt":"2026-10-18T19:18:20.692245Z","updatedBy":"a7d46e04f"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = PUT
+      Request URI = /api/v1/projects/214/test-documents/181/rows/989/result
+       Parameters = {_csrf=[uZUfsMcz7l0sv05A7WNTYlnso090XoBG6jpZ-K26ZIOFkIAX3KQq1PID12UBhnx4iU5nVGyKjnYVbLVriV88zMiDAeGxpuEi]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"87"]
+             Body = {"status":"OK","expectedVersion":0,"requestKey":"75d2da87-58ec-4ea5-8e5e-bbb83defda22"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=9dd0402c-6dd2-4301-a765-7c012a2ad9e7, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_TESTER]]]}
+
+Handler:
+             Type = vn.syp.tms.testcase.TestDocumentController
+           Method = vn.syp.tms.testcase.TestDocumentController#updateResult(Authentication, Long, Long, Long, UpdateResult)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"603cf8c1-bd99-4ea3-ae50-79d65997d506", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"rowId":989,"status":"OK","version":1,"updatedAt":"2026-10-18T19:18:20.771802Z","updatedBy":"a7d46e04f"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features
+       Parameters = {_csrf=[Sx8Q-3Lr513RysiW3aPnr56rQZ1laNLaZTGMra6OWYMZ-DKIfCpyzEKIgjz8rKmnuY7Tlq_PbKVcWrf3UATvzsi9aOF4zQDs]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"145"]
+             Body = {"requestKey":"07eae8b0-efb6-4ccb-b4a2-88acfa21c14e","name":"Other feature","environment":"server nhập tự do / URL","description":"Mô tả"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=95af91ff-f24d-490a-b006-8ef06cddc45a, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_ADMIN]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#create(Authentication, long, Create)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 201
+    Error message = null
+          Headers = [X-Request-ID:"19a1529b-862d-4561-a30c-389f267a3d3e", Location:"/api/v1/projects/214/features/199", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":199,"projectId":214,"name":"Other feature","environment":"server nhập tự do / URL","description":"Mô tả","archivedAt":null,"version":0,"createdAt":"2026-10-18T19:18:20.826517","updatedAt":"2026-10-18T19:18:20.826517","documentCount":0,"caseCount":0,"testedCaseCount":0,"progressPercent":0.0}
+    Forwarded URL = null
+   Redirected URL = /api/v1/projects/214/features/199
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/199/import-previews
+       Parameters = {_csrf=[drLRuRMvgs4gKQlDrcAZ35CBIy7niK12gEFefh4gHK9WfCvwE4Xh2HEd4a0NGDFwye0t66SyDk-G7pxbtXRpHXpDJZhnGh_J]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"5999de1e-6f9c-4015-9c28-56f81eb1a5b6", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":182,"featureId":199,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":996,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-182","titleVi":"Title1","valid":true,"errorMessage":null},{"id":997,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-182","titleVi":"Title2","valid":true,"errorMessage":null},{"id":998,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-182","titleVi":"Title3","valid":true,"errorMessage":null},{"id":999,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-182","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1000,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-182","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/199/import-previews/182/commit
+       Parameters = {_csrf=[vcMWgEmjtjaTeOxPXbQf0mVFxm3MNtKlOiQwtrLI8MwkgM7Jj_R1tiyWhlC-G4p9bJkrtlYj61WpA7eICxUGj4Hwk6gd5qv4]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"3717fc98-045a-45be-981e-488edeea383f", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":182,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:21.010601Z","updatedAt":"2026-10-18T19:18:21.168933Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":199,"featureName":"Other feature","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/projects/214/test-documents/182
+       Parameters = {}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=9dd0402c-6dd2-4301-a765-7c012a2ad9e7, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_TESTER]]]}
+
+Handler:
+             Type = vn.syp.tms.testcase.TestDocumentController
+           Method = vn.syp.tms.testcase.TestDocumentController#get(Authentication, Long, Long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"fbfe1012-2471-4cc1-b082-6af1f0bd63a7", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"document":{"id":182,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:21.010601Z","updatedAt":"2026-10-18T19:18:21.168933Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":199,"featureName":"Other feature","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true},"headers":["caseNo","suiteCode","titleVi","preconditionsVi","stepsVi","expectedVi","titleJp","preconditionsJp","stepsJp","expectedJp","sourceReference"],"rows":[{"rowNumber":2,"sourceId":"TC1","caseId":971,"caseNo":"XLSX-182-2","revisionId":996,"approved":false,"archived":false,"cells":["TC1","XLSX-182","Title1","","Steps1","Expected1","","","","","reference"],"sourceCells":["TC1","UNREGISTERED-SUITE","Title1","","Steps1","Expected1","","","","","reference"],"rowId":996,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":3,"sourceId":"TC2","caseId":972,"caseNo":"XLSX-182-3","revisionId":997,"approved":false,"archived":false,"cells":["TC2","XLSX-182","Title2","","Steps2","Expected2","","","","","reference"],"sourceCells":["TC2","UNREGISTERED-SUITE","Title2","","Steps2","Expected2","","","","","reference"],"rowId":997,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":4,"sourceId":"TC3","caseId":973,"caseNo":"XLSX-182-4","revisionId":998,"approved":false,"archived":false,"cells":["TC3","XLSX-182","Title3","","Steps3","Expected3","","","","","reference"],"sourceCells":["TC3","UNREGISTERED-SUITE","Title3","","Steps3","Expected3","","","","","reference"],"rowId":998,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":5,"sourceId":"TC4","caseId":974,"caseNo":"XLSX-182-5","revisionId":999,"approved":false,"archived":false,"cells":["TC4","XLSX-182","Title4","","Steps4","Expected4","","","","","reference"],"sourceCells":["TC4","UNREGISTERED-SUITE","Title4","","Steps4","Expected4","","","","","reference"],"rowId":999,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false},{"rowNumber":6,"sourceId":"TC5","caseId":975,"caseNo":"XLSX-182-6","revisionId":1000,"approved":false,"archived":false,"cells":["TC5","XLSX-182","Title5","","Steps5","Expected5","","","","","reference"],"sourceCells":["TC5","UNREGISTERED-SUITE","Title5","","Steps5","Expected5","","","","","reference"],"rowId":1000,"resultStatus":"UNEXECUTED","resultVersion":0,"resultUpdatedAt":null,"resultUpdatedBy":null,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null,"canUpdateResult":false}],"columns":{"sourceId":0},"cellVersions":{},"secondTests":[],"assignments":[{"rowId":996,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":997,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":998,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":999,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null},{"rowId":1000,"assigneeMembershipId":null,"assigneeName":null,"firstTesterName":null,"latestTesterName":null}],"canManage":false,"canAssign":true,"canCreateIssue":true,"selfMembershipId":894}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = PUT
+      Request URI = /api/v1/projects/214/test-documents/182/assignments
+       Parameters = {_csrf=[3R9tHsmXT85fVJdERXCbjEWzCZf5hnBT7uoyPPv6ccDLt0LO7n1ZK_yuLflyZPZxcV2vvSPXJPaYthF-3tgHWcObF_epgHOq]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"146"]
+             Body = {"changes":[{"assigneeMembershipId":894,"rowIds":[996,997,998,999,1000]}],"expectedVersion":0,"requestKey":"2615f97a-5f67-4392-b4ab-9dbb76cda816"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#assignments(Authentication, long, long, Assignments)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"749eb435-4eee-4332-a76b-bc0b2142bff0", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":182,"featureId":199,"version":1,"documentId":182,"items":[{"rowId":996,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"a7d46e04f","latestTesterName":null},{"rowId":997,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"a7d46e04f","latestTesterName":null},{"rowId":998,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"a7d46e04f","latestTesterName":null},{"rowId":999,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"a7d46e04f","latestTesterName":null},{"rowId":1000,"assigneeMembershipId":894,"assigneeName":"a7d46e04f","firstTesterName":"a7d46e04f","latestTesterName":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[Vl7MycO2mbC8rj22jWirQ1tCx395CpiR5mheD3f5YHsipCMWNDz6-vTVoIKRmAqHuEWfdj916kdAb_y8gwprbk6fWR8RkEdy]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"c5cde5fb-3965-4de6-9b71-347075be4750", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":183,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1001,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-183","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1002,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-183","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1003,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-183","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1004,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-183","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1005,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-183","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/183/commit
+       Parameters = {_csrf=[T0eyQMGr5H5OsQ7IFmTMEMwfUmcofcyaJe094noOaUYoljFGLHGAdvaf0RxjiTn-Ikn4Iqosf19OTaq3FN9ZhEhtWyUd8gJ2]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"8dd4c393-e3fb-416c-b42a-df1a1638df18", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":183,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:21.612834Z","updatedAt":"2026-10-18T19:18:21.759596Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[6Vr0yf6Ahx0-COLbcxFQ5-yxEt3Mzl2CyqQFkajYY7Z6rsA832mWqsm1tS8Ta4e9Ejxkg4mBP-T9-W-v-pEwoZu-AYBJnvkJ]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"d1ee8a31-9fd2-4901-beac-fc561de75a42", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":184,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1006,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-184","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1007,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-184","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1008,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-184","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1009,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-184","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1010,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-184","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/184/commit
+       Parameters = {_csrf=[2UgM_qKgG9oYenemWjSajhexQiZLyxIxxGB5LMpqLGfedDWWv38_z5DDI781QhXHPhmu7CHQbx998yIc8lQcTf1ZTVG9FQek]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"f3d4af3c-bc35-4ceb-8599-e98e340b6e25", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":184,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:21.934124Z","updatedAt":"2026-10-18T19:18:22.107516Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[T07KsdPX4CbY7BzGXaiIQ9nHSL_cxtC9YWNa_WsYXGIpegiueX_-1eHi1hL13n6jZIW8J-D1ZYe-9rOQBVpvxF8tblVKHjHL]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"e1fbe2fa-4402-451d-a659-e9ab6d0abae9", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":185,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1011,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-185","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1012,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-185","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1013,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-185","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1014,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-185","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1015,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-185","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/185/commit
+       Parameters = {_csrf=[V1qML_4Ns2Eg4jpOoCLfR3afiErKPt-k-ZPS_tfLx7b5bIzEbjzvSp1shFAN1VsqxA_rdUD9pSv5BuaJwfLjneL78NDOWrim]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"194c8f76-1f44-4cda-b368-0166dd6dae54", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":185,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:22.387127Z","updatedAt":"2026-10-18T19:18:22.526575Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[JyypS1xAB-2f0ivah3HTiOlAkW1w_Kg7AlUwR4UA77KfGrTnFxWYeTpxNdiy4BPovlznvY95vFRBypwWMDBTcL1l24b5Io2D]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"97fd091c-ddaa-4835-8a8b-19c82f2eb639", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":186,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1016,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-186","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1017,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-186","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1018,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-186","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1019,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-186","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1020,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-186","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/186/commit
+       Parameters = {_csrf=[YEfTXICWfx1piCUcuyN7vl05K9wPr_rH7CFVp7f9KdwvrEPrBn7iP7GuG35EvBB-ig5PhzlYBuVumcnq2BU2koGcTbganifa]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"81448025-8827-4b69-9569-792b840ed804", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":186,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:22.733072Z","updatedAt":"2026-10-18T19:18:22.887552Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[k3Z5yeanDxlFg3OALPLBLMB1jpXmaNXkxntSE4yFGfhT3cuephRBqN6UO31o4he5T9_1TqMTo62CWObJpUNgd-m3Ic9i7vL4]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"57e2c9bb-0a89-4ae3-af74-1f3b008f1d93", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":187,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1021,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-187","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1022,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-187","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1023,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-187","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1024,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-187","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1025,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-187","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/187/commit
+       Parameters = {_csrf=[pVEGwY46J5tBIlAdZM7IFb7x0114p417hz4Wdo4OqVyPpXO7lWQw9uwOQvhsFWIpVuP8JYuQ_mRIxblWsgkjQ7c8zDntlEDf]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"b9582014-7d9f-4876-b367-70a754a0cf51", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":187,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:23.060865Z","updatedAt":"2026-10-18T19:18:23.202292Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[JRdf2YO1mMXvP-nICEWGvgpk-O2wS186mCs1z7FFgFF4Bme7HSc66rvRq6DCWtn-bmiy2Dld1YyJeD4X-xlXrIlxsWRMNwPd]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"4b9e5a9b-0912-474e-a34a-3c4ed498745b", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":188,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1026,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-188","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1027,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-188","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1028,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-188","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1029,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-188","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1030,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-188","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/188/commit
+       Parameters = {_csrf=[XZ-SagJJwLHVBGM4hjuXxOcA42ySIALyTlKYC0KQgduoZ5QRaKmlXmd-9Ib4PVdcsxajp9c5zg7zFGPfeWavPiD15e-bX6Fw]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"806913fd-dec5-4edf-a727-f8efed908962", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":188,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:23.364862Z","updatedAt":"2026-10-18T19:18:23.478438Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[gNmIXC5ZSI3r2JnJ9HKCiSIyU4v8D9FaAv1w7wLQXfOxC1Mv4eG8aUo7LrTG4KHwxV-2vBdRfrLOPuF3Z54V22PjPMOFPjAZ]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"d26404cd-8310-40d7-a267-aa034944f9df", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":189,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1031,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-189","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1032,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-189","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1033,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-189","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1034,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-189","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1035,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-189","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/189/commit
+       Parameters = {_csrf=[dqHnrH3OKbLca6D3a-GGK0kJjdkoKYOL_6yFem2Wyb89uYWER8OEykz3HILxXpLHWMyyGS1voOFMGOamm5vkTAym-IsKjbOz]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"76e9a949-021b-4595-8041-d309972e0da4", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":189,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:23.642743Z","updatedAt":"2026-10-18T19:18:23.793206Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[QHKwXBhSHbiAgdz2_4gUbRzDjx3pcOpzHg2iwYqHSQqk6IZscEDSbi5lLNqtuOiUnqUgVHr6on_RSIheKG7Bo7PifG7B379V]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"6ddd792b-ed00-4530-a855-d55d5d7231b5", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":190,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1036,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-190","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1037,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-190","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1038,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-190","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1039,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-190","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1040,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-190","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/190/commit
+       Parameters = {_csrf=[BoVkxc7iB3zP6fvG4kpt7EkGFTbJ4I7hhteqq1kNbYHNgGeoZLJQo_bXNUniipqggWdZ2HsxOA_6hOjMtubMmG9sXrD75gbK]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"8c3d875b-b581-4593-b89a-a63b81def5f5", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":190,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:23.985618Z","updatedAt":"2026-10-18T19:18:24.136559Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[eJ6Og8bJS3bObp4ST4CLH3PLHGPaPYlf3em8wrWuZbI-YaFMTfzqt_OoeRDjVvt2eq2_LEP-MQLtCLBy7Y_d9NCcUNRfVsIv]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"14481d38-9816-4e64-bdc6-1df4ec2d694d", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":191,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1041,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-191","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1042,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-191","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1043,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-191","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1044,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-191","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1045,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-191","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/191/commit
+       Parameters = {_csrf=[ga-tVn4fXhnXLWvfR19-IxtWEROMAKy1WMT5rJoBbr5NpM4dtZecZEsuaiv6Tlnqf3JKRnpjPHG7MpSYavPPyKlnD9t5xv94]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"28055559-11ba-4862-8c7b-1ce899ee2d7c", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":191,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:24.267391Z","updatedAt":"2026-10-18T19:18:24.373284Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[KF5qWMTLU8vnug5AQ4Ac_FPexTNlm9onrcGA0mz85TF2QXXFEDoMOaHyZvjKiGgidK0oxGLq6AoB_ewKn_i05F-Zh1dEeU3x]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"3893dafe-0570-466b-a7fd-84f23b3100c5", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":192,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1046,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-192","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1047,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-192","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1048,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-192","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1049,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-192","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1050,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-192","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/192/commit
+       Parameters = {_csrf=[QLPufAIx6PIh5lvcB1Vbh39SzE38aR572kdowrUaX-Jgkj9XdtXXHzcB0ZAMgz7oZHhv4Ukx4XXODC1W63BY9dcvaoQFowpk]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"1672cdef-485d-4d52-bed7-32123fa045aa", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":192,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:24.488241Z","updatedAt":"2026-10-18T19:18:24.600918Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews
+       Parameters = {_csrf=[shmku0rW2wnvaBJDR3f6VR8zo9IdZJ2GZMjK4j5LIcWfFjDl0CzC2Hvi7jrCWHZxdVrONy0Ljup4B6irAf_y219_E_aoIFWD]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"3cfe2389-0220-4228-be23-2a845c45aa79", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":193,"featureId":198,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1051,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-193","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1052,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-193","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1053,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-193","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1054,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-193","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1055,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-193","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/214/features/198/import-previews/193/commit
+       Parameters = {_csrf=[_m1j8PEQkAGIpA-6n-VPJMr_A6m1bg5Wd1o8BJS1VBJaCdUwnAhbwpVxpWelwDnfqsh7QamcLsiMVm97T2oOZqOHNXZib7MB]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"6b19ce67-ce31-49e4-8cee-af1279af2623", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":193,"projectId":214,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:24.723524Z","updatedAt":"2026-10-18T19:18:24.824599Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":198,"featureName":"Worker facts","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/215/features
+       Parameters = {_csrf=[BvQcqK4vX-MLMqopQQs-Qh25GYFvPwQ9K1aBeoE7I4PcEXPuY8UvmZcWOdEmU5lPJCYKeiiINLhaC2cQEmW3G-cNFrTkKRGN]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"153"]
+             Body = {"requestKey":"847cfc75-684d-49ed-847e-1ab1e84835f0","name":"Hidden worker feature","environment":"server nhập tự do / URL","description":"Mô tả"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=95af91ff-f24d-490a-b006-8ef06cddc45a, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_ADMIN]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#create(Authentication, long, Create)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 201
+    Error message = null
+          Headers = [X-Request-ID:"c45507cd-8b87-4734-a4e6-223992529ed7", Location:"/api/v1/projects/215/features/200", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":200,"projectId":215,"name":"Hidden worker feature","environment":"server nhập tự do / URL","description":"Mô tả","archivedAt":null,"version":0,"createdAt":"2026-10-18T19:18:24.943742","updatedAt":"2026-10-18T19:18:24.943742","documentCount":0,"caseCount":0,"testedCaseCount":0,"progressPercent":0.0}
+    Forwarded URL = null
+   Redirected URL = /api/v1/projects/215/features/200
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/215/features/200/import-previews
+       Parameters = {_csrf=[NlhfvRx2sxmtLNo4zDCbrs__RMIF4xbujj2L1yUgSnwkp55wB249jCsTiiyATblb_h2vnPmdaaMxhifD6A245kZELksWn6lC]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"e84f333b-c880-4e46-8319-6245b50c760a", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":194,"featureId":200,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":12,"validRows":12,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1056,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-194","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1057,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-194","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1058,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-194","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1059,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-194","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1060,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-194","titleVi":"Title5","valid":true,"errorMessage":null},{"id":1061,"rowNumber":7,"caseNo":"TC6","suiteCode":"XLSX-194","titleVi":"Title6","valid":true,"errorMessage":null},{"id":1062,"rowNumber":8,"caseNo":"TC7","suiteCode":"XLSX-194","titleVi":"Title7","valid":true,"errorMessage":null},{"id":1063,"rowNumber":9,"caseNo":"TC8","suiteCode":"XLSX-194","titleVi":"Title8","valid":true,"errorMessage":null},{"id":1064,"rowNumber":10,"caseNo":"TC9","suiteCode":"XLSX-194","titleVi":"Title9","valid":true,"errorMessage":null},{"id":1065,"rowNumber":11,"caseNo":"TC10","suiteCode":"XLSX-194","titleVi":"Title10","valid":true,"errorMessage":null},{"id":1066,"rowNumber":12,"caseNo":"TC11","suiteCode":"XLSX-194","titleVi":"Title11","valid":true,"errorMessage":null},{"id":1067,"rowNumber":13,"caseNo":"TC12","suiteCode":"XLSX-194","titleVi":"Title12","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/215/features/200/import-previews/194/commit
+       Parameters = {_csrf=[hxbcZwSld9RIIu35Cu2jCqYT-EPYb3h1cpsu0BAvqY9E0IC2vyLlUT2cRLVlFYnAOcCXPZ531SHoWk5YR6JM4yRLnbl8suOE]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=0510d1ec-210c-425f-8f51-d42d149cb61c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"00dfd9bb-f642-4458-94ef-cd6f173294d1", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":194,"projectId":215,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":12,"caseCount":12,"createdAt":"2026-10-18T19:18:24.995995Z","updatedAt":"2026-10-18T19:18:25.132895Z","updatedBy":"pm7d46e04f","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":12},"version":0,"archivedAt":null,"featureId":200,"featureName":"Hidden worker feature","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+  </testcase>
+  <testcase name="archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts" classname="vn.syp.tms.testcase.FeatureAiIntegrationTest" time="2.007">
+    <failure message="&#10;Multiple Failures (5 failures)&#10;-- failure 1 --&#10;Expecting actual:&#10;  &quot;[{&quot;id&quot;:86,&quot;itemKey&quot;:&quot;AF-499e1c4c-3bbd-4d3d-9070-6fedd5e43f53&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;Monkey without document&quot;,&quot;description&quot;:&quot;Fixture&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;,&quot;featureId&quot;:201,&quot;documentId&quot;:null,&quot;rowId&quot;:null,&quot;steps&quot;:null,&quot;expectedResult&quot;:null,&quot;actualResult&quot;:null,&quot;question&quot;:null},{&quot;id&quot;:85,&quot;itemKey&quot;:&quot;AF-fd23b95a-0d76-4971-97ac-f4292c9caadf&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;ARCHIVED_DOCUMENT_ISSUE&quot;,&quot;description&quot;:&quot;Fixture&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;,&quot;featureId&quot;:201,&quot;documentId&quot;:196,&quot;rowId&quot;:null,&quot;steps&quot;:null,&quot;expectedResult&quot;:null,&quot;actualResult&quot;:null,&quot;question&quot;:null},{&quot;id&quot;:84,&quot;itemKey&quot;:&quot;AF-fd77e343-37ce-48ec-a707-d58c6e76647f&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;Active readable issue&quot;,&quot;description&quot;:&quot;Fixture&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;,&quot;featureId&quot;:201,&quot;documentId&quot;:195,&quot;rowId&quot;:null,&quot;steps&quot;:null,&quot;expectedResult&quot;:null,&quot;actualResult&quot;:null,&quot;question&quot;:null}]&quot;&#10;not to contain:&#10;  &quot;ARCHIVED_DOCUMENT_ISSUE&quot;&#10;at FeatureAiIntegrationTest.archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts(FeatureAiIntegrationTest.java:146)&#10;-- failure 2 --&#10;expected: 2L&#10; but was: 3L&#10;at FeatureAiIntegrationTest.archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts(FeatureAiIntegrationTest.java:148)&#10;-- failure 3 --&#10;Expecting actual:&#10;  &quot;[{&quot;id&quot;:86,&quot;itemKey&quot;:&quot;AF-499e1c4c-3bbd-4d3d-9070-6fedd5e43f53&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;Monkey without document&quot;,&quot;description&quot;:&quot;Fixture&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;,&quot;featureId&quot;:201,&quot;documentId&quot;:null,&quot;rowId&quot;:null,&quot;steps&quot;:null,&quot;expectedResult&quot;:null,&quot;actualResult&quot;:null,&quot;question&quot;:null},{&quot;id&quot;:85,&quot;itemKey&quot;:&quot;AF-fd23b95a-0d76-4971-97ac-f4292c9caadf&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;ARCHIVED_DOCUMENT_ISSUE&quot;,&quot;description&quot;:&quot;Fixture&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;,&quot;featureId&quot;:201,&quot;documentId&quot;:196,&quot;rowId&quot;:null,&quot;steps&quot;:null,&quot;expectedResult&quot;:null,&quot;actualResult&quot;:null,&quot;question&quot;:null},{&quot;id&quot;:84,&quot;itemKey&quot;:&quot;AF-fd77e343-37ce-48ec-a707-d58c6e76647f&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;Active readable issue&quot;,&quot;description&quot;:&quot;Fixture&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;,&quot;featureId&quot;:201,&quot;documentId&quot;:195,&quot;rowId&quot;:null,&quot;steps&quot;:null,&quot;expectedResult&quot;:null,&quot;actualResult&quot;:null,&quot;question&quot;:null}]&quot;&#10;not to contain:&#10;  &quot;ARCHIVED_DOCUMENT_ISSUE&quot;&#10;at FeatureAiIntegrationTest.archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts(FeatureAiIntegrationTest.java:146)&#10;-- failure 4 --&#10;Expecting actual:&#10;  &quot;[{&quot;id&quot;:86,&quot;itemKey&quot;:&quot;AF-499e1c4c-3bbd-4d3d-9070-6fedd5e43f53&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;Monkey without document&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;},{&quot;id&quot;:85,&quot;itemKey&quot;:&quot;AF-fd23b95a-0d76-4971-97ac-f4292c9caadf&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;ARCHIVED_DOCUMENT_ISSUE&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;},{&quot;id&quot;:84,&quot;itemKey&quot;:&quot;AF-fd77e343-37ce-48ec-a707-d58c6e76647f&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;Active readable issue&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;}]&quot;&#10;not to contain:&#10;  &quot;ARCHIVED_DOCUMENT_ISSUE&quot;&#10;at FeatureAiIntegrationTest.archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts(FeatureAiIntegrationTest.java:147)&#10;-- failure 5 --&#10;Expecting actual:&#10;  &quot;[{&quot;id&quot;:86,&quot;itemKey&quot;:&quot;AF-499e1c4c-3bbd-4d3d-9070-6fedd5e43f53&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;Monkey without document&quot;,&quot;description&quot;:&quot;Fixture&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;,&quot;featureId&quot;:201,&quot;documentId&quot;:null,&quot;rowId&quot;:null,&quot;steps&quot;:null,&quot;expectedResult&quot;:null,&quot;actualResult&quot;:null,&quot;question&quot;:null},{&quot;id&quot;:85,&quot;itemKey&quot;:&quot;AF-fd23b95a-0d76-4971-97ac-f4292c9caadf&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;ARCHIVED_DOCUMENT_ISSUE&quot;,&quot;description&quot;:&quot;Fixture&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;,&quot;featureId&quot;:201,&quot;documentId&quot;:196,&quot;rowId&quot;:null,&quot;steps&quot;:null,&quot;expectedResult&quot;:null,&quot;actualResult&quot;:null,&quot;question&quot;:null},{&quot;id&quot;:84,&quot;itemKey&quot;:&quot;AF-fd77e343-37ce-48ec-a707-d58c6e76647f&quot;,&quot;type&quot;:&quot;BUG&quot;,&quot;title&quot;:&quot;Active readable issue&quot;,&quot;description&quot;:&quot;Fixture&quot;,&quot;status&quot;:&quot;open&quot;,&quot;priority&quot;:&quot;MEDIUM&quot;,&quot;featureId&quot;:201,&quot;documentId&quot;:195,&quot;rowId&quot;:null,&quot;steps&quot;:null,&quot;expectedResult&quot;:null,&quot;actualResult&quot;:null,&quot;question&quot;:null}]&quot;&#10;not to contain:&#10;  &quot;ARCHIVED_DOCUMENT_ISSUE&quot;&#10;at FeatureAiIntegrationTest.archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts(FeatureAiIntegrationTest.java:146)" type="org.assertj.core.error.AssertJMultipleFailuresError"><![CDATA[org.assertj.core.error.AssertJMultipleFailuresError: 
+
+Multiple Failures (5 failures)
+-- failure 1 --
+Expecting actual:
+  "[{"id":86,"itemKey":"AF-499e1c4c-3bbd-4d3d-9070-6fedd5e43f53","type":"BUG","title":"Monkey without document","description":"Fixture","status":"open","priority":"MEDIUM","featureId":201,"documentId":null,"rowId":null,"steps":null,"expectedResult":null,"actualResult":null,"question":null},{"id":85,"itemKey":"AF-fd23b95a-0d76-4971-97ac-f4292c9caadf","type":"BUG","title":"ARCHIVED_DOCUMENT_ISSUE","description":"Fixture","status":"open","priority":"MEDIUM","featureId":201,"documentId":196,"rowId":null,"steps":null,"expectedResult":null,"actualResult":null,"question":null},{"id":84,"itemKey":"AF-fd77e343-37ce-48ec-a707-d58c6e76647f","type":"BUG","title":"Active readable issue","description":"Fixture","status":"open","priority":"MEDIUM","featureId":201,"documentId":195,"rowId":null,"steps":null,"expectedResult":null,"actualResult":null,"question":null}]"
+not to contain:
+  "ARCHIVED_DOCUMENT_ISSUE"
+at FeatureAiIntegrationTest.archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts(FeatureAiIntegrationTest.java:146)
+-- failure 2 --
+expected: 2L
+ but was: 3L
+at FeatureAiIntegrationTest.archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts(FeatureAiIntegrationTest.java:148)
+-- failure 3 --
+Expecting actual:
+  "[{"id":86,"itemKey":"AF-499e1c4c-3bbd-4d3d-9070-6fedd5e43f53","type":"BUG","title":"Monkey without document","description":"Fixture","status":"open","priority":"MEDIUM","featureId":201,"documentId":null,"rowId":null,"steps":null,"expectedResult":null,"actualResult":null,"question":null},{"id":85,"itemKey":"AF-fd23b95a-0d76-4971-97ac-f4292c9caadf","type":"BUG","title":"ARCHIVED_DOCUMENT_ISSUE","description":"Fixture","status":"open","priority":"MEDIUM","featureId":201,"documentId":196,"rowId":null,"steps":null,"expectedResult":null,"actualResult":null,"question":null},{"id":84,"itemKey":"AF-fd77e343-37ce-48ec-a707-d58c6e76647f","type":"BUG","title":"Active readable issue","description":"Fixture","status":"open","priority":"MEDIUM","featureId":201,"documentId":195,"rowId":null,"steps":null,"expectedResult":null,"actualResult":null,"question":null}]"
+not to contain:
+  "ARCHIVED_DOCUMENT_ISSUE"
+at FeatureAiIntegrationTest.archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts(FeatureAiIntegrationTest.java:146)
+-- failure 4 --
+Expecting actual:
+  "[{"id":86,"itemKey":"AF-499e1c4c-3bbd-4d3d-9070-6fedd5e43f53","type":"BUG","title":"Monkey without document","status":"open","priority":"MEDIUM"},{"id":85,"itemKey":"AF-fd23b95a-0d76-4971-97ac-f4292c9caadf","type":"BUG","title":"ARCHIVED_DOCUMENT_ISSUE","status":"open","priority":"MEDIUM"},{"id":84,"itemKey":"AF-fd77e343-37ce-48ec-a707-d58c6e76647f","type":"BUG","title":"Active readable issue","status":"open","priority":"MEDIUM"}]"
+not to contain:
+  "ARCHIVED_DOCUMENT_ISSUE"
+at FeatureAiIntegrationTest.archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts(FeatureAiIntegrationTest.java:147)
+-- failure 5 --
+Expecting actual:
+  "[{"id":86,"itemKey":"AF-499e1c4c-3bbd-4d3d-9070-6fedd5e43f53","type":"BUG","title":"Monkey without document","description":"Fixture","status":"open","priority":"MEDIUM","featureId":201,"documentId":null,"rowId":null,"steps":null,"expectedResult":null,"actualResult":null,"question":null},{"id":85,"itemKey":"AF-fd23b95a-0d76-4971-97ac-f4292c9caadf","type":"BUG","title":"ARCHIVED_DOCUMENT_ISSUE","description":"Fixture","status":"open","priority":"MEDIUM","featureId":201,"documentId":196,"rowId":null,"steps":null,"expectedResult":null,"actualResult":null,"question":null},{"id":84,"itemKey":"AF-fd77e343-37ce-48ec-a707-d58c6e76647f","type":"BUG","title":"Active readable issue","description":"Fixture","status":"open","priority":"MEDIUM","featureId":201,"documentId":195,"rowId":null,"steps":null,"expectedResult":null,"actualResult":null,"question":null}]"
+not to contain:
+  "ARCHIVED_DOCUMENT_ISSUE"
+at FeatureAiIntegrationTest.archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts(FeatureAiIntegrationTest.java:146)
+	at vn.syp.tms.testcase.FeatureAiIntegrationTest.archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts(FeatureAiIntegrationTest.java:150)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+]]></failure>
+    <system-out><![CDATA[
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/216/features
+       Parameters = {_csrf=[fPRIcowNP2y7w0GqCfcyJsZ7cgsCq4oM0xrrUffG-zFRMHzbGJZ-FLloCVqWpiOea9oGEvNIX2phmrohtS7SNMD-ywMyAE-6]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"150"]
+             Body = {"requestKey":"2e298d4a-da8f-4ad7-a0bf-c094b5a9e006","name":"Issue active scope","environment":"server nhập tự do / URL","description":"Mô tả"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=d1fdb6aa-b56b-4ff7-a2bc-a70336577e8c, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_ADMIN]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#create(Authentication, long, Create)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 201
+    Error message = null
+          Headers = [X-Request-ID:"073cfbed-d351-4383-82a3-6bf570c51a4c", Location:"/api/v1/projects/216/features/201", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":201,"projectId":216,"name":"Issue active scope","environment":"server nhập tự do / URL","description":"Mô tả","archivedAt":null,"version":0,"createdAt":"2026-10-18T19:18:27.691453","updatedAt":"2026-10-18T19:18:27.691453","documentCount":0,"caseCount":0,"testedCaseCount":0,"progressPercent":0.0}
+    Forwarded URL = null
+   Redirected URL = /api/v1/projects/216/features/201
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/216/features/201/import-previews
+       Parameters = {_csrf=[MqmRmPM_FchNBIhiVjVdbJP-I0HcR-zGkvW9sZCayzMQSRxRVpHy-ZEKIfFgNbtUYhhpD_DPDiPqdN7ro8KP0qH5qgt2fC1p]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=cf152aa2-9028-4b25-bb18-5f3391dcdc3b, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"f59bdb6e-1534-4ee8-9414-3991906874a8", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":195,"featureId":201,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1068,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-195","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1069,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-195","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1070,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-195","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1071,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-195","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1072,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-195","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/216/features/201/import-previews/195/commit
+       Parameters = {_csrf=[xd7m20DHOjTXlTs6QOdxA0b2SgDCxy34mrp8cy7t9Kfr_FfOpL_Rvyb2WQT6olhecMpFNSCSZzmn8RzV-N5NRUyOxZLSnWL6]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=cf152aa2-9028-4b25-bb18-5f3391dcdc3b, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"c9d3e853-711f-42c6-aafa-cacacd9666ef", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":195,"projectId":216,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:27.793078Z","updatedAt":"2026-10-18T19:18:27.890734Z","updatedBy":"pma5be0acf","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":201,"featureName":"Issue active scope","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/216/features/201/import-previews
+       Parameters = {_csrf=[CCzYEv6Crvw17rh86YYFtUYzkVfJtKLSoR7n8onpXEdGKOUEaUrhJM-xyMUY2NtMiqsxg3BQvDWq0pH_xHjfy7vQPyVyGIc8]}
+          Headers = [Content-Type:"multipart/form-data;charset=UTF-8"]
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=cf152aa2-9028-4b25-bb18-5f3391dcdc3b, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#preview(Authentication, long, long, MultipartFile)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"4fa95be5-864b-42ca-a8e7-5665ca5f1dfc", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":196,"featureId":201,"fileName":"cases.xlsx","status":"PREVIEW","totalRows":5,"validRows":5,"errorRows":0,"format":"INTERNAL_V1","sheetName":"TestCases","rows":[{"id":1073,"rowNumber":2,"caseNo":"TC1","suiteCode":"XLSX-196","titleVi":"Title1","valid":true,"errorMessage":null},{"id":1074,"rowNumber":3,"caseNo":"TC2","suiteCode":"XLSX-196","titleVi":"Title2","valid":true,"errorMessage":null},{"id":1075,"rowNumber":4,"caseNo":"TC3","suiteCode":"XLSX-196","titleVi":"Title3","valid":true,"errorMessage":null},{"id":1076,"rowNumber":5,"caseNo":"TC4","suiteCode":"XLSX-196","titleVi":"Title4","valid":true,"errorMessage":null},{"id":1077,"rowNumber":6,"caseNo":"TC5","suiteCode":"XLSX-196","titleVi":"Title5","valid":true,"errorMessage":null}]}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/216/features/201/import-previews/196/commit
+       Parameters = {_csrf=[ysH7BB7cT7x1EQTvIIJRTciMlXWaA-liWISDblXrEdyaL8G3-6DNNi69eYhYKDbeQa9lda3uuBT5O4tPab2xCGaPILmuGPXT]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=cf152aa2-9028-4b25-bb18-5f3391dcdc3b, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#commit(Authentication, long, long, long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"47e6759a-d68e-41aa-bf1a-2fc43d2aa0b6", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":196,"projectId":216,"fileName":"cases.xlsx","sheetName":"TestCases","format":"INTERNAL_V1","totalRows":5,"caseCount":5,"createdAt":"2026-10-18T19:18:28.016303Z","updatedAt":"2026-10-18T19:18:28.150111Z","updatedBy":"pma5be0acf","hasSourceFile":true,"sourceCounts":{},"resultCounts":{"UNEXECUTED":5},"version":0,"archivedAt":null,"featureId":201,"featureName":"Issue active scope","documentCount":1,"testedCaseCount":0,"progressPercent":0.0,"canCreateIssue":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/projects/216/features/201/documents/196/archive
+       Parameters = {_csrf=[pkRD2b4i0vhcvaj5HbhVRBlJ_rtR9NFlQs4KfDQLCAQ-5ST7xHZ27YlAtplxiczLeJVhdHpw09plw7BIcvxpHgBvbTZc1UXI]}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"73"]
+             Body = {"expectedVersion":0,"requestKey":"f986f884-6196-42d7-b0f6-0276003fc84c"}
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=cf152aa2-9028-4b25-bb18-5f3391dcdc3b, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_PM]]]}
+
+Handler:
+             Type = vn.syp.tms.feature.FeatureController
+           Method = vn.syp.tms.feature.FeatureController#archiveDocument(Authentication, long, long, long, Version)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"73616990-f0cd-44f4-ab9c-4d5fb58187c4", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"id":196,"featureId":201,"version":1,"archivedAt":null,"archived":true}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/projects/216/issues
+       Parameters = {featureId=[201]}
+          Headers = []
+             Body = null
+    Session Attrs = {SPRING_SECURITY_CONTEXT=SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=SessionPrincipal[id=71af5cda-e1ab-4545-9623-ed2a8890616f, version=0], Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[ROLE_TESTER]]]}
+
+Handler:
+             Type = vn.syp.tms.workitem.FeatureIssueController
+           Method = vn.syp.tms.workitem.FeatureIssueController#list(Authentication, long, int, int, Long, Long, Long, String, String, String)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Request-ID:"49a10b50-c901-4d0a-84ab-935dc405471b", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"items":[{"id":86,"key":"AF-499e1c4c-3bbd-4d3d-9070-6fedd5e43f53","type":"BUG","title":"Monkey without document","description":"Fixture","status":"open","statusLabel":"Chưa xử lý","priority":"MEDIUM","assigneeMembershipId":901,"assignee":"aa5be0acf","version":0,"createdAt":"2026-10-18T19:18:28.265206Z","updatedAt":"2026-10-18T19:18:28.265206Z","createdByUserId":"cf152aa2-9028-4b25-bb18-5f3391dcdc3b","creator":"pma5be0acf","featureId":201,"featureName":"Issue active scope","documentId":null,"fileName":null,"rowId":null,"caseNo":null,"monkey":true,"deletedAt":null,"steps":"","expectedResult":"","actualResult":"","canEdit":false,"canDelete":false,"canAssign":false,"allowedStatuses":[],"canTransition":false,"canComment":true},{"id":84,"key":"AF-fd77e343-37ce-48ec-a707-d58c6e76647f","type":"BUG","title":"Active readable issue","description":"Fixture","status":"open","statusLabel":"Chưa xử lý","priority":"MEDIUM","assigneeMembershipId":901,"assignee":"aa5be0acf","version":0,"createdAt":"2026-10-18T19:18:28.237285Z","updatedAt":"2026-10-18T19:18:28.237285Z","createdByUserId":"cf152aa2-9028-4b25-bb18-5f3391dcdc3b","creator":"pma5be0acf","featureId":201,"featureName":"Issue active scope","documentId":195,"fileName":"cases.xlsx","rowId":null,"caseNo":null,"monkey":false,"deletedAt":null,"steps":"","expectedResult":"","actualResult":"","canEdit":false,"canDelete":false,"canAssign":false,"allowedStatuses":[],"canTransition":false,"canComment":true}],"totalItems":2,"page":0,"size":20,"totalPages":1}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+  </testcase>
+</testsuite>

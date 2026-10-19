@@ -1,0 +1,7 @@
+{
+  "mainOwnSession": "LOGOUT_CONFIRMED_LOGIN_SCREEN",
+  "previewOwnSession": "LOGOUT_PERFORMED_BEFORE_MAIN_CHECK",
+  "viewportOverride": "RESET",
+  "url": "http://localhost:5173/#/dashboard?workspace=1",
+  "notFoundRecovery": "RETURNED_TO_DASHBOARD"
+}

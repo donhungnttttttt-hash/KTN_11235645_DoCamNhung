@@ -1,0 +1,145 @@
+# Admin, authentication and project information — source audit
+
+Checkpoint 2026-10-19. Agent scope: login/session, Admin routes and editors, project information/members/devices/Note, shared selection/dialogs these use. Audit only; no application edits, tests, process changes, environment changes or database writes. Branch `system-design`, HEAD `caf075af7231f207259b6a62808bff5c8445f6af`; substantial existing uncommitted work retained. HEAD alone does not identify working-tree runtime. Root agent owns all live browser evidence.
+
+Every inventory row below is **SOURCE_REVIEW / BROWSER_NOT_RUN**. No viewport, zoom, touch, screen reader, contrast, screenshot or performance measurements were performed by this agent. All priorities are source-evidence priorities; none is labelled a browser-confirmed regression. Finding IDs AG-S01 etc. are local stable references for the root report to map to UX IDs.
+
+## Requirements and method
+
+Reviewed repository AGENTS/RTK, current FixReports clarification, execution guidance, development skills and latest planning/review checkpoints. In particular the final UI follow-up checkpoint says main was upgraded V30→V33 and 8080 restarted on 19/10, superseding its earlier stale-runtime diagnosis. That is historical evidence, not a new runtime claim. C07 retires coded retest workflow, C08 replaces old run/config gate with Feature, C09 requires globally unassigned member candidates and one PM receiving devices, C11 permits PM/Admin Note CRUD with project scope, C12 requires word AND search and Vietnam audit dates. PM AI global read must not broaden ordinary project CRUD. Admin retains full authority without membership.
+
+Skill → actual work → evidence:
+
+| Skill read | Actual application | Evidence in this checkpoint |
+| --- | --- | --- |
+| `code-review` | Compare complete routed components against current spec and existing tests, beyond current diff | Source map, AG-S01/S02, nonfindings below. User audit scope overrides fixed-diff and further-delegation defaults |
+| `frontend-patterns` | Trace request cancellation, project keys, version snapshots, retry and draft lifetimes | `useAdminRead`, AuthProvider, ProjectNotes; AG-S02/S04 |
+| `frontend-ui-engineering` | Inspect semantic forms, focus hook, popup keyboard handling, overflow and CSS breakpoints | Shared-primitives inventory and targeted browser queue; no measured WCAG claim |
+| `security-review` | Inspect login boundary, cookie API, CSRF writes and frontend/backend authorization around Notes/Admin | AuthBoundary/client, AdminOverviewService, NotesService, projectAccess; no pentest |
+| `api-design` | Compare Note version conflict and admin pagination/readiness contracts with UI behavior | AG-S01/S02 and request/state inventory |
+
+Skills read at `C:/Users/admin/.codex/skills/{code-review,frontend-patterns,frontend-ui-engineering,security-review,api-design}/SKILL.md`. No skill installation, issue creation or code implementation.
+
+## Route and UI inventory
+
+Paths are hash paths. Workspace routes use current selected project; project/query scope and identity preservation are also reviewed by root. `F/` below means `Frontend/src/app/features/`; `C/` means `Frontend/src/app/components/`. Each row's states are source-defined states plus states requiring runtime checks; presence in source does not prove usable rendered appearance.
+
+| Route/access and actor | Components/source | Main / secondary controls | Distinct states/variants to verify |
+| --- | --- | --- | --- |
+| Login at every protected route; all unauthenticated actors | `F/auth/AuthBoundary.jsx`, `AuthProvider.jsx`, `auth.css` | Username/password, reveal password, submit / support copy | Loading session; anonymous; expired same-account reauth; rejected login; pending; connection unavailable/retry; changed identity discards private tree; expiry while dialog open |
+| Header account popup; signed in ADMIN/PM/TESTER/DEV | `F/auth/AccountMenu.jsx` | Open account / logout | Long name, DEV fallback label, granted PM create-Tester hint; logout pending/error/retry; Escape and blur close |
+| `/admin` ADMIN | `F/admin/AdminApp.jsx`, `AdminLayout.jsx`, `AdminDashboard.jsx`, `MetricBars.jsx`, `shared.jsx` | Reload; project links / users, devices, attention links, workspace exit, logout, chat launcher | Global/scoped overview, 0 cases vs null metrics, empty projects/attention, unavailable inventory, API loading/error/retry, long project labels, 5 KPI cards |
+| Any Admin route PM/TESTER/DEV | `AdminApp.jsx` guard | Return to workspace | Explicit denial, no Admin child rendering; backend enforcement separate |
+| `/admin/projects` and `?projectId=...` ADMIN | `AdminProjects.jsx`, `shared.jsx` ProjectTable, AdminLayout project chooser | Create project; search; scope filter / paging; project links | All/scoped, search empty vs no projects, page boundaries, archived rows, API error/retry |
+| Create-project modal ADMIN | `AdminProjectForm.jsx` + `MemberPicker`, `InitialDevicePicker`, `AdminFormDialog` | Code/name/timezone/description; choose PM/members; optional devices/recipient/date/note; create / cancel, X, Escape | Required explicit PM, duplicate code, validation, partial server/network error draft, busy close lock; unassigned candidate search/role/page; selected/off-page counts; single PM receiving devices |
+| `/admin/projects/:id` ADMIN | `AdminProjectDetail.jsx`; summary exported in `AdminProjects.jsx` | Reload; edit; role save; remove/add members / lifecycle, reports, audit, held devices | Separate summary/management reads, not found/error/retry, empty members, disabled/legacy incompatible roles, role drafts, partial member save, archived project read-only |
+| Edit-project modal ADMIN | `AdminProjectForm.jsx` edit variant | Name/description/timezone; save / cancel, version refresh | Conflict with draft retained; current-version refresh; pending; no code/member/device controls in edit variant |
+| Member candidate picker create/detail ADMIN | `AdminProjectForm.jsx` MemberPicker, `ProjectRoleSelect.jsx`, `SelectionTable` | Server keyword/role; select row/all; draft role / page, selected-person removal, display selected/unselected | `unassignedOnly:true`, enabled-only; existing row disabled defensively; DEV-only compatible role; multi-page retained selection, empty/error/loading |
+| Archive/reopen preview modal ADMIN | `AdminProjectLifecycle.jsx`, hook | Reason + confirm / cancel/Escape, refresh keeping reason, uncertain same-key retry | Readiness loading/error; blockers; nonblocking publication warnings; changed version, 403, 422, uncertain network result; archived/reopen; pending drafts disable opening |
+| Lifecycle history expansion ADMIN | `AdminProjectLifecycle.jsx` DecisionList | Expand / previous/next, retry | Empty, paginated, read error; long reason and actor; local-time formatting |
+| Legacy PM status-report history in Admin project detail | `ProjectStatusReports.jsx`, `status-reports.css` | Read history / paging, Analysis link | No creation in this old history panel; empty/error, deadlines/insufficient scope, long narrative |
+| `/admin/users` ADMIN | `AdminUsers.jsx`, shared project chooser/TableScroll | Create; keyword/role/status/project filters; lock/unlock; PM create-Tester grant/revoke / paging | Self-lock disabled with reason; empty; pending/error/success, stale version, user with many memberships |
+| Create-account modal ADMIN | private UserForm in `AdminUsers.jsx` | Username/display name/password/role; save / cancel/X/Escape | ADMIN/PM/TESTER/DEV choices; username pattern; min password 12; duplicate/validation/network response; draft retained on error and removed on success |
+| `/admin/devices[?projectId=...]` ADMIN | `AdminDevices.jsx`, `DeviceAssetForm.jsx`, `DeviceAllocationDialog.jsx` | Import machine; edit; handover; return / reload, project/history/search/condition filters, paging | Asset list vs allocation-history columns; available/allocated/maintenance/retired; empty/error; async return lookup; scoped current inventory and scoped history |
+| Create/edit machine modal ADMIN | `DeviceAssetForm.jsx`, AdminFormDialog | Asset code/model/type/serial/OS/condition/notes; save / cancel/version reload | New vs existing; allocated is computed, not editable condition; required asset/model; duplicate; conflict; latest status notice; long notes |
+| Assign-device modal ADMIN | `DeviceAllocationDialog.jsx` assign variant | Search/select project, PM, return date, note; confirm / cancel/version reload | No project, members loading/error/retry, active PM only, no PM, unavailable asset conflict, invalid date, pending/error |
+| Return-device modal ADMIN | `DeviceAllocationDialog.jsx` return variant | Return condition/note; confirm / cancel/version reload | Existing allocation context, already returned/concurrent version, optional note, pending/error |
+| Allocation table current/history | `AdminDevices.jsx` AllocationTable | Return only open allocation / horizontal region | Project/recipient, assigned/returned dates/actors, due date and notes; long labels, all table columns; history returned records readonly |
+| `/admin/audit[?projectId=...]` ADMIN | `AdminAudit.jsx`, shared project dropdown/TableScroll | Project; multiword keyword; from/through dates / reload and paging | Inclusive Vietnam day, global events only all-project scope; empty/error; reversed range; human-readable label fallbacks; no type/timezone selectors |
+| `/admin/ai` ADMIN | `AdminApp.jsx` → RetiredAiEntry | Chat configuration entry/retirement information | No old AI sidebar item; actual chat/config runtime covered by root/AI scope |
+| Unknown `/admin/...` ADMIN | `AdminApp.jsx` fallback | Return overview | Explicit missing-page copy; scope link |
+| Workspace project chooser all signed-in actors | `F/projects/ProjectSelector.jsx`, `projects.css` | Choose project / Admin create-project link | Loading, fetch error/retry, no projects, archived project marker, long names; Escape/blur/backdrop; new project link goes to Admin list |
+| `/settings` project readers, PM/Admin edits only active project | `ProjectSettingsPage.jsx` General, `projectAccess.js` | Name/description/timezone save / explicit information reload after error | No project, initial read loading/error; readonly member/archived; 409 keeps draft; reload replaces draft; save then provider refresh failure; whitespace validation |
+| `/settings/members` project readers | `ProjectMembers.jsx`, `ProjectDevices.jsx` | Read member roles/devices / Admin centralized membership link and machine actions | Empty/read error; ADMIN link; PM/TESTER/DEV read-only member list; no member-level machine reallocation |
+| Project-held machines in settings and Admin detail | `ProjectDevices.jsx` | Admin supplement/return devices / inventory link, paging | Admin/nonadmin endpoints; archived blocks supplement; no allocations, last page shrinks after return, API retry |
+| Supplement-machines modal ADMIN | `ProjectDeviceAssignDialog.jsx`, InitialDevicePicker | Select machines; one active project PM; handover / cancel, Admin members/inventory links | Members loading/error/no PM; stock loading/error; missing recipient; selected-machine stale version; partial success keeps remaining machines with identified failure |
+| `/settings/notes` project readers | `ProjectNotes.jsx`, `project-notes.css` | Read; PM/Admin add/edit/delete-soft / reload, paginated list | Empty/loading/error; title/body plain text; max lengths; create/edit; inline remove confirm; version conflict; same-project capability loss; old project response cancelled; last-page recovery |
+| Inline Note editor PM/Admin active project | `ProjectNotes.jsx` | Title/body/save / cancel | New/edit, whitespace, long Unicode and literal HTML, pending, save error and version conflict, reload while editing, focus return |
+| Inline Note delete confirmation PM/Admin | `ProjectNotes.jsx` role group | Confirm removal / keep Note | No request before confirmation; 409 retains note; success refresh; simultaneous paging/refresh can dismiss visual confirmation |
+| `/settings/rules` reachable sidebar, project readers/PM/Admin write | `RulesPanel.jsx` | Create internal ruleset; source/title prefix/save draft; publish / retry, native confirm | Absent ruleset, draft/published/active history, DEMO disclaimer, errors, versions list; stale old-workflow instructions AG-S03 |
+| `/settings/handbook` reachable sidebar, project readers/PM/Admin write | `HandbookPanel.jsx` | Choose item; new document/add revision/save / cancel, list/detail retry, revision history details | Empty/list/detail error; new vs revision editor; archived item; plain-text HTML; conflict; long history; keyboard focus insertion risk |
+| `/settings/catalogs` compatibility URL | `AppRouter.jsx` retirement block | Open Note | No live catalog editor; old CatalogPage/CatalogEditor are not active via router |
+| Rules/handbook/member editor legacy exported components | `ProjectMembers.jsx` private MemberEditor; CreateProjectDialog.jsx | Component-only variants | `ProjectMembers canEdit` editor exists/tested but routed settings always passes false; old CreateProjectDialog has no active caller from ProjectSelector. Do not count these as active product paths |
+
+## Shared primitives and style coverage
+
+| Primitive | Instances and controls | Source assessment / runtime queue |
+| --- | --- | --- |
+| `AdminFormDialog.jsx` + `hooks/useDialogFocus.js` | Project/user/device/supplement dialogs, X, focus heading, Escape, Tab wrap, body scroll lock, trigger restore | Source has named modal, disabled close while busy, responsive bounded body. Dirty dismissal risk AG-S04. Real nested dropdown/keyboard/short viewport still untested |
+| `AdminUserProjectFilter.jsx` + `AdminProjectDropdown.jsx` | Admin project scope, user project, device recipient project, audit project | Search debounce 250ms; server pages of 100; stale-response exclusion; selection not changed by typing; combobox/listbox arrows/Home/End/Enter; Escape/outside/blur. Popup uses role dialog without explicit aria-modal=false, and modal hook treats every such dialog as modal: inspect nested keyboard behavior, do not claim confirmed trap bug |
+| `SelectionTable.jsx`, `SelectPageCheckbox.jsx` | Member/available-device pickers; visible/all/selected/unselected | Eligible visible-row bulk semantics and retained off-page IDs present. Checkbox mixed state set; named region; counts aria-live. SelectionTable wraps long text; real coarse input and 320px role column need browser |
+| `TableScroll.jsx`, `table-scroll.css` | All wide Admin/member/allocation tables | ResizeObserver horizontal affordance, labelled focusable scroll region; per-table min-width (Admin project1100, inventory760, generic820/member520). Only source dimensions, not measured widths |
+| `shared.jsx` useAdminRead/ReadState | Admin reads/project devices | Key mismatch hides old data immediately, abort + live guard, explicit error/retry; source has no mock fallback |
+| `projectAccess.js` | General, Note, Rules, Handbook | Active project PM or ADMIN can manage; ADMIN doesn't require membership; DEV cannot inherit PM editing; archived disallows writes |
+| Auth API client and boundary | All protected workflows | Same-origin cookie transport; CSRF fetch before mutations; 401 locks app; hidden/inert retained draft tree keyed by user ID. No credential browser storage in inspected code/tests |
+| CSS | admin.css, projects.css, project-notes.css, auth.css, selection-table.css | Source breakpoints 1100/768/640/600/480/400/390; sticky Admin menu capped40dvh mobile; modal24px→12px padding; coarse controls44px. No contrast/WCAG/performance conclusion without measuring. Auth spinner reduced-motion behavior not verified against global CSS |
+
+## Findings and source risks
+
+### AG-S01 — P1 data-state/interaction: legacy workflow records still block project archive
+
+**Status:** SOURCE_CONFIRMED conditional blocker; BROWSER_NOT_RUN. No claim that current main project has a particular blocker, and no regression claim.
+
+**Evidence:** `Backend/src/main/java/vn/syp/tms/admin/ProjectLifecycleService.java:35` counts doing/paused file sessions, `:40` counts active/draft-with-runs cycles and `:41` counts OPEN retest requests as mandatory blockers. `:47` canArchive depends on *all* blockers being empty; `:71` enforces server rejection. `Frontend/src/app/features/admin/AdminProjectLifecycle.jsx:8–11` tells users to finish old file sessions/cycles/retests. `Frontend/src/app/routes/AppRouter.jsx:43` retires the `/tests` tree, so those old controls are no longer reachable there. New clarification C07 explicitly removes coded retest and requires remaining old backend gates to be checked; Feature workflow supersedes cycles/runs.
+
+**Reproduction:** on isolated fixture with one old OPEN retest (or ACTIVE cycle/session), open Admin → project detail → Kiểm tra lưu trữ. Existing main can be inspected read-only for such blockers; do not create records or submit archive on main. Observe blocker and disabled confirm; attempt suggested old `/tests/...` navigation to see retirement copy. Expected: archived legacy records are preserved, but lifecycle has an explicit current-workflow path for legitimate outstanding work and cannot require removed UI steps. Actual source: blocker persists until legacy DB/workflow state changes. Impact: legitimate Admin archive can be unreachable. Severity P1 is conditional on such records; otherwise source risk requiring fixture/native validation.
+
+**Fix direction:** align archive readiness with current Feature/Issue model; distinguish historical legacy outstanding records and current actionable work. Define handling in migration/policy without deleting history or bypassing real unfinished issues/devices/permissions. Tests: isolated old-record/current-feature fixtures, Admin without membership, archive/reopen idempotency/concurrency; browser blocker navigation and successful archive in disposable fixture.
+
+### AG-S02 — P2 data-state: Note conflict has no draft-preserving version recovery
+
+**Status:** SOURCE_CONFIRMED transition defect; BROWSER_NOT_RUN.
+
+**Evidence:** `ProjectNotes.jsx:29` captures original note in editor. `:42` always sends `editor.note.version`. `:46` Tải lại Note increments list revision only; list effect updates data, never editor.note. `:61` edit triggers are disabled while editor exists. `Backend/.../notes/ProjectNotesService.java:34` validates current version; stale version stays409. Existing test `ProjectNotes.test.jsx` “keeps edited text and displayed version on conflict” verifies retention then cancels; it does not cover recovery after reload.
+
+**Reproduction (fixture/two clients only):** PM1 opens Note v3 and edits draft; PM2 saves v4; PM1 Save receives409; PM1 clicks Tải lại Note, waits, then Save again. Expected: compare latest text/version and explicitly retry while preserving draft. Actual source: repeated save still sends v3; the available escape is cancel/reopen, which clears draft (or manually copy/paste elsewhere). No silent overwrite; server conflict protection remains correct. Impact: avoidable work loss/repeated failure on shared Note editing.
+
+**Fix direction:** provide explicit compare/reload-current-version with draft retention, require review before retry, explain externally deleted Note; never automatically replace expectedVersion just to force overwrite. Acceptance: edit conflict → read latest → review current and draft → save once with chosen latest version; errors preserve both; delete conflict separately; same-project role loss/project switch still block late updates.
+
+### AG-S03 — P2 content/spec-gap: visible Rules screen still teaches the superseded configuration/run model
+
+**Status:** SOURCE_CONFIRMED visible copy and generated policy payload; BROWSER_NOT_RUN. Not proof new Issue backend enforces those fields.
+
+**Evidence:** `C/Sidebar.jsx:22–23` includes Rules/Handbook in Thông tin chung. `AppRouter.jsx:55` routes both. `F/projects/RulesPanel.jsx:5` and `:30` construct mandatory buildId/environmentId/deviceId fields; `:34` says build, environment and device mandatory and “Liên kết case/lần chạy và ngoại lệ PM ... đã chốt”. C08 allows free-text Feature environment and removes mandatory old configuration; C07 removes coded retest/run workflow. The DEMO disclaimer remains, so this is misleading current guidance rather than a claim that customer rules are deployed.
+
+**Reproduction:** any project reader → Thông tin chung → Quy tắc báo lỗi; read required-fields paragraph. PM/Admin additionally sees draft/publish controls. Do not publish on main. Expected: current guidance clearly applies to current Bug/QA/Feature flow, and preserved legacy policy history is labelled historical/read-only where no longer applicable. Actual: old model is described as currently settled and new drafts reproduce its obsolete fields. Impact: users prepare unnecessary build/device data or misinterpret current bug creation. Fix: reconcile current help and writable policy UI with retained historical policy scope; do not restore old workflow. Acceptance: menu/deep link, reader/PM/Admin, historical version labels and current issue form expectations agree.
+
+### AG-S04 — P2 interaction risk: Escape/X/cancel silently discard complex modal drafts
+
+**Status:** SOURCE_RISK from this agent; root reports browser reproduction of project create draft loss after Escape→reopen, including text `UX audit draft - do not save`, and a usable320px create-project layout. Root owns screenshot/runtime evidence. Frame the finding around expensive long-form draft loss, rather than claiming every ordinary Escape/cancel is a violation. Other modal variants remain BROWSER_NOT_RUN here.
+
+**Evidence:** `AdminFormDialog.jsx:8` passes unconditional close into `useDialogFocus`; `useDialogFocus.js:43–45` closes immediately on Escape unless busy. Project/user/asset/handover parent close handlers unmount form state; no dirty comparison, confirmation or retained draft. More costly variant: create project includes member choices, device choices and handover notes. Busy mutations *are* protected.
+
+**Reproduction:** Admin project list → create → enter code/name, choose members (no Save), Escape or X, reopen. Check text/selections reset and whether any warning exists. Expected improvement: explicit discard/keep when draft is nonempty or retain draft for reopen; preserve clear quick close for pristine dialog. Actual source: reset with no prompt/retention. Scope: AdminProjectForm, UserForm, DeviceAssetForm, DeviceAllocationDialog, ProjectDeviceAssignDialog. Acceptance: pristine close fast; dirty Escape/X prompts or retains; busy close lock and focus return remain.
+
+## Targeted browser queue / unresolved risks
+
+1. Inspect AG-S01 using read-only readiness modal on existing projects. Do not submit. Fixture needed to prove old records independently block an otherwise complete current project.
+2. Open current Rules menu, read stale paragraph (AG-S03), screen at390/1440 if practical. No publish.
+3. Reproduce dirty Escape with text only (AG-S04), including create-project wide dialog and narrow machine editor. Capture before/after state, no backend mutation.
+4. Handbook existing-document → Thêm phiên bản: revision editor inserts above the document list; unlike new document, its fields have no autoFocus. Trigger disappears because detail canEdit becomes false. Verify focused element/Tab/scroll, especially long list/short viewport; source suggests focus loss but no browser claim. Existing Add document branch has autoFocus.
+5. Device handover project dropdown nested in Admin modal: inspect Arrow keys/Enter/Escape, Tab/Shift+Tab and focus return at320/390/768/1440 and short viewport. Dropdown dialog lacks explicit nonmodal flag; outer modal focus hook skips when any later role=dialog exists. Verify rather than infer trap failure.
+6. Admin narrow sticky horizontal menu must remain usable alongside page scroll; table region horizontal scroll should not widen page; long names/notes/serials need actual sample. CSS breakpoints alone are insufficient evidence.
+7. Auth loading/unavailable/expired retain drafts but hide/inert app. Test keyboard and nested dialog on fixture expired session; do not change production credentials. Verify username labels, password toggle, rejected-login focus/error and logout retry. Do not claim screen-reader compatibility from ARIA source alone.
+8. Last allocation page return can leave page empty because ProjectDevices/AdminDevices do not clamp after count shrinks (unlike Notes); requires disposable fixture. Existing Previous control recovers, so potential P2/P3 confusion, not total blocker.
+9. General save succeeds then refreshProjects fails: source leaves success notice plus refresh error; check how a user distinguishes persisted save from failed navigation refresh. No confirmed misreport because success notice is already present.
+
+## Existing evidence read, not re-executed
+
+Read whole implementations named in inventory (except backend enforcement beyond named focused services), matching current CSS and these full test files: auth/auth.test.jsx; admin/fixreports-members.test.jsx, fixreports-handover.test.jsx, fixreports-audit.test.jsx, admin-management.test.jsx, admin-dialog.test.jsx, admin-member-feedback.test.jsx, project-picker.test.jsx, AdminProjectLifecycle.test.jsx; projects/settings.test.jsx and ProjectNotes.test.jsx. The tests demonstrate intended coverage and fixture seams, not current PASS. Additional test files exist (inventory, routing, role compatibility, device focus, action buttons, selection, native/security suites); this agent did not reread or rerun all of them. No coverage percentage measured. Root may add independent suite/browser results.
+
+Nonfindings after contract checks: Admin percentages use `ReportMetrics` rounded to2 decimals (no raw-double defect from ManagementAnalysis transferred to Admin). New member picker sends globally unassigned filter, not just current-project exclusion. Handover recipients filter active PM and no member distribution UI in routed flow. Current Note/handbook content renders literal text, not HTML. Backend Notes checks project read/write scope and version; frontend role visibility is not treated as backend proof. Wide tables have explicit focusable scroll regions. No source finding of ADMIN accidentally requiring project membership in the inspected access helper.
+
+Timestamp follow-up requested by root: apparent Admin-user02:08 display at09:24 current local time is **not a confirmed timezone defect**. Fixture manifest `var/fixreports-2026-10-19/browser-fixture.json:6` says startedAt `2026-10-18T19:08:04.961594200Z`; filesystem creation UTC matches. Fixture creates new identities via `FixReportsBrowserFixtureTest.java:139`, with `IdentityUser.java:27` using Instant.now. Vietnam time at creation is02:08 on19/10, matching root's visible02:08:05. `AdminProjectService.java:76` returns createdAt via `WorkItemStore.java:24` (UTC conversion), and AdminUsers renders browser locale. No finding promoted; no fixture credentials reproduced in report.
+
+## Proposed repair order (no implementation performed)
+
+| Order | Finding / files | Target and skill application | Dependencies, risk and acceptance |
+| --- | --- | --- | --- |
+| 1 | AG-S01 LifecycleService/AdminProjectLifecycle/router tests | Current-workflow readiness policy; `api-design` + `security-review` + behavior TDD | Clarify historical/current blockers from existing C07/C08, not reopen business decision. Risk archive bypass. Isolated legacy/current fixtures + archive/reopen concurrency/idempotency/security, disposable browser journey |
+| 2 | AG-S02 ProjectNotes/service conflict tests | Explicit comparison/retry retaining draft; `frontend-patterns`, `frontend-ui-engineering`, API review | Depends on existing get/version API; risk lost updates. 409→fetch latest→review→save, deleted-note branch, role/project switch cancellation |
+| 3 | AG-S03 RulesPanel/Sidebar/help/spec | Current vs legacy policy wording and controls; `code-review` spec axis, UI content review | Preserve history, no new mandatory fields or restored run gate. Deep link/menu + read/write roles + payload tests |
+| 4 | AG-S04 shared modal dirty policy; Handbook focus if reproduced | `frontend-ui-engineering` keyboard lifecycle, `frontend-patterns` draft ownership | Inventory per-form dirty state before shared change. Risk nested Escape/busy close regression. Keyboard/return focus and pristine/dirty/pending variants at narrow/short viewport |
+| 5 | Responsive/copy finish only after measurements | Relevant scoped CSS and TableScroll | Root measured evidence first; no blanket global CSS redesign. Recheck all structurally distinct dialog/table variants, not one button sample |
+
+Completeness: this is an explicit source checkpoint with browser gaps, not a claim the entire application or every role/state/viewport has passed. No aesthetic score, external customer links accessed, secrets copied or product source changed.

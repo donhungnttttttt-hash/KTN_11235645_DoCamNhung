@@ -1,0 +1,21 @@
+{
+  "invalidMigrations" : [ {
+    "code" : "APPLIED_VERSIONED_MIGRATION_NOT_RESOLVED",
+    "version" : "20"
+  }, {
+    "code" : "APPLIED_VERSIONED_MIGRATION_NOT_RESOLVED",
+    "version" : "22"
+  }, {
+    "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED",
+    "version" : "31"
+  }, {
+    "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED",
+    "version" : "32"
+  }, {
+    "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED",
+    "version" : "33"
+  } ],
+  "validationSuccessful" : false,
+  "overallCode" : "VALIDATE_ERROR",
+  "validatedMigrationCount" : 0
+}

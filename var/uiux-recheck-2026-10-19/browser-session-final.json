@@ -1,0 +1,7 @@
+{
+  "mainOwnSession": "LOGOUT_CONFIRMED",
+  "isolatedOwnSession": "LOGOUT_CONFIRMED",
+  "viewportOverride": "RESET",
+  "domainWrites": 0,
+  "liveProviderCalls": 0
+}

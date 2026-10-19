@@ -1,0 +1,33 @@
+{
+  "exitCode": 2,
+  "diagnostics": [
+    "FixReports.md:1: trailing whitespace.",
+    "FixReports.md:3: trailing whitespace.",
+    "FixReports.md:5: trailing whitespace.",
+    "FixReports.md:7: trailing whitespace.",
+    "FixReports.md:9: trailing whitespace.",
+    "FixReports.md:11: trailing whitespace.",
+    "FixReports.md:13: trailing whitespace.",
+    "FixReports.md:15: trailing whitespace.",
+    "FixReports.md:17: trailing whitespace.",
+    "FixReports.md:21: trailing whitespace.",
+    "FixReports.md:25: trailing whitespace.",
+    "FixReports.md:27: trailing whitespace.",
+    "FixReports.md:29: trailing whitespace.",
+    "FixReports.md:31: trailing whitespace.",
+    "FixReports.md:35: trailing whitespace.",
+    "FixReports.md:41: trailing whitespace.",
+    "FixReports.md:43: trailing whitespace.",
+    "FixReports.md:47: trailing whitespace.",
+    "FixReports.md:49: trailing whitespace.",
+    "FixReports.md:51: trailing whitespace.",
+    "FixReports.md:69: trailing whitespace.",
+    "FixReports.md:73: trailing whitespace.",
+    "FixReports.md:76: trailing whitespace.",
+    "FixReports.md:82: new blank line at EOF.",
+    "Frontend/src/app/features/testing/testing.css:52: new blank line at EOF."
+  ],
+  "unexpected": [],
+  "requirementsOriginalPreserved": true,
+  "decision": "Preserve verbatim user requirements and verified source. Staged warnings are limited to original markdown trailing spaces and one CSS EOF blank; no product change made for commit."
+}

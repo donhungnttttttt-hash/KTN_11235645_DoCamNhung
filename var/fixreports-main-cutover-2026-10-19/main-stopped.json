@@ -1,0 +1,22 @@
+﻿{
+    "stoppedAt":  "2026-10-19T02:04:43.3815912Z",
+    "approval":  "Explicit user authorization: upgrade main tms V30 to V33 and restart8080",
+    "stoppedPid":  7016,
+    "parentPid":  6456,
+    "port":  8080,
+    "otherListenersUnchanged":  [
+                                    {
+                                        "LocalPort":  5173,
+                                        "OwningProcess":  2364
+                                    },
+                                    {
+                                        "LocalPort":  5174,
+                                        "OwningProcess":  26384
+                                    },
+                                    {
+                                        "LocalPort":  8081,
+                                        "OwningProcess":  27536
+                                    }
+                                ],
+    "noOtherProcessStopped":  true
+}

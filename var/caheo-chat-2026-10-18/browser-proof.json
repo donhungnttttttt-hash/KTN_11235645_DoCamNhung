@@ -1,0 +1,24 @@
+{
+  "immediate": {
+    "inputValue": "",
+    "pendingVisible": true,
+    "questionVisible": true,
+    "sendDisabled": true
+  },
+  "afterReopen": {
+    "answerText": "Xin chào! Tôi có thể giúp gì cho bạn?",
+    "inputValue": "Tin tiếp theo chưa gửi",
+    "questionCount": 1,
+    "sendDisabled": false
+  },
+  "ready": {
+    "answerText": "Xin chào! Tôi có thể giúp gì cho bạn?",
+    "errorCount": 0,
+    "inputValue": "",
+    "questionCount": 1,
+    "viewport": {
+      "height": 730,
+      "width": 1536
+    }
+  }
+}

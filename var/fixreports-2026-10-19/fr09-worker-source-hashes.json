@@ -1,0 +1,6 @@
+{
+  "Backend/src/main/java/vn/syp/tms/ai/FeatureFacts.java": "3ae84d8c2c986bc188295df57f6e628dd593f4119ddff41553b747e5b2404c20",
+  "Backend/src/main/java/vn/syp/tms/ai/AiPortfolioContext.java": "ebdadff32498f53e943811d8dc77890cc4d952764c45e5848ed6996330309b6c",
+  "Backend/src/test/java/vn/syp/tms/testcase/FeatureAiIntegrationTest.java": "54b8c467b4c1f024288a11bde8a41c38e7a1f62a901b66f0786008c2ac4791a9",
+  "Backend/src/test/java/vn/syp/tms/ai/AiPortfolioContextTest.java": "e58ca6756048a8817c46a157f668160d7bd3c5a564992526018d11f74387a7b5"
+}

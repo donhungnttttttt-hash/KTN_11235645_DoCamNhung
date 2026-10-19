@@ -1,0 +1,17 @@
+{
+  "backdropPosition": "static",
+  "bodyOverflow": "hidden",
+  "dialogClass": "d-modal wide  ",
+  "dialogPosition": "static",
+  "dialogRect": {
+    "bottom": 686.6000061035156,
+    "height": 858.2000122070312,
+    "left": 241.1999969482422,
+    "right": 372.3999938964844,
+    "top": -171.60000610351562,
+    "width": 131.1999969482422,
+    "x": 241.1999969482422,
+    "y": -171.60000610351562
+  },
+  "insideGrid": true
+}

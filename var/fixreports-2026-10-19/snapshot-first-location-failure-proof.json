@@ -1,0 +1,8 @@
+{
+  "schema" : "tms_docstest_4106ddac5f8d",
+  "backupSha256" : "dd945970478c48c4eb550fdda6fa2b0ade9b19d162b1556c6a31a674ad386f73",
+  "mainUntouched" : true,
+  "mainUntouchedBasis" : "Only exact isolated-schema JDBC URL admitted; no main connection opened; backup provenance hash checked by dedicated runner",
+  "status" : "FAIL",
+  "failure" : "UNEXPECTED_FlywayValidateException"
+}

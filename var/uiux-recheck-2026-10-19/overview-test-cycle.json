@@ -1,0 +1,17 @@
+{
+  "dateLocal": "2026-10-19",
+  "red": {
+    "command": "rtk proxy npm.cmd test -- src/app/modules/ProjectOverview.layout.test.jsx",
+    "exitCode": 1,
+    "testsFailed": 5,
+    "reason": "Current route replaces entire overview with project article; missing dashboard heading, status/milestone sections, read/retry/scope behavior"
+  },
+  "firstGreen": {
+    "command": "rtk proxy npm.cmd test -- src/app/modules/ProjectOverview.layout.test.jsx src/app/modules/ProjectOverview.test.jsx src/app/modules/ProjectOverview.permissions.test.jsx",
+    "testsPassed": 10,
+    "filesPassed": 3,
+    "exitCode": 0,
+    "coverage": "NOT_MEASURED"
+  },
+  "scope": "Component/API-boundary tests with mock network and real overview/project-information rendering; browser verification separate"
+}

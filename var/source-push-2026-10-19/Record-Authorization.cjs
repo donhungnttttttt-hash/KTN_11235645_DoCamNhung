@@ -1,0 +1,15 @@
+const fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'../..');
+const p=path.join(root,'docs/planning/STATUS.json'),raw=fs.readFileSync(p,'utf8'),s=JSON.parse(raw);
+const old=s.currentBranchPushRequest;
+const entry={date:'2026-10-19',branch:'system-design',authorization:'User explicitly requested committing all current source changes and pushing the current branch after completion. This authorizes this handover only; no merge/deploy or permanent push authorization.',scope:'All current tracked and new application source, tests, migrations, scripts, repository requirements and documentation outside var. Keep local credentials, database copies, build outputs, logs and raw var evidence at the workstation. Historical no-push and verification snapshots remain historical.',verification:'Frontend final frozen source:1100/1100 tests in120 files and build exit0; current hashes match all320 verified source/config files. Existing backend/native results remain in the FixReports review; no new backend tests run solely for commit. S11/FR-12 IN_REVIEW and UAT gaps unchanged.',remote:'origin/system-design',resultLocation:'Git commit history and origin/system-design after push; authorization entry does not itself assert push success.'};
+const needle=JSON.stringify(old,null,2).replace(/\n/g,'\n  ');
+if(!raw.includes(needle))throw Error('Current push-request formatting differs; inspect before editing.');
+const next=raw.replace(needle,JSON.stringify(entry,null,2).replace(/\n/g,'\n  '));
+const parsed=JSON.parse(next);parsed.currentBranchPushRequest=old;
+if(JSON.stringify(parsed)!==JSON.stringify(s))throw Error('Unexpected status data change');
+fs.writeFileSync(p,next);
+const r=path.join(root,'docs/planning/README.md'),readme=fs.readFileSync(r,'utf8'),heading='# Kế hoạch phát triển theo sprint\n';
+if(!readme.startsWith(heading))throw Error('Unexpected README heading');
+fs.writeFileSync(r,heading+'\nYêu cầu bàn giao 19/10: người dùng cho phép commit toàn bộ thay đổi source hiện tại và push `system-design`. Phạm vi gồm backend/frontend, tests, migration, scripts và tài liệu; giữ `var/` (log, dữ liệu/bằng chứng thô, file tạm) ở máy local. Báo cáo có tóm tắt kiểm chứng trong Git; đường dẫn bằng chứng `var/` chưa được xuất bản cùng source. Không merge/deploy; FR-12/S11 vẫn IN_REVIEW. Các ghi chú chưa commit/push bên dưới là snapshot trước yêu cầu bàn giao này.\n'+readme.slice(heading.length));
+console.log('Recorded explicit commit/push authorization; existing status values preserved.');

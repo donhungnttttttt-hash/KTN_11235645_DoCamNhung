@@ -1,0 +1,9 @@
+{
+  "viewportReset": true,
+  "loggedOutOwnAdminSession": true,
+  "closedFinalTab": true,
+  "domainWrites": 0,
+  "liveAiCalls": 0,
+  "authAuditEventsExpected": true,
+  "staleTabCleanup": "Tool could not explicitly close detached old tabs; no tab marked for retention."
+}

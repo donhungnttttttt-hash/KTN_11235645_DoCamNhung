@@ -1,0 +1,47 @@
+﻿[
+    {
+        "id":  "D1",
+        "file":  "Bản gốc.docx",
+        "sha256":  "104C09605032A7C3946B8022613BAF4465D75403A3408D7A686496576E6AA950",
+        "paragraphs":  2484,
+        "tables":  40,
+        "images":  72,
+        "characters":  134702
+    },
+    {
+        "id":  "D2",
+        "file":  "Chương 3 (backup trước khi sửa).docx",
+        "sha256":  "EFE4BF8B19F41E99B8CCD931ECE84E93F9A4CB740E1BA6041CAF6FA966467DB7",
+        "paragraphs":  323,
+        "tables":  1,
+        "images":  13,
+        "characters":  34800
+    },
+    {
+        "id":  "D3",
+        "file":  "Chương 3 (hoàn chỉnh).docx",
+        "sha256":  "33B7CCB32276153D74E84EC41CF80E9D190F00CD4F712FEB537184B87EBE2DED",
+        "paragraphs":  2272,
+        "tables":  46,
+        "images":  13,
+        "characters":  145358
+    },
+    {
+        "id":  "D4",
+        "file":  "Chương 3.docx",
+        "sha256":  "EFE4BF8B19F41E99B8CCD931ECE84E93F9A4CB740E1BA6041CAF6FA966467DB7",
+        "paragraphs":  323,
+        "tables":  1,
+        "images":  13,
+        "characters":  34800
+    },
+    {
+        "id":  "D5",
+        "file":  "QUy trình.docx",
+        "sha256":  "429FC9272E80D27FAEBC1914B00144F3953B3B7771FB46A010F99C1A60D76352",
+        "paragraphs":  33,
+        "tables":  0,
+        "images":  0,
+        "characters":  6419
+    }
+]

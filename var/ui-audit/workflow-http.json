@@ -1,0 +1,28 @@
+[
+  {
+    "projectId": 3,
+    "documents": 4,
+    "documentIds": [
+      15,
+      14,
+      13,
+      12
+    ],
+    "cases": 252,
+    "groups": 0,
+    "canReadAll": true,
+    "canCreate": false
+  },
+  {
+    "projectId": 5,
+    "documents": 2,
+    "documentIds": [
+      10,
+      9
+    ],
+    "cases": 88,
+    "groups": 2,
+    "canReadAll": true,
+    "canCreate": false
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "capturedAt": "2026-10-18T19:47:12.269Z",
+  "branch": "system-design",
+  "baselineFiles": 53,
+  "missingBaseline": [],
+  "newFilesChecked": 104,
+  "newFileWhitespace": [],
+  "documentsChecked": 5,
+  "localLinksChecked": 46,
+  "tablesChecked": 17,
+  "linkFailures": [],
+  "tableFailures": [],
+  "trackedAppliedMigrationsChanged": [],
+  "notAFullSecretScan": true
+}

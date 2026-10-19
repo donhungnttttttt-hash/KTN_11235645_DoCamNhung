@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: vn.syp.tms.testcase.FeatureLegacyRetirementIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.580 s -- in vn.syp.tms.testcase.FeatureLegacyRetirementIntegrationTest

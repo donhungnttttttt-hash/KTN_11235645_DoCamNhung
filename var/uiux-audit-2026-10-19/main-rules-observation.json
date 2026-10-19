@@ -1,0 +1,12 @@
+{
+  "source": "Manual audit note of directly observed CUA DOM snapshot; not an automated HTTP or screenshot receipt",
+  "dateLocal": "2026-10-19",
+  "url": "http://localhost:5173/#/settings/rules?projectId=1&workspace=1",
+  "actor": "Existing main ADMIN",
+  "state": "Existing INTERNAL_DEMO ruleset; current version absent; add-version editor visible",
+  "observedText": "Các trường bắt buộc: tiêu đề, bước tái hiện, kết quả mong đợi/thực tế, bản build, môi trường, thiết bị. Liên kết case/lần chạy và ngoại lệ PM giữ theo quy định nội bộ đã chốt.",
+  "sourceLabel": "ADR-006 — Quy tắc bug nội bộ",
+  "mainDomainWrites": 0,
+  "publicationPerformed": false,
+  "scopeCorrection": "This paragraph is editable PM/Admin existing-ruleset state, not every reader or empty-ruleset state"
+}

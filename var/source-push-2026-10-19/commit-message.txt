@@ -1,0 +1,15 @@
+feat: integrate feature testing, project AI and UI refinements
+
+Add Feature-owned test files and assignments, linked Bug/QA workflows,
+project notes, management reports and the associated V30-V33 migrations.
+Connect project-scoped AI chat and improve preset sending and feedback.
+
+Refine Admin navigation, responsive layouts, dialogs, draft protection,
+focus restoration and error recovery. Include the current tests,
+requirements, contracts, plans and review documentation.
+
+Verification: 1100 frontend tests across 120 files and production build
+passed on the unchanged source snapshot. Backend/native verification and
+remaining UAT gaps are documented in the FixReports review. Keep S11 and
+FR-12 in review. Local var evidence, runtime files and credentials are
+excluded from this source handover.

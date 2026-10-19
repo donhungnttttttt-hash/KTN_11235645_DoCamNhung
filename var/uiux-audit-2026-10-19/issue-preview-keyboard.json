@@ -1,0 +1,15 @@
+{
+  "before": {
+    "controls": null,
+    "expanded": "true",
+    "focus": "Issue (1)",
+    "preview": "Issue của case · 1SPIDER-PLUS-7 · UX-AUDIT · Bug từ case1BUG · Chưa xử lýTạo Issue từ case"
+  },
+  "afterTab": {
+    "focus": "Lịch sử Status",
+    "previewExists": true
+  },
+  "documentId": 267,
+  "case": 1,
+  "role": "TESTER"
+}

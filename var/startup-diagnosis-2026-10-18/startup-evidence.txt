@@ -1,0 +1,5 @@
+2026-10-18T15:07:51.181+07:00  INFO 27080 --- [syp-tms] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 29 migrations (execution time 00:00.052s)
+2026-10-18T15:07:51.197+07:00  INFO 27080 --- [syp-tms] [           main] o.f.core.internal.command.DbMigrate      : Schema `tms` is up to date. No migration necessary.
+2026-10-18T15:07:56.663+07:00  INFO 27080 --- [syp-tms] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-10-18T15:07:56.702+07:00  INFO 27080 --- [syp-tms] [           main] vn.syp.tms.TmsApplication                : Started TmsApplication in 9.061 seconds (process running for 9.383)
+2026-10-18T15:07:56.913+07:00  INFO 27080 --- [syp-tms] [           main] vn.syp.tms.identity.AdminBootstrap       : Administrator bootstrap skipped: accounts already exist.

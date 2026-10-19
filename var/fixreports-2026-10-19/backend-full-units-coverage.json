@@ -1,0 +1,230 @@
+{
+  "scope": "All explicitly selected offline74 classes only",
+  "mergedCoverage": false,
+  "reportCounters": {
+    "INSTRUCTION": {
+      "missed": 40228,
+      "covered": 34327,
+      "percent": 46.04
+    },
+    "BRANCH": {
+      "missed": 3348,
+      "covered": 2803,
+      "percent": 45.57
+    },
+    "LINE": {
+      "missed": 3464,
+      "covered": 3409,
+      "percent": 49.6
+    },
+    "COMPLEXITY": {
+      "missed": 3379,
+      "covered": 1944,
+      "percent": 36.52
+    },
+    "METHOD": {
+      "missed": 1260,
+      "covered": 948,
+      "percent": 42.93
+    },
+    "CLASS": {
+      "missed": 176,
+      "covered": 212,
+      "percent": 54.64
+    }
+  },
+  "classes": {
+    "vn/syp/tms/workitem/FeatureIssueService": {
+      "INSTRUCTION": {
+        "missed": 2517,
+        "covered": 231,
+        "percent": 8.41
+      },
+      "BRANCH": {
+        "missed": 237,
+        "covered": 35,
+        "percent": 12.87
+      },
+      "LINE": {
+        "missed": 95,
+        "covered": 18,
+        "percent": 15.93
+      },
+      "COMPLEXITY": {
+        "missed": 159,
+        "covered": 14,
+        "percent": 8.09
+      },
+      "METHOD": {
+        "missed": 31,
+        "covered": 6,
+        "percent": 16.22
+      },
+      "CLASS": {
+        "missed": 0,
+        "covered": 1,
+        "percent": 100
+      }
+    },
+    "vn/syp/tms/feature/FeatureService": {
+      "INSTRUCTION": {
+        "missed": 2814,
+        "covered": 0,
+        "percent": 0
+      },
+      "BRANCH": {
+        "missed": 220,
+        "covered": 0,
+        "percent": 0
+      },
+      "LINE": {
+        "missed": 154,
+        "covered": 0,
+        "percent": 0
+      },
+      "COMPLEXITY": {
+        "missed": 155,
+        "covered": 0,
+        "percent": 0
+      },
+      "METHOD": {
+        "missed": 45,
+        "covered": 0,
+        "percent": 0
+      },
+      "CLASS": {
+        "missed": 1,
+        "covered": 0,
+        "percent": 0
+      }
+    },
+    "vn/syp/tms/reporting/ManagementReportService": {
+      "INSTRUCTION": {
+        "missed": 450,
+        "covered": 46,
+        "percent": 9.27
+      },
+      "BRANCH": {
+        "missed": 23,
+        "covered": 3,
+        "percent": 11.54
+      },
+      "LINE": {
+        "missed": 34,
+        "covered": 6,
+        "percent": 15
+      },
+      "COMPLEXITY": {
+        "missed": 20,
+        "covered": 2,
+        "percent": 9.09
+      },
+      "METHOD": {
+        "missed": 7,
+        "covered": 2,
+        "percent": 22.22
+      },
+      "CLASS": {
+        "missed": 0,
+        "covered": 1,
+        "percent": 100
+      }
+    },
+    "vn/syp/tms/ai/AiPortfolioContext": {
+      "INSTRUCTION": {
+        "missed": 156,
+        "covered": 648,
+        "percent": 80.6
+      },
+      "BRANCH": {
+        "missed": 17,
+        "covered": 75,
+        "percent": 81.52
+      },
+      "LINE": {
+        "missed": 16,
+        "covered": 77,
+        "percent": 82.8
+      },
+      "COMPLEXITY": {
+        "missed": 17,
+        "covered": 52,
+        "percent": 75.36
+      },
+      "METHOD": {
+        "missed": 4,
+        "covered": 19,
+        "percent": 82.61
+      },
+      "CLASS": {
+        "missed": 0,
+        "covered": 1,
+        "percent": 100
+      }
+    },
+    "vn/syp/tms/ai/FeatureFacts": {
+      "INSTRUCTION": {
+        "missed": 198,
+        "covered": 496,
+        "percent": 71.47
+      },
+      "BRANCH": {
+        "missed": 28,
+        "covered": 36,
+        "percent": 56.25
+      },
+      "LINE": {
+        "missed": 11,
+        "covered": 55,
+        "percent": 83.33
+      },
+      "COMPLEXITY": {
+        "missed": 24,
+        "covered": 26,
+        "percent": 52
+      },
+      "METHOD": {
+        "missed": 2,
+        "covered": 16,
+        "percent": 88.89
+      },
+      "CLASS": {
+        "missed": 0,
+        "covered": 1,
+        "percent": 100
+      }
+    },
+    "vn/syp/tms/notes/ProjectNotesService": {
+      "INSTRUCTION": {
+        "missed": 3,
+        "covered": 286,
+        "percent": 98.96
+      },
+      "BRANCH": {
+        "missed": 6,
+        "covered": 20,
+        "percent": 76.92
+      },
+      "LINE": {
+        "missed": 0,
+        "covered": 28,
+        "percent": 100
+      },
+      "COMPLEXITY": {
+        "missed": 6,
+        "covered": 20,
+        "percent": 76.92
+      },
+      "METHOD": {
+        "missed": 0,
+        "covered": 13,
+        "percent": 100
+      },
+      "CLASS": {
+        "missed": 0,
+        "covered": 1,
+        "percent": 100
+      }
+    }
+  }
+}

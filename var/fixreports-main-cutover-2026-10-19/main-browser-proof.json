@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-19T02:09:42.740Z",
+  "origin": "http://localhost:5173",
+  "role": "existing ADMIN",
+  "featureList": "PASS_4_FEATURES",
+  "featureFiles": "PASS_2_FILES_283_CASES",
+  "document": "PASS_128_CASES",
+  "assignmentForm": "PASS_MEMBERS_LOADED_CLOSED_WITHOUT_SAVE",
+  "issues": "PASS_EMPTY_LIST_WITH_FEATURE_CATALOG",
+  "analysis": "PASS_370_TOTAL_CASES",
+  "adminReload": "PASS_ANALYSIS_WORKSPACE_MARKER_RETAINED",
+  "mobile": {
+    "measuredViewport": 391,
+    "pageWidth": 386,
+    "tableWidth": 672
+  },
+  "viewportReset": true,
+  "consoleWarningsErrors": [],
+  "mainDomainWrites": 0,
+  "liveAiCalls": 0,
+  "originalWorkbookBrowserDownload": "NOT_CONFIRMED_TOOL_TIMEOUT_KERNEL_RESET",
+  "upload": "NOT_RERUN_PREVIOUS_TOOL_FILE_URL_ACCESS_FAILURE_USER_CONFIRMS_ON"
+}

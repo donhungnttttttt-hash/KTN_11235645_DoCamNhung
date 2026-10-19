@@ -1,0 +1,112 @@
+{
+  "origin": "http://127.0.0.1:8081",
+  "projectId": 156,
+  "featureId": 261,
+  "previewId": 267,
+  "rowKeys": [
+    [
+      "id",
+      "rowNumber",
+      "caseNo",
+      "suiteCode",
+      "titleVi",
+      "valid",
+      "errorMessage"
+    ],
+    [
+      "id",
+      "rowNumber",
+      "caseNo",
+      "suiteCode",
+      "titleVi",
+      "valid",
+      "errorMessage"
+    ],
+    [
+      "id",
+      "rowNumber",
+      "caseNo",
+      "suiteCode",
+      "titleVi",
+      "valid",
+      "errorMessage"
+    ],
+    [
+      "id",
+      "rowNumber",
+      "caseNo",
+      "suiteCode",
+      "titleVi",
+      "valid",
+      "errorMessage"
+    ],
+    [
+      "id",
+      "rowNumber",
+      "caseNo",
+      "suiteCode",
+      "titleVi",
+      "valid",
+      "errorMessage"
+    ]
+  ],
+  "preview": {
+    "id": 267,
+    "featureId": 261,
+    "fileName": "ux-audit-input.xlsx",
+    "status": "PREVIEW",
+    "totalRows": 5,
+    "validRows": 5,
+    "errorRows": 0,
+    "format": "INTERNAL_V1",
+    "sheetName": "TestCases",
+    "rows": [
+      {
+        "id": 1420,
+        "rowNumber": 2,
+        "caseNo": "1",
+        "suiteCode": "XLSX-267",
+        "titleVi": "FR12 · Đỗ Cẩm Nhung · Case 1",
+        "valid": true,
+        "errorMessage": null
+      },
+      {
+        "id": 1421,
+        "rowNumber": 3,
+        "caseNo": "2",
+        "suiteCode": "XLSX-267",
+        "titleVi": "FR12 · Đỗ Cẩm Nhung · Case 2",
+        "valid": true,
+        "errorMessage": null
+      },
+      {
+        "id": 1422,
+        "rowNumber": 4,
+        "caseNo": "3",
+        "suiteCode": "XLSX-267",
+        "titleVi": "FR12 · Đỗ Cẩm Nhung · Case 3",
+        "valid": true,
+        "errorMessage": null
+      },
+      {
+        "id": 1423,
+        "rowNumber": 5,
+        "caseNo": "4",
+        "suiteCode": "XLSX-267",
+        "titleVi": "FR12 · Đỗ Cẩm Nhung · Case 4",
+        "valid": true,
+        "errorMessage": null
+      },
+      {
+        "id": 1424,
+        "rowNumber": 6,
+        "caseNo": "5",
+        "suiteCode": "XLSX-267",
+        "titleVi": "FR12 · Đỗ Cẩm Nhung · Case 5",
+        "valid": true,
+        "errorMessage": null
+      }
+    ]
+  },
+  "browserUpload": "TOOL_BLOCKED_NO_APP_FAILURE_PROVEN"
+}

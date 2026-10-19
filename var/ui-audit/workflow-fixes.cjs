@@ -1,0 +1,11 @@
+const fs=require('fs');
+const file='Frontend/src/app/features/file-work/FileWorkPage.jsx';
+let s=fs.readFileSync(file,'utf8');
+s="import {ImportedDocuments} from './ImportedDocuments';\n"+s;
+s=s.replace('</label>}</div>\n    {canFilter && <div className="fw-actions fw-filter-controls">','</label>}\n    {canFilter && <>');
+s=s.replace('<Pager data={cycles.data} onChange={setCyclePage} label="đợt lọc"/>','{cycles.data?.totalPages>1&&<Pager data={cycles.data} onChange={setCyclePage} label="đợt lọc"/>}');
+s=s.replace('    </div>}\n    {hasFilters', '    </>}\n    </div>\n    {hasFilters');
+s=s.replace('<CreateFile projectId={project.id} documentId={documentId}', '<CreateFile key={create.documentId||\'new\'} projectId={project.id} documentId={create.documentId||documentId}');
+s=s.replace('Chưa có công việc theo file. Kiểm tra bộ lọc hoặc liên hệ PM để nhận phân công.', 'Chưa có phân công theo file. File đã nhập vẫn nằm trong tài liệu nguồn; PM cần phân công trước khi Tester thực hiện.');
+s=s.replace('    {list.data && <><TableScroll', '    {canFilter&&<ImportedDocuments key={project.id+\':\'+(documentId||\'\')+\':\'+keyword} projectId={project.id} documentId={documentId} keyword={keyword} reload={reload} canAssign={!!meta.data?.canCreate} onAssign={id=>setCreate({documentId:id})} navigate={navigate}/>}\n    {list.data&&<h3>Phân công & thực thi</h3>}\n    {list.data && <><TableScroll');
+fs.writeFileSync(file,s);

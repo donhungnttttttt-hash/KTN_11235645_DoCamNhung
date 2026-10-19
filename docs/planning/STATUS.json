@@ -1178,11 +1178,20 @@
   "currentBranchPushRequest": {
     "date": "2026-10-19",
     "branch": "system-design",
-    "authorization": "User explicitly requested committing all current source changes and pushing the current branch after completion. This authorizes this handover only; no merge/deploy or permanent push authorization.",
-    "scope": "All current tracked and new application source, tests, migrations, scripts, repository requirements and documentation outside var. Keep local credentials, database copies, build outputs, logs and raw var evidence at the workstation. Historical no-push and verification snapshots remain historical.",
+    "authorization": "User explicitly requested committing all current source changes and pushing the current branch after completion. This authorizes this handover only; no merge/deploy or permanent push authorization. User subsequently explicitly requested reviewing/pushing the remaining 2000+ files while preserving all application code.",
+    "scope": "Source handover953c588 remains unchanged. Additional publication includes902 reviewed historical var artifacts and documentation/ignore rules;1446 initial files remain local as generated/runtime output, attachment derivatives, DB/vault metadata, credential helpers or preparation copies.",
     "verification": "Frontend final frozen source:1100/1100 tests in120 files and build exit0; current hashes match all320 verified source/config files. Existing backend/native results remain in the FixReports review; no new backend tests run solely for commit. S11/FR-12 IN_REVIEW and UAT gaps unchanged.",
     "remote": "origin/system-design",
-    "resultLocation": "Git commit history and origin/system-design after push; authorization entry does not itself assert push success."
+    "resultLocation": "Git commit history and origin/system-design after push; authorization entry does not itself assert push success.",
+    "evidencePublication": {
+      "report": "docs/reviews/2026-10-19-evidence-publication.md",
+      "manifest": "var/evidence-push-2026-10-19/publication-manifest.json",
+      "applicationBaseCommit": "953c588e614076c1c5a32a4c803671474f03e418",
+      "applicationCodeChange": false,
+      "deletedLocalFiles": 0,
+      "testsRerun": false,
+      "sourceTreeVerification": "Compare Backend/Frontend/scripts tree IDs before commit and after push; use Git/remote result as completion evidence."
+    }
   },
   "uiuxRefinement20261017": {
     "status": "IMPLEMENTED_AUTOMATED_AND_SCOPED_MOCK_BROWSER_VERIFIED_INTEGRATION_GATES_OPEN",

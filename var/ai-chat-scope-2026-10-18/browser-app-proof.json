@@ -1,0 +1,19 @@
+{
+  "actualApp": true,
+  "selectedScope": {
+    "comboboxes": 1,
+    "selected": "[Demo] Kiểm thử ứng dụng iPad",
+    "sourceSearchPresent": false,
+    "targetPresent": false,
+    "taskPresent": false
+  },
+  "narrow320": {
+    "clientWidth": 302,
+    "scrollWidth": 302,
+    "selectWidth": 272.8000183105469
+  },
+  "viewportReset": true,
+  "projectPromptsPresent": true,
+  "provider": "gpt-5.6-luna",
+  "mainProjectDataSent": false
+}

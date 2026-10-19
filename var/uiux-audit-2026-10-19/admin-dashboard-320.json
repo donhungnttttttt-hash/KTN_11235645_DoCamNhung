@@ -1,0 +1,797 @@
+{
+  "note": "Fixture Admin overview at320; sample all table structures and labels",
+  "metrics": {
+    "controls": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 19.5,
+        "name": "Đến nội dung",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 78.55000305175781,
+        "x": 0,
+        "y": -100
+      },
+      {
+        "background": "rgb(255, 255, 255)",
+        "border": "0.8px solid rgb(165, 188, 183)",
+        "borderRadius": "7px",
+        "color": "rgb(23, 48, 46)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 44,
+        "name": "Đăng xuất",
+        "outline": "rgb(23, 48, 46) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 84.25,
+        "x": 97.45000457763672,
+        "y": 58
+      },
+      {
+        "background": "rgb(255, 255, 255)",
+        "border": "0.8px solid rgb(165, 188, 183)",
+        "borderRadius": "8px",
+        "color": "rgb(23, 48, 46)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 44,
+        "name": "Mở chat AI",
+        "outline": "rgb(23, 48, 46) none 2.4px",
+        "tag": "BUTTON",
+        "type": "button",
+        "width": 44,
+        "x": 193.6999969482422,
+        "y": 58
+      },
+      {
+        "background": "rgb(240, 242, 242)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "4px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "Tổng quan",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 115.82500457763672,
+        "x": 8,
+        "y": 126.8000030517578
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "4px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "Dự án",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 89.6624984741211,
+        "x": 127.82500457763672,
+        "y": 126.8000030517578
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "4px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "Người dùng",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 123.1750030517578,
+        "x": 221.4875030517578,
+        "y": 126.8000030517578
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "4px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "Thiết bị",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 98.125,
+        "x": 348.6625061035156,
+        "y": 126.8000030517578
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "4px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "Nhật ký quản trị",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 145.5,
+        "x": 450.7875061035156,
+        "y": 126.8000030517578
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "4px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "Không gian dự án",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 154.22500610351562,
+        "x": 600.2875366210938,
+        "y": 126.8000030517578
+      },
+      {
+        "background": "rgb(255, 255, 255)",
+        "border": "0.8px solid rgb(165, 188, 183)",
+        "borderRadius": "7px",
+        "color": "rgb(23, 48, 46)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 44,
+        "name": "Tải lại",
+        "outline": "rgb(23, 48, 46) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 58.650001525878906,
+        "x": 16,
+        "y": 284.20001220703125
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 19.5,
+        "name": "Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 248.8000030517578,
+        "x": 32.79999923706055,
+        "y": 1315.5999755859375
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 19.5,
+        "name": "Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 248.8000030517578,
+        "x": 32.79999923706055,
+        "y": 1395.7000732421875
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 19.5,
+        "name": "Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 248.8000030517578,
+        "x": 32.79999923706055,
+        "y": 1475.800048828125
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 19.5,
+        "name": "Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 248.8000030517578,
+        "x": 32.79999923706055,
+        "y": 1555.9000244140625
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 19.5,
+        "name": "Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 248.8000030517578,
+        "x": 32.79999923706055,
+        "y": 1636
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 19.5,
+        "name": "Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 248.8000030517578,
+        "x": 32.79999923706055,
+        "y": 1716.0999755859375
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 19.5,
+        "name": "Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 248.8000030517578,
+        "x": 32.79999923706055,
+        "y": 1796.2000732421875
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 19.5,
+        "name": "Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 248.8000030517578,
+        "x": 32.79999923706055,
+        "y": 1876.300048828125
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 19.5,
+        "name": "Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 248.8000030517578,
+        "x": 32.79999923706055,
+        "y": 1956.4000244140625
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 19.5,
+        "name": "Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 248.8000030517578,
+        "x": 32.79999923706055,
+        "y": 2036.5
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 17.600000381469727,
+        "name": "Mở kho máy",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 72.0999984741211,
+        "x": 32.79999923706055,
+        "y": 3752.800048828125
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "FR2029c651 · Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 140.35000610351562,
+        "x": 42.79999923706055,
+        "y": 3968.400146484375
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "FR64bf36d4 · Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 142.25,
+        "x": 42.79999923706055,
+        "y": 4029.199951171875
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "FR1be05768 · Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 141.3874969482422,
+        "x": 42.79999923706055,
+        "y": 4090
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "FRfb923fcc · Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 136.78750610351562,
+        "x": 42.79999923706055,
+        "y": 4150.80029296875
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "FR31b2b61f · Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 138.1125030517578,
+        "x": 42.79999923706055,
+        "y": 4211.60009765625
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "FR64c8b9aa · Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 142.1999969482422,
+        "x": 42.79999923706055,
+        "y": 4272.39990234375
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "FR90aaa3ec · Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 140.66250610351562,
+        "x": 42.79999923706055,
+        "y": 4333.2001953125
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "FR5db4ccc9 · Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 141.4875030517578,
+        "x": 42.79999923706055,
+        "y": 4394
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "FRb3e71a20 · Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 140.9499969482422,
+        "x": 42.79999923706055,
+        "y": 4454.80029296875
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 44,
+        "name": "FRc01d2532 · Feature thử",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 140.53750610351562,
+        "x": 42.79999923706055,
+        "y": 4515.60009765625
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px solid rgb(229, 231, 235)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 17.600000381469727,
+        "name": "Xem toàn bộ dự án",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "A",
+        "type": null,
+        "width": 110.4375,
+        "x": 32.79999923706055,
+        "y": 4487
+      }
+    ],
+    "dialogs": [],
+    "focus": {
+      "name": "\n  Đến nội dungTMSQuản trị hệ thốngFR12 AdminĐăng xuấtChat AITổng quanDự ánNgười",
+      "tag": "BODY"
+    },
+    "tables": [
+      {
+        "headings": [
+          {
+            "height": 35.900001525878906,
+            "text": "Vai trò",
+            "width": 80.4749984741211
+          },
+          {
+            "height": 35.900001525878906,
+            "text": "Tổng",
+            "width": 63.20000076293945
+          },
+          {
+            "height": 35.900001525878906,
+            "text": "Hoạt động",
+            "width": 105.125
+          },
+          {
+            "height": 36.29999923706055,
+            "text": "ADMIN",
+            "width": 80.4749984741211
+          },
+          {
+            "height": 36.29999923706055,
+            "text": "DEV",
+            "width": 80.4749984741211
+          },
+          {
+            "height": 36.29999923706055,
+            "text": "PM",
+            "width": 80.4749984741211
+          },
+          {
+            "height": 36.29999923706055,
+            "text": "TESTER",
+            "width": 80.4749984741211
+          }
+        ],
+        "width": 248.8000030517578
+      },
+      {
+        "headings": [
+          {
+            "height": 35.900001525878906,
+            "text": "Nhóm",
+            "width": 118.5500030517578
+          },
+          {
+            "height": 35.900001525878906,
+            "text": "Số lượng",
+            "width": 130.25
+          },
+          {
+            "height": 54.29999923706055,
+            "text": "Feature thử",
+            "width": 118.5500030517578
+          },
+          {
+            "height": 54.29999923706055,
+            "text": "Feature thử",
+            "width": 118.5500030517578
+          },
+          {
+            "height": 54.29999923706055,
+            "text": "Feature thử",
+            "width": 118.5500030517578
+          },
+          {
+            "height": 54.29999923706055,
+            "text": "Feature thử",
+            "width": 118.5500030517578
+          },
+          {
+            "height": 54.29999923706055,
+            "text": "Feature thử",
+            "width": 118.5500030517578
+          },
+          {
+            "height": 54.29999923706055,
+            "text": "Feature thử",
+            "width": 118.5500030517578
+          },
+          {
+            "height": 54.29999923706055,
+            "text": "Feature thử",
+            "width": 118.5500030517578
+          },
+          {
+            "height": 54.29999923706055,
+            "text": "Feature thử",
+            "width": 118.5500030517578
+          },
+          {
+            "height": 54.29999923706055,
+            "text": "Feature thử",
+            "width": 118.5500030517578
+          },
+          {
+            "height": 54.29999923706055,
+            "text": "Feature thử",
+            "width": 118.5500030517578
+          }
+        ],
+        "width": 248.8000030517578
+      },
+      {
+        "headings": [
+          {
+            "height": 35.900001525878906,
+            "text": "Nhóm",
+            "width": 148.8000030517578
+          },
+          {
+            "height": 35.900001525878906,
+            "text": "Số lượng",
+            "width": 100
+          },
+          {
+            "height": 55.79999923706055,
+            "text": "IPAD · Đang bàn giao",
+            "width": 148.8000030517578
+          }
+        ],
+        "width": 248.8000030517578
+      },
+      {
+        "headings": [
+          {
+            "height": 34.400001525878906,
+            "text": "Dự án",
+            "width": 250.21250915527344
+          },
+          {
+            "height": 34.400001525878906,
+            "text": "PM hoạt động",
+            "width": 184.3625030517578
+          },
+          {
+            "height": 34.400001525878906,
+            "text": "Thành viên hoạt động",
+            "width": 139.9250030517578
+          },
+          {
+            "height": 34.400001525878906,
+            "text": "Tổng case",
+            "width": 74.8375015258789
+          },
+          {
+            "height": 34.400001525878906,
+            "text": "Đã test",
+            "width": 58.375
+          },
+          {
+            "height": 34.400001525878906,
+            "text": "Tỷ lệ OK",
+            "width": 65.2874984741211
+          },
+          {
+            "height": 34.400001525878906,
+            "text": "Bug mở",
+            "width": 62.79999923706055
+          },
+          {
+            "height": 34.400001525878906,
+            "text": "Mốc quá hạn",
+            "width": 91.32500457763672
+          },
+          {
+            "height": 34.400001525878906,
+            "text": "Máy đang giữ",
+            "width": 95.7874984741211
+          },
+          {
+            "height": 34.400001525878906,
+            "text": "Trạng thái",
+            "width": 77.0875015258789
+          },
+          {
+            "height": 60.79999923706055,
+            "text": "FR2029c651 · Feature thử",
+            "width": 250.21250915527344
+          },
+          {
+            "height": 60.79999923706055,
+            "text": "FR64bf36d4 · Feature thử",
+            "width": 250.21250915527344
+          },
+          {
+            "height": 60.79999923706055,
+            "text": "FR1be05768 · Feature thử",
+            "width": 250.21250915527344
+          },
+          {
+            "height": 60.79999923706055,
+            "text": "FRfb923fcc · Feature thử",
+            "width": 250.21250915527344
+          },
+          {
+            "height": 60.79999923706055,
+            "text": "FR31b2b61f · Feature thử",
+            "width": 250.21250915527344
+          },
+          {
+            "height": 60.79999923706055,
+            "text": "FR64c8b9aa · Feature thử",
+            "width": 250.21250915527344
+          },
+          {
+            "height": 60.79999923706055,
+            "text": "FR90aaa3ec · Feature thử",
+            "width": 250.21250915527344
+          },
+          {
+            "height": 60.79999923706055,
+            "text": "FR5db4ccc9 · Feature thử",
+            "width": 250.21250915527344
+          },
+          {
+            "height": 60.79999923706055,
+            "text": "FRb3e71a20 · Feature thử",
+            "width": 250.21250915527344
+          },
+          {
+            "height": 60.79999923706055,
+            "text": "FRc01d2532 · Feature thử",
+            "width": 250.21250915527344
+          }
+        ],
+        "width": 1100
+      }
+    ],
+    "url": "http://127.0.0.1:5174/#/admin",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 5164,
+      "pageWidth": 314,
+      "width": 320
+    }
+  },
+  "snapshot": "- link \"Đến nội dung\":\n  - /url: \"#admin-main\"\n- banner:\n  - strong: TMS\n  - generic: Quản trị hệ thống\n  - generic: FR12 Admin\n  - button \"Đăng xuất\"\n  - button \"Mở chat AI\":\n- complementary:\n  - navigation \"Quản trị\":\n    - link \"Tổng quan\":\n      - /url: \"#/admin\"\n      - generic: Tổng quan\n    - link \"Dự án\":\n      - /url: \"#/admin/projects\"\n      - generic: Dự án\n    - link \"Người dùng\":\n      - /url: \"#/admin/users\"\n      - generic: Người dùng\n    - link \"Thiết bị\":\n      - /url: \"#/admin/devices\"\n      - generic: Thiết bị\n    - link \"Nhật ký quản trị\":\n      - /url: \"#/admin/audit\"\n      - generic: Nhật ký quản trị\n    - link \"Không gian dự án\":\n      - /url: \"#/dashboard?workspace=1\"\n      - generic: Không gian dự án\n- main:\n  - heading \"Tổng quan hệ thống\" [level=1]\n  - paragraph: Tất cả dự án · Cập nhật 09:24:38 19/10/2026\n  - button \"Tải lại\"\n  - article:\n    - heading \"Dự án hoạt động\" [level=2]\n    - strong: \"212\"\n    - paragraph: 221 dự án trong phạm vi\n  - article:\n    - heading \"Tài khoản hoạt động\" [level=2]\n    - strong: \"1439\"\n    - paragraph: 1439 tài khoản duy nhất\n  - article:\n    - heading \"Tiến độ kiểm thử\" [level=2]\n    - strong: 10.36%\n    - paragraph: 124/1197 case đã test\n  - article:\n    - heading \"Bug chưa kết thúc\" [level=2]\n    - strong: \"62\"\n    - paragraph: 0 đã xử lý, chờ xác minh\n  - article:\n    - heading \"Máy đang bàn giao / sẵn sàng\" [level=2]\n    - strong: 2 / 0\n    - paragraph: 0 bảo trì · 0 ngừng sử dụng (ngoài tồn kho)\n  - heading \"Tiến độ theo dự án\" [level=2]\n  - paragraph: Hiển thị 10/221 dự án; KPI tính trên toàn phạm vi.\n  - link \"Feature thử\":\n    - /url: \"#/admin/projects/1\"\n  - generic: 0%\n  - link \"Feature thử\":\n    - /url: \"#/admin/projects/2\"\n  - generic: 0%\n  - link \"Feature thử\":\n    - /url: \"#/admin/projects/3\"\n  - generic: 0%\n  - link \"Feature thử\":\n    - /url: \"#/admin/projects/4\"\n  - generic: 60%\n  - link \"Feature thử\":\n    - /url: \"#/admin/projects/5\"\n  - generic: 0%\n  - link \"Feature thử\":\n    - /url: \"#/admin/projects/6\"\n  - generic: 0%\n  - link \"Feature thử\":\n    - /url: \"#/admin/projects/7\"\n  - generic: 0%\n  - link \"Feature thử\":\n    - /url: \"#/admin/projects/8\"\n  - generic: 0%\n  - link \"Feature thử\":\n    - /url: \"#/admin/projects/9\"\n  - generic: 60%\n  - link \"Feature thử\":\n    - /url: \"#/admin/projects/10\"\n  - generic: 0%\n  - heading \"Status test case\" [level=2]\n  - paragraph: NA và P đều tính là đã test; NA vẫn thuộc tổng số case.\n  - generic \"Phân bố kết quả thực thi\":\n    - generic: \"OK: 76\"\n    - generic: \"NG: 0\"\n    - generic: \"P: 24\"\n    - generic: \"Chưa chạy: 1073\"\n    - generic: \"NA: 24\"\n  - paragraph: \"Tỷ lệ đạt: 6.35%\"\n  - heading \"Tài khoản theo vai trò hệ thống\" [level=2]\n  - table:\n    - rowgroup:\n      - row \"Vai trò Tổng Hoạt động\":\n        - columnheader \"Vai trò\"\n        - columnheader \"Tổng\"\n        - columnheader \"Hoạt động\"\n    - rowgroup:\n      - row \"ADMIN 410 410\":\n        - rowheader \"ADMIN\"\n        - cell \"410\"\n        - cell \"410\"\n      - row \"DEV 208 208\":\n        - rowheader \"DEV\"\n        - cell \"208\"\n        - cell \"208\"\n      - row \"PM 416 416\":\n        - rowheader \"PM\"\n        - cell \"416\"\n        - cell \"416\"\n      - row \"TESTER 405 405\":\n        - rowheader \"TESTER\"\n        - cell \"405\"\n        - cell \"405\"\n  - heading \"Membership hoạt động theo dự án\" [level=3]\n  - group \"Membership theo dự án\":\n    - table:\n      - rowgroup:\n        - row \"Nhóm Số lượng\":\n          - columnheader \"Nhóm\"\n          - columnheader \"Số lượng\"\n      - rowgroup:\n        - row \"Feature thử 5\":\n          - rowheader \"Feature thử\"\n          - cell \"5\": \"5\"\n        - row \"Feature thử 5\":\n          - rowheader \"Feature thử\"\n          - cell \"5\": \"5\"\n        - row \"Feature thử 5\":\n          - rowheader \"Feature thử\"\n          - cell \"5\": \"5\"\n        - row \"Feature thử 5\":\n          - rowheader \"Feature thử\"\n          - cell \"5\": \"5\"\n        - row \"Feature thử 5\":\n          - rowheader \"Feature thử\"\n          - cell \"5\": \"5\"\n        - row \"Feature thử 5\":\n          - rowheader \"Feature thử\"\n          - cell \"5\": \"5\"\n        - row \"Feature thử 5\":\n          - rowheader \"Feature thử\"\n          - cell \"5\": \"5\"\n        - row \"Feature thử 5\":\n          - rowheader \"Feature thử\"\n          - cell \"5\": \"5\"\n        - row \"Feature thử 5\":\n          - rowheader \"Feature thử\"\n          - cell \"5\": \"5\"\n        - row \"Feature thử 5\":\n          - rowheader \"Feature thử\"\n          - cell \"5\": \"5\"\n  - paragraph: Thành viên từng dự án được đếm theo membership; một người có thể tham gia nhiều dự án.\n  - heading \"Kho thiết bị\" [level=2]\n  - group \"Máy theo loại và tình trạng\":\n    - table:\n      - rowgroup:\n        - row \"Nhóm Số lượng\":\n          - columnheader \"Nhóm\"\n          - columnheader \"Số lượng\"\n      - rowgroup:\n        - row \"IPAD · Đang bàn giao 2\":\n          - rowheader \"IPAD · Đang bàn giao\"\n          - cell \"2\": \"2\"\n  - paragraph: Chỉ tính máy vật lý; mỗi máy đang giao thuộc một dự án. Ngừng sử dụng hiển thị riêng, ngoài tồn kho.\n  - link \"Mở kho máy\":\n    - /url: \"#/admin/devices\"\n  - heading \"Dự án trong biểu đồ\" [level=2]\n  - paragraph: Kéo thanh cuộn ngang để xem thêm cột. Có thể dùng Shift + con lăn hoặc phím ← → khi chọn bảng.\n  - region \"Bảng tổng hợp dự án\":\n    - table:\n      - rowgroup:\n        - row \"Dự án PM hoạt động Thành viên hoạt động Tổng case Đã test Tỷ lệ OK Bug mở Mốc quá hạn Máy đang giữ Trạng thái\":\n          - columnheader \"Dự án\"\n          - columnheader \"PM hoạt động\"\n          - columnheader \"Thành viên hoạt động\"\n          - columnheader \"Tổng case\"\n          - columnheader \"Đã test\"\n          - columnheader \"Tỷ lệ OK\"\n          - columnheader \"Bug mở\"\n          - columnheader \"Mốc quá hạn\"\n          - columnheader \"Máy đang giữ\"\n          - columnheader \"Trạng thái\"\n      - rowgroup:\n        - row \"FR2029c651 · Feature thử admin2029c651, pm2029c651 5 0 0% 0% 0 0 0 Hoạt động\":\n          - rowheader \"FR2029c651 · Feature thử\":\n            - link \"FR2029c651 · Feature thử\":\n              - /url: \"#/admin/projects/1\"\n          - cell \"admin2029c651, pm2029c651\"\n          - cell \"5\"\n          - cell \"0\"\n          - cell \"0%\"\n          - cell \"0%\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"Hoạt động\"\n        - row \"FR64bf36d4 · Feature thử admin64bf36d4, pm64bf36d4 5 0 0% 0% 0 0 0 Hoạt động\":\n          - rowheader \"FR64bf36d4 · Feature thử\":\n            - link \"FR64bf36d4 · Feature thử\":\n              - /url: \"#/admin/projects/2\"\n          - cell \"admin64bf36d4, pm64bf36d4\"\n          - cell \"5\"\n          - cell \"0\"\n          - cell \"0%\"\n          - cell \"0%\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"Hoạt động\"\n        - row \"FR1be05768 · Feature thử admin1be05768, pm1be05768 5 10 0% 0% 0 0 0 Hoạt động\":\n          - rowheader \"FR1be05768 · Feature thử\":\n            - link \"FR1be05768 · Feature thử\":\n              - /url: \"#/admin/projects/3\"\n          - cell \"admin1be05768, pm1be05768\"\n          - cell \"5\"\n          - cell \"10\"\n          - cell \"0%\"\n          - cell \"0%\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"Hoạt động\"\n        - row \"FRfb923fcc · Feature thử adminfb923fcc, pmfb923fcc 5 5 60% 20% 0 0 0 Hoạt động\":\n          - rowheader \"FRfb923fcc · Feature thử\":\n            - link \"FRfb923fcc · Feature thử\":\n              - /url: \"#/admin/projects/4\"\n          - cell \"adminfb923fcc, pmfb923fcc\"\n          - cell \"5\"\n          - cell \"5\"\n          - cell \"60%\"\n          - cell \"20%\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"Hoạt động\"\n        - row \"FR31b2b61f · Feature thử admin31b2b61f, pm31b2b61f 5 5 0% 0% 0 0 0 Hoạt động\":\n          - rowheader \"FR31b2b61f · Feature thử\":\n            - link \"FR31b2b61f · Feature thử\":\n              - /url: \"#/admin/projects/5\"\n          - cell \"admin31b2b61f, pm31b2b61f\"\n          - cell \"5\"\n          - cell \"5\"\n          - cell \"0%\"\n          - cell \"0%\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"Hoạt động\"\n        - row \"FR64c8b9aa · Feature thử creator64c8b9aa, pm64c8b9aa 5 0 0% 0% 0 0 0 Hoạt động\":\n          - rowheader \"FR64c8b9aa · Feature thử\":\n            - link \"FR64c8b9aa · Feature thử\":\n              - /url: \"#/admin/projects/6\"\n          - cell \"creator64c8b9aa, pm64c8b9aa\"\n          - cell \"5\"\n          - cell \"0\"\n          - cell \"0%\"\n          - cell \"0%\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"Hoạt động\"\n        - row \"FR90aaa3ec · Feature thử creator90aaa3ec, pm90aaa3ec 5 0 0% 0% 0 0 0 Hoạt động\":\n          - rowheader \"FR90aaa3ec · Feature thử\":\n            - link \"FR90aaa3ec · Feature thử\":\n              - /url: \"#/admin/projects/7\"\n          - cell \"creator90aaa3ec, pm90aaa3ec\"\n          - cell \"5\"\n          - cell \"0\"\n          - cell \"0%\"\n          - cell \"0%\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"Hoạt động\"\n        - row \"FR5db4ccc9 · Feature thử creator5db4ccc9, pm5db4ccc9 5 10 0% 0% 0 0 0 Hoạt động\":\n          - rowheader \"FR5db4ccc9 · Feature thử\":\n            - link \"FR5db4ccc9 · Feature thử\":\n              - /url: \"#/admin/projects/8\"\n          - cell \"creator5db4ccc9, pm5db4ccc9\"\n          - cell \"5\"\n          - cell \"10\"\n          - cell \"0%\"\n          - cell \"0%\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"Hoạt động\"\n        - row \"FRb3e71a20 · Feature thử creatorb3e71a20, pmb3e71a20 5 5 60% 20% 0 0 0 Hoạt động\":\n          - rowheader \"FRb3e71a20 · Feature thử\":\n            - link \"FRb3e71a20 · Feature thử\":\n              - /url: \"#/admin/projects/9\"\n          - cell \"creatorb3e71a20, pmb3e71a20\"\n          - cell \"5\"\n          - cell \"5\"\n          - cell \"60%\"\n          - cell \"20%\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"Hoạt động\"\n        - row \"FRc01d2532 · Feature thử creatorc01d2532, pmc01d2532 5 5 0% 0% 0 0 0 Hoạt động\":\n          - rowheader \"FRc01d2532 · Feature thử\":\n            - link \"FRc01d2532 · Feature thử\":\n              - /url: \"#/admin/projects/10\"\n          - cell \"creatorc01d2532, pmc01d2532\"\n          - cell \"5\"\n          - cell \"5\"\n          - cell \"0%\"\n          - cell \"0%\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"0\"\n          - cell \"Hoạt động\"\n  - link \"Xem toàn bộ dự án\":\n    - /url: \"#/admin/projects\"\n  - heading \"Cần chú ý\" [level=2]\n  - heading \"Mốc quá hạn (0)\" [level=3]\n  - paragraph: Không có cảnh báo quá hạn.\n  - paragraph: 0 mốc chưa đủ dữ liệu về hạn hoặc phạm vi.\n  - heading \"Chưa có PM hoạt động (0)\" [level=3]\n  - paragraph: Không có dự án cần bổ sung PM.\n  - heading \"Đã xử lý, chờ xác minh (0)\" [level=3]\n  - paragraph: Không có bug chờ xác minh.\n  - paragraph: Danh sách chú ý hiển thị tối đa 20 mục mỗi nhóm.\n  - heading \"Máy quá hạn trả (0)\" [level=3]\n  - paragraph: Không có máy quá hạn trả.\n  - paragraph: Đã test = (OK + NG + P + NA) / tổng case của file và Feature đang hoạt động. Tỷ lệ OK = OK / tổng case. File rỗng có tiến độ 0%. Đóng Issue không tự đổi Status case."
+}

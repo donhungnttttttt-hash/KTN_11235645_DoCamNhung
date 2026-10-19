@@ -1,0 +1,12 @@
+{
+  "dateLocal": "2026-10-19",
+  "cwd": "Frontend",
+  "command": "rtk proxy npm.cmd run build",
+  "exitCode": 0,
+  "tool": "Vite 6.4.3",
+  "modulesTransformed": 1696,
+  "durationSeconds": 7.19,
+  "result": "PASS",
+  "coverage": "NOT_MEASURED",
+  "backendChanged": false
+}

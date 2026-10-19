@@ -1,0 +1,146 @@
+{
+  "exitCode": 2,
+  "scan": "OFFLINE_SOURCE_ONLY",
+  "target": "Frontend/src",
+  "requiresManualValidation": true,
+  "output": [
+    {
+      "antipattern": "side-tab",
+      "name": "Side-tab accent border",
+      "description": "Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\features\\ai\\ai.css",
+      "line": 17,
+      "importedBy": [
+        "AiAssistantPage.jsx",
+        "AiChat.jsx",
+        "AiConnections.jsx"
+      ]
+    },
+    {
+      "antipattern": "overused-font",
+      "name": "Overused font",
+      "description": "Inter, Roboto, Fraunces, Geist, Plus Jakarta Sans, and Space Grotesk are used on so many sites they no longer feel distinctive. Each new wave of AI-generated UIs converges on the same handful of faces. Choose a face that gives your interface personality.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\features\\auth\\auth.css",
+      "line": 1,
+      "importedBy": [
+        "AuthBoundary.jsx"
+      ]
+    },
+    {
+      "antipattern": "side-tab",
+      "name": "Side-tab accent border",
+      "description": "Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\features\\file-work\\file-work.css",
+      "line": 9
+    },
+    {
+      "antipattern": "side-tab",
+      "name": "Side-tab accent border",
+      "description": "Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\features\\file-work\\file-work.css",
+      "line": 53
+    },
+    {
+      "antipattern": "side-tab",
+      "name": "Side-tab accent border",
+      "description": "Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\features\\integrations\\redmine.css",
+      "line": 6,
+      "importedBy": [
+        "RedminePanel.jsx"
+      ]
+    },
+    {
+      "antipattern": "side-tab",
+      "name": "Side-tab accent border",
+      "description": "Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\features\\reports\\reports.css",
+      "line": 7
+    },
+    {
+      "antipattern": "side-tab",
+      "name": "Side-tab accent border",
+      "description": "Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\features\\retest\\retest.css",
+      "line": 1,
+      "importedBy": [
+        "RetestPanel.jsx",
+        "RetestQueuePage.jsx",
+        "RetestResult.jsx"
+      ]
+    },
+    {
+      "antipattern": "side-tab",
+      "name": "Side-tab accent border",
+      "description": "Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\features\\test-cases\\excel-import.css",
+      "line": 11,
+      "importedBy": [
+        "ImportExcelDialog.jsx"
+      ]
+    },
+    {
+      "antipattern": "overused-font",
+      "name": "Overused font",
+      "description": "Inter, Roboto, Fraunces, Geist, Plus Jakarta Sans, and Space Grotesk are used on so many sites they no longer feel distinctive. Each new wave of AI-generated UIs converges on the same handful of faces. Choose a face that gives your interface personality.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\features\\work-items\\work-items.css",
+      "line": 10,
+      "importedBy": [
+        "WorkBoardPage.jsx"
+      ]
+    },
+    {
+      "antipattern": "side-tab",
+      "name": "Side-tab accent border",
+      "description": "Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\styles\\app-shell.css",
+      "line": 220
+    },
+    {
+      "antipattern": "overused-font",
+      "name": "Overused font",
+      "description": "Inter, Roboto, Fraunces, Geist, Plus Jakarta Sans, and Space Grotesk are used on so many sites they no longer feel distinctive. Each new wave of AI-generated UIs converges on the same handful of faces. Choose a face that gives your interface personality.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\styles\\global.css",
+      "line": 49,
+      "importedBy": [
+        "index.js",
+        "main.jsx"
+      ]
+    },
+    {
+      "antipattern": "overused-font",
+      "name": "Overused font",
+      "description": "Inter, Roboto, Fraunces, Geist, Plus Jakarta Sans, and Space Grotesk are used on so many sites they no longer feel distinctive. Each new wave of AI-generated UIs converges on the same handful of faces. Choose a face that gives your interface personality.",
+      "severity": "warning",
+      "category": "slop",
+      "file": "D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\styles\\global.css",
+      "line": 2,
+      "importedBy": [
+        "index.js",
+        "main.jsx"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "height": 568,
+  "pageWidth": 314,
+  "regions": [
+    {
+      "name": "overview-information-heading",
+      "width": 294.3999938964844
+    },
+    {
+      "name": "overview-status-heading",
+      "width": 294.3999938964844
+    },
+    {
+      "name": "overview-milestone-heading",
+      "width": 294.3999938964844
+    }
+  ],
+  "width": 320
+}

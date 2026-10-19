@@ -1,0 +1,12 @@
+{
+  "number": 2,
+  "url": "https://github.com/donhungnttttttt-hash/KTN_11235645_DoCamNhung/pull/2",
+  "title": "feat: tích hợp TMS, quản trị, luồng kiểm thử và trợ lý AI theo vai trò",
+  "base": "develop",
+  "head": "system-design",
+  "sha": "c08ef48c6053b5e0a03acbee674e7ca20e498a44",
+  "state": "open",
+  "draft": false,
+  "mergeable": null,
+  "mergeableState": "unknown"
+}

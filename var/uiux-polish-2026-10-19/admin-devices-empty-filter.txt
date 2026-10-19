@@ -1,0 +1,54 @@
+- link "Đến nội dung":
+  - /url: "#admin-main"
+- banner:
+  - strong: TMS
+  - generic: Quản trị hệ thống
+  - generic: FR12 Admin
+  - button "Đăng xuất"
+  - button "Mở chat AI":
+- complementary:
+  - navigation "Quản trị":
+    - link "Tổng quan":
+      - /url: "#/admin"
+      - generic: Tổng quan
+    - link "Dự án":
+      - /url: "#/admin/projects"
+      - generic: Dự án
+    - link "Người dùng":
+      - /url: "#/admin/users"
+      - generic: Người dùng
+    - link "Thiết bị" [active]:
+      - /url: "#/admin/devices"
+      - generic: Thiết bị
+    - link "Nhật ký quản trị":
+      - /url: "#/admin/audit"
+      - generic: Nhật ký quản trị
+    - link "Không gian dự án":
+      - /url: "#/dashboard?workspace=1"
+      - generic: Không gian dự án
+  - strong: S+TMS
+  - generic: Quản trị tập trung
+- main:
+  - heading "Kho thiết bị vật lý" [level=1]
+  - paragraph: Quản lý từng máy và lịch sử bàn giao theo dự án.
+  - button "Nhập máy"
+  - button "Tải lại"
+  - generic: Dự án đang giữ máy
+  - button "Dự án đang giữ máy":
+    - generic: Tất cả dự án
+  - checkbox "Xem lịch sử bàn giao"
+  - text: Xem lịch sử bàn giao
+  - text: Tìm mã / model / serial
+  - textbox "Tìm mã / model / serial"
+  - text: Lọc tình trạng
+  - combobox "Lọc tình trạng":
+    - option "Tất cả tình trạng"
+    - option "Sẵn sàng" [selected]
+    - option "Đang bàn giao"
+    - option "Bảo trì"
+    - option "Ngừng sử dụng"
+  - paragraph: 0 máy phù hợp
+  - paragraph: Chưa có dữ liệu phù hợp.
+  - button "Trang trước" [disabled]
+  - generic: Trang 1
+  - button "Trang sau" [disabled]

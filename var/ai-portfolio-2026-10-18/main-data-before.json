@@ -1,0 +1,5 @@
+{
+  "backup": "var/mysql-native/backups/2026-10-18T10-28-22-959Z-tms.sql",
+  "insertStatements": 65,
+  "dataHash": "c9d33269e9917db470295d1ace56c3917517cccee55b04f91f8a0491c8c46476"
+}

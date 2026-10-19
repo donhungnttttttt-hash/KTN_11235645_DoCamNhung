@@ -1,0 +1,77 @@
+{
+  "readOnlyQueries": true,
+  "host": "loopback",
+  "port": "3307",
+  "schemaVersion": "30",
+  "projects": [
+    {
+      "id": 1,
+      "code": "DEMO-S04",
+      "name": "Demo thư viện kiểm thử"
+    },
+    {
+      "id": 2,
+      "code": "DEMO-REVIEW-0930",
+      "name": "DEMO · Review cấu hình dự án"
+    },
+    {
+      "id": 3,
+      "code": "DEMO-PILOT",
+      "name": "DEMO · Kiểm thử phát hành 1.2"
+    },
+    {
+      "id": 4,
+      "code": "DEMO-GRID-1003",
+      "name": "Demo khôi phục màn test case"
+    },
+    {
+      "id": 5,
+      "code": "SYP-DEMO-20",
+      "name": "[Demo] Kiểm thử ứng dụng iPad"
+    },
+    {
+      "id": 6,
+      "code": "SYP-DEMO-WEB-20",
+      "name": "[Demo] Web trên Android"
+    },
+    {
+      "id": 7,
+      "code": "SYP-LAB-22-IOS",
+      "name": "[Demo22] Kiểm thử iPad và iPhone"
+    },
+    {
+      "id": 8,
+      "code": "SYP-LAB-22-TABLET",
+      "name": "[Demo22] Kiểm thử tablet Android"
+    },
+    {
+      "id": 9,
+      "code": "SYP-LAB-22-PHONE",
+      "name": "[Demo22] Kiểm thử smartphone Android"
+    },
+    {
+      "id": 11,
+      "code": "Test",
+      "name": "Test1234"
+    }
+  ],
+  "isolatedSchemas": [
+    "tms_docstest_202610080023",
+    "tms_docstest_202610080024",
+    "tms_docstest_202610080025"
+  ],
+  "isolatedInventory": [
+    {
+      "schema": "tms_docstest_202610080023",
+      "tables": 69
+    },
+    {
+      "schema": "tms_docstest_202610080024",
+      "tables": 69
+    },
+    {
+      "schema": "tms_docstest_202610080025",
+      "tables": 69
+    }
+  ]
+}

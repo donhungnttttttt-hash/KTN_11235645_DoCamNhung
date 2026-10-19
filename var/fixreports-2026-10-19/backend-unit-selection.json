@@ -1,0 +1,294 @@
+{
+  "createdAt": "2026-10-18T19:37:26.847Z",
+  "selected": [
+    "AdminAuditLabelsTest",
+    "AdminAuditServiceTest",
+    "AdminFixReportsTest",
+    "AdminManagementSecurityTest",
+    "AdminOverviewServiceTest",
+    "AdminProjectServiceTest",
+    "AdminSearchTest",
+    "AdminSecurityTest",
+    "AdminStateProjectionTest",
+    "AiAccessTest",
+    "AiAssistanceServiceTest",
+    "AiChatPromptTest",
+    "AiChatServiceTest",
+    "AiContextBudgetTest",
+    "AiDraftContentTest",
+    "AiDraftServiceTest",
+    "AiManagementReportGeneratorTest",
+    "AiPortfolioContextTest",
+    "AiProviderAuthorizationTest",
+    "AiProviderIntegrationTest",
+    "AiProviderSafetyTest",
+    "ApiExceptionHandlerTest",
+    "AssignmentPlanTest",
+    "CatalogInputTest",
+    "CentralMembershipTest",
+    "ChatGptConnectionServiceTest",
+    "ChatGptCredentialVaultTest",
+    "ChatGptIdentityTest",
+    "ChatGptOAuthClientTest",
+    "CustomerWorkbookTest",
+    "DefaultProfileSecurityTest",
+    "DeveloperPermissionsTest",
+    "DeveloperResultsTest",
+    "DeviceInventoryServiceTest",
+    "DocumentResultServiceTest",
+    "DocumentWorkbookTest",
+    "EvidenceContentTest",
+    "FeatureIssueServiceTest",
+    "FeatureProgressContractTest",
+    "FileWorkExecutionTest",
+    "FileWorkServiceTest",
+    "FileWorkSessionTest",
+    "FileWorkWorkbookTest",
+    "HandoffServiceTest",
+    "IdentityPolicyTest",
+    "InternalRulePolicyTest",
+    "InventorySecurityTest",
+    "LocalDatabaseConfigurationTest",
+    "ManagementReportServiceTest",
+    "MultiWordSearchTest",
+    "OpenAiConfigurationTest",
+    "OpenAiEndpointConfigurationTest",
+    "OpenAiResponsesClientTest",
+    "OrdinaryWorkItemLifecycleTest",
+    "ProjectDeadlinesCurrentScopeTest",
+    "ProjectNotesPolicyTest",
+    "ProjectNotesSecurityTest",
+    "ProjectNotesServiceTest",
+    "ProjectStatusReportRetirementTest",
+    "ProjectStatusReportSecurityTest",
+    "ProjectStatusReportTest",
+    "ProjectTimezoneTest",
+    "QaEvidenceTest",
+    "QaServiceTest",
+    "RedmineClientTest",
+    "RedmineConfigurationTest",
+    "RedmineSchedulerTest",
+    "ReportingLimitTest",
+    "RetestExecutionTest",
+    "SessionAccountFilterTest",
+    "TestCaseWorkbookTest",
+    "TestDocumentBulkApprovalTest",
+    "WorkItemHistoryTest",
+    "WorkItemTypeContractTest"
+  ],
+  "excluded": [
+    {
+      "name": "AdminNativeIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in AdminNativeIntegrationTest; run separately"
+    },
+    {
+      "name": "AdminWorkspaceFileReadNativeTest",
+      "reason": "Native/container/live or explicitly environment-gated in AdminWorkspaceFileReadNativeTest; run separately"
+    },
+    {
+      "name": "AdminWorkspaceNativeTest",
+      "reason": "Native/container/live or explicitly environment-gated in AdminWorkspaceNativeTest; run separately"
+    },
+    {
+      "name": "AiChatLiveConnectionTest",
+      "reason": "Native/container/live or explicitly environment-gated in AiChatLiveConnectionTest; run separately"
+    },
+    {
+      "name": "AiPortfolioLiveConnectionTest",
+      "reason": "Native/container/live or explicitly environment-gated in AiPortfolioLiveConnectionTest; run separately"
+    },
+    {
+      "name": "CycleDecisionIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in CycleDecisionIntegrationTest; run separately"
+    },
+    {
+      "name": "ExecutionIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in ExecutionIntegrationTest; run separately"
+    },
+    {
+      "name": "FeatureAiIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in FeatureIntegrationTest; run separately"
+    },
+    {
+      "name": "FeatureIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in FeatureIntegrationTest; run separately"
+    },
+    {
+      "name": "FeatureLegacyRetirementIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in FeatureIntegrationTest; run separately"
+    },
+    {
+      "name": "FixReportsBrowserFixtureTest",
+      "reason": "Native/container/live or explicitly environment-gated in FixReportsBrowserFixtureTest; run separately"
+    },
+    {
+      "name": "FixReportsSnapshotMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in FixReportsSnapshotMigrationTest; run separately"
+    },
+    {
+      "name": "FoundationIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in FoundationIntegrationTest; run separately"
+    },
+    {
+      "name": "IdentityIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in IdentityIntegrationTest; run separately"
+    },
+    {
+      "name": "ManagementReportIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in ManagementReportIntegrationTest; run separately"
+    },
+    {
+      "name": "MigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in MigrationTest; run separately"
+    },
+    {
+      "name": "NativeAdminAuthorityMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeAdminAuthorityMigrationTest; run separately"
+    },
+    {
+      "name": "NativeAdminCurrentReadTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeAdminCurrentReadTest; run separately"
+    },
+    {
+      "name": "NativeAdminImportMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeAdminImportMigrationTest; run separately"
+    },
+    {
+      "name": "NativeAiChatTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeAiChatTest; run separately"
+    },
+    {
+      "name": "NativeAiDraftTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeAiDraftTest; run separately"
+    },
+    {
+      "name": "NativeAiPortfolioTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeAiPortfolioTest; run separately"
+    },
+    {
+      "name": "NativeDemoDataMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeDemoDataMigrationTest; run separately"
+    },
+    {
+      "name": "NativeDocumentMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeDocumentMigrationTest; run separately"
+    },
+    {
+      "name": "NativeExecutionDocumentResultTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeExecutionDocumentResultTest; run separately"
+    },
+    {
+      "name": "NativeFeatureIssueIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeFeatureIssueIntegrationTest; run separately"
+    },
+    {
+      "name": "NativeFeatureMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeFeatureMigrationTest; run separately"
+    },
+    {
+      "name": "NativeFeatureRepairMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeFeatureRepairMigrationTest; run separately"
+    },
+    {
+      "name": "NativeFileWorkQaConcurrencyTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeFileWorkQaConcurrencyTest; run separately"
+    },
+    {
+      "name": "NativeFileWorkQaIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeFileWorkQaIntegrationTest; run separately"
+    },
+    {
+      "name": "NativeFileWorkQaMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeFileWorkQaMigrationTest; run separately"
+    },
+    {
+      "name": "NativeFqDatabaseGuardTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeFqDatabaseGuardTest; run separately"
+    },
+    {
+      "name": "NativeInitialAllocationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeInitialAllocationTest; run separately"
+    },
+    {
+      "name": "NativeInventoryMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeInventoryMigrationTest; run separately"
+    },
+    {
+      "name": "NativeProjectLifecycleConcurrencyTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeProjectLifecycleConcurrencyTest; run separately"
+    },
+    {
+      "name": "NativeProjectLifecycleIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeProjectLifecycleIntegrationTest; run separately"
+    },
+    {
+      "name": "NativeProjectLifecycleMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeProjectLifecycleMigrationTest; run separately"
+    },
+    {
+      "name": "NativeProjectNotesIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeProjectNotesIntegrationTest; run separately"
+    },
+    {
+      "name": "NativeRedminePermissionTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeRedminePermissionTest; run separately"
+    },
+    {
+      "name": "NativeScaleDemoMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeScaleDemoMigrationTest; run separately"
+    },
+    {
+      "name": "NativeWorkflowFreshMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeWorkflowFreshMigrationTest; run separately"
+    },
+    {
+      "name": "NativeWorkflowRepairTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeWorkflowRepairTest; run separately"
+    },
+    {
+      "name": "NativeWorkflowSplitMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in NativeWorkflowSplitMigrationTest; run separately"
+    },
+    {
+      "name": "OpenAiLiveConnectionTest",
+      "reason": "Native/container/live or explicitly environment-gated in OpenAiLiveConnectionTest; run separately"
+    },
+    {
+      "name": "RedmineIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in RedmineIntegrationTest; run separately"
+    },
+    {
+      "name": "ReleaseMigrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in ReleaseMigrationTest; run separately"
+    },
+    {
+      "name": "ReportingIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in ReportingIntegrationTest; run separately"
+    },
+    {
+      "name": "RetestIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in RetestIntegrationTest; run separately"
+    },
+    {
+      "name": "SettingsReviewTest",
+      "reason": "Native/container/live or explicitly environment-gated in SettingsReviewTest; run separately"
+    },
+    {
+      "name": "SystemJourneyTest",
+      "reason": "Native/container/live or explicitly environment-gated in SystemJourneyTest; run separately"
+    },
+    {
+      "name": "TestCaseIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in TestCaseIntegrationTest; run separately"
+    },
+    {
+      "name": "TestDocumentIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in TestDocumentIntegrationTest; run separately"
+    },
+    {
+      "name": "WorkItemIntegrationTest",
+      "reason": "Native/container/live or explicitly environment-gated in WorkItemIntegrationTest; run separately"
+    }
+  ],
+  "scope": "All test classes without native/container/live/environment-gated source markers; no main database credential supplied"
+}

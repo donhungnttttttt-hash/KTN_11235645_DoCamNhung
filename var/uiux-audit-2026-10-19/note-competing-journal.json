@@ -1,0 +1,21 @@
+{
+  "identity": {
+    "origin": "http://127.0.0.1:8081",
+    "projectId": 156,
+    "title": "UX-AUDIT · Note xung đột"
+  },
+  "done": {
+    "competingUpdate": {
+      "id": 9,
+      "projectId": 156,
+      "title": "UX-AUDIT · Note xung đột",
+      "body": "Phiên khác đã cập nhật nội dung giả.",
+      "version": 1,
+      "createdBy": "5355c7a7-61cf-4c5e-8ec3-07994a795724",
+      "updatedBy": "5355c7a7-61cf-4c5e-8ec3-07994a795724",
+      "createdAt": "2026-10-19T02:36:49.706791Z",
+      "updatedAt": "2026-10-19T02:37:19.935114Z"
+    }
+  },
+  "pending": null
+}

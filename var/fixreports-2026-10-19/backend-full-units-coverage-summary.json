@@ -1,0 +1,35 @@
+{
+  "scope": "Entire instrumented production bundle, offline unit run only; native/browser coverage not merged",
+  "counters": {
+    "INSTRUCTION": {
+      "missed": 40228,
+      "covered": 34327,
+      "percent": 46.04
+    },
+    "BRANCH": {
+      "missed": 3348,
+      "covered": 2803,
+      "percent": 45.57
+    },
+    "LINE": {
+      "missed": 3464,
+      "covered": 3409,
+      "percent": 49.6
+    },
+    "COMPLEXITY": {
+      "missed": 3379,
+      "covered": 1944,
+      "percent": 36.52
+    },
+    "METHOD": {
+      "missed": 1260,
+      "covered": 948,
+      "percent": 42.93
+    },
+    "CLASS": {
+      "missed": 176,
+      "covered": 212,
+      "percent": 54.64
+    }
+  }
+}

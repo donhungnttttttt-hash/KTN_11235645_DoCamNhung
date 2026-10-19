@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: vn.syp.tms.filework.NativeFeatureMigrationTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.12 s -- in vn.syp.tms.filework.NativeFeatureMigrationTest

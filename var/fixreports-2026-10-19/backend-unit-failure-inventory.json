@@ -1,0 +1,19 @@
+{
+  "selectedClasses": 74,
+  "failedClasses": 1,
+  "failures": [
+    {
+      "class": "vn.syp.tms.ai.ChatGptOAuthClientTest",
+      "tests": 3,
+      "failures": 1,
+      "errors": 0,
+      "methods": [
+        {
+          "name": "refreshAndDiscoveryShareOuterCatalogDeadlineAndValidationTimeoutRequiresReconnect",
+          "type": "org.opentest4j.AssertionFailedError",
+          "reason": "&#10;Expecting message to be:&#10;  \"AI_UNAVAILABLE\"&#10;but was:&#10;  \"AI_RECONNECT_REQUIRED\"&#10;&#10;Throwable that failed the check:&#10;&#10;vn.syp.tms.ai.OpenAiResponsesClient$Failure: AI_RECONNECT_REQUIRED&#10;\tat vn.syp.tms.ai.ChatGptConnectionService.failure(ChatGptConnectionService.java:616)&#10;\tat vn.syp.tms.ai.ChatGptConnectionService.lambda$token$23(ChatGptConnectionService.java:425)&#10;\tat vn.syp.tms"
+        }
+      ]
+    }
+  ]
+}

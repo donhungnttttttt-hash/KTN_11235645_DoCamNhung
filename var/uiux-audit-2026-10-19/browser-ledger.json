@@ -1,0 +1,494 @@
+[
+  {
+    "name": "login-320",
+    "note": "Login empty; measured CSS viewport, keyboard labels and no main writes",
+    "url": "http://127.0.0.1:5174/",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 600,
+      "pageHeight": 869,
+      "pageWidth": 234,
+      "width": 240
+    }
+  },
+  {
+    "name": "login-320-measured",
+    "note": "Actual320px; initial filename login-320 was240px calibration and is not counted as320 coverage",
+    "url": "http://127.0.0.1:5174/",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 844,
+      "pageWidth": 320,
+      "width": 320
+    }
+  },
+  {
+    "name": "admin-dashboard-320",
+    "note": "Fixture Admin overview at320; sample all table structures and labels",
+    "url": "http://127.0.0.1:5174/#/admin",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 5164,
+      "pageWidth": 314,
+      "width": 320
+    }
+  },
+  {
+    "name": "admin-project-form-320",
+    "note": "Create project dialog; no submit",
+    "url": "http://127.0.0.1:5174/#/admin/projects",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1264,
+      "pageWidth": 320,
+      "width": 320
+    }
+  },
+  {
+    "name": "admin-users-1440",
+    "note": "Search AND fixture username; all visible identity data is synthetic",
+    "url": "http://127.0.0.1:5174/#/admin/users",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 900,
+      "pageHeight": 900,
+      "pageWidth": 1440,
+      "width": 1440
+    }
+  },
+  {
+    "name": "admin-account-form-1440",
+    "note": "Account form labels/role options; no credential entered or account created",
+    "url": "http://127.0.0.1:5174/#/admin/users",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 900,
+      "pageHeight": 900,
+      "pageWidth": 1440,
+      "width": 1440
+    }
+  },
+  {
+    "name": "admin-devices-1440",
+    "note": "Fixture device list and handover/history controls; no device mutation",
+    "url": "http://127.0.0.1:5174/#/admin/devices",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 900,
+      "pageHeight": 900,
+      "pageWidth": 1440,
+      "width": 1440
+    }
+  },
+  {
+    "name": "admin-device-form-768",
+    "note": "Physical device add form at768; no submit",
+    "url": "http://127.0.0.1:5174/#/admin/devices",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1024,
+      "pageWidth": 768,
+      "width": 768
+    }
+  },
+  {
+    "name": "admin-audit-768",
+    "note": "Audit date filters, timezone copy and table at768",
+    "url": "http://127.0.0.1:5174/#/admin/audit",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1329,
+      "pageWidth": 762,
+      "width": 768
+    }
+  },
+  {
+    "name": "monkey-dialog-768",
+    "note": "Issue create modal after selecting Feature; investigate overlay CSS and footer visibility",
+    "url": "http://127.0.0.1:5174/#/issues?projectId=156&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1647,
+      "pageWidth": 768,
+      "width": 768
+    }
+  },
+  {
+    "name": "issue-detail-context-loss-768",
+    "note": "Opened SPIDER-PLUS-4 from /issues project156; inspect resulting route/project and error",
+    "url": "http://127.0.0.1:5174/#/board/issue/63?page=0&size=20&from=issues&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1989,
+      "pageWidth": 768,
+      "width": 768
+    }
+  },
+  {
+    "name": "issue-expanded-768",
+    "note": "Expand toggles state but scoped CSS missing; dialog remains inline",
+    "url": "http://127.0.0.1:5174/#/board/issue/63?page=0&size=20&from=issues&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1989,
+      "pageWidth": 768,
+      "width": 768
+    }
+  },
+  {
+    "name": "document-390",
+    "note": "FeatureA internal60 fixture; case Status/Issue/edit/toolbar layout at390",
+    "url": "http://127.0.0.1:5174/#/board/testing/features/187/documents/155?projectId=156&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1177,
+      "pageWidth": 385,
+      "width": 390
+    }
+  },
+  {
+    "name": "assignment-390",
+    "note": "Shared assignment dialog loaded; no assignment saved",
+    "url": "http://127.0.0.1:5174/#/board/testing/features/187/documents/155?projectId=156&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1177,
+      "pageWidth": 390,
+      "width": 390
+    }
+  },
+  {
+    "name": "case-detail-390",
+    "note": "Case source detail modal; previous/next controls state",
+    "url": "http://127.0.0.1:5174/#/board/testing/features/187/documents/155?projectId=156&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1177,
+      "pageWidth": 390,
+      "width": 390
+    }
+  },
+  {
+    "name": "cell-editor-390",
+    "note": "Editable content modal; no write, focus and visible footer checked",
+    "url": "http://127.0.0.1:5174/#/board/testing/features/187/documents/155?projectId=156&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1177,
+      "pageWidth": 390,
+      "width": 390
+    }
+  },
+  {
+    "name": "feature-created-390",
+    "note": "Created one synthetic audit Feature only in isolated schema206 via real UI",
+    "url": "http://127.0.0.1:5174/#/board/testing?projectId=156&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1117,
+      "pageWidth": 385,
+      "width": 390
+    }
+  },
+  {
+    "name": "import-select-390",
+    "note": "Browser chooser opened but setFiles refused by tool despite user fileURL access confirmation; API setup is separate",
+    "url": "http://127.0.0.1:5174/#/board/testing/features/261?projectId=156&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 844,
+      "pageWidth": 390,
+      "width": 390
+    }
+  },
+  {
+    "name": "tester-status-390",
+    "note": "Tester actual writes only own audit fixture; OK/P/NA=3of5=60%. One pointer attempt intercepted while Issue preview open, keyboard path succeeded; cause not yet proven.",
+    "url": "http://127.0.0.1:5174/#/board/testing/features/261/documents/267?projectId=156&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1109,
+      "pageWidth": 385,
+      "width": 390
+    }
+  },
+  {
+    "name": "case-issue-form-390",
+    "note": "Case Issue create has same missing scopedCSS; keyboard trigger observed, own audit row only",
+    "url": "http://127.0.0.1:5174/#/board/testing/features/261/documents/267?projectId=156&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1109,
+      "pageWidth": 390,
+      "width": 390
+    }
+  },
+  {
+    "name": "case-issue-saved-390",
+    "note": "Keyboard save workaround succeeded on own fixture; returned to same case, count1, no main mutation; modal still defective",
+    "url": "http://127.0.0.1:5174/#/board/testing/features/261/documents/267?projectId=156&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1109,
+      "pageWidth": 385,
+      "width": 390
+    }
+  },
+  {
+    "name": "issue-preview-keyboard-390",
+    "note": "Tab from populated Issue preview goes to history; portal content not reached by next Tab",
+    "url": "http://127.0.0.1:5174/#/board/testing/features/261/documents/267?projectId=156&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1109,
+      "pageWidth": 385,
+      "width": 390
+    }
+  },
+  {
+    "name": "analysis-feature-scope-1440",
+    "note": "Selected audit Feature has3/5=60%; inspect whether table labels explain other Feature rows",
+    "url": "http://127.0.0.1:5174/#/analysis?projectId=156",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 900,
+      "pageHeight": 1922,
+      "pageWidth": 1434,
+      "width": 1440
+    }
+  },
+  {
+    "name": "report-draft-lost-1440",
+    "note": "Unsaved report draft disappeared after sidebar Tổng quan→Analysis; no warning and no save performed",
+    "url": "http://127.0.0.1:5174/#/analysis",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 900,
+      "pageHeight": 2050,
+      "pageWidth": 1434,
+      "width": 1440
+    }
+  },
+  {
+    "name": "report-saved-1440",
+    "note": "PM saves manual Markdown on own audit Feature; script and javascript link rendered as text; no provider calls",
+    "url": "http://127.0.0.1:5174/#/analysis",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 900,
+      "pageHeight": 2074,
+      "pageWidth": 1434,
+      "width": 1440
+    }
+  },
+  {
+    "name": "note-editor-768",
+    "note": "PM created one synthetic Note and opens unsaved edit before controlled competing edit",
+    "url": "http://127.0.0.1:5174/#/settings/notes?projectId=156",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1285,
+      "pageWidth": 762,
+      "width": 768
+    }
+  },
+  {
+    "name": "note-conflict-after-reload-768",
+    "note": "Actual409 then Tải lại Note then save still409, draft retained but no reconcile action",
+    "url": "http://127.0.0.1:5174/#/settings/notes?projectId=156",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1321,
+      "pageWidth": 762,
+      "width": 768
+    }
+  },
+  {
+    "name": "rules-pm-768",
+    "note": "Current PM-visible Rules route; inspect obsolete required-fields copy",
+    "url": "http://127.0.0.1:5174/#/settings/rules?projectId=156",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1024,
+      "pageWidth": 768,
+      "width": 768
+    }
+  },
+  {
+    "name": "members-devices-pm-768",
+    "note": "PM project members + assets after both reads finish; existing fixture only",
+    "url": "http://127.0.0.1:5174/#/settings/members?projectId=156",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1060,
+      "pageWidth": 762,
+      "width": 768
+    }
+  },
+  {
+    "name": "rules-loaded-pm-768",
+    "note": "Rules after load; separate empty fixture from source-only existing DEMO copy issue",
+    "url": "http://127.0.0.1:5174/#/settings/rules?projectId=156",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1024,
+      "pageWidth": 768,
+      "width": 768
+    }
+  },
+  {
+    "name": "handbook-empty-pm-768",
+    "note": "Empty handbook PM view; no document mutation",
+    "url": "http://127.0.0.1:5174/#/settings/handbook?projectId=156",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1024,
+      "pageWidth": 768,
+      "width": 768
+    }
+  },
+  {
+    "name": "analysis-dev-denied-768",
+    "note": "DEV deep link denies management Analysis in UI; separate HTTP403 proof",
+    "url": "http://127.0.0.1:5174/#/analysis?projectId=156",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1024,
+      "pageWidth": 768,
+      "width": 768
+    }
+  },
+  {
+    "name": "board-kanban-dev-1440",
+    "note": "DEV Kanban after load; source-of-truth Bug/QA, no drag requirement",
+    "url": "http://127.0.0.1:5174/#/board?projectId=156",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 900,
+      "pageHeight": 996,
+      "pageWidth": 1434,
+      "width": 1440
+    }
+  },
+  {
+    "name": "board-list-dev-1440",
+    "note": "Same data in list view; status/text and navigation",
+    "url": "http://127.0.0.1:5174/#/board/list?page=0&size=20",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 900,
+      "pageHeight": 900,
+      "pageWidth": 1440,
+      "width": 1440
+    }
+  },
+  {
+    "name": "dev-issue-note-1440",
+    "note": "DEV assigned fixture Issue4 adds one audit comment using keyboard workaround; no Status change or main writes",
+    "url": "http://127.0.0.1:5174/#/board/issue/63?page=0&size=20&view=list",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 900,
+      "pageHeight": 1796,
+      "pageWidth": 1440,
+      "width": 1440
+    }
+  },
+  {
+    "name": "chat-dev-unavailable-320",
+    "note": "Chat320 source unavailable; disabled send/presets have visible reason, no provider call",
+    "url": "http://127.0.0.1:5174/#/board/list?page=0&size=20",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1038,
+      "pageWidth": 314,
+      "width": 320
+    }
+  },
+  {
+    "name": "chat-scope-320",
+    "note": "Chat scope selector, default authorized projects vs one project; no chat send",
+    "url": "http://127.0.0.1:5174/#/board/list?page=0&size=20",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1038,
+      "pageWidth": 314,
+      "width": 320
+    }
+  },
+  {
+    "name": "chat-config-320",
+    "note": "AI settings inside chat; no provider/config mutation or OAuth connection",
+    "url": "http://127.0.0.1:5174/#/board/list?page=0&size=20",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 1038,
+      "pageWidth": 314,
+      "width": 320
+    }
+  },
+  {
+    "name": "chat-short-height-320",
+    "note": "Short viewport320x568; no virtual keyboard or touch-emulation claim",
+    "url": "http://127.0.0.1:5174/#/board/list?page=0&size=20",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 568,
+      "pageHeight": 1038,
+      "pageWidth": 314,
+      "width": 320
+    }
+  },
+  {
+    "name": "main-archive-readonly",
+    "note": "Main project1 archive readiness ONLY; no confirm/save/reason submitted",
+    "url": "http://localhost:5173/#/admin/projects/1",
+    "viewport": {
+      "devicePixelRatio": 0.9375,
+      "height": 862,
+      "pageHeight": 3276,
+      "pageWidth": 1381,
+      "width": 1381
+    }
+  },
+  {
+    "name": "main-archived-create-enabled",
+    "note": "Main archived project11 opens enabled create form; no data entered or submitted",
+    "url": "http://localhost:5173/#/board/testing?projectId=11&workspace=1",
+    "viewport": {
+      "devicePixelRatio": 0.9375,
+      "height": 862,
+      "pageHeight": 862,
+      "pageWidth": 1381,
+      "width": 1381
+    }
+  }
+]

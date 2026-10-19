@@ -1,0 +1,5 @@
+{
+  "status": "NOT_CONFIRMED",
+  "stage": "browser_download",
+  "reason": "Timed out after 10000ms waiting for download."
+}

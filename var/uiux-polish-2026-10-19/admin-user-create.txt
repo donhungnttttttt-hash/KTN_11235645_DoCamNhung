@@ -1,0 +1,377 @@
+- link "Đến nội dung":
+  - /url: "#admin-main"
+- banner:
+  - strong: TMS
+  - generic: Quản trị hệ thống
+  - generic: FR12 Admin
+  - button "Đăng xuất"
+  - button "Mở chat AI":
+- complementary:
+  - navigation "Quản trị":
+    - link "Tổng quan":
+      - /url: "#/admin"
+      - generic: Tổng quan
+    - link "Dự án":
+      - /url: "#/admin/projects"
+      - generic: Dự án
+    - link "Người dùng":
+      - /url: "#/admin/users"
+      - generic: Người dùng
+    - link "Thiết bị":
+      - /url: "#/admin/devices"
+      - generic: Thiết bị
+    - link "Nhật ký quản trị":
+      - /url: "#/admin/audit"
+      - generic: Nhật ký quản trị
+    - link "Không gian dự án":
+      - /url: "#/dashboard?workspace=1"
+      - generic: Không gian dự án
+- main:
+  - heading "Người dùng" [level=1]
+  - button "Tạo tài khoản"
+  - dialog "Tạo tài khoản":
+    - heading "Tạo tài khoản" [active] [level=2]
+    - button "Đóng":
+    - text: Tên đăng nhập
+    - textbox "Tên đăng nhập"
+    - generic: "3–64 ký tự: chữ không dấu, số, dấu chấm, gạch dưới hoặc gạch ngang; bắt đầu bằng chữ hoặc số."
+    - text: Tên hiển thị
+    - textbox "Tên hiển thị"
+    - text: Mật khẩu
+    - textbox "Mật khẩu"
+    - generic: Từ 12 đến 128 ký tự. Có thể dán hoặc dùng trình quản lý mật khẩu.
+    - text: Vai trò tài khoản
+    - combobox "Vai trò tài khoản":
+      - option "TESTER" [selected]
+      - option "DEV"
+      - option "PM"
+      - option "ADMIN"
+    - button "Lưu tài khoản"
+    - button "Hủy"
+  - text: Tìm username hoặc tên
+  - searchbox "Tìm username hoặc tên"
+  - text: Vai trò
+  - combobox "Vai trò":
+    - option "Tất cả" [selected]
+    - option "ADMIN"
+    - option "PM"
+    - option "TESTER"
+    - option "DEV"
+  - text: Trạng thái
+  - combobox "Trạng thái":
+    - option "Tất cả" [selected]
+    - option "Hoạt động"
+    - option "Đã khóa"
+  - generic: Dự án của người dùng
+  - button "Dự án của người dùng":
+    - generic: Tất cả dự án
+  - paragraph: 1439 tài khoản · Trang 1
+  - paragraph: Kéo thanh cuộn ngang để xem thêm cột. Có thể dùng Shift + con lăn hoặc phím ← → khi chọn bảng.
+  - region "Tài khoản hệ thống":
+    - table:
+      - rowgroup:
+        - row "Tài khoản Vai trò Trạng thái Dự án Tạo lúc Thao tác":
+          - columnheader "Tài khoản"
+          - columnheader "Vai trò"
+          - columnheader "Trạng thái"
+          - columnheader "Dự án"
+          - columnheader "Tạo lúc"
+          - columnheader "Thao tác"
+      - rowgroup:
+        - row "admin2029c651 @fr.admin2029c651 ADMIN Hoạt động FR2029c651 · PM 01:21:53 19/10/2026 Khóa":
+          - rowheader "admin2029c651 @fr.admin2029c651":
+            - text: admin2029c651
+            - generic: "@fr.admin2029c651"
+          - cell "ADMIN"
+          - cell "Hoạt động"
+          - cell "FR2029c651 · PM":
+            - paragraph:
+              - link "FR2029c651":
+                - /url: "#/admin/projects/1"
+              - text: · PM
+          - cell "01:21:53 19/10/2026":
+            - time: 01:21:53 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "pm2029c651 @fr.pm2029c651 PM Hoạt động FR2029c651 · PM 01:21:53 19/10/2026 Khóa Cấp quyền tạo Tester":
+          - rowheader "pm2029c651 @fr.pm2029c651":
+            - text: pm2029c651
+            - generic: "@fr.pm2029c651"
+          - cell "PM"
+          - cell "Hoạt động"
+          - cell "FR2029c651 · PM":
+            - paragraph:
+              - link "FR2029c651":
+                - /url: "#/admin/projects/1"
+              - text: · PM
+          - cell "01:21:53 19/10/2026":
+            - time: 01:21:53 19/10/2026
+          - cell "Khóa Cấp quyền tạo Tester":
+            - button "Khóa"
+            - button "Cấp quyền tạo Tester"
+        - row "a2029c651 @fr.a2029c651 TESTER Hoạt động FR2029c651 · TESTER 01:21:53 19/10/2026 Khóa":
+          - rowheader "a2029c651 @fr.a2029c651":
+            - text: a2029c651
+            - generic: "@fr.a2029c651"
+          - cell "TESTER"
+          - cell "Hoạt động"
+          - cell "FR2029c651 · TESTER":
+            - paragraph:
+              - link "FR2029c651":
+                - /url: "#/admin/projects/1"
+              - text: · TESTER
+          - cell "01:21:53 19/10/2026":
+            - time: 01:21:53 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "b2029c651 @fr.b2029c651 TESTER Hoạt động FR2029c651 · TESTER 01:21:53 19/10/2026 Khóa":
+          - rowheader "b2029c651 @fr.b2029c651":
+            - text: b2029c651
+            - generic: "@fr.b2029c651"
+          - cell "TESTER"
+          - cell "Hoạt động"
+          - cell "FR2029c651 · TESTER":
+            - paragraph:
+              - link "FR2029c651":
+                - /url: "#/admin/projects/1"
+              - text: · TESTER
+          - cell "01:21:53 19/10/2026":
+            - time: 01:21:53 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "dev2029c651 @fr.dev2029c651 DEV Hoạt động FR2029c651 · DEV 01:21:53 19/10/2026 Khóa":
+          - rowheader "dev2029c651 @fr.dev2029c651":
+            - text: dev2029c651
+            - generic: "@fr.dev2029c651"
+          - cell "DEV"
+          - cell "Hoạt động"
+          - cell "FR2029c651 · DEV":
+            - paragraph:
+              - link "FR2029c651":
+                - /url: "#/admin/projects/1"
+              - text: · DEV
+          - cell "01:21:53 19/10/2026":
+            - time: 01:21:53 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "outside2029c651 @fr.outside2029c651 PM Hoạt động Chưa có dự án 01:21:53 19/10/2026 Khóa Cấp quyền tạo Tester":
+          - rowheader "outside2029c651 @fr.outside2029c651":
+            - text: outside2029c651
+            - generic: "@fr.outside2029c651"
+          - cell "PM"
+          - cell "Hoạt động"
+          - cell "Chưa có dự án"
+          - cell "01:21:53 19/10/2026":
+            - time: 01:21:53 19/10/2026
+          - cell "Khóa Cấp quyền tạo Tester":
+            - button "Khóa"
+            - button "Cấp quyền tạo Tester"
+        - row "admin64bf36d4 @fr.admin64bf36d4 ADMIN Hoạt động FR64bf36d4 · PM 01:21:55 19/10/2026 Khóa":
+          - rowheader "admin64bf36d4 @fr.admin64bf36d4":
+            - text: admin64bf36d4
+            - generic: "@fr.admin64bf36d4"
+          - cell "ADMIN"
+          - cell "Hoạt động"
+          - cell "FR64bf36d4 · PM":
+            - paragraph:
+              - link "FR64bf36d4":
+                - /url: "#/admin/projects/2"
+              - text: · PM
+          - cell "01:21:55 19/10/2026":
+            - time: 01:21:55 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "pm64bf36d4 @fr.pm64bf36d4 PM Hoạt động FR64bf36d4 · PM 01:21:55 19/10/2026 Khóa Cấp quyền tạo Tester":
+          - rowheader "pm64bf36d4 @fr.pm64bf36d4":
+            - text: pm64bf36d4
+            - generic: "@fr.pm64bf36d4"
+          - cell "PM"
+          - cell "Hoạt động"
+          - cell "FR64bf36d4 · PM":
+            - paragraph:
+              - link "FR64bf36d4":
+                - /url: "#/admin/projects/2"
+              - text: · PM
+          - cell "01:21:55 19/10/2026":
+            - time: 01:21:55 19/10/2026
+          - cell "Khóa Cấp quyền tạo Tester":
+            - button "Khóa"
+            - button "Cấp quyền tạo Tester"
+        - row "a64bf36d4 @fr.a64bf36d4 TESTER Hoạt động FR64bf36d4 · TESTER 01:21:55 19/10/2026 Khóa":
+          - rowheader "a64bf36d4 @fr.a64bf36d4":
+            - text: a64bf36d4
+            - generic: "@fr.a64bf36d4"
+          - cell "TESTER"
+          - cell "Hoạt động"
+          - cell "FR64bf36d4 · TESTER":
+            - paragraph:
+              - link "FR64bf36d4":
+                - /url: "#/admin/projects/2"
+              - text: · TESTER
+          - cell "01:21:55 19/10/2026":
+            - time: 01:21:55 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "b64bf36d4 @fr.b64bf36d4 TESTER Hoạt động FR64bf36d4 · TESTER 01:21:55 19/10/2026 Khóa":
+          - rowheader "b64bf36d4 @fr.b64bf36d4":
+            - text: b64bf36d4
+            - generic: "@fr.b64bf36d4"
+          - cell "TESTER"
+          - cell "Hoạt động"
+          - cell "FR64bf36d4 · TESTER":
+            - paragraph:
+              - link "FR64bf36d4":
+                - /url: "#/admin/projects/2"
+              - text: · TESTER
+          - cell "01:21:55 19/10/2026":
+            - time: 01:21:55 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "dev64bf36d4 @fr.dev64bf36d4 DEV Hoạt động FR64bf36d4 · DEV 01:21:55 19/10/2026 Khóa":
+          - rowheader "dev64bf36d4 @fr.dev64bf36d4":
+            - text: dev64bf36d4
+            - generic: "@fr.dev64bf36d4"
+          - cell "DEV"
+          - cell "Hoạt động"
+          - cell "FR64bf36d4 · DEV":
+            - paragraph:
+              - link "FR64bf36d4":
+                - /url: "#/admin/projects/2"
+              - text: · DEV
+          - cell "01:21:55 19/10/2026":
+            - time: 01:21:55 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "outside64bf36d4 @fr.outside64bf36d4 PM Hoạt động Chưa có dự án 01:21:55 19/10/2026 Khóa Cấp quyền tạo Tester":
+          - rowheader "outside64bf36d4 @fr.outside64bf36d4":
+            - text: outside64bf36d4
+            - generic: "@fr.outside64bf36d4"
+          - cell "PM"
+          - cell "Hoạt động"
+          - cell "Chưa có dự án"
+          - cell "01:21:55 19/10/2026":
+            - time: 01:21:55 19/10/2026
+          - cell "Khóa Cấp quyền tạo Tester":
+            - button "Khóa"
+            - button "Cấp quyền tạo Tester"
+        - row "admin1be05768 @fr.admin1be05768 ADMIN Hoạt động FR1be05768 · PM 01:21:56 19/10/2026 Khóa":
+          - rowheader "admin1be05768 @fr.admin1be05768":
+            - text: admin1be05768
+            - generic: "@fr.admin1be05768"
+          - cell "ADMIN"
+          - cell "Hoạt động"
+          - cell "FR1be05768 · PM":
+            - paragraph:
+              - link "FR1be05768":
+                - /url: "#/admin/projects/3"
+              - text: · PM
+          - cell "01:21:56 19/10/2026":
+            - time: 01:21:56 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "pm1be05768 @fr.pm1be05768 PM Hoạt động FR1be05768 · PM 01:21:56 19/10/2026 Khóa Cấp quyền tạo Tester":
+          - rowheader "pm1be05768 @fr.pm1be05768":
+            - text: pm1be05768
+            - generic: "@fr.pm1be05768"
+          - cell "PM"
+          - cell "Hoạt động"
+          - cell "FR1be05768 · PM":
+            - paragraph:
+              - link "FR1be05768":
+                - /url: "#/admin/projects/3"
+              - text: · PM
+          - cell "01:21:56 19/10/2026":
+            - time: 01:21:56 19/10/2026
+          - cell "Khóa Cấp quyền tạo Tester":
+            - button "Khóa"
+            - button "Cấp quyền tạo Tester"
+        - row "a1be05768 @fr.a1be05768 TESTER Hoạt động FR1be05768 · TESTER 01:21:56 19/10/2026 Khóa":
+          - rowheader "a1be05768 @fr.a1be05768":
+            - text: a1be05768
+            - generic: "@fr.a1be05768"
+          - cell "TESTER"
+          - cell "Hoạt động"
+          - cell "FR1be05768 · TESTER":
+            - paragraph:
+              - link "FR1be05768":
+                - /url: "#/admin/projects/3"
+              - text: · TESTER
+          - cell "01:21:56 19/10/2026":
+            - time: 01:21:56 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "b1be05768 @fr.b1be05768 TESTER Hoạt động FR1be05768 · TESTER 01:21:56 19/10/2026 Khóa":
+          - rowheader "b1be05768 @fr.b1be05768":
+            - text: b1be05768
+            - generic: "@fr.b1be05768"
+          - cell "TESTER"
+          - cell "Hoạt động"
+          - cell "FR1be05768 · TESTER":
+            - paragraph:
+              - link "FR1be05768":
+                - /url: "#/admin/projects/3"
+              - text: · TESTER
+          - cell "01:21:56 19/10/2026":
+            - time: 01:21:56 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "dev1be05768 @fr.dev1be05768 DEV Hoạt động FR1be05768 · DEV 01:21:56 19/10/2026 Khóa":
+          - rowheader "dev1be05768 @fr.dev1be05768":
+            - text: dev1be05768
+            - generic: "@fr.dev1be05768"
+          - cell "DEV"
+          - cell "Hoạt động"
+          - cell "FR1be05768 · DEV":
+            - paragraph:
+              - link "FR1be05768":
+                - /url: "#/admin/projects/3"
+              - text: · DEV
+          - cell "01:21:56 19/10/2026":
+            - time: 01:21:56 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "outside1be05768 @fr.outside1be05768 PM Hoạt động Chưa có dự án 01:21:56 19/10/2026 Khóa Cấp quyền tạo Tester":
+          - rowheader "outside1be05768 @fr.outside1be05768":
+            - text: outside1be05768
+            - generic: "@fr.outside1be05768"
+          - cell "PM"
+          - cell "Hoạt động"
+          - cell "Chưa có dự án"
+          - cell "01:21:56 19/10/2026":
+            - time: 01:21:56 19/10/2026
+          - cell "Khóa Cấp quyền tạo Tester":
+            - button "Khóa"
+            - button "Cấp quyền tạo Tester"
+        - row "adminfb923fcc @fr.adminfb923fcc ADMIN Hoạt động FRfb923fcc · PM 01:21:57 19/10/2026 Khóa":
+          - rowheader "adminfb923fcc @fr.adminfb923fcc":
+            - text: adminfb923fcc
+            - generic: "@fr.adminfb923fcc"
+          - cell "ADMIN"
+          - cell "Hoạt động"
+          - cell "FRfb923fcc · PM":
+            - paragraph:
+              - link "FRfb923fcc":
+                - /url: "#/admin/projects/4"
+              - text: · PM
+          - cell "01:21:57 19/10/2026":
+            - time: 01:21:57 19/10/2026
+          - cell "Khóa":
+            - button "Khóa"
+        - row "pmfb923fcc @fr.pmfb923fcc PM Hoạt động FRfb923fcc · PM 01:21:57 19/10/2026 Khóa Cấp quyền tạo Tester":
+          - rowheader "pmfb923fcc @fr.pmfb923fcc":
+            - text: pmfb923fcc
+            - generic: "@fr.pmfb923fcc"
+          - cell "PM"
+          - cell "Hoạt động"
+          - cell "FRfb923fcc · PM":
+            - paragraph:
+              - link "FRfb923fcc":
+                - /url: "#/admin/projects/4"
+              - text: · PM
+          - cell "01:21:57 19/10/2026":
+            - time: 01:21:57 19/10/2026
+          - cell "Khóa Cấp quyền tạo Tester":
+            - button "Khóa"
+            - button "Cấp quyền tạo Tester"
+  - button "Trang trước" [disabled]
+  - button "Trang sau"

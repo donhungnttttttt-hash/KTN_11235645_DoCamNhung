@@ -1,0 +1,27 @@
+{
+  "http": 200,
+  "status": "completed",
+  "outputItems": [
+    {
+      "type": "message",
+      "role": "assistant",
+      "contentTypes": [
+        "output_text"
+      ]
+    }
+  ],
+  "textCount": 1,
+  "valueKeys": [
+    "answer"
+  ],
+  "textType": "undefined",
+  "responseIdLength": 60,
+  "responseIdAllowed": true,
+  "model": "gpt-5.6-luna",
+  "modelAllowed": true,
+  "usage": {
+    "input_tokens": 2553,
+    "output_tokens": 20,
+    "total_tokens": 2573
+  }
+}

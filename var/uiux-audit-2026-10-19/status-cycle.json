@@ -1,0 +1,16 @@
+{
+  "origin": "http://127.0.0.1:5174",
+  "projectId": 156,
+  "featureId": 261,
+  "documentId": 267,
+  "actorRole": "TESTER",
+  "statuses": [
+    "OK",
+    "NG",
+    "P",
+    "NA",
+    "Unexecuted"
+  ],
+  "unassignedCase4Enabled": false,
+  "existingBusinessDataWrites": 0
+}

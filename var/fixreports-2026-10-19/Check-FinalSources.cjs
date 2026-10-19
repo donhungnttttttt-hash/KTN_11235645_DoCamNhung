@@ -1,0 +1,11 @@
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),{spawnSync}=require('node:child_process');
+const root=path.resolve(__dirname,'../..');
+function walk(folder){return fs.existsSync(folder)?fs.readdirSync(folder,{withFileTypes:true}).flatMap(entry=>{const file=path.join(folder,entry.name);return entry.isDirectory()?walk(file):[file];}):[];}
+const paths=['Backend/src','Frontend/src','docs','tasks'].flatMap(folder=>walk(path.join(root,folder))).concat(['AGENTS.md','GLOSSARY.md','FixReports.md'].map(file=>path.join(root,file))).filter(file=>fs.existsSync(file)&&/\.(?:java|jsx?|css|md|json|ya?ml|sql)$/.test(file));
+const credentialShape=/sk-[A-Za-z0-9_-]{24,}|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/g,findings=[],whitespace=[],hashes=[];
+for(const file of paths){const bytes=fs.readFileSync(file),content=bytes.toString('utf8'),relative=path.relative(root,file).replaceAll('\\','/');hashes.push({path:relative,sha256:crypto.createHash('sha256').update(bytes).digest('hex')});content.split(/\r?\n/).forEach((line,index)=>{if(/[\t ]+$/.test(line))whitespace.push({path:relative,line:index+1});for(const match of line.matchAll(credentialShape))findings.push({path:relative,line:index+1,shapeSha256:crypto.createHash('sha256').update(match[0]).digest('hex'),syntheticContext:/\/test\/|\.test\./.test(relative)});});}
+const result=spawnSync('rtk',['git','diff','--check'],{cwd:root,encoding:'utf8',shell:false,windowsHide:true});
+const proof={capturedAt:new Date().toISOString(),scope:'Source/docs/tasks only; excludes var, local runtime secrets, dependencies and build outputs',files:paths.length,secretShapeFindings:findings,whitespaceOccurrences:whitespace,gitDiffCheck:result.status===0?'PASS':'FAIL',gitDiffOutput:result.stdout||result.stderr};
+fs.writeFileSync(path.join(__dirname,'final-source-hashes.json'),JSON.stringify(hashes,null,2)+'\n');fs.writeFileSync(path.join(__dirname,'final-source-check.json'),JSON.stringify(proof,null,2)+'\n');
+console.log(JSON.stringify({files:paths.length,secretShapeFindings:findings,whitespaceOccurrences:whitespace.length,gitDiffCheck:proof.gitDiffCheck}));
+if(result.status!==0||findings.some(finding=>!finding.syntheticContext))process.exitCode=1;

@@ -1,0 +1,94 @@
+{
+  "identity": {
+    "origin": "http://127.0.0.1:8081",
+    "projectId": 156,
+    "featureId": 261,
+    "purpose": "UIUX audit synthetic fixture"
+  },
+  "done": {
+    "preview": {
+      "id": 267,
+      "featureId": 261,
+      "fileName": "ux-audit-input.xlsx",
+      "status": "PREVIEW",
+      "totalRows": 5,
+      "validRows": 5,
+      "errorRows": 0,
+      "format": "INTERNAL_V1",
+      "sheetName": "TestCases",
+      "rows": [
+        {
+          "id": 1420,
+          "rowNumber": 2,
+          "caseNo": "1",
+          "suiteCode": "XLSX-267",
+          "titleVi": "FR12 · Đỗ Cẩm Nhung · Case 1",
+          "valid": true,
+          "errorMessage": null
+        },
+        {
+          "id": 1421,
+          "rowNumber": 3,
+          "caseNo": "2",
+          "suiteCode": "XLSX-267",
+          "titleVi": "FR12 · Đỗ Cẩm Nhung · Case 2",
+          "valid": true,
+          "errorMessage": null
+        },
+        {
+          "id": 1422,
+          "rowNumber": 4,
+          "caseNo": "3",
+          "suiteCode": "XLSX-267",
+          "titleVi": "FR12 · Đỗ Cẩm Nhung · Case 3",
+          "valid": true,
+          "errorMessage": null
+        },
+        {
+          "id": 1423,
+          "rowNumber": 5,
+          "caseNo": "4",
+          "suiteCode": "XLSX-267",
+          "titleVi": "FR12 · Đỗ Cẩm Nhung · Case 4",
+          "valid": true,
+          "errorMessage": null
+        },
+        {
+          "id": 1424,
+          "rowNumber": 6,
+          "caseNo": "5",
+          "suiteCode": "XLSX-267",
+          "titleVi": "FR12 · Đỗ Cẩm Nhung · Case 5",
+          "valid": true,
+          "errorMessage": null
+        }
+      ]
+    },
+    "commit": {
+      "id": 267,
+      "projectId": 156,
+      "fileName": "ux-audit-input.xlsx",
+      "sheetName": "TestCases",
+      "format": "INTERNAL_V1",
+      "totalRows": 5,
+      "caseCount": 5,
+      "createdAt": "2026-10-19T02:30:59.813425Z",
+      "updatedAt": "2026-10-19T02:30:59.954971Z",
+      "updatedBy": "FR12 Admin",
+      "hasSourceFile": true,
+      "sourceCounts": {},
+      "resultCounts": {
+        "UNEXECUTED": 5
+      },
+      "version": 0,
+      "archivedAt": null,
+      "featureId": 261,
+      "featureName": "UX-AUDIT-20261019 · Fixture riêng",
+      "documentCount": 1,
+      "testedCaseCount": 0,
+      "progressPercent": 0,
+      "canCreateIssue": true
+    }
+  },
+  "pending": null
+}

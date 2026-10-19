@@ -1,0 +1,9 @@
+{
+  "beforeDump": "var/mysql-native/backups/2026-10-18T10-28-22-959Z-tms.sql",
+  "afterDump": "var/mysql-native/backups/2026-10-18T10-32-09-492Z-tms.sql",
+  "beforeCount": 65,
+  "afterCount": 65,
+  "beforeHash": "c9d33269e9917db470295d1ace56c3917517cccee55b04f91f8a0491c8c46476",
+  "afterHash": "c9d33269e9917db470295d1ace56c3917517cccee55b04f91f8a0491c8c46476",
+  "unchanged": true
+}

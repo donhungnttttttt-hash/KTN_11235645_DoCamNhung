@@ -1,0 +1,48 @@
+
+    @Test void workersReceiveSelectedFilePersonalProgressAndActualCaseHistoryBeyondSamples()throws Exception{
+        byte[] twelve;
+        try(var book=new org.apache.poi.xssf.usermodel.XSSFWorkbook(new java.io.ByteArrayInputStream(internal()));var out=new java.io.ByteArrayOutputStream()){
+            for(int n=6;n<=12;n++){var row=book.getSheetAt(0).createRow(n);var cells=List.of("TC"+n,"SUITE","Title"+n,"","Steps"+n,"Expected"+n,"","","","","");for(int col=0;col<cells.size();col++)row.createCell(col).setCellValue(cells.get(col));}book.write(out);twelve=out.toByteArray();
+        }
+        long f=feature("Worker facts"),d=imported(f,twelve);db.update("UPDATE import_batches SET file_name='Long file.xlsx' WHERE project_id=? AND id=?",p,d);
+        var ids=new ArrayList<Long>();read(d).path("rows").forEach(row->ids.add(row.path("rowId").asLong()));assertThat(ids).hasSize(12);
+        assertThat(assign(d,pm,0,List.of(scope(bm,ids))).getResponse().getStatus()).isEqualTo(200);result(d,ids.get(11),b,"NG",0,200);
+        assertThat(assign(d,pm,1,List.of(scope(bm,List.of()),scope(am,ids))).getResponse().getStatus()).isEqualTo(200);result(d,ids.get(11),pm,"OK",1,200);
+        for(int n=0;n<6;n++)result(d,ids.get(n),a,n==0?"NA":n==1?"P":"OK",0,200);
+        long other=imported(feature("Other feature"),internal());var otherRows=new ArrayList<Long>();read(other).path("rows").forEach(row->otherRows.add(row.path("rowId").asLong()));assertThat(assign(other,pm,0,List.of(scope(am,otherRows))).getResponse().getStatus()).isEqualTo(200);
+        for(int n=0;n<11;n++)imported(f,internal()); // Requested readable file is older than the ten-file sample.
+        long allowed=p;
+        try{p=projects.create(pm.getId(),new vn.syp.tms.project.ProjectDtos.CreateProject("WH"+UUID.randomUUID().toString().substring(0,8),"FOREIGN_WORKER_FACTS","","Asia/Ho_Chi_Minh")).id();long hidden=imported(feature("Hidden worker feature"),twelve);db.update("UPDATE import_batches SET file_name='Long file.xlsx' WHERE project_id=? AND id=?",p,hidden);db.update("UPDATE test_case_revisions SET title_vi='FOREIGN_CASE_HISTORY' WHERE project_id=?",p);}finally{p=allowed;}
+        var checked=new org.assertj.core.api.SoftAssertions();
+        for(var reader:List.of(a,dev)){
+            login(reader);var scope=portfolio.currentProject(reader.getId(),p,f);var task=portfolio.prepareProject(reader.getId(),p,f,scope.reference(),UUID.randomUUID().toString(),"Tiến độ Long file.xlsx và phần việc của tôi, ai đã từng ghi Status TC12?");var value=facts(task);
+            checked.assertThat(value.has("personal")).isTrue();checked.assertThat(value.path("personal").path("assignment").path("assignedCases").asInt()).isEqualTo(reader==a?12:0);checked.assertThat(value.path("personal").path("assignment").path("testedCases").asInt()).isEqualTo(reader==a?7:0);
+            var progress=value.path("selectedFileProgress");checked.assertThat(progress.size()).isEqualTo(1);if(!progress.isEmpty()){checked.assertThat(progress.get(0).path("documentId").asLong()).isEqualTo(d);checked.assertThat(progress.get(0).path("total").asInt()).isEqualTo(12);checked.assertThat(progress.get(0).path("tested").asInt()).isEqualTo(7);checked.assertThat(progress.get(0).path("executionPercent").asDouble()).isEqualTo(58.33);}
+            var selected=value.path("caseSample").get(0);checked.assertThat(selected.path("sourceId").asText()).isEqualTo("TC12");checked.assertThat(selected.path("resultHistory").findValuesAsText("actor")).containsExactlyInAnyOrder(b.getDisplayName(),pm.getDisplayName());
+            assertThat(value.has("execution")).isFalse();assertThat(value.has("workByStatus")).isFalse();assertThat(value.has("workload")).isFalse();assertThat(task.data().toString()).doesNotContain("FOREIGN_WORKER_FACTS","FOREIGN_CASE_HISTORY");
+            var named=facts(portfolio.prepareProject(reader.getId(),p,f,scope.reference(),UUID.randomUUID().toString(),"Ai đã ghi Status cho case Title12 trong Long file.xlsx?"));
+            checked.assertThat(named.path("caseSample").get(0).path("sourceId").asText()).isEqualTo("TC12");
+            checked.assertThat(named.path("sourceFiles").toString()).contains("Long file.xlsx");
+        }
+        checked.assertAll();
+    }
+
+    @Test void archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts()throws Exception{
+        long f=feature("Issue active scope"),active=imported(f,internal()),hidden=imported(f,internal());
+        for(int n=0;n<3;n++){
+            String title=n==0?"Active readable issue":n==1?"ARCHIVED_DOCUMENT_ISSUE":"Monkey without document";String key="AF-"+UUID.randomUUID();
+            db.update("INSERT INTO work_items(project_id,item_no,item_key,item_type,title,description,assignee_membership_id,created_by,updated_by,created_at,updated_at,request_key,request_checksum) VALUES(?,?,?,'BUG',?,'Fixture',?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),?,REPEAT('b',64))",p,n+1,key,title,am,member(pm),member(pm),UUID.randomUUID().toString());
+            long issue=java.util.Objects.requireNonNull(db.queryForObject("SELECT id FROM work_items WHERE project_id=? AND item_key=?",Long.class,p,key));
+            db.update("INSERT INTO work_item_feature_context(project_id,work_item_id,feature_id,document_id,monkey,created_by_user_id) VALUES(?,?,?,?,?,?)",p,issue,f,n==2?null:n==0?active:hidden,n==2,pm.getId());
+        }
+        mvc.perform(post(path("/features/"+f+"/documents/"+hidden+"/archive")).with(actor(pm)).with(vn.syp.tms.support.MockMvcContracts.csrf()).contentType("application/json").content(encode(Map.of("expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
+        var official=body(mvc.perform(get(path("/issues?featureId="+f)).with(actor(a))).andExpect(status().isOk()).andReturn());assertThat(official.path("totalItems").asInt()).isEqualTo(2);
+        var checked=new org.assertj.core.api.SoftAssertions();
+        for(var reader:List.of(pm,a,dev)){
+            login(reader);var scope=portfolio.currentProject(reader.getId(),p,f);var value=facts(portfolio.prepareProject(reader.getId(),p,f,scope.reference(),UUID.randomUUID().toString(),"Issue hiện hành"));
+            checked.assertThat(value.path("issueSample").toString()).contains("Active readable issue","Monkey without document").doesNotContain("ARCHIVED_DOCUMENT_ISSUE");
+            checked.assertThat(value.path("myWorkSample").toString()).doesNotContain("ARCHIVED_DOCUMENT_ISSUE");
+            if(reader==pm){long total=0;for(var group:value.path("workByStatus"))total+=group.path("total").asLong();checked.assertThat(total).isEqualTo(2);}
+        }
+        checked.assertAll();
+    }

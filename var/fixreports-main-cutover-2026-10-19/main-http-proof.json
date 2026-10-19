@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-10-19T02:06:02.478Z",
+  "status": "PASS",
+  "origin": "http://127.0.0.1:8080",
+  "frontend": "http://localhost:5173",
+  "health": {
+    "status": 200,
+    "up": true
+  },
+  "history": [
+    "31\t1",
+    "32\t1",
+    "33\t1"
+  ],
+  "failedMigrations": 0,
+  "reads": [
+    {
+      "route": "/projects/1",
+      "status": 200
+    },
+    {
+      "route": "/projects/1/features",
+      "status": 200
+    },
+    {
+      "route": "/projects/1/issues",
+      "status": 200
+    },
+    {
+      "route": "/projects/1/management-reports/summary",
+      "status": 200
+    },
+    {
+      "route": "/projects/3",
+      "status": 200
+    },
+    {
+      "route": "/projects/3/features",
+      "status": 200
+    },
+    {
+      "route": "/projects/3/issues",
+      "status": 200
+    },
+    {
+      "route": "/projects/3/management-reports/summary",
+      "status": 200
+    },
+    {
+      "route": "/projects/12",
+      "status": 200
+    },
+    {
+      "route": "/projects/12/features",
+      "status": 200
+    },
+    {
+      "route": "/projects/12/issues",
+      "status": 200
+    },
+    {
+      "route": "/projects/12/management-reports/summary",
+      "status": 200
+    }
+  ],
+  "domainWrites": 0,
+  "liveAiCalls": 0
+}

@@ -1,0 +1,10 @@
+{
+  "noteId": 9,
+  "role": "PM",
+  "firstError": "Dữ liệu đã thay đổi. Tải lại để đối chiếu trước khi lưu.",
+  "afterReloadRetryError": "Dữ liệu đã thay đổi. Tải lại để đối chiếu trước khi lưu.",
+  "retainedDraft": "Nháp A của audit cần giữ khi có xung đột.",
+  "currentServerVersion": 1,
+  "editorStillVersion": 0,
+  "versionBasis": "Source ProjectNotes.save uses editor.note.version; API competing journal v1"
+}

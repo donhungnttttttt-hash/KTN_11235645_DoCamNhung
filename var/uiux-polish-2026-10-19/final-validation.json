@@ -1,0 +1,70 @@
+{
+  "capturedAt": "2026-10-19T04:22:12.263Z",
+  "tests": {
+    "passed": 1048,
+    "failed": 0,
+    "pending": 0,
+    "files": 116,
+    "receipt": "var/uiux-polish-2026-10-19/frontend-stable-final-tests.json"
+  },
+  "build": {
+    "exitCode": 0,
+    "receipt": "var/uiux-polish-2026-10-19/build-final.json"
+  },
+  "sourceStable": {
+    "files": 316,
+    "changed": [],
+    "missing": [],
+    "before": "2026-10-19T04:16:07.454Z",
+    "after": "2026-10-19T04:22:01.276Z"
+  },
+  "coverage": {
+    "lines": {
+      "total": 4661,
+      "covered": 4090,
+      "skipped": 0,
+      "pct": 87.74
+    },
+    "statements": {
+      "total": 9289,
+      "covered": 8084,
+      "skipped": 0,
+      "pct": 87.02
+    },
+    "functions": {
+      "total": 3205,
+      "covered": 2608,
+      "skipped": 0,
+      "pct": 81.37
+    },
+    "branches": {
+      "total": 8997,
+      "covered": 7504,
+      "skipped": 0,
+      "pct": 83.4
+    },
+    "branchesTrue": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    },
+    "note": "Measured full-source checkpoint1047 tests/115 files. During that run hook Escape guard, its new test, and modal radius changed; final frozen source is separately verified by the full suite above. Do not describe percentages as remeasured after freeze."
+  },
+  "browser": {
+    "matrix": "var/uiux-polish-2026-10-19/browser-matrix.md",
+    "allButtonsPassed": false,
+    "liveProviderCalls": 0,
+    "domainWrites": 0,
+    "authAuditEventsExpected": true
+  },
+  "remaining": {
+    "oldFindingsFixedSourceMock": 11,
+    "partial": 1,
+    "open": [
+      "UX-002",
+      "UX-011"
+    ],
+    "uat": "PARTIAL"
+  }
+}

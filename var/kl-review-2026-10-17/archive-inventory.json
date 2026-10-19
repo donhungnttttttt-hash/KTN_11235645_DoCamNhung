@@ -1,0 +1,266 @@
+﻿{
+    "archive":  "C:\\Users\\admin\\Downloads\\KL.zip",
+    "sha256":  "0B90A567D49DD6CC816D26A4B91C5B015143F4C842DF41F37730E5C4AD933058",
+    "entries":  [
+                    {
+                        "name":  "KL/",
+                        "bytes":  0,
+                        "compressedBytes":  0
+                    },
+                    {
+                        "name":  "KL/Bản gốc.docx",
+                        "bytes":  23428419,
+                        "compressedBytes":  23428173
+                    },
+                    {
+                        "name":  "KL/Chương 3 (backup trước khi sửa).docx",
+                        "bytes":  5819098,
+                        "compressedBytes":  5454770
+                    },
+                    {
+                        "name":  "KL/Chương 3 (hoàn chỉnh).docx",
+                        "bytes":  5875226,
+                        "compressedBytes":  5511151
+                    },
+                    {
+                        "name":  "KL/Chương 3.docx",
+                        "bytes":  5819098,
+                        "compressedBytes":  5454770
+                    },
+                    {
+                        "name":  "KL/diagrams/",
+                        "bytes":  0,
+                        "compressedBytes":  0
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.1-BPMN-tiep-nhan-khoi-tao-dot-kiem-thu.drawio",
+                        "bytes":  7834,
+                        "compressedBytes":  1405
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.1-BPMN-tiep-nhan-khoi-tao-dot-kiem-thu.svg",
+                        "bytes":  7644,
+                        "compressedBytes":  1719
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.10-UC-quan-ly-test-case.drawio",
+                        "bytes":  4644,
+                        "compressedBytes":  956
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.10-UC-quan-ly-test-case.svg",
+                        "bytes":  4689,
+                        "compressedBytes":  1201
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.11-UC-phan-cong-kiem-thu.drawio",
+                        "bytes":  3425,
+                        "compressedBytes":  820
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.11-UC-phan-cong-kiem-thu.svg",
+                        "bytes":  3630,
+                        "compressedBytes":  990
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.12-UC-thuc-thi-ghi-nhan-ket-qua.drawio",
+                        "bytes":  3609,
+                        "compressedBytes":  878
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.12-UC-thuc-thi-ghi-nhan-ket-qua.svg",
+                        "bytes":  3713,
+                        "compressedBytes":  1071
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.13-UC-tao-ticket-loi.drawio",
+                        "bytes":  4672,
+                        "compressedBytes":  980
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.13-UC-tao-ticket-loi.svg",
+                        "bytes":  4801,
+                        "compressedBytes":  1235
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.14-UC-hoi-dap-nghiep-vu.drawio",
+                        "bytes":  4907,
+                        "compressedBytes":  975
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.14-UC-hoi-dap-nghiep-vu.svg",
+                        "bytes":  4740,
+                        "compressedBytes":  1256
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.15-UC-xac-nhan-xu-ly-loi.drawio",
+                        "bytes":  5249,
+                        "compressedBytes":  1068
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.15-UC-xac-nhan-xu-ly-loi.svg",
+                        "bytes":  5483,
+                        "compressedBytes":  1394
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.16-UC-xac-nhan-lai-sau-sua.drawio",
+                        "bytes":  3751,
+                        "compressedBytes":  865
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.16-UC-xac-nhan-lai-sau-sua.svg",
+                        "bytes":  3810,
+                        "compressedBytes":  1058
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.17-UC-theo-doi-tien-do.drawio",
+                        "bytes":  4619,
+                        "compressedBytes":  942
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.17-UC-theo-doi-tien-do.svg",
+                        "bytes":  4413,
+                        "compressedBytes":  1158
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.18-UC-quan-ly-quy-tac.drawio",
+                        "bytes":  4913,
+                        "compressedBytes":  979
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.18-UC-quan-ly-quy-tac.svg",
+                        "bytes":  4851,
+                        "compressedBytes":  1299
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.19-UC-thong-bao-trao-doi-truy-vet.drawio",
+                        "bytes":  4521,
+                        "compressedBytes":  973
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.19-UC-thong-bao-trao-doi-truy-vet.svg",
+                        "bytes":  4527,
+                        "compressedBytes":  1211
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.2-BPMN-phan-cong-thuc-thi.drawio",
+                        "bytes":  7918,
+                        "compressedBytes":  1319
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.2-BPMN-phan-cong-thuc-thi.svg",
+                        "bytes":  8670,
+                        "compressedBytes":  1753
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.20-Sequence-tao-ticket-loi.drawio",
+                        "bytes":  7339,
+                        "compressedBytes":  1409
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.20-Sequence-tao-ticket-loi.svg",
+                        "bytes":  6592,
+                        "compressedBytes":  1479
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.21-Sequence-dong-bo-trang-thai-retest.drawio",
+                        "bytes":  8162,
+                        "compressedBytes":  1466
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.21-Sequence-dong-bo-trang-thai-retest.svg",
+                        "bytes":  7249,
+                        "compressedBytes":  1565
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.22-DSD.drawio",
+                        "bytes":  15570,
+                        "compressedBytes":  1834
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.22-DSD.svg",
+                        "bytes":  24402,
+                        "compressedBytes":  3056
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.3-BPMN-hoi-dap-nghiep-vu.drawio",
+                        "bytes":  8250,
+                        "compressedBytes":  1338
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.3-BPMN-hoi-dap-nghiep-vu.svg",
+                        "bytes":  8375,
+                        "compressedBytes":  1720
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.4-BPMN-ghi-nhan-xac-nhan-xu-ly-loi.drawio",
+                        "bytes":  8985,
+                        "compressedBytes":  1484
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.4-BPMN-ghi-nhan-xac-nhan-xu-ly-loi.svg",
+                        "bytes":  9017,
+                        "compressedBytes":  1870
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.5-BPMN-xac-nhan-lai-nghiem-thu.drawio",
+                        "bytes":  8831,
+                        "compressedBytes":  1436
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.5-BPMN-xac-nhan-lai-nghiem-thu.svg",
+                        "bytes":  9046,
+                        "compressedBytes":  1889
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.6-BFD.drawio",
+                        "bytes":  29160,
+                        "compressedBytes":  2569
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.6-BFD.svg",
+                        "bytes":  19365,
+                        "compressedBytes":  2621
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.7-UseCase-tong-quat.drawio",
+                        "bytes":  8601,
+                        "compressedBytes":  1252
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.7-UseCase-tong-quat.svg",
+                        "bytes":  7431,
+                        "compressedBytes":  1647
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.8-UC-quan-tri-tai-khoan.drawio",
+                        "bytes":  4277,
+                        "compressedBytes":  925
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.8-UC-quan-tri-tai-khoan.svg",
+                        "bytes":  4160,
+                        "compressedBytes":  1108
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.9-UC-quan-ly-dot-kiem-thu.drawio",
+                        "bytes":  4696,
+                        "compressedBytes":  940
+                    },
+                    {
+                        "name":  "KL/diagrams/Hinh-3.9-UC-quan-ly-dot-kiem-thu.svg",
+                        "bytes":  4376,
+                        "compressedBytes":  1126
+                    },
+                    {
+                        "name":  "KL/diagrams/HUONG-DAN-CHEN-HINH.md",
+                        "bytes":  4748,
+                        "compressedBytes":  2034
+                    },
+                    {
+                        "name":  "KL/QUy trình.docx",
+                        "bytes":  567222,
+                        "compressedBytes":  561969
+                    }
+                ]
+}

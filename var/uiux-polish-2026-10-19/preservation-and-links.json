@@ -1,0 +1,3356 @@
+{
+  "capturedAt": "2026-10-19T04:24:35.517Z",
+  "baseline": {
+    "path": "var/uiux-polish-2026-10-19/baseline.json",
+    "capturedAt": "2026-10-19T03:42:06.118Z",
+    "branch": "system-design",
+    "fileCount": 2853,
+    "sha256": "fbeacdb963f66ab3af224a8aaeaf67cc02e5d80b4a88f7e4f02124658e99aa39",
+    "preserved": true
+  },
+  "discovery": "Same git ls-files -co --exclude-standard enumeration as Capture-Baseline.cjs; ignored build/node_modules/runtime files are outside this snapshot. File bytes are hashed, never printed.",
+  "summary": {
+    "baselineFiles": 2853,
+    "unchangedExisting": 2804,
+    "changedExisting": 49,
+    "newFiles": 520,
+    "missing": 0,
+    "currentEnumerated": 3373
+  },
+  "protected": {
+    "backend": {
+      "baselineCount": 359,
+      "unchanged": true,
+      "changed": [],
+      "missing": [],
+      "added": []
+    },
+    "configuration": {
+      "baselineCount": 32,
+      "unchanged": true,
+      "changed": [],
+      "missing": [],
+      "added": []
+    },
+    "packages": {
+      "baselineCount": 3,
+      "unchanged": true,
+      "changed": [],
+      "missing": [],
+      "added": []
+    }
+  },
+  "changedExisting": [
+    {
+      "path": "Frontend/src/app/features/projects/ProjectNotes.jsx",
+      "baselineSha256": "d360911d5acd9d079739a218bbd62d17a95f2570fe3f1e8ac527b366337eb88a",
+      "currentSha256": "287d2db007111cc0b364ad6adabb8d5f775600f1ee5488b5b19b9dc067a0627a"
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectNotes.test.jsx",
+      "baselineSha256": "334ed1fe10103684b2abe1336011ffa93f9d24ac29f232f548b6b96729c3d1a6",
+      "currentSha256": "8c3ad0b5ed35ac1b7978c8350f3da56f683575ef0116ea103d1620fbb6616e2a"
+    },
+    {
+      "path": "Frontend/src/app/features/projects/project-notes.css",
+      "baselineSha256": "6b280897f17a5f36477e3d39140b9ab2307ba2a4109d3f1542822d2e0bf6acf5",
+      "currentSha256": "06436a42183faea989bde5e64ab59d65916270ea3e6faaf2e96543b2d20b5223"
+    },
+    {
+      "path": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "baselineSha256": "1cbf269cd0f8fd9aa8b776ed590570bfacebe58d6688501cddd2c8c1f8ec7c9d",
+      "currentSha256": "c1fd831216797ce9a7240de1908ef639e7b51e3bd01c43e33f59caf7bddd00d7"
+    },
+    {
+      "path": "Frontend/src/app/features/reports/ManagementAnalysisPage.test.jsx",
+      "baselineSha256": "635d7f0d67f3240ee878843bc0fecc3d29e2055165138ffc0221b6e705325da1",
+      "currentSha256": "6ede0fd023dcca398dfbffde53c233c903e73307ecd74fa0a44ce0b8ac7c080b"
+    },
+    {
+      "path": "Frontend/src/app/features/reports/management-analysis.css",
+      "baselineSha256": "66505c89fe5497fa4c75ea0ceda8633797451f260e6fad30c1df93a635c85e97",
+      "currentSha256": "aeec719202074bd2444b7258e223f47cd396abbd55a49b8091b4a9c08d24c17c"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/FeatureForm.jsx",
+      "baselineSha256": "e8f43d37a215b631ea3df0de9558f7f3ce34f1557931db2ea8e2a08508451d21",
+      "currentSha256": "c461342f734edda0408b51e3571618ec65c95c49b552b3211903e5e5eba2b864"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "baselineSha256": "84dbfa56d841b19efa5b099e882f1e74e658692a3a647143af38e3027656178b",
+      "currentSha256": "e8c0192b08bb6df2ca784567af4b3ba964db040d0194efd58468fcd781f30c15"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingDocumentPage.test.jsx",
+      "baselineSha256": "a6017f84bc0531f00bd568703bced4d59c07e9fedef7215c4ec283e1197ba1b8",
+      "currentSha256": "5b94e7383de7c3eb5bf2add1f49da325acbdd36d7ce0415b08c7207d343a7cf8"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "baselineSha256": "096cf34eeceb600b4f971574bf28ac85553aa8f14c4de4532b7d8c94b0facaef",
+      "currentSha256": "bd8e68f2a5d139123341030539a14a4348ff42c06a32a6c58efc236f10102e64"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "baselineSha256": "d91c46cc9b1c1818b21e266b74a65950041a7437861d47fb3eff758bfd6a4d7b",
+      "currentSha256": "fc6f792400879d507290913a28212a364b1c0a8ca61c6774435e3a5e80cf8a88"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/testing.css",
+      "baselineSha256": "212073f666508dd46a63bbe0709a1a5cfb5fb4b91c6d523c30776925e151958e",
+      "currentSha256": "0335f2ee3a40d3d341f9fa55711253ad59c65fa4fb9c9f8ea98a3f8b4cfb59c1"
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/CaseIssueAction.jsx",
+      "baselineSha256": "8ed3b05797e8a5db77e6f25f440b003056d61dd9abe6f8a4c5ca153778df0277",
+      "currentSha256": "05beb7fd127f4378860de02dc0e20939aecb6f444e34ae35e5cf5cb973aee6f5"
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/CaseIssueAction.test.jsx",
+      "baselineSha256": "15e2a3fd8ee8adf57b7ae2bdadaa037c6c0445c7d2ed245d614be4d9ab5383f4",
+      "currentSha256": "c6fa675aefde973d806b6bd6cd178d3ae8e4e66a449cb62be65f3b0670298932"
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx",
+      "baselineSha256": "2f5b28ab8cb64adc8bbb4716f012065e81f2381069eee3ec8fe92fc810c3bc5c",
+      "currentSha256": "b8b2b693938cf3fd7338046e06e8c3a3c17ee320fbfb0d05a57268e1581c980a"
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/FeatureIssueDetail.test.jsx",
+      "baselineSha256": "28b89d10b9aa918534090111d808ca8f5ad8b61c5dbc05b54ec5ffa56e44d092",
+      "currentSha256": "083b30ea683316fb04652489baa55eb78c8fc87979c0e4c9fa1d92dc68096997"
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/FeatureIssueForm.jsx",
+      "baselineSha256": "41117884bafc848e6ccfdb0c1df18073634f0f62ecd38316010e8d2f241b73f2",
+      "currentSha256": "448148cf7f7fc750fd199f1aa2f7b5030fe87148cae99f448380e2563d47ae23"
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx",
+      "baselineSha256": "c5a197e6ac6b96372873c496b160e4db06a01ca9daf179e33783065cad6b457b",
+      "currentSha256": "f56b585336ba2dd83ba681557dac0b785fab0330b6718f9eff2ca7bdae283628"
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/FeatureIssuesPage.test.jsx",
+      "baselineSha256": "3f5e33dc79a87829ddb083c310e51d44de2a27fb3c5f210bf1cc2b2cb9c22dc2",
+      "currentSha256": "2474cc2227fee7bee6a6aea9ff1f55861fcce9e662f80bc56b97252f5e022ea7"
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/feature-issues.css",
+      "baselineSha256": "e61142799723508c2a4ab516536cc5ed5a535543f6391e5562fd2d8db24daa8f",
+      "currentSha256": "f345a58b4a0d5500f89c26b374a5f42af747cddf0f669d7a3ac2b79de1fc2e61"
+    },
+    {
+      "path": "Frontend/src/app/modules/ProjectOverview.layout.test.jsx",
+      "baselineSha256": "cdbd8a9ed870149242bee5e7794f2e0a9462a43fe5d6bffcfb2097a2bc2e8d5c",
+      "currentSha256": "c3df238f40fa17758a487d1ef49ad299e862e772b3ca80d5ab81618006c0cc70"
+    },
+    {
+      "path": "Frontend/src/App.jsx",
+      "baselineSha256": "933ac5b4d3c7906404c6371c1163594a3757abac000b6658569dcf46f2e743f8",
+      "currentSha256": "95864696548ca3c81976f80615695ed4ec4f772ab01dbe8182bd6efe49adcd9d"
+    },
+    {
+      "path": "Frontend/src/App.scroll.test.jsx",
+      "baselineSha256": "69d588e9c0aa34617772439645350132fa8c68742fa21cee0600b3491c0d937a",
+      "currentSha256": "a54d1f7bbc8d1162a4b660141b3a659a69d5998cf073875c82decebccfe2dcaa"
+    },
+    {
+      "path": "Frontend/src/AppEntry.jsx",
+      "baselineSha256": "bfc67fc4d80509efcca39de3e29b54dd01b2c51fe5f3add0b4e13cabeaab07ae",
+      "currentSha256": "e358681a1275caebf3c6c319aa6eee8d607a5d4ab6010d11ba57901d83d41d04"
+    },
+    {
+      "path": "Frontend/src/app/components/selection-table.css",
+      "baselineSha256": "961c492f642053efd00e4061d60b1986b9692df3d2d312c549cd4ca07e65edf9",
+      "currentSha256": "c64e01c6f35e22b0f96ca5567620fc44bcdcbb24754c34e94fd6bb48252e9066"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "baselineSha256": "2de5c4f04555b46a8e16688e2601b25200264799525b6a07a84cca3a88467dfc",
+      "currentSha256": "995f7fb1f3cbd342fe294cd8be9e7581b8e893e9c0b065c77f6101304c6f9b55"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin.css",
+      "baselineSha256": "ea16eb8a93a70a343da85c144b9b620f32ae27e633a8c719ea56dab5130e4820",
+      "currentSha256": "2f4356c1c16186567507a9b8f1cc376090378e6bc345a017cce45d89fd4993e0"
+    },
+    {
+      "path": "Frontend/src/app/features/ai/AiChat.jsx",
+      "baselineSha256": "bd7beb4dfa319ea526e6e2498ab8fd1b78521449c935903587b688d14151c6e9",
+      "currentSha256": "b3c75f79f8a44d857a913a69a432cc2270e4dc5dc72d0eec98efdde45f488909"
+    },
+    {
+      "path": "Frontend/src/app/features/ai/AiChat.test.jsx",
+      "baselineSha256": "4ee9a69ffcf03aeaa3635e50166ba02144799fee1ea1a573192d790980f5bacb",
+      "currentSha256": "c0027eb7188acda711c881894cd1c93b599780a252ca3091e74d9a03d954bdef"
+    },
+    {
+      "path": "Frontend/src/app/features/ai/ai.css",
+      "baselineSha256": "a09f4fd40ba417a3361ef1a72bbbc30e98796519e082335c2c336ea0954b4759",
+      "currentSha256": "891c8f1578ffc3509bd34cae41d0c17fd4cf604034de3f23f3fe869b15917951"
+    },
+    {
+      "path": "Frontend/src/app/features/auth/AccountMenu.jsx",
+      "baselineSha256": "f63c14c3792681ab9a58fa597e8e24e3c5163a2bbc4ac368f7e6ff2976863436",
+      "currentSha256": "05b9b5f273e5528029bba551fc24b2330909c298ebbd2eccbf1f91f79fbf95f3"
+    },
+    {
+      "path": "Frontend/src/app/features/auth/AuthBoundary.jsx",
+      "baselineSha256": "85ac99dab6b08df9cf9e2bd5c66354840d5012bc969322ceb601804f44f9b407",
+      "currentSha256": "1b3b91d9133d1df06aed7fdb2dbec078e0c1f8226ef4a9ae6bed738e1b1f2bb7"
+    },
+    {
+      "path": "Frontend/src/app/features/auth/auth.css",
+      "baselineSha256": "73665da180c264f64c74b5919d2b3a4accaf58cd20dbcba1fc8308d3087e5159",
+      "currentSha256": "6e5bb42de40c9c667f7c92e588ad64e2934ac63b3cd2986d4790bdcbe920e74a"
+    },
+    {
+      "path": "Frontend/src/app/features/auth/auth.test.jsx",
+      "baselineSha256": "4c86a8109fd215723193794ded009d2bdde1cb7e2bc94a0ef0ac767eb1d1b87e",
+      "currentSha256": "d52d1ed0c369645910305a9ee5d469b2c4fb9b594be73ef8b19491fe1f24645b"
+    },
+    {
+      "path": "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "baselineSha256": "dd7ad495b926fffb8fa92cd7d41ff289e6e9961bf6a860e3917d2eb367ff88a8",
+      "currentSha256": "99646d925ae21f75b8312ce0e2ce8b92038442934b7b39dae7f604473bad1216"
+    },
+    {
+      "path": "Frontend/src/app/features/projects/projects.css",
+      "baselineSha256": "bc90e8769bd1b8a85f27948dcd390277e4069a7211122e728cb66e31e1b61870",
+      "currentSha256": "f5b3f4c2a1743f0d75efe450355ea72e7d0a8fc0f29541f95e935a672565e113"
+    },
+    {
+      "path": "Frontend/src/app/features/reports/reports.css",
+      "baselineSha256": "8a839f79c801162088ddafb58c7e52938ae82dc4072570cec92cb62f0093dacb",
+      "currentSha256": "f30d0c2b95c33badb61ffd4b59827007b561dfb250757c5b8e386b98767eb01b"
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/ExcelImportPreview.jsx",
+      "baselineSha256": "8789282120c041314c2c97d20d42a3bf5666ba367c4653d85d0624313a812f99",
+      "currentSha256": "360db2f77a47941254c87d0a18f2821e73542b16899a18d0286a5ecdd1057903"
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/test-cases.css",
+      "baselineSha256": "facea540d406cfc4810ab61b9ac5ca66eca1d183713f08dfe06bb40d367f146c",
+      "currentSha256": "dc02b1cc6c0ba6651549716b11126d232a357161bae8d3e973ead2c482f40838"
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/components.jsx",
+      "baselineSha256": "fd4f6317c231e1822c5fac4223d8971b276490ed6ad4e8771045ea24eef2ebb9",
+      "currentSha256": "6e929b9228a4f17a5b81e6e7dd36821a2c52fbddc21e8fcc1c26a398b405aeb0"
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/modal-expand.test.jsx",
+      "baselineSha256": "bef8011b39e7a4ad4c625815fd8d445b85c90b00ffecada1b16fa3d6367e4b43",
+      "currentSha256": "6e846ac28f233f21dcd9dac820d5e7758f040602b93f85103863b62e4c15f545"
+    },
+    {
+      "path": "Frontend/src/app/hooks/useDialogFocus.js",
+      "baselineSha256": "93cbc5ee1053f2fb182d3ab1a246ad61449d3ff98f0612e430b84049f2df55bb",
+      "currentSha256": "94aac08b1c8a025ef1f898ddf375837dec2b10793984dfc84b70e21d782dd881"
+    },
+    {
+      "path": "Frontend/src/app/layouts/MainLayout.jsx",
+      "baselineSha256": "5b97c579e658e2b514061d06cbb6a4c1b7680003dd1ec3083fa5e9333e367d04",
+      "currentSha256": "3cf7621612d5b1b7f4652fc01293dacb26e0205ac358549ff686d53ba39f9f59"
+    },
+    {
+      "path": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "baselineSha256": "2bfc7616387a6506303f735ef6a8fe7e87bedcdb3b6931ad83d320e503e9119a",
+      "currentSha256": "13f99e643fa07776196ad77ae92b271d5e6a6213c548cd4a37ac3e4a93da665c"
+    },
+    {
+      "path": "Frontend/src/app/styles/app-shell.css",
+      "baselineSha256": "a79caa55f32210e4ca7270bc18273bed5194f19174c64d8bf6a7238b55a844af",
+      "currentSha256": "da3e82566928e79fc5352d14070692675219bbbb0944242f82f80a46600f1472"
+    },
+    {
+      "path": "Frontend/src/app/styles/global.css",
+      "baselineSha256": "0972ac7ca8f13acbaa59aaec3978dea4f602511f76573752ee063cbb28b25648",
+      "currentSha256": "877a1f9de999839d4afd8fe080c61cd3e2c4daaf21b28f0fbff31a8151adb399"
+    },
+    {
+      "path": "Frontend/src/app/styles/project-overview.css",
+      "baselineSha256": "2a519b1524f1eeea729752f0457e3c586ea2f757f2ea99fe3d528f7e6b8629f7",
+      "currentSha256": "f21f1e127fec4d172e008ffcc417cfb9efa013ce1a4d20975054c27ceec1d782"
+    },
+    {
+      "path": "docs/planning/README.md",
+      "baselineSha256": "4b7144cb0b9211e7292a11c50d59abd7597b87fa4921ac88f6bd1c2b23d60bd5",
+      "currentSha256": "d127049c8376b963fec68f03e1817223c3f16d413b2a3fe527d9a803423c7387"
+    },
+    {
+      "path": "docs/planning/STATUS.json",
+      "baselineSha256": "39da99bfb3d1744f69497289303ae67c55ec10ea0708d04f0ebdc9a82f87085e",
+      "currentSha256": "0bd95cc051d18e50ca476333fcdada757ccfc0ef55731920105d7b1439e7d99b"
+    }
+  ],
+  "newFiles": [
+    {
+      "path": "Frontend/src/app/features/admin/UserCreateDialog.jsx",
+      "sha256": "a9b4fbd87ffe6afd1e3c78193daa423a83d043111be80c278a7f1a4d2432ac6a"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/nested-project-picker.test.jsx",
+      "sha256": "aa7da80e17b87f64f11369bd59f543f0371063da482e569f3e4afbf92d4421d8"
+    },
+    {
+      "path": "Frontend/src/app/features/auth/DialogVisibilityContext.js",
+      "sha256": "334bcc11873aa62c341f94c56f35967053da8dc5eb92902d7681eb3a046014a8"
+    },
+    {
+      "path": "Frontend/src/app/features/auth/account-create-tester.test.jsx",
+      "sha256": "c581fb9ae544786ced825554b0af63e681c1c848e6a802b724c60498a90a26cd"
+    },
+    {
+      "path": "Frontend/src/app/features/projects/handbook-editor-focus.test.jsx",
+      "sha256": "6b27ebd497ab418dec13e5081b2aa08348c3ef25f6b18317824fdd6e3d8e34f1"
+    },
+    {
+      "path": "Frontend/src/app/features/reports/ReportDraftProvider.jsx",
+      "sha256": "62a94b2583a1f2e12fb5763c3b64f8d743e476101a369440db779514bd7d7785"
+    },
+    {
+      "path": "Frontend/src/app/features/reports/ReportDraftProvider.test.jsx",
+      "sha256": "c9b7bfb932ff37369ded13b54714c8c35124f03bafff2d432e05e17cd4a28b01"
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/ExcelImportPreview.test.jsx",
+      "sha256": "5df4b9c6de6ce681392be969d74285af5c4ee7a8887cef946d5de578af88138f"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/DocumentAssignmentHistory.jsx",
+      "sha256": "335c2534c54eaa1e6f3e927e4b8ccd01fe8365fc280a856d43fb042ff593f358"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/DocumentAssignmentHistory.test.jsx",
+      "sha256": "97e24d46e025743016d83da531d6f2381a19b16372675853f72e9d1df6a30e1a"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/FeatureForm.test.jsx",
+      "sha256": "3505ed62c0aa985fdd82c8e9c786fe266fff8866703f2e1a82a84b1848e97a2a"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingReadOnly.test.jsx",
+      "sha256": "a27aa867e7961b5de9d4bc995362f08d8717379f29be51841cb9e9ede3f8b676"
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/work-item-modal.css",
+      "sha256": "15b952958cab327e53fff5d2046f457678af2d04b0deb34e58beb1a7f0b08e73"
+    },
+    {
+      "path": "Frontend/src/app/layouts/MainLayout.dialog-order.test.jsx",
+      "sha256": "3aa36646e8cee5c812437098875145d78566559fc969949b7e7296b1428a4768"
+    },
+    {
+      "path": "Frontend/src/app/layouts/MainLayout.navigation.test.jsx",
+      "sha256": "d5b5e56ad9ef757a4681be772fa3eaa0d8b11342495e7216c7d327b19d3e3e18"
+    },
+    {
+      "path": "docs/planning/2026-10-19-uiux-polish.md",
+      "sha256": "a344f825884c81978529a38842e00e77a04cadac6d830946638bdf09d611bec3"
+    },
+    {
+      "path": "docs/reviews/2026-10-19-uiux-polish.md",
+      "sha256": "8940791049049d761751e1968c58e5481ba21030a5129f9ba9e0a9aafab59fa7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/Audit-Surfaces.cjs",
+      "sha256": "da6857d5036a3097776529970986e1441146eff2c1c115642d10d39be9d799fc"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/Finalize-Review.cjs",
+      "sha256": "38f51a7768fbd39fa4635074882eff2845d86db82abde8c7a499345e2b9f1fa9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/Inspect-Test-Processes.ps1",
+      "sha256": "03a3b7b0a25d7e168b5bbcdfc0cf2fa054a31934e65d040796765a8fac8ef417"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/Snapshot-Source.cjs",
+      "sha256": "a5d35955f5520adb7f041617d376c6e0ba4be4d79096e936abaee234c6338e77"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/Verify-Preservation.cjs",
+      "sha256": "be437facdd2dd3093ccdac8e54ddf12608f07d6982935aa4d71fb03685a537b7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-audit-final.txt",
+      "sha256": "d97432e5b799907c134490be878122375a9a6662ef7edda40359df89e6f242a4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-dashboard-before.jpg",
+      "sha256": "e5bd6889064dc2f9ebf1ad8c0bba58baffe103843018541f606612d780708c7c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-devices-empty-filter.txt",
+      "sha256": "8e8c52a7457654908d9aaf60c7eb2e6ec8464ac38d6cd7ebe9d602b374a37069"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-general-auth-dialog-green.json",
+      "sha256": "bc3343bb714d208f2967149532322caa73cac9bb64ccfb6b41980cf4683a985b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-general-auth-isolated.json",
+      "sha256": "fc5800280123ead50bc6a2f63fdaadcda77346e0e8255753946d5a43dd842910"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-general-green.json",
+      "sha256": "98e4cafc8773baa4b13377d1a5fb6d262028961cdf0d417173cd1869888814dd"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-general-pm-retention-red.json",
+      "sha256": "d273ad49c87716d1fce508e9f42ebc85f382e5a55b2daa244ec2b9a2add6f544"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-general-portal-red.json",
+      "sha256": "0945047dd0270b68b782793d9ccfd73c05b1267c442d3e5547a8626b2f66e943"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-general-red.json",
+      "sha256": "00aeb51280bcd7a5eb1276291f1ec8233a0a2e2761e83d738e06f4d6bec126af"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-general-scoped-final.json",
+      "sha256": "c54bddab6b04048ec753b462d90680be96d8f4f6058fbee3c81ca7b1fad3547e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-general-scoped.json",
+      "sha256": "7d66add74068ea7328a10ca26cc04dc997703c0e816d4cf67cb28cc744a67bfe"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-general-scroll-lock-red.json",
+      "sha256": "b065ea38fcb08fb6f77420bf8c5f4da5f5a34b26270a49ff94d7be7751dc59d7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-general.md",
+      "sha256": "fa9e359bcc1379451718f1a07866f2187f0d8bfe1da12f502ec91315b0eede5f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-overview-final.txt",
+      "sha256": "5f12421ede769ea01e8eef78619736f76c3ac75c20374a966fe1b6dcd45b5366"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-user-create-320.jpg",
+      "sha256": "1cb6898f701cc1cb2f215f5dca495af2ae3a47bb39b51b0343214cdbee103c99"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/admin-user-create.txt",
+      "sha256": "6a3a26ee9ed060f6464f1e3b139312225d98948c610b610e278f445f7275d72f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/auth-dialog-integrated.json",
+      "sha256": "85d59dda00fe3fc8c76a80b8c2a0d3a26f9e0c38139dbee55fe39b3a394f8649"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/baseline.json",
+      "sha256": "fbeacdb963f66ab3af224a8aaeaf67cc02e5d80b4a88f7e4f02124658e99aa39"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/browser-cleanup.json",
+      "sha256": "a5d5f6c9d433dff870a64885e8369d6ea8045f4a034a4a396c1448f6b2d619c8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/browser-console-final.json",
+      "sha256": "2646d017b2fa949807aaf54054ec2b241cddfc085bdf63131331035717e418c1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/browser-matrix.md",
+      "sha256": "75cd0d4c860b4dba67819197601e46e5b5cf423a8d78b3106fee86c3aa7e1f9d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/build-final.json",
+      "sha256": "d9a387cbd869f3ef755788d81fc9de4b797054c61dd3217ef4829aeaae7744eb"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/chat-recovery-banner-red.json",
+      "sha256": "ee2af11e53612c03a6e82d12781a83d50d2578f67f5410d17eb4a330e6a22bac"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/chat-recovery-final.json",
+      "sha256": "1acec2ae5bb42ec928e99827ccc523b88b1bd729dd2ae94a30bdaa79462da880"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/dev-grid-readonly.txt",
+      "sha256": "68056878cd8353a07ec12723302e7a91ebe05d2b455dca3a586e11e92be59f9a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/dev-issue-expanded.jpg",
+      "sha256": "3f49e9e844115e53b1dc8c121c4105b3c6487ffd33a9256259726f79d01a09b8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/dev-issue-expanded.txt",
+      "sha256": "9d90d2d891342c42f763ba30bf7af9f49c36c3cd881d9bfe3d5d1c9cd6b70646"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/final-validation.json",
+      "sha256": "4e925d138e15ff14325374ec365ed2514053b81f04108e02299013225f3c0ade"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage-tests.json",
+      "sha256": "65cdf539b7098384e512dfaecd19a792ae3c518614a613fe68a411837522135e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/base.css",
+      "sha256": "3f876e51f0a46864ffa7665b4b7a1f5fb5f6f37fb6a28f014e2b12d82962c852"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/block-navigation.js",
+      "sha256": "cd8db34b1fbeb973354a93f8b4133c7c7eab34cdda9429a0434be91384783b7e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/coverage-summary.json",
+      "sha256": "6ab853dd5e5d63749c81a8debeb1cdd29babebc6cb6fa44407aa4079b00fec13"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/favicon.png",
+      "sha256": "5b0cfd52dc0bfbe544f4e1a9c77aa46b8629b0e0aad6c54f95eef457b86c2a89"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/index.html",
+      "sha256": "4d13a3bebb4fa451765e3fa63b4a486b66a56a78f867267a9cc3bee63f782975"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/prettify.css",
+      "sha256": "ea3fe433f9450698ca8a230271688e7aeec12f99c8a7ef6c94379abb38f27823"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/prettify.js",
+      "sha256": "fa1b1e1b906ddcfa08b46f161c0f924f506e1a31b4f3e09b8caaa2463ef52c18"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/sort-arrow-sprite.png",
+      "sha256": "42c895355f9838ede83fdfdca90127d8471aefed5ecf5342374f65ec7c3f10ab"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/sorter.js",
+      "sha256": "f8cc5d157379d844fd695ad567b6c29b3c1f0812964ddf6f95c26327e434bab5"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/App.jsx.html",
+      "sha256": "9b868f30ff7fa9b5cc98efe5169e8f3d81a6c1d1bb97c0196eb9085ec60c7569"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/AppEntry.jsx.html",
+      "sha256": "b768eb2cdec65e22e1c86c641eadd4ccd4245b9d39eaafa6c5b7238bec40b3ea"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/Footer.jsx.html",
+      "sha256": "97872fe6559fe81aac57c42dc798b5578340b8833f1de4111ef84596782e9194"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/Header.jsx.html",
+      "sha256": "f64af4d542a304ce1c4cf5e0764cec11d0f36eff6a757103ae23d556f7a43bc7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/SelectPageCheckbox.jsx.html",
+      "sha256": "b057a6bb82f9d03f8e467aa27eb01863bee4f96f1d9644d34b756deeec68b68a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/SelectionTable.jsx.html",
+      "sha256": "2e2b2abe9a8b591e415d54a8e4abd488052c22184a6bbf0c41cb6d045bf1d742"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/Sidebar.jsx.html",
+      "sha256": "c1253eccab4fa5e9ca904449a777d3012b51fa44b77f05da05b22898434bf877"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/TableScroll.jsx.html",
+      "sha256": "9a47d2e36f13e61c668f1e251462d7b6b38479aecf6cef118fb47f09348e5149"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/index.html",
+      "sha256": "b538bde08397b8a0308fca009b897ee6d8445211abc881407f417af4ac26d0bc"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminApp.jsx.html",
+      "sha256": "d59bcbef44dc576061f4a326183cee0133110665e5862e743a8a2cda27c73bf7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminAudit.jsx.html",
+      "sha256": "d13a25bed5ae1dfdb600074ce9c99f4126b8452de0495d440599cbac09da0480"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminDashboard.jsx.html",
+      "sha256": "fe73eceefae0af32e0e3a617521bf266a6468bd34a86eb2a346f3e3c1310e0bb"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminDevices.jsx.html",
+      "sha256": "18d69714d80c973d12367f0b24bb0b543e435b8655793a75b3954783f60e756f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminFormDialog.jsx.html",
+      "sha256": "7065b40921c3187638a4fa567b5f4558d6a49ca884590a04c949f76a1cd56eb3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminLayout.jsx.html",
+      "sha256": "6025601cf732ace6b007f9a1e7cac92c39890d2de480976462398843f425198b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminProjectDetail.jsx.html",
+      "sha256": "b666dd4f295c11be28294982811f2f786219db60795842c9270383bbcddec0a3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminProjectDropdown.jsx.html",
+      "sha256": "37b055b053f64b6dec06a298dfa824e90c46050abce6585d75aba75a3caac5a9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminProjectForm.jsx.html",
+      "sha256": "2fdd920458a98ea94dc0c806f8cac1b7a9f0ee475e3c2b0464aeed9969a9e8fb"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminProjectLifecycle.jsx.html",
+      "sha256": "75b98e6ad05b864171456b8c342d2496b2ceef5e88012b22ed003d707a864c87"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminProjects.jsx.html",
+      "sha256": "0a2d3d0f56cda9057fa0552114991d8e81a27cd49f286a591c1e7401c4ab951c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminUserProjectFilter.jsx.html",
+      "sha256": "38c7bd73e3f53f70216a7d578a3c16624e2a3c414636ed3f9f13e9d8faef824c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminUsers.jsx.html",
+      "sha256": "37aeb63981ca8750a321e838aa1db3e3623850afc3b04b125ac30476cae23c47"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/DeviceAllocationDialog.jsx.html",
+      "sha256": "f0196c0d166680de0f028902f8beb0c967da71b199e8f596ce33be14fb17e6f9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/DeviceAssetForm.jsx.html",
+      "sha256": "7708e194d53e52caa5bd723257374a2ff719ef69f64e2c439f319e7690a71ca1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/InitialDevicePicker.jsx.html",
+      "sha256": "d7480dd1587b7b5ecadc81d73b980c28d9815dc7d491fead22c2ff4fb9f20560"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/MetricBars.jsx.html",
+      "sha256": "b73eae0fb04466040f6b52c1daccffedccf1d6b25c1daeaed3b6cd2322c20952"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/ProjectRoleSelect.jsx.html",
+      "sha256": "500ed586bdb33e506d53ec8b1389d74ee37921ef4e67ce373af8ce6f6aea10e4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/ProjectStatusReports.jsx.html",
+      "sha256": "428b5d4094b91a7be167743d7a4487222151e78a5446e37a6e9bc6fa737bf7c8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/UserCreateDialog.jsx.html",
+      "sha256": "3823ca0d92e66b60794db111ee4f036aab6c1bc0188a2850f355977e1b5c1647"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/handoverRecipient.js.html",
+      "sha256": "dbb332b800643ecc7f00a2cd5d274d50d75b8194d1137ef3c08c3106c10a03dd"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/index.html",
+      "sha256": "5e173c452fcad82874eb51cb798c1ced1212b866a08131a41cf797be5132f244"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/shared.jsx.html",
+      "sha256": "74db2c012602fcb6e3ee998e10db144754ca04fdc0d7b3c7d5f7c38e5e2fc075"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/useInlineEditorFocus.js.html",
+      "sha256": "506d88601d1d6852553c3f9868a2ada5d06524764fc0eeac6593de6fb5b7da32"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/AiAssistantPage.jsx.html",
+      "sha256": "c1b9eba5f82be12e705cf705e1b9578411fce4196ffa2b399be26c27f220a4e6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/AiChat.jsx.html",
+      "sha256": "7a821bdb0ac935d4c1510723bc24dac3ab887173d856ca47047006fed0b4da5e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/AiConnections.jsx.html",
+      "sha256": "4da875798b8e30587921dd15fd9ae6675a9a95480446020a4990cb3744805f74"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/AiEditBuffer.jsx.html",
+      "sha256": "50b1925ef35934649828f334fd34bd2842cea6b8cc5bb9228cd4ff2c205f41e0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/ChatLauncherSlot.jsx.html",
+      "sha256": "4e22cd46134cbc259d8b35ff61d6faf3d2a2950517302ef81d74a63d42fe9395"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/aiErrors.js.html",
+      "sha256": "c75b0df4c93ffc29e368ca3208c2b8abed6da494b2e05b83681eaff8ecbe3392"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/aiLabels.js.html",
+      "sha256": "9b364ce62c088e4a9ddd43808c6dbf5f61e78ad5b5a368050af57a506447e24f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/aiProjectPrompts.js.html",
+      "sha256": "a39eb93de826eab2ab7aae8131a7fb110be718cde5fe50fd8c23b9a8c3e3ba58"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/index.html",
+      "sha256": "c77c023c81797cbc547054f03392d52cd85e89242ee2bedb11cfaa5f39c9e7a2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/auth/AccountMenu.jsx.html",
+      "sha256": "4b46229b1efb9ed2429fc8d75129c030be6a15a596195126038a29c7b5dbcbfc"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/auth/AuthBoundary.jsx.html",
+      "sha256": "44e87e683adbd85130e792f85199baf69c16d96082b94b3ebb502b025e53166e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/auth/AuthProvider.jsx.html",
+      "sha256": "b9d7dada5119e971d28aa1387f32161218c98694d949f9c1883720799ad35873"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/auth/DialogVisibilityContext.js.html",
+      "sha256": "90ac5615a7c71c732a455867171ae6168408ef6b252434824d02d22f52f59103"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/auth/index.html",
+      "sha256": "8ecc1af0453ea9af3023da698c9557a1174206721ee73ce426dc53dff82ec5d4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/ActionInbox.jsx.html",
+      "sha256": "3202d2a7f680338b406202e03f6b004db27e20c8076c25f3f9de0debe3327cb6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/CaseRangePicker.jsx.html",
+      "sha256": "915e913bc6b65122ccd0bbce7be31bdab2987e7b607521928ff8f9b351e526ee"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/FileCaseView.jsx.html",
+      "sha256": "189ec3ca8cc195fcea93f8c6594b3acb281bfa55616abe5695a9b1cbf45dfe03"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/FilePreparation.jsx.html",
+      "sha256": "77429cafc30602bc2957cb70553200ce2c9c0fdddeb0066cf5e28f1984a2103c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/FileWorkDetail.jsx.html",
+      "sha256": "fdd62d380649beab4b6286d2e7ffeecc3fffd8d5f3bd7c697c6a91bde659e3f8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/FileWorkPage.jsx.html",
+      "sha256": "a2c1d7b79c03f72660032534be4c20a77441716de1c3881931e97297e02e54b5"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/ImportedDocuments.jsx.html",
+      "sha256": "0653e44f0d19863567e3f0eadc0a677ac5eb9566a281d341cadadebe807c94f1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/caseRange.js.html",
+      "sha256": "0d5dd90da5af94c4f8d1b524b9846bbf521a47f8f700d8e5dbcb334a49177e59"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/index.html",
+      "sha256": "03e592d79bea2628f07040ae08361c92e989ecaabf2cc490f27ae8cc144a65fa"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/integrations/RedminePanel.jsx.html",
+      "sha256": "66eabf6c7f29bf5f24804fda2c7ce48bbcdf904aefac24f8f6a68053d634aad0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/integrations/index.html",
+      "sha256": "dacdbc93f40148fff24d6aa99d487bb5e817d8ea2c6bacc50fc13be1ea8bde94"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/CatalogEditor.jsx.html",
+      "sha256": "ce683f49a59943bb4bfc4f18068b26775267c2db303623ae50d092e58ab69069"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/CatalogPage.jsx.html",
+      "sha256": "9ccfd8a92b84b91d5cdaa77ea93d426b9d5fca0aca8a4a6b41c97d17e37cd131"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/CreateProjectDialog.jsx.html",
+      "sha256": "81079bd4c07f0f411d8aa2cc6902907490084da0ed0964fe2bee3aa0647a4695"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/HandbookPanel.jsx.html",
+      "sha256": "4b3a13267aa8c173f3ae11318865e3d6ba195c1a61b45c2eba06b350a8d3860e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectAccessNotice.jsx.html",
+      "sha256": "d76c336d5bf3b6e4fb5607dfa7f5a5065e7a5af4a46689e87f814fd5c35f29af"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectDeviceAssignDialog.jsx.html",
+      "sha256": "1b9b50e29f4f9491bc1d37c484812fdc9202ba9ee327e0fc918326ed13ad3ac8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectDevices.jsx.html",
+      "sha256": "21424019961658d45c8dd02b447e5ddff7e06b72220959900985ee5b288b1087"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectInformation.jsx.html",
+      "sha256": "49d22120c2a3678665f0b40291997653f1cbf658870fff21ef0f5645a2a7731d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectMembers.jsx.html",
+      "sha256": "a79cccfa9fec5c970e00ead77eb088d0df523ca2333f62b7835d431a42976b69"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectNotes.jsx.html",
+      "sha256": "c056d3fdaccc701797df710330527ef804b5e1f7acfb9ce3b20e65319e4b1a2e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectProvider.jsx.html",
+      "sha256": "f4a351143fe64e45bf34ca1b228ff35bc0060e489e53a1a0e8cc2e70c2d84086"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectSelector.jsx.html",
+      "sha256": "bacf62c8e1f008d25b0c431eefb4bf563a8dae56eacd8b3338f474a41c2b9266"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectSettingsPage.jsx.html",
+      "sha256": "527eaa1b787f4d978c42830fb3c689b537f2a9cca33891f900e8d95330f0afe9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/RulesPanel.jsx.html",
+      "sha256": "c1cbf587693818fb9db72ace396a8a4e3f3a78f0a1f460781fdaab27d9497959"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/index.html",
+      "sha256": "37dc9d0a400a512d06aadccf01fc94330460fa10421a639202d7cb0872e9157b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/projectAccess.js.html",
+      "sha256": "a2df3dba73a31d415592aadbe979f0f5f58d1828de524613c992986b3ab77ff2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/qa/HandoffPanel.jsx.html",
+      "sha256": "e61e0bdc963662cda7d9462e4ca604cab9790ab475938b82dc8838dfae4dcf1a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/qa/QaForm.jsx.html",
+      "sha256": "5b7a89587f447be383a64baa0c671d46a1ace845796535392574b67a8c602b9a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/qa/QaPanel.jsx.html",
+      "sha256": "7af0b9002afbdc6a92c035791d11653c5678fa4b05a7883e5d2517a82c32a4ac"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/qa/index.html",
+      "sha256": "bbcd920edebf7a65c12134ce84d0dfd84b82a072d39c68f7e51da22038b5c380"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/reports/ManagementAnalysisPage.jsx.html",
+      "sha256": "d967ed050ac7999b712aa22812cf2e3d9e036b4947e27e1e2ebbb525d850403b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/reports/ReportDraftProvider.jsx.html",
+      "sha256": "2e24f1462cbaeb737c7b493005f65a1a0f1abf4d5a029fe4782189913922ed85"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/reports/ReportsPage.jsx.html",
+      "sha256": "0e3e3435fae2aecaa2225bddb43b1ed814eaab1f0a67ee1100301897261915f0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/reports/SafeMarkdown.jsx.html",
+      "sha256": "211e2fdb97680ce40d0740efa335599cdad040734e70e8b362cf1ea1d00b5bf6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/reports/index.html",
+      "sha256": "7f8dee7d93975c40a6f41d1b6e949c1182bf0f19ee70a87e4e90152e284e9cca"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/CoverageEditor.jsx.html",
+      "sha256": "d78f24cbbdd7530254157de04430d4e1bc00d0e5f8415880148abe5f8ffb8b11"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/RetestPanel.jsx.html",
+      "sha256": "232daa9518e4a53379d776eddb853e8ac8a4599497151206cc40ca7d4bbfc5d6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/RetestQueuePage.jsx.html",
+      "sha256": "8e6b20676a7f9c01180059e71445ed223d565f1b0a6d56092e19462bdd6adcef"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/RetestResult.jsx.html",
+      "sha256": "85d38940b8d56b8002f5dcd1d6932e6fe9a1ef080c8e30a1c3056c05df7e0a06"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/index.html",
+      "sha256": "04cfcbf82d8dc6b83dad1a111fa20ec70d3cb09c1afd5da20adeada19a216307"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/shared.jsx.html",
+      "sha256": "1e3bb340b87307beed2c31b7c8b07420026353e659a64f6cbb369c4f6bc204a9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/CaseDetailModal.jsx.html",
+      "sha256": "5ee81425968b88a363044fb1ae2337dc05bd5268dd094bbf3639c6986d4c942a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/CaseHistoryDialog.jsx.html",
+      "sha256": "38e77e02c716c059217525e7917238e8adf8de7721576bd628360341c08397c6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/CreateCaseDialog.jsx.html",
+      "sha256": "69736027ded44187d5e5e14f86ab65271247b2a2565729b6c2cc0c12a4b1a68c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/CreateSuiteDialog.jsx.html",
+      "sha256": "66f1ed6a07dff7d6e5a0af70e19972b65883c27eb9bf9b4fe44e250b9bf2fb02"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/DocumentCaseDialog.jsx.html",
+      "sha256": "8bde3c00c943d6eb8998bc5e19357687768b07ab8c8ff12390c6426c642b831a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/DocumentCellEditor.jsx.html",
+      "sha256": "8eaebe47cee08e0b62cc7ea3a98080697c4b0d25b5bec4040975ce7fa159a86a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/DocumentExecution.jsx.html",
+      "sha256": "618f02623a11eb927c38469cbdac2d8bce9c2115e079d6c53921e9f8f92b4124"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/DocumentResultHistory.jsx.html",
+      "sha256": "5b49d73e2b60f9ae8443717b501e0354c04e879f397dc3bcfa98505056f95712"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/DocumentSecondTestDialog.jsx.html",
+      "sha256": "47304a43a9e1024de68993875229bd3ffeb23be8fb238e6d70755b972197a431"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/ExcelImportPreview.jsx.html",
+      "sha256": "aa21beb3ffffcbd4964c4383dec0a8cfee3c89d9e3adf7f06b618e2eeffd24d8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/ImportExcelDialog.jsx.html",
+      "sha256": "b39ab48d7f340a8ddb2d399336fb3f980b420b38108a3cc041947d35d2c23f4d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/ResultCycleButton.jsx.html",
+      "sha256": "735f4cec0a20c267905d943fe4074614d659c00eb6deadfb54c981b78ae7dbb9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/TestDocumentPage.jsx.html",
+      "sha256": "30508dd4d700db27279102a0ab499adb45ebca2b5fec0de11d196e3213be2603"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/TestDocumentsPage.jsx.html",
+      "sha256": "658e63f83201ce1132910bb79921ba78fef41c84c156d9dcc56c195ca2ff2c2e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/documentDownload.js.html",
+      "sha256": "a532c4e4e305c9753cb8948fa6c713d775399a98ef6d7638b39fd1e5455839be"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/index.html",
+      "sha256": "dd448e8fa3cbc928f3e1b78993abd8765315f84112dee2b98098b56b7763fceb"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/useDocumentResults.js.html",
+      "sha256": "b4b6fc2d232e9ed6da666c0972b96d1154fd80d869b37f5b3833d2c05a762ef6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/AssignmentDialog.jsx.html",
+      "sha256": "ab3804b43240e22383ea52cfe331019fe85509f1ca0db0bd3cdb28d79d7232eb"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/AttemptDialog.jsx.html",
+      "sha256": "62de99146763fe2a472ff65a8af863d9522471bf99e0a50f056a058ef85bc517"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/CycleDecisionDialog.jsx.html",
+      "sha256": "99229e6fe851016914043e5bcb2cd1c561e70d54358bf8d316edc837e2df7c7c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/ExecutionRunnerPage.jsx.html",
+      "sha256": "54a9ffa7689ec2800c3f7ba2c2d952da3c9eacd8976de39de41d8aa8baa12a89"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/NgBugActions.jsx.html",
+      "sha256": "09c5e5807db9ea37f8c024d7f724ff63e15a09c73cb9a6816bbab8c2b10bb4aa"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/ScopeSetup.jsx.html",
+      "sha256": "dd8932f74640ec15ec743eb17287c88e2f12f73bedfb8f3db0f1e11669ac234e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/TestCyclesPage.jsx.html",
+      "sha256": "09885746b32c3eaf41c948a7c9b94361b44bed9f3ecf9bacdf6892cd56f7221a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/components.jsx.html",
+      "sha256": "43c9211cf1e0e7868f3b3f76a5455fc71076cc3011bdb6e507779ae36231d578"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/index.html",
+      "sha256": "72b519e631c71064657bdfa248010f5733e52340a08ebca7473509d8590ab677"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/DocumentAssignmentHistory.jsx.html",
+      "sha256": "1c5b58db468caaafa37db6a50768fed69487b98fe0ff479b53dbd6bd434e54c0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/DocumentAssignments.jsx.html",
+      "sha256": "f04d8f7b69b250f2f10c5d18576ad1606777987a269758bb4ee6b288009a5f8e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/FeatureForm.jsx.html",
+      "sha256": "c4337ae683b67587dfd1d294be34c74287fa0741c9a3e0fe95d6a005330fb5de"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/TestingDocumentPage.jsx.html",
+      "sha256": "b01dad0dcaa87729591608f6eb3987afd7fff74f61c8265fa4cb4b5f045d4c9d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/TestingFeaturePage.jsx.html",
+      "sha256": "21ea49069add61a6328605d7008fcdbf56e20ddcb29a5f4f86787c8d0957a6d3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/TestingFeaturesPage.jsx.html",
+      "sha256": "db249e14072f3b7be642d3c59584b0de2ab149b218a87053c5ae1d6e76cf25b6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/index.html",
+      "sha256": "580b89a01fe9ee703a013985eba986a8b792c936c190b19dffe95cbe541ce399"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/testingState.js.html",
+      "sha256": "01afa7d188558822cca357639fd951ee16c483b11faf77e1777774cdf0ecb61f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/BoardPage.jsx.html",
+      "sha256": "c16a35eefdd5b2951987d22a97fe93c30c23dd70ee299c73fb28e13c9d34d08d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/CaseIssueAction.jsx.html",
+      "sha256": "92fe9d9c9f51a08f7ac22aceb12b9708d793e6e6c517de299c6029c4bab08903"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/EvidencePanel.jsx.html",
+      "sha256": "b0f343915f36e75ccce596b812a7e192f3c3d0ea0ef4a61f242995c87b75791b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/FeatureIssueDetail.jsx.html",
+      "sha256": "eb61d760eb80ca6dc4ffc96c926b023d195841d23da0866ab6098f2007fcb1ea"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/FeatureIssueForm.jsx.html",
+      "sha256": "feb7fe748e8f513b748ac7ae354a9be3289e3ae9b9eed7bcef349e1aeafcceb1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/FeatureIssuesPage.jsx.html",
+      "sha256": "7e9e4c9b228d4a1b9f82a3b96af458760b53841ea3f488af56d78a91de00085d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/HomePage.jsx.html",
+      "sha256": "1cba2c49e7e00ae40d1a5f07b1176065299261aa7899b785c279a8799670a141"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/IssueForm.jsx.html",
+      "sha256": "aaff873c40ab978ed9a5b89e650f53626165f3c02f3a6cb5f43fb898d33753e5"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/IssuesPage.jsx.html",
+      "sha256": "16134409f72c4a2316488afef1f8f8725ac561dbd8aba32a203cc48253b2d0d1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/ProjectData.jsx.html",
+      "sha256": "e9fea66837ffb17cbeaee5ce4e974978a554f701802c988d3f3bfab2e94c7fe7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/TransitionDialog.jsx.html",
+      "sha256": "db0e0fe370e8d3375dfffd8c0deabf53039f1ff52ab068365a11c0a0579d41f3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/WorkItemDetail.jsx.html",
+      "sha256": "b5805eed6bee9d87c2b75355b99777b29bcef6bad5ad312c51a615ab48024c28"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/WorkItemForm.jsx.html",
+      "sha256": "65e95278cb8ba5989d6acb3d8bdc1969e0df92e60cfb6590e134c5cbfc1f603e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/components.jsx.html",
+      "sha256": "69fe5cba698f5160570e2a826fbdc3faef7a801ac8042566397febc73fb0925c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/data.js.html",
+      "sha256": "90103537a7d88d27fe936db89eba688cb4e9fdf68dc977aedf9347d5a5b2c209"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/index.html",
+      "sha256": "93d9062aabe0351cfa4c09c3844e0823cd9247c467aae6603672744de72f836c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/issueFilters.js.html",
+      "sha256": "1d7bfa1cfadb923282aada8f7ffd02aba32958292f412179b3bd52c78b035a9b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/hooks/index.html",
+      "sha256": "2ca0c9f821633b25e6d40dd5250d6c77501e4969f3e365235d70d87f959f0b37"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/hooks/useDialogFocus.js.html",
+      "sha256": "f908927fd2df71bb990cbbd2f2512dd749612d9acebaa98fd7bfef0cd1ecc113"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/hooks/useRefreshingResource.js.html",
+      "sha256": "21842053c00c4d99b778d02b71f9da4a540257a3952d20faa54ea7a2be12022f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/layouts/MainLayout.jsx.html",
+      "sha256": "5a1e184c5cf91a96c07ed7ee6535f4c0e53da30746951f1c69a217e72527820e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/layouts/index.html",
+      "sha256": "a59e37b4159ed4f2dc5618c44f5ffbc439d7266037e76d650e19e307867855f9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/modules/CatHandbook.jsx.html",
+      "sha256": "d339aadd4c478935abe790b9954d34a95f48632958e5f290d2e4fdf0feb4f1fd"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/modules/KpiSummaryBar.jsx.html",
+      "sha256": "c802f8f965a59d49747d30ded158445b68e7e2b543b2439dfe9894a80ae235fa"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/modules/ProjectOverview.jsx.html",
+      "sha256": "64eacb8cd09ad7afadca62139b5f64c19035f643648b967679d1a7490a2b3b29"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/modules/TestingOverview.jsx.html",
+      "sha256": "df37ecb026c0942e90304ecf7bff540069da8ec39e127a2d78b9a4417bcb6559"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/modules/index.html",
+      "sha256": "fab690425b0e6525f0a76ee0ca2cf0996a1a32c8b987b192abc0959c8faab7e1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/AnalysisPage.jsx.html",
+      "sha256": "c2e493bf16bdb2455e448ae858d8dd0c3f86eb94f6c6112949fe0ceb64e41923"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/DashboardPage.jsx.html",
+      "sha256": "ce554847a35f0f21282f1b6ac11c6f7f68fc7ccc273c34965e79e3104c1c2f85"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/IssuesPage.jsx.html",
+      "sha256": "075f7e27c02f85162740710842a5bd3c2423ae867891ca84c6008f2664d3fb1a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/NotFoundPage.jsx.html",
+      "sha256": "9fdaa94c0a85e38d08262d37cfa326c74d7d98a44fee2ade576d117e518e28ce"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/ProgressPage.jsx.html",
+      "sha256": "bb55fcff8d08bb054b2d8fa0812a118b387102c7b2cade914d6e694bd2a7776d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/TestRunnerGridPage.jsx.html",
+      "sha256": "d3e57783c5254d00727b6c691731900348ea56d90b2970328c4a408949ba4c39"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/TestSpecsPage.jsx.html",
+      "sha256": "0c499716a3c050125d3551b3d8af32c57af3bdf136ae2f4f21b410af0476d1db"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/WorkBoardPage.jsx.html",
+      "sha256": "e55594f516e237d38c3c692582dab2251606a1f2e6854c0e3a840dfe4bb460a6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/index.html",
+      "sha256": "bee2463ef885bbf1b67ce14267950304aa50d5b2a4270b09e5c9561c56f5315e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/routes/AppRouter.jsx.html",
+      "sha256": "0b6ba6f3b036d5f5eca421094b74a2171c14e86b97ae1ac9dde1a50c8c8f8dcd"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/routes/RetiredAiEntry.jsx.html",
+      "sha256": "44ef0d51dc010a1c6fd826a07f2abe0ad8f844104a7731d325253a14a2dd6009"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/routes/index.html",
+      "sha256": "a2a05015236b4922b994d742a3eb7d67eb25cc135a931a38176f54eb246039f2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/routes/legacyRoutes.js.html",
+      "sha256": "f64e4ec5be580c70f1fbdba2e48ace3f44c745c5ecb4e5e56eacd7a2d5a3b45b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/routes/routeInfo.js.html",
+      "sha256": "217ef0f26a9a30247316a8c437e34ae39219cb4a33f8b944604d124af8583c5f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/admin.js.html",
+      "sha256": "48619f2a23d3ea25f1f6b15c55c197d9a104258fefcc641961e8849ecb1034c9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/ai.js.html",
+      "sha256": "0d477677332e4b47675bd5959ff6d6e900fff74f7689b73951b6a3a91e141f09"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/auth.js.html",
+      "sha256": "db266c086d4db7a4a36c949b0349a67cb0f4d205d042e771bee1ca85f62ef64e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/client.js.html",
+      "sha256": "e688b3448008681de3f52f46ce7f6ab5788a8af62ddd7f03b4d08f6193922afc"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/execution.js.html",
+      "sha256": "02f7efa2e80aa0292bc5bd6915490ce6e48eb8c9fd8cf61ac259ac60dee5ff82"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/featureIssues.js.html",
+      "sha256": "e45c6e01265dc383c81ebfc78dee7fbe8db42c202a48979b6223695a05b981e6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/features.js.html",
+      "sha256": "07463446b780207b8edbfde6ab8d891a847b044c6aefe1111fcf2e0ee5938269"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/fileWork.js.html",
+      "sha256": "72111e96ed765649e2342e708d6fdcb42a51b6b358b5e599eddef014df2a7e35"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/index.html",
+      "sha256": "ebd7ac1234275a7fe9a0dbad6c1f7fd9287b7669b5c82c0482981077868ff7a0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/managementReports.js.html",
+      "sha256": "8323572aa50d433851782ff74b1fb5aacd9edbae0037929697e577b8ad446572"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/notes.js.html",
+      "sha256": "c183bed7d86af7bb3b6305728e9b1bd36d2cd5f8719a284b928bc7299d9ab184"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/projects.js.html",
+      "sha256": "c24f2439e5e3a32b8620952a7852cd4fe17e12bd952a34f6795b3ed0da749ec8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/qa.js.html",
+      "sha256": "954396f898f3cdad63e1310e74a2cd77ef7adc34e2b9f01bd3b5ced60b12ad83"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/redmine.js.html",
+      "sha256": "f5ac4506ee7ab143ebe075e6d2688ba57153e88c1d5600aa3abc88b86ed744ef"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/reports.js.html",
+      "sha256": "2fe5527751eccaa8e35ece8aea6f6578fa78756fb6ac5e0a5333320e9432ec1a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/retest.js.html",
+      "sha256": "fa50f170b77dd62852fb8eb9baee0a649afb01562f2131e58675d6355341e82a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/testCases.js.html",
+      "sha256": "d3ebd240eee541667a3456dec9cc247841e7823a423102c65e1bc4765c4e9f24"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/workItems.js.html",
+      "sha256": "3165a4ea4cb15644c60a2fb4708958cd4dcce2f49f87451035a84e0f93b5deb4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/utils/index.html",
+      "sha256": "878ead533c3324a1baff72a3b2a3546a6d9f31796b9f0a99c15ce3cd1f025d54"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/utils/multiWordSearch.js.html",
+      "sha256": "e0c5a8ab61ebcf92107a8e3ef389c82667e1fbe8524a0a4fd116f5f814364fa8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/index.html",
+      "sha256": "779ce70edfbcbb6d2a983abe91b064b8be3799a87937fdf56b2210f17020c871"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/main.jsx.html",
+      "sha256": "cf27254dea87dee28e3af7c2d4b212ecac378471303185bb14cdfe4b541a0295"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/mocks/index.html",
+      "sha256": "0f0c05081cea1933de1da640b800ec45cbfc5b9972b17e1a4173ad2a194a309c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-final-coverage/src/mocks/storeData.js.html",
+      "sha256": "de37ee6eccf7354dba4a0908e12df2c3712ef87feeb8faaee1cb76f731616f55"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-full-coverage-tests.json",
+      "sha256": "e42c382890c17669e560444a1b767e86a82d1e512dd0786cefcdf62db4c29c60"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/frontend-stable-final-tests.json",
+      "sha256": "352e3759c56d4988ce7f662b45a4776f26fcbf2ae8610ead49dcc812e96392fc"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/independent-shared-review.md",
+      "sha256": "5e6febece1f946a403045bcea3cfc7f52f51f7d56d6afb484b77f10870bbc3f7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/independent-testing-review.md",
+      "sha256": "20fd762c65d37ac63eb760bb9c6aa19c42c5667df7a6270ecd98f5cb7ee67732"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/base.css",
+      "sha256": "3f876e51f0a46864ffa7665b4b7a1f5fb5f6f37fb6a28f014e2b12d82962c852"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/block-navigation.js",
+      "sha256": "cd8db34b1fbeb973354a93f8b4133c7c7eab34cdda9429a0434be91384783b7e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/coverage-summary.json",
+      "sha256": "570d602ed5c693a73dde40b4567ab791963f685c99dc13626a5b7f7dec67f862"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/favicon.png",
+      "sha256": "5b0cfd52dc0bfbe544f4e1a9c77aa46b8629b0e0aad6c54f95eef457b86c2a89"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/index.html",
+      "sha256": "d63cdea7c9ea19afe9c6905c87d4535f0f1f5205663a8d48e7cb5d6872cd52d7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/prettify.css",
+      "sha256": "ea3fe433f9450698ca8a230271688e7aeec12f99c8a7ef6c94379abb38f27823"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/prettify.js",
+      "sha256": "fa1b1e1b906ddcfa08b46f161c0f924f506e1a31b4f3e09b8caaa2463ef52c18"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/sort-arrow-sprite.png",
+      "sha256": "42c895355f9838ede83fdfdca90127d8471aefed5ecf5342374f65ec7c3f10ab"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/sorter.js",
+      "sha256": "f8cc5d157379d844fd695ad567b6c29b3c1f0812964ddf6f95c26327e434bab5"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/App.jsx.html",
+      "sha256": "02519d1409c30557a4e5a54076239f9b2e44354a6d6683c867af0bef197195e1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/AppEntry.jsx.html",
+      "sha256": "655d7c4dad3c102110bfed23b90d16b0dc80aceb29b6ad10deac1e75a6832585"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/Footer.jsx.html",
+      "sha256": "adfef15aece478c0c9431ac899122e13b477a8405a2df66fd8c8e53f9794d3c3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/Header.jsx.html",
+      "sha256": "020da683b1691c3a1f441450b513ea48f42b3e5f45bc2e350f37e5b1ec2172b3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/SelectPageCheckbox.jsx.html",
+      "sha256": "930d27844f5ee936a470afb08dd1a4f35c4fceceddd81432afae995c1ed72b41"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/SelectionTable.jsx.html",
+      "sha256": "24aa714690e48aa973144b8a52cc1699eb7266b5b94b18a071f35a0a75b5d856"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/Sidebar.jsx.html",
+      "sha256": "ec3affb939188cd43802233d256741bed3262c81fb6b9e302024f62de53747a8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/TableScroll.jsx.html",
+      "sha256": "e1076e3b536fc9f21b856b90f528c5ca499bb0266943ec48af6bb81e18aeced6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/index.html",
+      "sha256": "bca2e402cea6d46674b95098b45f3b6724ec1540b06301ad6787cd484745be4f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminApp.jsx.html",
+      "sha256": "76f49bfaa6a3286e430510a97207d103ad0e2a0a2e9b3a0bf99f069f87ba9f3a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminAudit.jsx.html",
+      "sha256": "bfe46249c52284c2fbd9bc04431b3c02444ec5022147d69afd3ae9ebbd4665d8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminDashboard.jsx.html",
+      "sha256": "136cb3d946fa6995f99021da73493a8f76a569a907038bd5258be49d2e52634d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminDevices.jsx.html",
+      "sha256": "033c2b2ec5f0214a164d79c86308bc63e8918c4fd5f8d75ad984a1b76c6c5624"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminFormDialog.jsx.html",
+      "sha256": "83974b2d8c2fd1f765bfbedfa3cd7d91c9cdda542b58aa2ab1ee966edcbd8dbe"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminLayout.jsx.html",
+      "sha256": "c410d14382281fe1f562ca1cef6cd32596ebe0df435db17583568c7da3815efa"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminProjectDetail.jsx.html",
+      "sha256": "1b6474db229cae978ee11751628cf5bf93e76cb0a094736571612e0ee541db4f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminProjectDropdown.jsx.html",
+      "sha256": "b365d45635f19db621d40feaca11e476f212607f33d5dcdecf6bffdfb9d309aa"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminProjectForm.jsx.html",
+      "sha256": "3b3007d390b91e9e6a887ebe85258b25fab92f7ffa979653f79784cd1bb6a37c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminProjectLifecycle.jsx.html",
+      "sha256": "9a3659250d6be8d990612cbebf7718eb0345bab68ca96d3d1b44b51d3c43545f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminProjects.jsx.html",
+      "sha256": "8595d1e7618f8c0326653511df2fabcb9bed059d84aa083cfb2387384086f219"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminUserProjectFilter.jsx.html",
+      "sha256": "b804b30b94da5dc977e77fab7d990d346a57fcf1a53aa5c98b1f2befed17bd91"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminUsers.jsx.html",
+      "sha256": "abbf9c739fc01fcbe842caf8e75124d7141e4fc9199977149c8f9ef9dac0ba31"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/DeviceAllocationDialog.jsx.html",
+      "sha256": "e6561eb3e58a4be9a56bb10505e384e3a0110f6b8da66c26b4d1df2a2a3d8dda"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/DeviceAssetForm.jsx.html",
+      "sha256": "1574e91b2f36d6ae5df9d60adbadf6079e7b6b2bf26805d12b128f5efa02cc5b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/InitialDevicePicker.jsx.html",
+      "sha256": "045422a4e353ec0f13c990131120a89940748f11874d364d4b0d9445ec5c9eeb"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/MetricBars.jsx.html",
+      "sha256": "26c3a4b3ca0db416e98dffd57b5bec327bd76b756f81fab0d9c0907fbabda6e0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/ProjectRoleSelect.jsx.html",
+      "sha256": "29f3ac90615592b8c616ac01ff136f8000e28ea6a23cc34d27844137fd673ad4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/ProjectStatusReports.jsx.html",
+      "sha256": "33b819bacbc85f72ddd139da6f7a682e99f2a267c70b48db3d25c6682e1ede41"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/UserCreateDialog.jsx.html",
+      "sha256": "8132925978269d514f79c7e12d7a817a376971c7ff10d0c74066366f26585ef2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/handoverRecipient.js.html",
+      "sha256": "f47d1b8b2d6b051201d3a32f00c19ff6728c54f1967be61cd9e832aa2dbd3bf0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/index.html",
+      "sha256": "9d882eaa49ebe0d497fa930a6df2cc3be934ad7249bf4f40f55a57737f7b0cc3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/shared.jsx.html",
+      "sha256": "8c83f2714d6a7107e55c73dce24862c925ac489b8d7bcb2b76f6f0b3f9476c70"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/useInlineEditorFocus.js.html",
+      "sha256": "81e351b64de498b10e449a6b66d913482e63eca3016cd7441f72f32ddddad2f0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/AiAssistantPage.jsx.html",
+      "sha256": "e64fcd8e8c1aaa7f7002ce727109d089ce5a97505bbbd49d70d4a3462648f5f2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/AiChat.jsx.html",
+      "sha256": "767055c83917c1ed3d4eee1b0f1ef9532b64bdae561710b1ffc121dd8cedd332"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/AiConnections.jsx.html",
+      "sha256": "b7dc6bf2be339614c4be13f742fdc52fb8c79af43774726b7d0a870dec529e0d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/AiEditBuffer.jsx.html",
+      "sha256": "da065ff385c68f806eb0d7cd1943ba0556873eefeacd89e19bf3ba91d7b50be5"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/ChatLauncherSlot.jsx.html",
+      "sha256": "f0e7b28806f99689e67efdf6776a84a720cf8ad3fe35140b7b8d13b38b6c210f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/aiErrors.js.html",
+      "sha256": "a739c96bef0aa8d225a6a4d204a8e60011f1b67a06f62e9dbc97925cc6f73bad"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/aiLabels.js.html",
+      "sha256": "14afe21ead12518c9eec85a2fac479990c9461159bb45c0fd77086524c02834e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/aiProjectPrompts.js.html",
+      "sha256": "21fb35b6469cb1a1bde56cf3f4bf54193224d236726b6f141b05228934e0e2f2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/index.html",
+      "sha256": "5d1fd5a99ce30d056a332eeee88059c32e4b369ef417596f5f531d2d6f34e407"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/auth/AccountMenu.jsx.html",
+      "sha256": "60a09b9fe03737c206d08a821fac49158af15121387eb0744a50953f9422ddb7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/auth/AuthBoundary.jsx.html",
+      "sha256": "ea0e5079bf73984ff1301f6e02c69b944564775c047c89f7a684a8dde7e95416"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/auth/AuthProvider.jsx.html",
+      "sha256": "6cc416b8434dffd09fdb1296c31ecdf3c357e27ebb85c21360158cb0c2bfd2e9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/auth/DialogVisibilityContext.js.html",
+      "sha256": "f5bf651d691261b38ed85c9cc994ec99eab1acebb6b331c2d0c4c81cfb76cf11"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/auth/index.html",
+      "sha256": "c242eb72a4954a444faa6b9f4daf0be5f9f6581a0b976a0101f9351fde633db2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/ActionInbox.jsx.html",
+      "sha256": "a06be568f5a38aba696e8f44630fe662aa041406c3c5fcad27e938b51b14ae96"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/CaseRangePicker.jsx.html",
+      "sha256": "fc5c6f4ba4614ea639ece2d9f95494dd710971a1353bd00ffc5a25a15bfd1720"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/FileCaseView.jsx.html",
+      "sha256": "64409315ab28eac56005ea8a81ea7d37de12212d592c7250d8ba772fcfa27aaf"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/FilePreparation.jsx.html",
+      "sha256": "39f6d9dd3dd3a4bb12bed3feba43df4aa9183938594fab0545ed78cb976ab052"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/FileWorkDetail.jsx.html",
+      "sha256": "70731c9f8bfa3e6889c40e697df592ab219b2326c7b963fbc73fd33af5be7ca9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/FileWorkPage.jsx.html",
+      "sha256": "a06f281450a4914d5d398bc73f5ab3d8cfe86f9a816158bd63af1a64118383b0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/ImportedDocuments.jsx.html",
+      "sha256": "aaff810903a32971f7ec524a4f230d1ae6d12b5c5d404bc55e219800a403bd91"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/caseRange.js.html",
+      "sha256": "5df4c6149758862f6ccb3dcb1c83d3f48ee39aea7982e5a639a940a32e4e4448"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/index.html",
+      "sha256": "877314c8da43a4d20fc2ea89dbd2732631800c7bb242a75b4c8af53e4eefe695"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/integrations/RedminePanel.jsx.html",
+      "sha256": "6fa31cc6fb5e519e13ce7715f5c4c0c283d5d54de2a6a773a512969226ea2b46"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/integrations/index.html",
+      "sha256": "c6dd3b0234a66de8cc878813032d513506966191beac43cdf593e89721693833"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/CatalogEditor.jsx.html",
+      "sha256": "04bedf709fccf4acc4468852ae053cd99aed7b4cac18aa0a8f0a1a96558a9d2c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/CatalogPage.jsx.html",
+      "sha256": "d1cbad35c1e881574aa911446f295020f250acdc690ab500a0d08597303d1588"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/CreateProjectDialog.jsx.html",
+      "sha256": "729e5364adbcfebff8f727cdc6847032e1f6c13902c9dd437b663a2118dd9129"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/HandbookPanel.jsx.html",
+      "sha256": "2bdb8cdd087876dc640c0c24d2c8a8dbed3b3e36c8649de96523aff4cf259124"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectAccessNotice.jsx.html",
+      "sha256": "6d842e4ef947cea8072896a9b46bfc30a5cf891dc7b81e6a949345504731fdc3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectDeviceAssignDialog.jsx.html",
+      "sha256": "3b5b372124af47ec77ff68a1a0086b7b347e5b404d93953aa9336f82295905b6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectDevices.jsx.html",
+      "sha256": "0597aa390e10c2524f2d7e789307486ce5983263032dec6791888df50441db23"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectInformation.jsx.html",
+      "sha256": "a9b4c911cfeb9975457a547cf84338b25ec19ca7b5bbc7f6fbfbd0366ff6f31f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectMembers.jsx.html",
+      "sha256": "af30960815762938e46b8ae58ebf027f1364b9a0dcd11a010e4e6ae5fa9f27a2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectNotes.jsx.html",
+      "sha256": "99b06f39a339d7cb8e5fd5aee1d96745170f5cfec2fa5750fbd580ac64620ae0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectProvider.jsx.html",
+      "sha256": "2bd21ad692b5d28a66307490327adebfd9c04b06601ade5b91a987fc6edbffdc"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectSelector.jsx.html",
+      "sha256": "9794117b938b7e421c0b1e57b1a42167c58aaf9e2e5ed3a910ee47e9f1a82e25"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectSettingsPage.jsx.html",
+      "sha256": "0dddb03f3fe0b6fac187ccee291b08973722ba5f0096ffcc4718a3a03663d41f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/RulesPanel.jsx.html",
+      "sha256": "9d8a7d125a42b007f5a5710a2659b0b625f77d1796ea73bfb32a57707853501d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/index.html",
+      "sha256": "f68a7a4884154a37bd7bb3e5cc4bbf1951b891fcd081b2d3e5cc9e6d178f5031"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/projectAccess.js.html",
+      "sha256": "71161229248471dff82d26af42438e6dbd8a5f9d028315e072ddb0c9b6421940"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/qa/HandoffPanel.jsx.html",
+      "sha256": "1b962c76c594a3da0da026cc447014a68e53ba28d50c2ecae7845e409869c44f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/qa/QaForm.jsx.html",
+      "sha256": "efe4130debc7e9815f3dd80b6773616a18e932125a1e84b06187625824f51725"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/qa/QaPanel.jsx.html",
+      "sha256": "3438c32fb77483103cbc47d2be8e5d90a2f06f7f094e77101e378a47cd05f395"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/qa/index.html",
+      "sha256": "2dfa9914c8c207209abeb18b9ef806b512cdf46a91fe93185bbd1d18cba03564"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/reports/ManagementAnalysisPage.jsx.html",
+      "sha256": "8b3693a2939a159847814ab04e7444f95de5a95b166a3e84aaeeeda66380049d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/reports/ReportDraftProvider.jsx.html",
+      "sha256": "decbeda7b2d4bc36bf8ecc082804c7ac6c0110d54ba2ac721cc47efc5f1e547b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/reports/ReportsPage.jsx.html",
+      "sha256": "be7f932034ada02fb48449a07af8d84411281f6e4a0e0d096a2c5b85a77df656"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/reports/SafeMarkdown.jsx.html",
+      "sha256": "3cbaf943da8b55275d132619e28b08e598f7306c605afa639660497c3c0a4dc3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/reports/index.html",
+      "sha256": "ca4ec694d4da01be2a3868cb1ee5030379759093277d9bb98430478766ba8c9a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/CoverageEditor.jsx.html",
+      "sha256": "babed73694a452ad86af1e14145424d02f60fb5c52157d9afd8ee45bd9136022"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/RetestPanel.jsx.html",
+      "sha256": "d805cd1281fc4a61142b68a593edf53a9dc735543290a3c2fd3edd1246214339"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/RetestQueuePage.jsx.html",
+      "sha256": "ace09a1030695b0d444010ada8f21431e96e24d083ca0a940868b33aa4c94fe3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/RetestResult.jsx.html",
+      "sha256": "77e8af48507aaeabb24efa453f9dc7b9a0edf69c9ebcb5d266a8b963e9c8eab8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/index.html",
+      "sha256": "8cbe268d99c8fb7d68f09b64afd6f5d63e42bf8e1371c82abb113092d06f2157"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/shared.jsx.html",
+      "sha256": "ff1cb4574f7171c22d265073f9c0171a1db741b6b29d6a637a221d4be37d6efd"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/CaseDetailModal.jsx.html",
+      "sha256": "a1c20489932c06de34f3851a5698790ffd671806434a504e610a2973d436683f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/CaseHistoryDialog.jsx.html",
+      "sha256": "314d82604ebe64bb07d8b31a0da417b15778f03be44184c635f2fbfc94f8dd9b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/CreateCaseDialog.jsx.html",
+      "sha256": "5525cf6fc28f83875eb731aef613b7871e7f73fb8156a8d8606b7ef5acf6a35d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/CreateSuiteDialog.jsx.html",
+      "sha256": "5cb7bbb874a05510a1977c548dc0798b7a13b6433f8d681456cff23d80049b67"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/DocumentCaseDialog.jsx.html",
+      "sha256": "63625332c060afafc6bcb51f614c0f3fc8311a56a0d40aad93eec18c93a8ac69"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/DocumentCellEditor.jsx.html",
+      "sha256": "759a636ed0f0aa9ce3bdb95b9d73a6f6a77bdd47edfe1edae1b43a1335f35586"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/DocumentExecution.jsx.html",
+      "sha256": "45b006cc8f1b4326cc9012f018f375d133ebb1c263b21a28fb58981b9698a7bf"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/DocumentResultHistory.jsx.html",
+      "sha256": "cd6740097ea43fe8b3df78804c40df96a59dbcdbbe3a821f123d9f61a7259440"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/DocumentSecondTestDialog.jsx.html",
+      "sha256": "7e9bec072c6b5f8164500dde81eb3c40b5b9e6839ffcdd3b117af6d3d9ed30e4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/ExcelImportPreview.jsx.html",
+      "sha256": "12433105bc1fc15518b5ee2a1bc1c2768fb1e6b791df4de16588c3cec150e1e7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/ImportExcelDialog.jsx.html",
+      "sha256": "abfa49e2ecbdbcab0d131d2bd93a913a80278906ebc68aa4d23501e8b8ffce40"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/ResultCycleButton.jsx.html",
+      "sha256": "63b9d1c085327d3595c71dbfb73a512f0a89605f5ef6f70e517f4003f00bddd4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/TestDocumentPage.jsx.html",
+      "sha256": "e4ec1c7efb80cc583f40709a35162b11de8e33a73743f214100636b80bd6e46d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/TestDocumentsPage.jsx.html",
+      "sha256": "480d39fbd699f1cd0d58ae4196e28351b6e2a66de9501f85f4c1e286be32ecfe"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/documentDownload.js.html",
+      "sha256": "4ffe678941f2fff9c3c891dfc484a70181a74f2f184cba37db6a568a8f8a455a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/index.html",
+      "sha256": "999da18fdfe4570cdd22692c48951ce229c68b6b2f765b7ff5bfb322faa8d843"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/useDocumentResults.js.html",
+      "sha256": "eaff83af0ba2c9de26dcb8eef3438226ac90024e46ef1f3d96cb22d9e1c1339c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/AssignmentDialog.jsx.html",
+      "sha256": "ca266f873f6b5100e6dd1d0b18ca770f5102ec69051bd9ecfbb83d9275df1540"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/AttemptDialog.jsx.html",
+      "sha256": "9e34e673bf5b3abc930e11a188e10fd592ea375da523e2ae0ccecc57779ae5c4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/CycleDecisionDialog.jsx.html",
+      "sha256": "ccce43fc3a47261dea56d78335fced96e6ff840d29a0a0e8ac6bf4abe9f1557d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/ExecutionRunnerPage.jsx.html",
+      "sha256": "ad5e32a771a4f5094775cfba19fbcbd95548d8e22447dae2ae54349ae38d3a30"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/NgBugActions.jsx.html",
+      "sha256": "20d5d734d93bfeebf7b83b562739c06c764f53398b5804038c8a806cde94cd02"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/ScopeSetup.jsx.html",
+      "sha256": "a8fbca25061f081db05a2690a7c8558bf0b46553bd44cd90890535622c191bda"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/TestCyclesPage.jsx.html",
+      "sha256": "95a8f601af1eca9db1c0fb3613ae82dfa9c540e5fb19d47e88d8951c8c8849b3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/components.jsx.html",
+      "sha256": "e7662323cf55a1271393e0d459471d01a9d00764debd38cd432fbfb635a24395"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/index.html",
+      "sha256": "97d65e8e051685278f782e01f964d9859fb463247379e4b3058f0ccd27da16f2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/DocumentAssignmentHistory.jsx.html",
+      "sha256": "64a1a4418758fe5235bfed73747465b453e8a7247cb25ca4df93d8ec20a63cd6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/DocumentAssignments.jsx.html",
+      "sha256": "4c52099858c270f27e6f14177e9c611cf03611f86a461903bf4a4a05dffec2e5"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/FeatureForm.jsx.html",
+      "sha256": "8d416b3944d98d554b6c762fee6f1b8a266acf8039feb76d9d6199cfae668b39"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/TestingDocumentPage.jsx.html",
+      "sha256": "a6f807ec13732a638e624cc3debc52b3042240fef0e0e60c8ad42ebd0f77cd2f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/TestingFeaturePage.jsx.html",
+      "sha256": "dc7dde16b47cf8c6bee47c3c186c61097fb512eb767db99f1da8263caf00a973"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/TestingFeaturesPage.jsx.html",
+      "sha256": "8905bb1bd7e73d91ca0d32daa08bce5aa97876ad36af330fdef8191327bd4617"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/index.html",
+      "sha256": "7047492a840e96cbd7bdc83d9c8781cef834dfb764f2c847bbbe091554070f31"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/testingState.js.html",
+      "sha256": "9a899cc2086ede08eb16b9cbf72b77e6e8bf159ca219fad3c2a9ec6c6c482fe8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/BoardPage.jsx.html",
+      "sha256": "370a75dff8a201a504aae71bd6ee6581985cf83cd957dc9d8943b5be5d9f854e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/CaseIssueAction.jsx.html",
+      "sha256": "0055ee5fe1d6d57fec1f75a60c15c301ba0435a1179a5dd2f316ea9a99622acb"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/EvidencePanel.jsx.html",
+      "sha256": "107f123d34db8bcca76a346697e8a929727039cae0a4b8ab214e68eb482a4222"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/FeatureIssueDetail.jsx.html",
+      "sha256": "30ca4ad466452352b9672aaf5fc638627e4bd404c3ac97f788094614d78b0df0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/FeatureIssueForm.jsx.html",
+      "sha256": "7367be8ab4c27cfe603d038ea3cc42353bf84263a6a8005916fccf23ad9f33d5"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/FeatureIssuesPage.jsx.html",
+      "sha256": "e0ac7d8eec533cdb4785d5eb6893ce3076e9a0478b85527f030010b6bd9def63"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/HomePage.jsx.html",
+      "sha256": "147452a3c64ea9ffe2b83387a7d9491fd559020f17a288537c121ed1df23b342"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/IssueForm.jsx.html",
+      "sha256": "173c32d7faf678369e4c0ae8968377cf764d8d5b0acecb212bf649d49419d073"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/IssuesPage.jsx.html",
+      "sha256": "dacd5bf1fd2c1718c33415fd902b6305d7cd4a44fe4e9fb985b3dbff7f604ff9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/ProjectData.jsx.html",
+      "sha256": "4c4ea038d83d8a699ecfd75b5dd1c7e7f425dec0be9708af293c47135b179fd1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/TransitionDialog.jsx.html",
+      "sha256": "abb87980af2b089f1fb572f0d6bdc94d8b2941250cfccaf7269a8df75c5b06ed"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/WorkItemDetail.jsx.html",
+      "sha256": "143a88f1212fea75745322a1f084dff143f704efe586f90fad5e15af302bc445"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/WorkItemForm.jsx.html",
+      "sha256": "2aed194e4f82bdd412cb6e5dea4e7dbeaeab6bf26159cfb0d1f64f22b9c79b3f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/components.jsx.html",
+      "sha256": "e5a35309e0c9e28364ad0a6e33089c5f262a5284ba1ff3434cf7bdc9feaa41fc"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/data.js.html",
+      "sha256": "15bf0bfda0b3e1515613418600c1e99db51f5d42047082a8d3564db0b2575d87"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/index.html",
+      "sha256": "16a701a2ec8f64d4a055ac9a21fe248f6b7e9012bfe80f003b0a965685ccb36f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/issueFilters.js.html",
+      "sha256": "f0616b6f1dde2ddfec51287cbff23fd2ae1d453394eb8fe8fca75f957d884878"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/hooks/index.html",
+      "sha256": "ac8654342afe9ef54dabc5a2895bffa49cde5d7f328555e7751fb04536a5a9ce"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/hooks/useDialogFocus.js.html",
+      "sha256": "71c0d75eede1b6be6135bb0e56b0b524893365eb73dab1906c6756c57b93f3f6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/hooks/useRefreshingResource.js.html",
+      "sha256": "7a7949ec1b8b1661fe192e771358def6980c5b5eaf9179c1f20d884116adb2ef"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/layouts/MainLayout.jsx.html",
+      "sha256": "1f737e3600f501e06b477e49a60fbd4a7b3395decc069bc563c6c2dd08c9a7a1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/layouts/index.html",
+      "sha256": "94aa0bfc00bbbb686f60d885b8a18620bd6b57729d47d0cbb2f5a03c0eab7cba"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/modules/CatHandbook.jsx.html",
+      "sha256": "6b9d03546f8c1f90dfd43d2fbf9f4cd3cea199dbc4de6b5318eb8d60caab18a4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/modules/KpiSummaryBar.jsx.html",
+      "sha256": "f526d922085188e1d9c9f68debf432d6fe604c05774af934380e16a6db1d4aaa"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/modules/ProjectOverview.jsx.html",
+      "sha256": "523d5d2392d359de6cbbb27f03185d56a481f50a1620ee0829b39bd9c4773e5c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/modules/TestingOverview.jsx.html",
+      "sha256": "5298cc369ac976cca6619f40bb37998d4420691e51a2c6e4d4b5ee1f4c4105e6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/modules/index.html",
+      "sha256": "e1e6a99e0120daa59bb4f8a72b4935315c5b8b801f77d4cad2286bb2c06bce00"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/AnalysisPage.jsx.html",
+      "sha256": "9ace22d982a4b07b9a5d97cc58537562406c05ec3fc3bc6bd72f7fb97fbaa410"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/DashboardPage.jsx.html",
+      "sha256": "f26735712a85cd5fc924a14c32519802449d73183ce488a355cc50d0c4fee1f4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/IssuesPage.jsx.html",
+      "sha256": "efe1cca1200e67376f5f710362189a4cd2c7bd94efaef71cd1c4a1d37bc5feaa"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/NotFoundPage.jsx.html",
+      "sha256": "97fca35d53a272b715396238a178559ee94c702e0d092bd50744b73863a180da"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/ProgressPage.jsx.html",
+      "sha256": "12a389bea9c39fe933c05365b303014eba11ee76f97537e55a71847824cf164a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/TestRunnerGridPage.jsx.html",
+      "sha256": "fb2ee922947abc00cc13841370a55487b0ca993e6a4fbbb868a2ce2c730f99a8"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/TestSpecsPage.jsx.html",
+      "sha256": "79ebdbeb8e8c112a2c67caaf92f234d49db980d491848b574672f509e8fddd5d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/WorkBoardPage.jsx.html",
+      "sha256": "30c96276ef9693d9cd3b64d78b5d736b28dfeb504a985b8a6e301186a6a99e48"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/index.html",
+      "sha256": "eb3f1fbf70cee5eb84665c8c80f3f1c0d5ae2b454dde8786e6d6d91cef22f4bb"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/routes/AppRouter.jsx.html",
+      "sha256": "e0e332f1c33b05dd9d6a9c3842a43e351973f8656f3a8269a4faade7e27895d5"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/routes/RetiredAiEntry.jsx.html",
+      "sha256": "ab474d172facd0ec3e05fe1af152f7f40aa7df8d7551147b4be105daecd5c3b5"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/routes/index.html",
+      "sha256": "78d64f696804e9e3531ba465b14acdfba8350fe7683fecf270ecddbaf0f48590"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/routes/legacyRoutes.js.html",
+      "sha256": "478255b538ecd6724da0221631a722f9cd3e8a364fd4556e4a1c15892a17daf4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/routes/routeInfo.js.html",
+      "sha256": "f5cfb9e9b6d239ea039e9098bc0610f28f403f39f00127e83288e1c61d8e02e4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/admin.js.html",
+      "sha256": "ef6929742db0a085171d22cfd4dc4a3190fed7645a9232695aaa987a12843945"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/ai.js.html",
+      "sha256": "a97d2f0377bfcd5f62cb562ac69b9fd5c8c66da536ded4740bd08734a2269029"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/auth.js.html",
+      "sha256": "5e70813f70697ed5f6383cfacde96dbc68566cb5d6ccdadbf8c2cb344fa09039"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/client.js.html",
+      "sha256": "939cf47c573f138b2e9bd248b422ff2a6e17d817e793abff7fbaf379c77227de"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/execution.js.html",
+      "sha256": "64ededd9b1aa3faf2aa8170fbeb0b4433ddddea6c8df3e7c53af1f25dc8d8937"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/featureIssues.js.html",
+      "sha256": "5641c90edbb09bd6cafd8d1ccef09d4eb8604298b68465420f588819a8df974c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/features.js.html",
+      "sha256": "68cf466f6fb3e8968f3264149976af61b6b59e4763d50784b41329070e272215"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/fileWork.js.html",
+      "sha256": "a40a4d1ce22de0bcf69fe175ed15c8a5a435148de380ef6e8c970a0899507dde"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/index.html",
+      "sha256": "536f4687b8155e8ced52b020fb732bc1afd103921341061fbb461067f378260a"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/managementReports.js.html",
+      "sha256": "3ab209a1d84a784bdc6f77b2558f5f5da7bab41b4e71ea5c969da0ac24ffad86"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/notes.js.html",
+      "sha256": "0ebb8d480db89756aaaa10e9bb78a50820f47c6e37c2f5910d1e9a648913e12c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/projects.js.html",
+      "sha256": "09a0a3bc494046c18771e0f08c5a96b3e2be6170763729a9d56ea279aea28a81"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/qa.js.html",
+      "sha256": "5abc4acb30422fe301c5df93dd04c5021d246cd1b7fc8c904c9491e4718d0c03"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/redmine.js.html",
+      "sha256": "895b14c1df788b8a73c566f5ed279be05be905cf4cfdeb3df4b57c8a5dae39a7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/reports.js.html",
+      "sha256": "6faed94a7139edd25a6ba9b333adf15057ace30872918e5fe80fa735e78b355e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/retest.js.html",
+      "sha256": "eeacefaef11336ebc2a23a819b373da5d1add7aa435f04a7dc052945b2a679d1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/testCases.js.html",
+      "sha256": "529249a4083cb9cf955f54297fda739bcf6b4f1e33a441bb011f8db87db2c6ee"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/workItems.js.html",
+      "sha256": "3189f682a90092c8509631a0a2172eb6e06a23c282db41398dafd68739d2d19e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/utils/index.html",
+      "sha256": "16fc032a16721fdc1a1b13f2acc2b2d9601fcf83e3ee057bdb56d9961cd2940e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/utils/multiWordSearch.js.html",
+      "sha256": "33ffdb9b2a08453bd9912270b34eb494adb17c5a84b221c8765c26cdb0fb0980"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/index.html",
+      "sha256": "40ee805d9038fc18f25db3f6fe1d12f286fe3c3f0223e494719db4392e222dd1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/main.jsx.html",
+      "sha256": "670d2184ebd4396ba7fd9409d33541e0d646444799cb70e476419d7ff5741296"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/mocks/index.html",
+      "sha256": "36aa9158240e3851e290605d24fe168211367eabf8aabe9ecb3ef0726b2bd658"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/mocks/storeData.js.html",
+      "sha256": "90f612ccbd0fc9959dc511110141248e8671e126d55c7a5494aa55c175e593e2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/isolated-cases-documents-tests.json",
+      "sha256": "2723f7def2e6ec60643a3db15e838a0f648038aafda220d18612b73014f6c193"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/issue-palette-contrast.json",
+      "sha256": "d3ee5507435a74e90053ff6dfe8c3114f2547819d19c1ba7a897aae0dfa5d3b3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/main-overview-polished-default.jpg",
+      "sha256": "ab3d847aed92fcd6a77f99e601b2e6401e8b377ebbf7e05893e82091b8b91737"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/main-overview-polished-default.json",
+      "sha256": "4a9dc9ff8cdf53b070afefdb2b2608eb7a1b211811ac4167940308588c211aa3"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/modal-responsive-final.json",
+      "sha256": "1232a1ef80cdeea6cc9cbe7ed072b92d77e6dd192380893199c4cd0237d75c48"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/monkey-discard-focus-red.json",
+      "sha256": "88a11c2f382f5b63b545dbe25f3e71e528881e7bf4986f7433097320a2a38184"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/nested-focus-green.json",
+      "sha256": "a19e92a127c6599ab2fe3c840e3fc4d621fd5a620d78a4b976e133e5bd2b6cf5"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/overview-final-1440.jpg",
+      "sha256": "83196e039612a53bffa9f664219474690ad794d147d9a7f4e3ca6f815af112f7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/overview-final-320.json",
+      "sha256": "49241d15156be9155edb070f93e9c39dad5617ca5cc58acb1c8ece1c6e42d621"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/overview-green.json",
+      "sha256": "95065d81b041360008759cc6c67c796036712558b32baccff983b6355a27e395"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/overview-red.json",
+      "sha256": "18051ebd2d23e88cc21a5a48f1d3d3f3945c753d89f313110f79a08d2f3e93b9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-account-no-grant.txt",
+      "sha256": "7357f56fd369b3c2ce28de71f1e7098f0d139b97e5979b07220868917c235621"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-chat-scope-320.jpg",
+      "sha256": "7d537f9bc83a00edba75d1d2fe2add93a39b8082d394e3f0a418e8c520653517"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-issues-list-1440.jpg",
+      "sha256": "a167f1da1df747e691074ce8fe1f26572696ab33878fabf346714a2711d1fcf9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-issues-list-1440.json",
+      "sha256": "8fb738c00fa4da34db72019b0c02924b5e48bf7293baf385205ec07a429fb3d2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-monkey-390-final-metrics.json",
+      "sha256": "fe7fd8a9f2185f4dde3d8cbd3ae99c17683eabd87f09962ad60477dcbcb108c4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-monkey-390-final.jpg",
+      "sha256": "585b7bfccd4e768d93157bfab584a0da779a9c428d3038dbc12d368666727272"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-monkey-390-footer.jpg",
+      "sha256": "79a8d9c2a56a02c6d4e0fcb7161b554792392f3fa2719035557d64a6fecc129c"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-monkey-draft-390.jpg",
+      "sha256": "610ed1e6c486ccca2b360e76ff2f6d5cd97438cf43866730bcb26d5d7d0fd283"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-monkey-draft-390.json",
+      "sha256": "3eb23dcc75c3199648d28ddbcc46f6a2cf2af5ecef5cc37fc4ef562b2a674200"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-monkey-form-1440.jpg",
+      "sha256": "070ef23cb973c33f5fa9cfe45c50e4b6d7b84876b9f267440fb8b7ddef11660d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-monkey-form-1440.json",
+      "sha256": "025ddbf74f54c36550e63a61c13f9282fbb5fff2bdf9057e193034890cc84c4b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-note-editor-final.txt",
+      "sha256": "f96f7d694170183d7cd0df07b7d7d26901fa07b7712e3fc3c2fde4a531f40bf6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-overview-1440.jpg",
+      "sha256": "6d8161f98a88e2d341f95923b30c413a95865956ee6a26fb97527728e635ed2d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-overview-1440.json",
+      "sha256": "b3c7ba39243fa615efb5b1c957a9e959d58005294be5fb07a3af7a116d391b35"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-report-contrast.json",
+      "sha256": "8489a81d0e4d143b4ec931879b4648889a99c57cf586047bbafec75315729cc4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-report-draft-restored-1440.jpg",
+      "sha256": "38d794605c75106c701ac7a0fdd22a704a0163b8664daac0e9c32e997597e837"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-report-draft-restored-1440.json",
+      "sha256": "1f16df5f100c64b217615f6781b1217d5d2c37de3a2ece64b9c95f5676db0f7e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-report-route-transition.jpg",
+      "sha256": "49f05303b4995afe9e0bf3674ab251ffe2aa18db535cb9ed629a14533c3210f7"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/pm-report-route-transition.json",
+      "sha256": "e07fb7c5bb81939508d345535463619ecd06d4d626215d62058407bc8ddd89f9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/preservation-and-links.json",
+      "sha256": null,
+      "note": "Self-report hash intentionally omitted."
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-401-403-race-red.json",
+      "sha256": "568b32bfc382c9347843fddf5cd304c13a8fa67c2d75adc147829df4ca216bb0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-401-reauth-green.json",
+      "sha256": "30c291c0eda2a13a07afc433323b1c52abbfd09135a1fc938be46e4353de638b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-401-reauth-red.json",
+      "sha256": "b44ebc041d4c74c54c97caddd0d58877c7733988d3dd5e9954a09dd6f10b9f05"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-ai-draft-green.json",
+      "sha256": "181c97279d305c5cce6c82d06e9e577531017cd5466f89de3ccb5ac51ff8e3a6"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-ai-final.json",
+      "sha256": "d907c49d82619b94f6c81eb8cee44854168978e281903068ab24f510656d7d2f"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-ai-green-behavior.json",
+      "sha256": "0f86504bf757c8f76495f1dd9a2b70172610cd8cd6c09b673c3d3465d4a4e24e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-ai-recovery-red.json",
+      "sha256": "cb3f8df31318c4dbcd59e1ad641588b45071652100eee2119ab12104d9960a58"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-ai-red.json",
+      "sha256": "33b08326d2b3686809083c58914a0c107bc03084c13585411be448bbdf8a018b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-ai.md",
+      "sha256": "07e436f817c27102c9fd0378b16979305c968db5aaf2350dc9985554587e07de"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-draft-auth-green.json",
+      "sha256": "a8670f9a05f0ddbbad5cafc2591de24a9f264344be6ec6451943852560cd023e"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-draft-auth-red.json",
+      "sha256": "945f533ca19b649db9e979b0d327517160dfcd0ea65df4e4a00a0eb660f74e99"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-draft-behavior-red.json",
+      "sha256": "f5cda21323848fe017551a45003eadf290f9cafb02773532d2cff21632b576a9"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-draft-locked-remount-green.json",
+      "sha256": "d850be911f236f7f55ef8defaf6ee4a7821def175c6f3371b62f3a19d8bbf821"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-draft-locked-remount-red.json",
+      "sha256": "8de4ee19c3d97d2525720e3fc1e8e4c26cacc3c6d61fac9333f80319555b48ad"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-draft-red.json",
+      "sha256": "87313c4579bff7d9f5f879bc52e444540514a6a80159e5212418b1030b128512"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-draft-save-auth-green.json",
+      "sha256": "3e443ce593e69da6909795102a41f3cb1b9ead6aecbe1f2014a1f4d2fb8f3085"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-draft-save-auth-red.json",
+      "sha256": "df69e1feec06fa64167e5aa9bf760461a1abd1e058466ba7cd9bac6732323bbf"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/reports-scope-red.json",
+      "sha256": "77a81e1a5a914fda0d0eb81809823098cea6fbbe2ccc1b30c64665dd56d61658"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/shared-dialog-final-green.json",
+      "sha256": "7c082da153e9b36d8dcd07c7a3b81ea9913ad03c32a1e3101aa8e839c242cbea"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/shared-header-dialog-red.json",
+      "sha256": "b9f86f65b24bf62a4e401b15d12c7b69c389a78a93fa94436077223eccdd34b0"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/shared-nested-picker-red.json",
+      "sha256": "4f78850701562d0054f581bf0d190b6401680e774ff7f397ff7f951db8cd1d89"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/shared-picker-final-green.json",
+      "sha256": "7603f275ff0d2cbfe2ffdf74b1b60b5d6451bedb0c723c007d8dc6964189bbf2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/shell-green.json",
+      "sha256": "5daa12f3a12f3b03b30b327138ecf501504ceea61995a155b7653db89d7e1f83"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/shell-red.json",
+      "sha256": "06169504bd3a6209f71e3f2ccc4a5582580ee9f450d36c81dd0235f30801d609"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/source-after-final-tests.json",
+      "sha256": "2cb6a484ac41eeea05bcf0beb0b857bb4d583d9fc12633671d6bb83450ec3f2d"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/source-before-final-tests.json",
+      "sha256": "5b9a59cea4349b3af61797ccf6079d7bcae8c34d8138034d0db0e8ce96d68784"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/source-freeze-final.json",
+      "sha256": "20c9a22c568abdbc6585f9f44e266f69d9132e28535ceb8939838fc1f9aeadaf"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/source-surfaces.json",
+      "sha256": "19c808f6ee9b327e7a7839b7cda2f6bd91af0860ee8ab555808429abed1c6ca2"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/tester-assignment-history.txt",
+      "sha256": "76265d53692cf4b7b92ff93aad01abb5117058063e9393ef510a945523e35aa4"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/tester-case-issue-390.jpg",
+      "sha256": "fcead117899461fb41a560b4ba9975078c39eb10c61f1fdc3e7f90fc1be94a81"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/tester-case-issue-390.json",
+      "sha256": "bbd4ae2313e149f7229ac55c9cfccc5e2912e7c10de516ef13a3082ab82ef042"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/tester-case-next-close-focus.json",
+      "sha256": "d844d8a98795bb1d257c8d6fe6a734e6d6ffc32c788ef4811bf07f43bd305388"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/tester-feature-grid.txt",
+      "sha256": "c3e4d96348042224970e3e7d3935d912d4508c0b7ad438319e04833ca77baccc"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/tester-issue-preview-keyboard.txt",
+      "sha256": "e1236023eee73b357c436e3bd77789d504f3cdd5bed4cc8c824e62de5486c922"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/tester-note-readonly.txt",
+      "sha256": "4787623f78cd0c380dba2244727ebf24a77bcd36ad64adc9fb85b9431b294779"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/testing-feature-create-conflict.json",
+      "sha256": "57124bc85a541a487e57d46f7ab64a7c5c9b91647bf5429fdcd32d2df20f8788"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/testing-issues-regression.json",
+      "sha256": "8dc9d0e840de376a5e5d9080628716dafd3776a28feeaed527ced7b2f0a44ca1"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/testing-issues.md",
+      "sha256": "3209f9a0d3cc636d63805ee37df25a1348d85a72bd5677152b81dc102eb1236b"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/workspace-overview-before.jpg",
+      "sha256": "d5993e9187b3948649577a5940719d8543f009f11cead8daa3395964f25b4703"
+    },
+    {
+      "path": "var/uiux-polish-2026-10-19/workspace-overview-before.json",
+      "sha256": "155e72b5f97c01eb13e05ccb2ed9eb0b88c957ed98919135d3397c4f9d5d48ef"
+    }
+  ],
+  "missing": [],
+  "changesByCategory": {
+    "UI_SOURCE": [
+      "Frontend/src/app/features/projects/ProjectNotes.jsx",
+      "Frontend/src/app/features/projects/ProjectNotes.test.jsx",
+      "Frontend/src/app/features/projects/project-notes.css",
+      "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "Frontend/src/app/features/reports/ManagementAnalysisPage.test.jsx",
+      "Frontend/src/app/features/reports/management-analysis.css",
+      "Frontend/src/app/features/testing/FeatureForm.jsx",
+      "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "Frontend/src/app/features/testing/TestingDocumentPage.test.jsx",
+      "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "Frontend/src/app/features/testing/testing.css",
+      "Frontend/src/app/features/work-items/CaseIssueAction.jsx",
+      "Frontend/src/app/features/work-items/CaseIssueAction.test.jsx",
+      "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx",
+      "Frontend/src/app/features/work-items/FeatureIssueDetail.test.jsx",
+      "Frontend/src/app/features/work-items/FeatureIssueForm.jsx",
+      "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx",
+      "Frontend/src/app/features/work-items/FeatureIssuesPage.test.jsx",
+      "Frontend/src/app/features/work-items/feature-issues.css",
+      "Frontend/src/app/modules/ProjectOverview.layout.test.jsx",
+      "Frontend/src/App.jsx",
+      "Frontend/src/App.scroll.test.jsx",
+      "Frontend/src/AppEntry.jsx",
+      "Frontend/src/app/components/selection-table.css",
+      "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "Frontend/src/app/features/admin/admin.css",
+      "Frontend/src/app/features/ai/AiChat.jsx",
+      "Frontend/src/app/features/ai/AiChat.test.jsx",
+      "Frontend/src/app/features/ai/ai.css",
+      "Frontend/src/app/features/auth/AccountMenu.jsx",
+      "Frontend/src/app/features/auth/AuthBoundary.jsx",
+      "Frontend/src/app/features/auth/auth.css",
+      "Frontend/src/app/features/auth/auth.test.jsx",
+      "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "Frontend/src/app/features/projects/projects.css",
+      "Frontend/src/app/features/reports/reports.css",
+      "Frontend/src/app/features/test-cases/ExcelImportPreview.jsx",
+      "Frontend/src/app/features/test-cases/test-cases.css",
+      "Frontend/src/app/features/work-items/components.jsx",
+      "Frontend/src/app/features/work-items/modal-expand.test.jsx",
+      "Frontend/src/app/hooks/useDialogFocus.js",
+      "Frontend/src/app/layouts/MainLayout.jsx",
+      "Frontend/src/app/modules/ProjectOverview.jsx",
+      "Frontend/src/app/styles/app-shell.css",
+      "Frontend/src/app/styles/global.css",
+      "Frontend/src/app/styles/project-overview.css",
+      "Frontend/src/app/features/admin/UserCreateDialog.jsx",
+      "Frontend/src/app/features/admin/nested-project-picker.test.jsx",
+      "Frontend/src/app/features/auth/DialogVisibilityContext.js",
+      "Frontend/src/app/features/auth/account-create-tester.test.jsx",
+      "Frontend/src/app/features/projects/handbook-editor-focus.test.jsx",
+      "Frontend/src/app/features/reports/ReportDraftProvider.jsx",
+      "Frontend/src/app/features/reports/ReportDraftProvider.test.jsx",
+      "Frontend/src/app/features/test-cases/ExcelImportPreview.test.jsx",
+      "Frontend/src/app/features/testing/DocumentAssignmentHistory.jsx",
+      "Frontend/src/app/features/testing/DocumentAssignmentHistory.test.jsx",
+      "Frontend/src/app/features/testing/FeatureForm.test.jsx",
+      "Frontend/src/app/features/testing/TestingReadOnly.test.jsx",
+      "Frontend/src/app/features/work-items/work-item-modal.css",
+      "Frontend/src/app/layouts/MainLayout.dialog-order.test.jsx",
+      "Frontend/src/app/layouts/MainLayout.navigation.test.jsx"
+    ],
+    "DOCS": [
+      "docs/planning/README.md",
+      "docs/planning/STATUS.json",
+      "docs/planning/2026-10-19-uiux-polish.md",
+      "docs/reviews/2026-10-19-uiux-polish.md"
+    ],
+    "EVIDENCE": [
+      "var/uiux-polish-2026-10-19/Audit-Surfaces.cjs",
+      "var/uiux-polish-2026-10-19/Finalize-Review.cjs",
+      "var/uiux-polish-2026-10-19/Inspect-Test-Processes.ps1",
+      "var/uiux-polish-2026-10-19/Snapshot-Source.cjs",
+      "var/uiux-polish-2026-10-19/Verify-Preservation.cjs",
+      "var/uiux-polish-2026-10-19/admin-audit-final.txt",
+      "var/uiux-polish-2026-10-19/admin-dashboard-before.jpg",
+      "var/uiux-polish-2026-10-19/admin-devices-empty-filter.txt",
+      "var/uiux-polish-2026-10-19/admin-general-auth-dialog-green.json",
+      "var/uiux-polish-2026-10-19/admin-general-auth-isolated.json",
+      "var/uiux-polish-2026-10-19/admin-general-green.json",
+      "var/uiux-polish-2026-10-19/admin-general-pm-retention-red.json",
+      "var/uiux-polish-2026-10-19/admin-general-portal-red.json",
+      "var/uiux-polish-2026-10-19/admin-general-red.json",
+      "var/uiux-polish-2026-10-19/admin-general-scoped-final.json",
+      "var/uiux-polish-2026-10-19/admin-general-scoped.json",
+      "var/uiux-polish-2026-10-19/admin-general-scroll-lock-red.json",
+      "var/uiux-polish-2026-10-19/admin-general.md",
+      "var/uiux-polish-2026-10-19/admin-overview-final.txt",
+      "var/uiux-polish-2026-10-19/admin-user-create-320.jpg",
+      "var/uiux-polish-2026-10-19/admin-user-create.txt",
+      "var/uiux-polish-2026-10-19/auth-dialog-integrated.json",
+      "var/uiux-polish-2026-10-19/baseline.json",
+      "var/uiux-polish-2026-10-19/browser-cleanup.json",
+      "var/uiux-polish-2026-10-19/browser-console-final.json",
+      "var/uiux-polish-2026-10-19/browser-matrix.md",
+      "var/uiux-polish-2026-10-19/build-final.json",
+      "var/uiux-polish-2026-10-19/chat-recovery-banner-red.json",
+      "var/uiux-polish-2026-10-19/chat-recovery-final.json",
+      "var/uiux-polish-2026-10-19/dev-grid-readonly.txt",
+      "var/uiux-polish-2026-10-19/dev-issue-expanded.jpg",
+      "var/uiux-polish-2026-10-19/dev-issue-expanded.txt",
+      "var/uiux-polish-2026-10-19/final-validation.json",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage-tests.json",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/base.css",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/block-navigation.js",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/coverage-summary.json",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/favicon.png",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/prettify.css",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/prettify.js",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/sort-arrow-sprite.png",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/sorter.js",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/App.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/AppEntry.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/Footer.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/Header.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/SelectPageCheckbox.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/SelectionTable.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/Sidebar.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/TableScroll.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/components/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminApp.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminAudit.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminDashboard.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminDevices.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminFormDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminLayout.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminProjectDetail.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminProjectDropdown.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminProjectForm.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminProjectLifecycle.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminProjects.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminUserProjectFilter.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/AdminUsers.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/DeviceAllocationDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/DeviceAssetForm.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/InitialDevicePicker.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/MetricBars.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/ProjectRoleSelect.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/ProjectStatusReports.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/UserCreateDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/handoverRecipient.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/shared.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/admin/useInlineEditorFocus.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/AiAssistantPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/AiChat.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/AiConnections.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/AiEditBuffer.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/ChatLauncherSlot.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/aiErrors.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/aiLabels.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/aiProjectPrompts.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/ai/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/auth/AccountMenu.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/auth/AuthBoundary.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/auth/AuthProvider.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/auth/DialogVisibilityContext.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/auth/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/ActionInbox.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/CaseRangePicker.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/FileCaseView.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/FilePreparation.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/FileWorkDetail.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/FileWorkPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/ImportedDocuments.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/caseRange.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/file-work/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/integrations/RedminePanel.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/integrations/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/CatalogEditor.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/CatalogPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/CreateProjectDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/HandbookPanel.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectAccessNotice.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectDeviceAssignDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectDevices.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectInformation.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectMembers.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectNotes.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectProvider.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectSelector.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/ProjectSettingsPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/RulesPanel.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/projects/projectAccess.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/qa/HandoffPanel.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/qa/QaForm.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/qa/QaPanel.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/qa/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/reports/ManagementAnalysisPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/reports/ReportDraftProvider.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/reports/ReportsPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/reports/SafeMarkdown.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/reports/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/CoverageEditor.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/RetestPanel.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/RetestQueuePage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/RetestResult.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/retest/shared.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/CaseDetailModal.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/CaseHistoryDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/CreateCaseDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/CreateSuiteDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/DocumentCaseDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/DocumentCellEditor.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/DocumentExecution.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/DocumentResultHistory.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/DocumentSecondTestDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/ExcelImportPreview.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/ImportExcelDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/ResultCycleButton.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/TestDocumentPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/TestDocumentsPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/documentDownload.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-cases/useDocumentResults.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/AssignmentDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/AttemptDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/CycleDecisionDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/ExecutionRunnerPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/NgBugActions.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/ScopeSetup.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/TestCyclesPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/components.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/test-execution/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/DocumentAssignmentHistory.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/DocumentAssignments.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/FeatureForm.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/TestingDocumentPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/TestingFeaturePage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/TestingFeaturesPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/testing/testingState.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/BoardPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/CaseIssueAction.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/EvidencePanel.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/FeatureIssueDetail.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/FeatureIssueForm.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/FeatureIssuesPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/HomePage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/IssueForm.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/IssuesPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/ProjectData.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/TransitionDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/WorkItemDetail.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/WorkItemForm.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/components.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/data.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/features/work-items/issueFilters.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/hooks/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/hooks/useDialogFocus.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/hooks/useRefreshingResource.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/layouts/MainLayout.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/layouts/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/modules/CatHandbook.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/modules/KpiSummaryBar.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/modules/ProjectOverview.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/modules/TestingOverview.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/modules/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/AnalysisPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/DashboardPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/IssuesPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/NotFoundPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/ProgressPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/TestRunnerGridPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/TestSpecsPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/WorkBoardPage.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/pages/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/routes/AppRouter.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/routes/RetiredAiEntry.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/routes/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/routes/legacyRoutes.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/routes/routeInfo.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/admin.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/ai.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/auth.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/client.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/execution.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/featureIssues.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/features.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/fileWork.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/managementReports.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/notes.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/projects.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/qa.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/redmine.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/reports.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/retest.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/testCases.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/services/api/workItems.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/utils/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/app/utils/multiWordSearch.js.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/main.jsx.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/mocks/index.html",
+      "var/uiux-polish-2026-10-19/frontend-final-coverage/src/mocks/storeData.js.html",
+      "var/uiux-polish-2026-10-19/frontend-full-coverage-tests.json",
+      "var/uiux-polish-2026-10-19/frontend-stable-final-tests.json",
+      "var/uiux-polish-2026-10-19/independent-shared-review.md",
+      "var/uiux-polish-2026-10-19/independent-testing-review.md",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/base.css",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/block-navigation.js",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/coverage-summary.json",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/favicon.png",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/prettify.css",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/prettify.js",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/sort-arrow-sprite.png",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/sorter.js",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/App.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/AppEntry.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/Footer.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/Header.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/SelectPageCheckbox.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/SelectionTable.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/Sidebar.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/TableScroll.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/components/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminApp.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminAudit.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminDashboard.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminDevices.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminFormDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminLayout.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminProjectDetail.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminProjectDropdown.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminProjectForm.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminProjectLifecycle.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminProjects.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminUserProjectFilter.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/AdminUsers.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/DeviceAllocationDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/DeviceAssetForm.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/InitialDevicePicker.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/MetricBars.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/ProjectRoleSelect.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/ProjectStatusReports.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/UserCreateDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/handoverRecipient.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/shared.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/admin/useInlineEditorFocus.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/AiAssistantPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/AiChat.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/AiConnections.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/AiEditBuffer.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/ChatLauncherSlot.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/aiErrors.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/aiLabels.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/aiProjectPrompts.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/ai/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/auth/AccountMenu.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/auth/AuthBoundary.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/auth/AuthProvider.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/auth/DialogVisibilityContext.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/auth/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/ActionInbox.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/CaseRangePicker.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/FileCaseView.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/FilePreparation.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/FileWorkDetail.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/FileWorkPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/ImportedDocuments.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/caseRange.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/file-work/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/integrations/RedminePanel.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/integrations/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/CatalogEditor.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/CatalogPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/CreateProjectDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/HandbookPanel.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectAccessNotice.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectDeviceAssignDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectDevices.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectInformation.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectMembers.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectNotes.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectProvider.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectSelector.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/ProjectSettingsPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/RulesPanel.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/projects/projectAccess.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/qa/HandoffPanel.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/qa/QaForm.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/qa/QaPanel.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/qa/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/reports/ManagementAnalysisPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/reports/ReportDraftProvider.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/reports/ReportsPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/reports/SafeMarkdown.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/reports/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/CoverageEditor.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/RetestPanel.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/RetestQueuePage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/RetestResult.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/retest/shared.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/CaseDetailModal.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/CaseHistoryDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/CreateCaseDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/CreateSuiteDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/DocumentCaseDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/DocumentCellEditor.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/DocumentExecution.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/DocumentResultHistory.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/DocumentSecondTestDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/ExcelImportPreview.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/ImportExcelDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/ResultCycleButton.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/TestDocumentPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/TestDocumentsPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/documentDownload.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-cases/useDocumentResults.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/AssignmentDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/AttemptDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/CycleDecisionDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/ExecutionRunnerPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/NgBugActions.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/ScopeSetup.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/TestCyclesPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/components.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/test-execution/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/DocumentAssignmentHistory.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/DocumentAssignments.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/FeatureForm.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/TestingDocumentPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/TestingFeaturePage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/TestingFeaturesPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/testing/testingState.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/BoardPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/CaseIssueAction.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/EvidencePanel.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/FeatureIssueDetail.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/FeatureIssueForm.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/FeatureIssuesPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/HomePage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/IssueForm.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/IssuesPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/ProjectData.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/TransitionDialog.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/WorkItemDetail.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/WorkItemForm.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/components.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/data.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/features/work-items/issueFilters.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/hooks/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/hooks/useDialogFocus.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/hooks/useRefreshingResource.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/layouts/MainLayout.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/layouts/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/modules/CatHandbook.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/modules/KpiSummaryBar.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/modules/ProjectOverview.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/modules/TestingOverview.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/modules/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/AnalysisPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/DashboardPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/IssuesPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/NotFoundPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/ProgressPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/TestRunnerGridPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/TestSpecsPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/WorkBoardPage.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/pages/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/routes/AppRouter.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/routes/RetiredAiEntry.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/routes/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/routes/legacyRoutes.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/routes/routeInfo.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/admin.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/ai.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/auth.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/client.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/execution.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/featureIssues.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/features.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/fileWork.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/managementReports.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/notes.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/projects.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/qa.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/redmine.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/reports.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/retest.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/testCases.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/services/api/workItems.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/utils/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/app/utils/multiWordSearch.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/main.jsx.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/mocks/index.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/src/mocks/storeData.js.html",
+      "var/uiux-polish-2026-10-19/isolated-cases-documents-tests.json",
+      "var/uiux-polish-2026-10-19/issue-palette-contrast.json",
+      "var/uiux-polish-2026-10-19/main-overview-polished-default.jpg",
+      "var/uiux-polish-2026-10-19/main-overview-polished-default.json",
+      "var/uiux-polish-2026-10-19/modal-responsive-final.json",
+      "var/uiux-polish-2026-10-19/monkey-discard-focus-red.json",
+      "var/uiux-polish-2026-10-19/nested-focus-green.json",
+      "var/uiux-polish-2026-10-19/overview-final-1440.jpg",
+      "var/uiux-polish-2026-10-19/overview-final-320.json",
+      "var/uiux-polish-2026-10-19/overview-green.json",
+      "var/uiux-polish-2026-10-19/overview-red.json",
+      "var/uiux-polish-2026-10-19/pm-account-no-grant.txt",
+      "var/uiux-polish-2026-10-19/pm-chat-scope-320.jpg",
+      "var/uiux-polish-2026-10-19/pm-issues-list-1440.jpg",
+      "var/uiux-polish-2026-10-19/pm-issues-list-1440.json",
+      "var/uiux-polish-2026-10-19/pm-monkey-390-final-metrics.json",
+      "var/uiux-polish-2026-10-19/pm-monkey-390-final.jpg",
+      "var/uiux-polish-2026-10-19/pm-monkey-390-footer.jpg",
+      "var/uiux-polish-2026-10-19/pm-monkey-draft-390.jpg",
+      "var/uiux-polish-2026-10-19/pm-monkey-draft-390.json",
+      "var/uiux-polish-2026-10-19/pm-monkey-form-1440.jpg",
+      "var/uiux-polish-2026-10-19/pm-monkey-form-1440.json",
+      "var/uiux-polish-2026-10-19/pm-note-editor-final.txt",
+      "var/uiux-polish-2026-10-19/pm-overview-1440.jpg",
+      "var/uiux-polish-2026-10-19/pm-overview-1440.json",
+      "var/uiux-polish-2026-10-19/pm-report-contrast.json",
+      "var/uiux-polish-2026-10-19/pm-report-draft-restored-1440.jpg",
+      "var/uiux-polish-2026-10-19/pm-report-draft-restored-1440.json",
+      "var/uiux-polish-2026-10-19/pm-report-route-transition.jpg",
+      "var/uiux-polish-2026-10-19/pm-report-route-transition.json",
+      "var/uiux-polish-2026-10-19/preservation-and-links.json",
+      "var/uiux-polish-2026-10-19/reports-401-403-race-red.json",
+      "var/uiux-polish-2026-10-19/reports-401-reauth-green.json",
+      "var/uiux-polish-2026-10-19/reports-401-reauth-red.json",
+      "var/uiux-polish-2026-10-19/reports-ai-draft-green.json",
+      "var/uiux-polish-2026-10-19/reports-ai-final.json",
+      "var/uiux-polish-2026-10-19/reports-ai-green-behavior.json",
+      "var/uiux-polish-2026-10-19/reports-ai-recovery-red.json",
+      "var/uiux-polish-2026-10-19/reports-ai-red.json",
+      "var/uiux-polish-2026-10-19/reports-ai.md",
+      "var/uiux-polish-2026-10-19/reports-draft-auth-green.json",
+      "var/uiux-polish-2026-10-19/reports-draft-auth-red.json",
+      "var/uiux-polish-2026-10-19/reports-draft-behavior-red.json",
+      "var/uiux-polish-2026-10-19/reports-draft-locked-remount-green.json",
+      "var/uiux-polish-2026-10-19/reports-draft-locked-remount-red.json",
+      "var/uiux-polish-2026-10-19/reports-draft-red.json",
+      "var/uiux-polish-2026-10-19/reports-draft-save-auth-green.json",
+      "var/uiux-polish-2026-10-19/reports-draft-save-auth-red.json",
+      "var/uiux-polish-2026-10-19/reports-scope-red.json",
+      "var/uiux-polish-2026-10-19/shared-dialog-final-green.json",
+      "var/uiux-polish-2026-10-19/shared-header-dialog-red.json",
+      "var/uiux-polish-2026-10-19/shared-nested-picker-red.json",
+      "var/uiux-polish-2026-10-19/shared-picker-final-green.json",
+      "var/uiux-polish-2026-10-19/shell-green.json",
+      "var/uiux-polish-2026-10-19/shell-red.json",
+      "var/uiux-polish-2026-10-19/source-after-final-tests.json",
+      "var/uiux-polish-2026-10-19/source-before-final-tests.json",
+      "var/uiux-polish-2026-10-19/source-freeze-final.json",
+      "var/uiux-polish-2026-10-19/source-surfaces.json",
+      "var/uiux-polish-2026-10-19/tester-assignment-history.txt",
+      "var/uiux-polish-2026-10-19/tester-case-issue-390.jpg",
+      "var/uiux-polish-2026-10-19/tester-case-issue-390.json",
+      "var/uiux-polish-2026-10-19/tester-case-next-close-focus.json",
+      "var/uiux-polish-2026-10-19/tester-feature-grid.txt",
+      "var/uiux-polish-2026-10-19/tester-issue-preview-keyboard.txt",
+      "var/uiux-polish-2026-10-19/tester-note-readonly.txt",
+      "var/uiux-polish-2026-10-19/testing-feature-create-conflict.json",
+      "var/uiux-polish-2026-10-19/testing-issues-regression.json",
+      "var/uiux-polish-2026-10-19/testing-issues.md",
+      "var/uiux-polish-2026-10-19/workspace-overview-before.jpg",
+      "var/uiux-polish-2026-10-19/workspace-overview-before.json"
+    ]
+  },
+  "unexpectedOutsideUiDocsEvidence": [],
+  "gitDiffCheck": {
+    "exitCode": 0,
+    "pass": true,
+    "diagnostics": []
+  },
+  "documentLinks": {
+    "checkedReports": 8,
+    "missingReports": [],
+    "localLinks": 56,
+    "missingLocalLinks": [],
+    "anchorExistenceChecked": false,
+    "externalLinksFetched": false,
+    "reports": [
+      {
+        "report": "docs/reviews/2026-10-19-uiux-polish.md",
+        "localCount": 35,
+        "missing": [],
+        "links": [
+          {
+            "target": "../../var/uiux-polish-2026-10-19/admin-general.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general.md",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/testing-issues.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/testing-issues.md",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/reports-ai.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/reports-ai.md",
+            "exists": true
+          },
+          {
+            "target": "2026-10-19-uiux-system-audit.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "docs/reviews/2026-10-19-uiux-system-audit.md",
+            "exists": true
+          },
+          {
+            "target": "2026-10-19-uiux-system-coverage.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "docs/reviews/2026-10-19-uiux-system-coverage.md",
+            "exists": true
+          },
+          {
+            "target": "2026-10-19-uiux-recheck-and-overview-correction.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "docs/reviews/2026-10-19-uiux-recheck-and-overview-correction.md",
+            "exists": true
+          },
+          {
+            "target": "../planning/2026-10-19-uiux-polish.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "docs/planning/2026-10-19-uiux-polish.md",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/browser-matrix.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/browser-matrix.md",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/admin-general-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-red.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/admin-general-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-green.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/admin-general-scoped.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-scoped.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/admin-general-scoped-final.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-scoped-final.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/testing-issues-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/testing-issues-regression.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/testing-feature-create-conflict.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/testing-feature-create-conflict.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/monkey-discard-focus-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/monkey-discard-focus-red.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/shared-dialog-final-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/shared-dialog-final-green.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/reports-ai-final.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/reports-ai-final.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/chat-recovery-final.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/chat-recovery-final.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/reports-401-reauth-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/reports-401-reauth-green.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/frontend-full-coverage-tests.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/frontend-full-coverage-tests.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/isolated-cases-documents-tests.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/isolated-cases-documents-tests.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/coverage-summary.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/isolated-cases-documents-coverage/coverage-summary.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/browser-matrix.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/browser-matrix.md",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/issue-palette-contrast.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/issue-palette-contrast.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/pm-monkey-draft-390.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/pm-monkey-draft-390.jpg",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/pm-monkey-draft-390.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/pm-monkey-draft-390.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/pm-monkey-390-final.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/pm-monkey-390-final.jpg",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/pm-monkey-390-final-metrics.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/pm-monkey-390-final-metrics.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/frontend-stable-final-tests.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/frontend-stable-final-tests.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/build-final.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/build-final.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/frontend-final-coverage/coverage-summary.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/frontend-final-coverage/coverage-summary.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/final-validation.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/final-validation.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/browser-matrix.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/browser-matrix.md",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/preservation-and-links.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/preservation-and-links.json",
+            "exists": true
+          },
+          {
+            "target": "../../var/uiux-polish-2026-10-19/overview-final-1440.jpg",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/overview-final-1440.jpg",
+            "exists": true
+          }
+        ]
+      },
+      {
+        "report": "docs/planning/2026-10-19-uiux-polish.md",
+        "localCount": 1,
+        "missing": [],
+        "links": [
+          {
+            "target": "../reviews/2026-10-19-uiux-polish.md",
+            "kind": "LOCAL_FILE",
+            "resolved": "docs/reviews/2026-10-19-uiux-polish.md",
+            "exists": true
+          }
+        ]
+      },
+      {
+        "report": "var/uiux-polish-2026-10-19/admin-general.md",
+        "localCount": 9,
+        "missing": [],
+        "links": [
+          {
+            "target": "admin-general-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-red.json",
+            "exists": true
+          },
+          {
+            "target": "admin-general-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-green.json",
+            "exists": true
+          },
+          {
+            "target": "admin-general-scoped.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-scoped.json",
+            "exists": true
+          },
+          {
+            "target": "admin-general-auth-isolated.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-auth-isolated.json",
+            "exists": true
+          },
+          {
+            "target": "admin-general-portal-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-portal-red.json",
+            "exists": true
+          },
+          {
+            "target": "admin-general-scroll-lock-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-scroll-lock-red.json",
+            "exists": true
+          },
+          {
+            "target": "admin-general-pm-retention-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-pm-retention-red.json",
+            "exists": true
+          },
+          {
+            "target": "admin-general-auth-dialog-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-auth-dialog-green.json",
+            "exists": true
+          },
+          {
+            "target": "admin-general-scoped-final.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/admin-general-scoped-final.json",
+            "exists": true
+          }
+        ]
+      },
+      {
+        "report": "var/uiux-polish-2026-10-19/browser-matrix.md",
+        "localCount": 0,
+        "missing": [],
+        "links": []
+      },
+      {
+        "report": "var/uiux-polish-2026-10-19/independent-shared-review.md",
+        "localCount": 7,
+        "missing": [],
+        "links": [
+          {
+            "target": "reports-401-reauth-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/reports-401-reauth-green.json",
+            "exists": true
+          },
+          {
+            "target": "monkey-discard-focus-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/monkey-discard-focus-red.json",
+            "exists": true
+          },
+          {
+            "target": "shared-header-dialog-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/shared-header-dialog-red.json",
+            "exists": true
+          },
+          {
+            "target": "shared-dialog-final-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/shared-dialog-final-green.json",
+            "exists": true
+          },
+          {
+            "target": "shared-nested-picker-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/shared-nested-picker-red.json",
+            "exists": true
+          },
+          {
+            "target": "shared-picker-final-green.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/shared-picker-final-green.json",
+            "exists": true
+          },
+          {
+            "target": "preservation-and-links.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/preservation-and-links.json",
+            "exists": true
+          }
+        ]
+      },
+      {
+        "report": "var/uiux-polish-2026-10-19/independent-testing-review.md",
+        "localCount": 0,
+        "missing": [],
+        "links": []
+      },
+      {
+        "report": "var/uiux-polish-2026-10-19/reports-ai.md",
+        "localCount": 0,
+        "missing": [],
+        "links": []
+      },
+      {
+        "report": "var/uiux-polish-2026-10-19/testing-issues.md",
+        "localCount": 4,
+        "missing": [],
+        "links": [
+          {
+            "target": "testing-issues-regression.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/testing-issues-regression.json",
+            "exists": true
+          },
+          {
+            "target": "testing-feature-create-conflict.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/testing-feature-create-conflict.json",
+            "exists": true
+          },
+          {
+            "target": "isolated-cases-documents-tests.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/isolated-cases-documents-tests.json",
+            "exists": true
+          },
+          {
+            "target": "monkey-discard-focus-red.json",
+            "kind": "LOCAL_FILE",
+            "resolved": "var/uiux-polish-2026-10-19/monkey-discard-focus-red.json",
+            "exists": true
+          }
+        ]
+      }
+    ]
+  }
+}

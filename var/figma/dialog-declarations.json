@@ -1,0 +1,429 @@
+[
+  {
+    "file": "Frontend/src/app/components/Sidebar.jsx",
+    "line": 59,
+    "tag": "aside",
+    "title": "\"Menu dự án\"",
+    "role": "{overlayOpen ? 'dialog' : undefined}"
+  },
+  {
+    "file": "Frontend/src/app/features/admin/AdminDevices.jsx",
+    "line": 31,
+    "tag": "DeviceAllocationDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+    "line": 10,
+    "tag": "section",
+    "title": "{titleId}",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/admin/AdminProjectDropdown.jsx",
+    "line": 80,
+    "tag": "div",
+    "title": "{labelId}",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+    "line": 30,
+    "tag": "AdminFormDialog",
+    "title": "{project?'Sửa dự án':'Tạo dự án'}",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/admin/AdminProjectLifecycle.jsx",
+    "line": 32,
+    "tag": "LifecycleDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/admin/AdminProjectLifecycle.jsx",
+    "line": 75,
+    "tag": "section",
+    "title": "\"lifecycle-title\"",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/admin/AdminUsers.jsx",
+    "line": 22,
+    "tag": "AdminFormDialog",
+    "title": "{'Tạo tài khoản'}",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+    "line": 14,
+    "tag": "AdminFormDialog",
+    "title": "{(allocation?'Thu hồi ':'Bàn giao ')+asset.assetCode}",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/admin/DeviceAssetForm.jsx",
+    "line": 10,
+    "tag": "AdminFormDialog",
+    "title": "{asset?'Sửa máy':'Nhập máy vào kho'}",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/ai/AiChat.jsx",
+    "line": 143,
+    "tag": "section",
+    "title": "\"Chat AI riêng\"",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+    "line": 43,
+    "tag": "div",
+    "title": "\"Tạo dự án mới\"",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/projects/ProjectDeviceAssignDialog.jsx",
+    "line": 29,
+    "tag": "AdminFormDialog",
+    "title": "\"Bổ sung máy vào dự án\"",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+    "line": 13,
+    "tag": "ProjectDeviceAssignDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+    "line": 14,
+    "tag": "DeviceAllocationDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+    "line": 115,
+    "tag": "div",
+    "title": "\"Chi tiết test case\"",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+    "line": 182,
+    "tag": "div",
+    "title": "\"Xác nhận phê duyệt\"",
+    "role": "\"alertdialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/CaseHistoryDialog.jsx",
+    "line": 27,
+    "tag": "section",
+    "title": "{`Lịch sử test case ${row.sourceId}`}",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/CreateCaseDialog.jsx",
+    "line": 57,
+    "tag": "div",
+    "title": "\"Tạo test case\"",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/CreateSuiteDialog.jsx",
+    "line": 34,
+    "tag": "div",
+    "title": "\"Tạo nhóm test case\"",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/DocumentCaseDialog.jsx",
+    "line": 7,
+    "tag": "section",
+    "title": "{`Chi tiết test case ${row.sourceId}`}",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/DocumentCellEditor.jsx",
+    "line": 17,
+    "tag": "section",
+    "title": "{`Sửa ô · ${cell.label}`}",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+    "line": 63,
+    "tag": "section",
+    "title": "{`Ghi kết quả test case ${e.requested.sourceId}`}",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+    "line": 76,
+    "tag": "section",
+    "title": "{`Công việc theo file · ${e.selected.caseNo}`}",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+    "line": 104,
+    "tag": "ResultContextDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+    "line": 106,
+    "tag": "FileWorkContextDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+    "line": 107,
+    "tag": "AttemptDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+    "line": 108,
+    "tag": "CycleDecisionDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+    "line": 17,
+    "tag": "section",
+    "title": "{`Lịch sử kết quả tài liệu ${row.sourceId}`}",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/DocumentSecondTestDialog.jsx",
+    "line": 38,
+    "tag": "section",
+    "title": "\"Phân công test lần 2\"",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+    "line": 13,
+    "tag": "ExcelImportDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+    "line": 114,
+    "tag": "div",
+    "title": "\"Nhập test case từ Excel\"",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+    "line": 221,
+    "tag": "DocumentSecondTestDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+    "line": 223,
+    "tag": "CaseDetailModal",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+    "line": 225,
+    "tag": "DocumentCaseDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+    "line": 229,
+    "tag": "CaseHistoryDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+    "line": 78,
+    "tag": "ImportExcelDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-execution/AssignmentDialog.jsx",
+    "line": 73,
+    "tag": "section",
+    "title": "\"Phân công lượt kiểm thử\"",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-execution/AttemptDialog.jsx",
+    "line": 45,
+    "tag": "section",
+    "title": "{`Thực thi ${run.caseNo}`}",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-execution/CycleDecisionDialog.jsx",
+    "line": 33,
+    "tag": "section",
+    "title": "{label}",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+    "line": 64,
+    "tag": "section",
+    "title": "\"Xác nhận bắt đầu đợt\"",
+    "role": "\"alertdialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+    "line": 71,
+    "tag": "AttemptDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+    "line": 73,
+    "tag": "CycleDecisionDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+    "line": 74,
+    "tag": "AssignmentDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/test-execution/NgBugActions.jsx",
+    "line": 25,
+    "tag": "Modal",
+    "title": "\"Liên kết NG với bug đã có\"",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/work-items/BoardPage.jsx",
+    "line": 292,
+    "tag": "Modal",
+    "title": "{menu.id}",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/work-items/BoardPage.jsx",
+    "line": 318,
+    "tag": "Modal",
+    "title": "\"Lưu bộ lọc bảng công việc\"",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/work-items/components.jsx",
+    "line": 203,
+    "tag": "section",
+    "title": "{title}",
+    "role": "\"dialog\""
+  },
+  {
+    "file": "Frontend/src/app/features/work-items/HomePage.jsx",
+    "line": 234,
+    "tag": "Modal",
+    "title": "\"Cài đặt hiển thị cập nhật\"",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/work-items/IssueForm.jsx",
+    "line": 206,
+    "tag": "Modal",
+    "title": "{`Thêm ${extra === \"category\" ? \"danh mục\" : extra === \"milestone\" ? \"mốc phát hành\" : \"phiên bản\"}`}",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/work-items/IssueForm.jsx",
+    "line": 372,
+    "tag": "Modal",
+    "title": "\"Xem trước công việc\"",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/work-items/IssueForm.jsx",
+    "line": 530,
+    "tag": "Modal",
+    "title": "\"Xem trước cập nhật\"",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/work-items/IssuesPage.jsx",
+    "line": 652,
+    "tag": "Modal",
+    "title": "{\r\n            {\r\n              save: \"Lưu điều kiện tìm kiếm\",\r\n              display: \"Cài đặt hiển thị\",\r\n              export: \"Xuất danh sách\",\r\n              batch: \"Cập nhật trạng thái hàng loạt\",\r\n            }[dialog]\r\n          }",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/work-items/TransitionDialog.jsx",
+    "line": 28,
+    "tag": "Modal",
+    "title": "{`Chuyển trạng thái · ${current.length} công việc`}",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/features/work-items/WorkItemDetail.jsx",
+    "line": 117,
+    "tag": "TransitionDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+    "line": 302,
+    "tag": "CreateSuiteDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+    "line": 310,
+    "tag": "CreateCaseDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+    "line": 320,
+    "tag": "ImportExcelDialog",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+    "line": 328,
+    "tag": "CaseDetailModal",
+    "title": "",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/pages/WorkBoardPage.jsx",
+    "line": 85,
+    "tag": "Modal",
+    "title": "{contextualQa?'Tạo QA từ ngữ cảnh':path==='/board/new'?'Thêm công việc':'Chi tiết công việc'}",
+    "role": ""
+  },
+  {
+    "file": "Frontend/src/app/pages/WorkBoardPage.jsx",
+    "line": 88,
+    "tag": "TransitionDialog",
+    "title": "",
+    "role": ""
+  }
+]

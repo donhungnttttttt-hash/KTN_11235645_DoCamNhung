@@ -1,0 +1,10 @@
+const fs=require('fs');
+const {parseConfig,query}=require('../../scripts/database/mysql-client.cjs');
+const {testConfiguration}=require('../../scripts/Test-FileWorkQaNative.cjs');
+const schema='tms_docstest_202610100016';
+const {client}=testConfiguration(parseConfig(fs.readFileSync('.env.mysql.local','utf8')),schema);
+if(query('SELECT DATABASE();',client)[0]!==schema)throw Error('Wrong schema');
+if(query("SELECT COUNT(*) FROM flyway_schema_history WHERE version='28' AND success=0;",client)[0]!=='1')throw Error('Expected failed isolated V28');
+if(query("SELECT COUNT(*) FROM information_schema.referential_constraints WHERE constraint_schema=DATABASE() AND constraint_name='fk_fw_session_allocation';",client)[0]!=='1')throw Error('Unexpected migration progress');
+query("ALTER TABLE device_allocations DROP INDEX uq_allocation_project_asset; DELETE FROM flyway_schema_history WHERE version='28' AND success=0;",client);
+console.log('Reverted only the failed V28 index and failed history entry in the isolated test schema.');

@@ -1,0 +1,11 @@
+{
+  "afterDirtyDiscard": {
+    "tag": "BODY",
+    "dialogs": 0,
+    "reproduced": 2
+  },
+  "afterPristineCancel": {
+    "tag": "BUTTON",
+    "text": "Tạo tài khoản"
+  }
+}

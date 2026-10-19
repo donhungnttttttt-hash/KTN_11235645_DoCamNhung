@@ -1,0 +1,82 @@
+{
+  "url": "http://127.0.0.1:5174/#/dashboard?projectId=156&workspace=1",
+  "metrics": {
+    "buttons": [
+      {
+        "disabled": false,
+        "name": "Chưa xử lý4"
+      },
+      {
+        "disabled": false,
+        "name": "Đang xử lý1"
+      },
+      {
+        "disabled": false,
+        "name": "SYP kiểm tra lại0"
+      },
+      {
+        "disabled": false,
+        "name": "Xác nhận đặc tả / mức độ0"
+      },
+      {
+        "disabled": false,
+        "name": "Sẵn sàng xử lý0"
+      },
+      {
+        "disabled": false,
+        "name": "Lập kế hoạch0"
+      },
+      {
+        "disabled": false,
+        "name": "Đã xử lý0"
+      },
+      {
+        "disabled": false,
+        "name": "Không tái hiện0"
+      },
+      {
+        "disabled": false,
+        "name": "Không xử lý0"
+      },
+      {
+        "disabled": false,
+        "name": "Hoàn thành1"
+      }
+    ],
+    "regions": [
+      {
+        "name": "Thông tin dự án",
+        "rect": {
+          "height": 1224.300048828125,
+          "width": 364.8000183105469,
+          "x": 10,
+          "y": -8.600000381469727
+        }
+      },
+      {
+        "name": "Trạng thái công việc",
+        "rect": {
+          "height": 486.3999938964844,
+          "width": 364.8000183105469,
+          "x": 10,
+          "y": 1237.7000732421875
+        }
+      },
+      {
+        "name": "Mốc phát hành",
+        "rect": {
+          "height": 70.4000015258789,
+          "width": 364.8000183105469,
+          "x": 10,
+          "y": 1724.0999755859375
+        }
+      }
+    ],
+    "viewport": {
+      "height": 844,
+      "pageWidth": 385,
+      "width": 390
+    }
+  },
+  "snapshot": "- banner:\n  - button \"Mở menu dự án\":\n  - button \"Tổng quan TMS\":\n    - generic: S+\n    - strong: TMS\n  - 'button \"Dự án: SPIDER PLUS · FR12 cô lập\"':\n    - text: \"Dự án:\"\n    - strong: SPIDER PLUS · FR12 cô lập\n  - button \"Mở chat AI\":\n  - 'button \"Tài khoản: FR12 Đỗ Cẩm Nhung\"':\n    - generic: CN\n- main:\n  - heading \"Tổng quan dự án · SPIDER PLUS · FR12 cô lập\" [level=1]:\n    - text: Tổng quan dự án\n    - generic: · SPIDER PLUS · FR12 cô lập\n  - paragraph: Thông tin dự án, trạng thái công việc và mốc phát hành.\n  - region \"Thông tin dự án\":\n    - heading \"Thông tin dự án\" [level=2]\n    - article:\n      - heading \"Giới thiệu\" [level=3]\n      - paragraph: Spider Plus hỗ trợ kiểm tra và quản lý các hạng mục tại công trường xây dựng, từ bản vẽ, shiteki đến điện, cốt thép và độ rọi. Dự án kiểm thử tập trung vào ứng dụng Flutter sau đợt cải tiến giao diện và chức năng, nhằm đánh giá khả năng đáp ứng các nghiệp vụ sử dụng thực tế.\n      - heading \"Mục tiêu và phạm vi\" [level=3]\n      - paragraph: Thực hiện System Test dựa trên bộ test case do SHIFT cung cấp. Phạm vi chính gồm ứng dụng trên iPad, iPhone, máy tính bảng Android và điện thoại Android; phần Web PC chủ yếu được giữ nguyên.\n      - paragraph: Mỗi Feature đại diện cho một đợt kiểm thử. Các file test case, phân công, kết quả và Bug/QA được theo dõi trong đúng Feature để thuận tiện kiểm tra tiến độ và đối chiếu kết quả.\n      - heading \"Các bên tham gia\" [level=3]\n      - list:\n        - strong: \"Spider Plus:\"\n        - text: khách hàng và đơn vị sở hữu sản phẩm.\n        - strong: \"SHIFT:\"\n        - text: cung cấp test case, điều phối tiến độ và giải đáp các câu hỏi nghiệp vụ.\n        - strong: \"SYP:\"\n        - text: thực hiện kiểm thử, ghi nhận kết quả và trao đổi các vấn đề phát sinh.\n      - heading \"Tài liệu làm việc\" [level=3]\n      - paragraph: Sử dụng tài liệu khách hàng cung cấp và bản nội bộ tương ứng để tra cứu trong quá trình kiểm thử.\n      - region \"Tài liệu làm việc Spider Plus\":\n        - table:\n          - rowgroup:\n            - row \"Nhóm tài liệu Nguồn khách hàng Bản nội bộ\":\n              - columnheader \"Nhóm tài liệu\"\n              - columnheader \"Nguồn khách hàng\"\n              - columnheader \"Bản nội bộ\"\n          - rowgroup:\n            - row \"Test case Pack tiêu chuẩn Google Drive · Pack tiêu chuẩn SharePoint · Pack tiêu chuẩn\":\n              - rowheader \"Test case Pack tiêu chuẩn\"\n              - cell \"Google Drive · Pack tiêu chuẩn\":\n                - link \"Google Drive · Pack tiêu chuẩn\":\n                  - /url: https://drive.google.com/drive/u/3/folders/1SRWqL-34eZN-VnN6Cut3SeGXA0X4jFvt\n                  - text: Google Drive\n              - cell \"SharePoint · Pack tiêu chuẩn\":\n                - link \"SharePoint · Pack tiêu chuẩn\":\n                  - /url: https://sypvn.sharepoint.com/:f:/s/SPPClassic/IgBcqSybLePRQpWl8mU7SgBwASj_t7I5LLM8uLkEBTNfBFs?e=OgyDKh\n                  - text: SharePoint\n            - row \"Test case Pack điện Google Drive · Pack điện SharePoint · Pack điện\":\n              - rowheader \"Test case Pack điện\"\n              - cell \"Google Drive · Pack điện\":\n                - link \"Google Drive · Pack điện\":\n                  - /url: https://drive.google.com/drive/u/3/folders/15E_T5W8pQEhaU-sDj7Gv6nzcoGuhMkCl\n                  - text: Google Drive\n              - cell \"SharePoint · Pack điện\":\n                - link \"SharePoint · Pack điện\":\n                  - /url: https://sypvn.sharepoint.com/:f:/s/SPPClassic/IgAt7vjUXeFjQ79IB5ZbjjfBAcS1XQ-I8GsBzcHqOVtpivs?e=jDBhU4\n                  - text: SharePoint\n      - heading \"Kết quả và bàn giao\" [level=3]\n      - paragraph: Kết quả được ghi nhận theo từng test case; lỗi và câu hỏi cần làm rõ được theo dõi bằng Bug/QA. Lỗi cần có mô tả, ngữ cảnh và chứng cứ phù hợp để các bên có thể kiểm tra, xử lý và đối chiếu khi kiểm thử lại.\n      - paragraph: Khi bàn giao, kết quả được cập nhật lên CAT theo quy trình của SHIFT. Báo cáo dự án tổng hợp tình hình kiểm thử và các vấn đề còn tồn tại; việc xác nhận nghiệm thu thực hiện theo quy trình đã thống nhất với các bên liên quan.\n  - complementary:\n    - region \"Trạng thái công việc\":\n      - heading \"Trạng thái công việc\" [level=2]\n      - paragraph: Bug và QA trong các Feature đang sử dụng.\n      - paragraph: 1/6 Issue ở trạng thái Hoàn thành · 17%\n      - button \"Chưa xử lý 4\":\n        - generic: Chưa xử lý\n        - generic: \"4\"\n      - button \"Đang xử lý 1\":\n        - generic: Đang xử lý\n        - generic: \"1\"\n      - button \"SYP kiểm tra lại 0\":\n        - generic: SYP kiểm tra lại\n        - generic: \"0\"\n      - button \"Xác nhận đặc tả / mức độ 0\":\n        - generic: Xác nhận đặc tả / mức độ\n        - generic: \"0\"\n      - button \"Sẵn sàng xử lý 0\":\n        - generic: Sẵn sàng xử lý\n        - generic: \"0\"\n      - button \"Lập kế hoạch 0\":\n        - generic: Lập kế hoạch\n        - generic: \"0\"\n      - button \"Đã xử lý 0\":\n        - generic: Đã xử lý\n        - generic: \"0\"\n      - button \"Không tái hiện 0\":\n        - generic: Không tái hiện\n        - generic: \"0\"\n      - button \"Không xử lý 0\":\n        - generic: Không xử lý\n        - generic: \"0\"\n      - button \"Hoàn thành 1\":\n        - generic: Hoàn thành\n        - generic: \"1\"\n    - region \"Mốc phát hành\":\n      - heading \"Mốc phát hành\" [level=2]\n      - paragraph: Các mốc đã cấu hình của dự án.\n      - paragraph: Chưa có mốc phát hành được cấu hình.\n- contentinfo:\n  - strong: TMS\n  - text: · Quản lý dự án & kiểm thử\n  - generic: Hệ thống nội bộ"
+}

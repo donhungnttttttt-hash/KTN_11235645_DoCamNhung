@@ -1,0 +1,906 @@
+{
+  "capturedAt": "2026-10-19T03:24:09.896Z",
+  "baseline": "2026-10-19T02:23:28.796Z",
+  "kind": "source-hash-comparison-no-runtime",
+  "files": [
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/AdminAuditLabels.java",
+      "baselineSha256": "e0cc3b82ad0279a4a7f3ed3647d7cccef6b468533fcd7aaeb893d8f4eaf394c8",
+      "sha256": "e0cc3b82ad0279a4a7f3ed3647d7cccef6b468533fcd7aaeb893d8f4eaf394c8",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/notes/ProjectNote.java",
+      "baselineSha256": "470cdc13aad8905b4bd05e7555a76a52eec570a40e48f5f5f6a93fef46a2c6d4",
+      "sha256": "470cdc13aad8905b4bd05e7555a76a52eec570a40e48f5f5f6a93fef46a2c6d4",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/notes/ProjectNotesController.java",
+      "baselineSha256": "78de89581eaab7e537ca224761d03c20aaba6cbc3a6524f23f7ee801a0879053",
+      "sha256": "78de89581eaab7e537ca224761d03c20aaba6cbc3a6524f23f7ee801a0879053",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/notes/ProjectNotesDtos.java",
+      "baselineSha256": "65f3e998f52c85861773ea67e35460074b88ec0a3f3795d40a04b93fe831a235",
+      "sha256": "65f3e998f52c85861773ea67e35460074b88ec0a3f3795d40a04b93fe831a235",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/notes/ProjectNotesService.java",
+      "baselineSha256": "b161d17214e7ad34b2b099186ad2643413acf61606046b4b20f39a5fb8bc1f8f",
+      "sha256": "b161d17214e7ad34b2b099186ad2643413acf61606046b4b20f39a5fb8bc1f8f",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/notes/ProjectNotesStore.java",
+      "baselineSha256": "ff015b7d6de1d1292da1646ea67e6e7bc826d69abe8ceb2e61b825298f65c7cd",
+      "sha256": "ff015b7d6de1d1292da1646ea67e6e7bc826d69abe8ceb2e61b825298f65c7cd",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/fixreports-audit.test.jsx",
+      "baselineSha256": "aa20f931c76b82af5b8e3aff53a72004a3c5166a450f62b46c5aa9dca1a5c182",
+      "sha256": "aa20f931c76b82af5b8e3aff53a72004a3c5166a450f62b46c5aa9dca1a5c182",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/fixreports-handover.test.jsx",
+      "baselineSha256": "484ac107260429a4b8c1f285bfc5902917844b0691e0d3b8117f7b17177ef709",
+      "sha256": "484ac107260429a4b8c1f285bfc5902917844b0691e0d3b8117f7b17177ef709",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/fixreports-members.test.jsx",
+      "baselineSha256": "6f19bf0bfab19e36396c60c22af7bdbb201b8651b869e2ff4431aaee59d0c019",
+      "sha256": "6f19bf0bfab19e36396c60c22af7bdbb201b8651b869e2ff4431aaee59d0c019",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/handoverRecipient.js",
+      "baselineSha256": "07670fb1219adc45ee2899d725995ddb12e92e1e02d5f9e7516be319473b0446",
+      "sha256": "07670fb1219adc45ee2899d725995ddb12e92e1e02d5f9e7516be319473b0446",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectInformation.jsx",
+      "baselineSha256": "b0d24f0453bec19b63479631a25d52b7cc240adfb8458dba165b9d2273a8105c",
+      "sha256": "b0d24f0453bec19b63479631a25d52b7cc240adfb8458dba165b9d2273a8105c",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectNotes.jsx",
+      "baselineSha256": "d360911d5acd9d079739a218bbd62d17a95f2570fe3f1e8ac527b366337eb88a",
+      "sha256": "d360911d5acd9d079739a218bbd62d17a95f2570fe3f1e8ac527b366337eb88a",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectNotes.test.jsx",
+      "baselineSha256": "334ed1fe10103684b2abe1336011ffa93f9d24ac29f232f548b6b96729c3d1a6",
+      "sha256": "334ed1fe10103684b2abe1336011ffa93f9d24ac29f232f548b6b96729c3d1a6",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/project-devices-navigation.test.jsx",
+      "baselineSha256": "12390e1a126320216f9c465c6b5ba317f7d73329a2c1748d8f0b03dbe15b6e68",
+      "sha256": "12390e1a126320216f9c465c6b5ba317f7d73329a2c1748d8f0b03dbe15b6e68",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/project-information.css",
+      "baselineSha256": "01a20e5af2fc5a01e85f7533da667182f57a9c15922937e8d1095da0a7eab1a9",
+      "sha256": "01a20e5af2fc5a01e85f7533da667182f57a9c15922937e8d1095da0a7eab1a9",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/project-notes.css",
+      "baselineSha256": "6b280897f17a5f36477e3d39140b9ab2307ba2a4109d3f1542822d2e0bf6acf5",
+      "sha256": "6b280897f17a5f36477e3d39140b9ab2307ba2a4109d3f1542822d2e0bf6acf5",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/AdminAuditController.java",
+      "baselineSha256": "61346e395b13d8658a83c32466337f88f06b66ec6c6d2ced6c62218f35ebc64b",
+      "sha256": "61346e395b13d8658a83c32466337f88f06b66ec6c6d2ced6c62218f35ebc64b",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/AdminAuditService.java",
+      "baselineSha256": "332dfc14aedc98561b649df0542b6e1b10df73e4065e00b4896daa60e4a038a6",
+      "sha256": "332dfc14aedc98561b649df0542b6e1b10df73e4065e00b4896daa60e4a038a6",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/AdminController.java",
+      "baselineSha256": "f88979eed60eb06d093ced2962a0e0d6507b2464711b010a29a520b3d0c7767a",
+      "sha256": "f88979eed60eb06d093ced2962a0e0d6507b2464711b010a29a520b3d0c7767a",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/AdminDtos.java",
+      "baselineSha256": "3e48c5c9baef8c72341d39df24d9d5c1b11f8fa39e29503b859e33ecb2a6f4be",
+      "sha256": "3e48c5c9baef8c72341d39df24d9d5c1b11f8fa39e29503b859e33ecb2a6f4be",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/AdminManagementController.java",
+      "baselineSha256": "275a2365e5629c481bc9466656d820ab523f06bf8af5c39fb48aa4260994c596",
+      "sha256": "275a2365e5629c481bc9466656d820ab523f06bf8af5c39fb48aa4260994c596",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/AdminOverviewService.java",
+      "baselineSha256": "4af9ade0cb96a88354246919dc48541a28d2047caf1b64ea08995434ccc0472c",
+      "sha256": "4af9ade0cb96a88354246919dc48541a28d2047caf1b64ea08995434ccc0472c",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/AdminProjectService.java",
+      "baselineSha256": "2bc5aa12c4591b5d4f2cd482a6f97429a69453498f75a4210ff429b772a1def9",
+      "sha256": "2bc5aa12c4591b5d4f2cd482a6f97429a69453498f75a4210ff429b772a1def9",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/DeviceInventoryController.java",
+      "baselineSha256": "f85876005a1a895aac7665821835d2b6ed31464a84d0aa5fcd05aa3a797bf207",
+      "sha256": "f85876005a1a895aac7665821835d2b6ed31464a84d0aa5fcd05aa3a797bf207",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/DeviceInventoryDtos.java",
+      "baselineSha256": "357c04b3bc48c60f55180ce248f8a1164fea3962ea907f94f1687da5398226e9",
+      "sha256": "357c04b3bc48c60f55180ce248f8a1164fea3962ea907f94f1687da5398226e9",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/DeviceInventoryService.java",
+      "baselineSha256": "211f214a57be5d2a4185e98b71482bbf4459daaddfc45801c301748c0f4fc396",
+      "sha256": "211f214a57be5d2a4185e98b71482bbf4459daaddfc45801c301748c0f4fc396",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/ProjectDeadlines.java",
+      "baselineSha256": "dd4a9e4a5ff4530b6e5f10a7d8965e90d09c6449aa0ff0ba24fb4aaae637dd44",
+      "sha256": "dd4a9e4a5ff4530b6e5f10a7d8965e90d09c6449aa0ff0ba24fb4aaae637dd44",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/ProjectLifecycleController.java",
+      "baselineSha256": "09d3c162e0a282f741584b0a1b97d27cdf116248e566f6f3686b079547285712",
+      "sha256": "09d3c162e0a282f741584b0a1b97d27cdf116248e566f6f3686b079547285712",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/ProjectLifecycleService.java",
+      "baselineSha256": "6bd0b4a20de36ffd524600812e18efb01873df9dcf6d0823f0c7b3cb5b22895d",
+      "sha256": "6bd0b4a20de36ffd524600812e18efb01873df9dcf6d0823f0c7b3cb5b22895d",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/ProjectStatusReportController.java",
+      "baselineSha256": "777464f4d9f75ec5d279306fa3581e49748b54b1c803a0f97afb4f001e9672d7",
+      "sha256": "777464f4d9f75ec5d279306fa3581e49748b54b1c803a0f97afb4f001e9672d7",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/admin/ProjectStatusReportService.java",
+      "baselineSha256": "6589f8cbb21cbf589d3ab062e7073632a63c16bcd4908d1e16ec6664acc7e8c7",
+      "sha256": "6589f8cbb21cbf589d3ab062e7073632a63c16bcd4908d1e16ec6664acc7e8c7",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookController.java",
+      "baselineSha256": "3a75bf304aa9190004e35e28ae533cbffe5c31309ccc541159f5d56ceb1281a0",
+      "sha256": "3a75bf304aa9190004e35e28ae533cbffe5c31309ccc541159f5d56ceb1281a0",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookDtos.java",
+      "baselineSha256": "326f3f4c96a9fbb9601dbe912edb233824cedb4e44a9b895c4d64915d55c1cf4",
+      "sha256": "326f3f4c96a9fbb9601dbe912edb233824cedb4e44a9b895c4d64915d55c1cf4",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookService.java",
+      "baselineSha256": "bf3abbac423ff232db4a993c1512057ffccb16148b10dd669925e03780147d10",
+      "sha256": "bf3abbac423ff232db4a993c1512057ffccb16148b10dd669925e03780147d10",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/ProjectResource.java",
+      "baselineSha256": "26756b6be1bc5481d96955e74a34e61e340a79621dbd20156dabe03c3e5ed708",
+      "sha256": "26756b6be1bc5481d96955e74a34e61e340a79621dbd20156dabe03c3e5ed708",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/ResourceRepository.java",
+      "baselineSha256": "f8e900a0074d0ad7aa63e0d5ceeb7a7d808675a0fd21612b2df50a2d9043d306",
+      "sha256": "f8e900a0074d0ad7aa63e0d5ceeb7a7d808675a0fd21612b2df50a2d9043d306",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/ResourceRevision.java",
+      "baselineSha256": "418b78c28bb0fde865e2d4d4797e8c11e2879eef286b74b526d5ede6e7cf92e7",
+      "sha256": "418b78c28bb0fde865e2d4d4797e8c11e2879eef286b74b526d5ede6e7cf92e7",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/RevisionRepository.java",
+      "baselineSha256": "2f91cd84d9c744eeab1d9b3b0d416f475f200645ce0985e5f7421ccc8fc0f878",
+      "sha256": "2f91cd84d9c744eeab1d9b3b0d416f475f200645ce0985e5f7421ccc8fc0f878",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/identity/AdminBootstrap.java",
+      "baselineSha256": "ac443c58f0accc0f2fb4ddd4de90b6251b7d93859905fa1652848f02a9e0b7cc",
+      "sha256": "ac443c58f0accc0f2fb4ddd4de90b6251b7d93859905fa1652848f02a9e0b7cc",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/identity/AuthController.java",
+      "baselineSha256": "e5fe1f7c1af18ff9ac3dfafebc8a37fa87760e8a966b1c9547612c1b6a0cde5f",
+      "sha256": "e5fe1f7c1af18ff9ac3dfafebc8a37fa87760e8a966b1c9547612c1b6a0cde5f",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/identity/IdentityAudit.java",
+      "baselineSha256": "f580301576b70a92ff1a41d38a1a7962bd119aaea4e595a2dacbb321caa76499",
+      "sha256": "f580301576b70a92ff1a41d38a1a7962bd119aaea4e595a2dacbb321caa76499",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/identity/IdentityDtos.java",
+      "baselineSha256": "8f61c91f329b6d513786ae1d64ff9a067b37b1ce54d48d21abf9018caf6c2162",
+      "sha256": "8f61c91f329b6d513786ae1d64ff9a067b37b1ce54d48d21abf9018caf6c2162",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/identity/IdentityService.java",
+      "baselineSha256": "4239dad55d88a28fb4b01919b58c39806af9d23a43219155b85f8b99a19c7fba",
+      "sha256": "4239dad55d88a28fb4b01919b58c39806af9d23a43219155b85f8b99a19c7fba",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/identity/IdentityUser.java",
+      "baselineSha256": "140388005d19e245c9c9557a5bfa176beec235f17f31113340075a8e3a59f200",
+      "sha256": "140388005d19e245c9c9557a5bfa176beec235f17f31113340075a8e3a59f200",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/identity/IdentityUserRepository.java",
+      "baselineSha256": "dc21b37a93c3b62018231da6b4f88224abb5048a172cc85c0603dde34b23a647",
+      "sha256": "dc21b37a93c3b62018231da6b4f88224abb5048a172cc85c0603dde34b23a647",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/identity/LoginThrottle.java",
+      "baselineSha256": "d0836d16594dec922501188ec511db5abae22ccd966a43fb75994484339752f6",
+      "sha256": "d0836d16594dec922501188ec511db5abae22ccd966a43fb75994484339752f6",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/identity/SessionAccountFilter.java",
+      "baselineSha256": "dc3664a73252d10df8063c3d08f1c6e1f8af7b0275bdc339653e7611de8f3a42",
+      "sha256": "dc3664a73252d10df8063c3d08f1c6e1f8af7b0275bdc339653e7611de8f3a42",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/identity/SessionPrincipal.java",
+      "baselineSha256": "b442ed34eeecfeabc01d97fdd0cf6f56cae123ea9482a1fcedc83afcf728e4f9",
+      "sha256": "b442ed34eeecfeabc01d97fdd0cf6f56cae123ea9482a1fcedc83afcf728e4f9",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/identity/UserController.java",
+      "baselineSha256": "b16d379dfd6a89de7c5d9d7d1c3334a64908fdc63e6ad2a2a617451d49d1fa66",
+      "sha256": "b16d379dfd6a89de7c5d9d7d1c3334a64908fdc63e6ad2a2a617451d49d1fa66",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/MembershipRepository.java",
+      "baselineSha256": "ccf57a2c40851203e3804867a2cb7eec4037f6e080b07fa280defff0806a0825",
+      "sha256": "ccf57a2c40851203e3804867a2cb7eec4037f6e080b07fa280defff0806a0825",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+      "baselineSha256": "1b5a89a836a9ddf1b869507e8df33b121080f4f9cbccca629710ef44d8f0aedb",
+      "sha256": "1b5a89a836a9ddf1b869507e8df33b121080f4f9cbccca629710ef44d8f0aedb",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectActorService.java",
+      "baselineSha256": "cf5f9c2c75372c4a2a68fb269b19d7cbc6e70f05791919a7831420904bfd00b1",
+      "sha256": "cf5f9c2c75372c4a2a68fb269b19d7cbc6e70f05791919a7831420904bfd00b1",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectAudit.java",
+      "baselineSha256": "46e03cf43e33f39dd64ec465abf5ca0bd71188f87447659cbb230c88c8c92bfc",
+      "sha256": "46e03cf43e33f39dd64ec465abf5ca0bd71188f87447659cbb230c88c8c92bfc",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectController.java",
+      "baselineSha256": "c5857e3c768c1517f27c27c85cd3a782d635c19fbeb473d0fc0714dba37e830f",
+      "sha256": "c5857e3c768c1517f27c27c85cd3a782d635c19fbeb473d0fc0714dba37e830f",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectDtos.java",
+      "baselineSha256": "2d7eefd3a8dcad242b9cbc50d64d82c69cef01bc89d62661a542f346f1a94f66",
+      "sha256": "2d7eefd3a8dcad242b9cbc50d64d82c69cef01bc89d62661a542f346f1a94f66",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectMembership.java",
+      "baselineSha256": "f6e59c482dee9777265c1bcf0b1d417487a8020d0077f91b019d1f57584a8672",
+      "sha256": "f6e59c482dee9777265c1bcf0b1d417487a8020d0077f91b019d1f57584a8672",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectRepository.java",
+      "baselineSha256": "06117a069a2b0e08ffe208f1644a4eb88e5375b87f8e2fd5ce8b58030f1c3746",
+      "sha256": "06117a069a2b0e08ffe208f1644a4eb88e5375b87f8e2fd5ce8b58030f1c3746",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectService.java",
+      "baselineSha256": "7193d92ef8dd9606a869632f084dab759e97f6b932d87a6ef04369813f4f1c3e",
+      "sha256": "7193d92ef8dd9606a869632f084dab759e97f6b932d87a6ef04369813f4f1c3e",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectTimezone.java",
+      "baselineSha256": "09ac7557bd1ce1951c4b889b49f07666cdf85dfc45fb7ed77c9380035b83e1b7",
+      "sha256": "09ac7557bd1ce1951c4b889b49f07666cdf85dfc45fb7ed77c9380035b83e1b7",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/SettingsVersion.java",
+      "baselineSha256": "1920aaa1a7a65367fea2b2a6d234e2cca9fb91f53a71a6af4cb4278c48575335",
+      "sha256": "1920aaa1a7a65367fea2b2a6d234e2cca9fb91f53a71a6af4cb4278c48575335",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/InternalRulePolicy.java",
+      "baselineSha256": "72f0d8d3e6caf43ce95268816a02932a0932db49421fa9ec373dab7f22afbf22",
+      "sha256": "72f0d8d3e6caf43ce95268816a02932a0932db49421fa9ec373dab7f22afbf22",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleController.java",
+      "baselineSha256": "023717f3bd694831568d23d5a4d91400800fc14ad313beaf8ad5f53a1b531a8a",
+      "sha256": "023717f3bd694831568d23d5a4d91400800fc14ad313beaf8ad5f53a1b531a8a",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleDtos.java",
+      "baselineSha256": "2859a72783a734f95d5b36f87f0236876b460fceece253746cce13c073d14101",
+      "sha256": "2859a72783a734f95d5b36f87f0236876b460fceece253746cce13c073d14101",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleService.java",
+      "baselineSha256": "356b66b64661ca93e87af82339ce3de6379266b3e85e0dbafefcf22a8dd2a875",
+      "sha256": "356b66b64661ca93e87af82339ce3de6379266b3e85e0dbafefcf22a8dd2a875",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleVersion.java",
+      "baselineSha256": "ca412f3c70776897d4ce4e5991022347d9ff51b78e34ed2b5df49e13b50b12cc",
+      "sha256": "ca412f3c70776897d4ce4e5991022347d9ff51b78e34ed2b5df49e13b50b12cc",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleVersionRepository.java",
+      "baselineSha256": "d110fe5c0880de0a4c3ce551b3e975cd321b68dc7cc2b967140b1798ffc23dcd",
+      "sha256": "d110fe5c0880de0a4c3ce551b3e975cd321b68dc7cc2b967140b1798ffc23dcd",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/Ruleset.java",
+      "baselineSha256": "b862ac1622b9d32f01941c75a99a972ed2a378da482c0fcbbf4b1394d16499a5",
+      "sha256": "b862ac1622b9d32f01941c75a99a972ed2a378da482c0fcbbf4b1394d16499a5",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RulesetRepository.java",
+      "baselineSha256": "31265a953ba58752a6757a9e930601c82a5b6023c51f9fc904db6b9f3aceb96b",
+      "sha256": "31265a953ba58752a6757a9e930601c82a5b6023c51f9fc904db6b9f3aceb96b",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/components/SelectPageCheckbox.jsx",
+      "baselineSha256": "e53b95b8d22c99cfc71b48c052b3237ecdd7f30f46a7f00e5109e5e2bbfd65d6",
+      "sha256": "e53b95b8d22c99cfc71b48c052b3237ecdd7f30f46a7f00e5109e5e2bbfd65d6",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/components/SelectionTable.jsx",
+      "baselineSha256": "f831964a389e9642bf9049fe29b203e4e38b9f58cc539b49ea1a918aff20f4ea",
+      "sha256": "f831964a389e9642bf9049fe29b203e4e38b9f58cc539b49ea1a918aff20f4ea",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/components/SelectionTable.test.jsx",
+      "baselineSha256": "3149b75a622b53701dee3877f0c2d799272acfa5db4b1161cbe6dc6d1a9bdd8f",
+      "sha256": "3149b75a622b53701dee3877f0c2d799272acfa5db4b1161cbe6dc6d1a9bdd8f",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/components/TableScroll.jsx",
+      "baselineSha256": "5753b1a9c9cc7ae51241e27084223323329fed961aafcd940c5f5f8ee2f354f9",
+      "sha256": "5753b1a9c9cc7ae51241e27084223323329fed961aafcd940c5f5f8ee2f354f9",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/components/TableScroll.test.jsx",
+      "baselineSha256": "ff41e55b43eec2f1419f2c861dbfc7ef5987ca74df073918076f46b5c86a9bf5",
+      "sha256": "ff41e55b43eec2f1419f2c861dbfc7ef5987ca74df073918076f46b5c86a9bf5",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "baselineSha256": "f4eeea2d0251b752c983c36e0aa12ec5eebbf0aee908dcfbd4403913be2bf3b5",
+      "sha256": "f4eeea2d0251b752c983c36e0aa12ec5eebbf0aee908dcfbd4403913be2bf3b5",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminAudit.jsx",
+      "baselineSha256": "e9019069751fa71fa08904d7b67868868b2a83ba7441168ec25a3c1bb40f5fa7",
+      "sha256": "e9019069751fa71fa08904d7b67868868b2a83ba7441168ec25a3c1bb40f5fa7",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminDashboard.jsx",
+      "baselineSha256": "605c3f837fe9c5591906d77e7164d4133e4a673c2bde6c4c9c255c32292a7854",
+      "sha256": "605c3f837fe9c5591906d77e7164d4133e4a673c2bde6c4c9c255c32292a7854",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "baselineSha256": "b9d82e62a749fd9892692cb6fb4e570ce56eb75b6a6ed6e1992f5f103e3e6ed4",
+      "sha256": "b9d82e62a749fd9892692cb6fb4e570ce56eb75b6a6ed6e1992f5f103e3e6ed4",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+      "baselineSha256": "6a0e17349b3e0ac71abbb71f81fa75a1c84c2d1db3421c2a1e51f69a481c80fb",
+      "sha256": "6a0e17349b3e0ac71abbb71f81fa75a1c84c2d1db3421c2a1e51f69a481c80fb",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminLayout.jsx",
+      "baselineSha256": "06d80782d8cde1e7abdabcd8711e0c1b6012e6220922ed8fee6e45802c9b6d93",
+      "sha256": "06d80782d8cde1e7abdabcd8711e0c1b6012e6220922ed8fee6e45802c9b6d93",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "baselineSha256": "6f9f2b1b69ace3f783ada8184be4ccc989f80e629d0e9dcd276eb261bb623e77",
+      "sha256": "6f9f2b1b69ace3f783ada8184be4ccc989f80e629d0e9dcd276eb261bb623e77",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectDropdown.jsx",
+      "baselineSha256": "26802a44fa56db21caba5f930597b1a6f2a5d1a352b7397f408fabb29baff727",
+      "sha256": "26802a44fa56db21caba5f930597b1a6f2a5d1a352b7397f408fabb29baff727",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+      "baselineSha256": "505dc4b2bdb7a2ca4ddf166088a923ac7dd1fe4ba78e44b6480a289a7fb72380",
+      "sha256": "505dc4b2bdb7a2ca4ddf166088a923ac7dd1fe4ba78e44b6480a289a7fb72380",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectLifecycle.integration.test.jsx",
+      "baselineSha256": "582e15cd0ae8b3d3c26c8543e5e00de76658729408b57e35607d33f106623d07",
+      "sha256": "582e15cd0ae8b3d3c26c8543e5e00de76658729408b57e35607d33f106623d07",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectLifecycle.jsx",
+      "baselineSha256": "e7a9812d1f7a7c45b3928ba837090997b4caeb72c8e9d877fcf448873bd65f92",
+      "sha256": "e7a9812d1f7a7c45b3928ba837090997b4caeb72c8e9d877fcf448873bd65f92",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectLifecycle.test.jsx",
+      "baselineSha256": "c5d899d570f7d5f4317efaabbc159918cc7d2693142f9b048992fa45fa9b0a3e",
+      "sha256": "c5d899d570f7d5f4317efaabbc159918cc7d2693142f9b048992fa45fa9b0a3e",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjects.jsx",
+      "baselineSha256": "9003df1df0f28faf0e0cde967397b07e2edc7232c3e3df99282dcd78a11e9c96",
+      "sha256": "9003df1df0f28faf0e0cde967397b07e2edc7232c3e3df99282dcd78a11e9c96",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx",
+      "baselineSha256": "b53ba4f456dc19fb9a70c1f225b0d258679f3a870f1b2a2334f42000902985b4",
+      "sha256": "b53ba4f456dc19fb9a70c1f225b0d258679f3a870f1b2a2334f42000902985b4",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "baselineSha256": "2de5c4f04555b46a8e16688e2601b25200264799525b6a07a84cca3a88467dfc",
+      "sha256": "2de5c4f04555b46a8e16688e2601b25200264799525b6a07a84cca3a88467dfc",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+      "baselineSha256": "a194b1f1d1f2cb5499e71c7e6df75a3bf80349f9ed9aefe2b7de93e040c9a884",
+      "sha256": "a194b1f1d1f2cb5499e71c7e6df75a3bf80349f9ed9aefe2b7de93e040c9a884",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/DeviceAssetForm.jsx",
+      "baselineSha256": "7169366fbe364a22509128174495c2c6761d2f44ba104ec62e57a263a5e68298",
+      "sha256": "7169366fbe364a22509128174495c2c6761d2f44ba104ec62e57a263a5e68298",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/InitialDevicePicker.jsx",
+      "baselineSha256": "c899143251f65d8f33137c5ece5f48391c61d3b558c15a8c9819e611dbbb7929",
+      "sha256": "c899143251f65d8f33137c5ece5f48391c61d3b558c15a8c9819e611dbbb7929",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/MetricBars.jsx",
+      "baselineSha256": "43dc7d7644c8ab61f917b8809f20b65db6c4a07512ca3cbbb9b40a01482d44ff",
+      "sha256": "43dc7d7644c8ab61f917b8809f20b65db6c4a07512ca3cbbb9b40a01482d44ff",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/ProjectRoleSelect.jsx",
+      "baselineSha256": "3e8a4758b0769557bc3e3097658a36b0d5b5bf366b7694267a374748abf3ec81",
+      "sha256": "3e8a4758b0769557bc3e3097658a36b0d5b5bf366b7694267a374748abf3ec81",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/ProjectStatusReports.jsx",
+      "baselineSha256": "da359a45f69f788a385216fe1ecee5d042d5ccf2e3a5ccd653948a8fc96031e0",
+      "sha256": "da359a45f69f788a385216fe1ecee5d042d5ccf2e3a5ccd653948a8fc96031e0",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/action-button-audit.test.jsx",
+      "baselineSha256": "0207e542f45c3a613682907e6cbb8fa3c00c6eb97478d20a36e8064a1701e3a6",
+      "sha256": "0207e542f45c3a613682907e6cbb8fa3c00c6eb97478d20a36e8064a1701e3a6",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin-dialog.test.jsx",
+      "baselineSha256": "48e77ea6527a6ac2b5c24b2807b1e61625620a096dd719b04232575cd5f2614a",
+      "sha256": "48e77ea6527a6ac2b5c24b2807b1e61625620a096dd719b04232575cd5f2614a",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin-management.test.jsx",
+      "baselineSha256": "28fd81c7619ba1844d9a96bd31daa11daa3a3d975c886b933bf692a600a3a28c",
+      "sha256": "28fd81c7619ba1844d9a96bd31daa11daa3a3d975c886b933bf692a600a3a28c",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin-member-feedback.test.jsx",
+      "baselineSha256": "13a867d444a4b10d84db2cfe06dc7520cb9933bf10ea5dbaed00482c0527d83a",
+      "sha256": "13a867d444a4b10d84db2cfe06dc7520cb9933bf10ea5dbaed00482c0527d83a",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin-projects.test.jsx",
+      "baselineSha256": "025369ba4b2d05c6fcd7081e972a0c67023f72dec28de77f9bcc68dfd236062b",
+      "sha256": "025369ba4b2d05c6fcd7081e972a0c67023f72dec28de77f9bcc68dfd236062b",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin-role-compatibility.test.jsx",
+      "baselineSha256": "436d20e8846ee9cf4d9344f0814bab7d4d4dd61d0254398b7e1b90fa5078a871",
+      "sha256": "436d20e8846ee9cf4d9344f0814bab7d4d4dd61d0254398b7e1b90fa5078a871",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin-routing.test.jsx",
+      "baselineSha256": "713b7c27c8eda51ace4e80d5964e6551c9e4d63e95a8b87e7a30cffb8c334784",
+      "sha256": "713b7c27c8eda51ace4e80d5964e6551c9e4d63e95a8b87e7a30cffb8c334784",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin.css",
+      "baselineSha256": "ea16eb8a93a70a343da85c144b9b620f32ae27e633a8c719ea56dab5130e4820",
+      "sha256": "ea16eb8a93a70a343da85c144b9b620f32ae27e633a8c719ea56dab5130e4820",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin.test.jsx",
+      "baselineSha256": "bf8e00b48bae5b70151eed60fb3a73ee8deb5d3cb8d1020a527b2d17dd47efc6",
+      "sha256": "bf8e00b48bae5b70151eed60fb3a73ee8deb5d3cb8d1020a527b2d17dd47efc6",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/button-recheck.test.jsx",
+      "baselineSha256": "8a9428c5b8b7027f9f13bbcc2871a278267b0565db233ad3325cdf29b2aeab7e",
+      "sha256": "8a9428c5b8b7027f9f13bbcc2871a278267b0565db233ad3325cdf29b2aeab7e",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/device-editor-focus.test.jsx",
+      "baselineSha256": "95697f4d0e4b4a4ea0c32277842684622aea9390e8c9c0ac7fb70b633b37a7cb",
+      "sha256": "95697f4d0e4b4a4ea0c32277842684622aea9390e8c9c0ac7fb70b633b37a7cb",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/inventory.test.jsx",
+      "baselineSha256": "35e81692feb947645c8f3c53833a2b0a897c43a5bb78afcbf573c8ea50854dd5",
+      "sha256": "35e81692feb947645c8f3c53833a2b0a897c43a5bb78afcbf573c8ea50854dd5",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/project-picker.test.jsx",
+      "baselineSha256": "18aa204d59978d94a0ca86e4a68b8e9ccfae5e94455eeb2c5123676ca818e905",
+      "sha256": "18aa204d59978d94a0ca86e4a68b8e9ccfae5e94455eeb2c5123676ca818e905",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/shared.jsx",
+      "baselineSha256": "fb214c6a7368ce5090558292b1c7f9edf6e5d5a1899d7f8045b9f7239c71538b",
+      "sha256": "fb214c6a7368ce5090558292b1c7f9edf6e5d5a1899d7f8045b9f7239c71538b",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/status-reports.css",
+      "baselineSha256": "a863030e4e77fecdeea8dcb37adafba252ff963c685297fa569c8b533270a930",
+      "sha256": "a863030e4e77fecdeea8dcb37adafba252ff963c685297fa569c8b533270a930",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/status-reports.test.jsx",
+      "baselineSha256": "4222fbe530c34f32a944042084394ea956643160671e4b4ce2200c09f0fa180c",
+      "sha256": "4222fbe530c34f32a944042084394ea956643160671e4b4ce2200c09f0fa180c",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/useInlineEditorFocus.js",
+      "baselineSha256": "0834980d10a15be8309c918dfb825800807205a619a5189248dc39fe52872afe",
+      "sha256": "0834980d10a15be8309c918dfb825800807205a619a5189248dc39fe52872afe",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/auth/AccountMenu.jsx",
+      "baselineSha256": "f63c14c3792681ab9a58fa597e8e24e3c5163a2bbc4ac368f7e6ff2976863436",
+      "sha256": "f63c14c3792681ab9a58fa597e8e24e3c5163a2bbc4ac368f7e6ff2976863436",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/auth/AuthBoundary.jsx",
+      "baselineSha256": "85ac99dab6b08df9cf9e2bd5c66354840d5012bc969322ceb601804f44f9b407",
+      "sha256": "85ac99dab6b08df9cf9e2bd5c66354840d5012bc969322ceb601804f44f9b407",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/auth/AuthProvider.jsx",
+      "baselineSha256": "6db5852bf856967d80b4e9f34949a85dc038c74bc97de72e266e90b2e3b9d4a0",
+      "sha256": "6db5852bf856967d80b4e9f34949a85dc038c74bc97de72e266e90b2e3b9d4a0",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/auth/auth.css",
+      "baselineSha256": "73665da180c264f64c74b5919d2b3a4accaf58cd20dbcba1fc8308d3087e5159",
+      "sha256": "73665da180c264f64c74b5919d2b3a4accaf58cd20dbcba1fc8308d3087e5159",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/auth/auth.test.jsx",
+      "baselineSha256": "4c86a8109fd215723193794ded009d2bdde1cb7e2bc94a0ef0ac767eb1d1b87e",
+      "sha256": "4c86a8109fd215723193794ded009d2bdde1cb7e2bc94a0ef0ac767eb1d1b87e",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CatalogEditor.jsx",
+      "baselineSha256": "be659576995efa12c2ef0fa3de8d55cbf51abb8bc996688c096711417dd9665a",
+      "sha256": "be659576995efa12c2ef0fa3de8d55cbf51abb8bc996688c096711417dd9665a",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CatalogPage.jsx",
+      "baselineSha256": "dd344edac08b59913ef3e713e26a93d41f6d307f9233136d9c8fbc580d5dd92d",
+      "sha256": "dd344edac08b59913ef3e713e26a93d41f6d307f9233136d9c8fbc580d5dd92d",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CatalogPage.test.jsx",
+      "baselineSha256": "96cc582fbaa8f21d7596f84df6799dd14ac263d7b0d62f4c0c572bed7fac4f35",
+      "sha256": "96cc582fbaa8f21d7596f84df6799dd14ac263d7b0d62f4c0c572bed7fac4f35",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "baselineSha256": "0b8efd05cc4e69cea305834bac12b499d41e5d6c2b16ebb5ad7258cca2867548",
+      "sha256": "0b8efd05cc4e69cea305834bac12b499d41e5d6c2b16ebb5ad7258cca2867548",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.review.test.jsx",
+      "baselineSha256": "4d0546ad7123ddcbd4b8bb39fc3c5613e58e0370b2ab32ae8faa073ee478a080",
+      "sha256": "4d0546ad7123ddcbd4b8bb39fc3c5613e58e0370b2ab32ae8faa073ee478a080",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "baselineSha256": "dd7ad495b926fffb8fa92cd7d41ff289e6e9961bf6a860e3917d2eb367ff88a8",
+      "sha256": "dd7ad495b926fffb8fa92cd7d41ff289e6e9961bf6a860e3917d2eb367ff88a8",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectAccessNotice.jsx",
+      "baselineSha256": "13c7594f2d148bf2d6fd8a14d19efecf662e7192068e584a9a88a726a9de6220",
+      "sha256": "13c7594f2d148bf2d6fd8a14d19efecf662e7192068e584a9a88a726a9de6220",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectDeviceAssignDialog.jsx",
+      "baselineSha256": "79ff84fb745bd3b9bd8eeb318903150339083263e034789108d5333d6064f680",
+      "sha256": "79ff84fb745bd3b9bd8eeb318903150339083263e034789108d5333d6064f680",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+      "baselineSha256": "1e713d6aecc1d6380909c9e0b4dd1cc79151e615f77b00d4432dba9053d2551d",
+      "sha256": "1e713d6aecc1d6380909c9e0b4dd1cc79151e615f77b00d4432dba9053d2551d",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectMembers.jsx",
+      "baselineSha256": "bf4072e9fc7d92af13f7eaec62579f1f7783123397686d774d7cf51302c37122",
+      "sha256": "bf4072e9fc7d92af13f7eaec62579f1f7783123397686d774d7cf51302c37122",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectProvider.jsx",
+      "baselineSha256": "50185993968b015f027ed9f117045a16377031667d8849341fd611fc1d3752d1",
+      "sha256": "50185993968b015f027ed9f117045a16377031667d8849341fd611fc1d3752d1",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectProvider.test.jsx",
+      "baselineSha256": "f4a5aa0c1992a97f8ca2016abe8d485a8973e474cb8f6512dd8f9eeef9219efc",
+      "sha256": "f4a5aa0c1992a97f8ca2016abe8d485a8973e474cb8f6512dd8f9eeef9219efc",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectSelector.jsx",
+      "baselineSha256": "1e0011014cd26df3fd70d96c2aef3bd0d452a8c34c084a524e65989bd3d99dee",
+      "sha256": "1e0011014cd26df3fd70d96c2aef3bd0d452a8c34c084a524e65989bd3d99dee",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "baselineSha256": "890c3b212a76c6e110cc4486dba83cc164cd658711b71f45cd446d03ff4f675e",
+      "sha256": "890c3b212a76c6e110cc4486dba83cc164cd658711b71f45cd446d03ff4f675e",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/RulesPanel.jsx",
+      "baselineSha256": "0d03aaaa2866ef068948f5ef41a74085a7bf836f9f16aac58b90efebdbcd523a",
+      "sha256": "0d03aaaa2866ef068948f5ef41a74085a7bf836f9f16aac58b90efebdbcd523a",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/device-handover-feedback.test.jsx",
+      "baselineSha256": "dde44a755af929c4e23a03b41003378839a50e254aa222ff2879012508eb68a7",
+      "sha256": "dde44a755af929c4e23a03b41003378839a50e254aa222ff2879012508eb68a7",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/projectAccess.js",
+      "baselineSha256": "14d9400f0367199eefebba3a3a5f9a65df5903e015eafe0619f8e1d0b25db1a3",
+      "sha256": "14d9400f0367199eefebba3a3a5f9a65df5903e015eafe0619f8e1d0b25db1a3",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/projects.css",
+      "baselineSha256": "bc90e8769bd1b8a85f27948dcd390277e4069a7211122e728cb66e31e1b61870",
+      "sha256": "bc90e8769bd1b8a85f27948dcd390277e4069a7211122e728cb66e31e1b61870",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/projects/settings.test.jsx",
+      "baselineSha256": "293dad3691032f2369325079be4cb218094136c8462258a9ca69464bbb27c076",
+      "sha256": "293dad3691032f2369325079be4cb218094136c8462258a9ca69464bbb27c076",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/hooks/useDialogFocus.js",
+      "baselineSha256": "93cbc5ee1053f2fb182d3ab1a246ad61449d3ff98f0612e430b84049f2df55bb",
+      "sha256": "93cbc5ee1053f2fb182d3ab1a246ad61449d3ff98f0612e430b84049f2df55bb",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/hooks/useDialogFocus.test.jsx",
+      "baselineSha256": "34ef26bc18972d1167889f29fc41654e880001a6be10f357bd26f9be22c534f6",
+      "sha256": "34ef26bc18972d1167889f29fc41654e880001a6be10f357bd26f9be22c534f6",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/routes/AppRouter.jsx",
+      "baselineSha256": "4d497793b493bc63cc70905188f6a688baf1d7c8f527307e3f9dd591550a1c45",
+      "sha256": "4d497793b493bc63cc70905188f6a688baf1d7c8f527307e3f9dd591550a1c45",
+      "match": true
+    }
+  ],
+  "matched": 138,
+  "changed": [],
+  "dependencyFiles": [
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/feature/FeatureService.java",
+      "sha256": "a391e722f3b10f4126551b01c8eeb3120e006426250295c785e73b36fe245b7c",
+      "baselineSha256": "a391e722f3b10f4126551b01c8eeb3120e006426250295c785e73b36fe245b7c",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/feature/LegacyTestingWrites.java",
+      "sha256": "512064242e8d10aac46653d5b39036cdbbcaef9727bf88f7e8a37d7ccf27a46e",
+      "baselineSha256": "512064242e8d10aac46653d5b39036cdbbcaef9727bf88f7e8a37d7ccf27a46e",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/workitem/FeatureIssueService.java",
+      "sha256": "014f0c10cf4212729d1067840713dd4eab214e08b2fb09f91d7d93f78adfa2a2",
+      "baselineSha256": "014f0c10cf4212729d1067840713dd4eab214e08b2fb09f91d7d93f78adfa2a2",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "sha256": "096cf34eeceb600b4f971574bf28ac85553aa8f14c4de4532b7d8c94b0facaef",
+      "baselineSha256": "096cf34eeceb600b4f971574bf28ac85553aa8f14c4de4532b7d8c94b0facaef",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "sha256": "d91c46cc9b1c1818b21e266b74a65950041a7437861d47fb3eff758bfd6a4d7b",
+      "baselineSha256": "d91c46cc9b1c1818b21e266b74a65950041a7437861d47fb3eff758bfd6a4d7b",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/services/api/notes.js",
+      "sha256": "1270794c487798b490f2f0d152a38deaace2dd0424c2a3b5f9bcd7eb19af366e",
+      "baselineSha256": "1270794c487798b490f2f0d152a38deaace2dd0424c2a3b5f9bcd7eb19af366e",
+      "match": true
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/config/SecurityConfig.java",
+      "sha256": "582b46ab0bbc9ebd78a02bd316586b3b559d76d838b8f58123e27f927bd12679",
+      "baselineSha256": "582b46ab0bbc9ebd78a02bd316586b3b559d76d838b8f58123e27f927bd12679",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/services/api/admin.js",
+      "sha256": "3f95d7148184a1af1997c47b60bcae75b5f68b9dea2b0f146e6ab0c3618d6fbb",
+      "baselineSha256": "3f95d7148184a1af1997c47b60bcae75b5f68b9dea2b0f146e6ab0c3618d6fbb",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/services/api/auth.js",
+      "sha256": "4d6f4c1afebcd25c35956d71d4c09bfc42a9cd203f397e3d7e831655a173c730",
+      "baselineSha256": "4d6f4c1afebcd25c35956d71d4c09bfc42a9cd203f397e3d7e831655a173c730",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/services/api/client.js",
+      "sha256": "cdf630f1479dde6e239ebd90223f0271e0be30f7c322ca2d872fb03c266cf4f0",
+      "baselineSha256": "cdf630f1479dde6e239ebd90223f0271e0be30f7c322ca2d872fb03c266cf4f0",
+      "match": true
+    },
+    {
+      "path": "Frontend/src/app/services/api/projects.js",
+      "sha256": "768ee278d73529380161568bdd8508892e959899a74306f68f2b28ba84c477d8",
+      "baselineSha256": "768ee278d73529380161568bdd8508892e959899a74306f68f2b28ba84c477d8",
+      "match": true
+    }
+  ],
+  "dependencyMatched": 11
+}

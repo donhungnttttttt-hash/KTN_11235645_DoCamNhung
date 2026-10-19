@@ -1,0 +1,124 @@
+{
+  "selectedClasses": 74,
+  "failedClasses": 6,
+  "failures": [
+    {
+      "class": "vn.syp.tms.admin.AdminManagementSecurityTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 3,
+      "methods": [
+        {
+          "name": "nonAdminsAndMissingCsrfCannotMutate",
+          "type": "java.lang.IllegalStateException",
+          "reason": "Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'legacyTestingWrites' defined in file [D:\\DCN\\KTN_11235645_DoCamNhung\\Backend\\target\\classes\\vn\\syp\\tms\\feature\\LegacyTestingWrites.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'vn.syp.tms.project.ProjectService' available: expected at least 1 bean which qu"
+        },
+        {
+          "name": "invalidRoleIsRejectedBeforeService",
+          "type": "java.lang.IllegalStateException",
+          "reason": "ApplicationContext failure threshold (1) exceeded: skipping repeated attempt to load context for [WebMergedContextConfiguration@a983f06 testClass = vn.syp.tms.admin.AdminManagementSecurityTest, locations = [], classes = [vn.syp.tms.TmsApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [\"org.springframework.boot.test.autoconfigure.web.servlet.W"
+        },
+        {
+          "name": "nullInitialMemberIsValidationErrorBeforeService",
+          "type": "java.lang.IllegalStateException",
+          "reason": "ApplicationContext failure threshold (1) exceeded: skipping repeated attempt to load context for [WebMergedContextConfiguration@a983f06 testClass = vn.syp.tms.admin.AdminManagementSecurityTest, locations = [], classes = [vn.syp.tms.TmsApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [\"org.springframework.boot.test.autoconfigure.web.servlet.W"
+        }
+      ]
+    },
+    {
+      "class": "vn.syp.tms.admin.AdminSecurityTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 3,
+      "methods": [
+        {
+          "name": "anonymousIs401AndPmTesterCannotAccessEvenDelegatedPm",
+          "type": "java.lang.IllegalStateException",
+          "reason": "Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'legacyTestingWrites' defined in file [D:\\DCN\\KTN_11235645_DoCamNhung\\Backend\\target\\classes\\vn\\syp\\tms\\feature\\LegacyTestingWrites.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'vn.syp.tms.project.ProjectService' available: expected at least 1 bean which qu"
+        },
+        {
+          "name": "staleAdminAuthorityIsRejectedByCurrentRoleGuard",
+          "type": "java.lang.IllegalStateException",
+          "reason": "ApplicationContext failure threshold (1) exceeded: skipping repeated attempt to load context for [WebMergedContextConfiguration@536d655f testClass = vn.syp.tms.admin.AdminSecurityTest, locations = [], classes = [vn.syp.tms.TmsApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [\"org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest"
+        },
+        {
+          "name": "disabledAccountIs401AndMissingProject404",
+          "type": "java.lang.IllegalStateException",
+          "reason": "ApplicationContext failure threshold (1) exceeded: skipping repeated attempt to load context for [WebMergedContextConfiguration@536d655f testClass = vn.syp.tms.admin.AdminSecurityTest, locations = [], classes = [vn.syp.tms.TmsApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [\"org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest"
+        }
+      ]
+    },
+    {
+      "class": "vn.syp.tms.admin.InventorySecurityTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 2,
+      "methods": [
+        {
+          "name": "malformedAndMissingVersionRejected",
+          "type": "java.lang.IllegalStateException",
+          "reason": "Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'legacyTestingWrites' defined in file [D:\\DCN\\KTN_11235645_DoCamNhung\\Backend\\target\\classes\\vn\\syp\\tms\\feature\\LegacyTestingWrites.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'vn.syp.tms.project.ProjectService' available: expected at least 1 bean which qu"
+        },
+        {
+          "name": "readsAndWritesRequireAdminAndCsrf",
+          "type": "java.lang.IllegalStateException",
+          "reason": "ApplicationContext failure threshold (1) exceeded: skipping repeated attempt to load context for [WebMergedContextConfiguration@3eebd1ee testClass = vn.syp.tms.admin.InventorySecurityTest, locations = [], classes = [vn.syp.tms.TmsApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [\"org.springframework.boot.test.autoconfigure.web.servlet.WebMvc"
+        }
+      ]
+    },
+    {
+      "class": "vn.syp.tms.config.DefaultProfileSecurityTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 1,
+      "methods": [
+        {
+          "name": "doesNotRegisterOrExposeLocalDiagnosticEndpointsByDefault",
+          "type": "java.lang.IllegalStateException",
+          "reason": "Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'legacyTestingWrites' defined in file [D:\\DCN\\KTN_11235645_DoCamNhung\\Backend\\target\\classes\\vn\\syp\\tms\\feature\\LegacyTestingWrites.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'vn.syp.tms.project.ProjectService' available: expected at least 1 bean which qu"
+        }
+      ]
+    },
+    {
+      "class": "vn.syp.tms.filework.FileWorkServiceTest",
+      "tests": 44,
+      "failures": 1,
+      "errors": 0,
+      "methods": [
+        {
+          "name": "monitoringProjectionJoinsSameProjectMilestoneAndSavedActivityWithoutChangingBuildMetrics",
+          "type": "org.opentest4j.AssertionFailedError",
+          "reason": "expected: <null> but was: <0.0>"
+        }
+      ]
+    },
+    {
+      "class": "vn.syp.tms.notes.ProjectNotesSecurityTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 4,
+      "methods": [
+        {
+          "name": "requiresSessionAndCsrfOnEveryWrite",
+          "type": "java.lang.IllegalStateException",
+          "reason": "Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'legacyTestingWrites' defined in file [D:\\DCN\\KTN_11235645_DoCamNhung\\Backend\\target\\classes\\vn\\syp\\tms\\feature\\LegacyTestingWrites.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'vn.syp.tms.project.ProjectService' available: expected at least 1 bean which qu"
+        },
+        {
+          "name": "sendsServerIdentityToServiceAndReturnsCreatedLocation",
+          "type": "java.lang.IllegalStateException",
+          "reason": "ApplicationContext failure threshold (1) exceeded: skipping repeated attempt to load context for [WebMergedContextConfiguration@64fda109 testClass = vn.syp.tms.notes.ProjectNotesSecurityTest, locations = [], classes = [vn.syp.tms.TmsApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [\"org.springframework.boot.test.autoconfigure.web.servlet.Web"
+        },
+        {
+          "name": "propagatesForbiddenScopeAndStaleVersionWithoutSuccessfulResponse",
+          "type": "java.lang.IllegalStateException",
+          "reason": "ApplicationContext failure threshold (1) exceeded: skipping repeated attempt to load context for [WebMergedContextConfiguration@64fda109 testClass = vn.syp.tms.notes.ProjectNotesSecurityTest, locations = [], classes = [vn.syp.tms.TmsApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [\"org.springframework.boot.test.autoconfigure.web.servlet.Web"
+        },
+        {
+          "name": "rejectsBlankTextAndMissingVersionBeforeCallingService",
+          "type": "java.lang.IllegalStateException",
+          "reason": "ApplicationContext failure threshold (1) exceeded: skipping repeated attempt to load context for [WebMergedContextConfiguration@64fda109 testClass = vn.syp.tms.notes.ProjectNotesSecurityTest, locations = [], classes = [vn.syp.tms.TmsApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [\"org.springframework.boot.test.autoconfigure.web.servlet.Web"
+        }
+      ]
+    }
+  ]
+}

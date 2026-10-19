@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-10-17T12:50:17.016Z",
+  "date": "2026-10-17",
+  "timezone": "Asia/Saigon",
+  "branch": "system-design",
+  "head": "caf075af7231f207259b6a62808bff5c8445f6af",
+  "archiveSha256": "0B90A567D49DD6CC816D26A4B91C5B015143F4C842DF41F37730E5C4AD933058",
+  "archivePreserved": true,
+  "sourceDocuments": [
+    {
+      "file": "Bản gốc.docx",
+      "unchanged": true
+    },
+    {
+      "file": "Chương 3 (backup trước khi sửa).docx",
+      "unchanged": true
+    },
+    {
+      "file": "Chương 3 (hoàn chỉnh).docx",
+      "unchanged": true
+    },
+    {
+      "file": "Chương 3.docx",
+      "unchanged": true
+    },
+    {
+      "file": "QUy trình.docx",
+      "unchanged": true
+    }
+  ],
+  "archiveFiles": 50,
+  "archiveDirectories": 2,
+  "diagrams": 22,
+  "sourceDdlTables": 75,
+  "doc3": {
+    "tables": 46,
+    "ucTables": 14,
+    "entityTables": 25,
+    "placeholders": 31,
+    "literalNewlineParagraphs": 67
+  },
+  "reportLinks": {
+    "checked": 109,
+    "missing": []
+  },
+  "businessSourceUnchanged": true,
+  "businessDiff": [],
+  "limits": {
+    "wordPdfPagination": "NOT_VERIFIED",
+    "svgVisualRendering": "NOT_RUN_FILE_PROTOCOL_BLOCKED",
+    "runtimeTestBuildDatabase": "NOT_RUN_DOCUMENT_REVIEW_ONLY",
+    "externalCompanyFacts": "NOT_VERIFIED",
+    "commitPush": "NOT_PERFORMED_FOR_THIS_TASK"
+  }
+}

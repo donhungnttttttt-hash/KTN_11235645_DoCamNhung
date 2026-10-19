@@ -1,0 +1,7 @@
+{
+  "command": "rtk proxy npm.cmd run build",
+  "cwd": "Frontend",
+  "sourceSnapshot": "source-verified-before.json",
+  "exitCode": 0,
+  "output": "✓ 1701 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.53 kB │ gzip:   0.37 kB\ndist/assets/index-OPXF5ydx.css  188.40 kB │ gzip:  33.58 kB\ndist/assets/index-Cymlw61w.js   488.03 kB │ gzip: 141.76 kB\n✓ built in 9.17s\n"
+}

@@ -1,0 +1,203 @@
+{
+  "originalTests": 46,
+  "replaced": 19,
+  "preserved": 27,
+  "tests": [
+    {
+      "line": 34,
+      "label": "it('context route sends exact typed source IDs and navigates only using fresh .item identity', async () => {",
+      "expandedCount": 1,
+      "disposition": "replace-retired-workboard-with-feature-context-and-retirement-tests",
+      "sha256": "eb0ccc1b5e27e66c0e4b480abe6e0e193a9e5d09d06ad012f3e76df35e75b5a8"
+    },
+    {
+      "line": 44,
+      "label": "it.each([{ loading: true }, { error: 'Mất kết nối' }, { writable: false }, { metadata: { canCreate: true, canCreateQa: false } }])('context creation fails closed with current metadata %j', override => {",
+      "expandedCount": 4,
+      "disposition": "replace-retired-workboard-with-feature-context-and-retirement-tests",
+      "sha256": "691c3567a0276ec0fe8e076ee45dc2d72f4e97cd056e68afb345bab1df856291"
+    },
+    {
+      "line": 50,
+      "label": "it.each(['documentId=1e2', 'revisionId=0', 'groupId=01', 'runItemId=9007199254740992', 'documentId=1&documentId=2', 'attempt=9&revisionId=4'])('invalid/contradictory source URL fails visibly: %s', source => {",
+      "expandedCount": 6,
+      "disposition": "replace-retired-workboard-with-feature-context-and-retirement-tests",
+      "sha256": "4f92ff2d494d61b93a070465354d397966a07182e57efd7109833c8a19c4b7a9"
+    },
+    {
+      "line": 55,
+      "label": "it.each(['create=QA&create=BUG', 'create=BUG&create=QA'])('duplicate QA create markers fail visibly in either order: %s', markers => {",
+      "expandedCount": 2,
+      "disposition": "replace-retired-workboard-with-feature-context-and-retirement-tests",
+      "sha256": "87933206ea7a92d2b776d3f283c9b5b17a9217deefcf1a1ea28a9397503233ef"
+    },
+    {
+      "line": 61,
+      "label": "it('ordinary BUG create marker retains the board list without a contextual QA form or writes', () => {",
+      "expandedCount": 1,
+      "disposition": "replace-retired-workboard-with-feature-context-and-retirement-tests",
+      "sha256": "1870a99ef15ea3d353023c9c6e0a24ca344549a201b0952dd29c9e3077e51043"
+    },
+    {
+      "line": 66,
+      "label": "it('generic chooser dispatches standalone QA with no nested forms and preserves it on capability downgrade', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "c5bb76251e64f5a83910254acc7956e7f3902e90bd625b67b4129d9590c7b28e"
+    },
+    {
+      "line": 73,
+      "label": "it('accepted contextual creation retains GET-only recovery when current creation permission is removed', async () => {",
+      "expandedCount": 1,
+      "disposition": "replace-retired-workboard-with-feature-context-and-retirement-tests",
+      "sha256": "3033265f0dce27b578720ae655e719ee069dc73a62b3932eedde5d2d2c084ee3"
+    },
+    {
+      "line": 81,
+      "label": "it('QA detail hides generic mutators/BUG properties and retains typed draft during shared reload', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "c4fcd98da8ab52af2a75e78a3170f691a8cbedddd816fba89111bb628ae44c81"
+    },
+    {
+      "line": 89,
+      "label": "it('QA canonical labels/filter and batch/drag boundary preserve original code without generic writes', () => {",
+      "expandedCount": 1,
+      "disposition": "replace-retired-workboard-with-feature-context-and-retirement-tests",
+      "sha256": "4be3dae45707c4fc1545046e4c3950652f0f59bde310e04358fdba26d554394f"
+    },
+    {
+      "line": 97,
+      "label": "it('a mixed selection that acquires QA cannot open a generic batch command', () => {",
+      "expandedCount": 1,
+      "disposition": "replace-retired-workboard-with-feature-context-and-retirement-tests",
+      "sha256": "25a75e52e918c937377c1de97b1ce3af73e105d27849c6f0e8d022de772effae"
+    },
+    {
+      "line": 105,
+      "label": "it('NG-derived creation stays BUG and cannot select QA even with QA permission', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "238f8f6ec07664be8be37a527525b6201a93f74584162380199006d0fe234bd4"
+    },
+    {
+      "line": 112,
+      "label": "it('generic QA dispatch adapts the fresh DTO to the existing item callback', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "0aa073ccf80fe0eccb00ca020957b1d8084eb56baafbdcd48c88d55ed3d1c2c5"
+    },
+    {
+      "line": 117,
+      "label": "it('server source consistency rejection preserves all URL pins and entered question for exact retry', async () => {",
+      "expandedCount": 1,
+      "disposition": "replace-retired-workboard-with-feature-context-and-retirement-tests",
+      "sha256": "772b465dbfcb20e8211cb033c762e944a0d8f96201cdff4b8cb7b5e8bdff7ca9"
+    },
+    {
+      "line": 125,
+      "label": "it.each([",
+      "expandedCount": 3,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "7c143bbcd48022e738a62a50b149bbd2224dcf5c0615bfccb7b67995114d405f"
+    },
+    {
+      "line": 134,
+      "label": "it('current canonical shared caps permit only INTERNAL discussion and evidence beside typed QA', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "8f4b388ee635cb083b8a2c2443c890958e0e86a7b1f1c9bcbdbf03ad1a3c8c8a"
+    },
+    {
+      "line": 160,
+      "label": "it.each([",
+      "expandedCount": 2,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "36cd26955cba1cb8019daae4d14bff65c1763bf9313de22e7c17674ba8b57fed"
+    },
+    {
+      "line": 186,
+      "label": "it('typed initial/manual loading and errors fail closed, retain readable attachments and allow explicit retry', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "9850d23bc9c0097c29536e1aa8ad450ba02f992bb95c0bb81d109fe173249f71"
+    },
+    {
+      "line": 199,
+      "label": "it.each([{ id: 8 }, { projectId: 2 }, { type: 'BUG' }, { version: 1 }, { version: undefined }])('typed mismatched/older/invalid identity or version fails closed: %j', async extra => {",
+      "expandedCount": 5,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "8577d970ff5de2e1e00c7eac1a986d5ebdbe0ac2e3ce8a4d88ed8d421bf25b9c"
+    },
+    {
+      "line": 205,
+      "label": "it.each([",
+      "expandedCount": 2,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "1d9fd7817e2178d153d020ed56f27ac32a33ea0613040487321f71abd498ace5"
+    },
+    {
+      "line": 216,
+      "label": "it('typed true never overrules generic denial, and notifications/re-renders/shared reloads do not refetch typed detail', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "002cdb9d378bc2990eb78ca919d63c04509e4a357f7553280073934c7ce2ef6b"
+    },
+    {
+      "line": 224,
+      "label": "it('confirmation and selected evidence survive permission notifications/shared reload without automatic mutations', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "1aa1bf9b3cf7df148bbaafde902851d107fc377e01dc6373b8e2b7506c7f82ea"
+    },
+    {
+      "line": 246,
+      "label": "it.each([{}, { canComment: 'true', canUploadEvidence: 1 }])('typed shared capabilities require exact booleans: %j', async capabilities => {",
+      "expandedCount": 2,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "15e64cadebf01bf2693de5672f885e83b4a9a428e0e29a456fc6028ba5145132"
+    },
+    {
+      "line": 251,
+      "label": "it('typed command recovery cannot replace canonical generic denial with allowed typed flags', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "83b9edc1b0960f16a2cdfec13e39285efd8f4c05db7dc491e076724fe8ecc4d4"
+    },
+    {
+      "line": 261,
+      "label": "it('late old-project typed reads cannot reopen current shared controls', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "dd47576e263c1c5bb2bbfa6d5a39f6d6c81278bd4bb610a00cca24993991e2fd"
+    },
+    {
+      "line": 269,
+      "label": "it('typed successful callback refreshes shared identity/caps without remounting the detail flow', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "33b0b563588f06b25bc827fe6bcd66c500cee64e50aedf1470554070800d7b50"
+    },
+    {
+      "line": 277,
+      "label": "it('generic-route accepted QA keeps GET-only recovery after all creation caps downgrade', async () => {",
+      "expandedCount": 1,
+      "disposition": "replace-retired-workboard-with-feature-context-and-retirement-tests",
+      "sha256": "2653bc4a9d3f755f4491d638c6ab794a4e996ca1e957dc0aab037733843f4553"
+    },
+    {
+      "line": 284,
+      "label": "it('same-QA failed generic reload preserves the typed draft while shared comments/evidence fail closed', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "9e58aad397ff24f360489798591e00083ef883ce4f43478781b2bbbac131b553"
+    },
+    {
+      "line": 291,
+      "label": "it('a late generic identity read cannot render the departed QA in the current project/item', async () => {",
+      "expandedCount": 1,
+      "disposition": "preserve-exact-test-body",
+      "sha256": "101f825aeca73672ba2b2dfd23c70a29504e0e1fced09e5057c3dc7e377e34a6"
+    }
+  ]
+}

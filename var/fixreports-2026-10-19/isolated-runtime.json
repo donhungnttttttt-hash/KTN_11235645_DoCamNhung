@@ -1,0 +1,18 @@
+{
+  "state": "READY",
+  "schema": "tms_docstest_2060e04c986c",
+  "flywayVersion": "33",
+  "fixtureRunId": "16e928bb-464e-4469-85b8-a7bfcc6a90dc",
+  "startedAt": "2026-10-18T19:09:05.357Z",
+  "backendPort": 8081,
+  "frontendPort": 5174,
+  "backendPid": 27536,
+  "frontendPid": 26384,
+  "readyAt": "2026-10-18T19:09:26.728Z",
+  "previousBackendPid": 28556,
+  "jar": "var\\fixreports-2026-10-19\\runtime-1792352611682-654af83ed933.jar",
+  "jarSha256": "654af83ed9335631ca926e1162378e0eef772e6aecee0e2a99c3e7ca065ed6e6",
+  "backendLog": "isolated-backend-1792352611682.log",
+  "resumedAt": "2026-10-18T19:43:31.793Z",
+  "stoppedAt": "2026-10-18T19:43:29.5714686Z"
+}

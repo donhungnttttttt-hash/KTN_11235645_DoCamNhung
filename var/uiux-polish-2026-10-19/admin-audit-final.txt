@@ -1,0 +1,198 @@
+- link "Đến nội dung":
+  - /url: "#admin-main"
+- banner:
+  - strong: TMS
+  - generic: Quản trị hệ thống
+  - generic: FR12 Admin
+  - button "Đăng xuất"
+  - button "Mở chat AI":
+- complementary:
+  - navigation "Quản trị":
+    - link "Tổng quan":
+      - /url: "#/admin"
+      - generic: Tổng quan
+    - link "Dự án":
+      - /url: "#/admin/projects"
+      - generic: Dự án
+    - link "Người dùng":
+      - /url: "#/admin/users"
+      - generic: Người dùng
+    - link "Thiết bị":
+      - /url: "#/admin/devices"
+      - generic: Thiết bị
+    - link "Nhật ký quản trị" [active]:
+      - /url: "#/admin/audit"
+      - generic: Nhật ký quản trị
+    - link "Không gian dự án":
+      - /url: "#/dashboard?workspace=1"
+      - generic: Không gian dự án
+  - strong: S+TMS
+  - generic: Quản trị tập trung
+- main:
+  - heading "Nhật ký quản trị" [level=1]
+  - button "Tải lại"
+  - generic: Dự án trong nhật ký
+  - button "Dự án trong nhật ký":
+    - generic: Tất cả dự án
+  - text: Tìm người / dự án / đối tượng / thao tác
+  - searchbox "Tìm người / dự án / đối tượng / thao tác"
+  - text: Từ ngày
+  - textbox "Từ ngày"
+  - text: Đến hết ngày
+  - textbox "Đến hết ngày"
+  - paragraph: "Ngày lọc và thời gian hiển thị: giờ Việt Nam (Asia/Ho_Chi_Minh). Bao gồm trọn ngày kết thúc. Sự kiện toàn hệ thống chỉ có trong Tất cả dự án."
+  - paragraph: 1457 sự kiện · Trang 1
+  - region "Nhật ký quản trị":
+    - table:
+      - rowgroup:
+        - row "Thời gian Người thực hiện Phạm vi Đối tượng Thao tác":
+          - columnheader "Thời gian"
+          - columnheader "Người thực hiện"
+          - columnheader "Phạm vi"
+          - columnheader "Đối tượng"
+          - columnheader "Thao tác"
+      - rowgroup:
+        - row "11:16:33 19/10/2026 FR12 Admin Toàn hệ thống Tài khoản · 84449550-5de2-4b76-b0b3-c641a1c5be78 Đăng nhập":
+          - cell "11:16:33 19/10/2026":
+            - time: 11:16:33 19/10/2026
+          - cell "FR12 Admin"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 84449550-5de2-4b76-b0b3-c641a1c5be78"
+          - cell "Đăng nhập"
+        - row "11:16:01 19/10/2026 FR12 DEV được giao Toàn hệ thống Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6 Đăng xuất":
+          - cell "11:16:01 19/10/2026":
+            - time: 11:16:01 19/10/2026
+          - cell "FR12 DEV được giao"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6"
+          - cell "Đăng xuất"
+        - row "11:15:34 19/10/2026 FR12 DEV được giao Toàn hệ thống Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6 Đăng nhập":
+          - cell "11:15:34 19/10/2026":
+            - time: 11:15:34 19/10/2026
+          - cell "FR12 DEV được giao"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6"
+          - cell "Đăng nhập"
+        - row "11:15:33 19/10/2026 FR12 Đỗ Cẩm Nhung Toàn hệ thống Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6 Đăng xuất":
+          - cell "11:15:33 19/10/2026":
+            - time: 11:15:33 19/10/2026
+          - cell "FR12 Đỗ Cẩm Nhung"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6"
+          - cell "Đăng xuất"
+        - row "11:12:55 19/10/2026 FR12 Đỗ Cẩm Nhung Toàn hệ thống Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6 Đăng nhập":
+          - cell "11:12:55 19/10/2026":
+            - time: 11:12:55 19/10/2026
+          - cell "FR12 Đỗ Cẩm Nhung"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6"
+          - cell "Đăng nhập"
+        - row "11:12:51 19/10/2026 FR12 PM Toàn hệ thống Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724 Đăng xuất":
+          - cell "11:12:51 19/10/2026":
+            - time: 11:12:51 19/10/2026
+          - cell "FR12 PM"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724"
+          - cell "Đăng xuất"
+        - row "11:06:08 19/10/2026 FR12 PM Toàn hệ thống Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724 Đăng nhập":
+          - cell "11:06:08 19/10/2026":
+            - time: 11:06:08 19/10/2026
+          - cell "FR12 PM"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724"
+          - cell "Đăng nhập"
+        - row "10:52:15 19/10/2026 FR12 PM Toàn hệ thống Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724 Đăng nhập":
+          - cell "10:52:15 19/10/2026":
+            - time: 10:52:15 19/10/2026
+          - cell "FR12 PM"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724"
+          - cell "Đăng nhập"
+        - row "10:35:40 19/10/2026 FR12 Đỗ Cẩm Nhung Toàn hệ thống Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6 Đăng xuất":
+          - cell "10:35:40 19/10/2026":
+            - time: 10:35:40 19/10/2026
+          - cell "FR12 Đỗ Cẩm Nhung"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6"
+          - cell "Đăng xuất"
+        - row "10:31:28 19/10/2026 FR12 Đỗ Cẩm Nhung Toàn hệ thống Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6 Đăng nhập":
+          - cell "10:31:28 19/10/2026":
+            - time: 10:31:28 19/10/2026
+          - cell "FR12 Đỗ Cẩm Nhung"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6"
+          - cell "Đăng nhập"
+        - row "09:42:01 19/10/2026 FR12 DEV được giao Toàn hệ thống Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6 Đăng xuất":
+          - cell "09:42:01 19/10/2026":
+            - time: 09:42:01 19/10/2026
+          - cell "FR12 DEV được giao"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6"
+          - cell "Đăng xuất"
+        - row "09:39:42 19/10/2026 FR12 DEV được giao SPIDER PLUS · FR12 cô lập Issue · 63 Thêm ghi chú":
+          - cell "09:39:42 19/10/2026":
+            - time: 09:39:42 19/10/2026
+          - cell "FR12 DEV được giao"
+          - cell "SPIDER PLUS · FR12 cô lập":
+            - link "SPIDER PLUS · FR12 cô lập":
+              - /url: "#/admin/projects/156"
+          - cell "Issue · 63"
+          - cell "Thêm ghi chú"
+        - row "09:39:17 19/10/2026 FR12 DEV được giao Toàn hệ thống Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6 Đăng nhập":
+          - cell "09:39:17 19/10/2026":
+            - time: 09:39:17 19/10/2026
+          - cell "FR12 DEV được giao"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6"
+          - cell "Đăng nhập"
+        - row "09:39:16 19/10/2026 FR12 PM Toàn hệ thống Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724 Đăng xuất":
+          - cell "09:39:16 19/10/2026":
+            - time: 09:39:16 19/10/2026
+          - cell "FR12 PM"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724"
+          - cell "Đăng xuất"
+        - row "09:38:01 19/10/2026 FR12 DEV được giao Toàn hệ thống Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6 Đăng xuất":
+          - cell "09:38:01 19/10/2026":
+            - time: 09:38:01 19/10/2026
+          - cell "FR12 DEV được giao"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6"
+          - cell "Đăng xuất"
+        - row "09:38:01 19/10/2026 FR12 DEV được giao Toàn hệ thống Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6 Đăng nhập":
+          - cell "09:38:01 19/10/2026":
+            - time: 09:38:01 19/10/2026
+          - cell "FR12 DEV được giao"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · f4559dc9-2246-46ed-a21d-8ae479c422a6"
+          - cell "Đăng nhập"
+        - row "09:38:01 19/10/2026 FR12 Đỗ Cẩm Nhung Toàn hệ thống Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6 Đăng xuất":
+          - cell "09:38:01 19/10/2026":
+            - time: 09:38:01 19/10/2026
+          - cell "FR12 Đỗ Cẩm Nhung"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6"
+          - cell "Đăng xuất"
+        - row "09:38:01 19/10/2026 FR12 Đỗ Cẩm Nhung Toàn hệ thống Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6 Đăng nhập":
+          - cell "09:38:01 19/10/2026":
+            - time: 09:38:01 19/10/2026
+          - cell "FR12 Đỗ Cẩm Nhung"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 686f3925-554c-447e-839e-3b10d9b624a6"
+          - cell "Đăng nhập"
+        - row "09:38:01 19/10/2026 FR12 PM Toàn hệ thống Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724 Đăng xuất":
+          - cell "09:38:01 19/10/2026":
+            - time: 09:38:01 19/10/2026
+          - cell "FR12 PM"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724"
+          - cell "Đăng xuất"
+        - row "09:38:00 19/10/2026 FR12 PM Toàn hệ thống Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724 Đăng nhập":
+          - cell "09:38:00 19/10/2026":
+            - time: 09:38:00 19/10/2026
+          - cell "FR12 PM"
+          - cell "Toàn hệ thống"
+          - cell "Tài khoản · 5355c7a7-61cf-4c5e-8ec3-07994a795724"
+          - cell "Đăng nhập"
+  - button "Trang trước" [disabled]
+  - button "Trang sau"

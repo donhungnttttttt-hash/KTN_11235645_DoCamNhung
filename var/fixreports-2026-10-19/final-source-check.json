@@ -1,0 +1,490 @@
+{
+  "capturedAt": "2026-10-19T01:09:29.348Z",
+  "scope": "Source/docs/tasks only; excludes var, local runtime secrets, dependencies and build outputs",
+  "files": 888,
+  "secretShapeFindings": [],
+  "whitespaceOccurrences": [
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogDtos.java",
+      "line": 7
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogDtos.java",
+      "line": 12
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogDtos.java",
+      "line": 17
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogDtos.java",
+      "line": 22
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogDtos.java",
+      "line": 27
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogEntities.java",
+      "line": 20
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogEntities.java",
+      "line": 53
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogEntities.java",
+      "line": 86
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogEntities.java",
+      "line": 118
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogEntities.java",
+      "line": 146
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogRepositories.java",
+      "line": 9
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogRepositories.java",
+      "line": 16
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogRepositories.java",
+      "line": 23
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogRepositories.java",
+      "line": 30
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/catalog/CatalogRepositories.java",
+      "line": 37
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookController.java",
+      "line": 26
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookController.java",
+      "line": 36
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookDtos.java",
+      "line": 12
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookService.java",
+      "line": 57
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookService.java",
+      "line": 59
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookService.java",
+      "line": 66
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookService.java",
+      "line": 77
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookService.java",
+      "line": 80
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookService.java",
+      "line": 87
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookService.java",
+      "line": 92
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookService.java",
+      "line": 103
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/handbook/HandbookService.java",
+      "line": 106
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+      "line": 12
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+      "line": 15
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+      "line": 18
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+      "line": 21
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+      "line": 24
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+      "line": 27
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+      "line": 31
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+      "line": 34
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+      "line": 37
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/Project.java",
+      "line": 40
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectDtos.java",
+      "line": 11
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectDtos.java",
+      "line": 13
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectDtos.java",
+      "line": 20
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectDtos.java",
+      "line": 27
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectDtos.java",
+      "line": 39
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectMembership.java",
+      "line": 12
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectMembership.java",
+      "line": 15
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectMembership.java",
+      "line": 18
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectMembership.java",
+      "line": 21
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectMembership.java",
+      "line": 24
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectMembership.java",
+      "line": 27
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectMembership.java",
+      "line": 58
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectService.java",
+      "line": 59
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectService.java",
+      "line": 63
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectService.java",
+      "line": 93
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/project/ProjectService.java",
+      "line": 98
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleController.java",
+      "line": 31
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleController.java",
+      "line": 41
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleDtos.java",
+      "line": 12
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleService.java",
+      "line": 64
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleService.java",
+      "line": 68
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleService.java",
+      "line": 84
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleService.java",
+      "line": 89
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/RuleService.java",
+      "line": 94
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/Ruleset.java",
+      "line": 17
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/rules/Ruleset.java",
+      "line": 29
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CatalogPage.jsx",
+      "line": 35
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CatalogPage.jsx",
+      "line": 137
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CatalogPage.jsx",
+      "line": 138
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 53
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 54
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 55
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 56
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 57
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 58
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 63
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 66
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 67
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 68
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 69
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 70
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 71
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 75
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 78
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 79
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 80
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 81
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 86
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 89
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 90
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 91
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 92
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 93
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "line": 100
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectProvider.jsx",
+      "line": 28
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectProvider.jsx",
+      "line": 32
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectProvider.jsx",
+      "line": 39
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectSelector.jsx",
+      "line": 41
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectSelector.jsx",
+      "line": 77
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectSelector.jsx",
+      "line": 80
+    },
+    {
+      "path": "FixReports.md",
+      "line": 1
+    },
+    {
+      "path": "FixReports.md",
+      "line": 3
+    },
+    {
+      "path": "FixReports.md",
+      "line": 5
+    },
+    {
+      "path": "FixReports.md",
+      "line": 7
+    },
+    {
+      "path": "FixReports.md",
+      "line": 9
+    },
+    {
+      "path": "FixReports.md",
+      "line": 11
+    },
+    {
+      "path": "FixReports.md",
+      "line": 13
+    },
+    {
+      "path": "FixReports.md",
+      "line": 15
+    },
+    {
+      "path": "FixReports.md",
+      "line": 17
+    },
+    {
+      "path": "FixReports.md",
+      "line": 21
+    },
+    {
+      "path": "FixReports.md",
+      "line": 25
+    },
+    {
+      "path": "FixReports.md",
+      "line": 27
+    },
+    {
+      "path": "FixReports.md",
+      "line": 29
+    },
+    {
+      "path": "FixReports.md",
+      "line": 31
+    },
+    {
+      "path": "FixReports.md",
+      "line": 35
+    },
+    {
+      "path": "FixReports.md",
+      "line": 41
+    },
+    {
+      "path": "FixReports.md",
+      "line": 43
+    },
+    {
+      "path": "FixReports.md",
+      "line": 47
+    },
+    {
+      "path": "FixReports.md",
+      "line": 49
+    },
+    {
+      "path": "FixReports.md",
+      "line": 51
+    },
+    {
+      "path": "FixReports.md",
+      "line": 69
+    },
+    {
+      "path": "FixReports.md",
+      "line": 73
+    },
+    {
+      "path": "FixReports.md",
+      "line": 76
+    }
+  ],
+  "gitDiffCheck": "PASS",
+  "gitDiffOutput": "\n"
+}

@@ -1,0 +1,13 @@
+{
+  "origin": "http://localhost:5173",
+  "projectId": 1,
+  "scope": "DIALOG_ONLY_BACKGROUND_MEMBERS_OMITTED",
+  "dialogText": "Kiểm tra trước khi lưu trữ\nHủy\n\nDữ liệu đã lưu vẫn xem và xuất được. Lưu trữ khóa thay đổi nghiệp vụ, không xóa lịch sử. Không thể bỏ qua việc tồn bên dưới.\n\nDEMO-S04 · Demo thư viện kiểm thử\n\nCần xử lý các mục sau trước khi lưu trữ:\n\nThiết bị chưa thu hồi\n2\nThu hồi thiết bị\nCông việc, bug hoặc QA chưa kết thúc\n3\n\nPM phối hợp Tester và Dev xử lý ticket, QA và xác minh trước khi kết thúc.\n\nĐợt kiểm thử đang hoạt động hoặc bản nháp đã có case\n2\n\nPM kiểm tra Đợt kiểm thử của dự án và chốt các đợt đã có phạm vi thực thi.\n\nĐã kiểm tra lúc 09:42:15 19/10/2026. Điều kiện và quyền được kiểm tra lại khi lưu.\n\nLý do lưu trữ\nBắt buộc, tối đa 2.000 ký tự. Lý do và người thực hiện được lưu trong nhật ký.\nXác nhận lưu trữ\nKiểm tra lại, giữ lý do",
+  "rect": {
+    "height": 735.0000610351562,
+    "width": 720.0000610351562,
+    "x": 330.66668701171875,
+    "y": 63.966670989990234
+  },
+  "noDomainWrite": true
+}

@@ -1,0 +1,12 @@
+// Writes only the UI-created, uniquely named Feature261 in the existing isolated fixture.
+const fs=require('node:fs'),path=require('node:path');const {LocalApi,Journal}=require('../../scripts/demo/local-api.cjs');
+const root=path.resolve(__dirname,'../..'),p=156,f=261;
+async function main(){const source=fs.readFileSync(path.join(root,'Backend/src/test/java/vn/syp/tms/testcase/FixReportsBrowserFixtureTest.java'),'utf8');const match=source.match(/"FR12-Browser-Only[^"\r\n]*"/);if(!match)throw Error('Synthetic credential missing');const api=new LocalApi('http://127.0.0.1:8081'),journal=new Journal(path.join(__dirname,'fixture-import-journal.json'),{origin:api.origin,projectId:p,featureId:f,purpose:'UIUX audit synthetic fixture'});let signed=false;
+ try{await api.write('POST','/auth/login',{username:'fr12.94ac4db0.admin',password:JSON.parse(match[0])});signed=true;const project=await api.get(`/projects/${p}`),feature=await api.get(`/projects/${p}/features/${f}`);if(project.code!=='SPIDER-PLUS'||feature.name!=='UX-AUDIT-20261019 · Fixture riêng')throw Error('Owned synthetic target guard failed');
+  const preview=await journal.once('preview',()=>api.upload(`/projects/${p}/features/${f}/import-previews`,'ux-audit-input.xlsx',fs.readFileSync(path.join(__dirname,'ux-audit-input.xlsx')),'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'));
+  const detail=await api.get(`/projects/${p}/features/${f}/import-previews/${preview.id}`);
+  fs.writeFileSync(path.join(__dirname,'import-preview-contract.json'),JSON.stringify({origin:api.origin,projectId:p,featureId:f,previewId:preview.id,rowKeys:detail.items?.map(r=>Object.keys(r))??detail.rows?.map(r=>Object.keys(r)),preview:detail,browserUpload:'TOOL_BLOCKED_NO_APP_FAILURE_PROVEN'},null,2)+'\n',{flag:'wx'});
+  const committed=await journal.once('commit',()=>api.write('POST',`/projects/${p}/features/${f}/import-previews/${preview.id}/commit`));
+  fs.writeFileSync(path.join(__dirname,'audit-fixture.json'),JSON.stringify({origin:api.origin,schema:'tms_docstest_2060e04c986c',projectId:p,featureId:f,featureName:feature.name,document:committed,mainWrites:0,browserCreatedFeature:true,importMode:'HTTP_API_SETUP_NOT_BROWSER_IMPORT'},null,2)+'\n',{flag:'wx'});console.log(JSON.stringify({featureId:f,document:committed,browserUploadConfirmed:false,mainWrites:0}));
+ }finally{if(signed)await api.write('POST','/auth/logout');}}
+main().catch(e=>{console.error('Isolated import stopped: '+e.message);process.exitCode=1;});

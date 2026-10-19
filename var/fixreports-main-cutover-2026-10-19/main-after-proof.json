@@ -1,0 +1,95 @@
+{
+  "mode" : "after",
+  "schema" : "tms",
+  "databaseWrites" : false,
+  "status" : "PASS",
+  "preVersion" : 30,
+  "postVersion" : 33,
+  "originalTableCount" : 76,
+  "preservedTables" : 74,
+  "sessionTablesExcludedFromRowComparison" : 2,
+  "oldRowsVerifiedIdentical" : 7374,
+  "cloneCount" : 10,
+  "cloneRowsVerified" : 711,
+  "paddedSourcesRecoveredV33" : 9,
+  "sourceExceptions" : [ {
+    "projectId" : 1,
+    "reason" : "MISSING_WORKBOOK",
+    "retainedOriginal" : true,
+    "sourceDocumentId" : 1
+  } ],
+  "unfiledCasesRetained" : 120,
+  "verifiedCopies" : [ {
+    "sourceDocumentId" : 3,
+    "featureId" : 15,
+    "workbookSha256" : "c2c0335421e2eb5bbe1d0efe55e5733763cddc97d844d920e125c12ca03e25a7",
+    "projectId" : 1,
+    "rowCount" : 155,
+    "documentId" : 17
+  }, {
+    "sourceDocumentId" : 4,
+    "featureId" : 15,
+    "workbookSha256" : "b578b41dde62db9fa5e8784be913772740158e9a4e56ea53612847e8ac58bd78",
+    "projectId" : 1,
+    "rowCount" : 128,
+    "documentId" : 18
+  }, {
+    "sourceDocumentId" : 8,
+    "featureId" : 2,
+    "workbookSha256" : "b3471dc7bb7c8ec0e640c76cc52d1890f116fed45ef994432ca8f86051c46c6b",
+    "projectId" : 1,
+    "rowCount" : 87,
+    "documentId" : 19
+  }, {
+    "sourceDocumentId" : 12,
+    "featureId" : 14,
+    "workbookSha256" : "40d4443b4ac1e28b502a786dda740e9e94bde521a4dbe61b43db70b878a197e0",
+    "projectId" : 3,
+    "rowCount" : 55,
+    "documentId" : 20
+  }, {
+    "sourceDocumentId" : 13,
+    "featureId" : 14,
+    "workbookSha256" : "0e49e9664f45754e408ccf856d8904b71e432428bd6053eb9f3a724eb0120fc8",
+    "projectId" : 3,
+    "rowCount" : 13,
+    "documentId" : 21
+  }, {
+    "sourceDocumentId" : 14,
+    "featureId" : 14,
+    "workbookSha256" : "94bbf57ee0f0ac0032581d041c745cae2700d377ef5e049b864ea7d3abbf44e5",
+    "projectId" : 3,
+    "rowCount" : 77,
+    "documentId" : 16
+  }, {
+    "sourceDocumentId" : 15,
+    "featureId" : 14,
+    "workbookSha256" : "bb437308cb4863791ef777cfdc553efc25b54286bea6c91ed87a650570c39a21",
+    "projectId" : 3,
+    "rowCount" : 107,
+    "documentId" : 22
+  }, {
+    "sourceDocumentId" : 5,
+    "featureId" : 8,
+    "workbookSha256" : "99ba558c01658910272b0ef2642e52774ee845eb4e66c638e14668bcf9875b7f",
+    "projectId" : 4,
+    "rowCount" : 1,
+    "documentId" : 23
+  }, {
+    "sourceDocumentId" : 9,
+    "featureId" : 9,
+    "workbookSha256" : "b3471dc7bb7c8ec0e640c76cc52d1890f116fed45ef994432ca8f86051c46c6b",
+    "projectId" : 5,
+    "rowCount" : 87,
+    "documentId" : 24
+  }, {
+    "sourceDocumentId" : 10,
+    "featureId" : 9,
+    "workbookSha256" : "99ba558c01658910272b0ef2642e52774ee845eb4e66c638e14668bcf9875b7f",
+    "projectId" : 5,
+    "rowCount" : 1,
+    "documentId" : 25
+  } ],
+  "flywayValidation" : "PASS",
+  "pendingMigrations" : 0
+}

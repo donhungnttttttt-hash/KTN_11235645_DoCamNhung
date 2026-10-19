@@ -1,0 +1,5 @@
+{
+  "relative": "Backend/src/test/java/vn/syp/tms/ai/ChatGptOAuthClientTest.java",
+  "sha256": "bc56e0adf33c2e8413320acc313015c4c20e054b8fa0b2f0bd8d08f32c13157a",
+  "scope": "Only the final deadline test method; no production fix, no assertion relaxation"
+}

@@ -1,0 +1,13 @@
+{
+  "retained": "Nháp UI không lưu",
+  "afterDiscardFocus": {
+    "tag": "BUTTON",
+    "text": "Tạo dự án mới"
+  },
+  "visibleDialogs": 0,
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "domainWrite": false
+}

@@ -1,0 +1,4 @@
+Planned bounded replacement (not applied until observed RED):
+PROJECTS result aggregate: import_rows -> import_batches(COMMITTED,not archived) -> testing_features(not archived), count each physical owned row once, sum current result_status NA/OK/NG/P, ReportMetrics.counts unchanged.
+BUG aggregate/awaiting list: work_item_feature_context(deleted_at null) -> active Feature -> optional document(not archived), BUG only, status vocabulary terminal/resolved; legacy work-items excluded.
+HTTP regression now creates5case Feature and new/legacy/soft/hidden/archived issue counterexamples.

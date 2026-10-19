@@ -1,0 +1,198 @@
+{
+  "scope": "Focused AI worker follow-up, not whole-suite",
+  "tests": 102,
+  "classes": {
+    "FeatureService": {
+      "INSTRUCTION": {
+        "missed": 370,
+        "covered": 2444,
+        "percent": 86.85
+      },
+      "LINE": {
+        "missed": 15,
+        "covered": 139,
+        "percent": 90.26
+      },
+      "COMPLEXITY": {
+        "missed": 67,
+        "covered": 88,
+        "percent": 56.77
+      },
+      "METHOD": {
+        "missed": 3,
+        "covered": 42,
+        "percent": 93.33
+      },
+      "BRANCH": {
+        "missed": 67,
+        "covered": 153,
+        "percent": 69.55
+      },
+      "CLASS": {
+        "missed": 0,
+        "covered": 1,
+        "percent": 100
+      }
+    },
+    "LegacyTestingWrites": {
+      "INSTRUCTION": {
+        "missed": 16,
+        "covered": 226,
+        "percent": 93.39
+      },
+      "LINE": {
+        "missed": 0,
+        "covered": 19,
+        "percent": 100
+      },
+      "COMPLEXITY": {
+        "missed": 8,
+        "covered": 15,
+        "percent": 65.22
+      },
+      "METHOD": {
+        "missed": 0,
+        "covered": 4,
+        "percent": 100
+      },
+      "BRANCH": {
+        "missed": 8,
+        "covered": 30,
+        "percent": 78.95
+      },
+      "CLASS": {
+        "missed": 0,
+        "covered": 1,
+        "percent": 100
+      }
+    },
+    "AiPortfolioContext": {
+      "INSTRUCTION": {
+        "missed": 39,
+        "covered": 747,
+        "percent": 95.04
+      },
+      "LINE": {
+        "missed": 6,
+        "covered": 85,
+        "percent": 93.41
+      },
+      "COMPLEXITY": {
+        "missed": 6,
+        "covered": 59,
+        "percent": 90.77
+      },
+      "METHOD": {
+        "missed": 1,
+        "covered": 22,
+        "percent": 95.65
+      },
+      "BRANCH": {
+        "missed": 5,
+        "covered": 79,
+        "percent": 94.05
+      },
+      "CLASS": {
+        "missed": 0,
+        "covered": 1,
+        "percent": 100
+      }
+    },
+    "AiAccess": {
+      "INSTRUCTION": {
+        "missed": 135,
+        "covered": 215,
+        "percent": 61.43
+      },
+      "LINE": {
+        "missed": 15,
+        "covered": 28,
+        "percent": 65.12
+      },
+      "COMPLEXITY": {
+        "missed": 23,
+        "covered": 16,
+        "percent": 41.03
+      },
+      "METHOD": {
+        "missed": 0,
+        "covered": 5,
+        "percent": 100
+      },
+      "BRANCH": {
+        "missed": 34,
+        "covered": 34,
+        "percent": 50
+      },
+      "CLASS": {
+        "missed": 0,
+        "covered": 1,
+        "percent": 100
+      }
+    },
+    "AiChatService": {
+      "INSTRUCTION": {
+        "missed": 344,
+        "covered": 581,
+        "percent": 62.81
+      },
+      "LINE": {
+        "missed": 28,
+        "covered": 66,
+        "percent": 70.21
+      },
+      "COMPLEXITY": {
+        "missed": 31,
+        "covered": 38,
+        "percent": 55.07
+      },
+      "METHOD": {
+        "missed": 5,
+        "covered": 12,
+        "percent": 70.59
+      },
+      "BRANCH": {
+        "missed": 40,
+        "covered": 64,
+        "percent": 61.54
+      },
+      "CLASS": {
+        "missed": 0,
+        "covered": 1,
+        "percent": 100
+      }
+    },
+    "FeatureFacts": {
+      "INSTRUCTION": {
+        "missed": 25,
+        "covered": 669,
+        "percent": 96.4
+      },
+      "LINE": {
+        "missed": 1,
+        "covered": 65,
+        "percent": 98.48
+      },
+      "COMPLEXITY": {
+        "missed": 10,
+        "covered": 40,
+        "percent": 80
+      },
+      "METHOD": {
+        "missed": 1,
+        "covered": 17,
+        "percent": 94.44
+      },
+      "BRANCH": {
+        "missed": 9,
+        "covered": 55,
+        "percent": 85.94
+      },
+      "CLASS": {
+        "missed": 0,
+        "covered": 1,
+        "percent": 100
+      }
+    }
+  }
+}

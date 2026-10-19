@@ -1,0 +1,14 @@
+{
+  "kind": "LOCAL_STRUCTURE_ONLY_NOT_HTTP_OR_UAT",
+  "files": 8,
+  "localLinks": 82,
+  "anchors": 2,
+  "tables": 19,
+  "warnings": [
+    {
+      "file": "docs/business/permissions.md",
+      "reason": "Preserved historical extra h1; no unrelated rewrite"
+    }
+  ],
+  "failures": []
+}

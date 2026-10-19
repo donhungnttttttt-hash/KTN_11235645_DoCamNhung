@@ -1,0 +1,12 @@
+{
+  "schema": "tms_docstest_202610080025",
+  "checks": [
+    "100 new users: 3 PM, 20 DEV, 77 TESTER; pagination without duplicate or missing IDs",
+    "120 detailed assets; correct 30 per family and 80 available/24 allocated/12 maintenance/4 retired",
+    "Three projects with matching member and device scopes",
+    "PM/DEV/TESTER logins enforce central admin and project boundaries",
+    "Concurrent device allocation has one winner; return retains history; stale version rejected",
+    "Maintenance asset cannot be allocated"
+  ],
+  "passed": 6
+}

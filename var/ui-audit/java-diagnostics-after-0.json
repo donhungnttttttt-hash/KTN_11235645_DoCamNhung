@@ -1,0 +1,11 @@
+{
+  "summary": {
+    "sourceCount": 256,
+    "errors": 0,
+    "warnings": 0,
+    "compilerExitCode": 0,
+    "compiler": "org.eclipse.jdt.core.compiler.batch_3.46.100.v20260826-1225.jar",
+    "output": "Backend/target/java-diagnostics"
+  },
+  "diagnostics": []
+}

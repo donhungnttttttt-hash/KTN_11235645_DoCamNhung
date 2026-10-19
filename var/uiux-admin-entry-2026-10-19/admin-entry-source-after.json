@@ -1,0 +1,2085 @@
+{
+  "capturedAt": "2026-10-19T04:32:19.204Z",
+  "mode": "SOURCE_ONLY_NO_BROWSER_NO_REQUESTS",
+  "limitations": [
+    "Static relative imports only; no runtime module execution.",
+    "Source CSS only; generated Tailwind reset/utilities are not expanded.",
+    "Selector matches are structural potential matches, not computed styles or viewport assertions."
+  ],
+  "moduleCount": 126,
+  "styles": [
+    "Frontend/src/app/features/admin/admin.css",
+    "Frontend/src/app/features/projects/projects.css",
+    "Frontend/src/app/styles/app-shell.css",
+    "Frontend/src/app/components/table-scroll.css",
+    "Frontend/src/app/features/projects/project-information.css",
+    "Frontend/src/app/features/work-items/work-items.css",
+    "Frontend/src/app/styles/work-board.css",
+    "Frontend/src/app/styles/project-overview.css",
+    "Frontend/src/app/features/ai/ai.css",
+    "Frontend/src/app/features/reports/management-analysis.css",
+    "Frontend/src/app/features/work-items/work-item-modal.css",
+    "Frontend/src/app/features/work-items/feature-issues.css",
+    "Frontend/src/app/features/work-items/work-items-live.css",
+    "Frontend/src/app/components/selection-table.css",
+    "Frontend/src/app/features/projects/project-notes.css",
+    "Frontend/src/app/features/test-cases/test-cases.css",
+    "Frontend/src/app/features/test-cases/test-documents.css",
+    "Frontend/src/app/features/testing/testing.css",
+    "Frontend/src/app/features/test-cases/excel-import.css",
+    "Frontend/src/app/routes/navigation.css",
+    "Frontend/src/app/features/auth/auth.css",
+    "Frontend/src/app/features/admin/status-reports.css",
+    "Frontend/src/app/styles/global.css"
+  ],
+  "edges": [
+    {
+      "from": "Frontend/src/main.jsx",
+      "to": "Frontend/src/AppEntry.jsx"
+    },
+    {
+      "from": "Frontend/src/AppEntry.jsx",
+      "to": "Frontend/src/App.jsx"
+    },
+    {
+      "from": "Frontend/src/App.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectAccessNotice.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectAccessNotice.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectProvider.jsx",
+      "to": "Frontend/src/app/services/api/projects.js"
+    },
+    {
+      "from": "Frontend/src/app/services/api/projects.js",
+      "to": "Frontend/src/app/services/api/client.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectProvider.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/auth/AuthProvider.jsx",
+      "to": "Frontend/src/app/services/api/auth.js"
+    },
+    {
+      "from": "Frontend/src/app/services/api/auth.js",
+      "to": "Frontend/src/app/services/api/client.js"
+    },
+    {
+      "from": "Frontend/src/app/features/auth/AuthProvider.jsx",
+      "to": "Frontend/src/app/services/api/client.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectAccessNotice.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/App.jsx",
+      "to": "Frontend/src/app/layouts/MainLayout.jsx"
+    },
+    {
+      "from": "Frontend/src/app/layouts/MainLayout.jsx",
+      "to": "Frontend/src/app/components/Header.jsx"
+    },
+    {
+      "from": "Frontend/src/app/components/Header.jsx",
+      "to": "Frontend/src/app/features/auth/AccountMenu.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/auth/AccountMenu.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/auth/AccountMenu.jsx",
+      "to": "Frontend/src/app/features/admin/UserCreateDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/UserCreateDialog.jsx",
+      "to": "Frontend/src/app/features/admin/AdminFormDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/hooks/useDialogFocus.js",
+      "to": "Frontend/src/app/features/auth/DialogVisibilityContext.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/UserCreateDialog.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/services/api/admin.js",
+      "to": "Frontend/src/app/services/api/client.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/UserCreateDialog.jsx",
+      "to": "Frontend/src/app/features/admin/admin.css"
+    },
+    {
+      "from": "Frontend/src/app/components/Header.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectSelector.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSelector.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSelector.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/components/Header.jsx",
+      "to": "Frontend/src/app/features/ai/ChatLauncherSlot.jsx"
+    },
+    {
+      "from": "Frontend/src/app/components/Header.jsx",
+      "to": "Frontend/src/app/features/projects/projects.css"
+    },
+    {
+      "from": "Frontend/src/app/layouts/MainLayout.jsx",
+      "to": "Frontend/src/app/components/Sidebar.jsx"
+    },
+    {
+      "from": "Frontend/src/app/components/Sidebar.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/components/Sidebar.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/layouts/MainLayout.jsx",
+      "to": "Frontend/src/app/components/Footer.jsx"
+    },
+    {
+      "from": "Frontend/src/app/layouts/MainLayout.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/layouts/MainLayout.jsx",
+      "to": "Frontend/src/app/styles/app-shell.css"
+    },
+    {
+      "from": "Frontend/src/app/layouts/MainLayout.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/layouts/MainLayout.jsx",
+      "to": "Frontend/src/app/routes/routeInfo.js"
+    },
+    {
+      "from": "Frontend/src/App.jsx",
+      "to": "Frontend/src/app/routes/AppRouter.jsx"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/pages/DashboardPage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/pages/DashboardPage.jsx",
+      "to": "Frontend/src/app/modules/ProjectOverview.jsx"
+    },
+    {
+      "from": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectInformation.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectInformation.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/components/TableScroll.jsx",
+      "to": "Frontend/src/app/components/table-scroll.css"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectInformation.jsx",
+      "to": "Frontend/src/app/features/projects/project-information.css"
+    },
+    {
+      "from": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "to": "Frontend/src/app/services/api/featureIssues.js"
+    },
+    {
+      "from": "Frontend/src/app/services/api/featureIssues.js",
+      "to": "Frontend/src/app/services/api/client.js"
+    },
+    {
+      "from": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "to": "Frontend/src/app/services/api/projects.js"
+    },
+    {
+      "from": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "to": "Frontend/src/app/features/work-items/data.js"
+    },
+    {
+      "from": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "to": "Frontend/src/app/features/work-items/work-items.css"
+    },
+    {
+      "from": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "to": "Frontend/src/app/styles/work-board.css"
+    },
+    {
+      "from": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "to": "Frontend/src/app/styles/project-overview.css"
+    },
+    {
+      "from": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "to": "Frontend/src/app/features/projects/projects.css"
+    },
+    {
+      "from": "Frontend/src/app/pages/DashboardPage.jsx",
+      "to": "Frontend/src/app/styles/project-overview.css"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/pages/AnalysisPage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/pages/AnalysisPage.jsx",
+      "to": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "to": "Frontend/src/app/features/ai/AiConnections.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "to": "Frontend/src/app/services/api/ai.js"
+    },
+    {
+      "from": "Frontend/src/app/services/api/ai.js",
+      "to": "Frontend/src/app/services/api/client.js"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "to": "Frontend/src/app/features/ai/aiErrors.js"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "to": "Frontend/src/app/features/ai/ai.css"
+    },
+    {
+      "from": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "to": "Frontend/src/app/features/ai/aiErrors.js"
+    },
+    {
+      "from": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "to": "Frontend/src/app/services/api/managementReports.js"
+    },
+    {
+      "from": "Frontend/src/app/services/api/managementReports.js",
+      "to": "Frontend/src/app/services/api/client.js"
+    },
+    {
+      "from": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "to": "Frontend/src/app/features/reports/SafeMarkdown.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "to": "Frontend/src/app/features/reports/ReportDraftProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/reports/ReportDraftProvider.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "to": "Frontend/src/app/features/work-items/data.js"
+    },
+    {
+      "from": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "to": "Frontend/src/app/features/reports/management-analysis.css"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/pages/WorkBoardPage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "to": "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx",
+      "to": "Frontend/src/app/services/api/featureIssues.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx",
+      "to": "Frontend/src/app/services/api/features.js"
+    },
+    {
+      "from": "Frontend/src/app/services/api/features.js",
+      "to": "Frontend/src/app/services/api/client.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx",
+      "to": "Frontend/src/app/features/work-items/components.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/components.jsx",
+      "to": "Frontend/src/app/features/work-items/work-item-modal.css"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/components.jsx",
+      "to": "Frontend/src/app/features/auth/DialogVisibilityContext.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/components.jsx",
+      "to": "Frontend/src/app/utils/multiWordSearch.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/components.jsx",
+      "to": "Frontend/src/app/features/work-items/data.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/components.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx",
+      "to": "Frontend/src/app/features/work-items/data.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx",
+      "to": "Frontend/src/app/features/work-items/FeatureIssueForm.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssueForm.jsx",
+      "to": "Frontend/src/app/services/api/featureIssues.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssueForm.jsx",
+      "to": "Frontend/src/app/features/work-items/components.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx",
+      "to": "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx",
+      "to": "Frontend/src/app/services/api/featureIssues.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx",
+      "to": "Frontend/src/app/services/api/projects.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx",
+      "to": "Frontend/src/app/features/work-items/data.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx",
+      "to": "Frontend/src/app/features/work-items/feature-issues.css"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx",
+      "to": "Frontend/src/app/features/work-items/components.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx",
+      "to": "Frontend/src/app/features/work-items/feature-issues.css"
+    },
+    {
+      "from": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "to": "Frontend/src/app/features/work-items/work-items.css"
+    },
+    {
+      "from": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "to": "Frontend/src/app/features/work-items/work-items-live.css"
+    },
+    {
+      "from": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "to": "Frontend/src/app/styles/work-board.css"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/pages/NotFoundPage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "to": "Frontend/src/app/features/projects/projectAccess.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "to": "Frontend/src/app/services/api/projects.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectDevices.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/shared.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+      "to": "Frontend/src/app/features/admin/AdminDevices.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "to": "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx",
+      "to": "Frontend/src/app/features/admin/AdminProjectDropdown.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectDropdown.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "to": "Frontend/src/app/features/admin/DeviceAssetForm.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/DeviceAssetForm.jsx",
+      "to": "Frontend/src/app/features/admin/AdminFormDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/DeviceAssetForm.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "to": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+      "to": "Frontend/src/app/features/admin/AdminFormDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+      "to": "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+      "to": "Frontend/src/app/features/admin/DeviceAssetForm.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+      "to": "Frontend/src/app/features/admin/handoverRecipient.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+      "to": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectDeviceAssignDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectDeviceAssignDialog.jsx",
+      "to": "Frontend/src/app/features/admin/AdminFormDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectDeviceAssignDialog.jsx",
+      "to": "Frontend/src/app/features/admin/InitialDevicePicker.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/InitialDevicePicker.jsx",
+      "to": "Frontend/src/app/components/SelectionTable.jsx"
+    },
+    {
+      "from": "Frontend/src/app/components/SelectionTable.jsx",
+      "to": "Frontend/src/app/utils/multiWordSearch.js"
+    },
+    {
+      "from": "Frontend/src/app/components/SelectionTable.jsx",
+      "to": "Frontend/src/app/components/selection-table.css"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/InitialDevicePicker.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/InitialDevicePicker.jsx",
+      "to": "Frontend/src/app/features/admin/handoverRecipient.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectDeviceAssignDialog.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectDeviceAssignDialog.jsx",
+      "to": "Frontend/src/app/features/admin/handoverRecipient.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "to": "Frontend/src/app/features/admin/admin.css"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectMembers.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectMembers.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectMembers.jsx",
+      "to": "Frontend/src/app/services/api/projects.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "to": "Frontend/src/app/features/projects/RulesPanel.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/RulesPanel.jsx",
+      "to": "Frontend/src/app/services/api/projects.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/RulesPanel.jsx",
+      "to": "Frontend/src/app/features/test-execution/components.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "to": "Frontend/src/app/features/projects/HandbookPanel.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "to": "Frontend/src/app/services/api/projects.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "to": "Frontend/src/app/features/test-execution/components.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectNotes.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectNotes.jsx",
+      "to": "Frontend/src/app/services/api/notes.js"
+    },
+    {
+      "from": "Frontend/src/app/services/api/notes.js",
+      "to": "Frontend/src/app/services/api/client.js"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectNotes.jsx",
+      "to": "Frontend/src/app/features/projects/project-notes.css"
+    },
+    {
+      "from": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "to": "Frontend/src/app/features/projects/projects.css"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/features/projects/projectAccess.js"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "to": "Frontend/src/app/services/api/features.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "to": "Frontend/src/app/features/projects/projectAccess.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "to": "Frontend/src/app/features/testing/FeatureForm.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/FeatureForm.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/FeatureForm.jsx",
+      "to": "Frontend/src/app/services/api/features.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/FeatureForm.jsx",
+      "to": "Frontend/src/app/features/testing/testingState.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "to": "Frontend/src/app/features/testing/testingState.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "to": "Frontend/src/app/features/test-cases/test-cases.css"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "to": "Frontend/src/app/features/test-cases/test-documents.css"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "to": "Frontend/src/app/features/testing/testing.css"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/features/testing/TestingFeaturePage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "to": "Frontend/src/app/services/api/features.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "to": "Frontend/src/app/features/projects/projectAccess.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "to": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "to": "Frontend/src/app/services/api/testCases.js"
+    },
+    {
+      "from": "Frontend/src/app/services/api/testCases.js",
+      "to": "Frontend/src/app/services/api/client.js"
+    },
+    {
+      "from": "Frontend/src/app/services/api/testCases.js",
+      "to": "Frontend/src/app/services/api/features.js"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "to": "Frontend/src/app/features/test-cases/ExcelImportPreview.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/ExcelImportPreview.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "to": "Frontend/src/app/features/test-cases/excel-import.css"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "to": "Frontend/src/app/features/testing/testingState.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "to": "Frontend/src/app/features/testing/testing.css"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/features/testing/TestingDocumentPage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/services/api/testCases.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/test-cases/DocumentCellEditor.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/DocumentCellEditor.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/DocumentCellEditor.jsx",
+      "to": "Frontend/src/app/services/api/testCases.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/test-cases/DocumentCaseDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/DocumentCaseDialog.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+      "to": "Frontend/src/app/services/api/testCases.js"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+      "to": "Frontend/src/app/features/test-cases/documentDownload.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/test-cases/ResultCycleButton.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/test-cases/useDocumentResults.js"
+    },
+    {
+      "from": "Frontend/src/app/features/test-cases/useDocumentResults.js",
+      "to": "Frontend/src/app/services/api/testCases.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/test-cases/documentDownload.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/utils/multiWordSearch.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/testing/DocumentAssignments.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/DocumentAssignments.jsx",
+      "to": "Frontend/src/app/services/api/features.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/DocumentAssignments.jsx",
+      "to": "Frontend/src/app/services/api/projects.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/DocumentAssignments.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/DocumentAssignments.jsx",
+      "to": "Frontend/src/app/features/testing/testingState.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/testing/DocumentAssignmentHistory.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/DocumentAssignmentHistory.jsx",
+      "to": "Frontend/src/app/services/api/features.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/DocumentAssignmentHistory.jsx",
+      "to": "Frontend/src/app/services/api/projects.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/DocumentAssignmentHistory.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/DocumentAssignmentHistory.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/DocumentAssignmentHistory.jsx",
+      "to": "Frontend/src/app/features/test-cases/documentDownload.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/testing/testingState.js"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/test-cases/test-cases.css"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/test-cases/test-documents.css"
+    },
+    {
+      "from": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "to": "Frontend/src/app/features/testing/testing.css"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/features/work-items/CaseIssueAction.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/CaseIssueAction.jsx",
+      "to": "Frontend/src/app/features/auth/DialogVisibilityContext.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/CaseIssueAction.jsx",
+      "to": "Frontend/src/app/features/work-items/components.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/CaseIssueAction.jsx",
+      "to": "Frontend/src/app/features/work-items/FeatureIssueForm.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/CaseIssueAction.jsx",
+      "to": "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/CaseIssueAction.jsx",
+      "to": "Frontend/src/app/services/api/featureIssues.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/CaseIssueAction.jsx",
+      "to": "Frontend/src/app/features/work-items/feature-issues.css"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/routes/routeInfo.js"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/routes/RetiredAiEntry.jsx"
+    },
+    {
+      "from": "Frontend/src/app/routes/RetiredAiEntry.jsx",
+      "to": "Frontend/src/app/features/ai/ChatLauncherSlot.jsx"
+    },
+    {
+      "from": "Frontend/src/app/routes/AppRouter.jsx",
+      "to": "Frontend/src/app/routes/navigation.css"
+    },
+    {
+      "from": "Frontend/src/App.jsx",
+      "to": "Frontend/src/app/routes/legacyRoutes.js"
+    },
+    {
+      "from": "Frontend/src/App.jsx",
+      "to": "Frontend/src/app/routes/routeInfo.js"
+    },
+    {
+      "from": "Frontend/src/App.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/App.jsx",
+      "to": "Frontend/src/mocks/storeData.js"
+    },
+    {
+      "from": "Frontend/src/AppEntry.jsx",
+      "to": "Frontend/src/app/features/work-items/ProjectData.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/ProjectData.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/ProjectData.jsx",
+      "to": "Frontend/src/app/services/api/projects.js"
+    },
+    {
+      "from": "Frontend/src/app/features/work-items/ProjectData.jsx",
+      "to": "Frontend/src/app/services/api/workItems.js"
+    },
+    {
+      "from": "Frontend/src/app/services/api/workItems.js",
+      "to": "Frontend/src/app/services/api/client.js"
+    },
+    {
+      "from": "Frontend/src/AppEntry.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/AppEntry.jsx",
+      "to": "Frontend/src/app/features/auth/AuthBoundary.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/auth/AuthBoundary.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/auth/AuthBoundary.jsx",
+      "to": "Frontend/src/app/features/auth/DialogVisibilityContext.js"
+    },
+    {
+      "from": "Frontend/src/app/features/auth/AuthBoundary.jsx",
+      "to": "Frontend/src/app/features/auth/auth.css"
+    },
+    {
+      "from": "Frontend/src/AppEntry.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/AppEntry.jsx",
+      "to": "Frontend/src/app/features/admin/AdminApp.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "to": "Frontend/src/app/features/admin/AdminLayout.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminLayout.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminLayout.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminLayout.jsx",
+      "to": "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminLayout.jsx",
+      "to": "Frontend/src/app/features/ai/ChatLauncherSlot.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminLayout.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "to": "Frontend/src/app/features/admin/AdminDashboard.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminDashboard.jsx",
+      "to": "Frontend/src/app/features/admin/MetricBars.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminDashboard.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminDashboard.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "to": "Frontend/src/app/features/admin/AdminProjects.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjects.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjects.jsx",
+      "to": "Frontend/src/app/features/admin/AdminProjectForm.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+      "to": "Frontend/src/app/components/SelectionTable.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+      "to": "Frontend/src/app/features/admin/AdminFormDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+      "to": "Frontend/src/app/features/admin/InitialDevicePicker.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+      "to": "Frontend/src/app/features/admin/ProjectRoleSelect.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjects.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjects.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "to": "Frontend/src/app/features/admin/AdminProjectDetail.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "to": "Frontend/src/app/features/admin/AdminProjects.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "to": "Frontend/src/app/features/admin/AdminProjectForm.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "to": "Frontend/src/app/features/admin/ProjectStatusReports.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/ProjectStatusReports.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/ProjectStatusReports.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/ProjectStatusReports.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/ProjectStatusReports.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/ProjectStatusReports.jsx",
+      "to": "Frontend/src/app/features/admin/status-reports.css"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "to": "Frontend/src/app/features/projects/ProjectDevices.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "to": "Frontend/src/app/features/admin/AdminProjectLifecycle.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectLifecycle.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectLifecycle.jsx",
+      "to": "Frontend/src/app/hooks/useDialogFocus.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectLifecycle.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "to": "Frontend/src/app/features/admin/ProjectRoleSelect.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "to": "Frontend/src/app/features/admin/AdminDevices.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "to": "Frontend/src/app/features/admin/AdminUsers.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "to": "Frontend/src/app/features/admin/UserCreateDialog.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "to": "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "to": "Frontend/src/app/features/admin/AdminAudit.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminAudit.jsx",
+      "to": "Frontend/src/app/components/TableScroll.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminAudit.jsx",
+      "to": "Frontend/src/app/services/api/admin.js"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminAudit.jsx",
+      "to": "Frontend/src/app/features/admin/shared.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminAudit.jsx",
+      "to": "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "to": "Frontend/src/app/routes/RetiredAiEntry.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "to": "Frontend/src/app/features/admin/admin.css"
+    },
+    {
+      "from": "Frontend/src/AppEntry.jsx",
+      "to": "Frontend/src/app/features/ai/AiEditBuffer.jsx"
+    },
+    {
+      "from": "Frontend/src/AppEntry.jsx",
+      "to": "Frontend/src/app/features/ai/AiConnections.jsx"
+    },
+    {
+      "from": "Frontend/src/AppEntry.jsx",
+      "to": "Frontend/src/app/features/ai/AiChat.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiChat.jsx",
+      "to": "Frontend/src/app/features/auth/AuthProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiChat.jsx",
+      "to": "Frontend/src/app/services/api/ai.js"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiChat.jsx",
+      "to": "Frontend/src/app/features/ai/AiConnections.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiChat.jsx",
+      "to": "Frontend/src/app/features/ai/aiErrors.js"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiChat.jsx",
+      "to": "Frontend/src/app/features/ai/aiLabels.js"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiChat.jsx",
+      "to": "Frontend/src/app/features/ai/ChatLauncherSlot.jsx"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiChat.jsx",
+      "to": "Frontend/src/app/features/ai/aiProjectPrompts.js"
+    },
+    {
+      "from": "Frontend/src/app/features/ai/AiChat.jsx",
+      "to": "Frontend/src/app/features/ai/ai.css"
+    },
+    {
+      "from": "Frontend/src/AppEntry.jsx",
+      "to": "Frontend/src/app/features/ai/ChatLauncherSlot.jsx"
+    },
+    {
+      "from": "Frontend/src/AppEntry.jsx",
+      "to": "Frontend/src/app/features/reports/ReportDraftProvider.jsx"
+    },
+    {
+      "from": "Frontend/src/main.jsx",
+      "to": "Frontend/src/app/styles/global.css"
+    }
+  ],
+  "adminMatchingRules": [
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 1,
+      "selector": ".admin-shell",
+      "conditions": [],
+      "areas": [
+        "shell"
+      ],
+      "declarations": [
+        {
+          "property": "--admin-teal",
+          "value": "#0f766e",
+          "important": false
+        },
+        {
+          "property": "--admin-sidebar-width",
+          "value": "200px",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "100dvh",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "background",
+          "value": "#f3f6f7",
+          "important": false
+        },
+        {
+          "property": "color",
+          "value": "#17302e",
+          "important": false
+        },
+        {
+          "property": "display",
+          "value": "grid",
+          "important": false
+        },
+        {
+          "property": "grid-template-columns",
+          "value": "var(--admin-sidebar-width) minmax(0,1fr)",
+          "important": false
+        },
+        {
+          "property": "grid-template-rows",
+          "value": "auto minmax(0,1fr)",
+          "important": false
+        },
+        {
+          "property": "grid-template-areas",
+          "value": "\"header header\" \"sidebar main\"",
+          "important": false
+        },
+        {
+          "property": "overflow",
+          "value": "hidden",
+          "important": false
+        },
+        {
+          "property": "font-family",
+          "value": "inherit",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 1,
+      "selector": ".admin-shell *",
+      "conditions": [],
+      "areas": [
+        "sidebar",
+        "nav",
+        "activeLink",
+        "label",
+        "icon",
+        "footer",
+        "main"
+      ],
+      "declarations": [
+        {
+          "property": "box-sizing",
+          "value": "border-box",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 1,
+      "selector": ".admin-shell a",
+      "conditions": [],
+      "areas": [
+        "activeLink"
+      ],
+      "declarations": [
+        {
+          "property": "color",
+          "value": "#0f766e",
+          "important": false
+        },
+        {
+          "property": "text-decoration",
+          "value": "underline",
+          "important": false
+        },
+        {
+          "property": "text-underline-offset",
+          "value": "3px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 1,
+      "selector": ".admin-shell :focus-visible,.admin-denied :focus-visible",
+      "conditions": [],
+      "areas": [
+        "shell"
+      ],
+      "declarations": [
+        {
+          "property": "outline",
+          "value": "3px solid #ea9c24",
+          "important": false
+        },
+        {
+          "property": "outline-offset",
+          "value": "3px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 1,
+      "selector": ".admin-sidebar",
+      "conditions": [],
+      "areas": [
+        "sidebar"
+      ],
+      "declarations": [
+        {
+          "property": "grid-area",
+          "value": "sidebar",
+          "important": false
+        },
+        {
+          "property": "background",
+          "value": "var(--color-sidebar-bg)",
+          "important": false
+        },
+        {
+          "property": "color",
+          "value": "var(--color-sidebar-text)",
+          "important": false
+        },
+        {
+          "property": "display",
+          "value": "flex",
+          "important": false
+        },
+        {
+          "property": "flex-direction",
+          "value": "column",
+          "important": false
+        },
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "overflow",
+          "value": "hidden",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 2,
+      "selector": ".admin-sidebar nav",
+      "conditions": [],
+      "areas": [
+        "nav"
+      ],
+      "declarations": [
+        {
+          "property": "display",
+          "value": "grid",
+          "important": false
+        },
+        {
+          "property": "align-content",
+          "value": "start",
+          "important": false
+        },
+        {
+          "property": "flex",
+          "value": "1",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "overflow-y",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "overscroll-behavior",
+          "value": "contain",
+          "important": false
+        },
+        {
+          "property": "scroll-padding-block",
+          "value": "8px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 4,
+      "selector": ".admin-sidebar nav a",
+      "conditions": [],
+      "areas": [
+        "activeLink"
+      ],
+      "declarations": [
+        {
+          "property": "display",
+          "value": "flex",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "center",
+          "important": false
+        },
+        {
+          "property": "gap",
+          "value": "13px",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "50px",
+          "important": false
+        },
+        {
+          "property": "padding",
+          "value": "12px 16px",
+          "important": false
+        },
+        {
+          "property": "color",
+          "value": "var(--color-sidebar-text)",
+          "important": false
+        },
+        {
+          "property": "text-decoration",
+          "value": "none",
+          "important": false
+        },
+        {
+          "property": "font-size",
+          "value": "var(--text-table)",
+          "important": false
+        },
+        {
+          "property": "font-weight",
+          "value": "600",
+          "important": false
+        },
+        {
+          "property": "line-height",
+          "value": "1.5",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 5,
+      "selector": ".admin-sidebar nav svg",
+      "conditions": [],
+      "areas": [
+        "icon"
+      ],
+      "declarations": [
+        {
+          "property": "flex-shrink",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 6,
+      "selector": ".admin-sidebar nav a:hover",
+      "conditions": [],
+      "areas": [
+        "activeLink"
+      ],
+      "declarations": [
+        {
+          "property": "background",
+          "value": "var(--color-sidebar-hover)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 7,
+      "selector": ".admin-sidebar nav a[aria-current=page]",
+      "conditions": [],
+      "areas": [
+        "activeLink"
+      ],
+      "declarations": [
+        {
+          "property": "background",
+          "value": "var(--color-sidebar-active-bg)",
+          "important": false
+        },
+        {
+          "property": "color",
+          "value": "var(--color-sidebar-active-text)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 8,
+      "selector": ".admin-sidebar nav a:focus-visible",
+      "conditions": [],
+      "areas": [
+        "activeLink"
+      ],
+      "declarations": [
+        {
+          "property": "outline",
+          "value": "2px solid currentColor",
+          "important": false
+        },
+        {
+          "property": "outline-offset",
+          "value": "-4px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 9,
+      "selector": ".admin-sidebar-bottom",
+      "conditions": [],
+      "areas": [
+        "footer"
+      ],
+      "declarations": [
+        {
+          "property": "flex",
+          "value": "none",
+          "important": false
+        },
+        {
+          "property": "margin-top",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "padding",
+          "value": "16px",
+          "important": false
+        },
+        {
+          "property": "color",
+          "value": "var(--color-sidebar-text)",
+          "important": false
+        },
+        {
+          "property": "font-size",
+          "value": "var(--text-caption)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 10,
+      "selector": ".admin-main",
+      "conditions": [],
+      "areas": [
+        "main"
+      ],
+      "declarations": [
+        {
+          "property": "padding",
+          "value": "28px",
+          "important": false
+        },
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 11,
+      "selector": ".admin-shell",
+      "conditions": [
+        "@media (max-width:1100px)"
+      ],
+      "areas": [
+        "shell"
+      ],
+      "declarations": [
+        {
+          "property": "--admin-sidebar-width",
+          "value": "190px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 11,
+      "selector": ".admin-main",
+      "conditions": [
+        "@media (max-width:1100px)"
+      ],
+      "areas": [
+        "main"
+      ],
+      "declarations": [
+        {
+          "property": "padding",
+          "value": "20px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 12,
+      "selector": ".admin-shell",
+      "conditions": [
+        "@media (max-width:768px)"
+      ],
+      "areas": [
+        "shell"
+      ],
+      "declarations": [
+        {
+          "property": "grid-template-columns",
+          "value": "minmax(0,1fr)",
+          "important": false
+        },
+        {
+          "property": "grid-template-areas",
+          "value": "\"header\" \"main\"",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 12,
+      "selector": ".admin-sidebar",
+      "conditions": [
+        "@media (max-width:768px)"
+      ],
+      "areas": [
+        "sidebar"
+      ],
+      "declarations": [
+        {
+          "property": "grid-area",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "position",
+          "value": "fixed",
+          "important": false
+        },
+        {
+          "property": "inset",
+          "value": "0 auto 0 0",
+          "important": false
+        },
+        {
+          "property": "z-index",
+          "value": "1301",
+          "important": false
+        },
+        {
+          "property": "width",
+          "value": "min(280px,calc(100vw - 48px))",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "100dvh",
+          "important": false
+        },
+        {
+          "property": "box-shadow",
+          "value": "8px 0 32px #102a2e33",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 12,
+      "selector": ".admin-sidebar nav a",
+      "conditions": [
+        "@media (max-width:768px)"
+      ],
+      "areas": [
+        "activeLink"
+      ],
+      "declarations": [
+        {
+          "property": "min-height",
+          "value": "44px",
+          "important": false
+        },
+        {
+          "property": "padding",
+          "value": "10px 16px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 12,
+      "selector": ".admin-main",
+      "conditions": [
+        "@media (max-width:768px)"
+      ],
+      "areas": [
+        "main"
+      ],
+      "declarations": [
+        {
+          "property": "padding",
+          "value": "16px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 20,
+      "selector": ".admin-main",
+      "conditions": [],
+      "areas": [
+        "main"
+      ],
+      "declarations": [
+        {
+          "property": "grid-area",
+          "value": "main",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "overflow",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "overscroll-behavior",
+          "value": "contain",
+          "important": false
+        },
+        {
+          "property": "scrollbar-gutter",
+          "value": "stable",
+          "important": false
+        },
+        {
+          "property": "scroll-padding-block",
+          "value": "24px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "line": 38,
+      "selector": ".admin-shell",
+      "conditions": [],
+      "areas": [
+        "shell"
+      ],
+      "declarations": [
+        {
+          "property": "font-size",
+          "value": "var(--text-body)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "line": 62,
+      "selector": "button,a,input,select,textarea",
+      "conditions": [],
+      "areas": [
+        "activeLink"
+      ],
+      "declarations": [
+        {
+          "property": "-webkit-tap-highlight-color",
+          "value": "rgb(15 118 110 / .12)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "line": 63,
+      "selector": "button,a",
+      "conditions": [],
+      "areas": [
+        "activeLink"
+      ],
+      "declarations": [
+        {
+          "property": "touch-action",
+          "value": "manipulation",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "line": 103,
+      "selector": ":where(button, a, input, select, textarea, [tabindex]):focus-visible",
+      "conditions": [],
+      "areas": [
+        "activeLink"
+      ],
+      "declarations": [
+        {
+          "property": "outline",
+          "value": "2px solid var(--color-focus-ring)",
+          "important": false
+        },
+        {
+          "property": "outline-offset",
+          "value": "2px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "line": 172,
+      "selector": "*,*::before,*::after",
+      "conditions": [
+        "@media (prefers-reduced-motion:reduce)"
+      ],
+      "areas": [
+        "shell",
+        "sidebar",
+        "nav",
+        "activeLink",
+        "label",
+        "icon",
+        "footer",
+        "main"
+      ],
+      "declarations": [
+        {
+          "property": "animation-duration",
+          "value": ".01ms",
+          "important": true
+        },
+        {
+          "property": "animation-iteration-count",
+          "value": "1",
+          "important": true
+        },
+        {
+          "property": "transition-duration",
+          "value": ".01ms",
+          "important": true
+        },
+        {
+          "property": "scroll-behavior",
+          "value": "auto",
+          "important": true
+        }
+      ]
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "line": 175,
+      "selector": ":where(main,section,article,fieldset)",
+      "conditions": [],
+      "areas": [
+        "main"
+      ],
+      "declarations": [
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        }
+      ]
+    }
+  ],
+  "sidebarRuleSources": [
+    "Frontend/src/app/features/admin/admin.css",
+    "Frontend/src/app/styles/global.css"
+  ],
+  "sourceHashes": [
+    {
+      "path": "Frontend/src/AppEntry.jsx",
+      "sha256": "e358681a1275caebf3c6c319aa6eee8d607a5d4ab6010d11ba57901d83d41d04"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "sha256": "f4eeea2d0251b752c983c36e0aa12ec5eebbf0aee908dcfbd4403913be2bf3b5"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminLayout.jsx",
+      "sha256": "38fccdeadbd0857cb6f1ccebe777ddb7965d000c35e8ec04a9265d39dbdea04e"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin.css",
+      "sha256": "d6e0e5dd33e8bda1e618032f6a12f485cd344b93672c0101d6ce365bf6339e8f"
+    },
+    {
+      "path": "Frontend/src/app/components/Sidebar.jsx",
+      "sha256": "403877d1f8ab57cc9d3421ffd35585b4bbf230aa0def920668565318a78248db"
+    },
+    {
+      "path": "Frontend/src/app/layouts/MainLayout.jsx",
+      "sha256": "3cf7621612d5b1b7f4652fc01293dacb26e0205ac358549ff686d53ba39f9f59"
+    },
+    {
+      "path": "Frontend/src/app/styles/app-shell.css",
+      "sha256": "32fe5c3073be1cfd81456c3af5b87d88623fec5bd087b208484b9cecaba5e871"
+    },
+    {
+      "path": "Frontend/src/app/styles/global.css",
+      "sha256": "877a1f9de999839d4afd8fe080c61cd3e2c4daaf21b28f0fbff31a8151adb399"
+    }
+  ]
+}

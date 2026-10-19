@@ -25,3 +25,43 @@ artifacts/
 Frontend/coverage/
 Backend/.idea/
 *.log
+
+# Reviewed local audit output (19/10/2026): retain files on disk.
+# Publish test receipts, screenshots and coverage summaries, not generated trees.
+/var/**/*coverage*/*
+!/var/**/*coverage*/coverage-summary.json
+/var/**/*coverage*.xml
+/var/**/*jacoco*.xml
+/var/**/*.jar
+/var/**/*.class
+/var/**/*.args
+/var/**/*.pid
+/var/**/*.err
+/var/**/*.exec
+/var/**/*.nul
+/var/**/*.before
+
+# Original user attachments and their full extracted content stay local.
+/var/kl-review-2026-10-17/extracted/
+/var/kl-review-2026-10-17/media/
+/var/kl-review-2026-10-17/text/
+/var/kl-review-2026-10-17/diagrams.json
+/var/kl-review-2026-10-17/report-before-format.md
+
+# Database snapshot, vault metadata and historical helpers with local credentials.
+/var/fixreports-2026-10-19/isolated-migration-v32.sql
+/var/fixreports-2026-10-19/provision-isolated-tests.sql
+/var/fixreports-2026-10-19/baseline.patch
+/var/startup-diagnosis-2026-10-18/vault-acl-before.json
+/var/startup-diagnosis-2026-10-18/vault-metadata-before.json
+/var/startup-diagnosis-2026-10-18/vault-metadata.json
+/var/fixreports-ui-followup-2026-10-19/Read-Endpoints.cjs
+/var/ui-audit/fresh-admin-workflow.cjs
+/var/ui-audit/read-workflow-api.cjs
+/var/ui-audit/run-current-workflow.cjs
+/var/verify-scale-http.cjs
+/var/verify-scale-main-readonly.cjs
+
+# Work files for preparing this evidence handover; keep its reviewed manifest.
+/var/evidence-push-2026-10-19/*
+!/var/evidence-push-2026-10-19/publication-manifest.json

@@ -1,0 +1,21 @@
+{
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "continueFocus": {
+    "id": "",
+    "tag": "INPUT",
+    "value": "focus-draft"
+  },
+  "escapeFocus": {
+    "id": "",
+    "tag": "INPUT",
+    "value": "focus-draft"
+  },
+  "discardFocus": {
+    "dialogs": 0,
+    "tag": "BUTTON",
+    "text": "Tạo tài khoản"
+  }
+}

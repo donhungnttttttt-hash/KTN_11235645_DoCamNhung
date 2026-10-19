@@ -1,0 +1,1063 @@
+{
+  "createdAt": "2026-10-18T18:42:01.981Z",
+  "source": "tms_docstest_7cb4aee200db",
+  "target": "tms_docstest_78a615de4a4c",
+  "port": 3307,
+  "mainUntouched": true,
+  "status": "PASS",
+  "credentialsPrinted": false,
+  "before": {
+    "hash": "df5ad29085742b8a49593569df0e7250b5060a40e76c2e29b21c4b22c7af40b3",
+    "counts": [
+      {
+        "table": "ai_chat_admission",
+        "count": 1
+      },
+      {
+        "table": "ai_chat_threads",
+        "count": 0
+      },
+      {
+        "table": "ai_chat_turns",
+        "count": 0
+      },
+      {
+        "table": "ai_generated_drafts",
+        "count": 0
+      },
+      {
+        "table": "application_info",
+        "count": 1
+      },
+      {
+        "table": "bug_closure_decisions",
+        "count": 0
+      },
+      {
+        "table": "bug_coverage_items",
+        "count": 0
+      },
+      {
+        "table": "bug_coverage_revisions",
+        "count": 0
+      },
+      {
+        "table": "bug_details",
+        "count": 1
+      },
+      {
+        "table": "bug_retest_state",
+        "count": 0
+      },
+      {
+        "table": "bug_verification_attempts",
+        "count": 0
+      },
+      {
+        "table": "builds",
+        "count": 6
+      },
+      {
+        "table": "categories",
+        "count": 0
+      },
+      {
+        "table": "cycle_configurations",
+        "count": 4
+      },
+      {
+        "table": "cycle_decisions",
+        "count": 0
+      },
+      {
+        "table": "cycle_statuses",
+        "count": 3
+      },
+      {
+        "table": "device_allocations",
+        "count": 3
+      },
+      {
+        "table": "device_assets",
+        "count": 3
+      },
+      {
+        "table": "devices",
+        "count": 3
+      },
+      {
+        "table": "environments",
+        "count": 3
+      },
+      {
+        "table": "execution_attempts",
+        "count": 1
+      },
+      {
+        "table": "execution_results",
+        "count": 3
+      },
+      {
+        "table": "file_work_commands",
+        "count": 0
+      },
+      {
+        "table": "file_work_group_items",
+        "count": 1
+      },
+      {
+        "table": "file_work_groups",
+        "count": 1
+      },
+      {
+        "table": "file_work_history",
+        "count": 0
+      },
+      {
+        "table": "file_work_sessions",
+        "count": 0
+      },
+      {
+        "table": "flyway_schema_history",
+        "count": 30
+      },
+      {
+        "table": "foundation_checks",
+        "count": 0
+      },
+      {
+        "table": "identity_audit",
+        "count": 0
+      },
+      {
+        "table": "identity_login_buckets",
+        "count": 0
+      },
+      {
+        "table": "identity_roles",
+        "count": 4
+      },
+      {
+        "table": "identity_users",
+        "count": 12
+      },
+      {
+        "table": "import_batches",
+        "count": 6
+      },
+      {
+        "table": "import_rows",
+        "count": 6
+      },
+      {
+        "table": "milestones",
+        "count": 0
+      },
+      {
+        "table": "project_audit",
+        "count": 1
+      },
+      {
+        "table": "project_counters",
+        "count": 0
+      },
+      {
+        "table": "project_lifecycle_decisions",
+        "count": 0
+      },
+      {
+        "table": "project_management_reports",
+        "count": 0
+      },
+      {
+        "table": "project_memberships",
+        "count": 12
+      },
+      {
+        "table": "project_notes",
+        "count": 0
+      },
+      {
+        "table": "project_resources",
+        "count": 0
+      },
+      {
+        "table": "project_status_reports",
+        "count": 0
+      },
+      {
+        "table": "projects",
+        "count": 3
+      },
+      {
+        "table": "qa_answers",
+        "count": 0
+      },
+      {
+        "table": "qa_commands",
+        "count": 0
+      },
+      {
+        "table": "qa_confirmations",
+        "count": 0
+      },
+      {
+        "table": "qa_details",
+        "count": 0
+      },
+      {
+        "table": "redmine_bindings",
+        "count": 0
+      },
+      {
+        "table": "redmine_delivery_attempts",
+        "count": 0
+      },
+      {
+        "table": "redmine_outbox",
+        "count": 0
+      },
+      {
+        "table": "resource_revisions",
+        "count": 0
+      },
+      {
+        "table": "retest_request_items",
+        "count": 0
+      },
+      {
+        "table": "retest_requests",
+        "count": 0
+      },
+      {
+        "table": "rule_versions",
+        "count": 0
+      },
+      {
+        "table": "rulesets",
+        "count": 0
+      },
+      {
+        "table": "run_item_assignments",
+        "count": 0
+      },
+      {
+        "table": "run_items",
+        "count": 2
+      },
+      {
+        "table": "run_scope_decisions",
+        "count": 0
+      },
+      {
+        "table": "spring_session",
+        "count": 0
+      },
+      {
+        "table": "spring_session_attributes",
+        "count": 0
+      },
+      {
+        "table": "test_case_revisions",
+        "count": 6
+      },
+      {
+        "table": "test_cases",
+        "count": 6
+      },
+      {
+        "table": "test_cycles",
+        "count": 5
+      },
+      {
+        "table": "test_document_assignment_changes",
+        "count": 0
+      },
+      {
+        "table": "test_document_assignments",
+        "count": 3
+      },
+      {
+        "table": "test_document_cell_changes",
+        "count": 0
+      },
+      {
+        "table": "test_document_cell_edits",
+        "count": 3
+      },
+      {
+        "table": "test_document_retests",
+        "count": 0
+      },
+      {
+        "table": "test_suites",
+        "count": 6
+      },
+      {
+        "table": "testing_commands",
+        "count": 0
+      },
+      {
+        "table": "testing_features",
+        "count": 6
+      },
+      {
+        "table": "testing_migration_case_map",
+        "count": 3
+      },
+      {
+        "table": "testing_migration_exceptions",
+        "count": 1
+      },
+      {
+        "table": "work_item_attachments",
+        "count": 0
+      },
+      {
+        "table": "work_item_clarifications",
+        "count": 0
+      },
+      {
+        "table": "work_item_comments",
+        "count": 0
+      },
+      {
+        "table": "work_item_execution_links",
+        "count": 1
+      },
+      {
+        "table": "work_item_external_references",
+        "count": 0
+      },
+      {
+        "table": "work_item_feature_context",
+        "count": 0
+      },
+      {
+        "table": "work_item_feature_history",
+        "count": 0
+      },
+      {
+        "table": "work_item_history",
+        "count": 1
+      },
+      {
+        "table": "work_item_policy_versions",
+        "count": 1
+      },
+      {
+        "table": "work_item_statuses",
+        "count": 10
+      },
+      {
+        "table": "work_items",
+        "count": 1
+      }
+    ]
+  },
+  "backup": {
+    "path": "var\\fixreports-2026-10-19\\isolated-migration-v32.sql",
+    "bytes": 209460,
+    "sha256": "56fbfdb8af353686c06cd9717cc1b9e591838f4af00f7722be36bd64b574fe65"
+  },
+  "restored": {
+    "hash": "df5ad29085742b8a49593569df0e7250b5060a40e76c2e29b21c4b22c7af40b3",
+    "counts": [
+      {
+        "table": "ai_chat_admission",
+        "count": 1
+      },
+      {
+        "table": "ai_chat_threads",
+        "count": 0
+      },
+      {
+        "table": "ai_chat_turns",
+        "count": 0
+      },
+      {
+        "table": "ai_generated_drafts",
+        "count": 0
+      },
+      {
+        "table": "application_info",
+        "count": 1
+      },
+      {
+        "table": "bug_closure_decisions",
+        "count": 0
+      },
+      {
+        "table": "bug_coverage_items",
+        "count": 0
+      },
+      {
+        "table": "bug_coverage_revisions",
+        "count": 0
+      },
+      {
+        "table": "bug_details",
+        "count": 1
+      },
+      {
+        "table": "bug_retest_state",
+        "count": 0
+      },
+      {
+        "table": "bug_verification_attempts",
+        "count": 0
+      },
+      {
+        "table": "builds",
+        "count": 6
+      },
+      {
+        "table": "categories",
+        "count": 0
+      },
+      {
+        "table": "cycle_configurations",
+        "count": 4
+      },
+      {
+        "table": "cycle_decisions",
+        "count": 0
+      },
+      {
+        "table": "cycle_statuses",
+        "count": 3
+      },
+      {
+        "table": "device_allocations",
+        "count": 3
+      },
+      {
+        "table": "device_assets",
+        "count": 3
+      },
+      {
+        "table": "devices",
+        "count": 3
+      },
+      {
+        "table": "environments",
+        "count": 3
+      },
+      {
+        "table": "execution_attempts",
+        "count": 1
+      },
+      {
+        "table": "execution_results",
+        "count": 3
+      },
+      {
+        "table": "file_work_commands",
+        "count": 0
+      },
+      {
+        "table": "file_work_group_items",
+        "count": 1
+      },
+      {
+        "table": "file_work_groups",
+        "count": 1
+      },
+      {
+        "table": "file_work_history",
+        "count": 0
+      },
+      {
+        "table": "file_work_sessions",
+        "count": 0
+      },
+      {
+        "table": "flyway_schema_history",
+        "count": 30
+      },
+      {
+        "table": "foundation_checks",
+        "count": 0
+      },
+      {
+        "table": "identity_audit",
+        "count": 0
+      },
+      {
+        "table": "identity_login_buckets",
+        "count": 0
+      },
+      {
+        "table": "identity_roles",
+        "count": 4
+      },
+      {
+        "table": "identity_users",
+        "count": 12
+      },
+      {
+        "table": "import_batches",
+        "count": 6
+      },
+      {
+        "table": "import_rows",
+        "count": 6
+      },
+      {
+        "table": "milestones",
+        "count": 0
+      },
+      {
+        "table": "project_audit",
+        "count": 1
+      },
+      {
+        "table": "project_counters",
+        "count": 0
+      },
+      {
+        "table": "project_lifecycle_decisions",
+        "count": 0
+      },
+      {
+        "table": "project_management_reports",
+        "count": 0
+      },
+      {
+        "table": "project_memberships",
+        "count": 12
+      },
+      {
+        "table": "project_notes",
+        "count": 0
+      },
+      {
+        "table": "project_resources",
+        "count": 0
+      },
+      {
+        "table": "project_status_reports",
+        "count": 0
+      },
+      {
+        "table": "projects",
+        "count": 3
+      },
+      {
+        "table": "qa_answers",
+        "count": 0
+      },
+      {
+        "table": "qa_commands",
+        "count": 0
+      },
+      {
+        "table": "qa_confirmations",
+        "count": 0
+      },
+      {
+        "table": "qa_details",
+        "count": 0
+      },
+      {
+        "table": "redmine_bindings",
+        "count": 0
+      },
+      {
+        "table": "redmine_delivery_attempts",
+        "count": 0
+      },
+      {
+        "table": "redmine_outbox",
+        "count": 0
+      },
+      {
+        "table": "resource_revisions",
+        "count": 0
+      },
+      {
+        "table": "retest_request_items",
+        "count": 0
+      },
+      {
+        "table": "retest_requests",
+        "count": 0
+      },
+      {
+        "table": "rule_versions",
+        "count": 0
+      },
+      {
+        "table": "rulesets",
+        "count": 0
+      },
+      {
+        "table": "run_item_assignments",
+        "count": 0
+      },
+      {
+        "table": "run_items",
+        "count": 2
+      },
+      {
+        "table": "run_scope_decisions",
+        "count": 0
+      },
+      {
+        "table": "spring_session",
+        "count": 0
+      },
+      {
+        "table": "spring_session_attributes",
+        "count": 0
+      },
+      {
+        "table": "test_case_revisions",
+        "count": 6
+      },
+      {
+        "table": "test_cases",
+        "count": 6
+      },
+      {
+        "table": "test_cycles",
+        "count": 5
+      },
+      {
+        "table": "test_document_assignment_changes",
+        "count": 0
+      },
+      {
+        "table": "test_document_assignments",
+        "count": 3
+      },
+      {
+        "table": "test_document_cell_changes",
+        "count": 0
+      },
+      {
+        "table": "test_document_cell_edits",
+        "count": 3
+      },
+      {
+        "table": "test_document_retests",
+        "count": 0
+      },
+      {
+        "table": "test_suites",
+        "count": 6
+      },
+      {
+        "table": "testing_commands",
+        "count": 0
+      },
+      {
+        "table": "testing_features",
+        "count": 6
+      },
+      {
+        "table": "testing_migration_case_map",
+        "count": 3
+      },
+      {
+        "table": "testing_migration_exceptions",
+        "count": 1
+      },
+      {
+        "table": "work_item_attachments",
+        "count": 0
+      },
+      {
+        "table": "work_item_clarifications",
+        "count": 0
+      },
+      {
+        "table": "work_item_comments",
+        "count": 0
+      },
+      {
+        "table": "work_item_execution_links",
+        "count": 1
+      },
+      {
+        "table": "work_item_external_references",
+        "count": 0
+      },
+      {
+        "table": "work_item_feature_context",
+        "count": 0
+      },
+      {
+        "table": "work_item_feature_history",
+        "count": 0
+      },
+      {
+        "table": "work_item_history",
+        "count": 1
+      },
+      {
+        "table": "work_item_policy_versions",
+        "count": 1
+      },
+      {
+        "table": "work_item_statuses",
+        "count": 10
+      },
+      {
+        "table": "work_items",
+        "count": 1
+      }
+    ]
+  },
+  "sourceAfter": {
+    "hash": "df5ad29085742b8a49593569df0e7250b5060a40e76c2e29b21c4b22c7af40b3",
+    "counts": [
+      {
+        "table": "ai_chat_admission",
+        "count": 1
+      },
+      {
+        "table": "ai_chat_threads",
+        "count": 0
+      },
+      {
+        "table": "ai_chat_turns",
+        "count": 0
+      },
+      {
+        "table": "ai_generated_drafts",
+        "count": 0
+      },
+      {
+        "table": "application_info",
+        "count": 1
+      },
+      {
+        "table": "bug_closure_decisions",
+        "count": 0
+      },
+      {
+        "table": "bug_coverage_items",
+        "count": 0
+      },
+      {
+        "table": "bug_coverage_revisions",
+        "count": 0
+      },
+      {
+        "table": "bug_details",
+        "count": 1
+      },
+      {
+        "table": "bug_retest_state",
+        "count": 0
+      },
+      {
+        "table": "bug_verification_attempts",
+        "count": 0
+      },
+      {
+        "table": "builds",
+        "count": 6
+      },
+      {
+        "table": "categories",
+        "count": 0
+      },
+      {
+        "table": "cycle_configurations",
+        "count": 4
+      },
+      {
+        "table": "cycle_decisions",
+        "count": 0
+      },
+      {
+        "table": "cycle_statuses",
+        "count": 3
+      },
+      {
+        "table": "device_allocations",
+        "count": 3
+      },
+      {
+        "table": "device_assets",
+        "count": 3
+      },
+      {
+        "table": "devices",
+        "count": 3
+      },
+      {
+        "table": "environments",
+        "count": 3
+      },
+      {
+        "table": "execution_attempts",
+        "count": 1
+      },
+      {
+        "table": "execution_results",
+        "count": 3
+      },
+      {
+        "table": "file_work_commands",
+        "count": 0
+      },
+      {
+        "table": "file_work_group_items",
+        "count": 1
+      },
+      {
+        "table": "file_work_groups",
+        "count": 1
+      },
+      {
+        "table": "file_work_history",
+        "count": 0
+      },
+      {
+        "table": "file_work_sessions",
+        "count": 0
+      },
+      {
+        "table": "flyway_schema_history",
+        "count": 30
+      },
+      {
+        "table": "foundation_checks",
+        "count": 0
+      },
+      {
+        "table": "identity_audit",
+        "count": 0
+      },
+      {
+        "table": "identity_login_buckets",
+        "count": 0
+      },
+      {
+        "table": "identity_roles",
+        "count": 4
+      },
+      {
+        "table": "identity_users",
+        "count": 12
+      },
+      {
+        "table": "import_batches",
+        "count": 6
+      },
+      {
+        "table": "import_rows",
+        "count": 6
+      },
+      {
+        "table": "milestones",
+        "count": 0
+      },
+      {
+        "table": "project_audit",
+        "count": 1
+      },
+      {
+        "table": "project_counters",
+        "count": 0
+      },
+      {
+        "table": "project_lifecycle_decisions",
+        "count": 0
+      },
+      {
+        "table": "project_management_reports",
+        "count": 0
+      },
+      {
+        "table": "project_memberships",
+        "count": 12
+      },
+      {
+        "table": "project_notes",
+        "count": 0
+      },
+      {
+        "table": "project_resources",
+        "count": 0
+      },
+      {
+        "table": "project_status_reports",
+        "count": 0
+      },
+      {
+        "table": "projects",
+        "count": 3
+      },
+      {
+        "table": "qa_answers",
+        "count": 0
+      },
+      {
+        "table": "qa_commands",
+        "count": 0
+      },
+      {
+        "table": "qa_confirmations",
+        "count": 0
+      },
+      {
+        "table": "qa_details",
+        "count": 0
+      },
+      {
+        "table": "redmine_bindings",
+        "count": 0
+      },
+      {
+        "table": "redmine_delivery_attempts",
+        "count": 0
+      },
+      {
+        "table": "redmine_outbox",
+        "count": 0
+      },
+      {
+        "table": "resource_revisions",
+        "count": 0
+      },
+      {
+        "table": "retest_request_items",
+        "count": 0
+      },
+      {
+        "table": "retest_requests",
+        "count": 0
+      },
+      {
+        "table": "rule_versions",
+        "count": 0
+      },
+      {
+        "table": "rulesets",
+        "count": 0
+      },
+      {
+        "table": "run_item_assignments",
+        "count": 0
+      },
+      {
+        "table": "run_items",
+        "count": 2
+      },
+      {
+        "table": "run_scope_decisions",
+        "count": 0
+      },
+      {
+        "table": "spring_session",
+        "count": 0
+      },
+      {
+        "table": "spring_session_attributes",
+        "count": 0
+      },
+      {
+        "table": "test_case_revisions",
+        "count": 6
+      },
+      {
+        "table": "test_cases",
+        "count": 6
+      },
+      {
+        "table": "test_cycles",
+        "count": 5
+      },
+      {
+        "table": "test_document_assignment_changes",
+        "count": 0
+      },
+      {
+        "table": "test_document_assignments",
+        "count": 3
+      },
+      {
+        "table": "test_document_cell_changes",
+        "count": 0
+      },
+      {
+        "table": "test_document_cell_edits",
+        "count": 3
+      },
+      {
+        "table": "test_document_retests",
+        "count": 0
+      },
+      {
+        "table": "test_suites",
+        "count": 6
+      },
+      {
+        "table": "testing_commands",
+        "count": 0
+      },
+      {
+        "table": "testing_features",
+        "count": 6
+      },
+      {
+        "table": "testing_migration_case_map",
+        "count": 3
+      },
+      {
+        "table": "testing_migration_exceptions",
+        "count": 1
+      },
+      {
+        "table": "work_item_attachments",
+        "count": 0
+      },
+      {
+        "table": "work_item_clarifications",
+        "count": 0
+      },
+      {
+        "table": "work_item_comments",
+        "count": 0
+      },
+      {
+        "table": "work_item_execution_links",
+        "count": 1
+      },
+      {
+        "table": "work_item_external_references",
+        "count": 0
+      },
+      {
+        "table": "work_item_feature_context",
+        "count": 0
+      },
+      {
+        "table": "work_item_feature_history",
+        "count": 0
+      },
+      {
+        "table": "work_item_history",
+        "count": 1
+      },
+      {
+        "table": "work_item_policy_versions",
+        "count": 1
+      },
+      {
+        "table": "work_item_statuses",
+        "count": 10
+      },
+      {
+        "table": "work_items",
+        "count": 1
+      }
+    ]
+  },
+  "finishedAt": "2026-10-18T18:42:08.235Z",
+  "tableCount": 86
+}

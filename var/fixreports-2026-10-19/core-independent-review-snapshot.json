@@ -1,0 +1,36 @@
+{
+  "reviewedAt": "2026-10-18T18:46:12.003Z",
+  "baselineHead": "caf075af7231f207259b6a62808bff5c8445f6af",
+  "files": [
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/feature/FeatureService.java",
+      "baselineEntry": null,
+      "sha256": "d370a755f3cdf2a2537fd2ad28a2fb90a0b57d94fa26a7f47adbb63a5cdcd5bd"
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/feature/AssignmentPlan.java",
+      "baselineEntry": null,
+      "sha256": "9bb5c3d123136bfbe905655c4cdbf5e2c27cfb01b9138ba8856846d73a202ae4"
+    },
+    {
+      "path": "Backend/src/main/resources/db/migration/V31__feature_owned_testing.sql",
+      "baselineEntry": null,
+      "sha256": "1a0c6556e454dfeb285a03455562440383047c0cc8966352fc093cda39822c1f"
+    },
+    {
+      "path": "Backend/src/main/java/db/migration/V32__copy_feature_documents.java",
+      "baselineEntry": null,
+      "sha256": "ba05dfc948b77b427e896bad27fa4ce494e798459d826ec4904cfd2d9bdb03d1"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/DocumentAssignments.jsx",
+      "baselineEntry": null,
+      "sha256": "aaea9ebfe2b6a736d0240cf730aa2f2b0c5adedd57b5f428270663ba0cd84657"
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "baselineEntry": null,
+      "sha256": "813ed62fae392cb16d9d561bceed47ddaeec92c4619edd5a775e6ca0c8e1821d"
+    }
+  ]
+}

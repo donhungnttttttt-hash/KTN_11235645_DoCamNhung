@@ -1,0 +1,31 @@
+﻿{
+    "checkedAt":  "2026-10-19T02:09:27.5086926Z",
+    "status":  "PASS",
+    "pid":  30588,
+    "previousPid":  7016,
+    "port":  8080,
+    "workspaceVerified":  true,
+    "profile":  "local",
+    "health":  "UP",
+    "migrationsApplied":  [
+                              31,
+                              32,
+                              33
+                          ],
+    "startupErrors":  0,
+    "otherListenerPidsUnchanged":  true,
+    "otherListeners":  [
+                           {
+                               "LocalPort":  5173,
+                               "OwningProcess":  2364
+                           },
+                           {
+                               "LocalPort":  5174,
+                               "OwningProcess":  26384
+                           },
+                           {
+                               "LocalPort":  8081,
+                               "OwningProcess":  27536
+                           }
+                       ]
+}

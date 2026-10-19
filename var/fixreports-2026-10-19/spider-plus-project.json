@@ -1,0 +1,14 @@
+{
+  "state": "READY",
+  "authorizedUserDecision": "User19/10 permits choosing an existing PM and adding Spider Plus",
+  "origin": "http://127.0.0.1:8080",
+  "code": "SPIDER-PLUS",
+  "pmUserId": "9de4b853-c33a-11f1-a175-0a0027000019",
+  "pmUsername": "syp.lab.pm03",
+  "pmPreviouslyUnassigned": false,
+  "startedAt": "2026-10-18T19:02:31.056Z",
+  "mainMigrationApplied": false,
+  "projectId": 12,
+  "verifiedAt": "2026-10-18T19:02:31.460Z",
+  "flywayVersionAfter": "30"
+}

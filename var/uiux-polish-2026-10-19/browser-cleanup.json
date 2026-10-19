@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-19T04:18:02.363Z",
+  "fixtureRolesSignedOut": [
+    "PM",
+    "TESTER",
+    "DEV",
+    "ADMIN"
+  ],
+  "viewportReset": true,
+  "domainWritesPerformed": 0,
+  "liveProviderCalls": 0,
+  "authenticationAuditEventsExpected": true
+}

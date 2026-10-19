@@ -1,0 +1,404 @@
+{
+  "adminPalette": [
+    {
+      "background": "rgb(13, 212, 76)",
+      "className": "result-ok"
+    },
+    {
+      "background": "rgb(182, 2, 2)",
+      "className": "result-ng"
+    },
+    {
+      "background": "rgb(248, 248, 53)",
+      "className": "result-pending"
+    },
+    {
+      "background": "rgb(22, 28, 37)",
+      "className": "result-notRun"
+    },
+    {
+      "background": "rgb(122, 122, 124)",
+      "className": "result-na"
+    }
+  ],
+  "samples": [
+    {
+      "background": "rgb(13, 212, 76)",
+      "contrast": 6.34,
+      "disabled": false,
+      "kind": "admin",
+      "matches": true,
+      "state": "ok",
+      "text": "rgb(51, 51, 51)"
+    },
+    {
+      "background": "rgb(182, 2, 2)",
+      "contrast": 1.8,
+      "disabled": false,
+      "kind": "admin",
+      "matches": true,
+      "state": "ng",
+      "text": "rgb(51, 51, 51)"
+    },
+    {
+      "background": "rgb(248, 248, 53)",
+      "contrast": 11.11,
+      "disabled": false,
+      "kind": "admin",
+      "matches": true,
+      "state": "pending",
+      "text": "rgb(51, 51, 51)"
+    },
+    {
+      "background": "rgb(22, 28, 37)",
+      "contrast": 1.35,
+      "disabled": false,
+      "kind": "admin",
+      "matches": true,
+      "state": "not-run",
+      "text": "rgb(51, 51, 51)"
+    },
+    {
+      "background": "rgb(122, 122, 124)",
+      "contrast": 2.95,
+      "disabled": false,
+      "kind": "admin",
+      "matches": true,
+      "state": "na",
+      "text": "rgb(51, 51, 51)"
+    },
+    {
+      "background": "rgb(13, 212, 76)",
+      "contrast": 10.54,
+      "disabled": false,
+      "kind": "reports",
+      "matches": true,
+      "state": "ok",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(182, 2, 2)",
+      "contrast": 7,
+      "disabled": false,
+      "kind": "reports",
+      "matches": true,
+      "state": "ng",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(248, 248, 53)",
+      "contrast": 18.47,
+      "disabled": false,
+      "kind": "reports",
+      "matches": true,
+      "state": "pending",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(22, 28, 37)",
+      "contrast": 17.12,
+      "disabled": false,
+      "kind": "reports",
+      "matches": true,
+      "state": "not-run",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(122, 122, 124)",
+      "contrast": 4.9,
+      "disabled": false,
+      "kind": "reports",
+      "matches": true,
+      "state": "na",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(13, 212, 76)",
+      "contrast": 10.54,
+      "disabled": false,
+      "kind": "execution",
+      "matches": true,
+      "state": "ok",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(182, 2, 2)",
+      "contrast": 7,
+      "disabled": false,
+      "kind": "execution",
+      "matches": true,
+      "state": "ng",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(248, 248, 53)",
+      "contrast": 18.47,
+      "disabled": false,
+      "kind": "execution",
+      "matches": true,
+      "state": "pending",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(22, 28, 37)",
+      "contrast": 17.12,
+      "disabled": false,
+      "kind": "execution",
+      "matches": true,
+      "state": "not-run",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(122, 122, 124)",
+      "contrast": 4.9,
+      "disabled": false,
+      "kind": "execution",
+      "matches": true,
+      "state": "na",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(13, 212, 76)",
+      "contrast": 10.54,
+      "disabled": false,
+      "kind": "file",
+      "matches": true,
+      "state": "ok",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(182, 2, 2)",
+      "contrast": 7,
+      "disabled": false,
+      "kind": "file",
+      "matches": true,
+      "state": "ng",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(248, 248, 53)",
+      "contrast": 18.47,
+      "disabled": false,
+      "kind": "file",
+      "matches": true,
+      "state": "pending",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(22, 28, 37)",
+      "contrast": 17.12,
+      "disabled": false,
+      "kind": "file",
+      "matches": true,
+      "state": "not-run",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(122, 122, 124)",
+      "contrast": 4.9,
+      "disabled": false,
+      "kind": "file",
+      "matches": true,
+      "state": "na",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(13, 212, 76)",
+      "contrast": 10.54,
+      "disabled": false,
+      "kind": "document",
+      "matches": true,
+      "state": "ok",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(182, 2, 2)",
+      "contrast": 7,
+      "disabled": false,
+      "kind": "document",
+      "matches": true,
+      "state": "ng",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(248, 248, 53)",
+      "contrast": 18.47,
+      "disabled": false,
+      "kind": "document",
+      "matches": true,
+      "state": "pending",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(22, 28, 37)",
+      "contrast": 17.12,
+      "disabled": false,
+      "kind": "document",
+      "matches": true,
+      "state": "not-run",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(122, 122, 124)",
+      "contrast": 4.9,
+      "disabled": false,
+      "kind": "document",
+      "matches": true,
+      "state": "na",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(13, 212, 76)",
+      "contrast": 10.54,
+      "disabled": true,
+      "kind": "disabled-document",
+      "matches": true,
+      "state": "ok",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(182, 2, 2)",
+      "contrast": 7,
+      "disabled": true,
+      "kind": "disabled-document",
+      "matches": true,
+      "state": "ng",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(248, 248, 53)",
+      "contrast": 18.47,
+      "disabled": true,
+      "kind": "disabled-document",
+      "matches": true,
+      "state": "pending",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(22, 28, 37)",
+      "contrast": 17.12,
+      "disabled": true,
+      "kind": "disabled-document",
+      "matches": true,
+      "state": "not-run",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(122, 122, 124)",
+      "contrast": 4.9,
+      "disabled": true,
+      "kind": "disabled-document",
+      "matches": true,
+      "state": "na",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(13, 212, 76)",
+      "contrast": 10.54,
+      "disabled": false,
+      "kind": "library",
+      "matches": true,
+      "state": "ok",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(182, 2, 2)",
+      "contrast": 7,
+      "disabled": false,
+      "kind": "library",
+      "matches": true,
+      "state": "ng",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(248, 248, 53)",
+      "contrast": 18.47,
+      "disabled": false,
+      "kind": "library",
+      "matches": true,
+      "state": "pending",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(22, 28, 37)",
+      "contrast": 17.12,
+      "disabled": false,
+      "kind": "library",
+      "matches": true,
+      "state": "not-run",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(122, 122, 124)",
+      "contrast": 4.9,
+      "disabled": false,
+      "kind": "library",
+      "matches": true,
+      "state": "na",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(13, 212, 76)",
+      "contrast": 10.54,
+      "disabled": false,
+      "kind": "status",
+      "matches": true,
+      "state": "ok",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(182, 2, 2)",
+      "contrast": 7,
+      "disabled": false,
+      "kind": "status",
+      "matches": true,
+      "state": "ng",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(248, 248, 53)",
+      "contrast": 18.47,
+      "disabled": false,
+      "kind": "status",
+      "matches": true,
+      "state": "pending",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(22, 28, 37)",
+      "contrast": 17.12,
+      "disabled": false,
+      "kind": "status",
+      "matches": true,
+      "state": "not-run",
+      "text": "rgb(255, 255, 255)"
+    },
+    {
+      "background": "rgb(122, 122, 124)",
+      "contrast": 4.9,
+      "disabled": false,
+      "kind": "status",
+      "matches": true,
+      "state": "na",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(13, 212, 76)",
+      "contrast": 10.54,
+      "disabled": false,
+      "kind": "retest",
+      "matches": true,
+      "state": "ok",
+      "text": "rgb(0, 0, 0)"
+    },
+    {
+      "background": "rgb(182, 2, 2)",
+      "contrast": 7,
+      "disabled": false,
+      "kind": "retest",
+      "matches": true,
+      "state": "ng",
+      "text": "rgb(255, 255, 255)"
+    }
+  ]
+}

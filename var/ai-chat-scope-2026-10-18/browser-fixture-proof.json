@@ -1,0 +1,17 @@
+{
+  "singleCombo": true,
+  "taskSourceProviderControlsRemoved": true,
+  "projectPresetSent": {
+    "projectId": 72,
+    "purpose": "PROJECT_CHAT",
+    "targetId": null
+  },
+  "defaultPresetSent": {
+    "projectId": null,
+    "purpose": "MY_PROJECTS",
+    "targetId": null
+  },
+  "requests": 2,
+  "paidCalls": 0,
+  "mainDatabaseWrites": 0
+}

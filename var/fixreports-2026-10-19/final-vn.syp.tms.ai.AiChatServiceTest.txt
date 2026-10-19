@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: vn.syp.tms.ai.AiChatServiceTest
+-------------------------------------------------------------------------------
+Tests run: 31, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.539 s -- in vn.syp.tms.ai.AiChatServiceTest

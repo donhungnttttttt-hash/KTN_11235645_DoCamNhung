@@ -1,0 +1,10 @@
+﻿{
+    "launchedAt":  "2026-10-19T02:05:05.8492821Z",
+    "launcherPid":  11428,
+    "port":  8080,
+    "workflow":  "scripts/Start-Backend.ps1",
+    "schema":  "tms",
+    "profile":  "local",
+    "aiConfig":  "Existing local config imported by standard workflow",
+    "testFixturesAdded":  false
+}

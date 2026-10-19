@@ -1,0 +1,41 @@
+{
+  "method": "WCAG relative luminance for opaque sRGB token pairs; does not certify every rendered element.",
+  "foreground": "#0f172a",
+  "ratios": [
+    {
+      "bg": "#ed807d",
+      "white": 2.63,
+      "slate": 6.79
+    },
+    {
+      "bg": "#5185bc",
+      "white": 3.87,
+      "slate": 4.62
+    },
+    {
+      "bg": "#e97443",
+      "white": 2.98,
+      "slate": 5.99
+    },
+    {
+      "bg": "#dc79a0",
+      "white": 2.88,
+      "slate": 6.19
+    },
+    {
+      "bg": "#449db5",
+      "white": 3.12,
+      "slate": 5.73
+    },
+    {
+      "bg": "#5aafa3",
+      "white": 2.59,
+      "slate": 6.88
+    },
+    {
+      "bg": "#9bb143",
+      "white": 2.4,
+      "slate": 7.45
+    }
+  ]
+}

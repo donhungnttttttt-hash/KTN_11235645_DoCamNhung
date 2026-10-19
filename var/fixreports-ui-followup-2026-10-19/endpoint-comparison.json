@@ -1,0 +1,53 @@
+{
+  "capturedAt": "2026-10-19T00:59:14.554Z",
+  "scope": "Authenticated HTTP comparison; existing project read confirms authorization, no fixture/main domain mutation",
+  "results": [
+    {
+      "origin": "http://127.0.0.1:8080",
+      "domainWrites": false,
+      "reads": [
+        {
+          "route": "/projects/1",
+          "status": 200
+        },
+        {
+          "route": "/projects/1/features",
+          "status": 404,
+          "code": "NOT_FOUND"
+        },
+        {
+          "route": "/projects/1/issues",
+          "status": 404,
+          "code": "NOT_FOUND"
+        },
+        {
+          "route": "/projects/1/management-reports/summary",
+          "status": 404,
+          "code": "NOT_FOUND"
+        }
+      ]
+    },
+    {
+      "origin": "http://127.0.0.1:8081",
+      "domainWrites": false,
+      "reads": [
+        {
+          "route": "/projects/156",
+          "status": 200
+        },
+        {
+          "route": "/projects/156/features",
+          "status": 200
+        },
+        {
+          "route": "/projects/156/issues",
+          "status": 200
+        },
+        {
+          "route": "/projects/156/management-reports/summary",
+          "status": 200
+        }
+      ]
+    }
+  ]
+}

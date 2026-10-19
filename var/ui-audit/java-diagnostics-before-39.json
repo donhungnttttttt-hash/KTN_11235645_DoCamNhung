@@ -1,0 +1,246 @@
+{
+  "summary": {
+    "sourceCount": 256,
+    "errors": 0,
+    "warnings": 39,
+    "compilerExitCode": 0,
+    "compiler": "org.eclipse.jdt.core.compiler.batch_3.46.100.v20260826-1225.jar",
+    "output": "Backend/target/java-diagnostics"
+  },
+  "diagnostics": [
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/main/java/vn/syp/tms/ai/AiChatController.java",
+      "line": 22,
+      "message": "Null type safety: The expression of type 'URI' needs unchecked conversion to conform to '@NonNull URI'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/main/java/vn/syp/tms/ai/AiProviderController.java",
+      "line": 9,
+      "message": "The import vn.syp.tms.shared.web.BusinessException is never used"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/main/java/vn/syp/tms/ai/ChatGptSse.java",
+      "line": 30,
+      "message": "Dead code"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/main/java/vn/syp/tms/project/ProjectService.java",
+      "line": 30,
+      "message": "Null type safety: parameter 'this' provided via method descriptor Function<ProjectMembership,Long>.apply(ProjectMembership) needs unchecked conversion to conform to '@NonNull ProjectMembership'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/main/java/vn/syp/tms/project/ProjectService.java",
+      "line": 30,
+      "message": "Null type safety: parameter 'this' provided via method descriptor Function<ProjectMembership,String>.apply(ProjectMembership) needs unchecked conversion to conform to '@NonNull ProjectMembership'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/main/java/vn/syp/tms/project/ProjectService.java",
+      "line": 32,
+      "message": "Null type safety: The expression of type 'Set<Long>' needs unchecked conversion to conform to '@NonNull Iterable<Long>'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/main/java/vn/syp/tms/project/ProjectService.java",
+      "line": 33,
+      "message": "Null type safety: parameter 'this' provided via method descriptor Function<Project,Long>.apply(Project) needs unchecked conversion to conform to '@NonNull Project'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/main/java/vn/syp/tms/testcase/TestDocumentEditingService.java",
+      "line": 38,
+      "message": "Null type safety: parameter 'this' provided via method descriptor Function<Map.Entry<String,Integer>,String>.apply(Map.Entry<String,Integer>) needs unchecked conversion to conform to 'Map.@NonNull Entry<String,Integer>'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/admin/AdminWorkspaceNativeTest.java",
+      "line": 58,
+      "message": "Null type safety: parameter 'this' provided via method descriptor ThrowingExtractor<ProjectDtos.ProjectSummary,Long,RuntimeException>.extractThrows(ProjectDtos.ProjectSummary) needs unchecked conversion to conform to 'ProjectDtos.@NonNull ProjectSummary'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/admin/AdminWorkspaceNativeTest.java",
+      "line": 61,
+      "message": "Null type safety: parameter 'this' provided via method descriptor ThrowingExtractor<ProjectDtos.ProjectSummary,Long,RuntimeException>.extractThrows(ProjectDtos.ProjectSummary) needs unchecked conversion to conform to 'ProjectDtos.@NonNull ProjectSummary'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/admin/AdminWorkspaceNativeTest.java",
+      "line": 79,
+      "message": "Null type safety: The expression of type 'SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor' needs unchecked conversion to conform to '@NonNull RequestPostProcessor'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/admin/AdminWorkspaceNativeTest.java",
+      "line": 82,
+      "message": "Null type safety: The expression of type 'SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor' needs unchecked conversion to conform to '@NonNull RequestPostProcessor'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/ai/AiProviderIntegrationTest.java",
+      "line": 20,
+      "message": "Null type safety: parameter 'this' provided via method descriptor ThrowingExtractor<AiProviderGateway.Model,String,RuntimeException>.extractThrows(AiProviderGateway.Model) needs unchecked conversion to conform to 'AiProviderGateway.@NonNull Model'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/ai/ChatGptConnectionServiceTest.java",
+      "line": 149,
+      "message": "Potential null pointer access: The variable params may be null at this location"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/filework/AdminWorkspaceFileReadNativeTest.java",
+      "line": 22,
+      "message": "The import vn.syp.tms.project is never used"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/filework/AdminWorkspaceFileReadNativeTest.java",
+      "line": 55,
+      "message": "Null type safety: The expression of type 'SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor' needs unchecked conversion to conform to '@NonNull RequestPostProcessor'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/filework/AdminWorkspaceFileReadNativeTest.java",
+      "line": 57,
+      "message": "Null type safety: The expression of type 'SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor' needs unchecked conversion to conform to '@NonNull RequestPostProcessor'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/filework/AdminWorkspaceFileReadNativeTest.java",
+      "line": 70,
+      "message": "Null type safety: The expression of type 'SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor' needs unchecked conversion to conform to '@NonNull RequestPostProcessor'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/filework/NativeAiChatTest.java",
+      "line": 133,
+      "message": "Null type safety: The expression of type 'Charset' needs unchecked conversion to conform to '@NonNull Charset'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/filework/NativeFileWorkQaIntegrationTest.java",
+      "line": 66,
+      "message": "Null type safety: The expression of type 'SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor' needs unchecked conversion to conform to '@NonNull RequestPostProcessor'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/filework/NativeFileWorkQaIntegrationTest.java",
+      "line": 69,
+      "message": "Null type safety: The expression of type 'SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor' needs unchecked conversion to conform to '@NonNull RequestPostProcessor'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/filework/NativeFileWorkQaIntegrationTest.java",
+      "line": 74,
+      "message": "Potential null pointer access: This expression of type Long may be null but requires auto-unboxing"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/filework/NativeFileWorkQaIntegrationTest.java",
+      "line": 75,
+      "message": "Potential null pointer access: This expression of type Long may be null but requires auto-unboxing"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/filework/NativeFileWorkQaIntegrationTest.java",
+      "line": 76,
+      "message": "Null type safety: The expression of type 'SecurityMockMvcRequestPostProcessors.CsrfRequestPostProcessor' needs unchecked conversion to conform to '@NonNull RequestPostProcessor'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 80,
+      "message": "Null type safety: The expression of type 'String' needs unchecked conversion to conform to '@NonNull String'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 81,
+      "message": "Null type safety: The expression of type 'String' needs unchecked conversion to conform to '@NonNull String'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 82,
+      "message": "Null type safety: The expression of type 'String' needs unchecked conversion to conform to '@NonNull String'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 86,
+      "message": "Null type safety: The expression of type 'String' needs unchecked conversion to conform to '@NonNull String'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 98,
+      "message": "Potential null pointer access: This expression of type Long may be null but requires auto-unboxing"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 99,
+      "message": "Potential null pointer access: This expression of type Long may be null but requires auto-unboxing"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 100,
+      "message": "Potential null pointer access: This expression of type Long may be null but requires auto-unboxing"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 101,
+      "message": "Potential null pointer access: This expression of type Long may be null but requires auto-unboxing"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 109,
+      "message": "Null type safety: The expression of type 'String' needs unchecked conversion to conform to '@NonNull String'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 110,
+      "message": "Null type safety: The expression of type 'String' needs unchecked conversion to conform to '@NonNull String'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 111,
+      "message": "Null type safety: The expression of type 'String' needs unchecked conversion to conform to '@NonNull String'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 113,
+      "message": "Null type safety: The expression of type 'String' needs unchecked conversion to conform to '@NonNull String'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 114,
+      "message": "Null type safety: The expression of type 'String' needs unchecked conversion to conform to '@NonNull String'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 127,
+      "message": "Null type safety: The expression of type 'String' needs unchecked conversion to conform to '@NonNull String'"
+    },
+    {
+      "kind": "WARNING",
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/TestDocumentIntegrationTest.java",
+      "line": 129,
+      "message": "Null type safety: The expression of type 'String' needs unchecked conversion to conform to '@NonNull String'"
+    }
+  ]
+}

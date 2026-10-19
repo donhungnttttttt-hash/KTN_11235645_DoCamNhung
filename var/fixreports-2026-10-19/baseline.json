@@ -1,0 +1,328 @@
+{
+  "capturedAt": "2026-10-18T18:01:40.843Z",
+  "branch": "system-design",
+  "head": "caf075af7231f207259b6a62808bff5c8445f6af",
+  "phase": "IN_REVIEW",
+  "activeSprint": "S11",
+  "files": [
+    {
+      "path": ".env.mysql.example",
+      "status": " M",
+      "bytes": 2709,
+      "sha256": "aaa62d23cea0b852ac42ba33882b5b1f6056762df415fb92ccfe2924e0d7ec67"
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/ai/AiChatService.java",
+      "status": " M",
+      "bytes": 10435,
+      "sha256": "9faf89a48dc78d83d8382393eb1e4bc6c5f84de029006d10ea0533717b16768c"
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/ai/AiChatStore.java",
+      "status": " M",
+      "bytes": 15045,
+      "sha256": "69ba4bb6ff2e92f8d20a959c2d5f134d45b509af00978d58fa1bd7fb5468e466"
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/ai/OpenAiConfiguration.java",
+      "status": " M",
+      "bytes": 3623,
+      "sha256": "50e72072880aca325209b94aa3b468ad1d5704b0dad507ac1703a8f9867f739d"
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/ai/OpenAiResponsesClient.java",
+      "status": " M",
+      "bytes": 9384,
+      "sha256": "94c4a3cbef60d00ffdd2b9d53a45a236488c9650a83d855a7e9d2021513f3649"
+    },
+    {
+      "path": "Backend/src/test/java/vn/syp/tms/ai/AiChatPromptTest.java",
+      "status": " M",
+      "bytes": 5923,
+      "sha256": "2fd5a65c9c67b2e5871cdf7dd3e03d8278fa0b10d1521a57b5f0d5bd5e1e2017"
+    },
+    {
+      "path": "Backend/src/test/java/vn/syp/tms/ai/AiChatServiceTest.java",
+      "status": " M",
+      "bytes": 11387,
+      "sha256": "fb745191ef892b069e17a5579448f4f0f6b51a8e0fff99e009138ec383a53831"
+    },
+    {
+      "path": "Backend/src/test/java/vn/syp/tms/ai/OpenAiLiveConnectionTest.java",
+      "status": " M",
+      "bytes": 2413,
+      "sha256": "d3e2147ec56e6689be0ed0e9db0851db9d76a519ea9b90c5611d8b023cfd80df"
+    },
+    {
+      "path": "Backend/src/test/java/vn/syp/tms/filework/NativeFileWorkQaMigrationTest.java",
+      "status": " M",
+      "bytes": 28266,
+      "sha256": "478830602672494d983717c843819b8e13f0edd6adb8abe30f97305665db2f3a"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin.css",
+      "status": " M",
+      "bytes": 20583,
+      "sha256": "cdc88e1aaf9df386d470a932c85fa8d3dec950949fc83420e3aa0d50a3840a9d"
+    },
+    {
+      "path": "Frontend/src/app/features/ai/AiChat.jsx",
+      "status": " M",
+      "bytes": 19292,
+      "sha256": "2788df2225e7d0a65f4f97f8113dddc1901ce1ff784cee6a41a94783f7596d7f"
+    },
+    {
+      "path": "Frontend/src/app/features/ai/AiChat.test.jsx",
+      "status": " M",
+      "bytes": 32049,
+      "sha256": "f65cb582f574fdd0970fc9d3839d9063fa247d851af97e85012cfbb450a17c47"
+    },
+    {
+      "path": "Frontend/src/app/features/ai/ai.css",
+      "status": " M",
+      "bytes": 11637,
+      "sha256": "c80df99aff866550d060ae4b6e962981296985250cb5a1c3ea7f038d41ed373f"
+    },
+    {
+      "path": "Frontend/src/app/features/ai/aiLabels.js",
+      "status": " M",
+      "bytes": 527,
+      "sha256": "303359ff6ec70b218c65517e85571d725eb5f5c3f0949fbb91a588f3dd0b1dca"
+    },
+    {
+      "path": "Frontend/src/app/features/file-work/file-work.css",
+      "status": " M",
+      "bytes": 10605,
+      "sha256": "a10117a1e740f8ac4f5e91a68f5a31079865b3f3731c61925e05ebd8aef39287"
+    },
+    {
+      "path": "Frontend/src/app/features/reports/reports.css",
+      "status": " M",
+      "bytes": 2067,
+      "sha256": "8a839f79c801162088ddafb58c7e52938ae82dc4072570cec92cb62f0093dacb"
+    },
+    {
+      "path": "Frontend/src/app/features/retest/retest.css",
+      "status": " M",
+      "bytes": 2147,
+      "sha256": "afc7b8297afd105c5bf3fe34bf87c54d9c1508d042b16f03681e8d80a36b7322"
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/test-documents.css",
+      "status": " M",
+      "bytes": 17376,
+      "sha256": "81f6f4ccbdd437163002afdd3a81ba37673e36b5c657cb64f3fb643900505eee"
+    },
+    {
+      "path": "Frontend/src/app/features/test-execution/execution.css",
+      "status": " M",
+      "bytes": 6361,
+      "sha256": "cd714fb73e99c7e89b616dc893b14849f6544f448b786d40d27cdb73dd76ee47"
+    },
+    {
+      "path": "Frontend/src/app/styles/global.css",
+      "status": " M",
+      "bytes": 8389,
+      "sha256": "0972ac7ca8f13acbaa59aaec3978dea4f602511f76573752ee063cbb28b25648"
+    },
+    {
+      "path": "docs/ai-assistance-ui.md",
+      "status": " M",
+      "bytes": 8008,
+      "sha256": "da7039a6eab3d4cf9db99aede42adf3378d2ede08daf1647f3072189516b6cae"
+    },
+    {
+      "path": "docs/api/ai-chat.md",
+      "status": " M",
+      "bytes": 12061,
+      "sha256": "9fd4dd0ef963aa958bc3c833ee2dab19548aad8a341afa6757d2a3a2969883c3"
+    },
+    {
+      "path": "docs/planning/README.md",
+      "status": " M",
+      "bytes": 21693,
+      "sha256": "348705bdebc902027bc9f0ef7c638848ac7f276aec45f576dbe3a7c82610cebd"
+    },
+    {
+      "path": "docs/planning/STATUS.json",
+      "status": " M",
+      "bytes": 114488,
+      "sha256": "eda4ddcf5b3634d44e209ee1437275a0dab02b3e4ef5ca49c92b6cf7d040a91f"
+    },
+    {
+      "path": "docs/product/AI-ASSISTANCE.md",
+      "status": " M",
+      "bytes": 11450,
+      "sha256": "4329bd26f6fd6d0badd9bdaad948d748032543b3f300a6c427daaee1fb571241"
+    },
+    {
+      "path": "scripts/Test-FileWorkQaNative.cjs",
+      "status": " M",
+      "bytes": 4071,
+      "sha256": "cb01d1c6b755da7bf50c9690c0368b5ab5454426aa4745bd38de0a54ff913be5"
+    },
+    {
+      "path": "scripts/Test-FileWorkQaNative.test.cjs",
+      "status": " M",
+      "bytes": 8363,
+      "sha256": "1aed9a81d2335626067c71e83f41b6598001212bd0721e1777724d15fdf5a283"
+    },
+    {
+      "path": "scripts/local-ai/LocalAi.ps1",
+      "status": " M",
+      "bytes": 10722,
+      "sha256": "792689b44e57b51cba78c2ccfd7124e8b0f0cbeb71efc8ac71d24da92adb077a"
+    },
+    {
+      "path": "scripts/local-ai/start-loader.test.cjs",
+      "status": " M",
+      "bytes": 3406,
+      "sha256": "c647f7cbad0c10b4d49d82600925a63f2822def6649c7877f4f68385e5c237c9"
+    },
+    {
+      "path": "tasks/plan.md",
+      "status": " M",
+      "bytes": 28968,
+      "sha256": "4f3e2907370149f33e03a3d0072d062e5914102d26e21909508d6f2902f74a43"
+    },
+    {
+      "path": "tasks/todo.md",
+      "status": " M",
+      "bytes": 13825,
+      "sha256": "2eda5612faa4ea3755952e21b67e38258153e1bc42a69bec32b169d58c9f7c01"
+    },
+    {
+      "path": "Backend/src/main/java/vn/syp/tms/ai/AiPortfolioContext.java",
+      "status": "??",
+      "bytes": 12109,
+      "sha256": "11497ea458520c309fb585e523f16e1497132f49fc094502536be161e2b09ca5"
+    },
+    {
+      "path": "Backend/src/main/resources/db/migration/V30__ai_my_projects_scope.sql",
+      "status": "??",
+      "bytes": 608,
+      "sha256": "3630bb4083d0a38f6eeef6c1ebba29f9ce05e2b9c8d75425f1aa42216fbc4da8"
+    },
+    {
+      "path": "Backend/src/test/java/vn/syp/tms/ai/AiChatLiveConnectionTest.java",
+      "status": "??",
+      "bytes": 2274,
+      "sha256": "6fd463529a76b4c25adcfc2440cc0dbcaf8bf32d0536e69d7d5090d741f415e9"
+    },
+    {
+      "path": "Backend/src/test/java/vn/syp/tms/ai/AiPortfolioContextTest.java",
+      "status": "??",
+      "bytes": 8293,
+      "sha256": "991130d430383f42593dab6c460d56f82e72df3c9e7c04d63d6c5671b1f65cc0"
+    },
+    {
+      "path": "Backend/src/test/java/vn/syp/tms/ai/AiPortfolioLiveConnectionTest.java",
+      "status": "??",
+      "bytes": 3097,
+      "sha256": "a893789846afbad9387636f23a7739adee48771b4d54a9ee2f2b371891b0b28f"
+    },
+    {
+      "path": "Backend/src/test/java/vn/syp/tms/ai/OpenAiEndpointConfigurationTest.java",
+      "status": "??",
+      "bytes": 2577,
+      "sha256": "c78779af76252164756f9005871c2eedae6172d60814da3c099345a3fdf8ffef"
+    },
+    {
+      "path": "Backend/src/test/java/vn/syp/tms/filework/NativeAiPortfolioTest.java",
+      "status": "??",
+      "bytes": 21204,
+      "sha256": "9a5cee751b867c75f19e3db9abdb7e0ff667df058e3d85c4552e4224df501558"
+    },
+    {
+      "path": "FixReports.md",
+      "status": "??",
+      "bytes": 8458,
+      "sha256": "29471ab136713a8f10f5eb517be50e5f9835fce21d53e26846e454fb7ea0fe88"
+    },
+    {
+      "path": "Frontend/src/app/features/ai/aiProjectPrompts.js",
+      "status": "??",
+      "bytes": 1820,
+      "sha256": "f02599bf1a970cfd170323b6d51a5634c51733c9a78473ef7cd009d56db90ada"
+    },
+    {
+      "path": "docs/content/spider-plus-project-overview.md",
+      "status": "??",
+      "bytes": 2581,
+      "sha256": "d811d71a3f681ed0ee896176c45dba4c2567a771de915d437c673e44f75c8f9b"
+    },
+    {
+      "path": "docs/planning/2026-10-18-ai-my-projects.md",
+      "status": "??",
+      "bytes": 3102,
+      "sha256": "30dc7423d39d10c08d2d6a0138fb88b167a58fca9dc4576425ef8e9976cc785f"
+    },
+    {
+      "path": "docs/planning/2026-10-19-fixreports-clarification.md",
+      "status": "??",
+      "bytes": 30163,
+      "sha256": "e50b5ed5d3e6f405435748eaea3624e052dff53c715f1f9a96041d87cb1e7748"
+    },
+    {
+      "path": "docs/planning/2026-10-19-fixreports-implementation-plan.md",
+      "status": "??",
+      "bytes": 54433,
+      "sha256": "c9e3a67d1bca7b6c63dea8fed154d260ef2267441dfbad14454d5ec59cc158d7"
+    },
+    {
+      "path": "docs/prompts/2026-10-19-fixreports-codex-prompt.md",
+      "status": "??",
+      "bytes": 33423,
+      "sha256": "88e2372732365085fa2e089f66ce987a1596a3966bcbb57390c9c962d622af0e"
+    },
+    {
+      "path": "docs/reviews/2026-10-17-kl-documents-review.md",
+      "status": "??",
+      "bytes": 71616,
+      "sha256": "099cf37d57571c5b37bb3a200c76897900595062090045399b1ad976f066572e"
+    },
+    {
+      "path": "docs/reviews/2026-10-18-ai-chat-scope.md",
+      "status": "??",
+      "bytes": 8842,
+      "sha256": "fbecb6b50143a895be4319216596188df67d7d27778e8cc2f50abd4c74b73689"
+    },
+    {
+      "path": "docs/reviews/2026-10-18-ai-my-projects.md",
+      "status": "??",
+      "bytes": 11204,
+      "sha256": "c709142561784b227dfafb41b3cb98ef9b4e696c56890b8b741ccb3d00a5167f"
+    },
+    {
+      "path": "docs/reviews/2026-10-18-ai-preset-send.md",
+      "status": "??",
+      "bytes": 4917,
+      "sha256": "da7b2f054ea017347527d76bd4f65348d376660aadc3fa586fc34b64fb35882b"
+    },
+    {
+      "path": "docs/reviews/2026-10-18-backend-startup-vault.md",
+      "status": "??",
+      "bytes": 3628,
+      "sha256": "c64dfd8cd1b441d1f10413164898ace45d0fa62972473988ac0baa5b3604c947"
+    },
+    {
+      "path": "docs/reviews/2026-10-18-caheo-ai-connection.md",
+      "status": "??",
+      "bytes": 7971,
+      "sha256": "bb822a70c00ec89ae01371d52e67d24dc6f26eb887f3f65194561da8123614a2"
+    },
+    {
+      "path": "docs/reviews/2026-10-18-caheo-chat-send.md",
+      "status": "??",
+      "bytes": 8134,
+      "sha256": "436b4ec08b580ef9d740c80127e4280ec394b220867b15788722787f1b43b3a0"
+    },
+    {
+      "path": "docs/reviews/2026-10-18-result-colors.md",
+      "status": "??",
+      "bytes": 4594,
+      "sha256": "5c7ae244fe78b9145509cdce5d277237557b22a2449e5b3cdebea3f6c29b7f71"
+    }
+  ],
+  "excluded": "Historical/current var artifacts and gitignored local secrets/databases; no files removed"
+}

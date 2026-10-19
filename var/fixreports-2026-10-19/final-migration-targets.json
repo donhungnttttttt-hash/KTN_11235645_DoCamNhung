@@ -1,0 +1,22 @@
+{
+  "createdAt": "2026-10-18T18:49:43.517Z",
+  "server": "existing native loopback",
+  "port": 3307,
+  "mainUntouched": true,
+  "backup": "var\\mysql-native\\backups\\2026-10-18T18-48-55-800Z-tms.sql",
+  "backupSha256": "dd945970478c48c4eb550fdda6fa2b0ade9b19d162b1556c6a31a674ad386f73",
+  "sessionRowsExcluded": true,
+  "targets": [
+    {
+      "purpose": "fresh-v33",
+      "schema": "tms_docstest_670ffab81c69",
+      "status": "EMPTY_VERIFIED"
+    },
+    {
+      "purpose": "main-v30-snapshot",
+      "schema": "tms_docstest_4106ddac5f8d",
+      "status": "RESTORED_V30",
+      "tableCount": 76
+    }
+  ]
+}

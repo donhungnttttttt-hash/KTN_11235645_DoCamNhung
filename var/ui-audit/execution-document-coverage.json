@@ -1,0 +1,51 @@
+{
+  "scope": "Final focused native + execution/document unit run, not whole backend coverage",
+  "projectionMethod": {
+    "INSTRUCTION": {
+      "missed": 0,
+      "covered": 73
+    },
+    "BRANCH": {
+      "missed": 0,
+      "covered": 2
+    },
+    "LINE": {
+      "missed": 0,
+      "covered": 8
+    },
+    "COMPLEXITY": {
+      "missed": 0,
+      "covered": 2
+    },
+    "METHOD": {
+      "missed": 0,
+      "covered": 1
+    }
+  },
+  "executionService": {
+    "INSTRUCTION": {
+      "missed": 388,
+      "covered": 1713
+    },
+    "BRANCH": {
+      "missed": 38,
+      "covered": 78
+    },
+    "LINE": {
+      "missed": 15,
+      "covered": 136
+    },
+    "COMPLEXITY": {
+      "missed": 40,
+      "covered": 58
+    },
+    "METHOD": {
+      "missed": 4,
+      "covered": 36
+    },
+    "CLASS": {
+      "missed": 0,
+      "covered": 1
+    }
+  }
+}

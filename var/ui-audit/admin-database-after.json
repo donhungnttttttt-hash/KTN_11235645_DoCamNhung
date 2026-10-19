@@ -1,0 +1,323 @@
+{
+  "checkedAt": "2026-10-10T15:41:23.627Z",
+  "database": "local/tms",
+  "access": "tms_app / read-only transaction",
+  "tableCount": 76,
+  "totalRows": 7226,
+  "foreignKeysChecked": 185,
+  "domainChecks": 6,
+  "failures": [],
+  "tables": [
+    {
+      "name": "ai_chat_admission",
+      "count": 1
+    },
+    {
+      "name": "ai_chat_threads",
+      "count": 0
+    },
+    {
+      "name": "ai_chat_turns",
+      "count": 0
+    },
+    {
+      "name": "ai_generated_drafts",
+      "count": 5
+    },
+    {
+      "name": "application_info",
+      "count": 1
+    },
+    {
+      "name": "bug_closure_decisions",
+      "count": 10
+    },
+    {
+      "name": "bug_coverage_items",
+      "count": 13
+    },
+    {
+      "name": "bug_coverage_revisions",
+      "count": 13
+    },
+    {
+      "name": "bug_details",
+      "count": 34
+    },
+    {
+      "name": "bug_retest_state",
+      "count": 34
+    },
+    {
+      "name": "bug_verification_attempts",
+      "count": 11
+    },
+    {
+      "name": "builds",
+      "count": 15
+    },
+    {
+      "name": "categories",
+      "count": 16
+    },
+    {
+      "name": "cycle_configurations",
+      "count": 16
+    },
+    {
+      "name": "cycle_decisions",
+      "count": 3
+    },
+    {
+      "name": "cycle_statuses",
+      "count": 3
+    },
+    {
+      "name": "device_allocations",
+      "count": 27
+    },
+    {
+      "name": "device_assets",
+      "count": 124
+    },
+    {
+      "name": "devices",
+      "count": 10
+    },
+    {
+      "name": "environments",
+      "count": 10
+    },
+    {
+      "name": "execution_attempts",
+      "count": 191
+    },
+    {
+      "name": "execution_results",
+      "count": 3
+    },
+    {
+      "name": "file_work_commands",
+      "count": 2
+    },
+    {
+      "name": "file_work_group_items",
+      "count": 88
+    },
+    {
+      "name": "file_work_groups",
+      "count": 2
+    },
+    {
+      "name": "file_work_history",
+      "count": 2
+    },
+    {
+      "name": "file_work_sessions",
+      "count": 0
+    },
+    {
+      "name": "flyway_schema_history",
+      "count": 28
+    },
+    {
+      "name": "foundation_checks",
+      "count": 1
+    },
+    {
+      "name": "identity_audit",
+      "count": 391
+    },
+    {
+      "name": "identity_login_buckets",
+      "count": 2
+    },
+    {
+      "name": "identity_roles",
+      "count": 4
+    },
+    {
+      "name": "identity_users",
+      "count": 118
+    },
+    {
+      "name": "import_batches",
+      "count": 15
+    },
+    {
+      "name": "import_rows",
+      "count": 920
+    },
+    {
+      "name": "milestones",
+      "count": 8
+    },
+    {
+      "name": "project_audit",
+      "count": 2175
+    },
+    {
+      "name": "project_counters",
+      "count": 2
+    },
+    {
+      "name": "project_lifecycle_decisions",
+      "count": 0
+    },
+    {
+      "name": "project_memberships",
+      "count": 122
+    },
+    {
+      "name": "project_resources",
+      "count": 4
+    },
+    {
+      "name": "project_status_reports",
+      "count": 0
+    },
+    {
+      "name": "projects",
+      "count": 9
+    },
+    {
+      "name": "qa_answers",
+      "count": 0
+    },
+    {
+      "name": "qa_commands",
+      "count": 0
+    },
+    {
+      "name": "qa_confirmations",
+      "count": 0
+    },
+    {
+      "name": "qa_details",
+      "count": 0
+    },
+    {
+      "name": "redmine_bindings",
+      "count": 2
+    },
+    {
+      "name": "redmine_delivery_attempts",
+      "count": 8
+    },
+    {
+      "name": "redmine_outbox",
+      "count": 6
+    },
+    {
+      "name": "resource_revisions",
+      "count": 5
+    },
+    {
+      "name": "retest_request_items",
+      "count": 13
+    },
+    {
+      "name": "retest_requests",
+      "count": 13
+    },
+    {
+      "name": "rule_versions",
+      "count": 2
+    },
+    {
+      "name": "rulesets",
+      "count": 3
+    },
+    {
+      "name": "run_item_assignments",
+      "count": 331
+    },
+    {
+      "name": "run_items",
+      "count": 330
+    },
+    {
+      "name": "run_scope_decisions",
+      "count": 10
+    },
+    {
+      "name": "spring_session",
+      "count": 2
+    },
+    {
+      "name": "spring_session_attributes",
+      "count": 2
+    },
+    {
+      "name": "test_case_revisions",
+      "count": 833
+    },
+    {
+      "name": "test_cases",
+      "count": 832
+    },
+    {
+      "name": "test_cycles",
+      "count": 12
+    },
+    {
+      "name": "test_document_cell_changes",
+      "count": 0
+    },
+    {
+      "name": "test_document_cell_edits",
+      "count": 0
+    },
+    {
+      "name": "test_document_retests",
+      "count": 0
+    },
+    {
+      "name": "test_suites",
+      "count": 19
+    },
+    {
+      "name": "work_item_attachments",
+      "count": 32
+    },
+    {
+      "name": "work_item_clarifications",
+      "count": 0
+    },
+    {
+      "name": "work_item_comments",
+      "count": 33
+    },
+    {
+      "name": "work_item_execution_links",
+      "count": 35
+    },
+    {
+      "name": "work_item_external_references",
+      "count": 0
+    },
+    {
+      "name": "work_item_history",
+      "count": 185
+    },
+    {
+      "name": "work_item_policy_versions",
+      "count": 1
+    },
+    {
+      "name": "work_item_statuses",
+      "count": 10
+    },
+    {
+      "name": "work_items",
+      "count": 74
+    }
+  ],
+  "changedCounts": [
+    {
+      "table": "flyway_schema_history",
+      "before": 27,
+      "after": 28
+    }
+  ]
+}

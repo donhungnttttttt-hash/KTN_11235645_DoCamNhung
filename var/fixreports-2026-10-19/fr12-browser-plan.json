@@ -1,0 +1,28 @@
+{
+  "status": "PREPARED_NOT_RUN",
+  "executor": "root CUA only",
+  "baseUrl": null,
+  "targetRule": "Root-owned isolated runtime and fixture only; no production/main application data mutations",
+  "viewports": [{"width":390,"height":844},{"width":768,"height":1024},{"width":1440,"height":900},{"width":320,"height":640}],
+  "fixtureIds": {"projectA":null,"projectB":null,"spiderPlus":null,"featureA":null,"featureB":null,"documentA":null,"documentB":null,"rowA":null,"caseA":null,"issueA":null,"reportA":null},
+  "roles": ["ADMIN without project membership","PM of A, observer of B","TESTER A first assignee","TESTER A second assignee","DEV A assigned Issue"],
+  "routes": [
+    {"route":"/dashboard?projectId={spiderPlus}","role":"TESTER","check":"Approved Spider Plus copy only for exact SPIDER-PLUS; no create, metrics or handoff queue"},
+    {"route":"/dashboard?projectId={projectB}","role":"PM","check":"Actual B description; no Spider Plus copy leakage"},
+    {"route":"/board","role":"PM","check":"Outer status/testing destinations plus inner Kanban/list both work; no blank generic create"},
+    {"route":"/board/testing?projectId={projectA}","role":"PM","check":"Create/edit/archive/restore Feature with pending/error feedback"},
+    {"route":"/board/testing/features/{featureA}?projectId={projectA}","role":"PM","check":"Import preview/commit, open document, hide document, correct Back"},
+    {"route":"/board/testing/features/{featureA}/documents/{documentA}?projectId={projectA}&caseId={rowA}","role":"TESTER","check":"Correct page/row focus, assignment range, native status cycle, Issue tap popup, save returns same case"},
+    {"route":"/issues?projectId={projectA}","role":"TESTER","check":"Monkey chooses actual Feature, Bug only; context Issue separate, title not invented"},
+    {"route":"/board/issue/{issueA}?projectId={projectA}","role":"DEV","check":"Only actual server capabilities, no case-content/Feature/assignment management; comments/status persist"},
+    {"route":"/settings/notes?projectId={projectA}","role":"PM","check":"CRUD Note, 409 keeps buffer, members read-only; no attachments"},
+    {"route":"/analysis?projectId={projectA}","role":"PM","check":"Feature summary, request-pinned AI preview, explicit apply/edit/save/download latest exact Markdown"},
+    {"route":"/analysis?projectId={projectA}","role":"TESTER","check":"Denied; no management API fetch; DEV also denied"},
+    {"route":"/tests/cycles/15?caseId=2","role":"PM","check":"Explicit retired notice, list link only, no guessed Feature mapping"},
+    {"route":"/admin/ai","role":"ADMIN","check":"Retired notice opens existing header chat; Cấu hình AI usable, no old menu"},
+    {"route":"/admin/devices","role":"ADMIN","check":"Existing physical inventory, PM recipient handover and notes/dates, no per-device Tester owner"},
+    {"route":"/admin/audit","role":"ADMIN","check":"Vietnam whole-day filters plus unordered/unaccented AND keyword; count matches rows"}
+  ],
+  "crossCutting": ["keyboard Tab/Shift-Tab/Escape and return focus","touch interactions without hover dependency","wide table scrolls in its own labeled region; page has no unintended horizontal overflow","repeated submit locks command; timeout retry keeps request identity","401/403 hides stale data; reauthentication never leaks other user draft","switch project with in-flight request and deep Feature path; no wrong-project request","ADMIN without membership works, project PM/Tester/DEV policies are distinct"],
+  "evidence": ["route+role+fixture IDs+viewport+source revision per screenshot pair","actual requests/statuses and non-sensitive payload shape, no cookies/tokens","browser console warnings/errors","persistent reread/download result separately from optimistic or mock UI","explicit NOT_RUN for live external AI, missing native evidence, or remaining steps"]
+}

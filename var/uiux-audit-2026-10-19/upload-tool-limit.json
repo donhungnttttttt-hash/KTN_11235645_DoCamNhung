@@ -1,0 +1,7 @@
+{
+  "stage": "chooser.setFiles",
+  "multiple": true,
+  "userConfirmsFileUrlAccessOn": true,
+  "reason": "Error: To enable file upload, go to chrome://extensions in Google Chrome, click Details under the ChatGPT extension, and enable \"Allow access to file URLs.\" See [here](https://developers.openai.com/codex/app/chrome-extension#upload-files) for details.\nfileChooser.setFiles failed",
+  "appUploadFailureNotProven": true
+}

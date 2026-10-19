@@ -1,0 +1,7 @@
+// Reads only a synthetic, existing isolated workbook. No import or domain writes.
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {LocalApi}=require('../../scripts/demo/local-api.cjs');
+const root=path.resolve(__dirname,'../..');
+async function main(){const source=fs.readFileSync(path.join(root,'Backend/src/test/java/vn/syp/tms/testcase/FixReportsBrowserFixtureTest.java'),'utf8');const match=source.match(/"FR12-Browser-Only[^"\r\n]*"/);if(!match)throw Error('Existing synthetic credential missing');const api=new LocalApi('http://127.0.0.1:8081');let signed=false;
+ try{await api.write('POST','/auth/login',{username:'fr12.94ac4db0.admin',password:JSON.parse(match[0])});signed=true;const project=await api.get('/projects/156');if(project.code!=='SPIDER-PLUS')throw Error('Synthetic project guard');const data=await api.request('GET','/projects/156/test-documents/159/export?original=true',undefined,{},true);fs.writeFileSync(path.join(__dirname,'ux-audit-input.xlsx'),data,{flag:'wx'});fs.writeFileSync(path.join(__dirname,'workbook-proof.json'),JSON.stringify({source:'existing synthetic fixture',origin:api.origin,projectId:156,documentId:159,bytes:data.length,sha256:crypto.createHash('sha256').update(data).digest('hex'),domainWrites:0},null,2)+'\n',{flag:'wx'});console.log('Synthetic workbook prepared; source read only; no credential saved.');}finally{if(signed)await api.write('POST','/auth/logout');}}
+main().catch(e=>{console.error('Workbook preparation refused: '+e.message);process.exitCode=1;});

@@ -1,0 +1,1605 @@
+{
+  "sourceFiles": 141,
+  "reachableFiles": 133,
+  "counts": {
+    "native-button": 370,
+    "click-control": 11,
+    "form": 42,
+    "native-disclosure": 16,
+    "custom-action": 81
+  },
+  "total": 520,
+  "noPath": [],
+  "implicitSubmit": [
+    {
+      "file": "Frontend/src/app/components/Header.jsx",
+      "line": 12,
+      "label": "\"Mở menu dự án\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/components/Header.jsx",
+      "line": 21,
+      "label": "\"Tổng quan TMS\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/components/Sidebar.jsx",
+      "line": 62,
+      "label": "{collapsed ? 'Mở rộng menu' : 'Thu gọn menu'}",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/components/Sidebar.jsx",
+      "line": 66,
+      "label": "\"Đóng menu\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/components/Sidebar.jsx",
+      "line": 71,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/components/Sidebar.jsx",
+      "line": 82,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/components/Sidebar.jsx",
+      "line": 90,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminAudit.jsx",
+      "line": 13,
+      "label": "Tải lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminAudit.jsx",
+      "line": 21,
+      "label": "Trang trước",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminAudit.jsx",
+      "line": 21,
+      "label": "Trang sau",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminDashboard.jsx",
+      "line": 16,
+      "label": "Tải lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "line": 10,
+      "label": "Thu hồi",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "line": 28,
+      "label": "Nhập máy",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "line": 28,
+      "label": "Tải lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "line": 33,
+      "label": "{`Sửa ${a.assetCode}`}",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "line": 33,
+      "label": "{`Bàn giao ${a.assetCode}`}",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "line": 33,
+      "label": "{`Thu hồi ${a.assetCode}`}",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "line": 34,
+      "label": "Trang trước",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "line": 34,
+      "label": "Trang sau",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminLayout.jsx",
+      "line": 16,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "line": 39,
+      "label": "Sửa dự án",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "line": 40,
+      "label": "Tải phiên bản hiện hành",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "line": 41,
+      "label": "Lưu vai trò",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "line": 41,
+      "label": "Gỡ",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "line": 42,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminProjects.jsx",
+      "line": 14,
+      "label": "Tạo dự án mới",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminProjects.jsx",
+      "line": 15,
+      "label": "Trang trước",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminProjects.jsx",
+      "line": 15,
+      "label": "Trang sau",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminProjects.jsx",
+      "line": 22,
+      "label": "Tải lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "line": 15,
+      "label": "Tạo tài khoản",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "line": 17,
+      "label": "Tải dữ liệu hiện hành",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "line": 17,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "line": 17,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "line": 17,
+      "label": "Trang trước",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "line": 17,
+      "label": "Trang sau",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/ProjectStatusReports.jsx",
+      "line": 46,
+      "label": "Báo cáo trước",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/admin/ProjectStatusReports.jsx",
+      "line": 46,
+      "label": "Báo cáo tiếp",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "line": 117,
+      "label": "Tải lại danh sách",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "line": 128,
+      "label": "Tải lại danh sách",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "line": 129,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "line": 137,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "line": 138,
+      "label": "Kiểm tra lại yêu cầu",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "line": 146,
+      "label": "Kiểm tra bản nháp",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "line": 149,
+      "label": "Lưu chỉnh sửa",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "line": 150,
+      "label": "Dùng bản đã lưu",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "line": 151,
+      "label": "Sao chép",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "line": 161,
+      "label": "{`Mở bản nháp ${item.content?.answer?.title||'#'+item.id}`}",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "line": 162,
+      "label": "Xem bản cũ hơn",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiChat.jsx",
+      "line": 144,
+      "label": "\"Thu nhỏ chat\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiChat.jsx",
+      "line": 146,
+      "label": "Mới",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiChat.jsx",
+      "line": 146,
+      "label": "Lịch sử",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiChat.jsx",
+      "line": 146,
+      "label": "Nguồn / phạm vi",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiChat.jsx",
+      "line": 150,
+      "label": "",
+      "form": {
+        "line": 150,
+        "submit": "{e=>{e.preventDefault();setQuery(new FormData(e.currentTarget).get('search').trim());retryTargets(value=>value+1);}}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiChat.jsx",
+      "line": 152,
+      "label": "# · ·",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiChat.jsx",
+      "line": 152,
+      "label": "Xem hội thoại cũ hơn",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiChat.jsx",
+      "line": 155,
+      "label": "Xem tin nhắn cũ hơn",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiChat.jsx",
+      "line": 156,
+      "label": "Sao chép câu trả lời",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiChat.jsx",
+      "line": 160,
+      "label": "Kiểm tra yêu cầu chat",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "line": 95,
+      "label": "Tải lại nguồn AI",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "line": 97,
+      "label": "Cấp quyền dùng gói ChatGPT",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "line": 97,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "line": 98,
+      "label": "(có dùng hạn mức)",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "line": 99,
+      "label": "Ngắt kết nối",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "line": 100,
+      "label": "Đổi tài khoản ChatGPT",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "line": 102,
+      "label": "Hủy đăng nhập ChatGPT",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/auth/AccountMenu.jsx",
+      "line": 14,
+      "label": "{`Tài khoản: ${user.displayName}`}",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/auth/AccountMenu.jsx",
+      "line": 23,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/auth/AuthBoundary.jsx",
+      "line": 54,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/ActionInbox.jsx",
+      "line": 35,
+      "label": "Cập nhật danh sách",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/ActionInbox.jsx",
+      "line": 39,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 91,
+      "label": "{`${code} · ${r.caseNo}`}",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 91,
+      "label": "Lịch sử ·",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 91,
+      "label": "Tạo QA ·",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 91,
+      "label": "Tạo BUG ·",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 91,
+      "label": "Gắn BUG ·",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 92,
+      "label": "Danh sách công việc",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 92,
+      "label": "Làm mới",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 93,
+      "label": "Thử lại nguyên lệnh",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 96,
+      "label": "Tài liệu và kết quả tham khảo",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 96,
+      "label": "Chuẩn bị / kích hoạt đợt · quyết định phạm vi NA",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 103,
+      "label": "Tải kết quả thực thi XLSX",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 106,
+      "label": "Bắt đầu phiên",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 107,
+      "label": "Tạm dừng phiên",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 107,
+      "label": "Tiếp tục phiên",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 107,
+      "label": "Hoàn thành phiên",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 107,
+      "label": "Hủy phiên",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 107,
+      "label": "Giao lại toàn nhóm",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 111,
+      "label": "Lịch sử nhóm / phiên",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 139,
+      "label": "Đóng case",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 146,
+      "label": "Sự kiện cũ hơn",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "line": 146,
+      "label": "Sự kiện mới nhất",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkPage.jsx",
+      "line": 53,
+      "label": "Giao file",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkPage.jsx",
+      "line": 53,
+      "label": "Làm mới",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/FileWorkPage.jsx",
+      "line": 69,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/CatalogEditor.jsx",
+      "line": 42,
+      "label": "",
+      "form": {
+        "line": 34,
+        "submit": "{save}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/projects/CatalogPage.jsx",
+      "line": 111,
+      "label": "Sửa",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/CatalogPage.jsx",
+      "line": 113,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/CatalogPage.jsx",
+      "line": 129,
+      "label": "Thêm mới",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/CatalogPage.jsx",
+      "line": 137,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/CatalogPage.jsx",
+      "line": 154,
+      "label": "Thử lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "line": 18,
+      "label": "Thêm tài liệu",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "line": 20,
+      "label": "Thử lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "line": 24,
+      "label": "· v",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "line": 32,
+      "label": "Thử lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "line": 34,
+      "label": "Thêm phiên bản",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "line": 55,
+      "label": "Lưu tài liệu",
+      "form": {
+        "line": 48,
+        "submit": "{save}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+      "line": 10,
+      "label": "Bổ sung máy vào dự án",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+      "line": 12,
+      "label": "Máy trước",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+      "line": 12,
+      "label": "Máy sau",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectMembers.jsx",
+      "line": 24,
+      "label": "Thêm thành viên",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectMembers.jsx",
+      "line": 26,
+      "label": "Thử lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectMembers.jsx",
+      "line": 29,
+      "label": "Sửa vai trò",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectMembers.jsx",
+      "line": 29,
+      "label": "Gỡ",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectMembers.jsx",
+      "line": 50,
+      "label": "Lưu thành viên",
+      "form": {
+        "line": 42,
+        "submit": "{save}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectSelector.jsx",
+      "line": 40,
+      "label": "Thử lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectSelector.jsx",
+      "line": 41,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectSelector.jsx",
+      "line": 63,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectSelector.jsx",
+      "line": 80,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "line": 61,
+      "label": "",
+      "form": {
+        "line": 51,
+        "submit": "{save}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/projects/RulesPanel.jsx",
+      "line": 25,
+      "label": "Tải lại quy tắc",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/RulesPanel.jsx",
+      "line": 27,
+      "label": "Tạo bộ quy tắc nội bộ",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/projects/RulesPanel.jsx",
+      "line": 35,
+      "label": "Lưu bản nháp",
+      "form": {
+        "line": 30,
+        "submit": "{event=>{event.preventDefault();mutate(()=>projectsApi.createRuleVersion(projectId,rule.id,{contentJson:JSON.stringify({schemaVersion:1,scope:'INTERNAL_DEMO',sourceReference:source,titlePrefix:prefix,requiredFields})}),'Đã lưu bản nháp quy tắc.');}}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/projects/RulesPanel.jsx",
+      "line": 45,
+      "label": "Công bố phiên bản",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/reports/ReportsPage.jsx",
+      "line": 52,
+      "label": "Làm mới",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/reports/ReportsPage.jsx",
+      "line": 52,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/reports/ReportsPage.jsx",
+      "line": 54,
+      "label": "Đợt trước",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/reports/ReportsPage.jsx",
+      "line": 54,
+      "label": "Đợt tiếp",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/retest/RetestQueuePage.jsx",
+      "line": 22,
+      "label": "Tải lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/retest/RetestQueuePage.jsx",
+      "line": 24,
+      "label": "· Yêu cầu #",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+      "line": 126,
+      "label": "\"Đóng\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+      "line": 141,
+      "label": "Bản tiếng Việt",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+      "line": 148,
+      "label": "Bản gốc tiếng Nhật (JP)",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+      "line": 159,
+      "label": "Phê duyệt bản này",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+      "line": 168,
+      "label": "Thêm phiên bản",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+      "line": 183,
+      "label": "Xác nhận phê duyệt",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+      "line": 184,
+      "label": "Hủy phê duyệt",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+      "line": 244,
+      "label": "Xem phiên bản",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CaseHistoryDialog.jsx",
+      "line": 28,
+      "label": "\"Đóng lịch sử\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CaseHistoryDialog.jsx",
+      "line": 30,
+      "label": "Lịch sử thực thi / kết quả",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CaseHistoryDialog.jsx",
+      "line": 32,
+      "label": "Thử lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CreateCaseDialog.jsx",
+      "line": 63,
+      "label": "\"Đóng\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/CreateSuiteDialog.jsx",
+      "line": 37,
+      "label": "\"Đóng\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentCaseDialog.jsx",
+      "line": 8,
+      "label": "\"Đóng chi tiết tài liệu\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentCaseDialog.jsx",
+      "line": 10,
+      "label": "Hiển thị lịch sử",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentCaseDialog.jsx",
+      "line": 10,
+      "label": "Nội dung / phiên bản",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentCaseDialog.jsx",
+      "line": 12,
+      "label": "‹ Trước",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentCaseDialog.jsx",
+      "line": 12,
+      "label": "Tiếp ›",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentCellEditor.jsx",
+      "line": 18,
+      "label": "Đóng",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentCellEditor.jsx",
+      "line": 23,
+      "label": "",
+      "form": {
+        "line": 19,
+        "submit": "{save}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+      "line": 64,
+      "label": "Đóng",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+      "line": 77,
+      "label": "Đóng",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+      "line": 80,
+      "label": "Công việc theo file",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+      "line": 96,
+      "label": "Đợt trước",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+      "line": 96,
+      "label": "Đợt tiếp",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+      "line": 98,
+      "label": "Tải lại kết quả",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+      "line": 98,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+      "line": 18,
+      "label": "\"Đóng lịch sử kết quả\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+      "line": 20,
+      "label": "Lịch sử / chứng cứ đợt kiểm thử",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+      "line": 21,
+      "label": "Thử lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+      "line": 25,
+      "label": "Xem lịch sử cũ hơn",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentSecondTestDialog.jsx",
+      "line": 39,
+      "label": "Đóng",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/DocumentSecondTestDialog.jsx",
+      "line": 58,
+      "label": "",
+      "form": {
+        "line": 40,
+        "submit": "{save}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "line": 117,
+      "label": "\"Đóng\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "line": 133,
+      "label": "Tải mẫu Excel theo tiêu đề",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "line": 145,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "line": 160,
+      "label": "Thử lại file chưa xem trước",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "line": 162,
+      "label": "Mở tài liệu đã nhập",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "line": 168,
+      "label": "Hủy",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "line": 169,
+      "label": "Xem trước kết quả",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "line": 171,
+      "label": "Quay lại sửa",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "line": 172,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "line": 173,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 132,
+      "label": "Danh sách tài liệu",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 133,
+      "label": "Thử lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 153,
+      "label": "\"Danh sách tài liệu\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 160,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 161,
+      "label": "Tổng quan tài liệu",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 162,
+      "label": "\"Tô màu kết quả\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 167,
+      "label": "Xóa bộ lọc",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 168,
+      "label": "Xuất Excel",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 169,
+      "label": "Tải file gốc",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 170,
+      "label": "Đợt kiểm thử",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 171,
+      "label": "\"Làm mới bảng case\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 174,
+      "label": "\"Trang trước\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 174,
+      "label": "\"Trang sau\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 184,
+      "label": "Tải lại kết quả đã lưu",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 203,
+      "label": "{`Mở test case ${row.sourceId}`}",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 204,
+      "label": "{`Tùy chọn test case ${row.sourceId}`}",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 205,
+      "label": "Hiển thị chi tiết",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 205,
+      "label": "Hiển thị lịch sử",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 205,
+      "label": "Sao chép URL",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 208,
+      "label": "Lịch sử / chứng cứ",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 209,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 212,
+      "label": "Mở lượt kiểm thử",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "line": 213,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+      "line": 53,
+      "label": "Công việc theo file",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+      "line": 54,
+      "label": "Nhập Excel",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+      "line": 55,
+      "label": "Tất cả test case",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+      "line": 56,
+      "label": "\"Làm mới tài liệu\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+      "line": 63,
+      "label": "Thử lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+      "line": 70,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+      "line": 70,
+      "label": "{`Công việc theo file của ${doc.fileName}`}",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+      "line": 75,
+      "label": "Thêm tài liệu Excel",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+      "line": 76,
+      "label": "\"Trang trước\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+      "line": 76,
+      "label": "\"Trang sau\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/AssignmentDialog.jsx",
+      "line": 74,
+      "label": "Đóng",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/AssignmentDialog.jsx",
+      "line": 76,
+      "label": "Tải bản hiện hành, giữ bản nháp",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/AssignmentDialog.jsx",
+      "line": 81,
+      "label": "Lưu phân công",
+      "form": {
+        "line": 78,
+        "submit": "{save}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/AttemptDialog.jsx",
+      "line": 46,
+      "label": "Đóng",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/AttemptDialog.jsx",
+      "line": 49,
+      "label": "Tải bản hiện hành, giữ bản nháp",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/AttemptDialog.jsx",
+      "line": 63,
+      "label": "",
+      "form": {
+        "line": 52,
+        "submit": "{submit}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/CycleDecisionDialog.jsx",
+      "line": 34,
+      "label": "Đóng",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/CycleDecisionDialog.jsx",
+      "line": 36,
+      "label": "Tải bản hiện hành, giữ bản nháp",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/CycleDecisionDialog.jsx",
+      "line": 40,
+      "label": "",
+      "form": {
+        "line": 38,
+        "submit": "{submit}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/CycleDecisionDialog.jsx",
+      "line": 55,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+      "line": 56,
+      "label": "Danh sách đợt",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+      "line": 61,
+      "label": "Bắt đầu đợt kiểm thử",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+      "line": 62,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+      "line": 64,
+      "label": "Xác nhận bắt đầu",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+      "line": 64,
+      "label": "Hủy",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+      "line": 66,
+      "label": "Tải lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+      "line": 68,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+      "line": 68,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+      "line": 68,
+      "label": "Phân công",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+      "line": 68,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ScopeSetup.jsx",
+      "line": 41,
+      "label": "Thêm cấu hình",
+      "form": {
+        "line": 37,
+        "submit": "{e => save(e, 'config')}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/ScopeSetup.jsx",
+      "line": 51,
+      "label": "Thêm case vào phạm vi",
+      "form": {
+        "line": 47,
+        "submit": "{e => save(e, 'scope')}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/TestCyclesPage.jsx",
+      "line": 34,
+      "label": "+ Tạo đợt kiểm thử",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/TestCyclesPage.jsx",
+      "line": 41,
+      "label": "",
+      "form": {
+        "line": 38,
+        "submit": "{create}"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/TestCyclesPage.jsx",
+      "line": 45,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/work-items/BoardPage.jsx",
+      "line": 144,
+      "label": "Xóa bộ lọc",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/work-items/BoardPage.jsx",
+      "line": 213,
+      "label": "Đang thực hiện",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/work-items/BoardPage.jsx",
+      "line": 229,
+      "label": "Hiển thị công việc",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/work-items/BoardPage.jsx",
+      "line": 256,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/work-items/BoardPage.jsx",
+      "line": 274,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/work-items/HomePage.jsx",
+      "line": 102,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/work-items/HomePage.jsx",
+      "line": 117,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/work-items/HomePage.jsx",
+      "line": 184,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/features/work-items/HomePage.jsx",
+      "line": 206,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/layouts/MainLayout.jsx",
+      "line": 38,
+      "label": "\"Đóng menu dự án\"",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/NotFoundPage.jsx",
+      "line": 4,
+      "label": "Về tổng quan",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 87,
+      "label": "Test case ( )",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 94,
+      "label": "Nhóm test case ( )",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 105,
+      "label": "Tài liệu Excel",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 108,
+      "label": "Đăng ký Case",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 114,
+      "label": "Tạo nhóm",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 123,
+      "label": "Nhập Excel",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 147,
+      "label": "Thử lại",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 158,
+      "label": "Tất cả ( )",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 165,
+      "label": "( )",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 226,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 246,
+      "label": "Trang trước",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 247,
+      "label": "Trang sau",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "line": 283,
+      "label": "Xem cases",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "line": 67,
+      "label": "Kanban",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "line": 67,
+      "label": "Danh sách",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "line": 81,
+      "label": "",
+      "form": null
+    },
+    {
+      "file": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "line": 82,
+      "label": "",
+      "form": null
+    }
+  ]
+}

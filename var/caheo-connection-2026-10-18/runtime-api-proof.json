@@ -1,0 +1,19 @@
+{
+  "readiness": 200,
+  "metadataHttp": 200,
+  "apiProvider": {
+    "code": "OPENAI_API",
+    "label": "API của hệ thống",
+    "enabled": true,
+    "available": true,
+    "reason": null,
+    "models": [
+      {
+        "id": "gpt-5.6-luna",
+        "label": "gpt-5.6-luna"
+      }
+    ],
+    "connection": null
+  },
+  "verifiedAt": "2026-10-18T09:50:07.833Z"
+}

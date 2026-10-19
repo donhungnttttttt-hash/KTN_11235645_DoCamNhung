@@ -1,0 +1,59 @@
+{
+  "appConnection": {
+    "ok": true,
+    "server": [
+      "9.7.0\t3307\ttms"
+    ]
+  },
+  "migrationConnection": {
+    "ok": true,
+    "server": [
+      "9.7.0\t3307\ttms"
+    ]
+  },
+  "schema": [
+    "76",
+    "29\t29\tsplit file assignments\tSQL\tV29__split_file_assignments.sql\t1",
+    "28\t28\tglobal admin execution attribution\tSQL\tV28__global_admin_execution_attribution.sql\t1",
+    "27\t27\tdocument edits and second test\tSQL\tV27__document_edits_and_second_test.sql\t1",
+    "26\t26\ttest case import identity author\tSQL\tV26__test_case_import_identity_author.sql\t1",
+    "25\t25\tprivate ai chats\tSQL\tV25__private_ai_chats.sql\t1",
+    "24\t24\tai provider provenance\tSQL\tV24__ai_provider_provenance.sql\t1",
+    "23\t23\ttemporary ai drafts\tSQL\tV23__temporary_ai_drafts.sql\t1",
+    "22\t22\tlocal scale demo data\tSQL\tV22__local_scale_demo_data.sql\t1",
+    "0"
+  ],
+  "sourceMigrationFiles": [
+    "V10__create_redmine_outbox.sql",
+    "V11__version_project_settings.sql",
+    "V12__retain_test_document_sources.sql",
+    "V13__persist_document_results.sql",
+    "V14__developer_role.sql",
+    "V15__create_device_inventory.sql",
+    "V16__project_status_reports.sql",
+    "V17__file_work_groups_and_sessions.sql",
+    "V18__qa_work_items.sql",
+    "V19__separate_qa_answer_pointer_index.sql",
+    "V1__create_foundation.sql",
+    "V21__project_lifecycle_decisions.sql",
+    "V23__temporary_ai_drafts.sql",
+    "V24__ai_provider_provenance.sql",
+    "V25__private_ai_chats.sql",
+    "V26__test_case_import_identity_author.sql",
+    "V27__document_edits_and_second_test.sql",
+    "V28__global_admin_execution_attribution.sql",
+    "V29__split_file_assignments.sql",
+    "V2__create_identity.sql",
+    "V3__create_project_catalogs.sql",
+    "V4__create_test_case_library.sql",
+    "V5__review_project_integrity.sql",
+    "V6__create_test_execution.sql",
+    "V7__create_work_items.sql",
+    "V8__create_bug_retest.sql",
+    "V9__create_cycle_decisions.sql"
+  ],
+  "demoMigrationFiles": [
+    "V20__local_role_demo_data.sql",
+    "V22__local_scale_demo_data.sql"
+  ]
+}

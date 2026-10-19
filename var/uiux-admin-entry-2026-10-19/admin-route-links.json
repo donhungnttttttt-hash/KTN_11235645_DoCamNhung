@@ -1,0 +1,57 @@
+[
+  {
+    "current": "Dự án",
+    "focus": "admin-main",
+    "heading": "Dự án",
+    "scrollTop": 0,
+    "url": "#/admin/projects",
+    "viewport": {
+      "h": 900,
+      "w": 1440
+    }
+  },
+  {
+    "current": "Người dùng",
+    "focus": "admin-main",
+    "heading": "Người dùng",
+    "scrollTop": 0,
+    "url": "#/admin/users",
+    "viewport": {
+      "h": 900,
+      "w": 1440
+    }
+  },
+  {
+    "current": "Thiết bị",
+    "focus": "admin-main",
+    "heading": "Kho thiết bị vật lý",
+    "scrollTop": 0,
+    "url": "#/admin/devices",
+    "viewport": {
+      "h": 900,
+      "w": 1440
+    }
+  },
+  {
+    "current": "Nhật ký quản trị",
+    "focus": "admin-main",
+    "heading": "Nhật ký quản trị",
+    "scrollTop": 0,
+    "url": "#/admin/audit",
+    "viewport": {
+      "h": 900,
+      "w": 1440
+    }
+  },
+  {
+    "current": "Tổng quan",
+    "focus": "admin-main",
+    "heading": "Tổng quan hệ thống",
+    "scrollTop": 0,
+    "url": "#/admin",
+    "viewport": {
+      "h": 900,
+      "w": 1440
+    }
+  }
+]

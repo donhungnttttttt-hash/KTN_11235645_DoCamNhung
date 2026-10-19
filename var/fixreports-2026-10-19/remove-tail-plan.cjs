@@ -1,0 +1,1 @@
+const fs=require('node:fs'),p='var/fixreports-2026-10-19/run-core-native.cjs';let s=fs.readFileSync(p,'utf8');s=s.replace(",'repair-tail':{schema:'tms_docstest_7cb4aee200db',test:'NativeFeatureTailRecoveryTest'}",'').replace(":mode==='repair-tail'?version==='33'",'');fs.writeFileSync(p,s);

@@ -1,0 +1,31 @@
+{
+  "frontendFull": {
+    "tests": 896,
+    "files": 82,
+    "revision": "Before final two small repairs"
+  },
+  "frontendFinalAi": {
+    "tests": 60,
+    "files": 4
+  },
+  "backendUnit": 165,
+  "native": 13,
+  "build": {
+    "status": "PASS",
+    "jsKb": 675.61
+  },
+  "runtime": {
+    "pid": 28580,
+    "health": "UP",
+    "schema": 30
+  },
+  "privatePreviewExcluded": true,
+  "paidCalls": 0,
+  "mainDatabaseFixtureWrites": 0,
+  "secretScan": {
+    "files": 1058,
+    "keyMatches": 0,
+    "paths": []
+  },
+  "fixtureRemoved": true
+}

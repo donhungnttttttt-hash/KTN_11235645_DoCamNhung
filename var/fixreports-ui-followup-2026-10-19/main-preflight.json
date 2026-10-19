@@ -1,0 +1,21 @@
+{
+  "capturedAt": "2026-10-19T02:04:31.838Z",
+  "mode": "SELECT_ONLY_NO_MIGRATION_OR_RUNTIME_CHANGE",
+  "schema": "tms",
+  "server": "127.0.0.1:3307",
+  "version": 30,
+  "failedMigrations": 0,
+  "oldTableCount": 76,
+  "committedSourceDocuments": 11,
+  "missingWorkbookSourceDocuments": 1,
+  "unfiledCasesRetained": 120,
+  "healthStatus": 200,
+  "healthUp": true,
+  "backup": {
+    "path": "var/mysql-native/backups/2026-10-19T01-00-03-809Z-tms.sql",
+    "sha256": "98be5f0e6a0d83d1da5fe0017460a993e3fdc090aa452cae5a6dd5ac12446410",
+    "bytes": 3504122,
+    "sessionRowsExcluded": true
+  },
+  "mainDomainMutationsInThisFollowup": 0
+}

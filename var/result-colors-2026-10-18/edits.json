@@ -1,0 +1,463 @@
+{
+  "tokens": {
+    "ok": "#0dd44c",
+    "ng": "#b60202",
+    "pending": "#f8f835",
+    "not-run": "#161c25",
+    "na": "#7a7a7c"
+  },
+  "foregrounds": {
+    "ok": "#000000",
+    "ng": "#ffffff",
+    "pending": "#000000",
+    "not-run": "#ffffff",
+    "na": "#000000"
+  },
+  "edits": [
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "selector": ".cat-status-ok",
+      "declarations": {
+        "background": "var(--color-result-ok)",
+        "color": "var(--color-result-ok-text)",
+        "font-weight": "600",
+        "border-radius": "3px",
+        "padding": "1px 4px"
+      }
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "selector": ".cat-kpi-block-ok",
+      "declarations": {
+        "background-color": "var(--color-result-ok)",
+        "color": "var(--color-result-ok-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "selector": ".cat-status-ng",
+      "declarations": {
+        "background": "var(--color-result-ng)",
+        "color": "var(--color-result-ng-text)",
+        "font-weight": "600",
+        "border-radius": "3px",
+        "padding": "1px 4px"
+      }
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "selector": ".cat-kpi-block-ng",
+      "declarations": {
+        "background-color": "var(--color-result-ng)",
+        "color": "var(--color-result-ng-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "selector": ".cat-status-pending",
+      "declarations": {
+        "background": "var(--color-result-pending)",
+        "color": "var(--color-result-pending-text)",
+        "font-weight": "600",
+        "border-radius": "3px",
+        "padding": "1px 4px"
+      }
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "selector": ".cat-kpi-block-pending",
+      "declarations": {
+        "background-color": "var(--color-result-pending)",
+        "color": "var(--color-result-pending-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "selector": ".cat-status-unexec",
+      "declarations": {
+        "background": "var(--color-result-not-run)",
+        "color": "var(--color-result-not-run-text)",
+        "font-weight": "600",
+        "border-radius": "3px",
+        "padding": "1px 4px"
+      }
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "selector": ".cat-kpi-block-unexec",
+      "declarations": {
+        "background-color": "var(--color-result-not-run)",
+        "color": "var(--color-result-not-run-text)",
+        "border": "1px solid var(--color-result-not-run)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "selector": ".cat-status-na",
+      "declarations": {
+        "background": "var(--color-result-na)",
+        "color": "var(--color-result-na-text)",
+        "font-weight": "600",
+        "border-radius": "3px",
+        "padding": "1px 4px"
+      }
+    },
+    {
+      "file": "Frontend/src/app/styles/global.css",
+      "selector": ".cat-kpi-block-na",
+      "declarations": {
+        "background-color": "var(--color-result-na)",
+        "color": "var(--color-result-na-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "selector": ".admin-bar-track span",
+      "declarations": {
+        "background": "var(--color-result-ok)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "selector": ".admin-bar-track .result-ok",
+      "declarations": {
+        "background": "var(--color-result-ok)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "selector": ".admin-bar-track .result-ng",
+      "declarations": {
+        "background": "var(--color-result-ng)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "selector": ".admin-bar-track .result-pending",
+      "declarations": {
+        "background": "var(--color-result-pending)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "selector": ".admin-bar-track .result-notRun",
+      "declarations": {
+        "background": "var(--color-result-not-run)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/admin/admin.css",
+      "selector": ".admin-bar-track .result-na",
+      "declarations": {
+        "background": "var(--color-result-na)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/execution.css",
+      "selector": ".ex-result",
+      "declarations": {
+        "background": "var(--color-result-not-run)",
+        "color": "var(--color-result-not-run-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/execution.css",
+      "selector": ".ex-result-OK",
+      "declarations": {
+        "background": "var(--color-result-ok)",
+        "color": "var(--color-result-ok-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/execution.css",
+      "selector": ".ex-result-NG",
+      "declarations": {
+        "background": "var(--color-result-ng)",
+        "color": "var(--color-result-ng-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/execution.css",
+      "selector": ".ex-result-P",
+      "declarations": {
+        "background": "var(--color-result-pending)",
+        "color": "var(--color-result-pending-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/execution.css",
+      "selector": ".ex-result-NOT_RUN",
+      "declarations": {
+        "background": "var(--color-result-not-run)",
+        "color": "var(--color-result-not-run-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-execution/execution.css",
+      "selector": ".ex-result-NA",
+      "declarations": {
+        "background": "var(--color-result-na)",
+        "color": "var(--color-result-na-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/file-work.css",
+      "selector": ".fw-page .fw-result-OK",
+      "declarations": {
+        "background": "var(--color-result-ok)",
+        "color": "var(--color-result-ok-text)",
+        "border-color": "var(--color-result-ok)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/file-work.css",
+      "selector": ".fw-page .fw-result-NG",
+      "declarations": {
+        "background": "var(--color-result-ng)",
+        "color": "var(--color-result-ng-text)",
+        "border-color": "var(--color-result-ng)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/file-work.css",
+      "selector": ".fw-page .fw-result-P",
+      "declarations": {
+        "background": "var(--color-result-pending)",
+        "color": "var(--color-result-pending-text)",
+        "border-color": "var(--color-result-pending)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/file-work.css",
+      "selector": ".fw-page .fw-result-NOT_RUN",
+      "declarations": {
+        "background": "var(--color-result-not-run)",
+        "color": "var(--color-result-not-run-text)",
+        "border-color": "var(--color-result-not-run)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/file-work/file-work.css",
+      "selector": ".fw-page .fw-result-NA",
+      "declarations": {
+        "background": "var(--color-result-na)",
+        "color": "var(--color-result-na-text)",
+        "border-color": "var(--color-result-na)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/reports/reports.css",
+      "selector": ".rp-page .cat-kpi-block-ok",
+      "declarations": {
+        "background": "var(--color-result-ok)",
+        "color": "var(--color-result-ok-text)",
+        "border-color": "var(--color-result-ok)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/reports/reports.css",
+      "selector": ".rp-page .cat-kpi-block-ng",
+      "declarations": {
+        "background": "var(--color-result-ng)",
+        "color": "var(--color-result-ng-text)",
+        "border-color": "var(--color-result-ng)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/reports/reports.css",
+      "selector": ".rp-page .cat-kpi-block-pending",
+      "declarations": {
+        "background": "var(--color-result-pending)",
+        "color": "var(--color-result-pending-text)",
+        "border-color": "var(--color-result-pending)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/reports/reports.css",
+      "selector": ".rp-page .cat-kpi-block-unexec",
+      "declarations": {
+        "background": "var(--color-result-not-run)",
+        "color": "var(--color-result-not-run-text)",
+        "border-color": "var(--color-result-not-run)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/reports/reports.css",
+      "selector": ".rp-page .cat-kpi-block-na",
+      "declarations": {
+        "background": "var(--color-result-na)",
+        "color": "var(--color-result-na-text)",
+        "border-color": "var(--color-result-na)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/reports/reports.css",
+      "selector": ".rp-meter span",
+      "declarations": {
+        "background": "var(--color-result-ok)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-count-ok",
+      "declarations": {
+        "background": "var(--color-result-ok)",
+        "color": "var(--color-result-ok-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-result-ok",
+      "declarations": {
+        "background": "var(--color-result-ok)",
+        "color": "var(--color-result-ok-text)",
+        "border": "2px solid var(--color-result-ok)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-count-ng",
+      "declarations": {
+        "background": "var(--color-result-ng)",
+        "color": "var(--color-result-ng-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-result-ng",
+      "declarations": {
+        "background": "var(--color-result-ng)",
+        "color": "var(--color-result-ng-text)",
+        "border": "2px solid var(--color-result-ng)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-count-p",
+      "declarations": {
+        "background": "var(--color-result-pending)",
+        "color": "var(--color-result-pending-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-count-pending",
+      "declarations": {
+        "background": "var(--color-result-pending)",
+        "color": "var(--color-result-pending-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-result-pending",
+      "declarations": {
+        "background": "var(--color-result-pending)",
+        "color": "var(--color-result-pending-text)",
+        "border": "2px solid var(--color-result-pending)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-count-unexecuted",
+      "declarations": {
+        "background": "var(--color-result-not-run)",
+        "color": "var(--color-result-not-run-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-result-unexecuted",
+      "declarations": {
+        "background": "var(--color-result-not-run)",
+        "color": "var(--color-result-not-run-text)",
+        "border": "2px solid var(--color-result-not-run)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-count-na",
+      "declarations": {
+        "background": "var(--color-result-na)",
+        "color": "var(--color-result-na-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-result-na",
+      "declarations": {
+        "background": "var(--color-result-na)",
+        "color": "var(--color-result-na-text)",
+        "border": "2px solid var(--color-result-na)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-highlight .td-case-grid .td-outcome-ok",
+      "declarations": {
+        "background": "color-mix(in srgb, var(--color-result-ok) 12%, white)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-highlight .td-case-grid .td-outcome-ng",
+      "declarations": {
+        "background": "color-mix(in srgb, var(--color-result-ng) 12%, white)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-highlight .td-case-grid .td-outcome-pending",
+      "declarations": {
+        "background": "color-mix(in srgb, var(--color-result-pending) 12%, white)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-highlight .td-case-grid .td-outcome-na",
+      "declarations": {
+        "background": "color-mix(in srgb, var(--color-result-na) 12%, white)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-highlight .td-case-grid .td-outcome--",
+      "declarations": {
+        "background": "color-mix(in srgb, var(--color-result-not-run) 12%, white)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/test-cases/test-documents.css",
+      "selector": ".td-result:disabled",
+      "declarations": {
+        "border-style": "dashed"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/retest/retest.css",
+      "selector": ".rt-verdict",
+      "declarations": {
+        "background": "var(--color-result-not-run)",
+        "color": "var(--color-result-not-run-text)",
+        "display": "inline-block",
+        "padding": "3px 7px",
+        "border-radius": "4px"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/retest/retest.css",
+      "selector": ".rt-verdict.PASS",
+      "declarations": {
+        "background": "var(--color-result-ok)",
+        "color": "var(--color-result-ok-text)"
+      }
+    },
+    {
+      "file": "Frontend/src/app/features/retest/retest.css",
+      "selector": ".rt-verdict.FAIL",
+      "declarations": {
+        "background": "var(--color-result-ng)",
+        "color": "var(--color-result-ng-text)"
+      }
+    }
+  ]
+}

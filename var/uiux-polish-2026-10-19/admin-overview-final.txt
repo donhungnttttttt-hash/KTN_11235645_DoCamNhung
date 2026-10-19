@@ -1,0 +1,333 @@
+- link "Đến nội dung":
+  - /url: "#admin-main"
+- banner:
+  - strong: TMS
+  - generic: Quản trị hệ thống
+  - generic: FR12 Admin
+  - button "Đăng xuất"
+  - button "Mở chat AI":
+- complementary:
+  - navigation "Quản trị":
+    - link "Tổng quan":
+      - /url: "#/admin"
+      - generic: Tổng quan
+    - link "Dự án":
+      - /url: "#/admin/projects"
+      - generic: Dự án
+    - link "Người dùng":
+      - /url: "#/admin/users"
+      - generic: Người dùng
+    - link "Thiết bị":
+      - /url: "#/admin/devices"
+      - generic: Thiết bị
+    - link "Nhật ký quản trị":
+      - /url: "#/admin/audit"
+      - generic: Nhật ký quản trị
+    - link "Không gian dự án":
+      - /url: "#/dashboard?workspace=1"
+      - generic: Không gian dự án
+  - strong: S+TMS
+  - generic: Quản trị tập trung
+- main:
+  - heading "Tổng quan hệ thống" [level=1]
+  - paragraph: Tất cả dự án · Cập nhật 11:16:34 19/10/2026
+  - button "Tải lại"
+  - article:
+    - heading "Dự án hoạt động" [level=2]
+    - strong: "212"
+    - paragraph: 221 dự án trong phạm vi
+  - article:
+    - heading "Tài khoản hoạt động" [level=2]
+    - strong: "1439"
+    - paragraph: 1439 tài khoản duy nhất
+  - article:
+    - heading "Tiến độ kiểm thử" [level=2]
+    - strong: 10.57%
+    - paragraph: 127/1202 case đã test
+  - article:
+    - heading "Bug chưa kết thúc" [level=2]
+    - strong: "63"
+    - paragraph: 0 đã xử lý, chờ xác minh
+  - article:
+    - heading "Máy đang bàn giao / sẵn sàng" [level=2]
+    - strong: 2 / 0
+    - paragraph: 0 bảo trì · 0 ngừng sử dụng (ngoài tồn kho)
+  - heading "Tiến độ theo dự án" [level=2]
+  - paragraph: Hiển thị 10/221 dự án; KPI tính trên toàn phạm vi.
+  - link "Feature thử":
+    - /url: "#/admin/projects/1"
+  - generic: 0%
+  - link "Feature thử":
+    - /url: "#/admin/projects/2"
+  - generic: 0%
+  - link "Feature thử":
+    - /url: "#/admin/projects/3"
+  - generic: 0%
+  - link "Feature thử":
+    - /url: "#/admin/projects/4"
+  - generic: 60%
+  - link "Feature thử":
+    - /url: "#/admin/projects/5"
+  - generic: 0%
+  - link "Feature thử":
+    - /url: "#/admin/projects/6"
+  - generic: 0%
+  - link "Feature thử":
+    - /url: "#/admin/projects/7"
+  - generic: 0%
+  - link "Feature thử":
+    - /url: "#/admin/projects/8"
+  - generic: 0%
+  - link "Feature thử":
+    - /url: "#/admin/projects/9"
+  - generic: 60%
+  - link "Feature thử":
+    - /url: "#/admin/projects/10"
+  - generic: 0%
+  - heading "Status test case" [level=2]
+  - paragraph: NA và P đều tính là đã test; NA vẫn thuộc tổng số case.
+  - generic "Phân bố kết quả thực thi":
+    - generic: "OK: 77"
+    - generic: "NG: 0"
+    - generic: "P: 25"
+    - generic: "Chưa chạy: 1075"
+    - generic: "NA: 25"
+  - paragraph: "Tỷ lệ đạt: 6.41%"
+  - heading "Tài khoản theo vai trò hệ thống" [level=2]
+  - table:
+    - rowgroup:
+      - row "Vai trò Tổng Hoạt động":
+        - columnheader "Vai trò"
+        - columnheader "Tổng"
+        - columnheader "Hoạt động"
+    - rowgroup:
+      - row "ADMIN 410 410":
+        - rowheader "ADMIN"
+        - cell "410"
+        - cell "410"
+      - row "DEV 208 208":
+        - rowheader "DEV"
+        - cell "208"
+        - cell "208"
+      - row "PM 416 416":
+        - rowheader "PM"
+        - cell "416"
+        - cell "416"
+      - row "TESTER 405 405":
+        - rowheader "TESTER"
+        - cell "405"
+        - cell "405"
+  - heading "Membership hoạt động theo dự án" [level=3]
+  - group "Membership theo dự án":
+    - table:
+      - rowgroup:
+        - row "Nhóm Số lượng":
+          - columnheader "Nhóm"
+          - columnheader "Số lượng"
+      - rowgroup:
+        - row "Feature thử 5":
+          - rowheader "Feature thử"
+          - cell "5": "5"
+        - row "Feature thử 5":
+          - rowheader "Feature thử"
+          - cell "5": "5"
+        - row "Feature thử 5":
+          - rowheader "Feature thử"
+          - cell "5": "5"
+        - row "Feature thử 5":
+          - rowheader "Feature thử"
+          - cell "5": "5"
+        - row "Feature thử 5":
+          - rowheader "Feature thử"
+          - cell "5": "5"
+        - row "Feature thử 5":
+          - rowheader "Feature thử"
+          - cell "5": "5"
+        - row "Feature thử 5":
+          - rowheader "Feature thử"
+          - cell "5": "5"
+        - row "Feature thử 5":
+          - rowheader "Feature thử"
+          - cell "5": "5"
+        - row "Feature thử 5":
+          - rowheader "Feature thử"
+          - cell "5": "5"
+        - row "Feature thử 5":
+          - rowheader "Feature thử"
+          - cell "5": "5"
+  - paragraph: Thành viên từng dự án được đếm theo membership; một người có thể tham gia nhiều dự án.
+  - heading "Kho thiết bị" [level=2]
+  - group "Máy theo loại và tình trạng":
+    - table:
+      - rowgroup:
+        - row "Nhóm Số lượng":
+          - columnheader "Nhóm"
+          - columnheader "Số lượng"
+      - rowgroup:
+        - row "IPAD · Đang bàn giao 2":
+          - rowheader "IPAD · Đang bàn giao"
+          - cell "2": "2"
+  - paragraph: Chỉ tính máy vật lý; mỗi máy đang giao thuộc một dự án. Ngừng sử dụng hiển thị riêng, ngoài tồn kho.
+  - link "Mở kho máy":
+    - /url: "#/admin/devices"
+  - heading "Dự án trong biểu đồ" [level=2]
+  - paragraph: Kéo thanh cuộn ngang để xem thêm cột. Có thể dùng Shift + con lăn hoặc phím ← → khi chọn bảng.
+  - region "Bảng tổng hợp dự án":
+    - table:
+      - rowgroup:
+        - row "Dự án PM hoạt động Thành viên hoạt động Tổng case Đã test Tỷ lệ OK Bug mở Mốc quá hạn Máy đang giữ Trạng thái":
+          - columnheader "Dự án"
+          - columnheader "PM hoạt động"
+          - columnheader "Thành viên hoạt động"
+          - columnheader "Tổng case"
+          - columnheader "Đã test"
+          - columnheader "Tỷ lệ OK"
+          - columnheader "Bug mở"
+          - columnheader "Mốc quá hạn"
+          - columnheader "Máy đang giữ"
+          - columnheader "Trạng thái"
+      - rowgroup:
+        - row "FR2029c651 · Feature thử admin2029c651, pm2029c651 5 0 0% 0% 0 0 0 Hoạt động":
+          - rowheader "FR2029c651 · Feature thử":
+            - link "FR2029c651 · Feature thử":
+              - /url: "#/admin/projects/1"
+          - cell "admin2029c651, pm2029c651"
+          - cell "5"
+          - cell "0"
+          - cell "0%"
+          - cell "0%"
+          - cell "0"
+          - cell "0"
+          - cell "0"
+          - cell "Hoạt động"
+        - row "FR64bf36d4 · Feature thử admin64bf36d4, pm64bf36d4 5 0 0% 0% 0 0 0 Hoạt động":
+          - rowheader "FR64bf36d4 · Feature thử":
+            - link "FR64bf36d4 · Feature thử":
+              - /url: "#/admin/projects/2"
+          - cell "admin64bf36d4, pm64bf36d4"
+          - cell "5"
+          - cell "0"
+          - cell "0%"
+          - cell "0%"
+          - cell "0"
+          - cell "0"
+          - cell "0"
+          - cell "Hoạt động"
+        - row "FR1be05768 · Feature thử admin1be05768, pm1be05768 5 10 0% 0% 0 0 0 Hoạt động":
+          - rowheader "FR1be05768 · Feature thử":
+            - link "FR1be05768 · Feature thử":
+              - /url: "#/admin/projects/3"
+          - cell "admin1be05768, pm1be05768"
+          - cell "5"
+          - cell "10"
+          - cell "0%"
+          - cell "0%"
+          - cell "0"
+          - cell "0"
+          - cell "0"
+          - cell "Hoạt động"
+        - row "FRfb923fcc · Feature thử adminfb923fcc, pmfb923fcc 5 5 60% 20% 0 0 0 Hoạt động":
+          - rowheader "FRfb923fcc · Feature thử":
+            - link "FRfb923fcc · Feature thử":
+              - /url: "#/admin/projects/4"
+          - cell "adminfb923fcc, pmfb923fcc"
+          - cell "5"
+          - cell "5"
+          - cell "60%"
+          - cell "20%"
+          - cell "0"
+          - cell "0"
+          - cell "0"
+          - cell "Hoạt động"
+        - row "FR31b2b61f · Feature thử admin31b2b61f, pm31b2b61f 5 5 0% 0% 0 0 0 Hoạt động":
+          - rowheader "FR31b2b61f · Feature thử":
+            - link "FR31b2b61f · Feature thử":
+              - /url: "#/admin/projects/5"
+          - cell "admin31b2b61f, pm31b2b61f"
+          - cell "5"
+          - cell "5"
+          - cell "0%"
+          - cell "0%"
+          - cell "0"
+          - cell "0"
+          - cell "0"
+          - cell "Hoạt động"
+        - row "FR64c8b9aa · Feature thử creator64c8b9aa, pm64c8b9aa 5 0 0% 0% 0 0 0 Hoạt động":
+          - rowheader "FR64c8b9aa · Feature thử":
+            - link "FR64c8b9aa · Feature thử":
+              - /url: "#/admin/projects/6"
+          - cell "creator64c8b9aa, pm64c8b9aa"
+          - cell "5"
+          - cell "0"
+          - cell "0%"
+          - cell "0%"
+          - cell "0"
+          - cell "0"
+          - cell "0"
+          - cell "Hoạt động"
+        - row "FR90aaa3ec · Feature thử creator90aaa3ec, pm90aaa3ec 5 0 0% 0% 0 0 0 Hoạt động":
+          - rowheader "FR90aaa3ec · Feature thử":
+            - link "FR90aaa3ec · Feature thử":
+              - /url: "#/admin/projects/7"
+          - cell "creator90aaa3ec, pm90aaa3ec"
+          - cell "5"
+          - cell "0"
+          - cell "0%"
+          - cell "0%"
+          - cell "0"
+          - cell "0"
+          - cell "0"
+          - cell "Hoạt động"
+        - row "FR5db4ccc9 · Feature thử creator5db4ccc9, pm5db4ccc9 5 10 0% 0% 0 0 0 Hoạt động":
+          - rowheader "FR5db4ccc9 · Feature thử":
+            - link "FR5db4ccc9 · Feature thử":
+              - /url: "#/admin/projects/8"
+          - cell "creator5db4ccc9, pm5db4ccc9"
+          - cell "5"
+          - cell "10"
+          - cell "0%"
+          - cell "0%"
+          - cell "0"
+          - cell "0"
+          - cell "0"
+          - cell "Hoạt động"
+        - row "FRb3e71a20 · Feature thử creatorb3e71a20, pmb3e71a20 5 5 60% 20% 0 0 0 Hoạt động":
+          - rowheader "FRb3e71a20 · Feature thử":
+            - link "FRb3e71a20 · Feature thử":
+              - /url: "#/admin/projects/9"
+          - cell "creatorb3e71a20, pmb3e71a20"
+          - cell "5"
+          - cell "5"
+          - cell "60%"
+          - cell "20%"
+          - cell "0"
+          - cell "0"
+          - cell "0"
+          - cell "Hoạt động"
+        - row "FRc01d2532 · Feature thử creatorc01d2532, pmc01d2532 5 5 0% 0% 0 0 0 Hoạt động":
+          - rowheader "FRc01d2532 · Feature thử":
+            - link "FRc01d2532 · Feature thử":
+              - /url: "#/admin/projects/10"
+          - cell "creatorc01d2532, pmc01d2532"
+          - cell "5"
+          - cell "5"
+          - cell "0%"
+          - cell "0%"
+          - cell "0"
+          - cell "0"
+          - cell "0"
+          - cell "Hoạt động"
+  - link "Xem toàn bộ dự án":
+    - /url: "#/admin/projects"
+  - heading "Cần chú ý" [level=2]
+  - heading "Mốc quá hạn (0)" [level=3]
+  - paragraph: Không có cảnh báo quá hạn.
+  - paragraph: 0 mốc chưa đủ dữ liệu về hạn hoặc phạm vi.
+  - heading "Chưa có PM hoạt động (0)" [level=3]
+  - paragraph: Không có dự án cần bổ sung PM.
+  - heading "Đã xử lý, chờ xác minh (0)" [level=3]
+  - paragraph: Không có bug chờ xác minh.
+  - paragraph: Danh sách chú ý hiển thị tối đa 20 mục mỗi nhóm.
+  - heading "Máy quá hạn trả (0)" [level=3]
+  - paragraph: Không có máy quá hạn trả.
+  - paragraph: Đã test = (OK + NG + P + NA) / tổng case của file và Feature đang hoạt động. Tỷ lệ OK = OK / tổng case. File rỗng có tiến độ 0%. Đóng Issue không tự đổi Status case.

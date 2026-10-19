@@ -1,0 +1,293 @@
+{
+  "verifiedAt": "2026-10-19T03:38:13.427Z",
+  "branch": "system-design",
+  "baselineFiles": 2823,
+  "baselineProductFiles": 725,
+  "productChanged": [
+    "Frontend/src/app/features/projects/ProjectInformation.jsx",
+    "Frontend/src/app/features/projects/project-information.css",
+    "Frontend/src/app/modules/ProjectOverview.jsx",
+    "Frontend/src/app/modules/ProjectOverview.permissions.test.jsx",
+    "Frontend/src/app/modules/ProjectOverview.test.jsx",
+    "Frontend/src/app/styles/project-overview.css"
+  ],
+  "backendChanged": [],
+  "newProduct": [
+    "Frontend/src/app/modules/ProjectOverview.layout.test.jsx"
+  ],
+  "unexpectedChanges": [],
+  "docStats": [
+    {
+      "file": "docs/planning/README.md",
+      "sha256": "4b7144cb0b9211e7292a11c50d59abd7597b87fa4921ac88f6bd1c2b23d60bd5",
+      "localLinks": 79
+    },
+    {
+      "file": "docs/planning/2026-10-19-fixreports-clarification.md",
+      "sha256": "f48b2b4c4774d50c5a81343596d29808682e7bf0e84b4ba02a66e59f81a23862",
+      "localLinks": 6
+    },
+    {
+      "file": "docs/reviews/2026-10-19-uiux-system-audit.md",
+      "sha256": "1029851be55ff8a6563d55ee8909348075b5e63067cf5cddc0d6d21ef167aa9b",
+      "localLinks": 43
+    },
+    {
+      "file": "docs/reviews/2026-10-19-uiux-system-coverage.md",
+      "sha256": "854e927e18b7a155e95ddc373cca0568ebc133ee705d231acf7aa9d70fabdfab",
+      "localLinks": 148
+    },
+    {
+      "file": "docs/reviews/2026-10-19-uiux-recheck-and-overview-correction.md",
+      "sha256": "983b066027d612da7ef485b0398a0dfefe4aeaaaef0afe298d324be60c1f8028",
+      "localLinks": 22
+    }
+  ],
+  "brokenLinks": [],
+  "tableErrors": [],
+  "tests": {
+    "success": true,
+    "passed": 985,
+    "total": 985,
+    "failed": 0,
+    "skipped": 0,
+    "files": 106
+  },
+  "build": {
+    "dateLocal": "2026-10-19",
+    "cwd": "Frontend",
+    "command": "rtk proxy npm.cmd run build",
+    "exitCode": 0,
+    "tool": "Vite 6.4.3",
+    "modulesTransformed": 1696,
+    "durationSeconds": 7.19,
+    "result": "PASS",
+    "coverage": "NOT_MEASURED",
+    "backendChanged": false
+  },
+  "previews": [
+    {
+      "name": "overview-main-after",
+      "height": 862,
+      "pageWidth": 1376,
+      "width": 1381,
+      "regions": [
+        {
+          "name": "Thông tin dự án",
+          "height": 903.9000244140624,
+          "width": 730.6000366210938,
+          "x": 216.00001525878903,
+          "y": 230.1333465576172
+        },
+        {
+          "name": "Trạng thái công việc",
+          "height": 484.7333679199219,
+          "width": 393.4000244140625,
+          "x": 966.6000366210938,
+          "y": 230.1333465576172
+        },
+        {
+          "name": "Mốc phát hành",
+          "height": 70.93333435058594,
+          "width": 393.4000244140625,
+          "x": 966.6000366210938,
+          "y": 736.86669921875
+        }
+      ]
+    },
+    {
+      "name": "overview-tester-1440",
+      "height": 1000,
+      "pageWidth": 1434,
+      "width": 1440,
+      "regions": [
+        {
+          "name": "Thông tin dự án",
+          "height": 902.2999877929688,
+          "width": 768.5499877929688,
+          "x": 216,
+          "y": 133
+        },
+        {
+          "name": "Trạng thái công việc",
+          "height": 464.3999938964844,
+          "width": 413.8500061035156,
+          "x": 1004.5499877929688,
+          "y": 133
+        },
+        {
+          "name": "Mốc phát hành",
+          "height": 70.4000015258789,
+          "width": 413.8500061035156,
+          "x": 1004.5499877929688,
+          "y": 619.4000244140625
+        }
+      ]
+    },
+    {
+      "name": "overview-tester-768",
+      "height": 1024,
+      "pageWidth": 762,
+      "width": 768,
+      "regions": [
+        {
+          "name": "Thông tin dự án",
+          "height": 986.2999877929688,
+          "width": 530.4000244140625,
+          "x": 216,
+          "y": 133
+        },
+        {
+          "name": "Trạng thái công việc",
+          "height": 486.3999938964844,
+          "width": 530.4000244140625,
+          "x": 216,
+          "y": 1141.300048828125
+        },
+        {
+          "name": "Mốc phát hành",
+          "height": 70.4000015258789,
+          "width": 530.4000244140625,
+          "x": 216,
+          "y": 1627.7000732421875
+        }
+      ]
+    },
+    {
+      "name": "overview-tester-390-top",
+      "height": 844,
+      "pageWidth": 385,
+      "width": 390,
+      "regions": [
+        {
+          "name": "Thông tin dự án",
+          "height": 1224.300048828125,
+          "width": 364.8000183105469,
+          "x": 10,
+          "y": 133
+        },
+        {
+          "name": "Trạng thái công việc",
+          "height": 486.3999938964844,
+          "width": 364.8000183105469,
+          "x": 10,
+          "y": 1379.300048828125
+        },
+        {
+          "name": "Mốc phát hành",
+          "height": 70.4000015258789,
+          "width": 364.8000183105469,
+          "x": 10,
+          "y": 1865.7000732421875
+        }
+      ]
+    },
+    {
+      "name": "overview-tester-320",
+      "height": 844,
+      "pageWidth": 314,
+      "width": 320,
+      "regions": [
+        {
+          "name": "Thông tin dự án",
+          "height": 1389.300048828125,
+          "width": 294.3999938964844,
+          "x": 10,
+          "y": 175
+        },
+        {
+          "name": "Trạng thái công việc",
+          "height": 490,
+          "width": 294.3999938964844,
+          "x": 10,
+          "y": 1586.300048828125
+        },
+        {
+          "name": "Mốc phát hành",
+          "height": 70.4000015258789,
+          "width": 294.3999938964844,
+          "x": 10,
+          "y": 2076.300048828125
+        }
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "port": 5173,
+      "file": "src/app/modules/ProjectOverview.jsx",
+      "status": 200,
+      "sourceMatches": true
+    },
+    {
+      "port": 5173,
+      "file": "src/app/features/projects/ProjectInformation.jsx",
+      "status": 200,
+      "sourceMatches": true
+    },
+    {
+      "port": 5174,
+      "file": "src/app/modules/ProjectOverview.jsx",
+      "status": 200,
+      "sourceMatches": true
+    },
+    {
+      "port": 5174,
+      "file": "src/app/features/projects/ProjectInformation.jsx",
+      "status": 200,
+      "sourceMatches": true
+    }
+  ],
+  "health": [
+    {
+      "origin": "http://127.0.0.1:8080",
+      "status": 200,
+      "up": true
+    },
+    {
+      "origin": "http://127.0.0.1:8081",
+      "status": 200,
+      "up": true
+    },
+    {
+      "origin": "http://localhost:5173",
+      "status": 200,
+      "up": true
+    },
+    {
+      "origin": "http://127.0.0.1:5174",
+      "status": 200,
+      "up": true
+    }
+  ],
+  "schemas": [
+    {
+      "schema": "tms",
+      "flyway": "33",
+      "failed": 0
+    },
+    {
+      "schema": "tms_docstest_2060e04c986c",
+      "flyway": "33",
+      "failed": 0
+    }
+  ],
+  "session": {
+    "mainOwnSession": "LOGOUT_CONFIRMED",
+    "isolatedOwnSession": "LOGOUT_CONFIRMED",
+    "viewportOverride": "RESET",
+    "domainWrites": 0,
+    "liveProviderCalls": 0
+  },
+  "diffCheck": 0,
+  "secretScan": {
+    "files": 32,
+    "keyMatches": 0
+  },
+  "activeSprint": "S11",
+  "fr12": "IN_REVIEW_MANUAL_BROWSER_UPLOAD_DOWNLOAD_LIVE_UAT_GAPS",
+  "auditRecheckStatus": "OVERVIEW_FIXED_RECHECK_FINDINGS_OPEN",
+  "domainWritesByAuditor": 0,
+  "environmentMutationsByAuditor": 0,
+  "ok": true
+}

@@ -1,0 +1,17 @@
+{
+  "executedAtLocal": "2026-10-19T09:47:41+07:00",
+  "cwd": "Frontend",
+  "command": "rtk proxy npm.cmd test -- src/app/features/ai/AiChat.test.jsx src/app/features/projects/ProjectNotes.test.jsx src/app/features/reports/ManagementAnalysisPage.test.jsx",
+  "runner": "vitest 4.1.11",
+  "filesPassed": 3,
+  "filesTotal": 3,
+  "testsPassed": 78,
+  "testsTotal": 78,
+  "durationSeconds": 8.78,
+  "exitCode": 0,
+  "coverage": "NOT_MEASURED",
+  "scope": "Existing mocked component tests only; not live provider, real browser geometry, or native database proof",
+  "newTestsWritten": false,
+  "build": "NOT_RUN_AUDIT_ONLY_NO_PRODUCT_CHANGE",
+  "lintTypecheck": "NOT_CONFIGURED"
+}

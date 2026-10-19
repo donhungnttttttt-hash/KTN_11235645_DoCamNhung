@@ -1,0 +1,12 @@
+{
+  "path": "var\\mysql-native\\backups\\2026-10-19T02-04-46-677Z-tms.sql",
+  "createdAt": "2026-10-19T02:04:47.649Z",
+  "source": "127.0.0.1:3307 / native mysql client",
+  "schema": "tms",
+  "schemaVersion": 30,
+  "sessionRowsExcluded": true,
+  "sha256": "159fe94ffd90539b1e1fc3cf8bf16347e8b259c189f651c67da771e03f8c2c2c",
+  "bytes": 3504332,
+  "evidenceDirectory": "Backend/var/evidence",
+  "note": "Keep writers stopped during transfer; evidence files must accompany DB when moving machines."
+}

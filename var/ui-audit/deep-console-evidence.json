@@ -1,0 +1,53 @@
+{
+  "sinceFinalReload": "2026-10-11T11:09:40Z",
+  "entries": [
+    {
+      "level": "error",
+      "message": "TypeError: Cannot destructure property 'status' of 'useAuth(...)' as it is null.\n    at AuthBoundary (http://localhost:5173/src/app/features/auth/AuthBoundary.jsx:166:11)\n    at renderWithHooks (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:11594:26)\n    at mountIndeterminateComponent (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:14972:21)\n    at beginWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:15960:22)\n    at HTMLUnknownElement.callCallback2 (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3678:22)\n    at Object.invokeGuardedCallbackDev (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3703:24)\n    at invokeGuardedCallback (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3737:39)\n    at beginWork$1 (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19816:15)\n    at performUnitOfWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19249:20)\n    at workLoopSync (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19188:13)",
+      "timestamp": "2026-10-11T10:57:27.976Z",
+      "url": "http://localhost:5173/src/app/features/auth/AuthBoundary.jsx"
+    },
+    {
+      "level": "error",
+      "message": "TypeError: Cannot destructure property 'status' of 'useAuth(...)' as it is null.\n    at AuthBoundary (http://localhost:5173/src/app/features/auth/AuthBoundary.jsx:166:11)\n    at renderWithHooks (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:11594:26)\n    at mountIndeterminateComponent (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:14972:21)\n    at beginWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:15960:22)\n    at HTMLUnknownElement.callCallback2 (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3678:22)\n    at Object.invokeGuardedCallbackDev (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3703:24)\n    at invokeGuardedCallback (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3737:39)\n    at beginWork$1 (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19816:15)\n    at performUnitOfWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19249:20)\n    at workLoopSync (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19188:13)",
+      "timestamp": "2026-10-11T10:57:27.987Z",
+      "url": "http://localhost:5173/src/app/features/auth/AuthBoundary.jsx"
+    },
+    {
+      "level": "error",
+      "message": "The above error occurred in the <AuthBoundary> component:\n\n    at AuthBoundary (http://localhost:5173/src/app/features/auth/AuthBoundary.jsx:164:32)\n    at AuthenticatedShell (http://localhost:5173/src/AppEntry.jsx?t=1791715954004:82:29)\n    at AuthProvider (http://localhost:5173/src/app/features/auth/AuthProvider.jsx?t=1791716247088:31:32)\n    at AppEntry\n\nConsider adding an error boundary to your tree to customize error handling behavior.\nVisit https://reactjs.org/link/error-boundaries to learn more about error boundaries.",
+      "timestamp": "2026-10-11T10:57:28.018Z",
+      "url": "http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160"
+    },
+    {
+      "level": "error",
+      "message": "TypeError: Cannot destructure property 'status' of 'useAuth(...)' as it is null.\n    at AuthBoundary (http://localhost:5173/src/app/features/auth/AuthBoundary.jsx:166:11)\n    at renderWithHooks (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:11594:26)\n    at mountIndeterminateComponent (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:14972:21)\n    at beginWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:15960:22)\n    at beginWork$1 (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19804:22)\n    at performUnitOfWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19249:20)\n    at workLoopSync (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19188:13)\n    at renderRootSync (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19167:15)\n    at recoverFromConcurrentError (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:18784:28)\n    at performSyncWorkOnRoot (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:18930:28)",
+      "timestamp": "2026-10-11T10:57:28.034Z",
+      "url": "http://localhost:5173/src/app/features/auth/AuthBoundary.jsx"
+    },
+    {
+      "level": "error",
+      "message": "TypeError: Cannot destructure property 'status' of 'useAuth(...)' as it is null.\n    at AuthBoundary (http://localhost:5173/src/app/features/auth/AuthBoundary.jsx?t=1791716247088:166:11)\n    at renderWithHooks (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:11594:26)\n    at mountIndeterminateComponent (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:14972:21)\n    at beginWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:15960:22)\n    at HTMLUnknownElement.callCallback2 (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3678:22)\n    at Object.invokeGuardedCallbackDev (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3703:24)\n    at invokeGuardedCallback (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3737:39)\n    at beginWork$1 (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19816:15)\n    at performUnitOfWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19249:20)\n    at workLoopSync (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19188:13)",
+      "timestamp": "2026-10-11T10:58:08.863Z",
+      "url": "http://localhost:5173/src/app/features/auth/AuthBoundary.jsx?t=1791716247088"
+    },
+    {
+      "level": "error",
+      "message": "TypeError: Cannot destructure property 'status' of 'useAuth(...)' as it is null.\n    at AuthBoundary (http://localhost:5173/src/app/features/auth/AuthBoundary.jsx?t=1791716247088:166:11)\n    at renderWithHooks (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:11594:26)\n    at mountIndeterminateComponent (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:14972:21)\n    at beginWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:15960:22)\n    at HTMLUnknownElement.callCallback2 (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3678:22)\n    at Object.invokeGuardedCallbackDev (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3703:24)\n    at invokeGuardedCallback (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:3737:39)\n    at beginWork$1 (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19816:15)\n    at performUnitOfWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19249:20)\n    at workLoopSync (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19188:13)",
+      "timestamp": "2026-10-11T10:58:08.872Z",
+      "url": "http://localhost:5173/src/app/features/auth/AuthBoundary.jsx?t=1791716247088"
+    },
+    {
+      "level": "error",
+      "message": "The above error occurred in the <AuthBoundary> component:\n\n    at AuthBoundary (http://localhost:5173/src/app/features/auth/AuthBoundary.jsx?t=1791716247088:164:32)\n    at AuthenticatedShell (http://localhost:5173/src/AppEntry.jsx?t=1791716278569:82:29)\n    at AuthProvider (http://localhost:5173/src/app/features/auth/AuthProvider.jsx?t=1791716288191:31:32)\n    at AppEntry\n\nConsider adding an error boundary to your tree to customize error handling behavior.\nVisit https://reactjs.org/link/error-boundaries to learn more about error boundaries.",
+      "timestamp": "2026-10-11T10:58:08.880Z",
+      "url": "http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160"
+    },
+    {
+      "level": "error",
+      "message": "TypeError: Cannot destructure property 'status' of 'useAuth(...)' as it is null.\n    at AuthBoundary (http://localhost:5173/src/app/features/auth/AuthBoundary.jsx?t=1791716247088:166:11)\n    at renderWithHooks (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:11594:26)\n    at mountIndeterminateComponent (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:14972:21)\n    at beginWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:15960:22)\n    at beginWork$1 (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19804:22)\n    at performUnitOfWork (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19249:20)\n    at workLoopSync (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19188:13)\n    at renderRootSync (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:19167:15)\n    at recoverFromConcurrentError (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:18784:28)\n    at performSyncWorkOnRoot (http://localhost:5173/node_modules/.vite/deps/chunk-SVG7M4VJ.js?v=d1754160:18930:28)",
+      "timestamp": "2026-10-11T10:58:08.891Z",
+      "url": "http://localhost:5173/src/app/features/auth/AuthBoundary.jsx?t=1791716247088"
+    }
+  ]
+}

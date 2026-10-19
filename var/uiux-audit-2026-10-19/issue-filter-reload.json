@@ -1,0 +1,12 @@
+{
+  "before": {
+    "url": "http://127.0.0.1:5174/#/board/list?page=0&size=20",
+    "feature": "261",
+    "keyword": "UX-AUDIT"
+  },
+  "after": {
+    "url": "http://127.0.0.1:5174/#/board/list?page=0&size=20",
+    "feature": "",
+    "keyword": ""
+  }
+}

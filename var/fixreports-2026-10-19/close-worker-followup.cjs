@@ -1,0 +1,28 @@
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const out=__dirname,checkpoint=path.join(out,'fr09-final-checkpoint.md');
+const summary=`## Independent review follow-up — closed by behavior tests
+
+Both accepted Medium findings in \`fr09-backend-independent-review.md\` are addressed. Actual intended RED was observed after fixing a fixture-only PM project-creation denial: worker personal assignment12/tested7 absent, requested older file missing, actual B+PM case actors absent, literal Title12 returning TC1. Separate Issue archive RED showed3 instead of2 and exposed archived-document title. Exact Vietnamese Analysis-equivalent public send completed instead of rejecting before provider admission. Saved \`fr09-worker-first-red.log\`, \`fr09-worker-content-red.log\` and XML distinguish the fixture correction from product failures. The first attempt used stale compiled tests and is not counted as RED.
+
+FeatureFacts now includes current actor personal assignment progress and own actual audit-change count, scoped to selected Feature; DEV receives zero own counts while retaining readable file/case facts. Up to3 explicitly named active readable files have progress using R03 (12 cases,7 tested including P/NA =58.33%). Literal filename/source ID/title lookup prioritizes matches before the bounded5-case/10-file samples, so the older requested file and Title12 are found. Per-case resultHistory contains up to10 recent actual audit actors and transitions, with CURRENT_ROW/MIGRATED_SOURCE provenance; imported tester names/current assignment are not actors. Foreign project/case sentinels remain absent. Project management execution/workload/Issue totals stay absent for Tester/DEV. The three Issue count/sample/own-work queries now exclude optional archived documents while retaining monkey Issues without documents.
+
+Normalized explicit Analysis/report/bulk capability is denied403 before any gateway call; readable file/personal/across-own-project progress stays allowed. A subsequent positive-language RED caught the old bulk substring matcher treating Vietnamese “hiện tại” and English “detailed” as download intent. Narrow verb/object boundaries and explicit personal modifiers fixed it. This supplemental intent handler is not a general semantic-security proof; restricted retrieval remains the boundary.
+
+Verification: focused18/18 PASS; then bounded regression **102/102 PASS (68 unit +34 HTTP/native)** on exact isolated2060e04c986c/V33, BUILD SUCCESS02:22:03. Includes full FeatureAiIntegration20, legacy retirement14, Portfolio16, ChatService31, Access5, CustomerWorkbook13 and root generator3. After the isolated intent-only language fix, Portfolio **16/16 PASS**, BUILD SUCCESS02:24:00; no data-query/source-schema changes followed native regression. Exact negative VI/EN sends verifyNoInteractions(gateway), with five positive personal/file forms. No model requests, listening server, main DB writes, cleanup, migration edits or commits.
+
+Evidence: \`fr09-worker-final-regression.log\`, \`worker-final-TEST-*.xml\`, \`fr09-worker-scoped-jacoco.xml\`/coverage JSON; later intent-only \`fr09-personal-language-{red,green}.log\`/XML. Focused102 coverage before the final intent-only fix: FeatureFacts98.48% lines/85.94% branches, Portfolio93.41/94.05; this is not whole-suite coverage and does not replace full private ChatStore/vault regression. Prior98 and export8 artifacts remain historical and unchanged. Source hashes are saved in \`fr09-worker-source-hashes.json\`.
+
+Commands: \`rtk proxy node var/fixreports-2026-10-19/run-core-native.cjs worker\`, then \`... ai\`; focused \`mvnw.cmd -B -ntp -Dtest=AiPortfolioContextTest test\` for language RED→GREEN. Skills already read: security-review for pre-provider denial/minimized scoped projection; tdd/test-driven-development for real public/native failures before fixes; code-review/verification-loop for fixture/stale-class distinctions, isolated targets and bounded coverage. Source is frozen for root FR12; parent owns full-suite/browser/private-store/provider validation and ledger.
+
+`;
+let text=fs.readFileSync(checkpoint,'utf8');
+const start=text.indexOf('## Independent review follow-up'),end=text.indexOf('## Skills → purpose → evidence',start);
+text=text.slice(0,start)+summary+text.slice(end);
+text=text.replace('Final focused execution: **98 tests PASS','Historical pre-review focused execution: **98 tests PASS');
+text=text.replace('Worker snapshots omit execution/workload/Issue totals and per-file counts.','Worker snapshots omit execution/workload/Issue totals; the follow-up below permits progress only for explicitly requested readable files.');
+text=text.replace('# FR09 backend / FR11 core handoff — 2026-10-19','# FR09 backend / FR11 core handoff — 2026-10-19\n\nLatest follow-up: both independent Mediums closed; focused102 PASS plus final intent-only16 PASS. Details and limitations below.');
+fs.writeFileSync(checkpoint,text);
+fs.copyFileSync('Backend/target/surefire-reports/TEST-vn.syp.tms.ai.AiPortfolioContextTest.xml',path.join(out,'fr09-personal-language-green.xml'));
+const files=['Backend/src/main/java/vn/syp/tms/ai/FeatureFacts.java','Backend/src/main/java/vn/syp/tms/ai/AiPortfolioContext.java','Backend/src/test/java/vn/syp/tms/testcase/FeatureAiIntegrationTest.java','Backend/src/test/java/vn/syp/tms/ai/AiPortfolioContextTest.java'];
+fs.writeFileSync(path.join(out,'fr09-worker-source-hashes.json'),JSON.stringify(Object.fromEntries(files.map(file=>[file,crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')])),null,2));
+console.log('Closed worker follow-up report and retained last unit evidence; no Backend or DB changes.');

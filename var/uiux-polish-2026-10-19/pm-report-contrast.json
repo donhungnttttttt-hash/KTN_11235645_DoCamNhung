@@ -1,0 +1,7 @@
+{
+  "url": "http://127.0.0.1:5174/#/analysis",
+  "checked": 0,
+  "skipped": 0,
+  "lowContrast": [],
+  "method": "Visible leaf-text sample, max4000 elements; excludes alpha/gradient/opacity/disabled. Not exhaustive or certification."
+}

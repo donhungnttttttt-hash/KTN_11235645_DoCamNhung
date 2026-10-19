@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: vn.syp.tms.testcase.FeatureAiIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 25.10 s -- in vn.syp.tms.testcase.FeatureAiIntegrationTest

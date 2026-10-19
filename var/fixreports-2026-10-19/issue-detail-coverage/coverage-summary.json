@@ -1,0 +1,3 @@
+{"total": {"lines":{"total":94,"covered":89,"skipped":0,"pct":94.68},"statements":{"total":302,"covered":284,"skipped":0,"pct":94.03},"functions":{"total":68,"covered":60,"skipped":0,"pct":88.23},"branches":{"total":259,"covered":203,"skipped":0,"pct":78.37},"branchesTrue":{"total":0,"covered":0,"skipped":0,"pct":"Unknown"}}
+,"D:\\DCN\\KTN_11235645_DoCamNhung\\Frontend\\src\\app\\features\\work-items\\FeatureIssueDetail.jsx": {"lines":{"total":94,"covered":89,"skipped":0,"pct":94.68},"functions":{"total":68,"covered":60,"skipped":0,"pct":88.23},"statements":{"total":302,"covered":284,"skipped":0,"pct":94.03},"branches":{"total":259,"covered":203,"skipped":0,"pct":78.37}}
+}

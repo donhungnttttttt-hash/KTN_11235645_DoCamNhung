@@ -1,0 +1,44 @@
+{
+  "correctedLocations" : {
+    "validatedMigrationCount" : 0,
+    "validationSuccessful" : false,
+    "locations" : [ "classpath:db/migration", "classpath:db/demo" ],
+    "overallCode" : "VALIDATE_ERROR",
+    "invalidMigrations" : [ {
+      "version" : "31",
+      "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED"
+    }, {
+      "version" : "32",
+      "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED"
+    }, {
+      "version" : "33",
+      "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED"
+    } ]
+  },
+  "mode" : "READ_ONLY_VALIDATE_ONLY_NO_MIGRATION",
+  "schema" : "tms_docstest_4106ddac5f8d",
+  "preVersion" : 30,
+  "defaultLocations" : {
+    "validatedMigrationCount" : 0,
+    "validationSuccessful" : false,
+    "locations" : [ "classpath:db/migration" ],
+    "overallCode" : "VALIDATE_ERROR",
+    "invalidMigrations" : [ {
+      "version" : "20",
+      "code" : "APPLIED_VERSIONED_MIGRATION_NOT_RESOLVED"
+    }, {
+      "version" : "22",
+      "code" : "APPLIED_VERSIONED_MIGRATION_NOT_RESOLVED"
+    }, {
+      "version" : "31",
+      "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED"
+    }, {
+      "version" : "32",
+      "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED"
+    }, {
+      "version" : "33",
+      "code" : "RESOLVED_VERSIONED_MIGRATION_NOT_APPLIED"
+    } ]
+  },
+  "oldTables" : 76
+}

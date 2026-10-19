@@ -1,0 +1,21 @@
+{
+  "capturedAt": "2026-10-19T00:50:33.884Z",
+  "mode": "SELECT_ONLY",
+  "schema": "tms",
+  "version": "30",
+  "failedMigrations": 0,
+  "tableCount": 76,
+  "authorizedSpiderProject": [
+    "12|SPIDER-PLUS|syp.lab.pm03|PM"
+  ],
+  "mainMigrationAppliedByThisTask": false,
+  "mainRestartedByThisTask": false,
+  "mainHealthStatus": 200,
+  "mainHealthUp": true,
+  "latestTaskBackup": {
+    "path": "var/mysql-native/backups/2026-10-18T19-02-48-762Z-tms.sql",
+    "sha256": "8e1534c68e67fc6e8da0d16b66f01ce10602b759881e92173a5f18e87f6856fc",
+    "afterAuthorizedSpiderCreation": true,
+    "sessionRowsExcluded": true
+  }
+}

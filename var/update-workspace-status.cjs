@@ -1,0 +1,5 @@
+const fs=require('fs');const path='docs/planning/STATUS.json';const s=JSON.parse(fs.readFileSync(path,'utf8'));
+s.updatedAt='2026-10-10';
+s.notes.push('10/10/2026 Admin workspace visibility: global enabled ADMIN lists/reads all projects without synthetic membership or business write authority. Shared read guards cover work/case/document/execution/QA/file-work/report/catalog data; UI shows observer mode and disables writes. RED then GREEN; final backend reports 472/472 (47 classes, four native suites on isolated MySQL V23), frontend684/684 and build PASS. Chrome verified nine projects, DEMO-S04 two items, PILOT72 items/120 cases/200 runs and GRID imported file; backend8080 restarted against3307/tms, healthUP. Coverage not measured; S11 remains IN_REVIEW. See docs/reviews/2026-10-10-admin-workspace-read.md.');
+s.confirmedDecisions.adminWorkspaceRead='10/10/2026: Admin tổng được xem mọi dự án trong Không gian dự án; quyền đọc không cấp membership/PM/executor hoặc quyền ghi nghiệp vụ. PM/Tester/Dev giữ phạm vi membership hiện hành.';
+fs.writeFileSync(path,JSON.stringify(s,null,2)+'\n');

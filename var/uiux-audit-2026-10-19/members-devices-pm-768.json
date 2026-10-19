@@ -1,0 +1,372 @@
+{
+  "note": "PM project members + assets after both reads finish; existing fixture only",
+  "metrics": {
+    "controls": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(30, 41, 59)",
+        "borderRadius": "0px",
+        "color": "rgb(30, 41, 59)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "height": 30,
+        "name": "Tổng quan TMS",
+        "outline": "rgb(30, 41, 59) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 74.07500457763672,
+        "x": 16,
+        "y": 8.600000381469727
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(51, 51, 51)",
+        "borderRadius": "4px",
+        "color": "rgb(51, 51, 51)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 27.5,
+        "name": "SPIDER PLUS · FR12 cô lập",
+        "outline": "rgb(51, 51, 51) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 240.71250915527344,
+        "x": 245.875,
+        "y": 9.850000381469728
+      },
+      {
+        "background": "rgb(8, 126, 116)",
+        "border": "0px none rgb(255, 255, 255)",
+        "borderRadius": "8px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "650",
+        "height": 40,
+        "name": "Mở chat AI",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "BUTTON",
+        "type": "button",
+        "width": 40,
+        "x": 642.4000244140625,
+        "y": 3.6000001430511475
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(51, 65, 85)",
+        "borderRadius": "0px",
+        "color": "rgb(51, 65, 85)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "height": 30,
+        "name": "Tài khoản: FR12 PM",
+        "outline": "rgb(51, 65, 85) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 50,
+        "x": 696.4000244140625,
+        "y": 8.600000381469727
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(217, 240, 233)",
+        "borderRadius": "0px",
+        "color": "rgb(217, 240, 233)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 31,
+        "name": "Thu gọn menu",
+        "outline": "rgb(217, 240, 233) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 31,
+        "x": 153,
+        "y": 57.5
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 50,
+        "name": "Tổng quan",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 200,
+        "x": 0,
+        "y": 98
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 50,
+        "name": "Bảng công việc",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 200,
+        "x": 0,
+        "y": 148
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 50,
+        "name": "Quản lý lỗi",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 200,
+        "x": 0,
+        "y": 198
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 50,
+        "name": "Tổng hợp & Phân tích",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 200,
+        "x": 0,
+        "y": 248
+      },
+      {
+        "background": "rgb(240, 242, 242)",
+        "border": "0px none rgb(15, 118, 110)",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 50,
+        "name": "Thông tin chung",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 200,
+        "x": 0,
+        "y": 298
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "height": 38,
+        "name": "Thông tin dự án",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 200,
+        "x": 0,
+        "y": 353
+      },
+      {
+        "background": "rgb(230, 245, 239)",
+        "border": "",
+        "borderRadius": "0px",
+        "color": "rgb(15, 118, 110)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "height": 38,
+        "name": "Thành viên",
+        "outline": "rgb(15, 118, 110) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 200,
+        "x": 0,
+        "y": 391
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "height": 38,
+        "name": "Note",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 200,
+        "x": 0,
+        "y": 429
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "height": 38,
+        "name": "Quy tắc báo lỗi",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 200,
+        "x": 0,
+        "y": 467
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "height": 38,
+        "name": "Sổ tay dự án",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 200,
+        "x": 0,
+        "y": 505
+      },
+      {
+        "background": "rgb(255, 255, 255)",
+        "border": "0.8px solid rgb(215, 220, 220)",
+        "borderRadius": "2px",
+        "color": "rgb(51, 51, 51)",
+        "disabled": true,
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "height": 44,
+        "name": "Máy trước",
+        "outline": "rgb(51, 51, 51) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 77.61250305175781,
+        "x": 240.8000030517578,
+        "y": 911.2999877929688
+      },
+      {
+        "background": "rgb(255, 255, 255)",
+        "border": "0.8px solid rgb(215, 220, 220)",
+        "borderRadius": "2px",
+        "color": "rgb(51, 51, 51)",
+        "disabled": true,
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "height": 44,
+        "name": "Máy sau",
+        "outline": "rgb(51, 51, 51) none 2.4px",
+        "tag": "BUTTON",
+        "type": null,
+        "width": 66.80000305175781,
+        "x": 326.4125061035156,
+        "y": 911.2999877929688
+      }
+    ],
+    "dialogs": [],
+    "focus": {
+      "name": "\n  S+TMSDự án: SPIDER PLUS · FR12 cô lậpChat AIFPFR12 PMTổng quanBảng công việcQ",
+      "tag": "BODY"
+    },
+    "tables": [
+      {
+        "headings": [
+          {
+            "height": 42.400001525878906,
+            "text": "Tên",
+            "width": 320.5500183105469
+          },
+          {
+            "height": 42.400001525878906,
+            "text": "Vai trò dự án",
+            "width": 199.4499969482422
+          }
+        ],
+        "width": 520
+      },
+      {
+        "headings": [
+          {
+            "height": 20,
+            "text": "Máy",
+            "width": 173.16250610351562
+          },
+          {
+            "height": 20,
+            "text": "Dự án / người nhận",
+            "width": 225.9125061035156
+          },
+          {
+            "height": 20,
+            "text": "Bàn giao",
+            "width": 113.8625030517578
+          },
+          {
+            "height": 20,
+            "text": "Hạn trả",
+            "width": 51.47500228881836
+          },
+          {
+            "height": 20,
+            "text": "Thu hồi",
+            "width": 82.51250457763672
+          },
+          {
+            "height": 20,
+            "text": "Ghi chú",
+            "width": 173.0749969482422
+          },
+          {
+            "height": 38,
+            "text": "FR12-94ac4db0-2 · FR12 iPad 2",
+            "width": 173.16250610351562
+          },
+          {
+            "height": 38,
+            "text": "FR12-94ac4db0-1 · FR12 iPad 1",
+            "width": 173.16250610351562
+          }
+        ],
+        "width": 820
+      }
+    ],
+    "url": "http://127.0.0.1:5174/#/settings/members?projectId=156",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 1024,
+      "pageHeight": 1060,
+      "pageWidth": 762,
+      "width": 768
+    }
+  },
+  "snapshot": "- banner:\n  - button \"Tổng quan TMS\":\n    - generic: S+\n    - strong: TMS\n  - 'button \"Dự án: SPIDER PLUS · FR12 cô lập\"':\n    - text: \"Dự án:\"\n    - strong: SPIDER PLUS · FR12 cô lập\n  - button \"Mở chat AI\":\n  - 'button \"Tài khoản: FR12 PM\"':\n    - generic: FP\n- complementary \"Menu dự án\":\n  - button \"Thu gọn menu\" [expanded]:\n  - navigation \"Điều hướng dự án\":\n    - button \"Tổng quan\":\n      - generic: Tổng quan\n    - button \"Bảng công việc\":\n      - generic: Bảng công việc\n    - button \"Quản lý lỗi\":\n      - generic: Quản lý lỗi\n    - button \"Tổng hợp & Phân tích\":\n      - generic: Tổng hợp & Phân tích\n    - button \"Thông tin chung\" [expanded]:\n      - generic: Thông tin chung\n    - group \"Các mục Thông tin chung\":\n      - button \"Thông tin dự án\":\n        - generic: Thông tin dự án\n      - button \"Thành viên\":\n        - generic: Thành viên\n      - button \"Note\":\n        - generic: Note\n      - button \"Quy tắc báo lỗi\":\n        - generic: Quy tắc báo lỗi\n      - button \"Sổ tay dự án\":\n        - generic: Sổ tay dự án\n  - text: S+TMS\n  - generic: Quản lý dự án & kiểm thử\n- main:\n  - heading \"Thành viên · SPIDER PLUS · FR12 cô lập\" [level=1]:\n    - text: Thành viên\n    - generic: · SPIDER PLUS · FR12 cô lập\n  - heading \"Thành viên dự án\" [level=2]\n  - paragraph: Thêm tài khoản nội bộ đã có vào dự án. Quyền dự án không cấp quyền tạo tài khoản mới.\n  - paragraph: Kéo thanh cuộn ngang để xem thêm cột. Có thể dùng Shift + con lăn hoặc phím ← → khi chọn bảng.\n  - region \"Thành viên dự án\":\n    - table:\n      - rowgroup:\n        - row \"Tên Vai trò dự án\":\n          - columnheader \"Tên\"\n          - columnheader \"Vai trò dự án\"\n      - rowgroup:\n        - row \"FR12 PM @fr12.94ac4db0.pm Quản lý dự án (PM)\":\n          - cell \"FR12 PM @fr12.94ac4db0.pm\":\n            - strong: FR12 PM\n            - generic: \"@fr12.94ac4db0.pm\"\n          - cell \"Quản lý dự án (PM)\"\n        - row \"FR12 Tester B @fr12.94ac4db0.testerb Kiểm thử viên\":\n          - cell \"FR12 Tester B @fr12.94ac4db0.testerb\":\n            - strong: FR12 Tester B\n            - generic: \"@fr12.94ac4db0.testerb\"\n          - cell \"Kiểm thử viên\"\n        - row \"FR12 Đỗ Cẩm Nhung @fr12.94ac4db0.testera Kiểm thử viên\":\n          - cell \"FR12 Đỗ Cẩm Nhung @fr12.94ac4db0.testera\":\n            - strong: FR12 Đỗ Cẩm Nhung\n            - generic: \"@fr12.94ac4db0.testera\"\n          - cell \"Kiểm thử viên\"\n        - row \"FR12 Tester chưa thuộc dự án @fr12.94ac4db0.unassignedtester Kiểm thử viên\":\n          - cell \"FR12 Tester chưa thuộc dự án @fr12.94ac4db0.unassignedtester\":\n            - strong: FR12 Tester chưa thuộc dự án\n            - generic: \"@fr12.94ac4db0.unassignedtester\"\n          - cell \"Kiểm thử viên\"\n        - row \"FR12 DEV được giao @fr12.94ac4db0.dev Lập trình viên\":\n          - cell \"FR12 DEV được giao @fr12.94ac4db0.dev\":\n            - strong: FR12 DEV được giao\n            - generic: \"@fr12.94ac4db0.dev\"\n          - cell \"Lập trình viên\"\n  - heading \"Máy vật lý của dự án\" [level=2]\n  - paragraph: Máy vật lý được lấy từ kho thiết bị và bàn giao cho PM; PM tự phân phối nội bộ bên ngoài phần mềm.\n  - paragraph: 2 máy đang giữ.\n  - paragraph: Kéo thanh cuộn ngang để xem thêm cột. Có thể dùng Shift + con lăn hoặc phím ← → khi chọn bảng.\n  - region \"Lịch sử bàn giao máy\":\n    - table:\n      - rowgroup:\n        - row \"Máy Dự án / người nhận Bàn giao Hạn trả Thu hồi Ghi chú\":\n          - columnheader \"Máy\"\n          - columnheader \"Dự án / người nhận\"\n          - columnheader \"Bàn giao\"\n          - columnheader \"Hạn trả\"\n          - columnheader \"Thu hồi\"\n          - columnheader \"Ghi chú\"\n      - rowgroup:\n        - row \"FR12-94ac4db0-2 · FR12 iPad 2 SPIDER-PLUS · SPIDER PLUS · FR12 cô lập FR12 PM · fr12.94ac4db0.pm 02:21:30 19/10/2026 FR12 Admin Chưa đặt Đang bàn giao —\":\n          - rowheader \"FR12-94ac4db0-2 · FR12 iPad 2\"\n          - cell \"SPIDER-PLUS · SPIDER PLUS · FR12 cô lập FR12 PM · fr12.94ac4db0.pm\":\n            - text: SPIDER-PLUS · SPIDER PLUS · FR12 cô lập\n            - text: FR12 PM · fr12.94ac4db0.pm\n          - cell \"02:21:30 19/10/2026 FR12 Admin\":\n            - text: 02:21:30 19/10/2026\n            - text: FR12 Admin\n          - cell \"Chưa đặt\"\n          - cell \"Đang bàn giao\"\n          - cell \"—\"\n        - row \"FR12-94ac4db0-1 · FR12 iPad 1 SPIDER-PLUS · SPIDER PLUS · FR12 cô lập FR12 PM · fr12.94ac4db0.pm 02:21:30 19/10/2026 FR12 Admin Chưa đặt Đang bàn giao FR12 bàn giao máy thử cho PM\":\n          - rowheader \"FR12-94ac4db0-1 · FR12 iPad 1\"\n          - cell \"SPIDER-PLUS · SPIDER PLUS · FR12 cô lập FR12 PM · fr12.94ac4db0.pm\":\n            - text: SPIDER-PLUS · SPIDER PLUS · FR12 cô lập\n            - text: FR12 PM · fr12.94ac4db0.pm\n          - cell \"02:21:30 19/10/2026 FR12 Admin\":\n            - text: 02:21:30 19/10/2026\n            - text: FR12 Admin\n          - cell \"Chưa đặt\"\n          - cell \"Đang bàn giao\"\n          - cell \"FR12 bàn giao máy thử cho PM\"\n  - button \"Máy trước\" [disabled]\n  - button \"Máy sau\" [disabled]\n- contentinfo:\n  - strong: TMS\n  - text: · Quản lý dự án & kiểm thử\n  - generic: Hệ thống nội bộ"
+}

@@ -1,0 +1,9 @@
+{
+  "source": "existing synthetic fixture",
+  "origin": "http://127.0.0.1:8081",
+  "projectId": 156,
+  "documentId": 159,
+  "bytes": 3861,
+  "sha256": "23f92065f84ed16e0ff0eef727bd5a5f3dbae657e8aecc1e122a2d08a6fc4065",
+  "domainWrites": 0
+}

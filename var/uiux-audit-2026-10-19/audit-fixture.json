@@ -1,0 +1,35 @@
+{
+  "origin": "http://127.0.0.1:8081",
+  "schema": "tms_docstest_2060e04c986c",
+  "projectId": 156,
+  "featureId": 261,
+  "featureName": "UX-AUDIT-20261019 · Fixture riêng",
+  "document": {
+    "id": 267,
+    "projectId": 156,
+    "fileName": "ux-audit-input.xlsx",
+    "sheetName": "TestCases",
+    "format": "INTERNAL_V1",
+    "totalRows": 5,
+    "caseCount": 5,
+    "createdAt": "2026-10-19T02:30:59.813425Z",
+    "updatedAt": "2026-10-19T02:30:59.954971Z",
+    "updatedBy": "FR12 Admin",
+    "hasSourceFile": true,
+    "sourceCounts": {},
+    "resultCounts": {
+      "UNEXECUTED": 5
+    },
+    "version": 0,
+    "archivedAt": null,
+    "featureId": 261,
+    "featureName": "UX-AUDIT-20261019 · Fixture riêng",
+    "documentCount": 1,
+    "testedCaseCount": 0,
+    "progressPercent": 0,
+    "canCreateIssue": true
+  },
+  "mainWrites": 0,
+  "browserCreatedFeature": true,
+  "importMode": "HTTP_API_SETUP_NOT_BROWSER_IMPORT"
+}

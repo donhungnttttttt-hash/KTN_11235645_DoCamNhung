@@ -1,0 +1,44 @@
+[
+  {
+    "dialog": [
+      {
+        "height": 552,
+        "maxHeight": "552px",
+        "width": 298.3999938964844,
+        "x": 8,
+        "y": 8
+      }
+    ],
+    "height": 568,
+    "pageWidth": 314,
+    "width": 320
+  },
+  {
+    "dialog": [
+      {
+        "height": 976,
+        "maxHeight": "976px",
+        "width": 714.4000244140625,
+        "x": 24,
+        "y": 24
+      }
+    ],
+    "height": 1024,
+    "pageWidth": 762,
+    "width": 768
+  },
+  {
+    "dialog": [
+      {
+        "height": 720,
+        "maxHeight": "720px",
+        "width": 970.4000244140624,
+        "x": 24,
+        "y": 24
+      }
+    ],
+    "height": 768,
+    "pageWidth": 1018,
+    "width": 1024
+  }
+]

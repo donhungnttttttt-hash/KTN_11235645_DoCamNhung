@@ -1,0 +1,64 @@
+- link "Đến nội dung chính":
+  - /url: "#main-viewport"
+- banner:
+  - button "Tổng quan TMS":
+    - generic: S+
+    - strong: TMS
+  - 'button "Dự án: SPIDER PLUS · FR12 cô lập"':
+    - text: "Dự án:"
+    - strong: SPIDER PLUS · FR12 cô lập
+  - button "Mở chat AI":
+  - 'button "Tài khoản: FR12 Đỗ Cẩm Nhung"':
+    - generic: CN
+    - strong: FR12 Đỗ Cẩm Nhung
+- complementary "Menu dự án":
+  - button "Thu gọn menu" [expanded]:
+  - navigation "Điều hướng dự án":
+    - button "Tổng quan":
+      - generic: Tổng quan
+    - button "Bảng công việc":
+      - generic: Bảng công việc
+    - button "Quản lý lỗi":
+      - generic: Quản lý lỗi
+    - button "Thông tin chung" [expanded]:
+      - generic: Thông tin chung
+    - group "Các mục Thông tin chung":
+      - button "Thông tin dự án":
+        - generic: Thông tin dự án
+      - button "Thành viên":
+        - generic: Thành viên
+      - button "Note":
+        - generic: Note
+      - button "Quy tắc báo lỗi":
+        - generic: Quy tắc báo lỗi
+      - button "Sổ tay dự án":
+        - generic: Sổ tay dự án
+  - text: S+TMS
+  - generic: Quản lý dự án & kiểm thử
+- main "Nội dung chính":
+  - heading "Note · SPIDER PLUS · FR12 cô lập" [level=1]:
+    - text: Note
+    - generic: · SPIDER PLUS · FR12 cô lập
+  - region "Note chung của dự án":
+    - paragraph: Ghi chú chung để các thành viên cùng theo dõi.
+    - button "Tải lại Note"
+    - article:
+      - heading "UX-AUDIT · Note xung đột" [level=2]
+      - paragraph: Cập nhật 09:37:19 19/10/2026 · giờ Việt Nam
+      - paragraph: Phiên khác đã cập nhật nội dung giả.
+    - article:
+      - heading "FR12 Browser Note" [level=2]
+      - paragraph: Cập nhật 02:14:56 19/10/2026 · giờ Việt Nam
+      - paragraph: Ghi chú kiểm thử Giữ nguyên nội dung <script>không thực thi</script>
+    - article:
+      - heading "FR12 · Ghi chú dự án" [level=2]
+      - paragraph: Cập nhật 02:08:12 19/10/2026 · giờ Việt Nam
+      - paragraph: Nội dung kiểm thử riêng. Không có dữ liệu hay thông tin đăng nhập thật.
+    - navigation "Phân trang Note":
+      - generic: 3 Note · Trang 1/1
+      - button "Trang Note trước" [disabled]: Trước
+      - button "Trang Note sau" [disabled]: Sau
+- contentinfo:
+  - strong: TMS
+  - text: · Quản lý dự án & kiểm thử
+  - generic: Hệ thống nội bộ

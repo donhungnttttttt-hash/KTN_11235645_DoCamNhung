@@ -1,0 +1,41 @@
+{
+  "capturedAt": "2026-10-19T04:56:49.138Z",
+  "tests": {
+    "passed": 1100,
+    "failed": 0,
+    "pending": 0,
+    "files": 120,
+    "success": true,
+    "exitCode": 0,
+    "receipt": "frontend-verified-final-tests.json"
+  },
+  "build": {
+    "exitCode": 0,
+    "receipt": "build-verified-final.json"
+  },
+  "sourceStable": {
+    "files": 320,
+    "changed": [],
+    "missing": [],
+    "added": [],
+    "buildComparison": {
+      "changed": [],
+      "missing": [],
+      "added": []
+    },
+    "before": "2026-10-19T04:50:52.749Z",
+    "after": "2026-10-19T04:56:47.728Z"
+  },
+  "coverage": "NOT_MEASURED_THIS_TURN",
+  "browser": {
+    "allButtonsPassed": false,
+    "main": "localhost:5173",
+    "fixture": "localhost:5174",
+    "domainWrites": 0,
+    "liveAiCalls": 0,
+    "authAuditEventsExpected": true,
+    "cleanup": "browser-cleanup.json"
+  },
+  "preservationReceipt": "preservation-and-links.json",
+  "sprintStatus": "S11_IN_REVIEW_FR12_IN_REVIEW"
+}

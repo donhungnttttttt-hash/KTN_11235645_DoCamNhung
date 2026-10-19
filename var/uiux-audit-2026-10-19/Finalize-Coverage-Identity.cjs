@@ -1,0 +1,16 @@
+const fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'../..'),file=path.join(root,'docs/reviews/2026-10-19-uiux-system-coverage.md');
+let content=fs.readFileSync(file,'utf8');
+const lines=content.split('\n');
+const i=lines.findIndex(x=>x.startsWith('| AG-I02 |'));
+if(i<0)throw Error('Existing inventory row required');
+lines[i]=lines[i].replace('**PARTIAL**','**PARTIAL + SOURCE_GAP_UX-014**').replace('Chuột, Enter/Escape','Chuột, Enter/Escape; PM được cấp users:create chưa kiểm browser').replace('chat-dev-unavailable-320.json)</','chat-dev-unavailable-320.json)</');
+lines[i]=lines[i].replace(/ \|\r?$/, '<br>[identity source review](../../var/uiux-audit-2026-10-19/independent-identity-review.md) |');
+content=lines.join('\n');
+content+='\nCheckpoint đối chiếu quyền cuối: UX-014/P2 là gap nối capability tạo Tester của PM với UI. AG-I02 đã kiểm kê biến thể PM được cấp và AG-I14 xác định form hiện chỉ ở Admin; không có form PM đang hoạt động để cộng thêm màn. Finding này là SOURCE_CONFIRMED_UI_GAP/BROWSER_NOT_RUN, không biến account menu đã mở bằng role PM thông thường thành kiểm thử PM được cấp. Xem [review độc lập](../../var/uiux-audit-2026-10-19/independent-identity-review.md).\n';
+fs.writeFileSync(file,content);
+const receipt=JSON.parse(fs.readFileSync(path.join(__dirname,'handoff-location.json'),'utf8'));
+const old=fs.readFileSync(receipt.path,'utf8');
+fs.writeFileSync(receipt.path.replace(/\.md$/,'.draft-13-findings.md'),old,{flag:'wx'});
+fs.writeFileSync(receipt.path,old.replace('There are 13 stable UX findings','There are 14 stable UX findings')+'\nFinal source check added UX-014: delegated PM Tester-creation capability has no reachable UI entry. See the identity independent review and RX-14; final regression gate is RX-15. No accounts or grants were created for this source-only check.\n');
+console.log(JSON.stringify({inventoryRows:92,addedFinding:'UX-014',modifiedDocs:[path.relative(root,file)],handoffUpdated:true}));

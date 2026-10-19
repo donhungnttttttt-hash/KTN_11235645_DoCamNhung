@@ -1,0 +1,5 @@
+{
+  "relative": "Backend/src/main/java/vn/syp/tms/admin/AdminAuditLabels.java",
+  "sha256": "f9306c8a7ce675391ef604dcae202e0fc348bc07231244e1d397cdb393f9c212",
+  "scope": "Labels only; raw audit rows/codes unchanged. Tests installed first for observed RED."
+}

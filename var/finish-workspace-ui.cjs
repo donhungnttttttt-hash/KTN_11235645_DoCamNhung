@@ -1,0 +1,5 @@
+const fs=require('fs');let p='Frontend/src/app/modules/ProjectOverview.jsx',s=fs.readFileSync(p,'utf8');s=s.replace(/<a className="d-button" href="#\/tests\/file-work"[\s\S]*?<\/a>/,'');fs.writeFileSync(p,s);
+p='Frontend/src/app/features/qa/qa-dashboard.test.jsx';s=fs.readFileSync(p,'utf8');
+s=s.replace("    const file = screen.getByRole('link', { name: 'Công việc theo file' }); expect(file).toHaveAttribute('href', '#/tests/file-work');\n    fireEvent.click(file); expect(navigate).toHaveBeenLastCalledWith('/tests/file-work');","    expect(screen.queryByRole('link', { name: 'Công việc theo file' })).not.toBeInTheDocument();");
+s=s.replace("expect(screen.getByRole('link', { name: 'Công việc theo file' })).toHaveAttribute('href', '#/tests/file-work');","expect(screen.queryByRole('link', { name: 'Công việc theo file' })).not.toBeInTheDocument();");
+const a=s.indexOf("  it('keeps the file deep link"),b=s.indexOf("  it('unmounts on authority",a);if(a<0||b<0)throw Error('Missing test');s=s.slice(0,a)+s.slice(b);fs.writeFileSync(p,s);

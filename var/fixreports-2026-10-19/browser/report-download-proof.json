@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "byteLength": 110,
+  "sha256": "6eea5377c6a30f160bc8b994289c56ae7c3fd2a46ace8ad8ecf6925c2fa60e46",
+  "browserDownload": "C:/Users/admin/Downloads/bao-cao-3.md",
+  "reportId": 3,
+  "scope": "isolated project156",
+  "note": "Browser download completed; event-wait bridge timed out afterward; bytes verified independently."
+}

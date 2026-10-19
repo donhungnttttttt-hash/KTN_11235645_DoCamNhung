@@ -1,0 +1,32 @@
+# Snapshot Flyway location reconciliation candidate
+
+Prepared outside Backend only while root/Admin own Maven. No database connection, writes, Maven, migration, repair, cleanup, main access or Backend source change by preparer.
+
+Root's first run failed `UNEXPECTED_FlywayValidateException` before migrate. Existing immutable snapshot-before is retained; exact isolated4106target remains V30/76tables per root. `application-local.yml` uses both `classpath:db/migration` and `classpath:db/demo`; original standalone harness used Flyway default migration location. Applied20/22 live in demo. Do not ignore missing migrations or repair checksums.
+
+## Reviewable files and sequence
+
+1. `SnapshotLocationsDiagnostic.java` + `Run-SnapshotLocationsDiagnostic.cjs`: independently javac-compiled to var only. Default wrapper argument is compile-only. After root review, `rtk proxy node var/fixreports-2026-10-19/Run-SnapshotLocationsDiagnostic.cjs --execute` runs plain Flyway `validateWithResult` twice, default and corrected locations, with createSchemasfalse and session transaction READ ONLY. Exact loopback3307/schema4106/version30/table76/manifest/backup SHA required. No migrate/repair/clean method is called. Immutable `snapshot-location-validation.json` contains only location names, success/count, invalid versions/error codes; no descriptions, file contents, raw SQL values or private data. Actual diagnostic execution remains root-owned and NOT_RUN by preparer.
+2. `FixReportsSnapshotMigrationTest.candidate.java`: complete staged snapshot test preserving existing full clone/current-revision/raw JSON/overlay/mapping/exception/replay validation. Compile-only PASS from outside Backend. Candidate Flyway uses explicit migration+demo matching local source. `Run-SnapshotMigration.candidate.cjs`: complete staged runner, node syntax PASS. Apply these to the original paths only after root review and exclusive Maven slot; running staged runner execute would still target Backend's installed test, so do not execute before applying.
+3. Resume is explicit `--execute --resume-validated-location-failure`; no automatic retry/repair/ignore. Runner archives first FAILproof/log with exclusive copies, keeps original log, and opens a different resumed log with wx. The immutable before file is never overwritten. Repeated resume/overwritten archive is refused rather than silently accepted.
+
+## Exact resume reconciliation before migrate
+
+- Same reviewed snapshot manifest, backup directory/hash and session-row-excluded provenance; only exact isolated loopback3307/schema4106 admitted. No main connection is ever constructed.
+- Prior proof must be schema4106, reviewed backup SHA, mainUntouchedtrue, statusFAIL and exact `UNEXPECTED_FlywayValidateException`. Immutable before must be same schema/SHA, preVersion30 and exactly76old tables.
+- Runner hashes before, first proof and first log and passes hashes to Java. Java rechecks immutable before and exclusively archived first failure proof/log against those hashes. A direct invalid invocation cannot overwrite the first proof unless the archival gate has passed; it emits a separate refusal proof.
+- Live DB must still be V30/76base tables with actual nonempty projects/committed files. Capture every original table with actual ordered column names and PK columns, framed per-value SHA256, PK SHA256→row SHA256 maps, row counts/table hashes. Includes flyway history and private encrypted-data bytes, compared only as hashes. Strict JSON equality to the original before image rejects **any** changed/missing/appended original row, column/PK change or table change; numeric JSON types are canonically serialized/read before comparison.
+- Recompute original projectID/code hashes, workbook source hashes, valid/invalid source classifications, cycle→file mappings, source actor availability and unfiled retained cases. Require the complete recomputed before object to equal immutable snapshot-before; no fabricated source or modified mapping can pass.
+- Only after unchanged-data proof, old default-location `validateWithResult` is recorded with sanitized codes/versions and must have **exactly two** invalid entries, versions20/22, both `APPLIED_VERSIONED_MIGRATION_NOT_RESOLVED`. Any checksum mismatch, other missing migration or other validation code refuses resume. This assumption must first be confirmed by the standalone diagnostic.
+- Corrected migration+demo `validateWithResult` must be clean; sanitized result is written before migrate. V31/V32/V33 remain untouched. Actual migrate result must be exactly3, postVersion33, every original row still identical and all existing clone/source/exception assertions pass; second migrate executes0.
+- Final proof records migration locations, exact executed count, prior/corrected validation, before/first-failure hashes, reason for explicit resume, all76image reconciliation and replay0. It contains only approved IDs/counts/hashes/reasons.
+
+## Validation performed
+
+Final candidate test independent javac PASS, including archival-proof preservation; diagnostic independent javac PASS; candidate runner/generator node--check PASS; scoped diff-check PASS. No shared target writes or new RED/GREEN behavior claim from compilation. Backend original test/runner and snapshot-before/proof/log were not edited by staging.
+
+Skills applied from prior reads: api/security review for fail-closed identity/provenance and sanitized output; tdd/verification-loop for distinguishing compile, diagnostic and actual migration; receiving-code-review for reconciling root evidence without bypassing Flyway validation. Root owns actual diagnostic and migration run/evidence.
+
+## Root final execution correction
+
+The staged assumption of only2 default validation errors and clean corrected standalone validate was not used. Actual diagnostic observed defaultmissing20/22 PLUS pending31/32/33; correctedlocations had ONLY pending31/32/33. Final root test requires exact5/3 codes, confirms info.pending exact31/32/33, keeps validateOnMigrate and postvalidate; no ignore/repair. Final snapshotPASS:76oldtables/7362oldrows identical,10copies/711cases,9paddedrecovered,1missingworkbook preserved,120unfiledcases retained,replay0. Initial diagnostic attempts before validateresult failed at JVMlaunch/classloading due Windowsclasspath length/mixed .m2versions; fixed with Javaargfile and Mavenresolvedclasspath for BOTH javac/runtime. No DBmigration occurred during these diagnostics. See snapshot-location-validation.json/snapshot-proof.json and final review.

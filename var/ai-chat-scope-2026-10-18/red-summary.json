@@ -1,0 +1,15 @@
+{
+  "frontend": {
+    "failed": 2,
+    "skipped": 35,
+    "reason": "Removed task/source controls still visible and project preset missing"
+  },
+  "native": {
+    "tests": 13,
+    "passed": 9,
+    "failed": 4,
+    "reason": "PROJECT_CHAT rejected422 before implementation"
+  },
+  "isolatedSchema": "tms_docstest_bab5ba2349be",
+  "mainDatabaseWrites": 0
+}

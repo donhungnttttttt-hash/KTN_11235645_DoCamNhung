@@ -1,0 +1,381 @@
+{
+  "method": "Static CREATE TABLE scan of current migration files, not current live database introspection",
+  "tableCount": 75,
+  "tables": [
+    {
+      "table": "ai_chat_admission",
+      "file": "Backend/src/main/resources/db/migration/V25__private_ai_chats.sql",
+      "line": 65
+    },
+    {
+      "table": "ai_chat_threads",
+      "file": "Backend/src/main/resources/db/migration/V25__private_ai_chats.sql",
+      "line": 2
+    },
+    {
+      "table": "ai_chat_turns",
+      "file": "Backend/src/main/resources/db/migration/V25__private_ai_chats.sql",
+      "line": 24
+    },
+    {
+      "table": "ai_generated_drafts",
+      "file": "Backend/src/main/resources/db/migration/V23__temporary_ai_drafts.sql",
+      "line": 2
+    },
+    {
+      "table": "application_info",
+      "file": "Backend/src/main/resources/db/migration/V1__create_foundation.sql",
+      "line": 2
+    },
+    {
+      "table": "bug_closure_decisions",
+      "file": "Backend/src/main/resources/db/migration/V8__create_bug_retest.sql",
+      "line": 86
+    },
+    {
+      "table": "bug_coverage_items",
+      "file": "Backend/src/main/resources/db/migration/V8__create_bug_retest.sql",
+      "line": 26
+    },
+    {
+      "table": "bug_coverage_revisions",
+      "file": "Backend/src/main/resources/db/migration/V8__create_bug_retest.sql",
+      "line": 4
+    },
+    {
+      "table": "bug_details",
+      "file": "Backend/src/main/resources/db/migration/V7__create_work_items.sql",
+      "line": 64
+    },
+    {
+      "table": "bug_retest_state",
+      "file": "Backend/src/main/resources/db/migration/V8__create_bug_retest.sql",
+      "line": 16
+    },
+    {
+      "table": "bug_verification_attempts",
+      "file": "Backend/src/main/resources/db/migration/V8__create_bug_retest.sql",
+      "line": 70
+    },
+    {
+      "table": "builds",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 66
+    },
+    {
+      "table": "categories",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 100
+    },
+    {
+      "table": "cycle_configurations",
+      "file": "Backend/src/main/resources/db/migration/V6__create_test_execution.sql",
+      "line": 40
+    },
+    {
+      "table": "cycle_decisions",
+      "file": "Backend/src/main/resources/db/migration/V9__create_cycle_decisions.sql",
+      "line": 26
+    },
+    {
+      "table": "cycle_statuses",
+      "file": "Backend/src/main/resources/db/migration/V6__create_test_execution.sql",
+      "line": 3
+    },
+    {
+      "table": "device_allocations",
+      "file": "Backend/src/main/resources/db/migration/V15__create_device_inventory.sql",
+      "line": 19
+    },
+    {
+      "table": "device_assets",
+      "file": "Backend/src/main/resources/db/migration/V15__create_device_inventory.sql",
+      "line": 3
+    },
+    {
+      "table": "devices",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 83
+    },
+    {
+      "table": "environments",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 51
+    },
+    {
+      "table": "execution_attempts",
+      "file": "Backend/src/main/resources/db/migration/V6__create_test_execution.sql",
+      "line": 92
+    },
+    {
+      "table": "execution_results",
+      "file": "Backend/src/main/resources/db/migration/V6__create_test_execution.sql",
+      "line": 9
+    },
+    {
+      "table": "file_work_commands",
+      "file": "Backend/src/main/resources/db/migration/V17__file_work_groups_and_sessions.sql",
+      "line": 85
+    },
+    {
+      "table": "file_work_group_items",
+      "file": "Backend/src/main/resources/db/migration/V17__file_work_groups_and_sessions.sql",
+      "line": 34
+    },
+    {
+      "table": "file_work_groups",
+      "file": "Backend/src/main/resources/db/migration/V17__file_work_groups_and_sessions.sql",
+      "line": 7
+    },
+    {
+      "table": "file_work_history",
+      "file": "Backend/src/main/resources/db/migration/V17__file_work_groups_and_sessions.sql",
+      "line": 104
+    },
+    {
+      "table": "file_work_sessions",
+      "file": "Backend/src/main/resources/db/migration/V17__file_work_groups_and_sessions.sql",
+      "line": 52
+    },
+    {
+      "table": "foundation_checks",
+      "file": "Backend/src/main/resources/db/migration/V1__create_foundation.sql",
+      "line": 16
+    },
+    {
+      "table": "identity_audit",
+      "file": "Backend/src/main/resources/db/migration/V2__create_identity.sql",
+      "line": 23
+    },
+    {
+      "table": "identity_login_buckets",
+      "file": "Backend/src/main/resources/db/migration/V2__create_identity.sql",
+      "line": 35
+    },
+    {
+      "table": "identity_roles",
+      "file": "Backend/src/main/resources/db/migration/V2__create_identity.sql",
+      "line": 1
+    },
+    {
+      "table": "identity_users",
+      "file": "Backend/src/main/resources/db/migration/V2__create_identity.sql",
+      "line": 7
+    },
+    {
+      "table": "import_batches",
+      "file": "Backend/src/main/resources/db/migration/V4__create_test_case_library.sql",
+      "line": 84
+    },
+    {
+      "table": "import_rows",
+      "file": "Backend/src/main/resources/db/migration/V4__create_test_case_library.sql",
+      "line": 105
+    },
+    {
+      "table": "milestones",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 114
+    },
+    {
+      "table": "project_audit",
+      "file": "Backend/src/main/resources/db/migration/V5__review_project_integrity.sql",
+      "line": 3
+    },
+    {
+      "table": "project_counters",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 41
+    },
+    {
+      "table": "project_lifecycle_decisions",
+      "file": "Backend/src/main/resources/db/migration/V21__project_lifecycle_decisions.sql",
+      "line": 3
+    },
+    {
+      "table": "project_memberships",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 25
+    },
+    {
+      "table": "project_resources",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 176
+    },
+    {
+      "table": "project_status_reports",
+      "file": "Backend/src/main/resources/db/migration/V16__project_status_reports.sql",
+      "line": 2
+    },
+    {
+      "table": "projects",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 7
+    },
+    {
+      "table": "qa_answers",
+      "file": "Backend/src/main/resources/db/migration/V18__qa_work_items.sql",
+      "line": 35
+    },
+    {
+      "table": "qa_commands",
+      "file": "Backend/src/main/resources/db/migration/V18__qa_work_items.sql",
+      "line": 75
+    },
+    {
+      "table": "qa_confirmations",
+      "file": "Backend/src/main/resources/db/migration/V18__qa_work_items.sql",
+      "line": 54
+    },
+    {
+      "table": "qa_details",
+      "file": "Backend/src/main/resources/db/migration/V18__qa_work_items.sql",
+      "line": 6
+    },
+    {
+      "table": "redmine_bindings",
+      "file": "Backend/src/main/resources/db/migration/V10__create_redmine_outbox.sql",
+      "line": 2
+    },
+    {
+      "table": "redmine_delivery_attempts",
+      "file": "Backend/src/main/resources/db/migration/V10__create_redmine_outbox.sql",
+      "line": 74
+    },
+    {
+      "table": "redmine_outbox",
+      "file": "Backend/src/main/resources/db/migration/V10__create_redmine_outbox.sql",
+      "line": 30
+    },
+    {
+      "table": "resource_revisions",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 193
+    },
+    {
+      "table": "retest_request_items",
+      "file": "Backend/src/main/resources/db/migration/V8__create_bug_retest.sql",
+      "line": 61
+    },
+    {
+      "table": "retest_requests",
+      "file": "Backend/src/main/resources/db/migration/V8__create_bug_retest.sql",
+      "line": 35
+    },
+    {
+      "table": "rule_versions",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 148
+    },
+    {
+      "table": "rulesets",
+      "file": "Backend/src/main/resources/db/migration/V3__create_project_catalogs.sql",
+      "line": 133
+    },
+    {
+      "table": "run_item_assignments",
+      "file": "Backend/src/main/resources/db/migration/V6__create_test_execution.sql",
+      "line": 76
+    },
+    {
+      "table": "run_items",
+      "file": "Backend/src/main/resources/db/migration/V6__create_test_execution.sql",
+      "line": 56
+    },
+    {
+      "table": "run_scope_decisions",
+      "file": "Backend/src/main/resources/db/migration/V9__create_cycle_decisions.sql",
+      "line": 9
+    },
+    {
+      "table": "SPRING_SESSION",
+      "file": "Backend/src/main/resources/db/migration/V2__create_identity.sql",
+      "line": 43
+    },
+    {
+      "table": "SPRING_SESSION_ATTRIBUTES",
+      "file": "Backend/src/main/resources/db/migration/V2__create_identity.sql",
+      "line": 56
+    },
+    {
+      "table": "test_case_revisions",
+      "file": "Backend/src/main/resources/db/migration/V4__create_test_case_library.sql",
+      "line": 46
+    },
+    {
+      "table": "test_cases",
+      "file": "Backend/src/main/resources/db/migration/V4__create_test_case_library.sql",
+      "line": 27
+    },
+    {
+      "table": "test_cycles",
+      "file": "Backend/src/main/resources/db/migration/V6__create_test_execution.sql",
+      "line": 16
+    },
+    {
+      "table": "test_document_cell_changes",
+      "file": "Backend/src/main/resources/db/migration/V27__document_edits_and_second_test.sql",
+      "line": 17
+    },
+    {
+      "table": "test_document_cell_edits",
+      "file": "Backend/src/main/resources/db/migration/V27__document_edits_and_second_test.sql",
+      "line": 5
+    },
+    {
+      "table": "test_document_retests",
+      "file": "Backend/src/main/resources/db/migration/V27__document_edits_and_second_test.sql",
+      "line": 31
+    },
+    {
+      "table": "test_suites",
+      "file": "Backend/src/main/resources/db/migration/V4__create_test_case_library.sql",
+      "line": 6
+    },
+    {
+      "table": "work_item_attachments",
+      "file": "Backend/src/main/resources/db/migration/V7__create_work_items.sql",
+      "line": 174
+    },
+    {
+      "table": "work_item_clarifications",
+      "file": "Backend/src/main/resources/db/migration/V7__create_work_items.sql",
+      "line": 157
+    },
+    {
+      "table": "work_item_comments",
+      "file": "Backend/src/main/resources/db/migration/V7__create_work_items.sql",
+      "line": 125
+    },
+    {
+      "table": "work_item_execution_links",
+      "file": "Backend/src/main/resources/db/migration/V7__create_work_items.sql",
+      "line": 93
+    },
+    {
+      "table": "work_item_external_references",
+      "file": "Backend/src/main/resources/db/migration/V7__create_work_items.sql",
+      "line": 141
+    },
+    {
+      "table": "work_item_history",
+      "file": "Backend/src/main/resources/db/migration/V7__create_work_items.sql",
+      "line": 107
+    },
+    {
+      "table": "work_item_policy_versions",
+      "file": "Backend/src/main/resources/db/migration/V7__create_work_items.sql",
+      "line": 16
+    },
+    {
+      "table": "work_item_statuses",
+      "file": "Backend/src/main/resources/db/migration/V7__create_work_items.sql",
+      "line": 2
+    },
+    {
+      "table": "work_items",
+      "file": "Backend/src/main/resources/db/migration/V7__create_work_items.sql",
+      "line": 24
+    }
+  ]
+}

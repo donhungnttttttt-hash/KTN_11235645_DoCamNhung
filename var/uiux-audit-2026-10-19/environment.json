@@ -1,0 +1,74 @@
+{
+  "capturedAt": "2026-10-19T02:23:44.472Z",
+  "mode": "READ_ONLY_AUDIT",
+  "databases": [
+    {
+      "schema": "tms",
+      "version": "33",
+      "failed": 0
+    },
+    {
+      "schema": "tms_docstest_2060e04c986c",
+      "version": "33",
+      "failed": 0
+    }
+  ],
+  "servers": [
+    {
+      "origin": "http://127.0.0.1:8080",
+      "status": 200,
+      "up": true
+    },
+    {
+      "origin": "http://127.0.0.1:8081",
+      "status": 200,
+      "up": true
+    },
+    {
+      "origin": "http://localhost:5173",
+      "status": 200,
+      "up": true
+    },
+    {
+      "origin": "http://127.0.0.1:5174",
+      "status": 200,
+      "up": true
+    }
+  ],
+  "modules": [
+    {
+      "port": 5173,
+      "file": "Frontend/src/AppEntry.jsx",
+      "status": 200,
+      "sourceMapContentMatches": true
+    },
+    {
+      "port": 5173,
+      "file": "Frontend/src/app/routes/AppRouter.jsx",
+      "status": 200,
+      "sourceMapContentMatches": true
+    },
+    {
+      "port": 5174,
+      "file": "Frontend/src/AppEntry.jsx",
+      "status": 200,
+      "sourceMapContentMatches": true
+    },
+    {
+      "port": 5174,
+      "file": "Frontend/src/app/routes/AppRouter.jsx",
+      "status": 200,
+      "sourceMapContentMatches": true
+    }
+  ],
+  "isolatedJar": {
+    "sha256": "654af83ed9335631ca926e1162378e0eef772e6aecee0e2a99c3e7ca065ed6e6",
+    "matchesManifest": true
+  },
+  "devtools": {
+    "dedicatedMcp": false,
+    "available": "CUA DOM/accessibility snapshot, read-only computed styles, console; no network throttle/screen reader/touch synthesis API"
+  },
+  "existingBusinessDataWrites": 0,
+  "liveProviderCalls": 0
+}

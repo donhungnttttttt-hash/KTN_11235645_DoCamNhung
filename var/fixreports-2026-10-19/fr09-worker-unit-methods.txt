@@ -1,0 +1,15 @@
+
+    @Test void managementAnalysisIsDeniedBeforeProviderAdmissionWhileReadableProgressRemainsAllowed(){
+        var scope=context.current("owner");
+        for(String question:List.of("Phân tích tổng hợp toàn dự án như màn Tổng hợp & Phân tích","Provide whole-project management analysis")){
+            var store=mock(AiChatStore.class);var gateway=mock(AiProviderGateway.class);var typed=mock(AiContextService.class);
+            when(store.thread("owner",1)).thenReturn(new AiChatStore.ThreadView(1,null,AiPortfolioContext.PURPOSE,null,scope.reference(),"OPENAI_API","test-model",null,null));
+            var selection=new AiProviderGateway.ResolvedSelection("OPENAI_API","test-model",null,0);when(gateway.resolve(eq("owner"),any())).thenReturn(selection);when(store.history("owner",1)).thenReturn(List.of());
+            when(store.reserve(eq("owner"),eq(1L),anyString(),anyString(),eq(selection),any(),anyBoolean())).thenReturn(new AiChatStore.Reservation(2,true));
+            when(gateway.generate(anyString(),any(),anyString(),any(),anyString(),any())).thenReturn(new OpenAiResponsesClient.Output(json.createObjectNode().put("text","Must not generate"),"resp_test","test-model",1,1));
+            when(gateway.withCurrent(eq("owner"),eq(selection),any())).thenAnswer(call->((java.util.function.Supplier<?>)call.getArgument(2)).get());
+            assertThatThrownBy(()->new AiChatService(store,typed,gateway,json,context).send("owner",1,question,"analysis-policy-001")).isInstanceOfSatisfying(BusinessException.class,e->assertThat(e.code()).isEqualTo("AI_CAPABILITY_DENIED"));verifyNoInteractions(gateway);
+        }
+        for(String question:List.of("Phân tích tiến độ file Long file.xlsx và việc của tôi","Tổng hợp tiến độ cá nhân của tôi trong toàn bộ dự án đang tham gia","Analyze my assigned work progress across all projects"))
+            assertThatCode(()->context.prepare("owner",scope.reference(),"personal-positive",question)).doesNotThrowAnyException();
+    }

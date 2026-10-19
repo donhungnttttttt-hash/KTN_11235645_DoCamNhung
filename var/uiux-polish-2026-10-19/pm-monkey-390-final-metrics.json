@@ -1,0 +1,63 @@
+{
+  "dialogs": [
+    {
+      "body": [
+        {
+          "height": 758,
+          "overflow": "auto",
+          "padding": "16px",
+          "scrollHeight": 934
+        }
+      ],
+      "className": "d-modal wide  ",
+      "maxHeight": "828px",
+      "rect": {
+        "height": 828,
+        "width": 368.8000183105469,
+        "x": 8,
+        "y": 8
+      }
+    }
+  ],
+  "fields": [
+    {
+      "height": 44,
+      "radius": "3px",
+      "tag": "SELECT"
+    },
+    {
+      "height": 44,
+      "radius": "8px",
+      "tag": "SELECT"
+    },
+    {
+      "height": 44,
+      "radius": "8px",
+      "tag": "INPUT"
+    },
+    {
+      "height": 96.8000030517578,
+      "radius": "8px",
+      "tag": "TEXTAREA"
+    },
+    {
+      "height": 123.20000457763672,
+      "radius": "8px",
+      "tag": "TEXTAREA"
+    },
+    {
+      "height": 96.8000030517578,
+      "radius": "8px",
+      "tag": "TEXTAREA"
+    },
+    {
+      "height": 96.8000030517578,
+      "radius": "8px",
+      "tag": "TEXTAREA"
+    }
+  ],
+  "height": 844,
+  "narrow": true,
+  "pageWidth": 385,
+  "width": 390
+}

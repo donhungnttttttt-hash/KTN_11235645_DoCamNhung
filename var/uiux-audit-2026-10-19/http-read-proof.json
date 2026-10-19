@@ -1,0 +1,124 @@
+{
+  "checkedAt": "2026-10-19T02:38:01.513Z",
+  "domainWrites": 0,
+  "liveAiCalls": 0,
+  "results": [
+    {
+      "origin": "http://127.0.0.1:8080",
+      "role": "MAIN_ADMIN",
+      "reads": [
+        {
+          "route": "/admin/projects/1/archive-readiness",
+          "status": 200,
+          "canArchive": false,
+          "blockers": [
+            {
+              "code": "ALLOCATED_DEVICES",
+              "count": 2
+            },
+            {
+              "code": "OPEN_WORK_ITEMS",
+              "count": 3
+            },
+            {
+              "code": "UNFINISHED_CYCLES",
+              "count": 2
+            }
+          ],
+          "archived": false
+        },
+        {
+          "route": "/admin/projects/3/archive-readiness",
+          "status": 200,
+          "canArchive": false,
+          "blockers": [
+            {
+              "code": "OPEN_WORK_ITEMS",
+              "count": 64
+            },
+            {
+              "code": "UNFINISHED_CYCLES",
+              "count": 3
+            },
+            {
+              "code": "OPEN_RETESTS",
+              "count": 2
+            }
+          ],
+          "archived": false
+        }
+      ]
+    },
+    {
+      "origin": "http://127.0.0.1:8081",
+      "role": "PM",
+      "reads": [
+        {
+          "route": "/projects/156/management-reports/summary?featureId=261",
+          "status": 200,
+          "metrics": {
+            "total": 5,
+            "na": 1,
+            "applicable": 5,
+            "ok": 1,
+            "ng": 0,
+            "pending": 1,
+            "notRun": 2,
+            "tested": 3,
+            "executionPercent": 60,
+            "passPercent": 20
+          },
+          "featureTableRows": 5
+        },
+        {
+          "route": "/projects/157",
+          "status": 404,
+          "code": "NOT_FOUND"
+        },
+        {
+          "route": "/projects/156/management-reports/6/download",
+          "status": 200,
+          "bytes": 140,
+          "sha256": "4155e97e917c54bb226165cb68b6a98cfe1f3bd839aefc4e97a29b2d5eed7f4e",
+          "exactContent": true,
+          "method": "HTTP_ONLY_NOT_BROWSER_DOWNLOAD"
+        }
+      ]
+    },
+    {
+      "origin": "http://127.0.0.1:8081",
+      "role": "TESTER",
+      "reads": [
+        {
+          "route": "/projects/156/management-reports/summary",
+          "status": 403,
+          "code": "MANAGEMENT_REPORT_FORBIDDEN"
+        }
+      ]
+    },
+    {
+      "origin": "http://127.0.0.1:8081",
+      "role": "DEV",
+      "reads": [
+        {
+          "route": "/projects/156/management-reports/summary",
+          "status": 403,
+          "code": "MANAGEMENT_REPORT_FORBIDDEN"
+        },
+        {
+          "route": "/projects/156/test-documents/267",
+          "status": 200,
+          "canManage": false,
+          "canAssign": false,
+          "resultWriteCapabilities": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "mode": "Production React components with injected synthetic API; network fetch blocked",
+  "singleClick": true,
+  "pending": {
+    "draft": "Câu hỏi tôi đang tự soạn",
+    "pending": "AI đang trả lời…",
+    "presets": [
+      {
+        "disabled": true,
+        "label": "Dự án tôi tham gia"
+      },
+      {
+        "disabled": true,
+        "label": "Tiến độ kiểm thử"
+      },
+      {
+        "disabled": true,
+        "label": "Việc và case còn lại"
+      },
+      {
+        "disabled": true,
+        "label": "Bug cần xử lý"
+      }
+    ]
+  },
+  "presetRequestCount": 1,
+  "threadCreateCount": 1,
+  "customDraftSubmittedAfterPreset": true,
+  "totalRequestsAfterCustomSend": 2,
+  "paidCalls": 0,
+  "mainDatabaseWrites": 0
+}

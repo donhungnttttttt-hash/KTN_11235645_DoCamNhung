@@ -1,0 +1,9 @@
+{
+  "mode" : "before",
+  "schema" : "tms",
+  "databaseWrites" : false,
+  "status" : "PASS",
+  "tableCount" : 76,
+  "preservedTables" : 74,
+  "rows" : 7374
+}

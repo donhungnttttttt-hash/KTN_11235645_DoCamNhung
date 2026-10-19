@@ -1,0 +1,57 @@
+{
+  "capturedAt": "2026-10-19T04:36:46.375Z",
+  "review": "SOURCE_ONLY_READ_ONLY_NO_NEW_TEST_RUN",
+  "baselineFiles": 3374,
+  "baselineCapturedAt": "2026-10-19T04:25:59.178Z",
+  "files": [
+    {
+      "path": "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+      "sha256": "21187c5c097db618d3c6f8413d04bf3c36a90a906ff4bc40d54526b7c6d751bd",
+      "ledgerHashMatches": true,
+      "inBaseline": true,
+      "changedFromBaseline": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/UserCreateDialog.jsx",
+      "sha256": "dfeab343b0fd4bef1b597b7fdecb4f201b01c3b58376220b56e521d3e6dc17d8",
+      "ledgerHashMatches": true,
+      "inBaseline": true,
+      "changedFromBaseline": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+      "sha256": "0b22ae48a6a9c6e9bd191d4d3a857c33b413b13ac0e98caf7913e81d57bc4d24",
+      "ledgerHashMatches": true,
+      "inBaseline": true,
+      "changedFromBaseline": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/DeviceAssetForm.jsx",
+      "sha256": "cd8886c9f3a751e8a81ed314ca6c80b1a022d7cbd32ba02bdf8b215b9565101e",
+      "ledgerHashMatches": true,
+      "inBaseline": true,
+      "changedFromBaseline": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+      "sha256": "c3ac8ae16cb64b201a7d15f69378c2aedbdc85a1df0fb80cc6debeb97ef6f061",
+      "ledgerHashMatches": true,
+      "inBaseline": true,
+      "changedFromBaseline": true
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin-dirty-close.test.jsx",
+      "sha256": "a013b77e70890600f461c2e1c627afd3425c017e2abfa96395314267d07ffee2",
+      "ledgerHashMatches": true,
+      "inBaseline": false,
+      "changedFromBaseline": null
+    },
+    {
+      "path": "Frontend/src/app/features/admin/nested-project-picker.test.jsx",
+      "sha256": "db1c5c5b6192b8574487a85247c11d3a66e93b2efb5f9c2690940f2d7b8eb733",
+      "ledgerHashMatches": true,
+      "inBaseline": true,
+      "changedFromBaseline": true
+    }
+  ]
+}

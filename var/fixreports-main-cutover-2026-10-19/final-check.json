@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-19T02:11:51.205Z",
+  "status": "PASS",
+  "mainMigrated": true,
+  "mainRestarted": true,
+  "mainHealth": "UP",
+  "mainVersion": 33,
+  "sourceBackendChanged": false,
+  "frontendFilesChangedSinceFollowupBaseline": [
+    "Frontend/src/app/features/admin/admin-routing.test.jsx",
+    "Frontend/src/app/features/reports/management-analysis.css",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.test.jsx",
+    "Frontend/src/app/features/testing/DocumentAssignments.jsx",
+    "Frontend/src/app/features/testing/DocumentAssignments.test.jsx",
+    "Frontend/src/AppEntry.jsx"
+  ],
+  "localLinksChecked": 163,
+  "failures": [],
+  "gitDiffCheck": "PASS",
+  "commitPushPerformed": false
+}

@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-10-19T01:09:10.262Z",
+  "changedExistingSourceDocs": [
+    "Frontend/src/app/features/admin/admin-routing.test.jsx",
+    "Frontend/src/app/features/reports/management-analysis.css",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.test.jsx",
+    "Frontend/src/app/features/testing/DocumentAssignments.jsx",
+    "Frontend/src/app/features/testing/DocumentAssignments.test.jsx",
+    "Frontend/src/AppEntry.jsx",
+    "docs/planning/2026-10-19-fixreports-implementation-plan.md",
+    "docs/planning/README.md",
+    "docs/planning/STATUS.json",
+    "docs/reviews/2026-10-19-fixreports-implementation-review.md",
+    "tasks/plan.md",
+    "tasks/todo.md"
+  ],
+  "backendSourceChanged": [],
+  "frontendSourceChanged": [
+    "Frontend/src/app/features/admin/admin-routing.test.jsx",
+    "Frontend/src/app/features/reports/management-analysis.css",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.test.jsx",
+    "Frontend/src/app/features/testing/DocumentAssignments.jsx",
+    "Frontend/src/app/features/testing/DocumentAssignments.test.jsx",
+    "Frontend/src/AppEntry.jsx"
+  ],
+  "localLinksChecked": 10,
+  "failures": [],
+  "gitDiffCheck": "PASS",
+  "mainRestarted": false,
+  "mainMigrated": false
+}

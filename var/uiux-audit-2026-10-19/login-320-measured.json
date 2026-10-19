@@ -1,0 +1,90 @@
+{
+  "note": "Actual320px; initial filename login-320 was240px calibration and is not counted as320 coverage",
+  "metrics": {
+    "controls": [
+      {
+        "background": "rgb(255, 255, 255)",
+        "border": "0.8px solid rgb(32, 183, 166)",
+        "borderRadius": "4px",
+        "color": "rgb(30, 41, 59)",
+        "disabled": false,
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "height": 47.60000228881836,
+        "name": "",
+        "outline": "rgba(32, 183, 166, 0.25) solid 1.6px",
+        "tag": "INPUT",
+        "type": null,
+        "width": 230.40000915527344,
+        "x": 44.79999923706055,
+        "y": 405.9500122070313
+      },
+      {
+        "background": "rgb(255, 255, 255)",
+        "border": "0.8px solid rgb(203, 213, 225)",
+        "borderRadius": "4px",
+        "color": "rgb(30, 41, 59)",
+        "disabled": false,
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "height": 47.60000228881836,
+        "name": "",
+        "outline": "rgb(30, 41, 59) none 2.4px",
+        "tag": "INPUT",
+        "type": "password",
+        "width": 230.40000915527344,
+        "x": 44.79999923706055,
+        "y": 495.5500183105469
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px none rgb(100, 116, 139)",
+        "borderRadius": "0px",
+        "color": "rgb(100, 116, 139)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "height": 47.60000228881836,
+        "name": "Hiện mật khẩu",
+        "outline": "rgb(100, 116, 139) none 2.4px",
+        "tag": "BUTTON",
+        "type": "button",
+        "width": 44,
+        "x": 227.1999969482422,
+        "y": 495.5500183105469
+      },
+      {
+        "background": "rgb(15, 118, 110)",
+        "border": "0.8px solid rgb(15, 118, 110)",
+        "borderRadius": "4px",
+        "color": "rgb(255, 255, 255)",
+        "disabled": false,
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "height": 43.10000228881836,
+        "name": "Đăng nhập",
+        "outline": "rgb(255, 255, 255) none 2.4px",
+        "tag": "BUTTON",
+        "type": "submit",
+        "width": 230.40000915527344,
+        "x": 44.79999923706055,
+        "y": 566.1500244140625
+      }
+    ],
+    "dialogs": [],
+    "focus": {
+      "name": "",
+      "tag": "INPUT"
+    },
+    "tables": [],
+    "url": "http://127.0.0.1:5174/",
+    "viewport": {
+      "devicePixelRatio": 1.0000000149011612,
+      "height": 844,
+      "pageHeight": 844,
+      "pageWidth": 320,
+      "width": 320
+    }
+  },
+  "snapshot": "- main:\n  - generic: S+\n  - strong: TMS\n  - generic: Quản lý dự án & kiểm thử\n  - region \"Tài khoản nội bộ\":\n    - heading \"Chào mừng trở lại\" [level=1]\n    - paragraph: Đăng nhập để quản lý dự án và công việc kiểm thử của bạn.\n    - form \"Đăng nhập\":\n      - generic: Tên đăng nhập\n      - textbox \"Tên đăng nhập\" [active]\n      - generic: Mật khẩu\n      - textbox \"Mật khẩu\"\n      - button \"Hiện mật khẩu\":\n      - button \"Đăng nhập\":\n        - text: Đăng nhập\n    - paragraph:\n      - text: Chưa có tài khoản hoặc cần hỗ trợ?\n      - text: Liên hệ quản trị viên của bạn.\n  - paragraph: Không gian làm việc nội bộ · TMS"
+}

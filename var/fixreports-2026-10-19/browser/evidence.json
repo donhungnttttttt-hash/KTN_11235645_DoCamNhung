@@ -1,0 +1,83 @@
+[
+  {
+    "id": "B01",
+    "role": "PM",
+    "checks": [
+      "Login isolated localhost5174/8081",
+      "SPIDER-PLUS overview approved copy and no oldqueues",
+      "Feature/file scoped navigation",
+      "3/5 Feature shows60%",
+      "PM rangeA1-40/B41-60 persists names",
+      "Overlap1-60 rejected; chosenrange kept",
+      "StatusOK→NG→P→NA→Unexecuted persisted with feedback",
+      "ClosedcaseBUG included inbadge1",
+      "MobiletapIssue and prefillFeature187/document155/row627",
+      "SaveBUG returns tosamecase, badge2/focusIssue2"
+    ],
+    "viewport": [
+      1440,
+      390,
+      768
+    ],
+    "limitations": [
+      "Initial target-jar overwrite during Maven package caused500; strict owned process stop and immutable runtime jar resolved it without productcode change"
+    ]
+  },
+  {
+    "id": "B02",
+    "role": "PM",
+    "checks": [
+      "Create Note with literal script markup saved and read back",
+      "Save Markdown report3 with edited8 text; reopen exactcontent",
+      "Actual browser download110bytes matched byte-for-byte/SHA (see report-download-proof.json)",
+      "Report sourceIssue counts remained5, currentStatus source not changed"
+    ],
+    "limits": [
+      "AI preview disabled in isolated runtime; no liveprovider call"
+    ]
+  },
+  {
+    "id": "B03",
+    "role": "TESTER",
+    "checks": [
+      "Management Analysis denied in UI",
+      "Only own range editable; overlap1-41 rejected/kept; change1-39 succeeds",
+      "Assignedcase1StatusOK saves withoutphysicaldevice allocation",
+      "Notes read-only",
+      "Own monkeyBUG onemptyFeature248 created, edited, softdeleted throughconfirmation; count6→5",
+      "Chat catalog only all-own plus project156, personalprompts; owner scope reset fromAdmin; no loose0 at320",
+      "Old cyclebookmark givesretirementnotice withoutIDguess"
+    ]
+  },
+  {
+    "id": "B04",
+    "role": "DEV",
+    "checks": [
+      "AssignedIssue63 opens, no contentmanagementcontrols",
+      "Moveopen→in_progress persists",
+      "Comment persists andactualDEVactor/history shown",
+      "Management Analysis denied"
+    ]
+  },
+  {
+    "id": "B05",
+    "role": "ADMIN withoutmembership",
+    "checks": [
+      "Admin KPI usesFeature/currentStatus andonlyone roles table",
+      "ANDaccentlessreordered projectquery co lap spider returnsproject156/count1",
+      "Unassignedmemberpicker thuoc FR12 chua returns1; saveaddsuser andvisiblemessage",
+      "MissingPMhandover givesexplicitmessage; selectonePM andhandover2assets; successreaddisplaysPM/actor/notes",
+      "Auditkeyword+Vietnamdate UI works withouttype/timezoneselectors",
+      "CreateFeature248/freeformenvironment",
+      "Archive/restoreFeature187 preservesStatusOK/assignments/Issuebadge2",
+      "Reassigncase1 A→B keepsStatusOK, firstA/latestB",
+      "Editcelltitleat320 keepsStatus/assignments; correctactualresultactorhistory",
+      "Feature188 sameworkbook retainsoldtitle/U/unassigned/Issue0",
+      "Chatglobalcatalog202entries thenproject+Featuretarget/configreachable; provider-notconfigured feedback"
+    ],
+    "limits": [
+      "BrowserExcel upload blockedbyChrome extension Allow access tofileURLs permission; notenabled automatically",
+      "OriginalExcel download UI attempted, localfile notconfirmed; native export proofseparate"
+    ]
+  }
+]
