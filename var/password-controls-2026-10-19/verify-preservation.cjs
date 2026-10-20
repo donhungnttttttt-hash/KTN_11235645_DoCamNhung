@@ -1,0 +1,18 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const {execFileSync} = require('node:child_process');
+const root = path.resolve(__dirname, '../..');
+const read = name => JSON.parse(fs.readFileSync(path.join(__dirname, name), 'utf8'));
+const baseline = read('before.json'), verified = read('verified-source-start.json');
+const hash = file => fs.existsSync(path.join(root,file)) ? crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex') : null;
+const changedTracked = Object.keys(baseline.files).filter(file => hash(file)!==baseline.files[file]);
+const preservedChanged = Object.keys(baseline.preserved).filter(file => hash(file)!==baseline.preserved[file]);
+const product = file => /^(Frontend|Backend|scripts)\//.test(file);
+const verifiedChanged = Object.keys(verified.files).filter(file => product(file)&&hash(file)!==verified.files[file]);
+const unchangedBackend = Object.keys(baseline.files).filter(file=>/^Backend\//.test(file)).every(file=>hash(file)===baseline.files[file]);
+const newSources = execFileSync('git',['ls-files','--others','--exclude-standard','-z','--','Frontend','Backend','scripts'],{cwd:root,encoding:'utf8'}).split('\0').filter(Boolean);
+const result = {preservedFiles:Object.keys(baseline.preserved).length,preservedChanged,unchangedBackend,verifiedTrackedProductChanges:verifiedChanged,changedTracked,newSources:Object.fromEntries(newSources.map(file=>[file,hash(file)]))};
+fs.writeFileSync(path.join(__dirname,'preservation-result.json'),`${JSON.stringify(result,null,2)}\n`);
+console.log(JSON.stringify(result,null,2));
+if(preservedChanged.length||verifiedChanged.length||!unchangedBackend)process.exitCode=1;

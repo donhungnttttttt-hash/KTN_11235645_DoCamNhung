@@ -1,0 +1,12 @@
+{
+  "startedAt": "2026-10-19T15:36:43.948Z",
+  "finishedAt": "2026-10-19T15:36:57.582Z",
+  "task": "test",
+  "args": [
+    "src/app/features/reports/ManagementAnalysisPage.ai.test.jsx",
+    "src/app/features/reports/ManagementAnalysisPage.providers.test.jsx",
+    "src/app/features/reports/ManagementAnalysisPage.test.jsx",
+    "src/app/services/api/managementReports.test.js"
+  ],
+  "exitCode": 0
+}

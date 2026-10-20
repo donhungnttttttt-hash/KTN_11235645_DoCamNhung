@@ -1,0 +1,14 @@
+{
+  "recordedAt": "2026-10-19T12:51:59.776Z",
+  "files": {
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx": "871ada5dc2f2c645e972cd7e845f4c86ebebc2d2e11efe94f2766e50af6ba4d4",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.test.jsx": "cc271092591af99791c5f1f930af53518fe8e7f0ba5a6ccf8b6401ffd22164c3",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.ai.test.jsx": "5c72438f430d611a55676b4deb43073457bebbbdd0ad3fcce1f5b7b8be0e222f",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.providers.test.jsx": "f1d7bed533c66e4ba881c4d1ad2d847fc39f3d34291f96ac6a6b056af03b931f",
+    "Backend/src/main/java/vn/syp/tms/ai/AiDraftContent.java": "9206d0bf76d4125c3aff26e692a1a938d13323cd8597a46e2498fa26bbbfd0fe",
+    "Backend/src/main/java/vn/syp/tms/ai/AiDraftService.java": "287f7a2d71f2cefb33bd631cd07d67dedeef0bb101c02b3ab0da0cafd168f3e4",
+    "Backend/src/main/java/vn/syp/tms/ai/AiManagementReportGenerator.java": "d04d84000a92af640dc0134b4d52db388be587fd1509d76ca344c22ee6fd3913",
+    "Backend/src/test/java/vn/syp/tms/ai/AiDraftServiceTest.java": "f48b20c5d989300a7f4cf87f6072e2d09c4c749dd626730fbd445b2c546b6554",
+    "Backend/src/test/java/vn/syp/tms/ai/AiManagementReportGeneratorTest.java": "62a6fdfe0831e6096dff3119829b4f9d26db2e6201f1846008483de09d57fbde"
+  }
+}

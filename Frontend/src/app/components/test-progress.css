@@ -1,0 +1,41 @@
+.test-progress {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+  color: var(--color-text-sub, #526460);
+}
+
+.test-progress-label {
+  font-size: var(--text-caption, 0.75rem);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.test-progress-track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--color-progress-track, #e7eeec);
+}
+
+.test-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-progress-incomplete, #d97706);
+  transition: width var(--motion-normal, 200ms) var(--ease-out, ease-out);
+}
+
+.test-progress.is-complete .test-progress-fill {
+  background: var(--color-progress-complete, #147e75);
+}
+
+.test-progress.is-empty .test-progress-fill {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .test-progress-fill { transition: none; }
+}

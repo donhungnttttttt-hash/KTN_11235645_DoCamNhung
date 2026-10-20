@@ -65,3 +65,10 @@ Backend/.idea/
 # Work files for preparing this evidence handover; keep its reviewed manifest.
 /var/evidence-push-2026-10-19/*
 !/var/evidence-push-2026-10-19/publication-manifest.json
+
+# Reviewed handover (20/10/2026): keep original document extracts and scratch copies local.
+/var/word-report-2026-10-19/recovered-parts/
+/var/word-report-2026-10-19/original-full-text.txt
+/var/word-report-2026-10-19/original-inventory.json
+/var/admin-login-landing-2026-10-19/AppEntry.before.jsx
+/var/uiux-dashboard-testing-2026-10-19/testing/testing-css-draft.css

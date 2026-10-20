@@ -1,0 +1,15 @@
+﻿{
+    "at":  "2026-10-19T13:02:48.1019121Z",
+    "stoppedPid":  26020,
+    "launcherPid":  3232,
+    "port":  8080,
+    "purpose":  "Load verified management report AI output contract fix",
+    "migrationFilesUnchanged":  true,
+    "configurationHash":  "225ED83C3DEED438C522AE6000AE5BDEAA57F4357CE905D1706FA64F1E890515",
+    "otherListeners":  [
+                           {
+                               "LocalPort":  5173,
+                               "OwningProcess":  15612
+                           }
+                       ]
+}

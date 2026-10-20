@@ -1,0 +1,57 @@
+{
+  "at": "2026-10-19T13:30:43.394Z",
+  "baseline": "var/uiux-dashboard-testing-2026-10-19/feature-filters-before.json",
+  "baselineAt": "2026-10-19T13:19:45.942Z",
+  "scope": [
+    "Frontend/src",
+    "Backend/src"
+  ],
+  "baselineFiles": 686,
+  "currentFiles": 688,
+  "unchanged": 677,
+  "changed": [
+    "Frontend/src/app/features/testing/testing.css",
+    "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+    "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+    "Frontend/src/app/features/testing/TestingFeaturesPage.test.jsx",
+    "Frontend/src/app/features/work-items/feature-kanban.css",
+    "Frontend/src/app/services/api/features.js",
+    "Backend/src/main/java/vn/syp/tms/feature/FeatureController.java",
+    "Backend/src/main/java/vn/syp/tms/feature/FeatureService.java",
+    "Backend/src/test/java/vn/syp/tms/testcase/FeatureIntegrationTest.java"
+  ],
+  "added": [
+    "Frontend/src/app/features/testing/FeatureListFilters.jsx",
+    "Frontend/src/app/services/api/features.test.js"
+  ],
+  "deleted": [],
+  "outsideTask": [],
+  "allowed": [
+    "Backend/src/main/java/vn/syp/tms/feature/FeatureController.java",
+    "Backend/src/main/java/vn/syp/tms/feature/FeatureService.java",
+    "Backend/src/test/java/vn/syp/tms/testcase/FeatureIntegrationTest.java",
+    "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+    "Frontend/src/app/features/testing/TestingFeaturesPage.test.jsx",
+    "Frontend/src/app/features/testing/FeatureListFilters.jsx",
+    "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+    "Frontend/src/app/features/testing/testing.css",
+    "Frontend/src/app/features/work-items/feature-kanban.css",
+    "Frontend/src/app/services/api/features.js",
+    "Frontend/src/app/services/api/features.test.js"
+  ],
+  "pass": true,
+  "changedHashes": {
+    "Frontend/src/app/features/testing/testing.css": "08049a201f4f0abfd84464403c9f93200fbef3ec55a12548e5c3296c13b9800f",
+    "Frontend/src/app/features/testing/TestingFeaturePage.jsx": "dfad12e8e71408e40d727857ca4263a8d2d3bf5312df82072a27c6e5eca9fb03",
+    "Frontend/src/app/features/testing/TestingFeaturesPage.jsx": "1f63869d32d4140201b81f76d24eae9ff176ba54e743a7b9c0419b51491f1c15",
+    "Frontend/src/app/features/testing/TestingFeaturesPage.test.jsx": "c80cd48025094d7afcd1e37ed7eab1e97ad4cf8fac70b158ca5f5c3294b184d1",
+    "Frontend/src/app/features/work-items/feature-kanban.css": "bbb9ae9506fdb560131edcb1a5e6639c7ead5fbadfb8c5e8064bb9ddc89cbd65",
+    "Frontend/src/app/services/api/features.js": "850eb069dec10e65fada10d1f6c7d45dffab22c4c249a14db85b0e737c40f52e",
+    "Backend/src/main/java/vn/syp/tms/feature/FeatureController.java": "c69e368c947e3f495a96ed846a7679a724def9aef7c9a985eb6a9fd32d7282d2",
+    "Backend/src/main/java/vn/syp/tms/feature/FeatureService.java": "d06887e8f6b91bb313e6248ca72876c48ec85bbe4598cd699cdf396003f82324",
+    "Backend/src/test/java/vn/syp/tms/testcase/FeatureIntegrationTest.java": "fa123e61e7f8faf99cf65a0c8e79e2248844244ec18076e743652d4bf5c34ea5",
+    "Frontend/src/app/features/testing/FeatureListFilters.jsx": "ee1e89fb986ddfb05a3e70332e8efea14ea10320e58266dd589cb3ab43a9dd0c",
+    "Frontend/src/app/services/api/features.test.js": "c0cc8615bf0180ce74e0a2aec81f0d8ca815f927862d757db3cdac1030ad6430"
+  },
+  "limitations": "Source-only hash comparison; does not assert preservation of files outside Frontend/src and Backend/src or database state."
+}

@@ -1,0 +1,46 @@
+[
+  {
+    "columns": 20,
+    "donut": 243.20001220703125,
+    "donutLayout": "243.2px",
+    "gridColumns": "277.333px",
+    "height": 800,
+    "labelOverflow": 0,
+    "notRunColor": "rgb(192, 192, 192)",
+    "pageWidth": 314,
+    "width": 320
+  },
+  {
+    "columns": 20,
+    "donut": 256,
+    "donutLayout": "320px 359.2px",
+    "gridColumns": "725.333px",
+    "height": 900,
+    "labelOverflow": 0,
+    "notRunColor": "rgb(192, 192, 192)",
+    "pageWidth": 762,
+    "width": 768
+  },
+  {
+    "columns": 20,
+    "donut": 256,
+    "donutLayout": "320px 425.2px",
+    "gridColumns": "791.333px",
+    "height": 900,
+    "labelOverflow": 0,
+    "notRunColor": "rgb(192, 192, 192)",
+    "pageWidth": 1018,
+    "width": 1024
+  },
+  {
+    "columns": 20,
+    "donut": 256,
+    "donutLayout": "320px 448px",
+    "gridColumns": "591.667px 591.667px",
+    "height": 900,
+    "labelOverflow": 0,
+    "notRunColor": "rgb(192, 192, 192)",
+    "pageWidth": 1434,
+    "width": 1440
+  }
+]

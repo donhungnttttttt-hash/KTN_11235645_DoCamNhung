@@ -1,0 +1,20 @@
+{
+  "preservedFiles": 104,
+  "preservedChanged": [],
+  "backendChanged": [],
+  "changesSinceFinalBuildSource": [],
+  "changesSinceFullSuiteSource": [
+    "Frontend/src/app/features/admin/AdminProjectForm.jsx"
+  ],
+  "newProductFiles": [
+    "Frontend/src/app/features/admin/project-form-recovery.test.jsx",
+    "Frontend/src/app/features/auth/AccountMenu.pending.test.jsx"
+  ],
+  "newProductChanges": [],
+  "removedNewFiles": [],
+  "temporaryFixtureExists": false,
+  "planningJsonValid": true,
+  "head": "9ccc73483faddde48d930c9607f2f2f7f6981761",
+  "branch": "system-design",
+  "pass": true
+}

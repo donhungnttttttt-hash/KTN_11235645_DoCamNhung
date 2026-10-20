@@ -26,7 +26,7 @@ export function AccountMenu({ inverted = false }) {
       <strong>{user.displayName}</strong><span>@{user.username}</span>
       <span>{user.roles.map(role => roleLabels[role] || role).join(", ")}</span>
       {user.roles.includes("PM") && auth.can("users:create") && <small>Được cấp quyền tạo tài khoản Tester</small>}
-      {canCreateTester&&<button type="button" onClick={()=>{setNotice('');setOpen(false);setCreating(true);}}>Tạo tài khoản Tester</button>}
+      {canCreateTester&&<button type="button" disabled={busy} onClick={()=>{setNotice('');setOpen(false);setCreating(true);}}>Tạo tài khoản Tester</button>}
       {notice&&<p role="status" className="account-action-notice">{notice}</p>}
       {error && <p role="alert" className="auth-error">{error}</p>}
       <button disabled={busy} onClick={async () => {

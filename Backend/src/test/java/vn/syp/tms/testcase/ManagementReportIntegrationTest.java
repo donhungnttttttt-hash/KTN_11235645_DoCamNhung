@@ -51,6 +51,26 @@ class ManagementReportIntegrationTest {
     String path(String tail){return "/api/v1/projects/"+p+tail;}
     String encode(Object value)throws Exception{return json.writeValueAsString(value);}
     JsonNode body(MvcResult result)throws Exception{return json.readTree(result.getResponse().getContentAsByteArray());}
+    @Test void generatedMarkdownPreviewCanBeEditedAndSavedAsAnOrdinaryReportWithoutProviderTraffic()throws Exception {
+        String generated="# Báo cáo AI\n\nChưa có case được kiểm thử.\n\n## Nhận xét\n\nChưa đủ dữ liệu để đánh giá.\n";
+        String key=UUID.randomUUID().toString();
+        var task=new AiDraftService.Task("PM_PROGRESS_REPORT","project:"+p,"feature-report-text-v3",key,
+            "Fixture-only completed report",json.createObjectNode(),json.createObjectNode(),List.of()).withMarkdownReport();
+        var reservation=drafts.reserve(p,pm.getId(),task);
+        var content=json.createObjectNode().put("markdown",generated);content.putArray("sources");
+        drafts.complete(p,pm.getId(),reservation.id(),new vn.syp.tms.ai.OpenAiResponsesClient.Output(content,"resp_fixture","fixture-model",10,10));
+        // Providers are disabled in this isolated suite: replay must use the owned READY draft.
+        var preview=body(mvc.perform(post(path("/management-reports/preview")).with(actor(pm)).with(csrf()).contentType("application/json")
+            .content(encode(Map.of("requestKey",key)))).andExpect(status().isOk()).andReturn());
+        assertThat(preview.path("state").asText()).isEqualTo("READY");assertThat(preview.path("markdown").asText()).isEqualTo(generated);
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM project_management_reports WHERE project_id=?",Long.class,p)).isZero();
+        String edited=preview.path("markdown").asText()+"\nGhi chú đã được người dùng chỉnh sửa.\n";
+        long reportId=body(mvc.perform(post(path("/management-reports")).with(actor(pm)).with(csrf()).contentType("application/json")
+            .content(encode(Map.of("title","Báo cáo đã duyệt","markdown",edited)))).andExpect(status().isCreated()).andReturn()).path("id").asLong();
+        mvc.perform(get(path("/management-reports/"+reportId)).with(actor(pm))).andExpect(status().isOk()).andExpect(jsonPath("$.markdown").value(edited));
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM import_rows WHERE project_id=?",Long.class,p)).isZero();
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM work_items WHERE project_id=?",Long.class,p)).isZero();
+    }
     @Test void editedReportPersistsExactlyWhileTenIssuesAndCaseStatusRemainUnchangedAfterDraftCleanup()throws Exception {
         for(int n=0;n<10;n++)mvc.perform(post(path("/issues")).with(actor(tester)).with(csrf()).contentType("application/json").content(encode(Map.of("type","BUG","featureId",f,"monkey",true,"title","Monkey "+n,"description","Details","steps","Open","expectedResult","Works","actualResult","Fails","requestKey",UUID.randomUUID())))).andExpect(status().isCreated());
         var upload=new MockMultipartFile("file","report.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",new FeatureIntegrationTest().internal());

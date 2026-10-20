@@ -1,0 +1,12 @@
+{
+  "startedAt": "2026-10-19T13:22:44.154Z",
+  "finishedAt": "2026-10-19T13:22:47.382Z",
+  "task": "test",
+  "args": [
+    "src/app/features/testing/TestingFeaturesPage.test.jsx",
+    "--maxWorkers=1",
+    "-t",
+    "timezone-less"
+  ],
+  "exitCode": 1
+}

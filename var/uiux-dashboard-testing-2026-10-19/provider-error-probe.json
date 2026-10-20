@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-19T12:59:59.951Z",
+  "status": 402,
+  "model": "gpt-5.6-luna",
+  "context": "public synthetic data only",
+  "error": {
+    "type": "insufficient_balance",
+    "code": "",
+    "param": "",
+    "message": "Số dư đã hết. Nạp thêm tại https://caheoai.com/dashboard/topup"
+  }
+}

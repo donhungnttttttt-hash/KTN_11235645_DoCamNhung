@@ -36,12 +36,19 @@ public class AiProviderGateway {
         };
     }
     public OpenAiResponsesClient.Output generate(String actor,ResolvedSelection selection,String instructions,JsonNode data,String schemaName,JsonNode schema) {
+        return generate(actor,selection,instructions,data,schemaName,schema,false);
+    }
+    public OpenAiResponsesClient.Output generateText(String actor,ResolvedSelection selection,String instructions,JsonNode data) {
+        return generate(actor,selection,instructions,data,null,null,true);
+    }
+    private OpenAiResponsesClient.Output generate(String actor,ResolvedSelection selection,String instructions,JsonNode data,String schemaName,JsonNode schema,boolean textOutput) {
         access.current(actor);validateModel(selection.model());
-        if(instructions==null||instructions.isBlank()||instructions.length()>12000||data==null||!data.isObject()||schema==null||!schema.isObject()||schemaName==null||!schemaName.matches("[A-Za-z0-9_-]{1,64}"))throw new OpenAiResponsesClient.Failure("AI_INVALID_INPUT");
+        if(instructions==null||instructions.isBlank()||instructions.length()>12000||data==null||!data.isObject()
+                ||!textOutput&&(schema==null||!schema.isObject()||schemaName==null||!schemaName.matches("[A-Za-z0-9_-]{1,64}")))throw new OpenAiResponsesClient.Failure("AI_INVALID_INPUT");
         return ProviderHttp.inference(actor,()->switch(selection.provider()) {
-            case "OPENAI_API" -> {if(!config.model().equals(selection.model()))throw new OpenAiResponsesClient.Failure("AI_MODEL_UNAVAILABLE");yield api.generate(instructions,data,schemaName,schema);}
-            case "OLLAMA" -> ollama.generate(selection.model(),instructions,data,schema);
-            case "CHATGPT" -> chatgpt.generate(connections.token(actor,selection),selection.model(),instructions,data,schemaName,schema);
+            case "OPENAI_API" -> {if(!config.model().equals(selection.model()))throw new OpenAiResponsesClient.Failure("AI_MODEL_UNAVAILABLE");yield textOutput?api.generateText(instructions,data):api.generate(instructions,data,schemaName,schema);}
+            case "OLLAMA" -> textOutput?ollama.generateText(selection.model(),instructions,data):ollama.generate(selection.model(),instructions,data,schema);
+            case "CHATGPT" -> textOutput?chatgpt.generateText(connections.token(actor,selection),selection.model(),instructions,data):chatgpt.generate(connections.token(actor,selection),selection.model(),instructions,data,schemaName,schema);
             default -> throw new OpenAiResponsesClient.Failure("AI_INVALID_PROVIDER");
         });
     }

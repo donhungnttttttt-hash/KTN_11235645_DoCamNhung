@@ -1,0 +1,13 @@
+{
+  "changedProduct": [
+    "Frontend/src/AppEntry.jsx"
+  ],
+  "preservedFiles": 104,
+  "preservedChanged": [],
+  "previousNewSourceChanges": [],
+  "originalEntryMatchesPreviousCheckpoint": true,
+  "finalEntrySha256": "29d29f007b826f111b327f32a7f5de4f1a963ce7bac11955a7a80a07806fa565",
+  "regressionTestSha256": "6fb5900bdb6f8abe8f8bd39a102a7d9427c7527e4e37ce134167041c23f5b98c",
+  "planningJsonValid": true,
+  "pass": true
+}

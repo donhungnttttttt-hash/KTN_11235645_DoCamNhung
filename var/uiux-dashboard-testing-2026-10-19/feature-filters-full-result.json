@@ -1,0 +1,12 @@
+{
+  "startedAt": "2026-10-19T13:23:33.424Z",
+  "finishedAt": "2026-10-19T13:28:15.544Z",
+  "task": "test",
+  "args": [
+    "--maxWorkers=1",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=../var/uiux-dashboard-testing-2026-10-19/feature-filters-tests.json"
+  ],
+  "exitCode": 1
+}

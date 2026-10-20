@@ -22,9 +22,17 @@ public class ChatGptPlanClient {
         }return List.copyOf(models);
     }
     OpenAiResponsesClient.Output generate(String token,String model,String instructions,JsonNode data,String schemaName,JsonNode schema) {
+        return generate(token,model,instructions,data,schemaName,schema,false);
+    }
+    OpenAiResponsesClient.Output generateText(String token,String model,String instructions,JsonNode data) {
+        return generate(token,model,instructions,data,null,null,true);
+    }
+    private OpenAiResponsesClient.Output generate(String token,String model,String instructions,JsonNode data,String schemaName,JsonNode schema,boolean textOutput) {
         var request=http.json.createObjectNode().put("model",model).put("store",false).put("stream",true).put("instructions",instructions).put("input",data.toString());
-        request.putObject("text").putObject("format").put("type","json_schema").put("name",schemaName).put("strict",true).set("schema",schema);
+        var format=request.putObject("text").putObject("format");
+        if(textOutput){format.put("type","text");request.putArray("tools");request.put("tool_choice","none");}
+        else format.put("type","json_schema").put("name",schemaName).put("strict",true).set("schema",schema);
         byte[] body=http.bytes(request);if(body.length>16000)throw new OpenAiResponsesClient.Failure("AI_INPUT_TOO_LARGE");
-        return new ChatGptSse(http.json).parse(http.request(api.resolve("responses"),"POST",token,"application/json",body,1048576));
+        return new ChatGptSse(http.json).parse(http.request(api.resolve("responses"),"POST",token,"application/json",body,1048576),textOutput);
     }
 }

@@ -1,0 +1,10 @@
+{
+  "startedAt": "2026-10-19T08:48:04.609Z",
+  "finishedAt": "2026-10-19T08:48:17.407Z",
+  "task": "test",
+  "args": [
+    "src/app/features/auth/auth.test.jsx",
+    "--maxWorkers=1"
+  ],
+  "exitCode": 0
+}

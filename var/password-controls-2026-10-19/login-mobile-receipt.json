@@ -1,0 +1,20 @@
+{
+  "controls": [
+    {
+      "disabled": false,
+      "height": 47.60000228881836,
+      "label": "Ẩn mật khẩu",
+      "width": 44
+    },
+    {
+      "disabled": false,
+      "height": 43.10000228881836,
+      "label": "Đăng nhập ",
+      "width": 224.8000030517578
+    }
+  ],
+  "height": 740,
+  "passwordType": "text",
+  "scrollWidth": 314,
+  "width": 314
+}

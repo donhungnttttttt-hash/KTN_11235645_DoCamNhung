@@ -4,6 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.sql.Statement;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -74,15 +79,48 @@ public class FeatureService {
     }
     @Transactional(readOnly=true)
     public Map<String,Object> list(long p,String actor,int page,int size,String keyword,boolean archived) {
+        return list(p,actor,page,size,keyword,archived,null,null,"created-desc");
+    }
+    @Transactional(readOnly=true)
+    public Map<String,Object> list(long p,String actor,int page,int size,String keyword,boolean archived,
+            String createdFrom,String createdTo,String sort) {
         projects.requireReadAccess(p,actor);validatePage(page,size,keyword);
+        LocalDate from=creationDate(createdFrom),through=creationDate(createdTo);
+        if(from!=null&&through!=null&&from.isAfter(through))
+            fail(422,"INVALID_FILTER","Ngày tạo bắt đầu không được sau ngày kết thúc.");
+        String order=switch(sort==null?"":sort.trim()) {
+            case "", "created-desc" -> "created_at DESC,id DESC";
+            case "created-asc" -> "created_at ASC,id ASC";
+            case "name-asc" -> "name ASC,id ASC";
+            default -> throw new BusinessException(422,"INVALID_FILTER","Cách sắp xếp Feature không hợp lệ.");
+        };
         String where=" WHERE project_id=? AND archived_at IS "+(archived?"NOT NULL":"NULL");
         List<Object> args=new ArrayList<>(List.of(p));
         var search=MultiWordSearch.sql(keyword,"name","environment","description");where+=search.sql();args.addAll(search.args());
+        if(from!=null){where+=" AND created_at>=?";args.add(creationDateStartUtc(from));}
+        if(through!=null){where+=" AND created_at<?";args.add(creationDateStartUtc(through.plusDays(1)));}
         long total=Objects.requireNonNull(db.queryForObject("SELECT COUNT(*) FROM testing_features"+where,Long.class,args.toArray()));
         args.add(size);args.add((long)page*size);
-        var items=db.queryForList("SELECT id,project_id AS projectId,name,environment,description,archived_at AS archivedAt,lock_version AS version,created_at AS createdAt,updated_at AS updatedAt FROM testing_features"+where+" ORDER BY id DESC LIMIT ? OFFSET ?",args.toArray());
+        var items=db.queryForList("SELECT id,project_id AS projectId,name,environment,description,archived_at AS archivedAt,lock_version AS version,created_at AS createdAt,updated_at AS updatedAt FROM testing_features"+where+" ORDER BY "+order+" LIMIT ? OFFSET ?",args.toArray());
         for(var item:items)item.putAll(metrics(p,num(item,"id"),null));
         return page(items,total,page,size);
+    }
+    private static LocalDate creationDate(String value) {
+        if(value==null||value.isBlank())return null;
+        try {
+            if(!value.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}"))throw new DateTimeException("Invalid date format");
+            LocalDate date=LocalDate.parse(value);
+            if(date.getYear()<1000)throw new DateTimeException("Date outside database range");
+            return date;
+        } catch(DateTimeException exception) {
+            throw new BusinessException(422,"INVALID_FILTER","Ngày tạo phải là ngày hợp lệ theo định dạng YYYY-MM-DD, năm từ 1000 đến 9999.");
+        }
+    }
+    private static LocalDateTime creationDateStartUtc(LocalDate date) {
+        LocalDateTime utc=LocalDateTime.ofInstant(date.atStartOfDay(ZoneId.of("Asia/Ho_Chi_Minh")).toInstant(),ZoneOffset.UTC);
+        // The first supported Vietnam day begins before MySQL DATETIME's UTC lower bound.
+        LocalDateTime earliest=LocalDate.of(1000,1,1).atStartOfDay();
+        return utc.isBefore(earliest)?earliest:utc;
     }
     public Map<String,Object> create(long p,String actor,FeatureDtos.Create input) {
         writer(p,actor,true);String payload=encode(input);var replay=replay(p,actor,input.requestKey().toString(),"FEATURE_CREATE",payload);if(replay!=null)return replay;

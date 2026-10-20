@@ -11,14 +11,16 @@ import vn.syp.tms.shared.web.BusinessException;
 /** Future use-case handlers supply server-owned prompts/schemas and already scoped source data. */
 @Service
 public class AiDraftService {
+    private static final org.slf4j.Logger log=org.slf4j.LoggerFactory.getLogger(AiDraftService.class);
     public record Source(String ref, String label, String path, Long version) {}
     public record Task(String purpose, String sourceReference, String promptVersion, String requestKey,
                        String instructions, JsonNode data, JsonNode schema, List<Source> sources,
-                       AiProviderGateway.ResolvedSelection selection) {
+                       AiProviderGateway.ResolvedSelection selection,boolean markdownReport) {
         public Task(String purpose,String sourceReference,String promptVersion,String requestKey,String instructions,JsonNode data,JsonNode schema,List<Source> sources) {
-            this(purpose,sourceReference,promptVersion,requestKey,instructions,data,schema,sources,null);
+            this(purpose,sourceReference,promptVersion,requestKey,instructions,data,schema,sources,null,false);
         }
-        public Task withSelection(AiProviderGateway.ResolvedSelection value){return new Task(purpose,sourceReference,promptVersion,requestKey,instructions,data,schema,sources,value);}
+        public Task withSelection(AiProviderGateway.ResolvedSelection value){return new Task(purpose,sourceReference,promptVersion,requestKey,instructions,data,schema,sources,value,markdownReport);}
+        public Task withMarkdownReport(){return new Task(purpose,sourceReference,promptVersion,requestKey,instructions,data,schema,sources,selection,true);}
     }
     private final AiDraftStore store;
     private final OpenAiResponsesClient client;
@@ -45,11 +47,15 @@ public class AiDraftService {
         OpenAiResponsesClient.Output output;
         try {
             if(task.selection()!=null)gateway.verifySession(session);
-            output = task.selection()==null?client.generate(task.instructions(), task.data(), "tms_draft", task.schema()):
+            if(task.markdownReport())output=task.selection()==null?client.generateText(task.instructions(),task.data()):gateway.generateText(actor,task.selection(),task.instructions(),task.data());
+            else output = task.selection()==null?client.generate(task.instructions(), task.data(), "tms_draft", task.schema()):
                     gateway.generate(actor,task.selection(),task.instructions(),task.data(),"tms_draft",task.schema());
-            output = new OpenAiResponsesClient.Output(AiDraftContent.validateAndWrap(output.value(), task.sources(), json),
+            var content=task.markdownReport()?AiDraftContent.validateAndWrapMarkdown(output.value(),task.sources(),json):AiDraftContent.validateAndWrap(output.value(), task.sources(), json);
+            output = new OpenAiResponsesClient.Output(content,
                     output.responseId(), output.model(), output.inputTokens(), output.outputTokens());
         } catch (OpenAiResponsesClient.Failure failure) {
+            // Constant constraint identifiers only: never log model text, citations, prompts or tokens.
+            if(failure instanceof AiDraftContent.InvalidContent invalid)log.warn("AI draft response rejected: {}",invalid.reason());
             store.markFailed(projectId, actor, reserved.id(), failure.code());
             return store.get(projectId, actor, reserved.id());
         } catch (BusinessException permissionOrSessionChanged) {

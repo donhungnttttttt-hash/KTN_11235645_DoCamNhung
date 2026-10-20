@@ -1,0 +1,21 @@
+{
+  "recordedAt": "2026-10-19T12:44:31.369Z",
+  "files": [
+    {
+      "path": "Frontend/src/app/features/admin/AdminDashboard.jsx",
+      "sha256": "8a0c29700c48eef97bc5c2f2c6ff3428515e3331cdd04b4a96393956bcf8123b"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminHealthCharts.jsx",
+      "sha256": "742dfd9590600208fc5c0854553bc8cc726d410634624d2751dbd4018f5ea3e1"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/admin-health-charts.css",
+      "sha256": "4d819a3198c1031d2c55147272e14e68ada3fccf993ff979d204321848927a36"
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminHealthCharts.test.jsx",
+      "sha256": "3db23dc1818fbaba92d3da05aef0090fe11debcdbd1c372ecd75d574dd138546"
+    }
+  ]
+}

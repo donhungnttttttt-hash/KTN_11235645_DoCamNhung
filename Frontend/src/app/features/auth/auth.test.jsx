@@ -80,6 +80,49 @@ describe("internal authentication", () => {
     await act(async () => resolve(profile()));
   });
 
+  it("uses one password toggle without submitting or changing the entered password", async () => {
+    const api = { me: vi.fn().mockRejectedValue(unauthorized()), login: vi.fn() };
+    const user = setup(api);
+    const password = await screen.findByLabelText("Mật khẩu");
+    await user.type(password, "sample-password");
+    const reveal = screen.getByRole("button", { name: "Hiện mật khẩu", exact: true });
+    expect(screen.getAllByRole("button", { name: /^(Hiện|Ẩn) mật khẩu$/ })).toHaveLength(1);
+    await user.click(reveal);
+    expect(password).toHaveAttribute("type", "text");
+    expect(password).toHaveValue("sample-password");
+    expect(screen.getByRole("button", { name: "Ẩn mật khẩu", exact: true })).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(password).toHaveAttribute("type", "password");
+    expect(password).toHaveValue("sample-password");
+    expect(api.login).not.toHaveBeenCalled();
+  });
+
+  it("masks the password and blocks its reveal while sign-in is pending", async () => {
+    let resolve;
+    const api = { me: vi.fn().mockRejectedValue(unauthorized()), login: vi.fn(() => new Promise(done => { resolve = done; })) };
+    const user = setup(api);
+    await screen.findByLabelText("Tên đăng nhập");
+    await user.click(screen.getByRole("button", { name: "Hiện mật khẩu", exact: true }));
+    await signIn(user);
+    expect(screen.getByLabelText("Mật khẩu")).toHaveAttribute("type", "password");
+    expect(screen.getByRole("button", { name: "Hiện mật khẩu", exact: true })).toBeDisabled();
+    await act(async () => resolve(profile()));
+  });
+
+  it("starts a rejected sign-in retry with a masked empty password", async () => {
+    const api = { me: vi.fn().mockRejectedValue(unauthorized()), login: vi.fn().mockRejectedValue(new ApiError("Không đăng nhập được", {status:401})) };
+    const user = setup(api);
+    const password = await screen.findByLabelText("Mật khẩu");
+    await user.click(screen.getByRole("button", { name: "Hiện mật khẩu", exact: true }));
+    await signIn(user);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Không đăng nhập được");
+    expect(password).toHaveValue("");
+    expect(password).toHaveAttribute("type", "password");
+    expect(screen.getByRole("button", { name: "Hiện mật khẩu", exact: true })).toBeEnabled();
+    await user.type(password, "second-attempt");
+    expect(password).toHaveAttribute("type", "password");
+  });
+
   it("locks on 401 and restores the draft only for the same account", async () => {
     const api = { me: vi.fn().mockResolvedValue(profile()), login: vi.fn().mockResolvedValue(profile()) };
     const user = setup(api);

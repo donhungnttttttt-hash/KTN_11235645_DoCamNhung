@@ -8,6 +8,9 @@ class ChatGptSse {
     private final ProviderHttp codec;
     ChatGptSse(ObjectMapper json){codec=new ProviderHttp(json);}
     OpenAiResponsesClient.Output parse(byte[] bytes) {
+        return parse(bytes,false);
+    }
+    OpenAiResponsesClient.Output parse(byte[] bytes,boolean textOutput) {
         if(bytes.length>1048576)throw failure();
         String stream=new String(bytes,StandardCharsets.UTF_8).replace("\r\n","\n");
         if(!stream.endsWith("\n\n"))throw failure();
@@ -30,7 +33,7 @@ class ChatGptSse {
             if(type.equals("response.completed"))completed=root.path("response");
         }
         if(completed==null)throw failure();
-        return OpenAiResponsesClient.parseOutput(completed,codec.json);
+        return OpenAiResponsesClient.parseOutput(completed,codec.json,textOutput);
     }
     private OpenAiResponsesClient.Failure failure(){return new OpenAiResponsesClient.Failure("AI_INCOMPLETE_RESPONSE");}
 }

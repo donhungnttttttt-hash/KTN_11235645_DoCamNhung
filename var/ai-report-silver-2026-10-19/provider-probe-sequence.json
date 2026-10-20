@@ -1,0 +1,10 @@
+{
+  "context": "Only synthetic connection-check data; no project records or credentials in artifacts",
+  "model": "gpt-5.6-luna",
+  "endpoint": "https://caheoai.com/v1/responses",
+  "attempts": [
+    {"at":"2026-10-19T15:40:12.810Z","format":"text","toolChoiceExplicit":false,"httpStatus":200,"responseStatus":"completed","outputTypes":["function_call"],"textLength":0},
+    {"at":"2026-10-19T15:40:39.189Z","format":"text","toolChoiceExplicit":false,"httpStatus":200,"responseStatus":"completed","outputTypes":["function_call"],"textLength":0,"finding":"Unrequested exec tool call; treated as invalid response, never executed"},
+    {"at":"2026-10-19T15:41:06.986Z","format":"text","toolChoice":"none","tools":[],"explicitNoToolInstructions":true,"httpStatus":200,"responseStatus":"completed","outputTypes":["message"],"textLength":303,"finding":"Valid Vietnamese Markdown using synthetic counts"}
+  ]
+}

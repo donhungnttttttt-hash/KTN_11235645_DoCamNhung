@@ -1,0 +1,6 @@
+{
+  "startedAt": "2026-10-19T12:48:23.098Z",
+  "finishedAt": "2026-10-19T12:48:38.303Z",
+  "command": "run src/app/features/testing src/app/features/work-items/CaseIssueAction.test.jsx src/app/components/TestProgress.test.jsx src/app/features/test-cases/ResultCycleButton.test.jsx --maxWorkers=1",
+  "exitCode": 0
+}

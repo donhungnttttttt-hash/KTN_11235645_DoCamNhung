@@ -1,0 +1,7 @@
+{
+  "startedAt": "2026-10-19T12:58:45.189Z",
+  "finishedAt": "2026-10-19T12:59:11.255Z",
+  "status": 1,
+  "signal": null,
+  "tests": "OpenAiResponsesClientTest,AiManagementReportGeneratorTest"
+}

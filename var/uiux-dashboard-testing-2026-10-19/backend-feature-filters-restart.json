@@ -1,0 +1,15 @@
+﻿{
+    "at":  "2026-10-19T13:26:36.3784230Z",
+    "stoppedPid":  24228,
+    "launcherPid":  28192,
+    "port":  8080,
+    "purpose":  "Load verified Feature creation-date filters and sorting; reused the guarded restart script",
+    "migrationFilesUnchanged":  true,
+    "configurationHash":  "225ED83C3DEED438C522AE6000AE5BDEAA57F4357CE905D1706FA64F1E890515",
+    "otherListeners":  [
+                           {
+                               "LocalPort":  5173,
+                               "OwningProcess":  15612
+                           }
+                       ]
+}

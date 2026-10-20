@@ -1,0 +1,10 @@
+{
+  "startedAt": "2026-10-19T13:11:11.288Z",
+  "finishedAt": "2026-10-19T13:11:14.218Z",
+  "task": "test",
+  "args": [
+    "src/app/features/admin/AdminHealthCharts.test.jsx",
+    "--maxWorkers=1"
+  ],
+  "exitCode": 1
+}

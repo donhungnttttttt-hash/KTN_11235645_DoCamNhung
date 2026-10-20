@@ -1,0 +1,12 @@
+{
+  "startedAt": "2026-10-19T13:00:45.940Z",
+  "finishedAt": "2026-10-19T13:05:22.815Z",
+  "task": "test",
+  "args": [
+    "--maxWorkers=1",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=../var/uiux-dashboard-testing-2026-10-19/frontend-final-tests.json"
+  ],
+  "exitCode": 0
+}

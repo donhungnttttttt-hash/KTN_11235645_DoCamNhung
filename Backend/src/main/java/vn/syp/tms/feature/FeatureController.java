@@ -15,7 +15,14 @@ public class FeatureController {
     private final FeatureService service;
     public FeatureController(FeatureService service){this.service=service;}
     private String actor(Authentication auth){return ((SessionPrincipal)auth.getPrincipal()).id();}
-    @GetMapping("/features") public Map<String,Object> list(Authentication auth,@PathVariable long projectId,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size,@RequestParam(defaultValue="") String keyword,@RequestParam(defaultValue="false") boolean archived){return service.list(projectId,actor(auth),page,size,keyword,archived);}
+    @GetMapping("/features")
+    public Map<String,Object> list(Authentication auth,@PathVariable long projectId,
+            @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size,
+            @RequestParam(defaultValue="") String keyword,@RequestParam(defaultValue="false") boolean archived,
+            @RequestParam(required=false) String createdFrom,@RequestParam(required=false) String createdTo,
+            @RequestParam(defaultValue="created-desc") String sort) {
+        return service.list(projectId,actor(auth),page,size,keyword,archived,createdFrom,createdTo,sort);
+    }
     @GetMapping("/features/{id}") public Map<String,Object> get(Authentication auth,@PathVariable long projectId,@PathVariable long id){return service.get(projectId,actor(auth),id);}
     @PostMapping("/features") public ResponseEntity<Map<String,Object>> create(Authentication auth,@PathVariable long projectId,@Valid @RequestBody FeatureDtos.Create input){var result=service.create(projectId,actor(auth),input);return ResponseEntity.created(URI.create("/api/v1/projects/"+projectId+"/features/"+result.get("id"))).body(result);}
     @PutMapping("/features/{id}") public Map<String,Object> update(Authentication auth,@PathVariable long projectId,@PathVariable long id,@Valid @RequestBody FeatureDtos.Update input){return service.update(projectId,actor(auth),id,input);}

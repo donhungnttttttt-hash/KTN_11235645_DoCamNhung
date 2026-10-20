@@ -1,0 +1,12 @@
+{
+  "startedAt": "2026-10-19T13:11:53.190Z",
+  "finishedAt": "2026-10-19T13:16:16.448Z",
+  "task": "test",
+  "args": [
+    "--maxWorkers=1",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=../var/uiux-dashboard-testing-2026-10-19/chart-redesign-tests.json"
+  ],
+  "exitCode": 0
+}

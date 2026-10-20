@@ -1,0 +1,199 @@
+/* Restore the original board's white columns and breathing room in the Feature flow. */
+.cat-container.feature-issues-page { padding-block: 24px; }
+@media (max-width: 600px) {
+  .cat-container.feature-issues-page { padding-block: 16px; }
+}
+.feature-issues-page > .td-heading-row {
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.feature-issues-page > .td-heading-row p { margin: 8px 0 0; }
+.feature-issues-page .feature-issue-view-switch {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control, 8px);
+  background: var(--color-surface, #fff);
+}
+.feature-issue-view-switch .cat-btn {
+  border-color: transparent;
+  background: transparent;
+  min-width: 88px;
+}
+.feature-issue-view-switch .cat-btn[aria-pressed="true"] {
+  color: var(--color-mint);
+  background: var(--color-mint-light);
+  font-weight: 600;
+}
+.feature-issues-page > .feature-issue-filters {
+  gap: 16px;
+  padding: 16px;
+  margin-block: 20px 24px;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-panel, 12px);
+  background: var(--color-surface, #fff);
+}
+.feature-issues-page > .feature-issue-filters label { gap: 8px; }
+.feature-kanban { min-width: 0; max-width: 100%; }
+.feature-kanban-hint {
+  margin: 0 0 16px;
+  max-width: 80ch;
+  color: var(--color-text-sub);
+  font-size: var(--text-table, 14px);
+  line-height: 1.6;
+}
+.feature-kanban-scroll {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding: 2px 2px 16px;
+  scrollbar-width: auto;
+}
+.feature-kanban-scroll:focus-visible {
+  outline: 2px solid var(--color-focus-ring, #0f766e);
+  outline-offset: 2px;
+  border-radius: var(--radius-control, 8px);
+}
+.feature-kanban-columns {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  min-width: 100%;
+  align-items: stretch;
+  height: clamp(28rem, calc(100dvh - 24rem), 44rem);
+}
+.feature-kanban-column {
+  flex: 0 0 320px;
+  width: 320px;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control, 8px);
+  transition: border-color var(--motion-fast, 140ms), background var(--motion-fast, 140ms);
+}
+.feature-kanban-column.is-drop-target {
+  border-color: var(--color-mint);
+  background: var(--color-mint-light);
+}
+.feature-kanban-column-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 64px;
+  padding: 16px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+.feature-kanban-column-header h2 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--text-table, 14px);
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.feature-kanban-status-dot { width: 8px; height: 8px; flex: none; border-radius: 50%; }
+.feature-kanban-count {
+  flex: none;
+  min-width: 28px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-sub);
+  text-align: center;
+  font-size: var(--text-caption, 12px);
+  font-variant-numeric: tabular-nums;
+}
+.feature-kanban-cards {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 16px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+.feature-kanban-empty {
+  margin: 24px 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-table, 14px);
+  text-align: center;
+}
+.feature-kanban-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface, #fff);
+  overflow-wrap: anywhere;
+  transition: border-color var(--motion-fast, 140ms), box-shadow var(--motion-fast, 140ms);
+}
+.feature-kanban-card[draggable="true"] { cursor: grab; }
+.feature-kanban-card.is-dragging { opacity: .5; }
+.feature-kanban-card:hover { border-color: var(--color-control-border); box-shadow: 0 2px 6px #163c300a; }
+.feature-kanban-card-meta { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.feature-kanban-type {
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-sub);
+  font-size: var(--text-caption, 12px);
+}
+.feature-kanban-key, .feature-kanban-title {
+  border: 0;
+  background: transparent;
+  color: var(--color-mint);
+  font: inherit;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.feature-kanban-key { min-height: 32px; font-size: var(--text-caption, 12px); }
+.feature-kanban-title { line-height: 1.6; font-size: var(--text-body, 16px); font-weight: 600; }
+.feature-kanban-title:hover, .feature-kanban-key:hover { text-decoration: underline; text-underline-offset: 3px; }
+.feature-kanban-title:focus-visible, .feature-kanban-key:focus-visible, .feature-kanban-card select:focus-visible {
+  outline: 2px solid var(--color-focus-ring, #0f766e);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.feature-kanban-feature, .feature-kanban-assignee {
+  margin: 0;
+  color: var(--color-text-sub);
+  font-size: var(--text-table, 14px);
+  line-height: 1.5;
+}
+.feature-kanban-assignee { padding-top: 12px; border-top: 1px solid var(--color-border-light); }
+.feature-kanban-card select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px;
+  font: inherit;
+  font-size: var(--text-table, 14px);
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control, 8px);
+  background: var(--color-surface, #fff);
+  color: var(--color-text-sub);
+}
+.feature-issues-page > .td-pagination { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--color-border-light); }
+@media (max-width: 600px) {
+  .feature-issues-page > .feature-issue-filters { padding: 12px; gap: 12px; }
+  .feature-issues-page > .feature-issue-filters label { flex-basis: 100%; }
+  .feature-kanban-columns { gap: 12px; height: 24rem; }
+  .feature-kanban-column { flex-basis: min(280px, calc(100vw - 48px)); width: min(280px, calc(100vw - 48px)); }
+  .feature-kanban-column-header, .feature-kanban-cards, .feature-kanban-card { padding: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feature-kanban-column, .feature-kanban-card { transition: none; }
+}

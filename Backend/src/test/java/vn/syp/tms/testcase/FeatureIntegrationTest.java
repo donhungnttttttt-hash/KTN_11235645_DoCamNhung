@@ -135,6 +135,54 @@ class FeatureIntegrationTest {
         long d=imported(feature("Issue capability"),internal());
         assertThat(read(d).path("canCreateIssue").asBoolean()).isTrue();
     }
+    @Test void featureCreationDatesUseInclusiveVietnamDaysBeforeCountingAndPaging()throws Exception {
+        datedFeature("Đăng nhập before","2026-10-17 16:59:59.999999");
+        long first=datedFeature("Đăng nhập first","2026-10-17 17:00:00.000000");
+        long last=datedFeature("Đăng nhập last","2026-10-19 16:59:59.999999");
+        datedFeature("Đăng nhập after","2026-10-19 17:00:00.000000");
+        datedFeature("Unrelated","2026-10-18 12:00:00.000000");
+        long archived=datedFeature("Đăng nhập archived","2026-10-18 12:00:00.000000");
+        db.update("UPDATE testing_features SET archived_at=UTC_TIMESTAMP(6) WHERE id=? AND project_id=?",archived,p);
+        long otherProject=projects.create(admin.getId(),new ProjectDtos.CreateProject("DATES"+UUID.randomUUID().toString().substring(0,8),"Other date project","","Asia/Ho_Chi_Minh")).id();
+        db.update("INSERT INTO testing_features(project_id,name,environment,description,created_by,updated_by,created_at,updated_at) VALUES(?,'Đăng nhập outside','','',?,?,'2026-10-18 12:00:00','2026-10-18 12:00:00')",otherProject,admin.getId(),admin.getId());
+        for(int page=0;page<2;page++) {
+            var response=body(mvc.perform(get(path("/features")).with(actor(a)).param("createdFrom","2026-10-18").param("createdTo","2026-10-19").param("keyword","NHAP dang").param("size","1").param("page",""+page)).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(2)).andExpect(jsonPath("$.items.length()").value(1)).andReturn());
+            assertThat(response.at("/items/0/id").asLong()).isEqualTo(page==0?last:first);
+            if(page==1)assertThat(java.time.LocalDateTime.parse(response.at("/items/0/createdAt").asText()).toInstant(java.time.ZoneOffset.UTC)).isEqualTo(java.time.Instant.parse("2026-10-17T17:00:00Z"));
+        }
+        mvc.perform(get(path("/features")).with(actor(a)).param("createdFrom","2026-10-18").param("createdTo","2026-10-19").param("keyword","NHAP dang").param("archived","true")).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(1)).andExpect(jsonPath("$.items[0].id").value(archived));
+        mvc.perform(get(path("/features")).with(actor(outside)).param("createdFrom","2026-10-18").param("createdTo","2026-10-19")).andExpect(status().isNotFound());
+    }
+    @Test void featureCreationDateBoundsCanBeUsedIndependentlyAndCleared()throws Exception {
+        long old=datedFeature("Old","2026-10-17 16:59:59.999999");
+        long current=datedFeature("Current","2026-10-17 17:00:00.000000");
+        mvc.perform(get(path("/features")).with(actor(a)).param("createdFrom","2026-10-18")).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(1)).andExpect(jsonPath("$.items[0].id").value(current));
+        mvc.perform(get(path("/features")).with(actor(a)).param("createdTo","2026-10-17")).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(1)).andExpect(jsonPath("$.items[0].id").value(old));
+        mvc.perform(get(path("/features")).with(actor(a)).param("createdFrom","2026-10-18").param("createdTo","2026-10-18")).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(1)).andExpect(jsonPath("$.items[0].id").value(current));
+        mvc.perform(get(path("/features")).with(actor(a)).param("createdFrom","").param("createdTo","")).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(2));
+        mvc.perform(get(path("/features")).with(actor(a)).param("createdFrom","1000-01-01").param("createdTo","9999-12-31")).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(2));
+        mvc.perform(get(path("/features")).with(actor(a)).param("createdFrom","2026-11-01")).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
+    }
+    @Test void featureSortUsesCreationDateAndStableTiesInsteadOfAssumingIdChronology()throws Exception {
+        long newest=datedFeature("Zulu","2026-10-19 10:00:00.000000");
+        long older=datedFeature("Alpha","2026-10-18 10:00:00.000000");
+        long sameTime=datedFeature("Alpha","2026-10-19 10:00:00.000000");
+        for(String sort:List.of("","created-desc","created-asc","name-asc")) {
+            List<Long> expected=switch(sort){case "created-asc" -> List.of(older,newest,sameTime);case "name-asc" -> List.of(older,sameTime,newest);default -> List.of(sameTime,newest,older);};
+            for(int page=0;page<3;page++)mvc.perform(get(path("/features")).with(actor(a)).param("sort",sort).param("size","1").param("page",""+page)).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(3)).andExpect(jsonPath("$.items[0].id").value(expected.get(page)));
+        }
+    }
+    @Test void invalidFeatureFiltersReturnClearClientErrorsWithoutQueryingArbitrarySorts()throws Exception {
+        for(String field:List.of("createdFrom","createdTo"))for(String value:List.of("2026-02-30","2026-13-01","2026-2-01","2026/10/19","0999-12-31","10000-01-01","2026-10-19T00:00:00Z","' OR 1=1 --"))
+            mvc.perform(get(path("/features")).with(actor(a)).param(field,value)).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("INVALID_FILTER"));
+        mvc.perform(get(path("/features")).with(actor(a)).param("createdFrom","2026-10-20").param("createdTo","2026-10-19")).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("INVALID_FILTER"));
+        for(String sort:List.of("updated-desc","created_at desc; DROP TABLE testing_features","CREATED-DESC"))mvc.perform(get(path("/features")).with(actor(a)).param("sort",sort)).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("INVALID_FILTER"));
+    }
+    long datedFeature(String name,String utcCreatedAt)throws Exception {
+        long id=feature(name);
+        db.update("UPDATE testing_features SET created_at=? WHERE project_id=? AND id=?",utcCreatedAt,p,id);
+        return id;
+    }
     void invalidSourceIds(String first,String second)throws Exception{
         long f=feature("Invalid source identities");byte[] bytes;
         try(var book=new XSSFWorkbook(new ByteArrayInputStream(internal()));var out=new ByteArrayOutputStream()){

@@ -1,0 +1,7 @@
+{
+  "startedAt": "2026-10-19T13:00:12.891Z",
+  "finishedAt": "2026-10-19T13:00:45.372Z",
+  "status": 0,
+  "signal": null,
+  "tests": "Ai*Test,ChatGpt*Test,OpenAi*Test,!*LiveConnectionTest"
+}

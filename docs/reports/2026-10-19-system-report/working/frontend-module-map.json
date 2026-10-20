@@ -1,0 +1,2263 @@
+{
+  "kind": "Lexical static import inventory, NOT proof that a component renders or a route is active",
+  "root": "Frontend/src/main.jsx",
+  "sourceFiles": 166,
+  "staticReachable": 103,
+  "files": [
+    {
+      "path": "Frontend/src/app/components/Footer.jsx",
+      "lines": 12,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/components/Header.jsx",
+      "lines": 39,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/auth/AccountMenu.jsx",
+        "Frontend/src/app/features/projects/ProjectSelector.jsx",
+        "Frontend/src/app/features/ai/ChatLauncherSlot.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/components/SelectionTable.jsx",
+      "lines": 36,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/utils/multiWordSearch.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/components/SelectPageCheckbox.jsx",
+      "lines": 9,
+      "staticallyReachable": false,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/components/Sidebar.jsx",
+      "lines": 93,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/components/TableScroll.jsx",
+      "lines": 25,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminApp.jsx",
+      "lines": 26,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/admin/AdminLayout.jsx",
+        "Frontend/src/app/features/admin/AdminDashboard.jsx",
+        "Frontend/src/app/features/admin/AdminProjects.jsx",
+        "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+        "Frontend/src/app/features/admin/AdminDevices.jsx",
+        "Frontend/src/app/features/admin/AdminUsers.jsx",
+        "Frontend/src/app/features/admin/AdminAudit.jsx",
+        "Frontend/src/app/routes/RetiredAiEntry.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminAudit.jsx",
+      "lines": 24,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/admin/shared.jsx",
+        "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminDashboard.jsx",
+      "lines": 43,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/admin/MetricBars.jsx",
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/admin/shared.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminDevices.jsx",
+      "lines": 37,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/admin/shared.jsx",
+        "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx",
+        "Frontend/src/app/features/admin/DeviceAssetForm.jsx",
+        "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+      "lines": 40,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/features/auth/DialogVisibilityContext.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminLayout.jsx",
+      "lines": 77,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx",
+        "Frontend/src/app/features/ai/ChatLauncherSlot.jsx",
+        "Frontend/src/app/hooks/useDialogFocus.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectDetail.jsx",
+      "lines": 50,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/admin/shared.jsx",
+        "Frontend/src/app/features/admin/AdminProjects.jsx",
+        "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+        "Frontend/src/app/features/admin/ProjectStatusReports.jsx",
+        "Frontend/src/app/features/projects/ProjectDevices.jsx",
+        "Frontend/src/app/features/admin/AdminProjectLifecycle.jsx",
+        "Frontend/src/app/features/admin/ProjectRoleSelect.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectDropdown.jsx",
+      "lines": 132,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/admin/shared.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+      "lines": 43,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/SelectionTable.jsx",
+        "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+        "Frontend/src/app/features/admin/InitialDevicePicker.jsx",
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/admin/shared.jsx",
+        "Frontend/src/app/features/admin/ProjectRoleSelect.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjectLifecycle.jsx",
+      "lines": 99,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/features/admin/shared.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminProjects.jsx",
+      "lines": 26,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/admin/shared.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx",
+      "lines": 41,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/admin/shared.jsx",
+        "Frontend/src/app/features/admin/AdminProjectDropdown.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/AdminUsers.jsx",
+      "lines": 19,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/admin/UserCreateDialog.jsx",
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/admin/shared.jsx",
+        "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+      "lines": 20,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx",
+        "Frontend/src/app/features/admin/shared.jsx",
+        "Frontend/src/app/features/admin/DeviceAssetForm.jsx",
+        "Frontend/src/app/features/admin/handoverRecipient.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/DeviceAssetForm.jsx",
+      "lines": 20,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+        "Frontend/src/app/services/api/admin.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/handoverRecipient.js",
+      "lines": 2,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/admin/InitialDevicePicker.jsx",
+      "lines": 35,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/SelectionTable.jsx",
+        "Frontend/src/app/features/admin/shared.jsx",
+        "Frontend/src/app/features/admin/handoverRecipient.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/MetricBars.jsx",
+      "lines": 8,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/admin/ProjectRoleSelect.jsx",
+      "lines": 12,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/admin/ProjectStatusReports.jsx",
+      "lines": 32,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/admin/shared.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/shared.jsx",
+      "lines": 31,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/admin/useInlineEditorFocus.js",
+      "lines": 20,
+      "staticallyReachable": false,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/admin/UserCreateDialog.jsx",
+      "lines": 36,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+        "Frontend/src/app/services/api/admin.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/ai/AiAssistantPage.jsx",
+      "lines": 167,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/ai.js",
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/admin/AdminUserProjectFilter.jsx",
+        "Frontend/src/app/features/ai/AiEditBuffer.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/ai/AiConnections.jsx",
+        "Frontend/src/app/features/ai/aiErrors.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/ai/AiChat.jsx",
+      "lines": 219,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/services/api/ai.js",
+        "Frontend/src/app/features/ai/AiConnections.jsx",
+        "Frontend/src/app/features/ai/aiErrors.js",
+        "Frontend/src/app/features/ai/aiLabels.js",
+        "Frontend/src/app/features/ai/ChatLauncherSlot.jsx",
+        "Frontend/src/app/features/ai/aiProjectPrompts.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/ai/AiConnections.jsx",
+      "lines": 111,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/services/api/ai.js",
+        "Frontend/src/app/features/ai/aiErrors.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/ai/AiEditBuffer.jsx",
+      "lines": 16,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/ai/aiErrors.js",
+      "lines": 46,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/ai/aiLabels.js",
+      "lines": 12,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/ai/aiProjectPrompts.js",
+      "lines": 27,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/ai/ChatLauncherSlot.jsx",
+      "lines": 18,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/auth/AccountMenu.jsx",
+      "lines": 41,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/admin/UserCreateDialog.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/auth/AuthBoundary.jsx",
+      "lines": 62,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/auth/DialogVisibilityContext.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/auth/AuthProvider.jsx",
+      "lines": 95,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/auth.js",
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/auth/DialogVisibilityContext.js",
+      "lines": 5,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/file-work/ActionInbox.jsx",
+      "lines": 43,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/services/api/fileWork.js",
+        "Frontend/src/app/features/test-cases/documentDownload.js",
+        "Frontend/src/app/features/file-work/FileWorkPage.jsx",
+        "Frontend/src/app/hooks/useRefreshingResource.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/file-work/caseRange.js",
+      "lines": 24,
+      "staticallyReachable": false,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/file-work/CaseRangePicker.jsx",
+      "lines": 27,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/SelectionTable.jsx",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/features/file-work/caseRange.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/file-work/FileCaseView.jsx",
+      "lines": 39,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/file-work/FilePreparation.jsx",
+      "lines": 33,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/fileWork.js",
+        "Frontend/src/app/features/test-cases/documentDownload.js",
+        "Frontend/src/app/features/file-work/FileWorkPage.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/file-work/FileWorkDetail.jsx",
+      "lines": 148,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/services/api/fileWork.js",
+        "Frontend/src/app/services/api/execution.js",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/services/api/workItems.js",
+        "Frontend/src/app/features/test-cases/documentDownload.js",
+        "Frontend/src/app/features/test-execution/NgBugActions.jsx",
+        "Frontend/src/app/features/file-work/FileWorkPage.jsx",
+        "Frontend/src/app/hooks/useRefreshingResource.js",
+        "Frontend/src/app/features/file-work/FileCaseView.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/file-work/FileWorkPage.jsx",
+      "lines": 128,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/features/file-work/ImportedDocuments.jsx",
+        "Frontend/src/app/features/file-work/CaseRangePicker.jsx",
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/services/api/fileWork.js",
+        "Frontend/src/app/services/api/execution.js",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/features/test-cases/documentDownload.js",
+        "Frontend/src/app/features/file-work/FilePreparation.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/file-work/ImportedDocuments.jsx",
+      "lines": 26,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/features/file-work/FileWorkPage.jsx",
+        "Frontend/src/app/components/TableScroll.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/integrations/RedminePanel.jsx",
+      "lines": 121,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/services/api/redmine.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/WorkItemForm.jsx",
+        "Frontend/src/app/features/work-items/data.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CatalogEditor.jsx",
+      "lines": 46,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/projects.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CatalogPage.jsx",
+      "lines": 165,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/projects/projectAccess.js",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/projects/CatalogEditor.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/CreateProjectDialog.jsx",
+      "lines": 115,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/hooks/useDialogFocus.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/HandbookPanel.jsx",
+      "lines": 60,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/features/test-execution/components.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/projectAccess.js",
+      "lines": 18,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectAccessNotice.jsx",
+      "lines": 13,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectDeviceAssignDialog.jsx",
+      "lines": 41,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/admin/AdminFormDialog.jsx",
+        "Frontend/src/app/features/admin/InitialDevicePicker.jsx",
+        "Frontend/src/app/features/admin/shared.jsx",
+        "Frontend/src/app/features/admin/handoverRecipient.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectDevices.jsx",
+      "lines": 16,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/admin.js",
+        "Frontend/src/app/features/admin/shared.jsx",
+        "Frontend/src/app/features/admin/AdminDevices.jsx",
+        "Frontend/src/app/features/admin/DeviceAllocationDialog.jsx",
+        "Frontend/src/app/features/projects/ProjectDeviceAssignDialog.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectInformation.jsx",
+      "lines": 23,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectMembers.jsx",
+      "lines": 53,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/services/api/projects.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectNotes.jsx",
+      "lines": 87,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/notes.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectProvider.jsx",
+      "lines": 90,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/features/auth/AuthProvider.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectSelector.jsx",
+      "lines": 98,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+      "lines": 67,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/projects/projectAccess.js",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/features/projects/ProjectDevices.jsx",
+        "Frontend/src/app/features/projects/ProjectMembers.jsx",
+        "Frontend/src/app/features/projects/RulesPanel.jsx",
+        "Frontend/src/app/features/projects/HandbookPanel.jsx",
+        "Frontend/src/app/features/projects/ProjectNotes.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/projects/RulesPanel.jsx",
+      "lines": 49,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/features/test-execution/components.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/qa/HandoffPanel.jsx",
+      "lines": 47,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/qa.js",
+        "Frontend/src/app/features/work-items/components.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/qa/QaForm.jsx",
+      "lines": 115,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/qa.js",
+        "Frontend/src/app/features/work-items/components.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/qa/QaPanel.jsx",
+      "lines": 177,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/qa.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/qa/QaForm.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "lines": 168,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/ai/AiConnections.jsx",
+        "Frontend/src/app/features/ai/aiErrors.js",
+        "Frontend/src/app/services/api/managementReports.js",
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/reports/SafeMarkdown.jsx",
+        "Frontend/src/app/features/reports/ReportDraftProvider.jsx",
+        "Frontend/src/app/features/work-items/data.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/reports/ReportDraftProvider.jsx",
+      "lines": 40,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/auth/AuthProvider.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/reports/ReportsPage.jsx",
+      "lines": 88,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/services/api/reports.js",
+        "Frontend/src/app/services/api/execution.js",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/modules/KpiSummaryBar.jsx",
+        "Frontend/src/app/features/test-execution/components.jsx",
+        "Frontend/src/app/features/admin/ProjectStatusReports.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/reports/SafeMarkdown.jsx",
+      "lines": 38,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/retest/CoverageEditor.jsx",
+      "lines": 28,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/SelectionTable.jsx",
+        "Frontend/src/app/services/api/retest.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/WorkItemForm.jsx",
+        "Frontend/src/app/features/test-execution/components.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/retest/RetestPanel.jsx",
+      "lines": 67,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/retest.js",
+        "Frontend/src/app/services/api/workItems.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/WorkItemForm.jsx",
+        "Frontend/src/app/features/retest/CoverageEditor.jsx",
+        "Frontend/src/app/features/retest/RetestResult.jsx",
+        "Frontend/src/app/features/retest/shared.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/retest/RetestQueuePage.jsx",
+      "lines": 28,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/services/api/retest.js",
+        "Frontend/src/app/features/test-execution/components.jsx",
+        "Frontend/src/app/features/retest/RetestResult.jsx",
+        "Frontend/src/app/features/retest/shared.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/retest/RetestResult.jsx",
+      "lines": 53,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/retest.js",
+        "Frontend/src/app/services/api/workItems.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/WorkItemForm.jsx",
+        "Frontend/src/app/features/retest/shared.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/retest/shared.jsx",
+      "lines": 32,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/SelectionTable.jsx",
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/work-items/components.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+      "lines": 362,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/projects/projectAccess.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/CaseHistoryDialog.jsx",
+      "lines": 40,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/features/test-cases/documentDownload.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/CreateCaseDialog.jsx",
+      "lines": 238,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/services/api/testCases.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/CreateSuiteDialog.jsx",
+      "lines": 91,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/services/api/testCases.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/DocumentCaseDialog.jsx",
+      "lines": 16,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/hooks/useDialogFocus.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/DocumentCellEditor.jsx",
+      "lines": 48,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/services/api/testCases.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/documentDownload.js",
+      "lines": 21,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+      "lines": 111,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/features/projects/projectAccess.js",
+        "Frontend/src/app/services/api/execution.js",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/test-execution/AttemptDialog.jsx",
+        "Frontend/src/app/features/test-execution/CycleDecisionDialog.jsx",
+        "Frontend/src/app/hooks/useDialogFocus.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+      "lines": 29,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/features/test-cases/documentDownload.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/DocumentSecondTestDialog.jsx",
+      "lines": 92,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/services/api/execution.js",
+        "Frontend/src/app/services/api/projects.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/ExcelImportPreview.jsx",
+      "lines": 70,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+      "lines": 181,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/features/test-cases/ExcelImportPreview.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/ResultCycleButton.jsx",
+      "lines": 16,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/TestDocumentPage.jsx",
+      "lines": 233,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/features/projects/projectAccess.js",
+        "Frontend/src/app/utils/multiWordSearch.js",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/features/test-cases/CaseDetailModal.jsx",
+        "Frontend/src/app/features/test-cases/DocumentCaseDialog.jsx",
+        "Frontend/src/app/features/test-cases/CaseHistoryDialog.jsx",
+        "Frontend/src/app/features/test-cases/DocumentExecution.jsx",
+        "Frontend/src/app/features/test-cases/ResultCycleButton.jsx",
+        "Frontend/src/app/features/test-cases/useDocumentResults.js",
+        "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+        "Frontend/src/app/features/test-cases/documentDownload.js",
+        "Frontend/src/app/features/test-cases/DocumentCellEditor.jsx",
+        "Frontend/src/app/features/test-cases/DocumentSecondTestDialog.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/TestDocumentsPage.jsx",
+      "lines": 81,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/projects/projectAccess.js",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+        "Frontend/src/app/features/test-cases/documentDownload.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-cases/useDocumentResults.js",
+      "lines": 40,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/testCases.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-execution/AssignmentDialog.jsx",
+      "lines": 90,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/execution.js",
+        "Frontend/src/app/features/test-execution/components.jsx",
+        "Frontend/src/app/hooks/useDialogFocus.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-execution/AttemptDialog.jsx",
+      "lines": 81,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/execution.js",
+        "Frontend/src/app/features/test-execution/components.jsx",
+        "Frontend/src/app/features/test-execution/CycleDecisionDialog.jsx",
+        "Frontend/src/app/features/test-execution/NgBugActions.jsx",
+        "Frontend/src/app/hooks/useDialogFocus.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-execution/components.jsx",
+      "lines": 21,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/test-execution/CycleDecisionDialog.jsx",
+      "lines": 61,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/execution.js",
+        "Frontend/src/app/features/test-execution/components.jsx",
+        "Frontend/src/app/hooks/useDialogFocus.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx",
+      "lines": 77,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/projects/projectAccess.js",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/services/api/execution.js",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/features/test-execution/CycleDecisionDialog.jsx",
+        "Frontend/src/app/features/test-execution/ScopeSetup.jsx",
+        "Frontend/src/app/features/test-execution/AttemptDialog.jsx",
+        "Frontend/src/app/features/test-execution/AssignmentDialog.jsx",
+        "Frontend/src/app/features/test-execution/components.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-execution/NgBugActions.jsx",
+      "lines": 34,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/workItems.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/WorkItemForm.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-execution/ScopeSetup.jsx",
+      "lines": 62,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/SelectionTable.jsx",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/services/api/execution.js",
+        "Frontend/src/app/features/test-execution/components.jsx",
+        "Frontend/src/app/features/file-work/FileWorkPage.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/test-execution/TestCyclesPage.jsx",
+      "lines": 50,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/projects/projectAccess.js",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/services/api/execution.js",
+        "Frontend/src/app/features/test-execution/components.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/testing/DocumentAssignmentHistory.jsx",
+      "lines": 15,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/features.js",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/test-cases/documentDownload.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/testing/DocumentAssignments.jsx",
+      "lines": 33,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/features.js",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/features/testing/testingState.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/testing/FeatureForm.jsx",
+      "lines": 28,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/services/api/features.js",
+        "Frontend/src/app/features/testing/testingState.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+      "lines": 83,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/test-cases/DocumentCellEditor.jsx",
+        "Frontend/src/app/features/test-cases/DocumentCaseDialog.jsx",
+        "Frontend/src/app/features/test-cases/DocumentResultHistory.jsx",
+        "Frontend/src/app/features/test-cases/ResultCycleButton.jsx",
+        "Frontend/src/app/features/test-cases/useDocumentResults.js",
+        "Frontend/src/app/features/test-cases/documentDownload.js",
+        "Frontend/src/app/utils/multiWordSearch.js",
+        "Frontend/src/app/features/testing/DocumentAssignments.jsx",
+        "Frontend/src/app/features/testing/DocumentAssignmentHistory.jsx",
+        "Frontend/src/app/features/testing/testingState.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+      "lines": 31,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/features.js",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/projects/projectAccess.js",
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+        "Frontend/src/app/features/testing/testingState.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+      "lines": 36,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/features.js",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/projects/projectAccess.js",
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/testing/FeatureForm.jsx",
+        "Frontend/src/app/features/testing/testingState.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/testing/testingState.js",
+      "lines": 15,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/BoardPage.jsx",
+      "lines": 347,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/data.js",
+        "Frontend/src/app/features/work-items/issueFilters.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/CaseIssueAction.jsx",
+      "lines": 59,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/auth/DialogVisibilityContext.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/FeatureIssueForm.jsx",
+        "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx",
+        "Frontend/src/app/services/api/featureIssues.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/components.jsx",
+      "lines": 459,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/auth/DialogVisibilityContext.js",
+        "Frontend/src/app/utils/multiWordSearch.js",
+        "Frontend/src/app/features/work-items/data.js",
+        "Frontend/src/app/hooks/useDialogFocus.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/data.js",
+      "lines": 361,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/EvidencePanel.jsx",
+      "lines": 46,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/workItems.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/WorkItemForm.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx",
+      "lines": 178,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/featureIssues.js",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/features/work-items/data.js",
+        "Frontend/src/app/features/work-items/components.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/FeatureIssueForm.jsx",
+      "lines": 49,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/featureIssues.js",
+        "Frontend/src/app/features/work-items/components.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx",
+      "lines": 57,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/featureIssues.js",
+        "Frontend/src/app/services/api/features.js",
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/data.js",
+        "Frontend/src/app/features/work-items/FeatureIssueForm.jsx",
+        "Frontend/src/app/features/work-items/FeatureIssueDetail.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/HomePage.jsx",
+      "lines": 266,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/data.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/issueFilters.js",
+      "lines": 37,
+      "staticallyReachable": false,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/IssueForm.jsx",
+      "lines": 549,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/data.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/IssuesPage.jsx",
+      "lines": 768,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/work-items/issueFilters.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/data.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/ProjectData.jsx",
+      "lines": 48,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/services/api/workItems.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/TransitionDialog.jsx",
+      "lines": 38,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/workItems.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/WorkItemForm.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/WorkItemDetail.jsx",
+      "lines": 164,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/workItems.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/WorkItemForm.jsx",
+        "Frontend/src/app/features/work-items/EvidencePanel.jsx",
+        "Frontend/src/app/features/work-items/TransitionDialog.jsx",
+        "Frontend/src/app/features/work-items/ProjectData.jsx",
+        "Frontend/src/app/features/retest/RetestPanel.jsx",
+        "Frontend/src/app/features/integrations/RedminePanel.jsx",
+        "Frontend/src/app/features/qa/QaPanel.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/features/work-items/WorkItemForm.jsx",
+      "lines": 81,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/workItems.js",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/features/work-items/components.jsx",
+        "Frontend/src/app/features/work-items/ProjectData.jsx",
+        "Frontend/src/app/features/qa/QaForm.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/hooks/useDialogFocus.js",
+      "lines": 87,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/auth/DialogVisibilityContext.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/hooks/useRefreshingResource.js",
+      "lines": 20,
+      "staticallyReachable": false,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/layouts/MainLayout.jsx",
+      "lines": 85,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/components/Header.jsx",
+        "Frontend/src/app/components/Sidebar.jsx",
+        "Frontend/src/app/components/Footer.jsx",
+        "Frontend/src/app/hooks/useDialogFocus.js",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/routes/routeInfo.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/modules/CatHandbook.jsx",
+      "lines": 113,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/modules/KpiSummaryBar.jsx",
+      "lines": 7,
+      "staticallyReachable": false,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/modules/ProjectOverview.jsx",
+      "lines": 76,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/projects/ProjectInformation.jsx",
+        "Frontend/src/app/services/api/featureIssues.js",
+        "Frontend/src/app/services/api/projects.js",
+        "Frontend/src/app/features/work-items/data.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/modules/TestingOverview.jsx",
+      "lines": 4,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/features/reports/ReportsPage.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/pages/AnalysisPage.jsx",
+      "lines": 4,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/pages/DashboardPage.jsx",
+      "lines": 8,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/modules/ProjectOverview.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/pages/IssuesPage.jsx",
+      "lines": 61,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/pages/NotFoundPage.jsx",
+      "lines": 7,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/pages/ProgressPage.jsx",
+      "lines": 4,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/features/reports/ReportsPage.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/pages/TestRunnerGridPage.jsx",
+      "lines": 8,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/features/test-execution/ExecutionRunnerPage.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/pages/TestSpecsPage.jsx",
+      "lines": 338,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/components/TableScroll.jsx",
+        "Frontend/src/app/features/projects/projectAccess.js",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/services/api/testCases.js",
+        "Frontend/src/app/features/test-cases/CreateSuiteDialog.jsx",
+        "Frontend/src/app/features/test-cases/CreateCaseDialog.jsx",
+        "Frontend/src/app/features/test-cases/ImportExcelDialog.jsx",
+        "Frontend/src/app/features/test-cases/CaseDetailModal.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/pages/WorkBoardPage.jsx",
+      "lines": 19,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/work-items/FeatureIssuesPage.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/routes/AppRouter.jsx",
+      "lines": 58,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/pages/DashboardPage.jsx",
+        "Frontend/src/app/pages/AnalysisPage.jsx",
+        "Frontend/src/app/pages/WorkBoardPage.jsx",
+        "Frontend/src/app/pages/NotFoundPage.jsx",
+        "Frontend/src/app/features/projects/ProjectSettingsPage.jsx",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/projects/projectAccess.js",
+        "Frontend/src/app/features/testing/TestingFeaturesPage.jsx",
+        "Frontend/src/app/features/testing/TestingFeaturePage.jsx",
+        "Frontend/src/app/features/testing/TestingDocumentPage.jsx",
+        "Frontend/src/app/features/work-items/CaseIssueAction.jsx",
+        "Frontend/src/app/routes/routeInfo.js",
+        "Frontend/src/app/routes/RetiredAiEntry.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/routes/legacyRoutes.js",
+      "lines": 16,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/routes/RetiredAiEntry.jsx",
+      "lines": 14,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/ai/ChatLauncherSlot.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/routes/routeInfo.js",
+      "lines": 53,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/services/api/admin.js",
+      "lines": 42,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/ai.js",
+      "lines": 29,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/auth.js",
+      "lines": 18,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/client.js",
+      "lines": 75,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/app/services/api/execution.js",
+      "lines": 26,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/featureIssues.js",
+      "lines": 20,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/features.js",
+      "lines": 23,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/fileWork.js",
+      "lines": 44,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/managementReports.js",
+      "lines": 17,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/notes.js",
+      "lines": 16,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/projects.js",
+      "lines": 47,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/qa.js",
+      "lines": 27,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/redmine.js",
+      "lines": 14,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/reports.js",
+      "lines": 7,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/retest.js",
+      "lines": 18,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/testCases.js",
+      "lines": 57,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/client.js",
+        "Frontend/src/app/services/api/features.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/services/api/workItems.js",
+      "lines": 31,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/services/api/client.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/app/utils/multiWordSearch.js",
+      "lines": 10,
+      "staticallyReachable": true,
+      "imports": []
+    },
+    {
+      "path": "Frontend/src/App.jsx",
+      "lines": 70,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/app/features/projects/ProjectAccessNotice.jsx",
+        "Frontend/src/app/layouts/MainLayout.jsx",
+        "Frontend/src/app/routes/AppRouter.jsx",
+        "Frontend/src/app/routes/legacyRoutes.js",
+        "Frontend/src/app/routes/routeInfo.js",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/mocks/storeData.js"
+      ]
+    },
+    {
+      "path": "Frontend/src/AppEntry.jsx",
+      "lines": 66,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/App.jsx",
+        "Frontend/src/app/features/work-items/ProjectData.jsx",
+        "Frontend/src/app/features/auth/AuthProvider.jsx",
+        "Frontend/src/app/features/auth/AuthBoundary.jsx",
+        "Frontend/src/app/features/projects/ProjectProvider.jsx",
+        "Frontend/src/app/features/admin/AdminApp.jsx",
+        "Frontend/src/app/features/ai/AiEditBuffer.jsx",
+        "Frontend/src/app/features/ai/AiConnections.jsx",
+        "Frontend/src/app/features/ai/AiChat.jsx",
+        "Frontend/src/app/features/ai/ChatLauncherSlot.jsx",
+        "Frontend/src/app/features/reports/ReportDraftProvider.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/index.js",
+      "lines": 12,
+      "staticallyReachable": false,
+      "imports": [
+        "Frontend/src/App.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/main.jsx",
+      "lines": 11,
+      "staticallyReachable": true,
+      "imports": [
+        "Frontend/src/AppEntry.jsx"
+      ]
+    },
+    {
+      "path": "Frontend/src/mocks/storeData.js",
+      "lines": 39,
+      "staticallyReachable": true,
+      "imports": []
+    }
+  ],
+  "historicalTestReceipt": {
+    "path": "var/uiux-admin-entry-2026-10-19/frontend-verified-final-tests.json",
+    "tests": 1100,
+    "passed": 1100,
+    "files": 120,
+    "results": [
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/App.scroll.test.jsx",
+        "status": "passed",
+        "assertions": 11
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/components/selection-search.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/components/selection-ux.test.jsx",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/components/SelectionTable.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/components/TableScroll.test.jsx",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/hooks/useDialogFocus.test.jsx",
+        "status": "passed",
+        "assertions": 7
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/layouts/MainLayout.dialog-order.test.jsx",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/layouts/MainLayout.navigation.test.jsx",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/layouts/ui-audit.test.jsx",
+        "status": "passed",
+        "assertions": 9
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/modules/ProjectOverview.layout.test.jsx",
+        "status": "passed",
+        "assertions": 6
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/modules/ProjectOverview.permissions.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/modules/ProjectOverview.test.jsx",
+        "status": "passed",
+        "assertions": 4
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/pages/TestSpecsPage.navigation.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/pages/WorkBoardPage.test.jsx",
+        "status": "passed",
+        "assertions": 11
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/utils/multiWordSearch.test.js",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/routes/entry-adapters.test.jsx",
+        "status": "passed",
+        "assertions": 9
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/routes/fixreports-navigation.test.jsx",
+        "status": "passed",
+        "assertions": 23
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/routes/legacy-ai-entry.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/routes/navigation.test.jsx",
+        "status": "passed",
+        "assertions": 8
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/routes/sidebar-groups.test.jsx",
+        "status": "passed",
+        "assertions": 20
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/ai/AiAssistantPage.test.jsx",
+        "status": "passed",
+        "assertions": 14
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/ai/AiChat.test.jsx",
+        "status": "passed",
+        "assertions": 57
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/ai/AiConnections.test.jsx",
+        "status": "passed",
+        "assertions": 11
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/ai/aiErrors.test.js",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/auth/account-create-tester.test.jsx",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/auth/auth.test.jsx",
+        "status": "passed",
+        "assertions": 11
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/integrations/RedminePanel.test.jsx",
+        "status": "passed",
+        "assertions": 11
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/action-button-audit.test.jsx",
+        "status": "passed",
+        "assertions": 14
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/admin-dialog.test.jsx",
+        "status": "passed",
+        "assertions": 4
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/admin-dirty-close.test.jsx",
+        "status": "passed",
+        "assertions": 23
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/admin-management.test.jsx",
+        "status": "passed",
+        "assertions": 15
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/admin-member-feedback.test.jsx",
+        "status": "passed",
+        "assertions": 5
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/admin-projects.test.jsx",
+        "status": "passed",
+        "assertions": 4
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/admin-role-compatibility.test.jsx",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/admin-routing.test.jsx",
+        "status": "passed",
+        "assertions": 16
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/admin.test.jsx",
+        "status": "passed",
+        "assertions": 6
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/AdminLayout.navigation.test.jsx",
+        "status": "passed",
+        "assertions": 7
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/AdminProjectLifecycle.integration.test.jsx",
+        "status": "passed",
+        "assertions": 4
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/AdminProjectLifecycle.test.jsx",
+        "status": "passed",
+        "assertions": 10
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/button-recheck.test.jsx",
+        "status": "passed",
+        "assertions": 5
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/device-editor-focus.test.jsx",
+        "status": "passed",
+        "assertions": 4
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/device-error-recovery.test.jsx",
+        "status": "passed",
+        "assertions": 12
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/fixreports-audit.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/fixreports-handover.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/fixreports-members.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/inventory.test.jsx",
+        "status": "passed",
+        "assertions": 11
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/nested-project-picker.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/project-picker.test.jsx",
+        "status": "passed",
+        "assertions": 7
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/admin/status-reports.test.jsx",
+        "status": "passed",
+        "assertions": 8
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/file-work/ActionInbox.test.jsx",
+        "status": "passed",
+        "assertions": 8
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/file-work/caseRange.test.js",
+        "status": "passed",
+        "assertions": 12
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/file-work/CaseRangePicker.test.jsx",
+        "status": "passed",
+        "assertions": 4
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/file-work/file-work.test.jsx",
+        "status": "passed",
+        "assertions": 83
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/file-work/FileCaseView.test.jsx",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/file-work/grouped-navigation.test.jsx",
+        "status": "passed",
+        "assertions": 19
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/qa/qa-dashboard.test.jsx",
+        "status": "passed",
+        "assertions": 14
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/qa/qa-glue.test.jsx",
+        "status": "passed",
+        "assertions": 48
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/qa/qa.test.jsx",
+        "status": "passed",
+        "assertions": 51
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/reports/ManagementAnalysisPage.test.jsx",
+        "status": "passed",
+        "assertions": 38
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/reports/ReportDraftProvider.test.jsx",
+        "status": "passed",
+        "assertions": 7
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/reports/reports.test.jsx",
+        "status": "passed",
+        "assertions": 9
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/reports/SafeMarkdown.test.jsx",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/retest/retest.test.jsx",
+        "status": "passed",
+        "assertions": 17
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/projects/CatalogPage.test.jsx",
+        "status": "passed",
+        "assertions": 13
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/projects/CreateProjectDialog.review.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/projects/device-handover-feedback.test.jsx",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/projects/handbook-editor-focus.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/projects/project-devices-navigation.test.jsx",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/projects/ProjectNotes.test.jsx",
+        "status": "passed",
+        "assertions": 11
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/projects/ProjectProvider.test.jsx",
+        "status": "passed",
+        "assertions": 4
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/projects/settings.test.jsx",
+        "status": "passed",
+        "assertions": 21
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-execution/cycle-decisions.test.jsx",
+        "status": "passed",
+        "assertions": 7
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-execution/dialog-review.test.jsx",
+        "status": "passed",
+        "assertions": 6
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-execution/execution.test.jsx",
+        "status": "passed",
+        "assertions": 28
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-execution/NgBugActions.test.jsx",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-execution/read-state.test.jsx",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/document-conflicts.test.jsx",
+        "status": "passed",
+        "assertions": 13
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/document-editing.test.jsx",
+        "status": "passed",
+        "assertions": 19
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/documentDownload.test.js",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/DocumentExecution.test.jsx",
+        "status": "passed",
+        "assertions": 11
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/DocumentResultHistory.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/ExcelImportPreview.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/ImportExcelBatch.test.jsx",
+        "status": "passed",
+        "assertions": 9
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/result-cycle.test.jsx",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/result-grid.test.jsx",
+        "status": "passed",
+        "assertions": 8
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/ResultCycleButton.test.jsx",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/test-cases.test.jsx",
+        "status": "passed",
+        "assertions": 21
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/test-cases/test-documents.test.jsx",
+        "status": "passed",
+        "assertions": 27
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/testing/DocumentAssignmentHistory.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/testing/DocumentAssignments.test.jsx",
+        "status": "passed",
+        "assertions": 4
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/testing/FeatureForm.test.jsx",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/testing/testing-modal.test.jsx",
+        "status": "passed",
+        "assertions": 5
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/testing/TestingDocumentPage.test.jsx",
+        "status": "passed",
+        "assertions": 7
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/testing/TestingFeaturesPage.test.jsx",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/testing/TestingListRecovery.test.jsx",
+        "status": "passed",
+        "assertions": 4
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/testing/TestingReadOnly.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/CaseIssueAction.test.jsx",
+        "status": "passed",
+        "assertions": 5
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/EvidencePanel.test.jsx",
+        "status": "passed",
+        "assertions": 6
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/FeatureIssueDetail.test.jsx",
+        "status": "passed",
+        "assertions": 18
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/FeatureIssueForm.test.jsx",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/FeatureIssuesPage.test.jsx",
+        "status": "passed",
+        "assertions": 6
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/HomePage.test.jsx",
+        "status": "passed",
+        "assertions": 6
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/local-search.test.jsx",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/modal-expand.test.jsx",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/ordinary-lifecycle.test.jsx",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/ProjectData.test.jsx",
+        "status": "passed",
+        "assertions": 7
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/WorkItemDetail.test.jsx",
+        "status": "passed",
+        "assertions": 17
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/features/work-items/workItems.test.jsx",
+        "status": "passed",
+        "assertions": 8
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/admin.test.js",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/ai.test.js",
+        "status": "passed",
+        "assertions": 7
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/client.test.js",
+        "status": "passed",
+        "assertions": 15
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/download.test.js",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/execution.test.js",
+        "status": "passed",
+        "assertions": 8
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/managementReports.test.js",
+        "status": "passed",
+        "assertions": 4
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/notes.test.js",
+        "status": "passed",
+        "assertions": 3
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/projects.test.js",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/redmine.test.js",
+        "status": "passed",
+        "assertions": 4
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/reports.test.js",
+        "status": "passed",
+        "assertions": 1
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/retest.test.js",
+        "status": "passed",
+        "assertions": 2
+      },
+      {
+        "path": "D:/DCN/KTN_11235645_DoCamNhung/Frontend/src/app/services/api/workItems.test.js",
+        "status": "passed",
+        "assertions": 11
+      }
+    ]
+  }
+}

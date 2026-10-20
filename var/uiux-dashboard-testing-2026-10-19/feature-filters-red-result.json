@@ -1,0 +1,11 @@
+{
+  "startedAt": "2026-10-19T13:21:00.692Z",
+  "finishedAt": "2026-10-19T13:21:07.282Z",
+  "task": "test",
+  "args": [
+    "src/app/features/testing/TestingFeaturesPage.test.jsx",
+    "src/app/services/api/features.test.js",
+    "--maxWorkers=1"
+  ],
+  "exitCode": 1
+}

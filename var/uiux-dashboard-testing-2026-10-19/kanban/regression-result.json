@@ -1,0 +1,6 @@
+{
+  "startedAt": "2026-10-19T12:42:48.662Z",
+  "finishedAt": "2026-10-19T12:43:11.115Z",
+  "command": "vitest run src/app/features/work-items --maxWorkers=1",
+  "exitCode": 0
+}

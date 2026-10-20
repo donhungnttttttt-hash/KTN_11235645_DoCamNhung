@@ -9,37 +9,48 @@ export function HandbookPanel({projectId,canEdit=false}) {
   const [reload,setReload]=useState(0);
   const [editor,setEditor]=useState(null);
   const [notice,setNotice]=useState('');
-  const focusRevision=useRef(false),panel=useRef(null);
-  useEffect(()=>{if(!editor&&focusRevision.current){panel.current?.querySelector('.handbook-detail button')?.focus();focusRevision.current=false;}},[editor]);
+  const pendingFocus=useRef(null),completedRead=useRef(null),addButton=useRef(null),revisionButton=useRef(null),editorRef=useRef(null);
+  useEffect(()=>{
+    const request=pendingFocus.current;
+    if(!request||editor||items===null||reload<request.minimumReload||completedRead.current!==reload)return;
+    pendingFocus.current=null;
+    const active=document.activeElement;
+    if(active!==document.body&&active!==document.documentElement)return;
+    const target=request.itemId===selected?revisionButton.current||addButton.current:addButton.current;
+    if(target?.isConnected&&!target.disabled)target.focus();
+  },[editor,items,selected,reload]);
+  function requestFocus(itemId,minimumReload=reload){const active=document.activeElement;pendingFocus.current=active===document.body||editorRef.current?.contains(active)?{itemId,minimumReload}:null;}
+  function closeEditor(){requestFocus(editor?.item?.id);setEditor(null);}
+  function saved(){requestFocus(null,reload+1);setNotice('Đã lưu tài liệu.');setEditor(null);setSelected(null);setReload(x=>x+1);}
   useEffect(()=>{
     let live=true;setItems(null);setError('');
-    projectsApi.listHandbook(projectId).then(data=>{if(live)setItems(data);}).catch(failure=>{if(live)setError(failure.message);});
+    projectsApi.listHandbook(projectId).then(data=>{if(live){completedRead.current=reload;setItems(data);}}).catch(failure=>{if(live){pendingFocus.current=null;setError(failure.message);}});
     return()=>{live=false;};
   },[projectId,reload]);
-  return <section ref={panel}>
-    <div className="settings-heading"><h2>Sổ tay dự án</h2>{canEdit && <button className="cat-btn primary" disabled={!!editor} onClick={()=>setEditor({item:null})}>Thêm tài liệu</button>}</div>
+  return <section>
+    <div className="settings-heading"><h2>Sổ tay dự án</h2>{canEdit && <button ref={addButton} className="cat-btn primary" disabled={!!editor} onClick={()=>{pendingFocus.current=null;setEditor({item:null});}}>Thêm tài liệu</button>}</div>
     <p className="settings-hint">Hướng dẫn nội bộ và nguồn đặc tả. Chỉ lưu thông tin tham chiếu nơi cấp phát tài khoản, không ghi mật khẩu hoặc khóa truy cập.</p>
     {error && <p role="alert" className="text-danger">{error} <button className="cat-btn" onClick={()=>setReload(x=>x+1)}>Thử lại</button></p>}
     {notice && <p role="status">{notice}</p>}
-    {editor && <HandbookEditor key={editor.item?.id || 'new'} projectId={projectId} item={editor.item} onClose={()=>setEditor(null)} onSaved={()=>{setNotice('Đã lưu tài liệu.');setEditor(null);setSelected(null);setReload(x=>x+1);}}/>}
+    {editor && <HandbookEditor key={editor.item?.id || 'new'} projectId={projectId} item={editor.item} formRef={editorRef} onClose={closeEditor} onSaved={saved}/>}
     {!items ? !error && <p>Đang tải sổ tay…</p> : !items.length ? <p>Chưa có tài liệu trong dự án.</p> : <div className="handbook-layout">
       <nav className="handbook-list" aria-label="Tài liệu dự án">{items.map(item=><button key={item.id} className="cat-btn" aria-current={selected===item.id?'page':undefined} onClick={()=>setSelected(item.id)}>{item.name} · v{item.currentRevision?.revisionNo}</button>)}</nav>
-      {selected && <HandbookDetail key={selected} projectId={projectId} id={selected} canEdit={canEdit && !editor} onEdit={item=>{focusRevision.current=true;setEditor({item});}}/>}
+      {selected && <HandbookDetail key={selected} projectId={projectId} id={selected} canEdit={canEdit && !editor} triggerRef={revisionButton} onEdit={item=>{pendingFocus.current=null;setEditor({item});}}/>}
     </div>}
   </section>;
 }
-function HandbookDetail({projectId,id,canEdit,onEdit}) {
+function HandbookDetail({projectId,id,canEdit,onEdit,triggerRef}) {
   const [data,setData]=useState(null),[error,setError]=useState(''),[reload,setReload]=useState(0);
   useEffect(()=>{let live=true;setError('');projectsApi.getHandbook(projectId,id).then(value=>{if(live)setData(value);}).catch(failure=>{if(live)setError(failure.message);});return()=>{live=false;};},[projectId,id,reload]);
   if(error)return <p role="alert">{error} <button className="cat-btn" onClick={()=>setReload(x=>x+1)}>Thử lại</button></p>;
   if(!data)return <p>Đang tải nội dung…</p>;
-  return <article className="handbook-detail"><div className="settings-heading"><h3>{data.name}</h3>{canEdit && !data.archived && <button className="cat-btn" onClick={()=>onEdit(data)}>Thêm phiên bản</button>}</div>
+  return <article className="handbook-detail"><div className="settings-heading"><h3>{data.name}</h3>{canEdit && !data.archived && <button ref={triggerRef} className="cat-btn" onClick={()=>onEdit(data)}>Thêm phiên bản</button>}</div>
     <p className="settings-hint">Nội bộ · Phiên bản {data.currentRevision?.revisionNo} · {formatTime(data.currentRevision?.createdAt)} (UTC)</p>
     <pre className="handbook-text">{data.currentRevision?.contentHtml}</pre>
     <details><summary>Lịch sử chỉnh sửa ({data.history.length})</summary>{data.history.map(revision=><section key={revision.id} className="handbook-revision"><strong>Phiên bản {revision.revisionNo}</strong><p>{formatTime(revision.createdAt)} (UTC) · Thành viên #{revision.editedBy}</p><pre className="handbook-text">{revision.contentHtml}</pre></section>)}</details>
   </article>;
 }
-function HandbookEditor({projectId,item,onSaved,onClose}) {
+function HandbookEditor({projectId,item,onSaved,onClose,formRef}) {
   const [form,setForm]=useState({code:'',name:'',resourceType:'GUIDE',contentHtml:item?.currentRevision?.contentHtml || ''});
   const [error,setError]=useState(''),[busy,setBusy]=useState(false);
   async function save(event){event.preventDefault();if(busy)return;setBusy(true);setError('');try{
@@ -47,7 +58,7 @@ function HandbookEditor({projectId,item,onSaved,onClose}) {
     else await projectsApi.createHandbook(projectId,{...form,visibility:'INTERNAL'});
     onSaved();
   }catch(failure){setError(failure.message);}finally{setBusy(false);}}
-  return <form className="settings-editor" onSubmit={save} onInvalid={()=>setError('Kiểm tra các trường bắt buộc được đánh dấu trước khi lưu tài liệu.')}>
+  return <form ref={formRef} className="settings-editor" onSubmit={save} onInvalid={()=>setError('Kiểm tra các trường bắt buộc được đánh dấu trước khi lưu tài liệu.')}>
     <h3>{item?`Phiên bản mới: ${item.name}`:'Tài liệu mới'}</h3>{error && <p role="alert" className="text-danger">{error}</p>}
     <fieldset disabled={busy}>
       {!item && <div className="settings-fields"><label className="form-group">Mã tài liệu<input autoFocus required maxLength={32} value={form.code} onChange={e=>setForm({...form,code:e.target.value})}/></label><label className="form-group">Tên tài liệu<input required maxLength={100} value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label>

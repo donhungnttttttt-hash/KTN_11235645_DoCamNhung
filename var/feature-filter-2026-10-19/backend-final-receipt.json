@@ -1,0 +1,645 @@
+{
+  "at": "2026-10-19T13:25:35.165Z",
+  "files": [
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/feature/FeatureController.java",
+      "sha256": "c69e368c947e3f495a96ed846a7679a724def9aef7c9a985eb6a9fd32d7282d2"
+    },
+    {
+      "file": "Backend/src/main/java/vn/syp/tms/feature/FeatureService.java",
+      "sha256": "d06887e8f6b91bb313e6248ca72876c48ec85bbe4598cd699cdf396003f82324"
+    },
+    {
+      "file": "Backend/src/test/java/vn/syp/tms/testcase/FeatureIntegrationTest.java",
+      "sha256": "fa123e61e7f8faf99cf65a0c8e79e2248844244ec18076e743652d4bf5c34ea5"
+    }
+  ],
+  "native": [
+    {
+      "name": "vn.syp.tms.testcase.FeatureIntegrationTest",
+      "tests": "15",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "29.714"
+    },
+    {
+      "name": "vn.syp.tms.testcase.FeatureLegacyRetirementIntegrationTest",
+      "tests": "18",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.284"
+    },
+    {
+      "name": "vn.syp.tms.testcase.NativeFeatureIssueIntegrationTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.633"
+    }
+  ],
+  "offline": [
+    {
+      "name": "vn.syp.tms.admin.AdminAuditLabelsTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2.424"
+    },
+    {
+      "name": "vn.syp.tms.admin.AdminAuditServiceTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.17"
+    },
+    {
+      "name": "vn.syp.tms.admin.AdminFixReportsTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.311"
+    },
+    {
+      "name": "vn.syp.tms.admin.AdminManagementSecurityTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.099"
+    },
+    {
+      "name": "vn.syp.tms.admin.AdminOverviewServiceTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.067"
+    },
+    {
+      "name": "vn.syp.tms.admin.AdminProjectServiceTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.129"
+    },
+    {
+      "name": "vn.syp.tms.admin.AdminSearchTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.014"
+    },
+    {
+      "name": "vn.syp.tms.admin.AdminSecurityTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.883"
+    },
+    {
+      "name": "vn.syp.tms.admin.DeveloperResultsTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.371"
+    },
+    {
+      "name": "vn.syp.tms.admin.DeviceInventoryServiceTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.045"
+    },
+    {
+      "name": "vn.syp.tms.admin.InventorySecurityTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.847"
+    },
+    {
+      "name": "vn.syp.tms.admin.ProjectDeadlinesCurrentScopeTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.006"
+    },
+    {
+      "name": "vn.syp.tms.admin.ProjectStatusReportRetirementTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.104"
+    },
+    {
+      "name": "vn.syp.tms.admin.ProjectStatusReportSecurityTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.875"
+    },
+    {
+      "name": "vn.syp.tms.admin.ProjectStatusReportTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.015"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiAccessTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.19"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiAssistanceServiceTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.262"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiChatPromptTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.348"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiChatServiceTest",
+      "tests": "31",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.437"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiContextBudgetTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.038"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiDraftContentTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.016"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiDraftServiceTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.106"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiManagementReportGeneratorTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.128"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiPortfolioContextTest",
+      "tests": "16",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.286"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiProviderAuthorizationTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.273"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiProviderIntegrationTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.467"
+    },
+    {
+      "name": "vn.syp.tms.ai.AiProviderSafetyTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.031"
+    },
+    {
+      "name": "vn.syp.tms.ai.ChatGptConnectionServiceTest",
+      "tests": "28",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.487"
+    },
+    {
+      "name": "vn.syp.tms.ai.ChatGptCredentialVaultTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.067"
+    },
+    {
+      "name": "vn.syp.tms.ai.ChatGptIdentityTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.554"
+    },
+    {
+      "name": "vn.syp.tms.ai.ChatGptOAuthClientTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.316"
+    },
+    {
+      "name": "vn.syp.tms.ai.OpenAiConfigurationTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.083"
+    },
+    {
+      "name": "vn.syp.tms.ai.OpenAiEndpointConfigurationTest",
+      "tests": "16",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.122"
+    },
+    {
+      "name": "vn.syp.tms.ai.OpenAiResponsesClientTest",
+      "tests": "35",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.934"
+    },
+    {
+      "name": "vn.syp.tms.attachment.EvidenceContentTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.18"
+    },
+    {
+      "name": "vn.syp.tms.attachment.QaEvidenceTest",
+      "tests": "36",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.743"
+    },
+    {
+      "name": "vn.syp.tms.catalog.CatalogInputTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.032"
+    },
+    {
+      "name": "vn.syp.tms.config.DefaultProfileSecurityTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.889"
+    },
+    {
+      "name": "vn.syp.tms.config.LocalDatabaseConfigurationTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.244"
+    },
+    {
+      "name": "vn.syp.tms.feature.AssignmentPlanTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.019"
+    },
+    {
+      "name": "vn.syp.tms.filework.FileWorkExecutionTest",
+      "tests": "19",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "3.15"
+    },
+    {
+      "name": "vn.syp.tms.filework.FileWorkServiceTest",
+      "tests": "44",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.64"
+    },
+    {
+      "name": "vn.syp.tms.filework.FileWorkSessionTest",
+      "tests": "35",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.275"
+    },
+    {
+      "name": "vn.syp.tms.filework.NativeFqDatabaseGuardTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.124"
+    },
+    {
+      "name": "vn.syp.tms.identity.IdentityPolicyTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.31"
+    },
+    {
+      "name": "vn.syp.tms.identity.SessionAccountFilterTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.022"
+    },
+    {
+      "name": "vn.syp.tms.integration.RedmineClientTest",
+      "tests": "25",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.372"
+    },
+    {
+      "name": "vn.syp.tms.integration.RedmineConfigurationTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.04"
+    },
+    {
+      "name": "vn.syp.tms.integration.RedmineSchedulerTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.072"
+    },
+    {
+      "name": "vn.syp.tms.notes.ProjectNotesPolicyTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.359"
+    },
+    {
+      "name": "vn.syp.tms.notes.ProjectNotesSecurityTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.867"
+    },
+    {
+      "name": "vn.syp.tms.notes.ProjectNotesServiceTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.029"
+    },
+    {
+      "name": "vn.syp.tms.project.AdminStateProjectionTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.152"
+    },
+    {
+      "name": "vn.syp.tms.project.CentralMembershipTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.092"
+    },
+    {
+      "name": "vn.syp.tms.project.ProjectTimezoneTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.004"
+    },
+    {
+      "name": "vn.syp.tms.qa.HandoffServiceTest",
+      "tests": "58",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.322"
+    },
+    {
+      "name": "vn.syp.tms.qa.QaServiceTest",
+      "tests": "42",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.628"
+    },
+    {
+      "name": "vn.syp.tms.reporting.FeatureProgressContractTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.004"
+    },
+    {
+      "name": "vn.syp.tms.reporting.ManagementReportServiceTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.009"
+    },
+    {
+      "name": "vn.syp.tms.reporting.ReportingLimitTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.085"
+    },
+    {
+      "name": "vn.syp.tms.retest.RetestExecutionTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.096"
+    },
+    {
+      "name": "vn.syp.tms.rules.InternalRulePolicyTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.014"
+    },
+    {
+      "name": "vn.syp.tms.shared.search.MultiWordSearchTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.004"
+    },
+    {
+      "name": "vn.syp.tms.shared.web.ApiExceptionHandlerTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.087"
+    },
+    {
+      "name": "vn.syp.tms.testcase.CustomerWorkbookTest",
+      "tests": "13",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.552"
+    },
+    {
+      "name": "vn.syp.tms.testcase.DocumentResultServiceTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.413"
+    },
+    {
+      "name": "vn.syp.tms.testcase.DocumentWorkbookTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.355"
+    },
+    {
+      "name": "vn.syp.tms.testcase.FileWorkWorkbookTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.235"
+    },
+    {
+      "name": "vn.syp.tms.testcase.TestCaseWorkbookTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.394"
+    },
+    {
+      "name": "vn.syp.tms.testcase.TestDocumentBulkApprovalTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.301"
+    },
+    {
+      "name": "vn.syp.tms.workitem.DeveloperPermissionsTest",
+      "tests": "14",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.249"
+    },
+    {
+      "name": "vn.syp.tms.workitem.FeatureIssueServiceTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.017"
+    },
+    {
+      "name": "vn.syp.tms.workitem.OrdinaryWorkItemLifecycleTest",
+      "tests": "13",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.131"
+    },
+    {
+      "name": "vn.syp.tms.workitem.WorkItemHistoryTest",
+      "tests": "14",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.119"
+    },
+    {
+      "name": "vn.syp.tms.workitem.WorkItemTypeContractTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.024"
+    }
+  ]
+}

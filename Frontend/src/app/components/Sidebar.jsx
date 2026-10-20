@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Home, Columns3, FlaskConical, Bug, ChartNoAxesCombined,
-  Menu, X, ChevronDown, Settings, BookOpen,
+  Menu, X, ChevronDown, Settings, BookOpen, ArrowLeft,
   Users, SlidersHorizontal, FileCheck,
 } from 'lucide-react';
 import { useProject } from '../features/projects/ProjectProvider';
@@ -52,7 +52,11 @@ export function Sidebar({ activeRoute, navigate, collapsed, onToggle, onClose, p
 
   return <aside ref={panelRef} id="project-navigation" className="app-sidebar" aria-label="Menu dự án"
     role={overlayOpen ? 'dialog' : undefined} aria-modal={overlayOpen ? 'true' : undefined} tabIndex={overlayOpen ? -1 : undefined}>
-    <div className="app-sidebar-toggle">
+    <div className={'app-sidebar-toggle' + (hasRole('ADMIN') ? ' app-sidebar-toggle-admin' : '')}>
+      {hasRole('ADMIN') && <a className="sidebar-admin-return" href="#/admin" onClick={onClose}
+        aria-label="Quay lại Tổng quan hệ thống" title="Quay lại Tổng quan hệ thống">
+        <ArrowLeft size={20} aria-hidden="true"/><span>Quay lại</span>
+      </a>}
       {!overlayOpen && <button className="sidebar-desktop-toggle" onClick={onToggle}
         aria-label={collapsed ? 'Mở rộng menu' : 'Thu gọn menu'} aria-expanded={!collapsed}>
         <Menu size={21} />

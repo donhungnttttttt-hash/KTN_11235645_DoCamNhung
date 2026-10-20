@@ -1,0 +1,13 @@
+const {spawnSync}=require('node:child_process');
+const fs=require('node:fs');
+const path=require('node:path');
+const directory=__dirname;
+const root=path.resolve(directory,'../../..');
+const [label,...tests]=process.argv.slice(2);
+if(!label||!tests.length)throw new Error('Supply label and test files.');
+const startedAt=new Date().toISOString();
+const result=spawnSync(process.execPath,[path.join(root,'Frontend/node_modules/vitest/vitest.mjs'),'run',...tests,'--maxWorkers=1'],{cwd:path.join(root,'Frontend'),encoding:'utf8',maxBuffer:8*1024*1024});
+fs.writeFileSync(path.join(directory,`${label}.log`),(result.stdout||'')+(result.stderr||''));
+fs.writeFileSync(path.join(directory,`${label}.json`),JSON.stringify({startedAt,finishedAt:new Date().toISOString(),status:result.status,signal:result.signal,error:result.error?.message,tests},null,2));
+console.log((result.stdout||'').slice(-6000));console.error((result.stderr||'').slice(-3000));
+process.exit(result.status??1);

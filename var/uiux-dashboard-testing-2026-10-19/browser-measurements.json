@@ -1,0 +1,332 @@
+{
+  "at": "2026-10-19T12:51:12.579Z",
+  "checks": [
+    {
+      "page": "kanban",
+      "columns": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "height": 38.400001525878906,
+          "width": 517.5
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "height": 537.4666748046875,
+          "width": 1208.0001220703125
+        }
+      ],
+      "height": 592,
+      "overflowPage": false,
+      "scrollWidth": 1208,
+      "viewport": 2048,
+      "width": 1208
+    },
+    {
+      "page": "features",
+      "overflowPage": false,
+      "progress": [
+        {
+          "fill": "rgb(217, 119, 6)",
+          "label": "Tiến độ Dữ liệu cũ chưa phân đợt",
+          "text": "1/283 case · 0%",
+          "width": 0.7500000596046448
+        },
+        {
+          "fill": "rgba(0, 0, 0, 0)",
+          "label": "Tiến độ Test Regression tiêu chuẩn",
+          "text": "Chưa có case",
+          "width": 0
+        },
+        {
+          "fill": "rgb(217, 119, 6)",
+          "label": "Tiến độ 1",
+          "text": "0/87 case · 0%",
+          "width": 0
+        },
+        {
+          "fill": "rgba(0, 0, 0, 0)",
+          "label": "Tiến độ Kiểm thử đăng nhập — Sprint 5",
+          "text": "Chưa có case",
+          "width": 0
+        }
+      ],
+      "viewport": 2048
+    },
+    {
+      "page": "files",
+      "overflowPage": false,
+      "progress": [
+        {
+          "fill": "rgb(217, 119, 6)",
+          "text": "1/128 case · 0%"
+        },
+        {
+          "fill": "rgb(217, 119, 6)",
+          "text": "0/155 case · 0%"
+        }
+      ],
+      "viewport": 2048
+    },
+    {
+      "page": "document",
+      "gridHeight": 501.0333557128906,
+      "height": 898,
+      "outerTabs": false,
+      "overflowPage": false,
+      "progress": "1/128 case · 0.8%",
+      "statusGroups": [
+        {
+          "controls": [
+            {
+              "bg": "color(srgb 0.974235 0.910706 0.910706)",
+              "center": 1832.5334548950195,
+              "text": "NG",
+              "width": 148.00001525878906
+            },
+            {
+              "bg": "rgb(255, 255, 255)",
+              "center": 1832.5334548950195,
+              "text": "Issue (0)",
+              "width": 148.00001525878906
+            },
+            {
+              "bg": "rgb(255, 255, 255)",
+              "center": 1832.5334548950195,
+              "text": "Lịch sử Status",
+              "width": 148.00001525878906
+            }
+          ],
+          "width": 148.00001525878906
+        },
+        {
+          "controls": [
+            {
+              "bg": "color(srgb 0.917765 0.919882 0.923059)",
+              "center": 1832.5334548950195,
+              "text": "Unexecuted",
+              "width": 148.00001525878906
+            },
+            {
+              "bg": "rgb(255, 255, 255)",
+              "center": 1832.5334548950195,
+              "text": "Issue (0)",
+              "width": 148.00001525878906
+            },
+            {
+              "bg": "rgb(255, 255, 255)",
+              "center": 1832.5334548950195,
+              "text": "Lịch sử Status",
+              "width": 148.00001525878906
+            }
+          ],
+          "width": 148.00001525878906
+        }
+      ],
+      "titleBackground": "rgba(0, 0, 0, 0)",
+      "toolbarHeight": 147.20001220703125,
+      "viewport": 2048
+    },
+    {
+      "page": "case-issue-popup",
+      "fits": true,
+      "rect": {
+        "bottom": 763.6000671386719,
+        "height": 165.60000610351562,
+        "left": 1712.0001220703125,
+        "right": 2032.0001525878904,
+        "top": 598.0000610351562,
+        "width": 320.0000305175781,
+        "x": 1712.0001220703125,
+        "y": 598.0000610351562
+      },
+      "viewport": {
+        "h": 898,
+        "w": 2048
+      }
+    },
+    {
+      "page": "document-320",
+      "gridHeight": 352,
+      "pageOverflow": false,
+      "toolbarScrollable": true,
+      "viewport": 320,
+      "viewportHeight": 800
+    },
+    {
+      "page": "document-responsive",
+      "gridHeight": 554,
+      "height": 900,
+      "pageOverflow": false,
+      "toolbarHeight": 74,
+      "toolbarScrollable": true,
+      "viewport": 768
+    },
+    {
+      "page": "document-responsive",
+      "gridHeight": 562,
+      "height": 900,
+      "pageOverflow": false,
+      "toolbarHeight": 74,
+      "toolbarScrollable": true,
+      "viewport": 1024
+    },
+    {
+      "page": "document-responsive",
+      "gridHeight": 504,
+      "height": 900,
+      "pageOverflow": false,
+      "toolbarHeight": 138,
+      "toolbarScrollable": false,
+      "viewport": 1440
+    },
+    {
+      "page": "admin-return-mobile",
+      "back": {
+        "bottom": 95.00000762939452,
+        "height": 44.000003814697266,
+        "left": 16,
+        "right": 104.28334045410156,
+        "top": 51.000003814697266,
+        "width": 88.28334045410156,
+        "x": 16,
+        "y": 51.000003814697266
+      },
+      "close": {
+        "bottom": 95.00000762939452,
+        "height": 44.000003814697266,
+        "left": 140,
+        "right": 184.0000038146973,
+        "top": 51.000003814697266,
+        "width": 44.000003814697266,
+        "x": 140,
+        "y": 51.000003814697266
+      },
+      "viewport": 320
+    },
+    {
+      "page": "file-back",
+      "fileButtons": 0
+    },
+    {
+      "page": "feature-back",
+      "features": 4
+    },
+    {
+      "page": "kanban-320",
+      "columns": [
+        {
+          "background": "rgb(255, 255, 255)",
+          "height": 384.0000305175781,
+          "width": 272
+        },
+        {
+          "background": "rgb(255, 255, 255)",
+          "height": 384.0000305175781,
+          "width": 272
+        },
+        {
+          "background": "rgb(255, 255, 255)",
+          "height": 384.0000305175781,
+          "width": 272
+        },
+        {
+          "background": "rgb(255, 255, 255)",
+          "height": 384.0000305175781,
+          "width": 272
+        },
+        {
+          "background": "rgb(255, 255, 255)",
+          "height": 384.0000305175781,
+          "width": 272
+        },
+        {
+          "background": "rgb(255, 255, 255)",
+          "height": 384.0000305175781,
+          "width": 272
+        },
+        {
+          "background": "rgb(255, 255, 255)",
+          "height": 384.0000305175781,
+          "width": 272
+        },
+        {
+          "background": "rgb(255, 255, 255)",
+          "height": 384.0000305175781,
+          "width": 272
+        },
+        {
+          "background": "rgb(255, 255, 255)",
+          "height": 384.0000305175781,
+          "width": 272
+        },
+        {
+          "background": "rgb(255, 255, 255)",
+          "height": 384.0000305175781,
+          "width": 272
+        }
+      ],
+      "height": 402,
+      "pageOverflow": false,
+      "scrollable": true,
+      "viewport": 320
+    },
+    {
+      "page": "kanban-1440",
+      "columnHeight": 516.2667236328125,
+      "columnWidth": 320.0000305175781,
+      "gap": "20px",
+      "height": 534,
+      "pageOverflow": false,
+      "scrollable": true,
+      "viewport": 1440
+    },
+    {
+      "page": "admin-return-collapsed",
+      "back": {
+        "bottom": 84.00000381469727,
+        "height": 36,
+        "left": 82.00000762939453,
+        "right": 118.00000762939452,
+        "top": 48.000003814697266,
+        "width": 36,
+        "x": 82.00000762939453,
+        "y": 48.000003814697266
+      },
+      "menuWidth": 200.00001525878903,
+      "toggle": {
+        "bottom": 128.00000762939453,
+        "height": 36,
+        "left": 82.00000762939453,
+        "right": 118.00000762939452,
+        "top": 92.00000762939452,
+        "width": 36,
+        "x": 82.00000762939453,
+        "y": 92.00000762939452
+      }
+    },
+    {
+      "page": "admin-return-keyboard",
+      "url": "http://127.0.0.1:5173/#/admin",
+      "headings": [
+        "Tổng quan hệ thống"
+      ]
+    },
+    {
+      "page": "files-loaded",
+      "filenames": [
+        "(タブレット)(#標準)テスト仕様書(図面メモ)_VI.xlsx",
+        "(タブレット)(#指摘管理)テスト仕様書(アイコン表示絞り込み)_VI.xlsx"
+      ]
+    },
+    {
+      "page": "final-document-visual",
+      "url": "http://127.0.0.1:5173/#/board/testing/features/15/documents/18?projectId=1&workspace=1",
+      "tabsAbsent": true
+    }
+  ],
+  "notes": [
+    "Some snapshots were taken before an asynchronous list loaded; files-loaded is the later settled check.",
+    "Collapsed menu measurement was captured during its width transition; keyboard return result and integration tests confirm destination.",
+    "Chrome screenshot API intermittently timed out; final JPEG captures succeeded and were reviewed."
+  ]
+}

@@ -43,4 +43,26 @@ class AiManagementReportGeneratorTest {
         prepare();when(drafts.findRequest(eq(7L),eq("pm"),eq(AiPurpose.PM_PROGRESS_REPORT),eq("project:7:feature:2"),eq(input.requestKey()),any(),eq(true))).thenReturn(draft("PENDING"));
         service.preview(7,"pm",input);verifyNoInteractions(generator);
     }
+    @Test void paymentFailureKeepsItsActionableCodeAtTheReportBoundary() {
+        prepare();when(gateway.resolve(eq("pm"),any())).thenThrow(new OpenAiResponsesClient.Failure("AI_PAYMENT_REQUIRED"));
+        assertThatThrownBy(()->service.preview(7,"pm",input)).isInstanceOfSatisfying(BusinessException.class,error->{
+            assertThat(error.status()).isEqualTo(422);assertThat(error.code()).isEqualTo("AI_PAYMENT_REQUIRED");
+        });
+        verifyNoInteractions(generator);verify(reports,never()).create(anyLong(),anyString(),any());
+    }
+    @Test void previouslyGeneratedStructuredReportIsStillReadableWithoutAnotherProviderRequest() throws Exception {
+        prepare();
+        var content=json.readTree("""
+            {"answer":{"title":"Báo cáo cũ","summary":"Đã test 3/5 case.",
+             "observations":[{"text":"Có 1 case NG.","sourceRefs":["project:7"]}],
+             "suggestedActions":[],"missingInformation":["Chưa có hạn nghiệm thu."]},
+             "sources":[{"label":"Dự án","ref":"project:7"}]}
+            """);
+        var old=draft("READY");
+        var cached=new AiDraftStore.Draft(old.id(),old.projectId(),old.createdBy(),old.purpose(),old.sourceReference(),"feature-report-v2","READY",old.model(),content,null,old.createdAt(),old.expiresAt(),null,0);
+        when(drafts.findRequest(eq(7L),eq("pm"),eq(AiPurpose.PM_PROGRESS_REPORT),eq("project:7:feature:2"),eq(input.requestKey()),any(),eq(true))).thenReturn(cached);
+        assertThat((String)service.preview(7,"pm",input).get("markdown"))
+            .startsWith("# Báo cáo cũ\n\nĐã test 3/5 case.").contains("- Có 1 case NG.","- Chưa có hạn nghiệm thu.","- Dự án · project:7");
+        verifyNoInteractions(generator);
+    }
 }

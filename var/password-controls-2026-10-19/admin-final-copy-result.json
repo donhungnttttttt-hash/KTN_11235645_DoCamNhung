@@ -1,0 +1,11 @@
+{
+  "startedAt": "2026-10-19T09:02:43.021Z",
+  "finishedAt": "2026-10-19T09:02:51.512Z",
+  "task": "test",
+  "args": [
+    "src/app/features/admin/project-form-recovery.test.jsx",
+    "src/app/features/admin/admin-management.test.jsx",
+    "--maxWorkers=1"
+  ],
+  "exitCode": 0
+}

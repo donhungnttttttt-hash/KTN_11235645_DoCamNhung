@@ -1,0 +1,81 @@
+{
+  "testedAt": "2026-10-19T13:28:25.302Z",
+  "origin": "http://127.0.0.1:5173",
+  "futureRange": {
+    "from": "2026-10-21",
+    "to": "2026-10-21",
+    "total": 0
+  },
+  "sameDay": {
+    "from": "2026-10-19",
+    "to": "2026-10-19",
+    "total": 4,
+    "sort": "name-asc",
+    "order": [
+      "1",
+      "Dữ liệu cũ chưa phân đợt",
+      "Kiểm thử đăng nhập — Sprint 5",
+      "Test Regression tiêu chuẩn"
+    ]
+  },
+  "reversedRange": {
+    "focusedStart": true,
+    "message": "Ngày bắt đầu không được sau ngày kết thúc.",
+    "rows": 4
+  },
+  "clear": {
+    "dates": [
+      "",
+      ""
+    ],
+    "rows": 4,
+    "sort": "created-desc"
+  },
+  "keyword": [
+    "Kiểm thử đăng nhập — Sprint 5"
+  ],
+  "layouts": [
+    {
+      "bodyOverflow": false,
+      "filterOverflow": false,
+      "gridColumns": "248.533px",
+      "titleGap": 15.999996185302734,
+      "width": 320
+    },
+    {
+      "bodyOverflow": false,
+      "filterOverflow": false,
+      "gridColumns": "236.267px 236.267px",
+      "titleGap": 24.000003814697266,
+      "width": 768
+    },
+    {
+      "bodyOverflow": false,
+      "filterOverflow": false,
+      "gridColumns": "232.167px 154.783px 154.783px 154.8px",
+      "titleGap": 24.000003814697266,
+      "width": 1024
+    },
+    {
+      "bodyOverflow": false,
+      "filterOverflow": false,
+      "gridColumns": "370.833px 247.233px 247.233px 247.217px",
+      "titleGap": 24.000003814697266,
+      "width": 1440
+    }
+  ],
+  "featureFiles": {
+    "padding": "24px",
+    "nameWeight": "700",
+    "files": 2
+  },
+  "kanban": {
+    "padding": "24px",
+    "titleGap": 24.000003814697266
+  },
+  "console": [],
+  "screenshots": {
+    "desktop": "feature-filters-desktop.jpg",
+    "mobile": "NOT_CAPTURED: screenshot API timeout; responsive measured from DOM"
+  }
+}

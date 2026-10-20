@@ -1,0 +1,12 @@
+{
+  "startedAt": "2026-10-19T15:37:36.757Z",
+  "finishedAt": "2026-10-19T15:42:57.007Z",
+  "task": "test",
+  "args": [
+    "--maxWorkers=1",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=../var/ai-report-silver-2026-10-19/frontend-tests.json"
+  ],
+  "exitCode": 0
+}

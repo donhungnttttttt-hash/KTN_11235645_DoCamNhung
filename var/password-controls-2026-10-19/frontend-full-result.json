@@ -1,0 +1,9 @@
+{
+  "startedAt": "2026-10-19T08:54:32.586Z",
+  "finishedAt": "2026-10-19T09:00:33.783Z",
+  "task": "test",
+  "args": [
+    "--maxWorkers=1"
+  ],
+  "exitCode": 0
+}

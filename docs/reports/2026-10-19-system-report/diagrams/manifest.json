@@ -1,0 +1,72 @@
+[
+  {
+    "id": "01-context",
+    "title": "Ngữ cảnh hệ thống TMS",
+    "source": "AppEntry; FeatureController; AiProviderGateway; RedmineController. SHIFT/CAT là quy trình ngoài, không có tích hợp được chứng minh.",
+    "width": 1100,
+    "height": 650
+  },
+  {
+    "id": "02-architecture",
+    "title": "Kiến trúc ứng dụng hiện hành",
+    "source": "Backend/pom.xml; application.yml; SecurityConfig; FeatureService; AI gateway. Sơ đồ thành phần logic, không phải triển khai production.",
+    "width": 1100,
+    "height": 730
+  },
+  {
+    "id": "03-modules",
+    "title": "Phân rã chức năng TMS",
+    "source": "Frontend AppRouter/AdminApp và controller inventory. Không coi workflow legacy là nhóm thao tác mới.",
+    "width": 1100,
+    "height": 750
+  },
+  {
+    "id": "04-use-cases",
+    "title": "Use Case tiêu biểu theo vai trò",
+    "source": "Actor/ellipse/system boundary UML, association không hướng. TESTER chỉ tự nhận ở ca phân công; ADMIN/PM còn quyền quản trị Issue theo ma trận. Hình chọn các ca tiêu biểu, không phải sơ đồ bao hết mọi quyền.",
+    "width": 1100,
+    "height": 900
+  },
+  {
+    "id": "05-workflow",
+    "title": "Quy trình phân công và ghi nhận kiểm thử",
+    "source": "Clarification C03/C05/C06/C07; AssignmentPlan; FeatureService. Không có start/end execution hoặc cấp máy cho Tester.",
+    "width": 1100,
+    "height": 880
+  },
+  {
+    "id": "06-sequence-status",
+    "title": "Trình tự ghi Status thành công",
+    "source": "useDocumentResults → TestDocumentController → FeatureService → TestDocumentService. Nhánh401/403/409 nằm trong đặc tả; không tạo execution run.",
+    "width": 1100,
+    "height": 760
+  },
+  {
+    "id": "07-data-core",
+    "title": "Quan hệ dữ liệu kiểm thử cốt lõi",
+    "source": "ER logic có cardinality và khóa chọn lọc; V4/V13/V27/V31. FK thực tế gồm project scope; xem từ điển dữ liệu, không coi nhãn rút gọn là toàn bộ SQL.",
+    "width": 1100,
+    "height": 950
+  },
+  {
+    "id": "08-data-support",
+    "title": "Quan hệ Issue Note và báo cáo",
+    "source": "V7/V31. Context và history đều tham chiếu work_items; Note và report trực tiếp thuộc project. Chat/user/membership được trình bày trong từ điển dữ liệu.",
+    "width": 1100,
+    "height": 800
+  },
+  {
+    "id": "09-status",
+    "title": "Vòng Status trên giao diện",
+    "source": "ResultCycleButton và FeatureService.updateResult; C05. Không gọi đây là quy tắc cạnh chuyển bắt buộc ở backend.",
+    "width": 1100,
+    "height": 480
+  },
+  {
+    "id": "10-navigation",
+    "title": "Điều hướng màn hình hiện hành",
+    "source": "AppEntry; AppRouter; AdminApp. Đây là bản đồ điều hướng không phải ảnh chụp UI hoặc bằng chứng bấm nút.",
+    "width": 1100,
+    "height": 900
+  }
+]

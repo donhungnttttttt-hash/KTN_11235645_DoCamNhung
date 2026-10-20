@@ -16,6 +16,11 @@ const percent=value=>Number.isFinite(Number(value))?Math.max(0,Math.min(100,Numb
 const displayPercent=value=>Math.round(percent(value)*100)/100;
 const issueStatusLabel=value=>issueStatuses.find(status=>status.id===String(value).toLowerCase())?.label||value;
 const providerLabels={OPENAI_API:'API của hệ thống',CHATGPT:'ChatGPT cá nhân',OLLAMA:'Ollama local'};
+const reportAiError=(code,provider)=>code==='AI_INPUT_TOO_LARGE'
+  ?'Phạm vi báo cáo quá lớn. Chọn một Feature trong Phạm vi Feature rồi tạo lại gợi ý. Bản đang soạn được giữ nguyên.'
+  :code==='AI_INVALID_RESPONSE'
+  ?'AI chưa trả về nội dung báo cáo hợp lệ. Bản đang soạn được giữ nguyên; bạn có thể thử tạo lại hoặc tự nhập nội dung rồi lưu báo cáo.'
+  :aiError(code,provider);
 
 export function ManagementAnalysisPage({project:providedProject,api=managementReportsApi}){
   const context=useProject(),auth=useAuth();const project=providedProject===undefined?context?.currentProject:providedProject;
@@ -47,11 +52,13 @@ function ManagementWorkspace({project,api}){
   const [page,setPage]=useState(0),[reports,setReports]=useState(null),[listError,setListError]=useState(''),[listRevision,setListRevision]=useState(0);
   const [saved,setSaved]=useState(restored?.saved||null),[editor,setEditor]=useState(restored?.editor||initial),[baseline,setBaseline]=useState(restored?.baseline||initial),[busy,setBusy]=useState(false),[operation,setOperation]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState('');
   const [restoringSaved,setRestoringSaved]=useState(!!restored?.saved),[restoreRead,setRestoreRead]=useState({loading:!!restored?.saved}),[restoreRevision,setRestoreRevision]=useState(0);
-  const [proposal,setProposal]=useState(null),[previewBusy,setPreviewBusy]=useState(false),[previewPending,setPreviewPending]=useState(null),[previewError,setPreviewError]=useState('');
+  const [proposal,setProposal]=useState(null),[previewBusy,setPreviewBusy]=useState(false),[previewPending,setPreviewPending]=useState(null),[previewError,setPreviewError]=useState(''),[previewNotice,setPreviewNotice]=useState('');
   const [accessDenied,setAccessDenied]=useState('');
   const [reauthRetry,setReauthRetry]=useState(0),[reauthBusy,setReauthBusy]=useState(false),[reauthError,setReauthError]=useState('');
   const reauthGate=useRef({locked:false,retry:0});
   const lifetime=useRef(null),actionLock=useRef(false),previewLock=useRef(false),previewBody=useRef(null);
+  const editorCurrent=useRef(editor),editorRevision=useRef(0),previewEditorRevision=useRef(0);
+  editorCurrent.current=editor;
   function readError(failure,setMessage){if(failure.status===403)setAccessDenied('forbidden');else if(failure.status===401)setAccessDenied(current=>current==='forbidden'?current:'auth');else setMessage(failure.message);}
   useEffect(()=>{const abort=new AbortController();lifetime.current=abort;return()=>abort.abort();},[]);
   useEffect(()=>{
@@ -102,7 +109,8 @@ function ManagementWorkspace({project,api}){
   const selectedProvider=previewPending?.provider||providers?.selection?.provider;
   const aiUnavailable=!previewPending&&!providers?.ready;
   function permitDiscard(){return !dirty||window.confirm('Bản sửa chưa lưu. Bỏ bản sửa để chuyển nội dung?');}
-  function resetEditor(value=initial,document=null){drafts?.remove(project.id,entryId);setRestoreNotice(false);setRestoringSaved(false);setRestoreRead({});setSaved(document);setEditor({title:value.title,markdown:value.markdown});setBaseline({title:value.title,markdown:value.markdown});setProposal(null);setPreviewError('');setNotice('');setError('');}
+  function changeEditor(value){editorRevision.current++;editorCurrent.current=value;setEditor(value);}
+  function resetEditor(value=initial,document=null){drafts?.remove(project.id,entryId);setRestoreNotice(false);setRestoringSaved(false);setRestoreRead({});setSaved(document);changeEditor({title:value.title,markdown:value.markdown});setBaseline({title:value.title,markdown:value.markdown});setProposal(null);setPreviewError('');setPreviewNotice('');setNotice('');setError('');}
   function chooseFeature(value){if(locked||!permitDiscard())return;setFeatureId(value);resetEditor();}
   async function perform(action,message){
     if(actionLock.current)return;actionLock.current=true;setBusy(true);setOperation(message);setError('');setNotice('');const signal=lifetime.current.signal;
@@ -118,15 +126,22 @@ function ManagementWorkspace({project,api}){
   }
   async function preview(){
     if(previewLock.current||busy||!writable||!previewBody.current&&!providers?.ready)return;
-    previewLock.current=true;setPreviewBusy(true);setPreviewError('');const signal=lifetime.current.signal;
+    previewLock.current=true;setPreviewBusy(true);setPreviewError('');setPreviewNotice('');const signal=lifetime.current.signal;
+    if(!previewBody.current){previewEditorRevision.current=editorRevision.current;setProposal(null);}
     const body=previewBody.current||{featureId:featureId?Number(featureId):null,...providers.selection,requestKey:`report-${crypto.randomUUID()}`};previewBody.current=body;setPreviewPending(body);
     try{
       const value=await api.preview(project.id,body,{signal});if(signal.aborted)return;
-      if(value.state==='GENERATING')return;
-      if(value.state==='READY'&&typeof value.markdown==='string'){setProposal(value.markdown);setPreviewPending(null);previewBody.current=null;}
-      else if(value.state==='FAILED'){setPreviewPending(null);previewBody.current=null;setPreviewError(aiError(value.failureCode,body.provider));}
+      if(value?.state==='GENERATING')return;
+      if(value?.state==='READY'){
+        setPreviewPending(null);previewBody.current=null;
+        if(typeof value.markdown!=='string'||!value.markdown.trim())setPreviewError('AI trả về bản gợi ý không có nội dung. Bản đang soạn được giữ nguyên; bạn có thể tạo lại gợi ý.');
+        else if(editorCurrent.current.markdown===''&&editorRevision.current===previewEditorRevision.current){
+          changeEditor({...editorCurrent.current,markdown:value.markdown});setProposal(null);setPreviewNotice('Đã tạo nội dung AI vào bản soạn, chưa lưu. Kiểm tra và chỉnh sửa trước khi lưu báo cáo.');
+        }else{setProposal(value.markdown);setPreviewNotice('Đã tạo gợi ý AI bên dưới. Nội dung bạn đang soạn được giữ nguyên; chỉ thay khi bạn bấm Đưa vào bản soạn.');}
+      }
+      else if(value?.state==='FAILED'){setPreviewPending(null);previewBody.current=null;setPreviewError(reportAiError(value.failureCode,body.provider));}
       else setPreviewError('Chưa xác nhận được bản gợi ý. Kiểm tra lại cùng yêu cầu.');
-    }catch(failure){if(!signal.aborted){readError(failure,setPreviewError);const uncertain=['TIMEOUT','NETWORK_ERROR','AI_BUSY','AI_CREDENTIAL_STORE_FAILED'].includes(failure.code)||failure.status>=500;if(!uncertain){setPreviewPending(null);previewBody.current=null;}}}
+    }catch(failure){if(!signal.aborted){readError(failure,message=>setPreviewError(failure.code?.startsWith('AI_')?reportAiError(failure.code,body.provider):message));const uncertain=['TIMEOUT','NETWORK_ERROR','INVALID_RESPONSE','AI_BUSY','AI_CREDENTIAL_STORE_FAILED'].includes(failure.code)||failure.status>=500;if(!uncertain){setPreviewPending(null);previewBody.current=null;}}}
     finally{if(!signal.aborted){previewLock.current=false;setPreviewBusy(false);}}
   }
   function download(){if(!saved||busy)return;perform(async signal=>{const response=await api.download(project.id,saved.id,{signal});const blob=await response.blob();if(signal.aborted)return;const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`bao-cao-${saved.id}.md`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);setNotice('Đã tải bản báo cáo đã lưu.');},'Đang tải bản báo cáo đã lưu…');}
@@ -148,8 +163,9 @@ function ManagementWorkspace({project,api}){
         {restoringSaved&&restoreRead.conflict&&<p role="alert">Bản đã lưu đã thay đổi. Bản sửa của bạn vẫn được giữ. Mở lại báo cáo trong danh sách để xem bản mới; hãy sao chép phần cần giữ trước khi bỏ bản sửa.</p>}
         {restoringSaved&&restoreRead.error&&<div className="management-mode-notice"><p role="alert">{restoreRead.error} Bản sửa vẫn được giữ. Cần đối chiếu phiên bản trước khi lưu.</p><button type="button" className="cat-btn" onClick={()=>setRestoreRevision(value=>value+1)}>Đối chiếu lại bản đã lưu</button></div>}
         {writable&&<div className="management-ai-preview"><p>Nguồn AI: {providerLabels[selectedProvider]||'chưa chọn'} · {previewPending?.model||providers?.selection?.model||'chưa chọn model'}. Cấu hình nguồn trong chat AI.</p><button type="button" className="cat-btn" disabled={previewBusy||busy||aiUnavailable} aria-describedby={aiUnavailable?'management-ai-unavailable':undefined} onClick={preview}>{previewBusy?'Đang tạo gợi ý…':previewPending?'Kiểm tra gợi ý AI':'Tạo gợi ý AI'}</button>{aiUnavailable&&<p id="management-ai-unavailable" role="status">Nguồn AI chưa sẵn sàng. {providers?.loading?'Đang tải cấu hình AI.':providers?.error||aiError(providers?.provider?.reason||'AI_NOT_CONFIGURED',selectedProvider)} Mở chat AI → Cấu hình AI để kiểm tra. Bạn vẫn có thể soạn và lưu báo cáo thủ công.</p>}{previewError&&<p role="alert">{previewError}</p>}{previewPending&&!previewBusy&&<p role="status">Yêu cầu chưa kết thúc. Kiểm tra lại sẽ dùng cùng mã yêu cầu và nguồn AI.</p>}</div>}
-        {proposal!==null&&<section className="management-ai-proposal"><h3>Bản gợi ý AI chưa lưu</h3><SafeMarkdown markdown={proposal}/><button type="button" className="cat-btn" disabled={busy} onClick={()=>{setEditor(value=>({...value,markdown:proposal}));setProposal(null);}}>Đưa vào bản soạn</button></section>}
-        <form onSubmit={save}><fieldset disabled={busy||!writable}><label>Tiêu đề báo cáo<input required maxLength={200} value={editor.title} onChange={event=>setEditor({...editor,title:event.target.value})}/></label><label>Nội dung Markdown<textarea required rows={14} value={editor.markdown} onChange={event=>setEditor({...editor,markdown:event.target.value})}/></label></fieldset><div className="management-actions">{writable&&<button className="cat-btn cat-btn-mint" disabled={locked||restoreBlocked||!editor.title.trim()||!editor.markdown.trim()}>{operation==='Đang lưu báo cáo…'?'Đang lưu…':'Lưu báo cáo'}</button>}{saved&&<button type="button" className="cat-btn" disabled={busy} onClick={download}>Tải bản đã lưu</button>}</div></form>
+        {previewNotice&&<p role="status" aria-label="Kết quả tạo gợi ý AI">{previewNotice}</p>}
+        {proposal!==null&&<section className="management-ai-proposal"><h3>Bản gợi ý AI chưa lưu</h3><SafeMarkdown markdown={proposal}/><button type="button" className="cat-btn" disabled={locked} onClick={()=>{changeEditor({...editorCurrent.current,markdown:proposal});setProposal(null);setPreviewNotice('Đã đưa gợi ý vào bản soạn, chưa lưu. Kiểm tra và chỉnh sửa trước khi lưu báo cáo.');}}>Đưa vào bản soạn</button></section>}
+        <form onSubmit={save}><fieldset disabled={busy||!writable}><label>Tiêu đề báo cáo<input required maxLength={200} value={editor.title} onChange={event=>changeEditor({...editor,title:event.target.value})}/></label><label>Nội dung Markdown<textarea required rows={14} value={editor.markdown} onChange={event=>changeEditor({...editor,markdown:event.target.value})}/></label></fieldset><div className="management-actions">{writable&&<button className="cat-btn cat-btn-mint" disabled={locked||restoreBlocked||!editor.title.trim()||!editor.markdown.trim()}>{operation==='Đang lưu báo cáo…'?'Đang lưu…':'Lưu báo cáo'}</button>}{saved&&<button type="button" className="cat-btn" disabled={busy} onClick={download}>Tải bản đã lưu</button>}</div></form>
         {saved&&dirty&&<p>Bạn có thay đổi chưa lưu. File tải xuống là bản đã lưu trên máy chủ.</p>}<section className="management-markdown-preview" aria-label="Xem trước bản soạn"><h3>Xem trước bản soạn</h3><SafeMarkdown markdown={editor.markdown}/></section>
       </section></div>
     </section>

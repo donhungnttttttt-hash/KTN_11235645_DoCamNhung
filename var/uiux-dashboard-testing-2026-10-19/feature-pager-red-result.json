@@ -1,0 +1,11 @@
+{
+  "startedAt": "2026-10-19T13:25:42.094Z",
+  "finishedAt": "2026-10-19T13:25:44.297Z",
+  "task": "test",
+  "args": [
+    "src/app/features/testing/TestingFeaturesPage.test.jsx",
+    "-t",
+    "keeps pagination locked"
+  ],
+  "exitCode": 1
+}

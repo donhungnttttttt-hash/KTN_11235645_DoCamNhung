@@ -1,0 +1,9 @@
+{
+  "args": [
+    "src/app/features/admin/AdminHealthCharts.test.jsx",
+    "src/app/features/admin/admin.test.jsx"
+  ],
+  "startedAt": "2026-10-19T12:44:04.081Z",
+  "finishedAt": "2026-10-19T12:44:08.550Z",
+  "exitCode": 0
+}

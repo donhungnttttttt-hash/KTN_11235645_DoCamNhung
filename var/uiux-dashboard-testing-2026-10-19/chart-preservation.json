@@ -1,0 +1,12 @@
+{
+  "changed": [
+    "Frontend/src/app/features/admin/admin-health-charts.css",
+    "Frontend/src/app/features/admin/AdminHealthCharts.jsx",
+    "Frontend/src/app/features/admin/AdminHealthCharts.test.jsx"
+  ],
+  "added": [
+    "Frontend/src/app/features/admin/HealthResultChart.jsx"
+  ],
+  "backendUnchanged": true,
+  "missing": []
+}

@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import {MetricBars} from './MetricBars';
+import { AdminHealthCharts } from './AdminHealthCharts';
 import { adminApi } from '../../services/api/admin';
 import { useAdminRead, ReadState, ProjectTable, percent } from './shared';
 
@@ -38,5 +39,6 @@ export function AdminDashboard({projectId,api=adminApi}) {
       <div><h3>Máy quá hạn trả ({attention.overdueReturnCount??0})</h3>{attention.overdueReturns?.length?<ul>{attention.overdueReturns.map(a=><li key={a.id}><a href={`#/admin/devices?projectId=${a.projectId}`}>{a.assetCode} · {a.projectName}</a> — {a.expectedReturnOn}</li>)}</ul>:<p>Không có máy quá hạn trả.</p>}</div>
     </div></section>
     <p className="admin-definition">Đã test = (OK + NG + P + NA) / tổng case của file và Feature đang hoạt động. Tỷ lệ OK = OK / tổng case. File rỗng có tiến độ 0%. Đóng Issue không tự đổi Status case.</p>
+    <AdminHealthCharts overview={data} projectId={projectId} api={api}/>
   </>;
 }

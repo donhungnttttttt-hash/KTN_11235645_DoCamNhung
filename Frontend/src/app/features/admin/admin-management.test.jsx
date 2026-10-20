@@ -50,7 +50,7 @@ it('shows unassigned users, prevents self-disable and sends versioned PM delegat
 
 it('preserves project edits on conflict and refreshes version before retry',async()=>{
  const project={id:1,code:'AA',name:'Old',description:'',timezone:'UTC',version:1};
- const api={projects:vi.fn().mockResolvedValue({items:[{id:1,code:"AA",name:"Project Alpha"}],totalElements:1}),updateProject:vi.fn().mockRejectedValueOnce(new Error('Conflict')).mockResolvedValueOnce({id:1}),project:vi.fn().mockResolvedValue({...project,version:2})};
+ const api={projects:vi.fn().mockResolvedValue({items:[{id:1,code:"AA",name:"Project Alpha"}],totalElements:1}),updateProject:vi.fn().mockRejectedValueOnce(Object.assign(new Error('Conflict'),{status:409,code:'VERSION_CONFLICT'})).mockResolvedValueOnce({id:1}),project:vi.fn().mockResolvedValue({...project,version:2})};
  const onSaved=vi.fn();render(<AdminProjectForm project={project} api={api} onSaved={onSaved}/>);
  fireEvent.change(screen.getByLabelText('Tên dự án'),{target:{value:'Draft'}});
  fireEvent.click(screen.getByRole('button',{name:'Lưu dự án'}));await screen.findByText('Conflict');

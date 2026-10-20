@@ -1,0 +1,7 @@
+{
+  "startedAt": "2026-10-19T13:20:42.078Z",
+  "completedAt": "2026-10-19T13:21:22.171Z",
+  "exitCode": 1,
+  "schema": "tms_docstest_2060e04c986c",
+  "selected": "FeatureIntegrationTest#featureCreationDatesUseInclusiveVietnamDaysBeforeCountingAndPaging+featureCreationDateBoundsCanBeUsedIndependentlyAndCleared+featureSortUsesCreationDateAndStableTiesInsteadOfAssumingIdChronology+invalidFeatureFiltersReturnClearClientErrorsWithoutQueryingArbitrarySorts"
+}

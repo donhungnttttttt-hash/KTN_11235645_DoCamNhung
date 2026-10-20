@@ -13,6 +13,7 @@ const messages={
  AI_CONNECTION_CHANGED:'Kết nối đã thay đổi khi xử lý. Kết quả cũ không được lưu; kiểm tra lại kết nối.',
  AI_OAUTH_INVALID_GRANT:'Quyền đăng nhập ChatGPT không còn hợp lệ. Kết nối lại tài khoản.',
  AI_REQUEST_REJECTED:'Nguồn AI đã từ chối yêu cầu. Kiểm tra nội dung và model.',
+ AI_PAYMENT_REQUIRED:'Nguồn AI yêu cầu kiểm tra thanh toán hoặc hạn mức (HTTP 402). Kiểm tra tài khoản tại nhà cung cấp rồi thử lại.',
  AI_NOT_CONFIGURED:'Nguồn AI chưa được cấu hình. Liên hệ quản trị viên.',
  AI_DISABLED:'Nguồn AI chưa được bật. Liên hệ quản trị viên.',
  AI_CONNECT_REQUIRED:'Kết nối tài khoản ChatGPT trước khi sử dụng.',

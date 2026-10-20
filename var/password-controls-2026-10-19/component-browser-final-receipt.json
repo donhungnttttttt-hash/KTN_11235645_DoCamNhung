@@ -1,0 +1,46 @@
+{
+  "notesAddCancel": {
+    "active": "Thêm Note",
+    "editorPresent": false
+  },
+  "notesEditCancel": {
+    "active": "Sửa Note Note giả lập",
+    "editorPresent": false
+  },
+  "notesSaved": {
+    "active": "Sửa Note Note đã sửa giả lập",
+    "editorPresent": false,
+    "status": [
+      "Đã lưu Note."
+    ]
+  },
+  "handbookAddCancel": {
+    "active": "Thêm tài liệu",
+    "editorPresent": false
+  },
+  "handbookRevisionCancel": {
+    "active": "Thêm phiên bản",
+    "editorPresent": false
+  },
+  "handbookSaved": {
+    "active": "Thêm tài liệu",
+    "editorPresent": false,
+    "status": [
+      "Đã lưu tài liệu."
+    ]
+  },
+  "projectInvalid": {
+    "alerts": [
+      "Kiểm tra các trường bắt buộc được đánh dấu trước khi lưu dự án."
+    ],
+    "recoveryShown": false
+  },
+  "projectRecovery": {
+    "activeRole": "status",
+    "activeText": "Đã tải version hiện hành; bản nháp được giữ. Kiểm tra trước khi lưu lại.",
+    "alerts": [],
+    "projectName": "Bản nháp giả lập cần giữ",
+    "recoveryShown": false
+  },
+  "scope": "Production components + CSS, synthetic API; no business mutation"
+}

@@ -1,0 +1,24 @@
+{
+  "preservedFiles": 104,
+  "preservedChanged": [],
+  "unchangedBackend": true,
+  "verifiedTrackedProductChanges": [],
+  "changedTracked": [
+    "Frontend/src/app/features/admin/AdminProjectForm.jsx",
+    "Frontend/src/app/features/admin/admin-management.test.jsx",
+    "Frontend/src/app/features/ai/AiConnections.jsx",
+    "Frontend/src/app/features/ai/AiConnections.test.jsx",
+    "Frontend/src/app/features/auth/AccountMenu.jsx",
+    "Frontend/src/app/features/auth/AuthBoundary.jsx",
+    "Frontend/src/app/features/auth/auth.css",
+    "Frontend/src/app/features/auth/auth.test.jsx",
+    "Frontend/src/app/features/projects/HandbookPanel.jsx",
+    "Frontend/src/app/features/projects/ProjectNotes.jsx",
+    "Frontend/src/app/features/projects/ProjectNotes.test.jsx",
+    "Frontend/src/app/features/projects/handbook-editor-focus.test.jsx"
+  ],
+  "newSources": {
+    "Frontend/src/app/features/admin/project-form-recovery.test.jsx": "f48ecfbcb57bcff287055e0407743d9fc491ea3b25030b8009e1e2b9559a49f5",
+    "Frontend/src/app/features/auth/AccountMenu.pending.test.jsx": "3161c9cd1ff503409f5f06cc10e2e1aed42cd8b78c970ce336204c58e20be7a3"
+  }
+}

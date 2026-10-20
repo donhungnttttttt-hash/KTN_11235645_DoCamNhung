@@ -1,0 +1,22 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const {spawn} = require('node:child_process');
+const [name, task, ...args] = process.argv.slice(2);
+if (!/^[a-z0-9-]+$/.test(name || '') || !['test','build'].includes(task)) throw new Error('Expected evidence name, test/build, and arguments');
+const cwd = path.resolve(__dirname, '../../Frontend');
+const entry = task === 'test' ? 'node_modules/vitest/vitest.mjs' : 'node_modules/vite/bin/vite.js';
+const commandArgs = [entry, task === 'test' ? 'run' : 'build', ...args];
+const output = fs.createWriteStream(path.join(__dirname, `${name}.log`));
+const startedAt = new Date().toISOString();
+output.write(`node ${commandArgs.join(' ')}\nStarted: ${startedAt}\n`);
+const child = spawn(process.execPath, commandArgs, {cwd, env:{...process.env, NO_COLOR:'1', FORCE_COLOR:'0'}});
+child.stdout.pipe(output, {end:false});
+child.stderr.pipe(output, {end:false});
+child.on('error', error => {output.end(String(error)); process.exitCode=1;});
+child.on('close', code => {
+  const result = {startedAt, finishedAt:new Date().toISOString(), task, args, exitCode:code};
+  output.end(`\n${JSON.stringify(result)}\n`);
+  fs.writeFileSync(path.join(__dirname, `${name}-result.json`), `${JSON.stringify(result,null,2)}\n`);
+  console.log(JSON.stringify(result));
+  process.exitCode = code ?? 1;
+});

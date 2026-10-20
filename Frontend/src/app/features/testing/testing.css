@@ -1,52 +1,176 @@
-.testing-page{padding:1rem;min-width:0;max-width:100%}.testing-page .td-filter-row{flex-wrap:wrap}.testing-page label{display:flex;align-items:center;gap:.5rem}.testing-page input,.testing-page select,.testing-page textarea{border:1px solid var(--border-color,#cbd5e1);border-radius:.375rem;padding:.5rem;max-width:100%}.testing-fields{display:grid;gap:1rem;padding:1rem}.testing-fields label{display:grid;gap:.375rem}.testing-form{max-width:42rem;width:calc(100% - 2rem)}.testing-page .td-file-table{min-width:42rem;width:100%}.testing-page .td-file-table th,.testing-page .td-file-table td{padding:.75rem;text-align:left}.testing-progress{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}.testing-progress progress{max-width:12rem}.testing-assignment-scope{display:grid;grid-template-columns:minmax(10rem,1fr) minmax(10rem,2fr);gap:.75rem}.testing-assignment-scope textarea{width:100%}.testing-document .td-grid-scroll{max-height:65vh}.testing-document .td-case-grid{min-width:90rem}.testing-document .td-case-grid td{min-width:9rem;max-width:20rem;white-space:pre-wrap}.testing-document .td-case-grid th{min-width:9rem}.testing-document .td-result-cell{min-width:10rem}.testing-document .td-result-cell button{display:block;margin:.25rem 0}.testing-document .testing-case-text{border:0;background:none;text-align:left;white-space:pre-wrap;cursor:pointer;color:inherit;width:100%}.testing-document .testing-case-text:focus-visible{outline:2px solid currentColor;outline-offset:2px}@media(max-width:600px){.testing-page{padding:.75rem}.testing-assignment-scope{grid-template-columns:1fr}.testing-page .td-heading-row{align-items:flex-start;flex-direction:column}.testing-page .td-pagination{flex-wrap:wrap;gap:.75rem}.testing-page .td-filter-row input[type=search]{width:100%}}
+.testing-page { padding: 24px; min-width: 0; max-width: 100%; }
+/* Keep vertical breathing room even when global .cat-container loads later. */
+.cat-container.testing-list-page { padding-block: 24px; }
+.testing-page label { display: flex; align-items: center; gap: 8px; }
+.testing-page input, .testing-page select, .testing-page textarea {
+  min-height: 40px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-control-border, #8ba39e);
+  border-radius: var(--radius-control, 8px);
+  color: inherit;
+  background: var(--color-surface, #fff);
+  font: inherit;
+}
+.testing-page input[type="checkbox"] { min-height: 0; width: 18px; height: 18px; flex: none; }
+.testing-page input:focus-visible, .testing-page select:focus-visible, .testing-page textarea:focus-visible {
+  outline: 2px solid var(--color-focus-ring, #0f766e);
+  outline-offset: 2px;
+}
+.testing-page .td-heading-row { align-items: flex-start; gap: 24px; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--color-border-light); }
+.testing-page .td-heading-row h1, .testing-page .td-heading-row h2 { line-height: 1.35; overflow-wrap: anywhere; margin: 0; }
+.testing-page .td-heading-row p { margin: 8px 0 0; line-height: 1.6; }
+.testing-page .td-muted { color: var(--color-text-sub); }
+.testing-page .td-filter-row { flex-wrap: wrap; gap: 16px; }
+.testing-page .testing-list-filters { align-items: end; justify-content: flex-start; margin-bottom: 24px; padding: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-panel, 12px); background: var(--color-surface, #fff); }
+.testing-page .testing-list-filters .testing-search-field { display: grid; align-items: start; gap: 8px; flex: 0 1 360px; }
+.testing-page .testing-search-field input { width: 100%; }
+.testing-page .testing-list-filters .testing-checkbox { min-height: 40px; gap: 8px; margin-left: 8px; }
+.testing-page .testing-list-filters > button { margin-left: auto; }
+.testing-page .testing-back { flex: none; }
+.testing-feature-page > .testing-back { margin-bottom: 24px; }
+.testing-page .td-file-table { min-width: 46rem; width: 100%; }
+.testing-page .td-file-table th, .testing-page .td-file-table td { padding: 20px 16px; text-align: left; line-height: 1.5; }
+.testing-page .td-file-table th { color: var(--color-text-sub); background: var(--color-surface-subtle, #f6f9f8); font-weight: 600; }
+.testing-page .td-file-table td { vertical-align: middle; overflow-wrap: anywhere; }
+.testing-page .td-file-table td:first-child { width: 38%; }
+.testing-page .td-file-table .td-file-link { line-height: 1.6; font-weight: 700; font-size: var(--text-body); color: var(--color-mint); }
+.testing-page .td-file-link:hover, .testing-page .td-file-link:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+.testing-page .td-file-link:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 3px; border-radius: 2px; }
+.testing-page .td-file-table .td-muted { margin-top: 8px; }
+.testing-page .testing-created-at { margin: 8px 0 0; color: var(--color-text-sub); font-size: var(--text-caption); }
+.testing-page .td-file-table .td-sheet { margin: 8px 0 0; color: var(--color-text-sub); }
+.testing-page .td-file-table .testing-progress-column { min-width: 200px; width: 22%; padding-inline: 24px; }
+.testing-page .td-file-table .td-actions { gap: 8px; }
+.testing-page .td-pagination { margin-top: 24px; padding-top: 16px; gap: 16px; border-top: 1px solid var(--color-border-light); }
+.testing-page .td-pagination > div { gap: 12px; }
+.testing-fields { display: grid; gap: 16px; padding: 16px; line-height: 1.5; }
+.testing-fields label { display: grid; gap: 8px; }
+.testing-form { max-width: 42rem; width: calc(100% - 2rem); }
+.testing-page .testing-fields > section { padding: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-control, 8px); background: var(--color-surface-subtle, #f6f9f8); overflow-wrap: anywhere; }
+.testing-assignment-scope { display: grid; grid-template-columns: minmax(10rem, 1fr) minmax(10rem, 2fr); gap: 12px; }
+.testing-assignment-scope textarea { width: 100%; }
 
-.testing-document tr[aria-current=true]{outline:2px solid #2563eb;outline-offset:-2px;background:#eff6ff;}
-
-/* New testing routes reuse document dialogs without mounting legacy execution. */
-.testing-page .ex-modal{position:fixed;inset:0;z-index:1000;background:#0f172a88;display:flex;align-items:center;justify-content:center;padding:1rem;box-sizing:border-box}
-.testing-page .ex-modal .td-case-dialog{max-height:calc(100dvh - 2rem)}
-.testing-page .ex-modal .td-case-dialog>header{flex-shrink:0}
-.testing-page .testing-form .testing-fields{overflow-y:auto;min-height:0}
-
-/* Scoped finishing for the active Feature and document routes. */
-.testing-page .td-heading-row h1,.testing-page .td-heading-row h2{line-height:1.35;overflow-wrap:anywhere}
-.testing-page .td-heading-row{padding-bottom:12px;border-bottom:1px solid #d8e6e1;gap:12px}
-.testing-page .td-filter-row{gap:12px;padding:12px;border:1px solid #d8e6e1;border-radius:var(--radius-panel,12px);background:#f8fbfa}
-.testing-page input,.testing-page select,.testing-page textarea{border-radius:var(--radius-control,8px);font:inherit;color:inherit}
-.testing-page input:focus-visible,.testing-page select:focus-visible,.testing-page textarea:focus-visible{outline:2px solid #0f766e;outline-offset:2px}
-.testing-page .td-file-table th{padding-block:12px;line-height:1.4}
-.testing-page .td-file-table td{line-height:1.5;overflow-wrap:anywhere}
-.testing-progress{padding:12px 14px;border:1px solid #d8e6e1;border-radius:var(--radius-control,8px);background:#f4faf8;line-height:1.5}
-.testing-progress progress{accent-color:#147e75;flex:1 1 100px;min-width:0}
-.testing-document .td-case-grid .testing-case-text{overflow-wrap:anywhere;line-height:1.55}
-.testing-document .td-case-grid .testing-case-text:hover{color:#096d62;text-decoration:underline;text-underline-offset:3px}
-.testing-document .td-case-grid tbody .td-sticky-id{top:auto;z-index:1;max-width:20rem;vertical-align:top;padding:5px 6px;background:#fff;font-weight:400;white-space:pre-wrap}
-.testing-document .td-case-grid tbody tr:nth-child(even)>.td-sticky-id{background:#f3f9f8}
-.testing-document .td-case-grid tbody tr:hover>.td-sticky-id{background:#edf7f5}
-.testing-page .td-case-dialog{border-radius:var(--radius-panel,12px);overflow:hidden}
-.testing-page .td-case-dialog>header{gap:12px;flex-wrap:wrap}
-.testing-page .td-case-dialog>header h2{min-width:0;overflow-wrap:anywhere;font-size:var(--text-section,18px)}
-.testing-page .testing-fields{gap:16px;line-height:1.5}
-.testing-page .testing-fields>section{padding:12px;border:1px solid #bfd9d0;border-radius:var(--radius-control,8px);background:#f5faf8;overflow-wrap:anywhere}
-.testing-page .td-assignment-history td:nth-child(2),.testing-page .td-assignment-history td:nth-child(3){background:transparent;color:inherit}
-.testing-page .td-assignment-history tbody tr:nth-child(even){background:#f5faf8}
-@media(max-width:600px){.testing-page .td-filter-row{padding:10px}.testing-page .td-case-dialog>header{padding:12px}.testing-page .testing-form{width:100%}.testing-progress{gap:8px}}
-
-/* The active document consumes the workspace remainder; only its grid scrolls vertically. */
-.document-focus .testing-document{display:flex;flex-direction:column;min-height:0;height:auto}
-.document-focus .testing-document>:not(.td-grid-scroll){flex-shrink:0}
-.document-focus .testing-document>.td-grid-scroll{flex:1 1 auto;min-height:0;height:auto;max-height:none}
-.document-focus .testing-document>.td-sheet-toolbar{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;max-width:100%;gap:12px}
-.document-focus .testing-document>.td-sheet-toolbar>*{flex-shrink:0}
-.document-focus .testing-document .testing-progress{flex-wrap:nowrap;padding:8px 10px}
-.document-focus .testing-document .testing-progress strong{white-space:nowrap}
-.document-focus .testing-document .td-filter-row{flex-wrap:nowrap;margin:0;padding:8px 10px}
-.document-focus .testing-document .td-filter-row label{flex-shrink:0;white-space:nowrap}
-.document-focus .testing-document .td-filter-row input[type=search]{width:180px}
-.document-focus .testing-document .td-toolbar-pagination{flex-wrap:nowrap;width:auto;margin:0;padding:0;border:0}
-.document-focus .testing-document .td-toolbar-pagination>span{margin:0;white-space:nowrap}
-.document-focus .testing-document .td-toolbar-pagination label{white-space:nowrap}
-@media(max-height:500px){
- .document-focus .testing-document>.td-grid-scroll{flex:none;min-height:240px;height:60dvh;max-height:none}
+.testing-feature-filters { margin-bottom: 24px; padding: 20px; border: 1px solid var(--color-border); border-radius: var(--radius-panel); background: var(--color-surface); }
+.testing-feature-filter-fields { display: grid; grid-template-columns: minmax(220px, 1.5fr) repeat(3, minmax(150px, 1fr)); gap: 16px; }
+.testing-page .testing-feature-filter-fields label { display: grid; align-content: start; gap: 8px; min-width: 0; font-weight: 600; }
+.testing-feature-filter-fields input, .testing-feature-filter-fields select { width: 100%; font-weight: 400; }
+.testing-feature-filter-footer { display: flex; align-items: end; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 16px; }
+.testing-feature-filter-footer .testing-checkbox { min-height: 40px; }
+.testing-feature-filter-footer .td-muted { margin: 4px 0 0; }
+.testing-feature-filter-footer .td-actions { gap: 8px; }
+.testing-feature-filters > .td-error { margin-top: 12px; }
+@media (max-width: 1000px) {
+  .testing-feature-filter-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+/* File detail has a quiet heading and groups controls above the scrolling case grid. */
+.testing-document { padding: 16px; }
+.testing-document > .td-sheet-title { align-items: center; flex-wrap: wrap; gap: 16px; padding: 16px 0 20px; background: transparent; color: var(--color-text-main); }
+.testing-document > .td-sheet-title h2 { margin: 0; min-width: 200px; font-size: var(--text-section, 18px); line-height: 1.5; font-weight: 600; }
+.testing-document > .td-sheet-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 24px; padding: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-panel, 12px) var(--radius-panel, 12px) 0 0; background: var(--color-surface, #fff); }
+.testing-document .testing-progress { grid-column: 1 / -1; display: flex; gap: 24px; align-items: center; flex-wrap: wrap; padding-bottom: 16px; border-bottom: 1px solid var(--color-border-light); }
+.testing-document .testing-progress > .test-progress { flex: 0 1 240px; min-width: 180px; }
+.testing-document .testing-progress-actions, .testing-document .testing-file-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.testing-document .testing-progress-actions { margin-left: auto; }
+.testing-document .td-sheet-toolbar .td-filter-row { justify-content: flex-start; gap: 12px; margin: 0; padding: 0; border: 0; background: transparent; }
+.testing-document .td-sheet-toolbar .td-filter-row label { gap: 8px; white-space: nowrap; }
+.testing-document .td-sheet-toolbar input[type="search"] { width: 180px; }
+.testing-document .td-sheet-toolbar .cat-btn { min-height: 40px; padding: 8px 12px; font-size: var(--text-table, 14px); }
+.testing-document .td-toolbar-pagination { justify-content: flex-start; flex-wrap: wrap; width: auto; padding: 0; margin: 0; border: 0; gap: 8px 12px; }
+.testing-document .td-toolbar-pagination > span { margin: 0; white-space: nowrap; }
+.testing-document .td-toolbar-pagination label { white-space: nowrap; }
+.testing-document > .td-source-note { padding: 12px 16px; line-height: 1.6; color: var(--color-text-sub); background: var(--color-surface-subtle, #f6f9f8); border: 1px solid var(--color-border); border-top: 0; }
+.testing-document > [role="status"] { margin: 8px 0; }
+.testing-document > [role="status"]:empty { display: none; }
+.testing-document .td-grid-scroll { max-height: 65vh; border: 1px solid var(--color-border); border-top: 0; }
+.testing-document .td-case-grid { min-width: 90rem; }
+.testing-document .td-case-grid td { min-width: 9rem; max-width: 20rem; white-space: pre-wrap; padding: 12px; }
+.testing-document .td-case-grid th { min-width: 9rem; padding: 12px; line-height: 1.5; }
+.testing-document .testing-case-text { border: 0; background: none; text-align: left; white-space: pre-wrap; cursor: pointer; color: inherit; width: 100%; overflow-wrap: anywhere; line-height: 1.6; }
+.testing-document .testing-case-text:focus-visible { outline: 2px solid var(--color-focus-ring, #0f766e); outline-offset: 2px; }
+.testing-document .testing-case-text:hover { color: var(--color-mint); text-decoration: underline; text-underline-offset: 3px; }
+.testing-document .td-case-grid tbody .td-sticky-id { top: auto; z-index: 1; max-width: 20rem; vertical-align: top; padding: 12px; background: #fff; font-weight: 400; white-space: pre-wrap; }
+.testing-document .td-case-grid tbody tr:nth-child(even) > .td-sticky-id { background: #f3f9f8; }
+.testing-document .td-case-grid tbody tr:hover > .td-sticky-id { background: #edf7f5; }
+.testing-document tr[aria-current="true"] { outline: 2px solid var(--color-focus-ring, #0f766e); outline-offset: -2px; background: var(--color-mint-light); }
+
+/* Keep all three case actions aligned and use the chosen five colors as accents. */
+.testing-document .td-case-grid .testing-result-heading { text-align: center; }
+.testing-document .td-case-grid .td-result-cell { min-width: 11rem; vertical-align: middle; text-align: center; white-space: normal; }
+.testing-document .testing-result-actions { display: flex; flex-direction: column; align-items: stretch; gap: 8px; width: min(100%, 148px); margin-inline: auto; }
+.testing-document .testing-result-actions > button { width: 100%; max-width: none; margin: 0; min-height: 40px; justify-content: center; text-align: center; }
+.testing-document .testing-result-actions .td-result {
+  --testing-result-accent: var(--color-result-not-run);
+  display: inline-flex;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--testing-result-accent) 35%, var(--color-border));
+  border-radius: var(--radius-control, 8px);
+  background: color-mix(in srgb, var(--testing-result-accent) 9%, white);
+  color: var(--color-text-main, #333);
+  font-size: var(--text-table, 14px);
+  font-weight: 600;
+  line-height: 1.5;
+}
+.testing-document .testing-result-actions .td-result::before { content: ''; width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--testing-result-accent); }
+.testing-document .testing-result-actions .td-result-ok { --testing-result-accent: var(--color-result-ok); }
+.testing-document .testing-result-actions .td-result-ng { --testing-result-accent: var(--color-result-ng); }
+.testing-document .testing-result-actions .td-result-pending { --testing-result-accent: var(--color-result-pending); }
+.testing-document .testing-result-actions .td-result-na { --testing-result-accent: var(--color-result-na); }
+.testing-document .testing-result-actions .td-result-unexecuted { background: var(--color-result-not-run); color: var(--color-result-not-run-text); border-color: var(--color-result-not-run); }
+.testing-document .testing-result-actions .td-result-unexecuted::before { border: 1px solid currentColor; }
+.testing-document .testing-result-actions .td-result:disabled { border-style: dashed; opacity: .8; cursor: not-allowed; }
+.testing-document .testing-result-actions .td-result-history { display: inline-flex; align-items: center; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-control, 8px); background: var(--color-surface, #fff); color: var(--color-text-sub); font-size: var(--text-caption, 12px); line-height: 1.5; }
+.testing-document .testing-result-actions .td-result-history:hover:not(:disabled) { background: var(--color-surface-subtle); border-color: var(--color-control-border); }
+.testing-document .testing-result-actions .case-issue-button { display: inline-flex; align-items: center; padding: 8px 12px; }
+.testing-document .testing-result-actions > button:focus-visible { outline: 2px solid var(--color-focus-ring, #0f766e); outline-offset: 2px; }
+
+/* Current testing routes use these dialogs without mounting the retired execution flow. */
+.testing-page .ex-modal { position: fixed; inset: 0; z-index: 1000; background: #0f172a88; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; }
+.testing-page .ex-modal .td-case-dialog { max-height: calc(100dvh - 2rem); }
+.testing-page .ex-modal .td-case-dialog > header { flex-shrink: 0; }
+.testing-page .testing-form .testing-fields { overflow-y: auto; min-height: 0; }
+.testing-page .td-case-dialog { border-radius: var(--radius-panel, 12px); overflow: hidden; }
+.testing-page .td-case-dialog > header { gap: 12px; flex-wrap: wrap; }
+.testing-page .td-case-dialog > header h2 { min-width: 0; overflow-wrap: anywhere; font-size: var(--text-section, 18px); }
+.testing-page .td-assignment-history td:nth-child(2), .testing-page .td-assignment-history td:nth-child(3) { background: transparent; color: inherit; }
+.testing-page .td-assignment-history tbody tr:nth-child(even) { background: var(--color-surface-subtle); }
+
+/* In focused file view, only the case grid uses the remaining vertical space. */
+.document-focus .testing-document { display: flex; flex-direction: column; min-height: 0; height: auto; }
+.document-focus .testing-document > :not(.td-grid-scroll) { flex-shrink: 0; }
+.document-focus .testing-document > .td-grid-scroll { flex: 1 1 auto; min-height: 0; height: auto; max-height: none; }
+@media (max-width: 1280px) {
+  .testing-document > .td-sheet-toolbar { display: flex; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; max-width: 100%; gap: 24px; }
+  .testing-document > .td-sheet-toolbar > * { flex-shrink: 0; }
+  .testing-document .testing-progress { flex-wrap: nowrap; gap: 16px; padding: 0 24px 0 0; border-bottom: 0; border-right: 1px solid var(--color-border); }
+  .testing-document .testing-progress > .test-progress { flex: 0 0 180px; }
+  .testing-document .testing-progress-actions, .testing-document .testing-file-actions, .testing-document .td-sheet-toolbar .td-filter-row, .testing-document .td-toolbar-pagination { flex-wrap: nowrap; }
+  .testing-document .testing-progress-actions .cat-btn, .testing-document .testing-file-actions .cat-btn { white-space: nowrap; }
+}
+@media (max-width: 600px) {
+  .testing-page { padding: 12px; }
+  .cat-container.testing-list-page { padding-block: 16px; }
+  .testing-feature-filters { padding: 16px; }
+  .testing-feature-filter-fields { grid-template-columns: minmax(0, 1fr); }
+  .testing-feature-filter-footer { align-items: stretch; }
+  .testing-feature-filter-footer .td-actions { width: 100%; }
+  .testing-feature-filter-footer .td-actions > button { flex: 1 1 auto; min-height: 44px; }
+  .testing-assignment-scope { grid-template-columns: 1fr; }
+  .testing-page .td-heading-row { align-items: flex-start; flex-direction: column; gap: 16px; padding-bottom: 16px; margin-bottom: 16px; }
+  .testing-page .td-pagination { flex-wrap: wrap; gap: 12px; }
+  .testing-page .testing-list-filters { padding: 12px; gap: 12px; }
+  .testing-page .testing-list-filters .testing-search-field { flex-basis: 100%; }
+  .testing-page .testing-list-filters .testing-checkbox { margin-left: 0; }
+  .testing-page .td-case-dialog > header { padding: 12px; }
+  .testing-page .testing-form { width: 100%; }
+  .testing-document > .td-sheet-title { padding: 8px 0 16px; gap: 12px; }
+  .testing-document > .td-sheet-title h2 { flex-basis: 100%; font-size: var(--text-body, 16px); }
+  .testing-document > .td-sheet-toolbar { padding: 12px; }
+  .testing-document .td-sheet-toolbar .cat-btn { min-height: 44px; }
+}
+@media (max-height: 500px) {
+  .document-focus .testing-document > .td-grid-scroll { flex: none; min-height: 240px; height: 60dvh; max-height: none; }
+}

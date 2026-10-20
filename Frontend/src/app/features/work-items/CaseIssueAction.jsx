@@ -6,6 +6,7 @@ import {FeatureIssueForm} from './FeatureIssueForm';
 import {FeatureIssueDetail} from './FeatureIssueDetail';
 import {featureIssuesApi} from '../../services/api/featureIssues';
 import './feature-issues.css';
+import './case-issue-action.css';
 
 export function CaseIssueAction({projectId,featureId,documentId,row,refresh,api=featureIssuesApi,canCreate=true}) {
  const visible=useContext(DialogVisibilityContext);

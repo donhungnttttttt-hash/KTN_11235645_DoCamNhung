@@ -18,6 +18,28 @@ vi.mock('../features/testing/TestingFeaturePage',()=>({TestingFeaturePage:({proj
 vi.mock('../features/testing/TestingDocumentPage',()=>({TestingDocumentPage:({projectId,featureId,documentId,caseId,onBack,renderIssueAction})=><><p>Document {projectId}/{featureId}/{documentId} Case {caseId}</p><button onClick={onBack}>Document Back</button>{renderIssueAction({projectId,featureId,documentId,row:{rowId:1001},document:{canCreateIssue:state.canCreateIssue}})}</>}));
 vi.mock('../features/work-items/CaseIssueAction',()=>({CaseIssueAction:({canCreate})=><p>Issue create {String(canCreate)}</p>}));
 beforeEach(()=>{state.project={id:1,name:'A',projectRole:'PM'};state.roles=['PM'];state.canCreateIssue=true;});
+it('keeps document detail focused while retaining its scoped back action',()=>{
+ const navigate=vi.fn(),view=render(<AppRouter activeRoute='/board/testing' navigate={navigate}/>);
+ expect(screen.getByRole('navigation',{name:'Các khu vực Bảng công việc'})).toBeVisible();
+ view.rerender(<AppRouter activeRoute='/board/testing/features/42/documents/7?projectId=1' navigate={navigate}/>);
+ expect(screen.queryByRole('navigation',{name:'Các khu vực Bảng công việc'})).not.toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'Document Back'}));
+ expect(navigate).toHaveBeenCalledWith('/board/testing/features/42?projectId=1');
+});
+it.each([false,true])('lets Admin return home from the project sidebar when collapsed=%s',collapsed=>{
+ state.roles=['ADMIN'];const onClose=vi.fn();
+ render(<Sidebar activeRoute='/dashboard' navigate={vi.fn()} collapsed={collapsed} onClose={onClose} onToggle={vi.fn()}/>);
+ const back=screen.getByRole('link',{name:'Quay lại Tổng quan hệ thống'});
+ expect(back).toHaveAttribute('href','#/admin');fireEvent.click(back);expect(onClose).toHaveBeenCalledOnce();
+});
+it.each(['PM','TESTER','DEV'])('does not offer Admin home to %s',role=>{
+ state.roles=[role];render(<Sidebar activeRoute='/dashboard' navigate={vi.fn()} collapsed={false} onToggle={vi.fn()}/>);
+ expect(screen.queryByRole('link',{name:'Quay lại Tổng quan hệ thống'})).not.toBeInTheDocument();
+});
+it('offers Admin return within the mobile navigation dialog',()=>{
+ state.roles=['ADMIN'];render(<Sidebar activeRoute='/dashboard' navigate={vi.fn()} collapsed overlayOpen onToggle={vi.fn()}/>);
+ expect(within(screen.getByRole('dialog',{name:'Menu dự án'})).getByRole('link',{name:'Quay lại Tổng quan hệ thống'})).toHaveAttribute('href','#/admin');
+});
 it('FR05 dispatches Feature routes before the generic board and preserves scoped Back targets',()=>{
  const navigate=vi.fn(),view=render(<AppRouter activeRoute='/board/testing' navigate={navigate}/>);fireEvent.click(screen.getByRole('button',{name:'Features 1'}));expect(navigate).toHaveBeenCalledWith('/board/testing/features/42?projectId=1');
  view.rerender(<AppRouter activeRoute='/board/testing/features/42?projectId=1' navigate={navigate}/>);fireEvent.click(screen.getByRole('button',{name:'Open file'}));expect(navigate).toHaveBeenLastCalledWith('/board/testing/features/42/documents/7?projectId=1');

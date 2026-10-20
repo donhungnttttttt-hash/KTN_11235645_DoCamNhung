@@ -65,3 +65,37 @@ it.each(['expired','unavailable'])('clears an obsolete provider error after succ
  expect(screen.queryByRole('alert')).toBeNull();
  expect(screen.queryByText('private transport detail')).toBeNull();
 });
+it.each(['GENERATING','TIMEOUT','AI_UNAVAILABLE','AI_INTERRUPTED','AI_BUSY','AI_CREDENTIAL_STORE_FAILED'])('locks probe scope and connection mutations until an unresolved %s probe settles with its original body',async outcome=>{
+ api.probe=vi.fn().mockResolvedValue({state:'READY'});
+ if(outcome==='TIMEOUT')api.probe.mockRejectedValueOnce(Object.assign(new Error('private transport detail'),{code:'TIMEOUT'}));
+ else if(outcome==='GENERATING')api.probe.mockResolvedValueOnce({state:'GENERATING'});
+ else api.probe.mockRejectedValueOnce(Object.assign(new Error('private settlement detail'),{status:422,code:outcome}));
+ api.disconnect=vi.fn();api.authorize=vi.fn();const popup=vi.spyOn(window,'open').mockReturnValue(null);
+ render(<AiProviderProvider api={api}><AiSourceSelector connectionsOnly/></AiProviderProvider>);
+ await waitFor(()=>expect(screen.getByLabelText('Nguồn AI')).toBeEnabled());
+ fireEvent.change(screen.getByLabelText('Nguồn AI'),{target:{value:'CHATGPT'}});
+ const probe=await screen.findByRole('button',{name:/Kiểm tra kết nối model/});await waitFor(()=>expect(probe).toBeEnabled());fireEvent.click(probe);
+ const retry=await screen.findByRole('button',{name:/Kiểm tra lại kết nối/});await waitFor(()=>expect(retry).toBeEnabled());
+ expect(screen.getByLabelText('Nguồn AI')).toBeDisabled();expect(screen.getByLabelText('Model AI')).toBeDisabled();
+ for(const name of ['Ngắt kết nối','Kết nối lại ChatGPT','Đổi tài khoản ChatGPT']){const mutation=screen.getByRole('button',{name});expect(mutation).toBeDisabled();fireEvent.click(mutation);}
+ fireEvent.change(screen.getByLabelText('Model AI'),{target:{value:'b'}});fireEvent.change(screen.getByLabelText('Nguồn AI'),{target:{value:'OLLAMA'}});
+ expect(screen.getByLabelText('Nguồn AI')).toHaveValue('CHATGPT');expect(screen.getByLabelText('Model AI')).toHaveValue('a');
+ fireEvent.click(retry);await waitFor(()=>expect(api.probe).toHaveBeenCalledTimes(2));
+ expect(api.probe.mock.calls[0][0]).toBe('c1');expect(api.probe.mock.calls[0][1]).toMatchObject({model:'a',requestKey:expect.any(String)});
+ expect(api.probe.mock.calls[1].slice(0,2)).toEqual(api.probe.mock.calls[0].slice(0,2));
+ await waitFor(()=>expect(screen.getByLabelText('Nguồn AI')).toBeEnabled());
+ fireEvent.change(screen.getByLabelText('Model AI'),{target:{value:'b'}});expect(screen.getByLabelText('Model AI')).toHaveValue('b');
+ expect(api.disconnect).not.toHaveBeenCalled();expect(api.authorize).not.toHaveBeenCalled();expect(popup).not.toHaveBeenCalled();
+});
+it.each([{outcome:'FAILED',failureCode:'AI_INVALID_MODEL'},{outcome:'REJECTED',failureCode:'AI_INVALID_MODEL'},{outcome:'FAILED',failureCode:'AI_UNAVAILABLE'},{outcome:'FAILED',failureCode:'AI_INTERRUPTED'}])('releases a terminal $outcome $failureCode probe so a corrected model starts an explicit new request',async({outcome,failureCode})=>{
+ api.probe=vi.fn().mockResolvedValue({state:'READY'});
+ if(outcome==='REJECTED')api.probe.mockRejectedValueOnce(Object.assign(new Error('invalid model'),{status:422,code:failureCode}));
+ else api.probe.mockResolvedValueOnce({state:'FAILED',failureCode});
+ render(<AiProviderProvider api={api}><AiSourceSelector connectionsOnly/></AiProviderProvider>);
+ await waitFor(()=>expect(screen.getByLabelText('Nguồn AI')).toBeEnabled());fireEvent.change(screen.getByLabelText('Nguồn AI'),{target:{value:'CHATGPT'}});
+ const probe=await screen.findByRole('button',{name:/Kiểm tra kết nối model/});await waitFor(()=>expect(probe).toBeEnabled());fireEvent.click(probe);
+ await waitFor(()=>expect(api.probe).toHaveBeenCalledTimes(1));await waitFor(()=>expect(screen.getByLabelText('Model AI')).toBeEnabled());
+ expect(screen.queryByRole('button',{name:/Kiểm tra lại kết nối/})).toBeNull();expect(screen.getByRole('button',{name:'Ngắt kết nối'})).toBeEnabled();
+ fireEvent.change(screen.getByLabelText('Model AI'),{target:{value:'b'}});fireEvent.click(screen.getByRole('button',{name:/Kiểm tra kết nối model/}));
+ await waitFor(()=>expect(api.probe).toHaveBeenCalledTimes(2));expect(api.probe.mock.calls[1][1].model).toBe('b');expect(api.probe.mock.calls[1][1].requestKey).not.toBe(api.probe.mock.calls[0][1].requestKey);
+});

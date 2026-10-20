@@ -14,7 +14,7 @@ export function LoginForm() {
   async function submit(event) {
     event.preventDefault();
     if (busy) return;
-    setBusy(true); setError("");
+    setBusy(true); setError(""); setVisible(false);
     try { await login({ username: username.trim(), password }); }
     catch (failure) { setError(failure.message); }
     finally { setBusy(false); setPassword(""); }
@@ -29,7 +29,7 @@ export function LoginForm() {
       <label htmlFor="auth-password">Mật khẩu</label>
       <div className="auth-password">
         <input id="auth-password" name="password" type={visible ? "text" : "password"} autoComplete="current-password" required maxLength={128} value={password} onChange={e => setPassword(e.target.value)} disabled={busy} />
-        <button type="button" aria-label={visible ? "Ẩn mật khẩu" : "Hiện mật khẩu"} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={18}/> : <Eye size={18}/>}</button>
+        <button type="button" aria-label={visible ? "Ẩn mật khẩu" : "Hiện mật khẩu"} aria-controls="auth-password" disabled={busy} onClick={() => setVisible(current => !current)}>{visible ? <EyeOff size={18} aria-hidden="true"/> : <Eye size={18} aria-hidden="true"/>}</button>
       </div>
       {error && <p className="auth-error" role="alert">{error}</p>}
       <button className="auth-submit" disabled={busy} type="submit">{busy ? <><LoaderCircle size={17} className="auth-spin"/> Đang đăng nhập…</> : <>Đăng nhập <ArrowRight size={17}/></>}</button>

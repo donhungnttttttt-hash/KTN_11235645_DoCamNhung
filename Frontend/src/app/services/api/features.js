@@ -6,7 +6,7 @@ async function write(path,body,method='POST') {
   return apiRequest(path,{method,headers:{[csrf.headerName]:csrf.token},...(body?{body:JSON.stringify(body)}:{})});
 }
 export const featuresApi={
-  list:(p,{page=0,keyword='',archived=false}={})=>apiRequest(`${base(p)}/features?${new URLSearchParams({page:String(page),size:'20',keyword,archived:String(archived)})}`),
+  list:(p,{page=0,keyword='',archived=false,createdFrom='',createdTo='',sort='created-desc'}={})=>apiRequest(`${base(p)}/features?${new URLSearchParams({page:String(page),size:'20',keyword,archived:String(archived),sort,...(createdFrom?{createdFrom}:{}),...(createdTo?{createdTo}:{})})}`),
   get:(p,f)=>apiRequest(`${base(p)}/features/${f}`),
   create:(p,input)=>write(`${base(p)}/features`,input),
   update:(p,f,input)=>write(`${base(p)}/features/${f}`,input,'PUT'),

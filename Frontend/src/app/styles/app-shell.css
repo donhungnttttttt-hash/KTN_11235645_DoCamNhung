@@ -167,6 +167,24 @@
   transition:background-color var(--motion-fast) ease;
 }
 .app-sidebar-toggle button:hover { background:var(--color-sidebar-hover); }
+.app-sidebar-toggle-admin { justify-content:space-between; gap:8px; }
+.sidebar-admin-return {
+  display:inline-flex; align-items:center; gap:8px; min-height:36px;
+  padding:6px 8px; border-radius:var(--radius-control); color:#fff;
+  font-size:var(--text-table); font-weight:600; text-decoration:none;
+  transition:background-color var(--motion-fast) ease;
+}
+.sidebar-admin-return svg { flex-shrink:0; }
+.sidebar-admin-return:hover { background:var(--color-sidebar-hover); color:#fff; }
+.sidebar-admin-return:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
+@media (min-width:641px) {
+  .sidebar-collapsed .app-sidebar-toggle-admin { height:auto; flex-direction:column; gap:2px; padding-block:6px; }
+  .sidebar-collapsed .sidebar-admin-return span { display:none; }
+}
+@media (max-width:640px) {
+  .sidebar-collapsed .app-sidebar .app-sidebar-toggle-admin { justify-content:space-between; }
+  .sidebar-admin-return,.app-sidebar-toggle .sidebar-mobile-close { min-height:44px; min-width:44px; }
+}
 .app-sidebar nav {
   flex: 1;
   overflow-y: auto;

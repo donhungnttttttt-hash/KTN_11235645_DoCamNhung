@@ -1,0 +1,12 @@
+{
+  "startedAt": "2026-10-19T12:46:04.301Z",
+  "finishedAt": "2026-10-19T12:46:14.050Z",
+  "task": "test",
+  "args": [
+    "src/app/routes/fixreports-navigation.test.jsx",
+    "src/app/routes/sidebar-groups.test.jsx",
+    "src/app/layouts/MainLayout.navigation.test.jsx",
+    "src/app/features/admin/admin-login-landing.test.jsx"
+  ],
+  "exitCode": 0
+}

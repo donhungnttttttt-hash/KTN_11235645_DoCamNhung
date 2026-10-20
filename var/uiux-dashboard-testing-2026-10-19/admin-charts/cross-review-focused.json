@@ -1,0 +1,11 @@
+{
+  "args": [
+    "src/app/components/TestProgress.test.jsx",
+    "src/app/routes/fixreports-navigation.test.jsx",
+    "src/app/features/reports/ManagementAnalysisPage.ai.test.jsx",
+    "src/app/features/reports/ManagementAnalysisPage.providers.test.jsx"
+  ],
+  "startedAt": "2026-10-19T12:51:18.644Z",
+  "finishedAt": "2026-10-19T12:51:24.697Z",
+  "exitCode": 0
+}

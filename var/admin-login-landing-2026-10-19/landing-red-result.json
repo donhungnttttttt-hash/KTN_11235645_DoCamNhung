@@ -1,0 +1,10 @@
+{
+  "startedAt": "2026-10-19T09:38:34.023Z",
+  "finishedAt": "2026-10-19T09:38:48.006Z",
+  "task": "test",
+  "args": [
+    "src/app/features/admin/admin-login-landing.test.jsx",
+    "--maxWorkers=1"
+  ],
+  "exitCode": 1
+}

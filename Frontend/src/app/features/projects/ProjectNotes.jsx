@@ -11,10 +11,10 @@ export function ProjectNotes({projectId,canEdit=false,api=notesApi}) {
 
 function Notes({projectId,canEdit,api}) {
   const [page,setPage]=useState(0),[revision,setRevision]=useState(0),[data,setData]=useState(null);
-  const [loading,setLoading]=useState(true),[listError,setListError]=useState(''),[actionError,setActionError]=useState('');
+  const [loading,setLoading]=useState(true),[listError,setListError]=useState(''),[actionError,setActionError]=useState(''),[completedRead,setCompletedRead]=useState(null);
   const [editor,setEditor]=useState(null),[removing,setRemoving]=useState(null),[busy,setBusy]=useState(false),[notice,setNotice]=useState('');
   const [needsReview,setNeedsReview]=useState(false),[latest,setLatest]=useState(null);
-  const lifetime=useRef(null),lock=useRef(false),focusAfter=useRef(null),addButton=useRef(null);
+  const lifetime=useRef(null),lock=useRef(false),pendingFocus=useRef(null),addButton=useRef(null),editButtons=useRef(new Map()),editorRef=useRef(null);
   useEffect(()=>{const abort=new AbortController();lifetime.current=abort;return()=>abort.abort();},[]);
   useEffect(()=>{
     const abort=new AbortController();setLoading(true);setListError('');setData(null);
@@ -23,11 +23,22 @@ function Notes({projectId,canEdit,api}) {
       if(page>0&&!value.items.length&&page>=value.totalPages){setPage(Math.max(0,value.totalPages-1));return;}
       setData(value);
     }).catch(error=>{if(!abort.signal.aborted)setListError(error.message);})
-      .finally(()=>{if(!abort.signal.aborted)setLoading(false);});
+      .finally(()=>{if(!abort.signal.aborted){setCompletedRead(`${page}/${revision}`);setLoading(false);}});
     return()=>abort.abort();
   },[projectId,api,page,revision]);
-  function closeEditor(){setEditor(null);setActionError('');setNeedsReview(false);setLatest(null);focusAfter.current?.focus();}
-  function openEditor(note,event){focusAfter.current=event.currentTarget;setEditor({note,title:note?.title||'',body:note?.body||''});setRemoving(null);setActionError('');setNotice('');setNeedsReview(false);setLatest(null);}
+  useEffect(()=>{
+    const request=pendingFocus.current;
+    if(!request||editor||busy||loading||revision<request.minimumRevision||completedRead!==`${page}/${revision}`)return;
+    pendingFocus.current=null;
+    // A refreshed row has a new button. Return only while focus is unclaimed.
+    const active=document.activeElement;
+    if(active!==document.body&&active!==document.documentElement)return;
+    const target=editButtons.current.get(request.noteId)||addButton.current;
+    if(target?.isConnected&&!target.disabled)target.focus();
+  },[editor,busy,loading,data,page,revision,completedRead]);
+  function requestFocus(noteId,minimumRevision=revision){const active=document.activeElement;pendingFocus.current=active===document.body||editorRef.current?.contains(active)?{noteId,minimumRevision}:null;}
+  function closeEditor(){requestFocus(editor?.note?.id);setEditor(null);setActionError('');setNeedsReview(false);setLatest(null);}
+  function openEditor(note){pendingFocus.current=null;setEditor({note,title:note?.title||'',body:note?.body||''});setRemoving(null);setActionError('');setNotice('');setNeedsReview(false);setLatest(null);}
   async function compareLatest(){
     if(lock.current||!editor?.note)return;
     lock.current=true;setBusy(true);setActionError('');const signal=lifetime.current.signal;
@@ -40,7 +51,8 @@ function Notes({projectId,canEdit,api}) {
     lock.current=true;setBusy(true);setActionError('');setNotice('');const signal=lifetime.current.signal;
     try {
       await action({signal});if(signal.aborted)return;
-      setEditor(null);setRemoving(null);setNeedsReview(false);setLatest(null);setNotice(message);setRevision(value=>value+1);addButton.current?.focus();
+      requestFocus(editing?editor?.note?.id:null,revision+1);
+      setEditor(null);setRemoving(null);setNeedsReview(false);setLatest(null);setNotice(message);setRevision(value=>value+1);
     }catch(error){if(!signal.aborted){setActionError(error.message);if(editing&&error.status===409){setNeedsReview(true);setLatest(null);}}}
     finally{if(!signal.aborted){lock.current=false;setBusy(false);}}
   }
@@ -52,11 +64,11 @@ function Notes({projectId,canEdit,api}) {
   return <section className="project-notes" aria-label="Note chung của dự án">
     <div className="project-notes-toolbar"><p>Ghi chú chung để các thành viên cùng theo dõi.</p>
       <div className="project-notes-actions"><button type="button" className="cat-btn" disabled={loading||busy} onClick={()=>setRevision(value=>value+1)}>Tải lại Note</button>
-        {canEdit&&<button ref={addButton} type="button" className="cat-btn primary" disabled={loading||busy||!!editor||!!listError} onClick={event=>openEditor(null,event)}>Thêm Note</button>}</div>
+        {canEdit&&<button ref={addButton} type="button" className="cat-btn primary" disabled={loading||busy||!!editor||!!listError} onClick={()=>openEditor(null)}>Thêm Note</button>}</div>
     </div>
     {notice&&<p role="status">{notice}</p>}
     {listError&&<p role="alert">{listError}</p>}{actionError&&<p role="alert">{actionError}</p>}
-    {canEdit&&editor&&<form className="project-notes-editor" onSubmit={save}>
+    {canEdit&&editor&&<form ref={editorRef} className="project-notes-editor" onSubmit={save}>
       <h2>{editor.note?'Sửa Note':'Note mới'}</h2>
       <fieldset disabled={busy}><label>Tiêu đề Note<input autoFocus required maxLength={200} value={editor.title} onChange={event=>setEditor({...editor,title:event.target.value})}/></label>
         <label>Nội dung Note<textarea required maxLength={10000} rows={8} value={editor.body} onChange={event=>setEditor({...editor,body:event.target.value})}/></label></fieldset>
@@ -72,7 +84,7 @@ function Notes({projectId,canEdit,api}) {
     {!loading&&data&&!data.items.length&&<p>Chưa có Note trong dự án.</p>}
     {data&&<><div className="project-notes-list">{data.items.map(note=><article key={note.id} className="project-note">
       <div className="project-note-heading"><h2>{note.title}</h2>{canEdit&&<div className="project-notes-actions">
-        <button type="button" className="cat-btn" aria-label={`Sửa Note ${note.title}`} disabled={busy||!!editor} onClick={event=>openEditor(note,event)}>Sửa</button>
+        <button ref={element=>{if(element)editButtons.current.set(note.id,element);else editButtons.current.delete(note.id);}} type="button" className="cat-btn" aria-label={`Sửa Note ${note.title}`} disabled={busy||!!editor} onClick={()=>openEditor(note)}>Sửa</button>
         <button type="button" className="cat-btn" aria-label={`Xóa Note ${note.title}`} disabled={busy||!!editor} onClick={()=>{setRemoving(note);setActionError('');setNotice('');}}>Xóa</button>
       </div>}</div>
       <p className="project-note-time">Cập nhật {savedTime(note.updatedAt)} · giờ Việt Nam</p><p className="project-note-body">{note.body}</p>

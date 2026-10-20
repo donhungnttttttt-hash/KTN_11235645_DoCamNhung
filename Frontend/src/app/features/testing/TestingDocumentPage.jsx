@@ -8,6 +8,7 @@ import {ResultCycleButton} from '../test-cases/ResultCycleButton';
 import {useDocumentResults} from '../test-cases/useDocumentResults';
 import {downloadWorkbook,documentExportName} from '../test-cases/documentDownload';
 import {matchesSearch} from '../../utils/multiWordSearch';
+import {TestProgress} from '../../components/TestProgress';
 import {DocumentAssignments} from './DocumentAssignments';
 import {DocumentAssignmentHistory} from './DocumentAssignmentHistory';
 import {useTestingQuery} from './testingState';
@@ -38,7 +39,7 @@ function FeatureDocument({projectId,featureId,documentId,caseId,onBack,renderIss
     setPage(Math.floor(rows.findIndex(row=>row.rowId===linkedRow.rowId)/pageSize));
   },[caseId,linkedRow,rows,pageSize]);
   useLayoutEffect(()=>{if(linkedRow&&visible.some(row=>row.rowId===linkedRow.rowId)){focusedRow.current?.focus({preventScroll:true});focusedRow.current?.scrollIntoView?.({block:'nearest'});}},[linkedRow?.rowId,currentPage]);
-  const tested=rows.filter(row=>row.resultStatus!=='UNEXECUTED').length,percent=rows.length?Math.round(tested*100/rows.length):0;
+  const tested=rows.filter(row=>row.resultStatus!=='UNEXECUTED').length;
   const blocked=results.pending>0||!!results.error||query.loading||exporting;
   const statusBlockedReason=results.pending>0?'Đang lưu Status. Vui lòng chờ.':results.error?'Kết quả chưa được xác nhận. Tải lại kết quả trước khi sửa.':query.loading?'Đang tải lại bảng case.':exporting?'Đang xuất file. Vui lòng chờ.':'Case đang ở chế độ chỉ đọc hoặc không thuộc phạm vi bạn phụ trách.';
   function edit(row,index){const field=Object.keys(columns).find(name=>columns[name]===index)||['','','titleVi','preconditionsVi','stepsVi','expectedVi','titleJp','preconditionsJp','stepsJp','expectedJp','sourceReference'][index];setEditing({row,index,value:row.cells[index]||'',version:data.cellVersions?.[row.rowId]?.[index]||0,label:data.headers[index]||`Cột ${index+1}`,canonical:false,maxLength:['titleVi','titleJp','sourceReference'].includes(field)?255:8000});}
@@ -51,9 +52,9 @@ function FeatureDocument({projectId,featureId,documentId,caseId,onBack,renderIss
   const dialogRow=selectedCurrent&&{...selectedCurrent,cells:[...visibleColumns.map(({index})=>selectedCurrent.cells[index]),selectedCurrent.resultStatus,selectedCurrent.firstTesterName||'',selectedCurrent.latestTesterName||'']};
   const dialogHeaders=[...visibleColumns.map(({label})=>label),'Status','Người test đầu tiên','Người test lại gần nhất'];
   function issueRow(row){return {...row,title:row.cells[columns.titleVi??2]||'',steps:row.cells[columns.stepsVi??4]||'',expected:row.cells[columns.expectedVi??5]||''};}
-  return <section className="testing-page testing-document td-page"><div className="td-sheet-title"><button className="cat-btn" onClick={onBack}>← File trong Feature</button><h2>{data.document.fileName}</h2></div>
-    <div className="td-sheet-toolbar" role="region" aria-label="Điều khiển bảng case" tabIndex={0}><div className="testing-progress"><strong>{tested}/{rows.length} case · {percent}%</strong><progress value={tested} max={Math.max(1,rows.length)} aria-label="Tiến độ file"/>{(data.canManage||data.canAssign)&&<button className="cat-btn" disabled={blocked} onClick={()=>setAssigning(true)}>{data.canManage?'Phân công case':'Tự nhận / sửa phạm vi'}</button>}<button className="cat-btn" disabled={results.pending>0} onClick={()=>setAssignmentHistory(true)}>Lịch sử phân công</button></div>
-      <div className="td-filter-row"><label>Tìm trong file<input type="search" value={search} onChange={e=>{setSearch(e.target.value);setPage(0);}}/></label><label>Status<select value={status} onChange={e=>{setStatus(e.target.value);setPage(0);}}><option value="">Tất cả</option>{['UNEXECUTED','OK','NG','P','NA'].map(s=><option key={s} value={s}>{s==='UNEXECUTED'?'Unexecuted':s}</option>)}</select></label><button className="cat-btn" disabled={blocked} onClick={()=>download(false)}>Xuất Excel</button>{data.document.hasSourceFile&&<button className="cat-btn" disabled={blocked} onClick={()=>download(true)}>Tải file gốc</button>}<button className="cat-btn" disabled={results.pending>0} onClick={query.load}>Làm mới</button></div>
+  return <section className="testing-page testing-document td-page"><div className="td-sheet-title"><button className="cat-btn testing-back" onClick={onBack}>← File trong Feature</button><h2>{data.document.fileName}</h2></div>
+    <div className="td-sheet-toolbar" role="region" aria-label="Điều khiển bảng case" tabIndex={0}><div className="testing-progress"><TestProgress tested={tested} total={rows.length} label="Tiến độ file"/><div className="testing-progress-actions">{(data.canManage||data.canAssign)&&<button className="cat-btn" disabled={blocked} onClick={()=>setAssigning(true)}>{data.canManage?'Phân công case':'Tự nhận / sửa phạm vi'}</button>}<button className="cat-btn" disabled={results.pending>0} onClick={()=>setAssignmentHistory(true)}>Lịch sử phân công</button></div></div>
+      <div className="td-filter-row"><label>Tìm trong file<input type="search" value={search} onChange={e=>{setSearch(e.target.value);setPage(0);}}/></label><label>Status<select value={status} onChange={e=>{setStatus(e.target.value);setPage(0);}}><option value="">Tất cả</option>{['UNEXECUTED','OK','NG','P','NA'].map(s=><option key={s} value={s}>{s==='UNEXECUTED'?'Unexecuted':s}</option>)}</select></label><div className="testing-file-actions"><button className="cat-btn" disabled={blocked} onClick={()=>download(false)}>Xuất Excel</button>{data.document.hasSourceFile&&<button className="cat-btn" disabled={blocked} onClick={()=>download(true)}>Tải file gốc</button>}<button className="cat-btn" disabled={results.pending>0} onClick={query.load}>Làm mới</button></div></div>
       <div className="td-toolbar-pagination"><button className="cat-btn" disabled={currentPage===0} onClick={()=>setPage(n=>n-1)}>Trang trước</button><span>Trang {currentPage+1}/{pages} · {filtered.length} case</span><button className="cat-btn" disabled={currentPage+1>=pages} onClick={()=>setPage(n=>n+1)}>Trang sau</button><label>Số dòng<select value={pageSize} onChange={e=>{setPageSize(Number(e.target.value));setPage(0);}}>{[20,50,100].map(n=><option key={n}>{n}</option>)}</select></label></div>
     </div>
     <p className="td-source-note">Status lưu riêng cho từng Feature. Hai cột người test thể hiện phân công; người ghi kết quả có trong lịch sử.</p>
@@ -61,16 +62,16 @@ function FeatureDocument({projectId,featureId,documentId,caseId,onBack,renderIss
     <div className="td-grid-scroll" role="region" aria-label="Bảng test case của Feature" tabIndex={0}>
       <table className="td-case-grid"><thead><tr>
         {visibleColumns.map(({label,index})=><th key={index} scope="col" className={index===sourceIndex?'td-sticky-id':undefined}>{label||`Cột ${index+1}`}</th>)}
-        <th scope="col">Status / Issue</th><th scope="col">Người test đầu tiên</th><th scope="col">Người test lại gần nhất</th>
+        <th scope="col" className="testing-result-heading">Status / Issue</th><th scope="col">Người test đầu tiên</th><th scope="col">Người test lại gần nhất</th>
       </tr></thead><tbody>{visible.map(row=><tr key={row.rowId} ref={row.rowId===linkedRow?.rowId?focusedRow:undefined} tabIndex={row.rowId===linkedRow?.rowId?-1:undefined} aria-current={row.rowId===linkedRow?.rowId?true:undefined}>
         {visibleColumns.map(({index})=>index===sourceIndex?
           <th key={index} scope="row" className="td-sticky-id"><button ref={element=>{if(element)caseButtons.current.set(row.rowId,element);else caseButtons.current.delete(row.rowId);}} className="td-case-id" onClick={()=>setSelected(row)}>{row.sourceId||row.cells[index]}</button></th>:
           <td key={index}>{data.canManage&&!blocked?<button className="testing-case-text" aria-label={`Sửa ${data.headers[index]} · case ${row.sourceId}`} onClick={()=>edit(row,index)}>{row.cells[index]||'—'}</button>:<span className="td-cell-text">{row.cells[index]||'—'}</span>}</td>)}
-        <td className="td-result-cell">
+        <td className="td-result-cell"><div className="testing-result-actions">
           <ResultCycleButton sourceId={row.sourceId} value={row.resultStatus} disabled={blocked||!row.canUpdateResult} disabledReason={statusBlockedReason} onChange={value=>results.change(row,value)}/>
           {renderIssueAction?.({projectId,featureId,documentId,row:issueRow(row),document:data.document,refresh:query.load})}
           <button className="td-result-history" disabled={results.pending>0} onClick={()=>setHistory(row)}>Lịch sử Status</button>
-        </td><td>{row.firstTesterName||'—'}</td><td>{row.latestTesterName||'—'}</td>
+        </div></td><td>{row.firstTesterName||'—'}</td><td>{row.latestTesterName||'—'}</td>
       </tr>)}</tbody></table>{!visible.length&&<p className="td-empty">Không có case phù hợp.</p>}
     </div>
     {editing&&<DocumentCellEditor projectId={projectId} documentId={documentId} cell={editing} authorized={data.canManage} onClose={()=>setEditing(null)} onSaved={query.load}/>}

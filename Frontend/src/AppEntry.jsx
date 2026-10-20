@@ -50,9 +50,14 @@ export function RoleApp({workspaceIdentity}) {
 }
 
 function AuthenticatedShell() {
+  const {status}=useAuth();
   // Remains mounted across AuthBoundary's identity-keyed app remounts, so a
   // previous account's workspace opt-in cannot become the next account's default.
   const workspaceIdentity=useRef(null);
+  // A fresh login must not reuse a workspace URL or the same account's previous
+  // choice. Keep a sentinel: null would opt in again from the URL in RoleApp.
+  // Expired sessions retain their choice so reauthentication preserves drafts.
+  if(status==='anonymous') workspaceIdentity.current={id:null,optedIn:false};
   return <AuthBoundary><ReportDraftProvider><AiEditBuffer><AiProviderProvider><ChatLauncherProvider><RoleApp workspaceIdentity={workspaceIdentity}/><AiChat/></ChatLauncherProvider></AiProviderProvider></AiEditBuffer></ReportDraftProvider></AuthBoundary>;
 }
 

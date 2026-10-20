@@ -1,5 +1,5 @@
 import React from 'react';
-import {render,screen,fireEvent,waitFor} from '@testing-library/react';
+import {render,screen,fireEvent,waitFor,within} from '@testing-library/react';
 import {it,expect,vi} from 'vitest';
 import {FeatureIssuesPage} from './FeatureIssuesPage';
 import userEvent from '@testing-library/user-event';
@@ -52,4 +52,45 @@ it('keeps a monkey draft attached to its Feature until it is explicitly discarde
  render(<FeatureIssuesPage projectId={1} activeRoute="/issues" api={api} featureApi={featureApi} canCreate/>);await screen.findByRole('option',{name:'Feature A'});fireEvent.click(screen.getByRole('button',{name:'Ghi lỗi monkey'}));
  fireEvent.change(screen.getByLabelText('Feature phát hiện lỗi'),{target:{value:'1'}});fireEvent.change(screen.getByLabelText('Tiêu đề'),{target:{value:'Nháp cho Feature A'}});
  await waitFor(()=>expect(screen.getByLabelText('Feature phát hiện lỗi')).toBeDisabled());expect(screen.getByLabelText('Tiêu đề')).toHaveValue('Nháp cho Feature A');
+});
+
+it('keeps empty Kanban columns discoverable and lets keyboard users reach the horizontal board',async()=>{
+ const user=userEvent.setup(),api={list:async()=>({items:[],totalItems:0,totalPages:0})},featureApi={list:async()=>({items:[],totalPages:0})};
+ render(<FeatureIssuesPage projectId={1} api={api} featureApi={featureApi}/>);
+ const board=await screen.findByRole('region',{name:'Bảng trạng thái Bug và QA'});
+ const open=within(board).getByRole('region',{name:'Cột Chưa xử lý'});
+ expect(within(open).getByText('Chưa có Issue')).toBeVisible();
+ expect(within(open).getByLabelText('0 Issue trong trang này')).toBeVisible();
+ expect(within(board).getAllByRole('region')).toHaveLength(10);
+ screen.getByRole('button',{name:'Tải lại'}).focus();await user.tab();
+ expect(board).toHaveFocus();
+});
+
+it('groups real cards by status and keeps page counts distinct from the project total',async()=>{
+ const api={list:async()=>({items:[{id:7,key:'A-7',type:'BUG',title:'Lỗi đăng nhập',featureName:'Đăng nhập',assignee:'Tester A',status:'open',canTransition:false},{id:8,key:'A-8',type:'QA',title:'Xác nhận thiết kế',featureName:'Thiết kế',status:'progress',canTransition:false}],totalItems:99,totalPages:5})};
+ render(<FeatureIssuesPage projectId={1} api={api} featureApi={{list:async()=>({items:[],totalPages:0})}}/>);
+ const open=await screen.findByRole('region',{name:'Cột Chưa xử lý'}),progress=screen.getByRole('region',{name:'Cột Đang xử lý'});
+ expect(within(open).getByRole('button',{name:'Lỗi đăng nhập'})).toBeVisible();
+ expect(within(open).queryByRole('button',{name:'Xác nhận thiết kế'})).not.toBeInTheDocument();
+ expect(within(progress).getByRole('button',{name:'Xác nhận thiết kế'})).toBeVisible();
+ expect(within(open).getByLabelText('1 Issue trong trang này')).toBeVisible();
+ expect(within(progress).getByLabelText('1 Issue trong trang này')).toBeVisible();
+ expect(within(open).queryByRole('combobox')).not.toBeInTheDocument();
+});
+
+it('opens confirmation when a permitted card is dropped and preserves workspace filters',async()=>{
+ const navigate=vi.fn(),api={list:async()=>({items:[{id:7,key:'A-7',type:'BUG',title:'Lỗi đăng nhập',featureName:'Đăng nhập',status:'open',canTransition:true,allowedStatuses:[{id:'open',label:'Chưa xử lý'},{id:'progress',label:'Đang xử lý'}]}],totalItems:1,totalPages:1})};
+ render(<FeatureIssuesPage projectId={42} activeRoute="/board?workspace=1&keyword=login" navigate={navigate} api={api} featureApi={{list:async()=>({items:[],totalPages:0})}}/>);
+ const destination=await screen.findByRole('region',{name:'Cột Đang xử lý'});
+ fireEvent.drop(destination,{dataTransfer:{getData:()=> '7'}});
+ expect(navigate).toHaveBeenCalledTimes(1);
+ const [path,query]=navigate.mock.lastCall[0].split('?'),params=new URLSearchParams(query);
+ expect(path).toBe('/board/issue/7');expect(params.get('projectId')).toBe('42');expect(params.get('workspace')).toBe('1');expect(params.get('keyword')).toBe('login');
+});
+
+it('rejects a card drop outside allowed status transitions with visible feedback',async()=>{
+ const navigate=vi.fn(),api={list:async()=>({items:[{id:7,key:'A-7',type:'BUG',title:'Lỗi đăng nhập',status:'open',canTransition:true,allowedStatuses:[{id:'progress',label:'Đang xử lý'}]}],totalItems:1,totalPages:1})};
+ render(<FeatureIssuesPage projectId={1} navigate={navigate} api={api} featureApi={{list:async()=>({items:[],totalPages:0})}}/>);
+ fireEvent.drop(await screen.findByRole('region',{name:'Cột Hoàn thành'}),{dataTransfer:{getData:()=> '7'}});
+ expect(navigate).not.toHaveBeenCalled();expect(screen.getByRole('status')).toHaveTextContent('Bạn không có quyền chuyển Issue sang trạng thái này.');
 });

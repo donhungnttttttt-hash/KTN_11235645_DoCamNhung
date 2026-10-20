@@ -1,0 +1,12 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const { spawnSync } = require('node:child_process');
+const root = path.resolve(__dirname, '../../..');
+const name = process.argv[2];
+const args = process.argv.slice(3);
+const startedAt = new Date().toISOString();
+const result = spawnSync(process.execPath, ['node_modules/vitest/vitest.mjs', 'run', ...args, '--maxWorkers=1'], { cwd: path.join(root, 'Frontend'), encoding: 'utf8' });
+fs.writeFileSync(path.join(__dirname, `${name}.log`), (result.stdout || '') + (result.stderr || ''));
+fs.writeFileSync(path.join(__dirname, `${name}.json`), JSON.stringify({ args, startedAt, finishedAt: new Date().toISOString(), exitCode: result.status }, null, 2));
+console.log((result.stdout || '') + (result.stderr || ''));
+process.exit(result.status ?? 1);

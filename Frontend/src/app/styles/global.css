@@ -51,8 +51,8 @@
   --color-result-ng-text: #ffffff;
   --color-result-pending: #f8f835;
   --color-result-pending-text: #000000;
-  --color-result-not-run: #161c25;
-  --color-result-not-run-text: #ffffff;
+  --color-result-not-run: #c0c0c0;
+  --color-result-not-run-text: #333333;
   --color-result-na: #7a7a7c;
   --color-result-na-text: #000000;
 }

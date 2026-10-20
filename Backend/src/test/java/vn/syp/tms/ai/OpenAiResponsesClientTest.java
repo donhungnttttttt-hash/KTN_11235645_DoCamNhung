@@ -110,6 +110,34 @@ class OpenAiResponsesClientTest {
         assertThat(calls).hasValue(1);
     }
 
+    @ParameterizedTest @ValueSource(strings={"not-json", "{\"error\":{\"code\":\"private-provider-code\",\"message\":\"test-only-secret-never-live\"}}"})
+    void paymentRequiredRemainsActionableWithoutLeakingProviderContentOrRetrying(String body) {
+        respond(402,body);
+        assertThatThrownBy(this::generate).hasMessage("AI_PAYMENT_REQUIRED").hasNoCause();
+        assertThat(calls).hasValue(1);
+    }
+
+    @Test void knownInsufficientBalanceOnHttp402UsesQuotaGuidanceWithoutExposingTheProviderMessage() {
+        respond(402,"{\"error\":{\"type\":\"insufficient_balance\",\"message\":\""+SECRET+"\"}}");
+        assertThatThrownBy(this::generate).hasMessage("AI_QUOTA_EXHAUSTED").hasNoCause();
+        assertThat(calls).hasValue(1);
+    }
+
+    @ParameterizedTest @ValueSource(strings={"unsupported_parameter",SECRET})
+    void requestRejectionLogsOnlyHttpStatusAndAllowlistedCode(String providerCode) {
+        var logger=(ch.qos.logback.classic.Logger)org.slf4j.LoggerFactory.getLogger(OpenAiResponsesClient.class);
+        var appender=new ch.qos.logback.core.read.ListAppender<ch.qos.logback.classic.spi.ILoggingEvent>();appender.start();logger.addAppender(appender);
+        try {
+            respond(400,"{\"error\":{\"code\":\""+providerCode+"\",\"message\":\""+SECRET+"\",\"param\":\""+SECRET+"\"}}");
+            assertThatThrownBy(this::generate).hasMessage("AI_REQUEST_REJECTED").hasNoCause();
+            String knownCode="unsupported_parameter".equals(providerCode)?"unsupported_parameter":"UNKNOWN";
+            assertThat(appender.list).extracting(ch.qos.logback.classic.spi.ILoggingEvent::getFormattedMessage)
+                .contains("AI provider request rejected: httpStatus=400, code="+knownCode)
+                .allMatch(message->!message.contains(SECRET)&&!message.contains("Bearer"));
+            assertThat(calls).hasValue(1);
+        } finally {logger.detachAppender(appender);appender.stop();}
+    }
+
     @Test void nonJsonRateLimitStillReportsRateLimit() {
         respond(429, "upstream temporarily throttled");
         assertThatThrownBy(this::generate).hasMessage("AI_RATE_LIMITED");

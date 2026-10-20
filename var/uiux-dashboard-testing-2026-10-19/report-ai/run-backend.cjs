@@ -1,0 +1,11 @@
+const {spawnSync}=require('node:child_process');
+const fs=require('node:fs');
+const path=require('node:path');
+const [label,tests,phase]=process.argv.slice(2);
+if(!label||!tests)throw new Error('Supply label and test selector.');
+const root=path.resolve(__dirname,'../../..'),startedAt=new Date().toISOString();
+const script=phase==='test'?path.join(__dirname,'Run-Unit.ps1'):path.join(root,'scripts/Test-Backend.ps1');
+const result=spawnSync('powershell',['-NoProfile','-File',script,'-Tests',tests],{cwd:root,encoding:'utf8',env:{...process.env,DEBUG:'false',TRACE:'false'},maxBuffer:16*1024*1024});
+fs.writeFileSync(path.join(__dirname,`${label}.log`),(result.stdout||'')+(result.stderr||''));
+fs.writeFileSync(path.join(__dirname,`${label}.json`),JSON.stringify({startedAt,finishedAt:new Date().toISOString(),status:result.status,signal:result.signal,error:result.error?.message,tests},null,2));
+console.log((result.stdout||'').slice(-7000));console.error((result.stderr||'').slice(-2000));process.exit(result.status??1);

@@ -1,0 +1,8 @@
+{
+  "recordedAt": "2026-10-19T12:43:42.941Z",
+  "files": {
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx": "871ada5dc2f2c645e972cd7e845f4c86ebebc2d2e11efe94f2766e50af6ba4d4",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.test.jsx": "cc271092591af99791c5f1f930af53518fe8e7f0ba5a6ccf8b6401ffd22164c3",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.ai.test.jsx": "5c72438f430d611a55676b4deb43073457bebbbdd0ad3fcce1f5b7b8be0e222f"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "background": "#C0C0C0",
+  "text": "#333333",
+  "contrastRatio": 6.944428695477496,
+  "normalTextAA": true,
+  "changedFiles": [
+    "Frontend/src/app/styles/global.css",
+    "Frontend/src/app/features/admin/admin-health-charts.css",
+    "Frontend/src/app/features/testing/testing.css"
+  ],
+  "tests": {
+    "files": 4,
+    "passed": 24
+  },
+  "coverage": "NOT_MEASURED",
+  "browser": "ROOT_OWNS",
+  "backend": "No test-result palette in XLSX exporters; original workbook formatting is preserved."
+}

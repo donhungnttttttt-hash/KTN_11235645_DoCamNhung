@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-19T13:07:33.924Z",
+  "frontend": {
+    "passed": 1189,
+    "failed": 0,
+    "pending": 0,
+    "testFiles": 128,
+    "success": true,
+    "sourceFilesCompared": 331,
+    "changesSinceFullSuiteStarted": []
+  },
+  "buildExitCode": 0,
+  "backendVerifyExitCode": 0,
+  "aiSourceHashesCompared": 13,
+  "changesSinceAiFinalVerify": [],
+  "runtimeHealth": {
+    "httpStatus": 200,
+    "status": "UP"
+  },
+  "ledger": {
+    "activeSprint": "S11",
+    "phase": "IN_REVIEW"
+  },
+  "liveProviderSuccess": "NOT_VERIFIED: HTTP402 insufficient_balance; user reports balance available",
+  "gitActions": "No commit, push, merge or deploy"
+}

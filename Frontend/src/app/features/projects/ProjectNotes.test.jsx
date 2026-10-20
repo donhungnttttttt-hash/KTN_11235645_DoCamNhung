@@ -80,3 +80,38 @@ it('retains a conflict draft when current Note loading fails and allows comparin
  expect(screen.getByLabelText('Nội dung Note')).toHaveValue('Giữ nháp này');expect(screen.getByRole('button',{name:'Lưu Note'})).toBeDisabled();
  fireEvent.click(screen.getByRole('button',{name:'Đối chiếu bản mới của Note'}));await screen.findByText('Bản mới nhất');
 });
+it.each(['add','edit'])('returns focus to the enabled %s trigger after cancelling a Note draft',async mode=>{
+ mount();const trigger=await screen.findByRole('button',{name:mode==='add'?'Thêm Note':'Sửa Note Lịch trao đổi'});
+ await waitFor(()=>expect(trigger).toBeEnabled());fireEvent.click(trigger);
+ const cancel=screen.getByRole('button',{name:'Hủy chỉnh sửa'});cancel.focus();fireEvent.click(cancel);
+ await waitFor(()=>expect(trigger).toHaveFocus());expect(trigger).toBeEnabled();
+});
+it.each(['add','edit'])('waits for the saved Note reload before focusing the live %s trigger',async mode=>{
+ let save,reload;const updated={...note,title:'Tên đã lưu',version:4};
+ api[mode==='add'?'create':'update'].mockReturnValue(new Promise(resolve=>{save=resolve;}));
+ api.list.mockResolvedValueOnce({items:[note],totalItems:1,totalPages:1}).mockReturnValueOnce(new Promise(resolve=>{reload=resolve;}));
+ mount();await screen.findByRole('heading',{name:note.title});fireEvent.click(screen.getByRole('button',{name:mode==='add'?'Thêm Note':'Sửa Note Lịch trao đổi'}));
+ fireEvent.change(screen.getByLabelText('Tiêu đề Note'),{target:{value:updated.title}});fireEvent.change(screen.getByLabelText('Nội dung Note'),{target:{value:'Nội dung đã lưu'}});
+ const submit=screen.getByRole('button',{name:'Lưu Note'});submit.focus();fireEvent.click(submit);
+ await act(async()=>save(updated));expect(screen.getByRole('button',{name:'Thêm Note'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Thêm Note'})).not.toHaveFocus();
+ await act(async()=>reload({items:[updated],totalItems:1,totalPages:1}));
+ const target=screen.getByRole('button',{name:mode==='add'?'Thêm Note':'Sửa Note Tên đã lưu'});
+ await waitFor(()=>expect(target).toHaveFocus());expect(target).toBeEnabled();
+});
+it('falls back to Add when the edited Note is absent after saving',async()=>{
+ api.update.mockResolvedValue({});api.list.mockResolvedValueOnce({items:[note],totalItems:1,totalPages:1}).mockResolvedValue({items:[],totalItems:0,totalPages:0});
+ mount();fireEvent.click(await screen.findByRole('button',{name:'Sửa Note Lịch trao đổi'}));
+ const submit=screen.getByRole('button',{name:'Lưu Note'});submit.focus();fireEvent.click(submit);
+ await screen.findByText('Chưa có Note trong dự án.');await waitFor(()=>expect(screen.getByRole('button',{name:'Thêm Note'})).toHaveFocus());
+});
+it.each(['save','reload'])('does not take focus moved during Note %s or on ordinary refresh',async phase=>{
+ let finish,reload;api.create.mockReturnValue(new Promise(resolve=>{finish=resolve;}));api.list.mockResolvedValueOnce({items:[note],totalItems:1,totalPages:1}).mockReturnValueOnce(new Promise(resolve=>{reload=resolve;})).mockResolvedValue({items:[note],totalItems:1,totalPages:1});
+ render(<><input aria-label="Công việc khác"/><ProjectNotes projectId={1} canEdit api={api}/></>);
+ await screen.findByRole('heading',{name:note.title});fireEvent.click(screen.getByRole('button',{name:'Thêm Note'}));
+ fireEvent.change(screen.getByLabelText('Tiêu đề Note'),{target:{value:'Mới'}});fireEvent.change(screen.getByLabelText('Nội dung Note'),{target:{value:'Nội dung'}});
+ const submit=screen.getByRole('button',{name:'Lưu Note'});submit.focus();fireEvent.click(submit);
+ const other=screen.getByLabelText('Công việc khác');if(phase==='save')other.focus();await act(async()=>finish({}));await screen.findByText('Đã lưu Note.');
+ if(phase==='reload')other.focus();await act(async()=>reload({items:[note],totalItems:1,totalPages:1}));expect(other).toHaveFocus();
+ fireEvent.click(screen.getByRole('button',{name:'Tải lại Note'}));await waitFor(()=>expect(api.list).toHaveBeenCalledTimes(3));expect(other).toHaveFocus();
+});

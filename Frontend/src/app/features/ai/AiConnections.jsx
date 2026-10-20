@@ -58,29 +58,32 @@ function OwnerProviders({children,api,active}){
   async function poll(){try{const value=await api.authorization(attempt.attemptId,{signal:abort.signal});if(abort.signal.aborted||!current.current)return;if(['PENDING','PROCESSING'].includes(value.state)){timer=setTimeout(poll,1500);return;}setAttempt(null);setAuthorizationUrl('');if(value.state==='AUTHORIZED'){setNotice('Đã cấp quyền. Chọn model và kiểm tra kết nối trước khi dùng.');setRevision(v=>v+1);}else setError(aiError(value.failureCode,'CHATGPT'));}catch(e){if(!abort.signal.aborted&&current.current){setError(aiError(e.code,'CHATGPT'));timer=setTimeout(poll,3000);}}}
   timer=setTimeout(poll,1500);return()=>{clearTimeout(timer);abort.abort();};
  },[api,attempt,active]);
- const refresh=()=>{setError('');setRevision(v=>v+1);};
- function chooseProvider(code){const item=providers.find(p=>p.code===code),conn=item?.connection,key=`${code}:${conn?.id||''}:${conn?.version||0}`;setPreferences(old=>({...old,[selection.provider]:selection.model}));setSelection({provider:code,model:preferences[code]||item?.models?.[0]?.id||catalogs[key]?.items[0]?.id||''});setError('');setNotice('');}
+ const refresh=()=>{if(probeRef.current)return;setError('');setRevision(v=>v+1);};
+ function chooseProvider(code){if(!active||actionLock.current||probeRef.current)return;const item=providers.find(p=>p.code===code),conn=item?.connection,key=`${code}:${conn?.id||''}:${conn?.version||0}`;setPreferences(old=>({...old,[selection.provider]:selection.model}));setSelection({provider:code,model:preferences[code]||item?.models?.[0]?.id||catalogs[key]?.items[0]?.id||''});setError('');setNotice('');}
  async function action(fn){if(actionLock.current||!active)return;const signal=lifetime.current.signal;actionLock.current=true;setBusy(true);setError('');setNotice('');try{await fn(signal);}catch(e){if(!signal.aborted&&current.current)setError(aiError(e.code,selection.provider));}finally{if(!signal.aborted&&current.current){actionLock.current=false;setBusy(false);}}}
  function authorize(enablePlanPermission=false,newAccount=false){
-  if(actionLock.current||!active)return;
+  if(actionLock.current||!active||probeRef.current)return;
   const popup=window.open('about:blank','_blank');if(popup)popup.opener=null;
   action(async signal=>{try{const value=await api.authorize({newAccount,enablePlanPermission},{signal});if(signal.aborted||!current.current){popup?.close();return;}const url=new URL(value.authorizationUrl);if(url.protocol!=='https:'||url.hostname!=='auth.openai.com')throw new Error('Invalid authorization URL');setAttempt(value);setAuthorizationUrl(url.href);if(popup&&!popup.closed)popup.location.href=url.href;else setNotice('Cửa sổ bị chặn. Mở liên kết đăng nhập ChatGPT bên dưới.');}catch(e){popup?.close();throw e;}});
  }
  async function probe(){
-  const saved=probeRef.current;
-  const body=saved&&saved.id===connection.id&&saved.version===connection.version&&saved.body.model===selection.model?saved.body:{model:selection.model,requestKey:`probe-${crypto.randomUUID()}`};
-  probeRef.current={id:connection.id,version:connection.version,body};setProbeRequest(probeRef.current);
-  await action(async signal=>{const result=await api.probe(connection.id,body,{signal});if(signal.aborted||!current.current)return;if(result.state==='GENERATING'){setNotice('Đang kiểm tra. Kiểm tra lại sẽ dùng cùng mã yêu cầu.');return;}probeRef.current=null;setProbeRequest(null);refresh();if(result.state==='READY')setNotice('Đã kiểm chứng model và phiên bản kết nối này.');else setError(aiError(result.failureCode,'CHATGPT'));});
+  if(actionLock.current||!active)return;
+  const request=probeRef.current||{id:connection.id,version:connection.version,body:{model:selection.model,requestKey:`probe-${crypto.randomUUID()}`}};
+  probeRef.current=request;setProbeRequest(request);
+  // The backend can return HTTP 422 while retaining a timed-out/interrupted settlement.
+  // Only a terminal probe response or a known rejection releases this request.
+  await action(async signal=>{try{const result=await api.probe(request.id,request.body,{signal});if(signal.aborted||!current.current)return;if(result.state==='GENERATING'){setNotice('Đang kiểm tra. Kiểm tra lại sẽ dùng cùng model và mã yêu cầu.');return;}probeRef.current=null;setProbeRequest(null);refresh();if(result.state==='READY')setNotice('Đã kiểm chứng model và phiên bản kết nối này.');else setError(aiError(result.failureCode,'CHATGPT'));}catch(e){if(!signal.aborted&&current.current){const unresolved=['TIMEOUT','NETWORK_ERROR','AI_BUSY','AI_CREDENTIAL_STORE_FAILED','AI_UNAVAILABLE','AI_INTERRUPTED'].includes(e.code)||e.status>=500||!e.status;if(!unresolved){probeRef.current=null;setProbeRequest(null);}}throw e;}});
  }
- const value={api,active,providers,provider,selection,setModel:model=>setSelection(old=>({...old,model})),chooseProvider,models:provider?.code==='OPENAI_API'?provider.models||[]:catalog?.items||[],ready:active&&!loading&&providerReady(provider,selection.model,catalog),loading,error,busy,notice,attempt,authorizationUrl,probeRequest,refresh,authorize,probe,catalog,catalogs,
+ const value={api,active,providers,provider,selection,setModel:model=>{if(active&&!actionLock.current&&!probeRef.current)setSelection(old=>({...old,model}));},chooseProvider,models:provider?.code==='OPENAI_API'?provider.models||[]:catalog?.items||[],ready:active&&!loading&&providerReady(provider,selection.model,catalog),loading,error,busy,notice,attempt,authorizationUrl,probeRequest,refresh,authorize,probe,catalog,catalogs,
   cancel:()=>action(async signal=>{await api.cancelAuthorization(attempt.attemptId,{signal});if(!signal.aborted&&current.current){setAttempt(null);setAuthorizationUrl('');setNotice('Đã hủy đăng nhập.');}}),
-  disconnect:()=>action(async signal=>{const result=await api.disconnect(connection.id,connection.version,{signal});if(!signal.aborted&&current.current){setNotice(result.remoteRevoked?'Đã ngắt kết nối ChatGPT.':'Đã xóa kết nối local. Mở ChatGPT Settings để thu hồi quyền từ xa.');probeRef.current=null;setProbeRequest(null);refresh();}})};
+  disconnect:()=>{if(probeRef.current)return;return action(async signal=>{const result=await api.disconnect(connection.id,connection.version,{signal});if(!signal.aborted&&current.current){setNotice(result.remoteRevoked?'Đã ngắt kết nối ChatGPT.':'Đã xóa kết nối local. Mở ChatGPT Settings để thu hồi quyền từ xa.');probeRef.current=null;setProbeRequest(null);refresh();}});}};
  return <ProviderContext.Provider value={value}>{children}</ProviderContext.Provider>;
 }
 export function AiSourceSelector({disabled=false,connectionsOnly=false}){
  const store=useAiProviders();if(!store||!store.active)return null;
  const {provider,selection,models}=store,connection=provider?.connection;
- const blocked=disabled||store.loading||store.busy||!!store.attempt;
+ const actionBlocked=disabled||store.loading||store.busy||!!store.attempt;
+ const blocked=actionBlocked||!!store.probeRequest;
  return <section className="ai-connection" aria-label="Nguồn và kết nối AI">
   <div className="ai-source-fields"><label className="ai-field">Nguồn AI<select value={selection.provider} disabled={blocked} onChange={e=>store.chooseProvider(e.target.value)}>{Object.entries(labels).map(([code,label])=><option key={code} value={code}>{label}</option>)}</select></label>
    <label className="ai-field">Model AI<select value={selection.model} disabled={blocked||!models.length} onChange={e=>store.setModel(e.target.value)}><option value="">Chọn model</option>{selection.model&&!models.some(m=>m.id===selection.model)&&<option value={selection.model}>{selection.model} · chưa sẵn sàng</option>}{models.map(m=><option key={m.id} value={m.id}>{m.label}</option>)}</select></label></div>
@@ -95,7 +98,7 @@ export function AiSourceSelector({disabled=false,connectionsOnly=false}){
    <div className="ai-actions"><button className="ai-button" disabled={blocked||store.loading} onClick={store.refresh}><RefreshCw size={16} aria-hidden="true"/>Tải lại nguồn AI</button>
     {selection.provider==='CHATGPT'&&provider?.enabled&&<>
      {connection?.state==='MISSING_PERMISSION'?<button className="ai-button" disabled={blocked} onClick={()=>store.authorize(true,false)}>Cấp quyền dùng gói ChatGPT</button>:<button className="ai-button" disabled={blocked} onClick={()=>store.authorize(false,false)}>{connection&&connection.state!=='DISCONNECTED'?'Kết nối lại ChatGPT':'Kết nối ChatGPT'}</button>}
-     {connection&&['UNVERIFIED','VERIFIED'].includes(connection.state)&&connection.planPermission&&<button className="ai-button" disabled={blocked||!selection.model||!store.catalog?.ready} onClick={store.probe}>{store.probeRequest?'Kiểm tra lại kết nối':'Kiểm tra kết nối model'} (có dùng hạn mức)</button>}
+     {connection&&['UNVERIFIED','VERIFIED'].includes(connection.state)&&connection.planPermission&&<button className="ai-button" disabled={actionBlocked||!selection.model||!store.catalog?.ready} onClick={store.probe}>{store.probeRequest?'Kiểm tra lại kết nối':'Kiểm tra kết nối model'} (có dùng hạn mức)</button>}
      {connection&&!['DISCONNECTED','RECONNECT_REQUIRED'].includes(connection.state)&&<button className="ai-button" disabled={blocked} onClick={store.disconnect}>Ngắt kết nối</button>}
      {connection&&connection.state!=='MISSING_PERMISSION'&&<button className="ai-button" disabled={blocked} onClick={()=>store.authorize(false,true)}>Đổi tài khoản ChatGPT</button>}
     </>}

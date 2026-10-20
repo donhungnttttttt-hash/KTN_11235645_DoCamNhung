@@ -38,7 +38,7 @@ export function AppRouter({ activeRoute, navigate }) {
     if(info.testingDocumentId) content = <TestingDocumentPage key={`${project.id}/${info.featureId}/${info.testingDocumentId}`} projectId={project.id} featureId={info.featureId} documentId={info.testingDocumentId} caseId={info.testingCaseId} onBack={()=>navigate(featurePath)} renderIssueAction={props=><CaseIssueAction {...props} canCreate={props.document?.canCreateIssue===true&&!isProjectDeveloper(project,hasRole)}/>}/>;
     else if(info.featureId) content = <TestingFeaturePage key={`${project.id}/${info.featureId}`} projectId={project.id} featureId={info.featureId} onOpenDocument={id=>navigate(scoped(`/board/testing/features/${info.featureId}/documents/${id}`))} onBack={()=>navigate(testingPath)}/>;
     else content = <TestingFeaturesPage key={project.id} projectId={project.id} onOpenFeature={id=>navigate(scoped(`/board/testing/features/${id}`))}/>;
-    return boardArea(content);
+    return info.testingDocumentId ? content : boardArea(content);
   }
   if(path==='/tests'||path.startsWith('/tests/')) return retired('Luồng kiểm thử đã thay đổi','Quản lý kiểm thử hiện được tổ chức theo Feature và tài liệu. Chọn Feature trong dự án để tiếp tục; mã đợt kiểm thử cũ không được chuyển thành mã Feature.',testingPath,'Mở Quản lý kiểm thử');
   if(path==='/dashboard') return <DashboardPage activeRoute={activeRoute} navigate={navigate}/>;

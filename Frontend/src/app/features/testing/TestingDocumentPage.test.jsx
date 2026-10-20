@@ -21,8 +21,12 @@ test('counts P and NA as tested and saves Status without run or device inputs',a
   testCasesApi.updateDocumentResult.mockResolvedValue({rowId:101,status:'OK',version:1});
   render(<TestingDocumentPage projectId={1} featureId={2} documentId={9} onBack={()=>{}}/>);
   expect(await screen.findByText('3/5 case · 60%')).toBeInTheDocument();
+  expect(screen.getByRole('progressbar',{name:'Tiến độ file'})).toHaveAttribute('aria-valuenow','3');
   fireEvent.click(screen.getByRole('button',{name:'Kết quả test case 1'}));
   await waitFor(()=>expect(testCasesApi.updateDocumentResult).toHaveBeenCalledWith(1,9,101,expect.objectContaining({status:'OK',expectedVersion:0})));
+  await waitFor(()=>expect(screen.getByRole('progressbar',{name:'Tiến độ file'})).toHaveAttribute('aria-valuenow','4'));
+  fireEvent.change(screen.getByLabelText('Status'),{target:{value:'UNEXECUTED'}});
+  expect(screen.getByRole('progressbar',{name:'Tiến độ file'})).toHaveAttribute('aria-valuetext','4/5 case · 80%');
   expect(screen.queryByText('Đợt kiểm thử')).not.toBeInTheDocument();
 });
 test('opens the page containing the linked row and marks that case',async()=>{

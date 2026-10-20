@@ -45,6 +45,22 @@ class AiDraftServiceTest {
         verify(store, never()).complete(anyLong(), anyString(), anyLong(), any());
     }
 
+    @Test void invalidProviderShapeLogsOnlyAConstantConstraintCodeAndNeverTheOutput() {
+        var logger=(ch.qos.logback.classic.Logger)org.slf4j.LoggerFactory.getLogger(AiDraftService.class);
+        var appender=new ch.qos.logback.core.read.ListAppender<ch.qos.logback.classic.spi.ILoggingEvent>();appender.start();logger.addAppender(appender);
+        try {
+            var answer=json.createObjectNode().put("answer","private-fixture-content-not-for-logs");
+            when(store.reserve(1,"pm",task)).thenReturn(new AiDraftStore.Reservation(9,true));
+            when(client.generate(anyString(),any(),anyString(),any())).thenReturn(new OpenAiResponsesClient.Output(answer,"resp_test","test",1,1));
+            when(store.get(1,"pm",9)).thenReturn(draft("FAILED"));
+            assertThat(service.generate(1,"pm",task).state()).isEqualTo("FAILED");
+            verify(store).markFailed(1,"pm",9,"AI_INVALID_RESPONSE");verify(store,never()).complete(anyLong(),anyString(),anyLong(),any());
+            assertThat(appender.list).extracting(ch.qos.logback.classic.spi.ILoggingEvent::getFormattedMessage)
+                .contains("AI draft response rejected: ROOT_SHAPE")
+                .allMatch(message->!message.contains("private-fixture-content-not-for-logs")&&!message.contains("resp_test"));
+        } finally {logger.detachAppender(appender);appender.stop();}
+    }
+
     @Test void permissionFailurePreventsNetworkUse() {
         when(store.reserve(1, "pm", task)).thenThrow(new vn.syp.tms.shared.web.BusinessException(403, "FORBIDDEN", "Forbidden"));
         assertThatThrownBy(() -> service.generate(1, "pm", task)).hasMessage("Forbidden");

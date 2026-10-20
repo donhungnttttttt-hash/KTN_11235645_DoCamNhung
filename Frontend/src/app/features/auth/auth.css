@@ -12,6 +12,8 @@
 .auth-card input:focus { outline: 2px solid #20b7a640; border-color: #20b7a6; }
 .auth-password { position: relative; }
 .auth-password input { padding-right: 45px; }
+/* Edge adds its own reveal control; this wrapper already supplies one. */
+.auth-password input::-ms-reveal { display: none; }
 .auth-password button { position: absolute; right: 4px; top: 4px; bottom: 4px; width: 36px; display: grid; place-items: center; border: 0; background: transparent; color: #64748b; }
 .auth-submit { width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; color: white; background: var(--color-mint, #0f766e); border: 1px solid var(--color-mint, #0f766e); border-radius: 4px; padding: 11px; font-weight: 600; font-size: var(--text-body); margin-top: 23px; }
 .auth-submit:hover { background: var(--color-mint-hover, #115e59); }

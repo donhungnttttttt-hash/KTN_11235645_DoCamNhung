@@ -1,0 +1,9 @@
+{
+  "startedAt": "2026-10-19T12:58:45.194Z",
+  "finishedAt": "2026-10-19T12:58:48.105Z",
+  "status": 1,
+  "signal": null,
+  "tests": [
+    "src/app/features/reports/ManagementAnalysisPage.ai.test.jsx"
+  ]
+}

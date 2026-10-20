@@ -1,0 +1,18 @@
+{
+  "recordedAt": "2026-10-19T13:02:18.108Z",
+  "files": {
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx": "871ada5dc2f2c645e972cd7e845f4c86ebebc2d2e11efe94f2766e50af6ba4d4",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.test.jsx": "cc271092591af99791c5f1f930af53518fe8e7f0ba5a6ccf8b6401ffd22164c3",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.ai.test.jsx": "687b42f53d5a2c15caa9830c19ffea848523e801374a26afb1fa290b5b72430c",
+    "Frontend/src/app/features/reports/ManagementAnalysisPage.providers.test.jsx": "f1d7bed533c66e4ba881c4d1ad2d847fc39f3d34291f96ac6a6b056af03b931f",
+    "Backend/src/main/java/vn/syp/tms/ai/AiDraftContent.java": "9206d0bf76d4125c3aff26e692a1a938d13323cd8597a46e2498fa26bbbfd0fe",
+    "Backend/src/main/java/vn/syp/tms/ai/AiDraftService.java": "287f7a2d71f2cefb33bd631cd07d67dedeef0bb101c02b3ab0da0cafd168f3e4",
+    "Backend/src/main/java/vn/syp/tms/ai/AiManagementReportGenerator.java": "d04d84000a92af640dc0134b4d52db388be587fd1509d76ca344c22ee6fd3913",
+    "Backend/src/test/java/vn/syp/tms/ai/AiDraftServiceTest.java": "f48b20c5d989300a7f4cf87f6072e2d09c4c749dd626730fbd445b2c546b6554",
+    "Backend/src/test/java/vn/syp/tms/ai/AiManagementReportGeneratorTest.java": "aa3e395e39852e78ec12e9d0512f1c22f1240fbf754e0d59e6e8c3e7cbfc28bb",
+    "Backend/src/main/java/vn/syp/tms/ai/OpenAiResponsesClient.java": "3f37d298d451fdc7b33b167b15847789fee778aefc839c2c9e1c0863641a8883",
+    "Backend/src/test/java/vn/syp/tms/ai/OpenAiResponsesClientTest.java": "d4da3a0965a6242a2de603a7c6eb19351b6fb4d19867321355e8d95b44176eb3",
+    "Backend/src/main/java/vn/syp/tms/ai/AiChatService.java": "4168f767bc3e3a2728b48f79aadcd7a4d81a5e6b522503ce992e342b681706ff",
+    "Frontend/src/app/features/ai/aiErrors.js": "9032c4779f795a4481e7815ffd65e1a485f643040d2b54a238ddbc6ae77a504a"
+  }
+}

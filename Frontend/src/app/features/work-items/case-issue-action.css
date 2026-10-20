@@ -1,0 +1,28 @@
+/* The case preview is portalled outside the table, so its spacing is scoped here. */
+.case-issue-preview {
+  box-sizing: border-box;
+  width: min(320px, calc(100vw - 16px));
+  max-height: min(280px, calc(100dvh - 16px));
+  padding: 16px;
+  border: 1px solid var(--color-border, #d9dede);
+  border-radius: var(--radius-panel, 12px);
+  background: var(--color-surface, #fff);
+  color: var(--color-text-main, #333);
+  box-shadow: 0 8px 24px #163c301f;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.case-issue-preview > strong {
+  display: block;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-light, #e5e8e8);
+  font-size: var(--text-table, 14px);
+  font-weight: 600;
+}
+.case-issue-preview > p { margin: 12px 0; color: var(--color-text-sub, #526460); }
+.case-issue-preview > div:not(.wi-actions) { margin: 0; padding: 12px 0; border-bottom: 1px solid var(--color-border-light, #e5e8e8); }
+.case-issue-preview .d-issue-key { display: block; width: 100%; padding: 0; color: var(--color-mint, #0f766e); text-align: left; line-height: 1.6; }
+.case-issue-preview small { margin-top: 4px; color: var(--color-text-sub, #526460); }
+.case-issue-preview > .cat-btn { margin-top: 12px; min-height: 44px; }
+.case-issue-preview .wi-actions { margin-block: 12px; gap: 8px; }
+.case-issue-preview .wi-actions button { min-height: 40px; padding: 8px 12px; border: 1px solid var(--color-border, #d9dede); border-radius: var(--radius-control, 8px); }

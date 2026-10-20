@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-19T15:41:06.986Z",
+  "status": 200,
+  "model": "gpt-5.6-luna",
+  "context": "synthetic data only; no project data",
+  "mode": "text",
+  "responseStatus": "completed",
+  "outputTypes": [
+    "message"
+  ],
+  "textLength": 303,
+  "nonBlank": true
+}
