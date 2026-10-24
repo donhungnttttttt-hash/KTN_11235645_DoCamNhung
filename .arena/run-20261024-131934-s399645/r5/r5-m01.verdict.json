@@ -1,0 +1,14 @@
+﻿{
+  "match": "r5-m01",
+  "scores": {
+    "a036": {"correctness": 9, "completeness": 9, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false},
+    "a012": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false}
+  },
+  "winner": "a036",
+  "reason": "a036 thắng nhờ truy vết xuyên tầng đều hơn và phát hiện có căn cứ khoảng trống tạo Tester của PM trên web để ưu tiên sửa, trong khi a012 phân tích sâu lifecycle/chứng cứ nhưng bỏ sót điểm đứt quy trình tài khoản này; cả ba phản biện của trận đều đã được sửa trong bản cuối, gồm quyền COMPLETE của PM trong a012.",
+  "survived": [
+    "FIXED — QA: B.5 tách Tester/PM tạo, đường ngoại lệ hoặc ADMIN, điều kiện xác nhận và vô hiệu xác nhận khi đổi Dev/reopen; đối chiếu QaService xác nhận đúng.",
+    "FIXED — Inbox: B.6 bổ sung route, FE, API, scope theo vai trò, nguồn dữ liệu, refresh, deep link, phân trang và test; phân biệt kiểm tra tĩnh với runtime."
+  ],
+  "standing": {"a036": [], "a012": []}
+}

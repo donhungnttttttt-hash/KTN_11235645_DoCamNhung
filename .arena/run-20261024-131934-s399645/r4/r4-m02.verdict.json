@@ -1,0 +1,11 @@
+﻿{
+  "match": "r4-m02",
+  "scores": {
+    "a016": {"correctness": 9, "completeness": 9, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false},
+    "a002": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 7, "fatal": false}
+  },
+  "winner": "a016",
+  "reason": "Cả ba phản biện đều FIXED sau đối chiếu bản sửa và source, nhưng a016 nối thêm rule phiên bản, sổ tay, bốn đầu ra Excel và lifecycle vào bản đồ/nghiệm thu tổng thể rõ hơn, trong khi a002 vẫn để rule/sổ tay ngoài khảo sát sâu và phân tán các bổ sung C/D/F trong phần B; a016 còn điểm nhỏ là thứ tự việc thứ ba giữa D và E chưa thống nhất hoàn toàn.",
+  "survived": ["FIXED — bổ sung RulesPanel→RuleService→rule_versions→SettingsReviewTest, pin V1/V2/null và nghiệm thu publish/xung đột", "FIXED — bổ sung HandbookPanel→HandbookService→revision/history, quyền, expectedCurrentRevisionId và nghiệm thu hai tab"],
+  "standing": {"a016": [], "a002": []}
+}

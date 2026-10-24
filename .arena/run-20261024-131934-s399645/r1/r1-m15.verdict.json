@@ -1,0 +1,35 @@
+﻿{
+    "match":  "r1-m15",
+    "scores":  {
+                   "a012":  {
+                                "correctness":  9,
+                                "completeness":  8,
+                                "specificity":  9,
+                                "robustness":  9,
+                                "clarity":  8,
+                                "fatal":  false
+                            },
+                   "a040":  {
+                                "correctness":  6,
+                                "completeness":  8,
+                                "specificity":  8,
+                                "robustness":  4,
+                                "clarity":  8,
+                                "fatal":  false
+                            }
+               },
+    "winner":  "a012",
+    "reason":  "a012 sửa đúng cả hai phản biện và kiểm tra thêm giới hạn 500 run/đợt, trong khi a040 vẫn ưu tiên cải tiến dựa trên ví dụ một đợt 6.000 run không tạo được qua addScope hiện hành. Hai phản biện gốc đối với a040 cũng đã FIXED sau khi đối chiếu bản sửa.",
+    "survived":  [
+                     "FIXED — phân biệt bộ lọc build với thu hẹp số run, ghi nhận bộ chọn đã tồn tại và dùng tổng nhiều cycle cho ca 5.001 run.",
+                     "FIXED — bổ sung truy vết sửa, duyệt revision, run pin revision và phân công lần 2 cùng ca nghiệm thu R1/R2."
+                 ],
+    "standing":  {
+                     "a012":  [
+
+                              ],
+                     "a040":  [
+                                  "MAJOR mới — F3, D3 và E3 dùng một đợt trên 5.000/6.000 run làm tình huống thực tế, nhưng ExecutionService.java:111 chặn vượt 500 run/cycle; không chỉ ra đường tạo dữ liệu ngoại lệ. Giới hạn báo cáo có thật ở tổng nhiều cycle, nên phải sửa tình huống và nghiệm thu tương ứng."
+                              ]
+                 }
+}

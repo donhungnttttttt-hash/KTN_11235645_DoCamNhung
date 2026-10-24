@@ -1,0 +1,25 @@
+﻿{
+  "match": "r2-m08",
+  "scores": {
+    "a008": {"correctness": 8, "completeness": 7, "specificity": 8, "robustness": 7, "clarity": 8, "fatal": false},
+    "a020": {"correctness": 6, "completeness": 7, "specificity": 8, "robustness": 4, "clarity": 7, "fatal": false}
+  },
+  "winner": "a008",
+  "reason": "a008 sửa đầy đủ hai phản biện và giới hạn đề xuất theo luồng hiện hữu, còn a020 lấy một cycle 6.000 run làm căn cứ ưu tiên mở rộng ZIP dù ExecutionService:111 và FileWorkService:174 chặn 500 run/cycle, đồng thời bỏ sót giới hạn 10.000 bug của báo cáo.",
+  "survived": [
+    "FIXED: bổ sung catalog, handbook, rules với FE/API/service/schema/test và tác động archive/publish lên execution/bug",
+    "FIXED: bổ sung giới hạn bug 10.000/10.001 độc lập run, cả summary/export và không thu hẹp theo build"
+  ],
+  "standing": {
+    "a008": [
+      "Khoảng trống còn lại: QA chỉ mô tả Tester xác nhận mà chưa giải thích điều kiện chính Tester tạo, nhánh PM tạo và đóng ngoại lệ; QaService:215,231,238–239.",
+      "Bản đồ vẫn thiếu luồng chứng cứ upload/download/delete và phục hồi DB cùng blob; một số module chỉ được truy một phần, dù báo cáo thừa nhận rõ giới hạn."
+    ],
+    "a020": [
+      "Hai phản biện nhận được đều FIXED: QA đã phân biệt creator/ngoại lệ/Admin; evidence có chuỗi UI/API/metadata/blob/test và nghiệm thu restore.",
+      "MAJOR mới: ví dụ một cycle 6.000 run và thiết kế ZIP dài dựa trên tình huống không tạo được qua các đường scope hiện hữu bị chặn 500 run/cycle; không chỉ ra nguồn tạo khác hay dữ liệu lịch sử làm ngoại lệ.",
+      "MINOR mới: F03 và nghiệm thu ZIP bỏ giới hạn 10.000 bug liên quan tại ReportingService:112–123, nên ngưỡng run không đủ xác định phạm vi xuất được.",
+      "Thiếu bản đồ catalog/handbook/rules và inbox trong đánh giá tổng thể; QA/evidence bổ sung cải thiện chiều sâu nhưng không bù hết phạm vi còn thiếu."
+    ]
+  }
+}

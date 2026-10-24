@@ -1,0 +1,17 @@
+﻿{
+  "match": "r1-m18",
+  "scores": {
+    "a037": {"correctness": 8, "completeness": 8, "specificity": 8, "robustness": 7, "clarity": 8, "fatal": false},
+    "a008": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 9, "fatal": false}
+  },
+  "winner": "a008",
+  "reason": "a008 bổ sung truy vết các luồng chính và phân biệt chính xác hướng dẫn UI hiện có với thay đổi chỉ cần làm nếu UAT chứng minh, trong khi P2 của a037 vẫn chưa xác định rõ phần chênh lệch cần triển khai.",
+  "survived": [
+    "FIXED — thiếu chuỗi truy vết: bảng bổ sung nối frontend/API/service/DB/test cho bug, retest, tài liệu và thực thi; ghi rõ mắt xích còn chưa khảo sát.",
+    "FIXED — P2 trùng UI hiện có: ghi nhận nhãn và liên kết tại TestDocumentPage:182/189/212, chuyển sang UAT và chỉ di chuyển giải thích một chiều khi cần."
+  ],
+  "standing": {
+    "a037": ["MINOR do giám khảo xác minh: P2/E.3 vẫn đề xuất nhãn và đường xem run mà chưa phân biệt phần đã có tại TestDocumentPage:182/189/212 với phần bổ sung cụ thể; hai attack nhận được về phục hồi lỗi và Inbox đều FIXED."],
+    "a008": []
+  }
+}

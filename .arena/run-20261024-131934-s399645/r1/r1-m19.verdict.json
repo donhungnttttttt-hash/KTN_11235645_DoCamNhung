@@ -1,0 +1,22 @@
+﻿{
+  "match": "r1-m19",
+  "scores": {
+    "a033": {"correctness": 9, "completeness": 8, "specificity": 8, "robustness": 8, "clarity": 9, "fatal": false},
+    "a019": {"correctness": 9, "completeness": 7, "specificity": 9, "robustness": 8, "clarity": 8, "fatal": false}
+  },
+  "winner": "a033",
+  "reason": "a033 bao phủ rõ cả QA do PM tạo và test lần 2 độc lập BUG cùng nghiệm thu tương ứng, trong khi a019 tuy phân tích báo cáo và vòng đời BUG cụ thể hơn vẫn bỏ luồng test lần 2 và diễn giải kết thúc QA còn mỏng.",
+  "survived": [
+    "FIXED — QA tách chính TESTER tạo xác nhận với PM tạo cần đóng ngoại lệ hoặc ADMIN; đối chiếu QaService.java:206–249 xác nhận đúng.",
+    "FIXED — thêm test lần 2 độc lập BUG từ phân công, DRAFT/ACTIVE đến export và ca âm; TestDocumentEditingService.java:79–100 xác nhận phân công dùng run riêng và khóa ngữ cảnh."
+  ],
+  "standing": {
+    "a033": [
+      "Không còn hai attack ban đầu; hạn chế độc lập: bản đồ BUG trước retest còn ở mức entry point, chưa phân tích tạo/gắn/transition và phục hồi đủ sâu, dù báo cáo đã thừa nhận chưa khảo sát đầy đủ."
+    ],
+    "a019": [
+      "Hai attack ban đầu đều FIXED: đã bổ sung sửa tài liệu một chiều và tạo/gắn/xử lý BUG, được kiểm tra với TestDocumentService.java:59–84, WorkItemService.java:145–255 và ReportingService.java:73–89.",
+      "Hạn chế độc lập: chưa có bản đồ hay nghiệm thu test lần 2 không cần BUG; QA vẫn chưa giải thích đường kết thúc riêng khi PM là người tạo."
+    ]
+  }
+}

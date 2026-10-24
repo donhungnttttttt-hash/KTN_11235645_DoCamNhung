@@ -1,0 +1,31 @@
+{
+  "match": "r3-m05",
+  "scores": {
+    "a017": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 10,
+      "clarity": 7,
+      "fatal": false
+    },
+    "a004": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 10,
+      "clarity": 8,
+      "fatal": false
+    }
+  },
+  "winner": "a004",
+  "reason": "Hai bản đều sửa đầy đủ các phản biện, nhưng a004 trình bày ưu tiên dễ dùng hơn và xác minh được khoảng hở UI tạo Tester của PM, trong khi a017 còn bỏ qua đường thao tác này và có các hàng F7–F9 tách khỏi bảng.",
+  "survived": [
+    "FIXED — Attack 1: bảng D đã ghép đúng F01 với phương án pilot, công sức, phụ thuộc và nghiệm thu trong một hàng.",
+    "FIXED — Attack 2: đã nối import, danh tính cấp/tạo/thu hồi, máy và phiên, archive, báo cáo, AI với frontend/API/service/DDL/test; kiểm tra source xác nhận form PM bị chặn và đường cancel phiên đã có."
+  ],
+  "standing": {
+    "a017": [],
+    "a004": []
+  }
+}

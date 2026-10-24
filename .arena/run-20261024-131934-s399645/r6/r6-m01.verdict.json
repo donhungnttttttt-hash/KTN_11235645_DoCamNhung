@@ -1,0 +1,35 @@
+﻿{
+    "match":  "r6-m01",
+    "scores":  {
+                   "a036":  {
+                                "correctness":  9,
+                                "completeness":  8,
+                                "specificity":  9,
+                                "robustness":  10,
+                                "clarity":  7,
+                                "fatal":  false
+                            },
+                   "a016":  {
+                                "correctness":  9,
+                                "completeness":  9,
+                                "specificity":  9,
+                                "robustness":  10,
+                                "clarity":  8,
+                                "fatal":  false
+                            }
+               },
+    "winner":  "a016",
+    "reason":  "Cả hai đã sửa các phản biện trong vòng này, nhưng a016 đánh giá toàn hệ thống đầy đủ hơn bằng truy vết lifecycle công việc thường, NA/chốt/mở lại đợt, bốn đầu ra Excel, lưu trữ chứng cứ và phiên bản rule/sổ tay, đồng thời xếp ưu tiên rõ theo trở ngại người dùng.",
+    "survived":  [
+                     "FIXED — Đường PM tạo TESTER: B và F6 xác định gate ADMIN, D/E bổ sung form hẹp và nghiệm thu cấp–tạo–thu quyền; đối chiếu AdminApp.jsx:19,24 và AdminUsers.jsx:21.",
+                     "FIXED — QA do PM tạo: F7 và D/E phân biệt quyền CONFIRM, ADMIN và đóng ngoại lệ; đối chiếu QaService.java:215,231–239, không kết luận bế tắc."
+                 ],
+    "standing":  {
+                     "a036":  [
+
+                              ],
+                     "a016":  [
+
+                              ]
+                 }
+}

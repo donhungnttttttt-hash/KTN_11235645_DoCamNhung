@@ -1,0 +1,14 @@
+﻿{
+  "match": "r1-m10",
+  "scores": {
+    "a023": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 9, "clarity": 8, "fatal": false},
+    "a029": {"correctness": 7, "completeness": 7, "specificity": 8, "robustness": 6, "clarity": 8, "fatal": false}
+  },
+  "winner": "a023",
+  "reason": "a023 bổ sung chính xác vòng lưu trữ/mở lại cùng blocker và nghiệm thu, trong khi a029 vẫn bỏ luồng này và ưu tiên sửa diễn đạt mọi build mà UI đã có tại ReportsPage.jsx:83.",
+  "survived": ["FIXED: bổ sung lưu trữ/mở lại dự án với UI/API/schema/test, trách nhiệm xử lý blocker, phân biệt cảnh báo Redmine, replay và nghiệm thu sau mở lại; đã đối chiếu ProjectLifecycleService.java:35–76."],
+  "standing": {
+    "a023": ["MINOR, phát hiện bổ sung: tạo/kích hoạt/chốt đợt và hàng đợi mới được nhắc gián tiếp, chưa có trace đầu-cuối chi tiết như các luồng chính."],
+    "a029": ["MAJOR, phát hiện bổ sung: F2 và ưu tiên số 1 không ghi nhận tiêu đề BugTable hiện có 'Lỗi liên quan phạm vi · mọi build' tại ReportsPage.jsx:83; bổ sung điều kiện liên kết còn hữu ích nhưng căn cứ thiếu giải thích mọi build bị phóng đại.", "MAJOR, phát hiện bổ sung: không khảo sát hoặc ghi rõ giới hạn về luồng archive/reopen, bỏ mắt xích kết thúc dự án và blocker máy/outbox khỏi UAT.", "Các công kích gốc đều FIXED: đã thêm bảng test theo luồng và giới hạn, sửa phạm vi bug theo execution link/coverage, bổ sung chuẩn bị đợt/catalog/hàng đợi cùng giới hạn khảo sát."]
+  }
+}

@@ -1,0 +1,14 @@
+﻿{
+  "match": "r3-m02",
+  "scores": {
+    "a008": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false},
+    "a012": {"correctness": 9, "completeness": 9, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false}
+  },
+  "winner": "a012",
+  "reason": "Cả hai sửa đầy đủ các phản biện bằng truy vết phù hợp source, nhưng a012 bao phủ đầu-cuối tốt hơn nhờ phân tích cụ thể bàn giao phiên/máy, QA do PM tạo và archive/reopen, trong khi a008 vẫn để các nhánh này khá mỏng.",
+  "survived": [
+    "FIXED: QA do PM tạo được tách rõ đóng ngoại lệ hoặc ADMIN xác nhận, cùng ma trận quyền và nghiệm thu đúng QaService.",
+    "FIXED: Archive/reopen được truy vết UI/API/DDL, phân biệt blocker với warning và kiểm replay không đảo reopen đúng ProjectLifecycleService."
+  ],
+  "standing": {"a008": [], "a012": []}
+}

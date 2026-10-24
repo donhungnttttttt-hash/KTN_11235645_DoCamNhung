@@ -1,0 +1,1771 @@
+{
+ "version": 1,
+ "created": "2026-10-24 13:19:34",
+ "seed": 399645,
+ "agents_n": 40,
+ "cards_available": 2160,
+ "wave": 3,
+ "dir": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645",
+ "has_baseline": false,
+ "agents": {
+  "a001": {
+   "card": {
+    "reasoning": {
+     "id": "probabilistic",
+     "name": "Probabilistic",
+     "how": "Treat every claim and choice as uncertain. Weigh what is likely, prefer what holds up across most scenarios, and state your confidence where it changes the decision."
+    },
+    "workflow": {
+     "id": "research-then-synthesise",
+     "name": "Research, then synthesise",
+     "how": "Gather every relevant fact first: the task, any files or context it points to, what is known about the domain. Write nothing until the research is done, then synthesise."
+    },
+    "strategy": {
+     "id": "edge-cases-first",
+     "name": "Edge cases first",
+     "how": "Hunt the edge cases, failure modes and weird inputs first, and design the answer around surviving them."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m12.a001.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a022",
+   "byes": 0
+  },
+  "a002": {
+   "card": {
+    "reasoning": {
+     "id": "socratic",
+     "name": "Socratic",
+     "how": "Interrogate the task with the questions a sharp expert would ask before starting. Answer each one explicitly and let the answers decide the shape of the solution."
+    },
+    "workflow": {
+     "id": "outline-first",
+     "name": "Outline first",
+     "how": "Write a skeleton outline, check the outline against every requirement in the task, fix it, and only then fill it in."
+    },
+    "strategy": {
+     "id": "defensive",
+     "name": "Defensive",
+     "how": "Assume the inputs are bad and the conditions are hostile. Make the answer fail safely and loudly rather than quietly."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r4\\r4-m02.a002.solution.md",
+   "alive": false,
+   "eliminated_in": 4,
+   "eliminated_by": "a016",
+   "byes": 0
+  },
+  "a003": {
+   "card": {
+    "reasoning": {
+     "id": "dialectical",
+     "name": "Dialectical",
+     "how": "State the strongest version of one answer, then the strongest opposing answer, then write the synthesis that keeps what is true in both."
+    },
+    "workflow": {
+     "id": "draft-critique-rewrite",
+     "name": "Draft, critique, rewrite",
+     "how": "Write a complete first draft. Critique it line by line against the task as if someone else wrote it. Then rewrite it from scratch using the critique."
+    },
+    "strategy": {
+     "id": "clarity",
+     "name": "Clarity above all",
+     "how": "Make it the easiest answer to read and act on: plain words, obvious structure, nothing the reader has to decode."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r2\\r2-m06.a003.solution.md",
+   "alive": false,
+   "eliminated_in": 2,
+   "eliminated_by": "a017",
+   "byes": 0
+  },
+  "a004": {
+   "card": {
+    "reasoning": {
+     "id": "decomposition",
+     "name": "Decomposition",
+     "how": "Break the task into independent sub-problems. Solve each one completely, then integrate them and test the seams where they meet."
+    },
+    "workflow": {
+     "id": "write-then-restructure",
+     "name": "Write, then restructure",
+     "how": "Write freely and fast. Then outline what you actually wrote, fix the structure, and rewrite it to the new outline."
+    },
+    "strategy": {
+     "id": "defensive",
+     "name": "Defensive",
+     "how": "Assume the inputs are bad and the conditions are hostile. Make the answer fail safely and loudly rather than quietly."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r4\\r4-m01.a004.solution.md",
+   "alive": false,
+   "eliminated_in": 4,
+   "eliminated_by": "a012",
+   "byes": 0
+  },
+  "a005": {
+   "card": {
+    "reasoning": {
+     "id": "probabilistic",
+     "name": "Probabilistic",
+     "how": "Treat every claim and choice as uncertain. Weigh what is likely, prefer what holds up across most scenarios, and state your confidence where it changes the decision."
+    },
+    "workflow": {
+     "id": "test-first",
+     "name": "Test first",
+     "how": "Before writing the answer, write the checks it must pass: acceptance tests for code, pass or fail criteria for anything else. Then write the answer and run every check against it."
+    },
+    "strategy": {
+     "id": "clarity",
+     "name": "Clarity above all",
+     "how": "Make it the easiest answer to read and act on: plain words, obvious structure, nothing the reader has to decode."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r2\\r2-m04.a005.solution.md",
+   "alive": false,
+   "eliminated_in": 2,
+   "eliminated_by": "a012",
+   "byes": 0
+  },
+  "a006": {
+   "card": {
+    "reasoning": {
+     "id": "systems-thinking",
+     "name": "Systems thinking",
+     "how": "Map the moving parts, how they affect each other, and what happens second and third order. Optimise the whole system, not just the one part the task points at."
+    },
+    "workflow": {
+     "id": "open-questions-first",
+     "name": "Open questions first",
+     "how": "List every open question the task leaves. Resolve each one with reasoning or a stated assumption, then answer."
+    },
+    "strategy": {
+     "id": "completeness",
+     "name": "Completeness",
+     "how": "Leave out nothing the task asks for or clearly implies. Cover every requirement explicitly."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m01.a006.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a005",
+   "byes": 0
+  },
+  "a007": {
+   "card": {
+    "reasoning": {
+     "id": "first-principles",
+     "name": "First principles",
+     "how": "Strip the task down to the facts and requirements nobody can argue with. Rebuild the answer from those alone, and keep a convention only if it earns its place again."
+    },
+    "workflow": {
+     "id": "outline-first",
+     "name": "Outline first",
+     "how": "Write a skeleton outline, check the outline against every requirement in the task, fix it, and only then fill it in."
+    },
+    "strategy": {
+     "id": "user-empathy",
+     "name": "User empathy first",
+     "how": "Start from the person who will use this: their situation, their skill level, and what they will actually do next. Shape everything around that."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m04.a007.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a024",
+   "byes": 0
+  },
+  "a008": {
+   "card": {
+    "reasoning": {
+     "id": "decomposition",
+     "name": "Decomposition",
+     "how": "Break the task into independent sub-problems. Solve each one completely, then integrate them and test the seams where they meet."
+    },
+    "workflow": {
+     "id": "options-matrix",
+     "name": "Options matrix",
+     "how": "List the realistic options, score them in a small matrix against the criteria that matter for this task, choose one, and write up the choice."
+    },
+    "strategy": {
+     "id": "edge-cases-first",
+     "name": "Edge cases first",
+     "how": "Hunt the edge cases, failure modes and weird inputs first, and design the answer around surviving them."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r3\\r3-m02.a008.solution.md",
+   "alive": false,
+   "eliminated_in": 3,
+   "eliminated_by": "a012",
+   "byes": 0
+  },
+  "a009": {
+   "card": {
+    "reasoning": {
+     "id": "decomposition",
+     "name": "Decomposition",
+     "how": "Break the task into independent sub-problems. Solve each one completely, then integrate them and test the seams where they meet."
+    },
+    "workflow": {
+     "id": "iterative-deepening",
+     "name": "Iterative deepening",
+     "how": "Write a one-paragraph answer first. Then expand the parts that matter most in two more passes, each one deeper than the last."
+    },
+    "strategy": {
+     "id": "completeness",
+     "name": "Completeness",
+     "how": "Leave out nothing the task asks for or clearly implies. Cover every requirement explicitly."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m13.a009.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a026",
+   "byes": 0
+  },
+  "a010": {
+   "card": {
+    "reasoning": {
+     "id": "constraint-first",
+     "name": "Constraint first",
+     "how": "List every hard constraint, stated and implied: time, budget, tools, format, audience, platform. Solve strictly inside that box and let the tightest constraint drive the design."
+    },
+    "workflow": {
+     "id": "open-questions-first",
+     "name": "Open questions first",
+     "how": "List every open question the task leaves. Resolve each one with reasoning or a stated assumption, then answer."
+    },
+    "strategy": {
+     "id": "speed",
+     "name": "Speed",
+     "how": "Optimise for the fastest route to something usable today. Cut anything that does not move the result."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m16.a010.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a011",
+   "byes": 0
+  },
+  "a011": {
+   "card": {
+    "reasoning": {
+     "id": "analogy",
+     "name": "Analogy",
+     "how": "Find a problem in a different field that has already been solved and has the same shape. Port its solution over, then fix every place where the analogy breaks."
+    },
+    "workflow": {
+     "id": "options-matrix",
+     "name": "Options matrix",
+     "how": "List the realistic options, score them in a small matrix against the criteria that matter for this task, choose one, and write up the choice."
+    },
+    "strategy": {
+     "id": "explicit-trade-offs",
+     "name": "Explicit trade-offs",
+     "how": "Name the real trade-offs, choose for the user's most likely constraints, and say plainly what that choice gives up."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r3\\r3-m01.a011.solution.md",
+   "alive": false,
+   "eliminated_in": 3,
+   "eliminated_by": "a002",
+   "byes": 0
+  },
+  "a012": {
+   "card": {
+    "reasoning": {
+     "id": "analogy",
+     "name": "Analogy",
+     "how": "Find a problem in a different field that has already been solved and has the same shape. Port its solution over, then fix every place where the analogy breaks."
+    },
+    "workflow": {
+     "id": "write-then-restructure",
+     "name": "Write, then restructure",
+     "how": "Write freely and fast. Then outline what you actually wrote, fix the structure, and rewrite it to the new outline."
+    },
+    "strategy": {
+     "id": "completeness",
+     "name": "Completeness",
+     "how": "Leave out nothing the task asks for or clearly implies. Cover every requirement explicitly."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r5\\r5-m01.a012.solution.md",
+   "alive": false,
+   "eliminated_in": 5,
+   "eliminated_by": "a036",
+   "byes": 0
+  },
+  "a013": {
+   "card": {
+    "reasoning": {
+     "id": "evidence-first",
+     "name": "Evidence first",
+     "how": "Ground every claim in something checkable: the task text, the files it points to, the numbers given, documentation. Anything you cannot check gets labelled as an assumption."
+    },
+    "workflow": {
+     "id": "three-drafts",
+     "name": "Three drafts, pick one",
+     "how": "Write three short, genuinely different approaches. Pick the strongest on the task's own terms and develop only that one fully."
+    },
+    "strategy": {
+     "id": "concrete-specifics",
+     "name": "Concrete specifics",
+     "how": "Exact numbers, names, commands, file paths and steps. Zero generic advice."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m02.a013.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a004",
+   "byes": 0
+  },
+  "a014": {
+   "card": {
+    "reasoning": {
+     "id": "contrarian",
+     "name": "Contrarian",
+     "how": "Write down the obvious default answer, then argue seriously against it. Keep only what survives the argument, even if that takes you the unpopular way."
+    },
+    "workflow": {
+     "id": "build-then-break",
+     "name": "Build, then break",
+     "how": "Build the answer. Then throw five hostile inputs or scenarios at it, write down what breaks, and patch every break."
+    },
+    "strategy": {
+     "id": "clarity",
+     "name": "Clarity above all",
+     "how": "Make it the easiest answer to read and act on: plain words, obvious structure, nothing the reader has to decode."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r2\\r2-m07.a014.solution.md",
+   "alive": false,
+   "eliminated_in": 2,
+   "eliminated_by": "a004",
+   "byes": 0
+  },
+  "a015": {
+   "card": {
+    "reasoning": {
+     "id": "expert-panel",
+     "name": "Expert panel",
+     "how": "Answer the task as three different experts would, picking roles that fit it. Take the strongest idea from each and settle every point where they disagree."
+    },
+    "workflow": {
+     "id": "iterative-deepening",
+     "name": "Iterative deepening",
+     "how": "Write a one-paragraph answer first. Then expand the parts that matter most in two more passes, each one deeper than the last."
+    },
+    "strategy": {
+     "id": "maximal-rigour",
+     "name": "Maximal rigour",
+     "how": "Be exhaustive and exact. Check every step, verify every claim, and leave no hand-waving anywhere."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r2\\r2-m03.a015.solution.md",
+   "alive": false,
+   "eliminated_in": 2,
+   "eliminated_by": "a016",
+   "byes": 0
+  },
+  "a016": {
+   "card": {
+    "reasoning": {
+     "id": "analogy",
+     "name": "Analogy",
+     "how": "Find a problem in a different field that has already been solved and has the same shape. Port its solution over, then fix every place where the analogy breaks."
+    },
+    "workflow": {
+     "id": "three-drafts",
+     "name": "Three drafts, pick one",
+     "how": "Write three short, genuinely different approaches. Pick the strongest on the task's own terms and develop only that one fully."
+    },
+    "strategy": {
+     "id": "simplest",
+     "name": "Simplest thing that works",
+     "how": "Pick the least complicated answer that fully does the job. Every extra part has to justify itself."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r6\\r6-m01.a016.solution.md",
+   "alive": true,
+   "eliminated_in": null,
+   "eliminated_by": null,
+   "byes": 1
+  },
+  "a017": {
+   "card": {
+    "reasoning": {
+     "id": "adversarial",
+     "name": "Adversarial",
+     "how": "Picture the harshest expert reviewer trying to tear the answer apart. Write their attacks down first and build the answer backwards from them."
+    },
+    "workflow": {
+     "id": "test-first",
+     "name": "Test first",
+     "how": "Before writing the answer, write the checks it must pass: acceptance tests for code, pass or fail criteria for anything else. Then write the answer and run every check against it."
+    },
+    "strategy": {
+     "id": "maximal-rigour",
+     "name": "Maximal rigour",
+     "how": "Be exhaustive and exact. Check every step, verify every claim, and leave no hand-waving anywhere."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r3\\r3-m05.a017.solution.md",
+   "alive": false,
+   "eliminated_in": 3,
+   "eliminated_by": "a004",
+   "byes": 0
+  },
+  "a018": {
+   "card": {
+    "reasoning": {
+     "id": "inversion",
+     "name": "Inversion",
+     "how": "Ask what would make this answer fail. List every way it could, then build the answer that makes each of those failures impossible."
+    },
+    "workflow": {
+     "id": "smallest-version-first",
+     "name": "Smallest version first",
+     "how": "Produce the smallest complete version that actually works. Then extend it one step at a time, keeping it working after every step."
+    },
+    "strategy": {
+     "id": "explicit-trade-offs",
+     "name": "Explicit trade-offs",
+     "how": "Name the real trade-offs, choose for the user's most likely constraints, and say plainly what that choice gives up."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m05.a018.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a020",
+   "byes": 0
+  },
+  "a019": {
+   "card": {
+    "reasoning": {
+     "id": "expert-panel",
+     "name": "Expert panel",
+     "how": "Answer the task as three different experts would, picking roles that fit it. Take the strongest idea from each and settle every point where they disagree."
+    },
+    "workflow": {
+     "id": "three-drafts",
+     "name": "Three drafts, pick one",
+     "how": "Write three short, genuinely different approaches. Pick the strongest on the task's own terms and develop only that one fully."
+    },
+    "strategy": {
+     "id": "speed",
+     "name": "Speed",
+     "how": "Optimise for the fastest route to something usable today. Cut anything that does not move the result."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m19.a019.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a033",
+   "byes": 0
+  },
+  "a020": {
+   "card": {
+    "reasoning": {
+     "id": "working-backwards",
+     "name": "Working backwards",
+     "how": "Describe the finished result precisely, as if it already exists. Then work backwards, step by step, to where the user is right now."
+    },
+    "workflow": {
+     "id": "outline-first",
+     "name": "Outline first",
+     "how": "Write a skeleton outline, check the outline against every requirement in the task, fix it, and only then fill it in."
+    },
+    "strategy": {
+     "id": "concrete-specifics",
+     "name": "Concrete specifics",
+     "how": "Exact numbers, names, commands, file paths and steps. Zero generic advice."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r2\\r2-m08.a020.solution.md",
+   "alive": false,
+   "eliminated_in": 2,
+   "eliminated_by": "a008",
+   "byes": 0
+  },
+  "a021": {
+   "card": {
+    "reasoning": {
+     "id": "adversarial",
+     "name": "Adversarial",
+     "how": "Picture the harshest expert reviewer trying to tear the answer apart. Write their attacks down first and build the answer backwards from them."
+    },
+    "workflow": {
+     "id": "open-questions-first",
+     "name": "Open questions first",
+     "how": "List every open question the task leaves. Resolve each one with reasoning or a stated assumption, then answer."
+    },
+    "strategy": {
+     "id": "simplest",
+     "name": "Simplest thing that works",
+     "how": "Pick the least complicated answer that fully does the job. Every extra part has to justify itself."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m06.a021.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a016",
+   "byes": 0
+  },
+  "a022": {
+   "card": {
+    "reasoning": {
+     "id": "socratic",
+     "name": "Socratic",
+     "how": "Interrogate the task with the questions a sharp expert would ask before starting. Answer each one explicitly and let the answers decide the shape of the solution."
+    },
+    "workflow": {
+     "id": "requirements-checklist",
+     "name": "Requirements checklist",
+     "how": "Pull every requirement out of the task into a numbered list. Solve, then tick each item off and say exactly where it is met."
+    },
+    "strategy": {
+     "id": "edge-cases-first",
+     "name": "Edge cases first",
+     "how": "Hunt the edge cases, failure modes and weird inputs first, and design the answer around surviving them."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r2\\r2-m10.a022.solution.md",
+   "alive": false,
+   "eliminated_in": 2,
+   "eliminated_by": "a011",
+   "byes": 0
+  },
+  "a023": {
+   "card": {
+    "reasoning": {
+     "id": "adversarial",
+     "name": "Adversarial",
+     "how": "Picture the harshest expert reviewer trying to tear the answer apart. Write their attacks down first and build the answer backwards from them."
+    },
+    "workflow": {
+     "id": "smallest-version-first",
+     "name": "Smallest version first",
+     "how": "Produce the smallest complete version that actually works. Then extend it one step at a time, keeping it working after every step."
+    },
+    "strategy": {
+     "id": "user-empathy",
+     "name": "User empathy first",
+     "how": "Start from the person who will use this: their situation, their skill level, and what they will actually do next. Shape everything around that."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r3\\r3-m04.a023.solution.md",
+   "alive": false,
+   "eliminated_in": 3,
+   "eliminated_by": "a036",
+   "byes": 0
+  },
+  "a024": {
+   "card": {
+    "reasoning": {
+     "id": "working-backwards",
+     "name": "Working backwards",
+     "how": "Describe the finished result precisely, as if it already exists. Then work backwards, step by step, to where the user is right now."
+    },
+    "workflow": {
+     "id": "draft-critique-rewrite",
+     "name": "Draft, critique, rewrite",
+     "how": "Write a complete first draft. Critique it line by line against the task as if someone else wrote it. Then rewrite it from scratch using the critique."
+    },
+    "strategy": {
+     "id": "explicit-trade-offs",
+     "name": "Explicit trade-offs",
+     "how": "Name the real trade-offs, choose for the user's most likely constraints, and say plainly what that choice gives up."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r3\\r3-m03.a024.solution.md",
+   "alive": false,
+   "eliminated_in": 3,
+   "eliminated_by": "a016",
+   "byes": 0
+  },
+  "a025": {
+   "card": {
+    "reasoning": {
+     "id": "worked-example",
+     "name": "Worked example",
+     "how": "Solve one concrete, realistic instance end to end first, with real values. Generalise only from what that example actually taught you."
+    },
+    "workflow": {
+     "id": "write-then-restructure",
+     "name": "Write, then restructure",
+     "how": "Write freely and fast. Then outline what you actually wrote, fix the structure, and rewrite it to the new outline."
+    },
+    "strategy": {
+     "id": "speed",
+     "name": "Speed",
+     "how": "Optimise for the fastest route to something usable today. Cut anything that does not move the result."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m17.a025.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a039",
+   "byes": 0
+  },
+  "a026": {
+   "card": {
+    "reasoning": {
+     "id": "worked-example",
+     "name": "Worked example",
+     "how": "Solve one concrete, realistic instance end to end first, with real values. Generalise only from what that example actually taught you."
+    },
+    "workflow": {
+     "id": "iterative-deepening",
+     "name": "Iterative deepening",
+     "how": "Write a one-paragraph answer first. Then expand the parts that matter most in two more passes, each one deeper than the last."
+    },
+    "strategy": {
+     "id": "clarity",
+     "name": "Clarity above all",
+     "how": "Make it the easiest answer to read and act on: plain words, obvious structure, nothing the reader has to decode."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r2\\r2-m05.a026.solution.md",
+   "alive": false,
+   "eliminated_in": 2,
+   "eliminated_by": "a036",
+   "byes": 0
+  },
+  "a027": {
+   "card": {
+    "reasoning": {
+     "id": "socratic",
+     "name": "Socratic",
+     "how": "Interrogate the task with the questions a sharp expert would ask before starting. Answer each one explicitly and let the answers decide the shape of the solution."
+    },
+    "workflow": {
+     "id": "draft-critique-rewrite",
+     "name": "Draft, critique, rewrite",
+     "how": "Write a complete first draft. Critique it line by line against the task as if someone else wrote it. Then rewrite it from scratch using the critique."
+    },
+    "strategy": {
+     "id": "maximal-rigour",
+     "name": "Maximal rigour",
+     "how": "Be exhaustive and exact. Check every step, verify every claim, and leave no hand-waving anywhere."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m08.a027.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a014",
+   "byes": 0
+  },
+  "a028": {
+   "card": {
+    "reasoning": {
+     "id": "contrarian",
+     "name": "Contrarian",
+     "how": "Write down the obvious default answer, then argue seriously against it. Keep only what survives the argument, even if that takes you the unpopular way."
+    },
+    "workflow": {
+     "id": "draft-critique-rewrite",
+     "name": "Draft, critique, rewrite",
+     "how": "Write a complete first draft. Critique it line by line against the task as if someone else wrote it. Then rewrite it from scratch using the critique."
+    },
+    "strategy": {
+     "id": "fewest-moving-parts",
+     "name": "Fewest moving parts",
+     "how": "Remove things until it breaks, then put the last one back. Fewer steps, fewer dependencies, fewer words."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m14.a028.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a017",
+   "byes": 0
+  },
+  "a029": {
+   "card": {
+    "reasoning": {
+     "id": "first-principles",
+     "name": "First principles",
+     "how": "Strip the task down to the facts and requirements nobody can argue with. Rebuild the answer from those alone, and keep a convention only if it earns its place again."
+    },
+    "workflow": {
+     "id": "build-then-break",
+     "name": "Build, then break",
+     "how": "Build the answer. Then throw five hostile inputs or scenarios at it, write down what breaks, and patch every break."
+    },
+    "strategy": {
+     "id": "fewest-moving-parts",
+     "name": "Fewest moving parts",
+     "how": "Remove things until it breaks, then put the last one back. Fewer steps, fewer dependencies, fewer words."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m10.a029.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a023",
+   "byes": 0
+  },
+  "a030": {
+   "card": {
+    "reasoning": {
+     "id": "inversion",
+     "name": "Inversion",
+     "how": "Ask what would make this answer fail. List every way it could, then build the answer that makes each of those failures impossible."
+    },
+    "workflow": {
+     "id": "research-then-synthesise",
+     "name": "Research, then synthesise",
+     "how": "Gather every relevant fact first: the task, any files or context it points to, what is known about the domain. Write nothing until the research is done, then synthesise."
+    },
+    "strategy": {
+     "id": "built-to-last",
+     "name": "Built to last",
+     "how": "Optimise for how this holds up in six months: easy to maintain, easy to extend, no traps for the next person."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m09.a030.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a015",
+   "byes": 0
+  },
+  "a031": {
+   "card": {
+    "reasoning": {
+     "id": "first-principles",
+     "name": "First principles",
+     "how": "Strip the task down to the facts and requirements nobody can argue with. Rebuild the answer from those alone, and keep a convention only if it earns its place again."
+    },
+    "workflow": {
+     "id": "requirements-checklist",
+     "name": "Requirements checklist",
+     "how": "Pull every requirement out of the task into a numbered list. Solve, then tick each item off and say exactly where it is met."
+    },
+    "strategy": {
+     "id": "built-to-last",
+     "name": "Built to last",
+     "how": "Optimise for how this holds up in six months: easy to maintain, easy to extend, no traps for the next person."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m20.a031.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a034",
+   "byes": 0
+  },
+  "a032": {
+   "card": {
+    "reasoning": {
+     "id": "constraint-first",
+     "name": "Constraint first",
+     "how": "List every hard constraint, stated and implied: time, budget, tools, format, audience, platform. Solve strictly inside that box and let the tightest constraint drive the design."
+    },
+    "workflow": {
+     "id": "test-first",
+     "name": "Test first",
+     "how": "Before writing the answer, write the checks it must pass: acceptance tests for code, pass or fail criteria for anything else. Then write the answer and run every check against it."
+    },
+    "strategy": {
+     "id": "fewest-moving-parts",
+     "name": "Fewest moving parts",
+     "how": "Remove things until it breaks, then put the last one back. Fewer steps, fewer dependencies, fewer words."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m07.a032.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a036",
+   "byes": 0
+  },
+  "a033": {
+   "card": {
+    "reasoning": {
+     "id": "evidence-first",
+     "name": "Evidence first",
+     "how": "Ground every claim in something checkable: the task text, the files it points to, the numbers given, documentation. Anything you cannot check gets labelled as an assumption."
+    },
+    "workflow": {
+     "id": "iterative-deepening",
+     "name": "Iterative deepening",
+     "how": "Write a one-paragraph answer first. Then expand the parts that matter most in two more passes, each one deeper than the last."
+    },
+    "strategy": {
+     "id": "fewest-moving-parts",
+     "name": "Fewest moving parts",
+     "how": "Remove things until it breaks, then put the last one back. Fewer steps, fewer dependencies, fewer words."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r2\\r2-m09.a033.solution.md",
+   "alive": false,
+   "eliminated_in": 2,
+   "eliminated_by": "a024",
+   "byes": 0
+  },
+  "a034": {
+   "card": {
+    "reasoning": {
+     "id": "working-backwards",
+     "name": "Working backwards",
+     "how": "Describe the finished result precisely, as if it already exists. Then work backwards, step by step, to where the user is right now."
+    },
+    "workflow": {
+     "id": "build-then-break",
+     "name": "Build, then break",
+     "how": "Build the answer. Then throw five hostile inputs or scenarios at it, write down what breaks, and patch every break."
+    },
+    "strategy": {
+     "id": "user-empathy",
+     "name": "User empathy first",
+     "how": "Start from the person who will use this: their situation, their skill level, and what they will actually do next. Shape everything around that."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r2\\r2-m02.a034.solution.md",
+   "alive": false,
+   "eliminated_in": 2,
+   "eliminated_by": "a002",
+   "byes": 0
+  },
+  "a035": {
+   "card": {
+    "reasoning": {
+     "id": "evidence-first",
+     "name": "Evidence first",
+     "how": "Ground every claim in something checkable: the task text, the files it points to, the numbers given, documentation. Anything you cannot check gets labelled as an assumption."
+    },
+    "workflow": {
+     "id": "options-matrix",
+     "name": "Options matrix",
+     "how": "List the realistic options, score them in a small matrix against the criteria that matter for this task, choose one, and write up the choice."
+    },
+    "strategy": {
+     "id": "maximal-rigour",
+     "name": "Maximal rigour",
+     "how": "Be exhaustive and exact. Check every step, verify every claim, and leave no hand-waving anywhere."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m11.a035.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a003",
+   "byes": 0
+  },
+  "a036": {
+   "card": {
+    "reasoning": {
+     "id": "contrarian",
+     "name": "Contrarian",
+     "how": "Write down the obvious default answer, then argue seriously against it. Keep only what survives the argument, even if that takes you the unpopular way."
+    },
+    "workflow": {
+     "id": "requirements-checklist",
+     "name": "Requirements checklist",
+     "how": "Pull every requirement out of the task into a numbered list. Solve, then tick each item off and say exactly where it is met."
+    },
+    "strategy": {
+     "id": "defensive",
+     "name": "Defensive",
+     "how": "Assume the inputs are bad and the conditions are hostile. Make the answer fail safely and loudly rather than quietly."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r6\\r6-m01.a036.solution.md",
+   "alive": false,
+   "eliminated_in": 6,
+   "eliminated_by": "a016",
+   "byes": 1
+  },
+  "a037": {
+   "card": {
+    "reasoning": {
+     "id": "inversion",
+     "name": "Inversion",
+     "how": "Ask what would make this answer fail. List every way it could, then build the answer that makes each of those failures impossible."
+    },
+    "workflow": {
+     "id": "test-first",
+     "name": "Test first",
+     "how": "Before writing the answer, write the checks it must pass: acceptance tests for code, pass or fail criteria for anything else. Then write the answer and run every check against it."
+    },
+    "strategy": {
+     "id": "concrete-specifics",
+     "name": "Concrete specifics",
+     "how": "Exact numbers, names, commands, file paths and steps. Zero generic advice."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m18.a037.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a008",
+   "byes": 0
+  },
+  "a038": {
+   "card": {
+    "reasoning": {
+     "id": "systems-thinking",
+     "name": "Systems thinking",
+     "how": "Map the moving parts, how they affect each other, and what happens second and third order. Optimise the whole system, not just the one part the task points at."
+    },
+    "workflow": {
+     "id": "smallest-version-first",
+     "name": "Smallest version first",
+     "how": "Produce the smallest complete version that actually works. Then extend it one step at a time, keeping it working after every step."
+    },
+    "strategy": {
+     "id": "built-to-last",
+     "name": "Built to last",
+     "how": "Optimise for how this holds up in six months: easy to maintain, easy to extend, no traps for the next person."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m03.a038.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a002",
+   "byes": 0
+  },
+  "a039": {
+   "card": {
+    "reasoning": {
+     "id": "systems-thinking",
+     "name": "Systems thinking",
+     "how": "Map the moving parts, how they affect each other, and what happens second and third order. Optimise the whole system, not just the one part the task points at."
+    },
+    "workflow": {
+     "id": "research-then-synthesise",
+     "name": "Research, then synthesise",
+     "how": "Gather every relevant fact first: the task, any files or context it points to, what is known about the domain. Write nothing until the research is done, then synthesise."
+    },
+    "strategy": {
+     "id": "simplest",
+     "name": "Simplest thing that works",
+     "how": "Pick the least complicated answer that fully does the job. Every extra part has to justify itself."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r2\\r2-m01.a039.solution.md",
+   "alive": false,
+   "eliminated_in": 2,
+   "eliminated_by": "a023",
+   "byes": 0
+  },
+  "a040": {
+   "card": {
+    "reasoning": {
+     "id": "dialectical",
+     "name": "Dialectical",
+     "how": "State the strongest version of one answer, then the strongest opposing answer, then write the synthesis that keeps what is true in both."
+    },
+    "workflow": {
+     "id": "build-then-break",
+     "name": "Build, then break",
+     "how": "Build the answer. Then throw five hostile inputs or scenarios at it, write down what breaks, and patch every break."
+    },
+    "strategy": {
+     "id": "speed",
+     "name": "Speed",
+     "how": "Optimise for the fastest route to something usable today. Cut anything that does not move the result."
+    }
+   },
+   "solution": "E:\\KLTN\\System\\KTN_11235645_DoCamNhung\\.arena\\run-20261024-131934-s399645\\r1\\r1-m15.a040.solution.md",
+   "alive": false,
+   "eliminated_in": 1,
+   "eliminated_by": "a012",
+   "byes": 0
+  }
+ },
+ "rounds": [
+  {
+   "n": 1,
+   "alive": [
+    "a001",
+    "a002",
+    "a003",
+    "a004",
+    "a005",
+    "a006",
+    "a007",
+    "a008",
+    "a009",
+    "a010",
+    "a011",
+    "a012",
+    "a013",
+    "a014",
+    "a015",
+    "a016",
+    "a017",
+    "a018",
+    "a019",
+    "a020",
+    "a021",
+    "a022",
+    "a023",
+    "a024",
+    "a025",
+    "a026",
+    "a027",
+    "a028",
+    "a029",
+    "a030",
+    "a031",
+    "a032",
+    "a033",
+    "a034",
+    "a035",
+    "a036",
+    "a037",
+    "a038",
+    "a039",
+    "a040"
+   ],
+   "matches": [
+    {
+     "id": "r1-m01",
+     "a": "a005",
+     "b": "a006",
+     "winner": "a005",
+     "loser": "a006",
+     "reason": "C\u1ea3 hai \u0111\u00e3 s\u1eeda c\u00e1c ph\u1ea3n bi\u1ec7n nh\u1eadn \u0111\u01b0\u1ee3c (a006 s\u1eeda ph\u1ea1m vi bug v\u00e0 b\u1ed5 sung archive/reopen), nh\u01b0ng a005 n\u1ed1i FE/API/service/schema/test v\u00e0 ch\u1ec9 r\u00f5 t\u1ea7ng ch\u01b0a kh\u1ea3o s\u00e1t t\u1ed1t h\u01a1n, \u0111\u00e1nh gi\u00e1 ri\u00eang inbox/test l\u1ea7n 2, \u0111\u1ed3ng th\u1eddi \u0111\u01b0a ra c\u1ea3i ti\u1ebfn l\u1ecbch s\u1eed \u00f4 c\u00f3 b\u1eb1ng ch\u1ee9ng tr\u1ef1c ti\u1ebfp v\u00e0 nghi\u1ec7m thu c\u1ee5 th\u1ec3 h\u01a1n; b\u1ea3n \u0111\u1ed3 nhi\u1ec1u mi\u1ec1n c\u1ee7a a006 v\u1eabn m\u1ecfng v\u00e0 hai \u01b0u ti\u00ean \u0111\u1ea7u c\u00f9ng thu\u1ed9c m\u1ed9t pilot.",
+     "survived": [
+      "FIXED \u2014 B\u1ecf gi\u1ea3 \u0111\u1ecbnh cycle v\u01b0\u1ee3t 500 run; v\u00ed d\u1ee5 6.000 run thu\u1ed9c nhi\u1ec1u cycle, d\u00f9ng l\u1ecdc cycle hi\u1ec7n c\u00f3 tr\u01b0\u1edbc khi m\u1edf r\u1ed9ng xu\u1ea5t.",
+      "FIXED \u2014 B\u1ed5 sung inbox, ph\u00e2n c\u00f4ng/\u0111\u1ed5i ng\u01b0\u1eddi test l\u1ea7n 2 v\u00e0 k\u1ebft qu\u1ea3 tr\u1edf l\u1ea1i t\u00e0i li\u1ec7u; kh\u00f4ng nh\u1ea7m v\u1edbi retest BUG ho\u1eb7c m\u1eb7c \u0111\u1ecbnh l\u01b0\u1ee3t l\u1ea7n 2 xu\u1ea5t hi\u1ec7n trong inbox.",
+      "FIXED \u2014 B\u1ed5 sung chu\u1ed7i FE/API/backend/database/test cho c\u00e1c tuy\u1ebfn tr\u1ecdng t\u00e2m v\u00e0 \u0111\u00e1nh d\u1ea5u r\u00f5 c\u00e1c m\u1eaft x\u00edch ch\u01b0a \u0111\u1ed1i chi\u1ebfu."
+     ],
+     "scores": {
+      "a005": 88.5,
+      "a006": 84.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m02",
+     "a": "a004",
+     "b": "a013",
+     "winner": "a004",
+     "loser": "a013",
+     "reason": "a004 x\u1eed l\u00fd \u0111\u1ee7 hai ph\u1ea3n bi\u1ec7n v\u00e0 chuy\u1ec3n \u0111\u1ec1 xu\u1ea5t UI tr\u00f9ng hi\u1ec7n tr\u1ea1ng th\u00e0nh ki\u1ec3m ch\u1ee9ng UAT c\u00f3 \u0111i\u1ec1u ki\u1ec7n, trong khi a013 v\u1eabn \u01b0u ti\u00ean s\u1eeda nh\u00e3n ch\u01b0a ch\u1ee9ng minh kho\u1ea3ng tr\u1ed1ng d\u00f9 \u0111\u00e3 b\u1ed5 sung t\u1ed1t v\u00f2ng \u0111\u1eddi d\u1ef1 \u00e1n.",
+     "survived": [
+      "FIXED \u2014 Attack 1: b\u1ed5 sung truy v\u1ebft import, file execution, QA, retest v\u00e0 Redmine qua component, API, service, schema, test; ghi r\u00f5 t\u1eebng m\u1eaft x\u00edch ch\u01b0a kh\u1ea3o s\u00e1t.",
+      "FIXED \u2014 Attack 2: F02/D/E ghi nh\u1eadn nh\u00e3n, l\u1ecbch s\u1eed v\u00e0 li\u00ean k\u1ebft hi\u1ec7n c\u00f3; ki\u1ec3m ch\u1ee9ng m\u1ee9c hi\u1ec3u tr\u01b0\u1edbc khi quy\u1ebft \u0111\u1ecbnh s\u1eeda UI."
+     ],
+     "scores": {
+      "a004": 87.0,
+      "a013": 78.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m03",
+     "a": "a002",
+     "b": "a038",
+     "winner": "a002",
+     "loser": "a038",
+     "reason": "a002 ph\u00e2n t\u00edch c\u1ee5 th\u1ec3 h\u01a1n chu\u1ed7i NA\u2013ch\u1ed1t\u2013m\u1edf\u2013kh\u00f4i ph\u1ee5c, t\u00e1c \u0111\u1ed9ng coverage/KPI v\u00e0 ph\u1ee5c h\u1ed3i l\u01b0u t\u1eebng ph\u1ea7n, trong khi a038 \u0111\u00e3 s\u1eeda hai ph\u1ea3n bi\u1ec7n nh\u1eadn \u0111\u01b0\u1ee3c nh\u01b0ng v\u1eabn b\u1ecf ng\u1ecf nghi\u1ec7p v\u1ee5 k\u1ebft th\u00fac \u0111\u1ee3t trong \u0111\u00e1nh gi\u00e1 \u0111\u1ea7u-cu\u1ed1i.",
+     "survived": [
+      "FIXED \u2014 B\u1ed5 sung NA/ch\u1ed1t/m\u1edf \u0111\u1ee3t, guard, coverage h\u1ee7y so v\u1edbi request t\u1ea1m d\u1eebng, m\u1eabu s\u1ed1 KPI v\u00e0 h\u00e0nh tr\u00ecnh nghi\u1ec7m thu; \u0111\u1ed1i chi\u1ebfu CycleDecisionService.java:27\u201392, ReportMetrics.java:17\u201324 v\u00e0 RetestIntegrationTest.java:95\u2013119 x\u00e1c nh\u1eadn n\u1ed9i dung.",
+      "FIXED \u2014 B\u1ed5 sung b\u1ea3ng test \u0111\u1ea1i di\u1ec7n theo c\u00e1c chu\u1ed7i ch\u00ednh, t\u00e1ch \u0111\u1ecbnh v\u1ecb khai b\u00e1o/\u0111\u1ecdc assertions/ch\u01b0a ch\u1ea1y, n\u1ed1i b\u1ed9 h\u1ed3i quy v\u1edbi \u0111\u1ec1 xu\u1ea5t nghi\u1ec7m thu."
+     ],
+     "scores": {
+      "a002": 82.5,
+      "a038": 72.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m04",
+     "a": "a024",
+     "b": "a007",
+     "winner": "a024",
+     "loser": "a007",
+     "reason": "a024 b\u1ed5 sung \u0111\u01b0\u1ee3c chu\u1ed7i chu\u1ea9n b\u1ecb xuy\u00ean t\u1ea7ng v\u00e0 c\u00e1c \u0111\u01b0\u1eddng ph\u1ee5c h\u1ed3i c\u00f3 ch\u1ee9ng c\u1ee9, \u0111\u1ed3ng th\u1eddi tr\u00e1nh v\u00ed d\u1ee5 m\u1ed9t cycle 5.001 run ch\u01b0a c\u00f3 c\u0103n c\u1ee9 trong lu\u1ed3ng b\u1ecb gi\u1edbi h\u1ea1n 500 run m\u00e0 a007 v\u1eabn d\u00f9ng.",
+     "survived": [
+      "FIXED \u2014 ATTACK 1: c\u00f4ng nh\u1eadn nh\u00e3n v\u00e0 li\u00ean k\u1ebft l\u1ecbch s\u1eed hi\u1ec7n h\u1eefu, chuy\u1ec3n \u0111\u1ec1 xu\u1ea5t th\u00e0nh UAT c\u00f3 \u0111i\u1ec1u ki\u1ec7n thay v\u00ec x\u00e2y tr\u00f9ng.",
+      "FIXED \u2014 ATTACK 2: b\u1ed5 sung d\u1ef1 \u00e1n/membership, import/preview/commit, duy\u1ec7t, cycle/scope, giao file v\u00e0 phi\u00ean m\u00e1y v\u1edbi guard, ph\u1ee5c h\u1ed3i v\u00e0 test ngu\u1ed3n."
+     ],
+     "scores": {
+      "a024": 87.0,
+      "a007": 76.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m05",
+     "a": "a020",
+     "b": "a018",
+     "winner": "a020",
+     "loser": "a018",
+     "reason": "a020 nh\u1ec9nh h\u01a1n nh\u1edd ph\u00e1t hi\u1ec7n ph\u1ea3n h\u1ed3i l\u01b0u b\u1ecb m\u1ea5t khi r\u1eddi trang c\u00f3 c\u0103n c\u1ee9 tr\u1ef1c ti\u1ebfp v\u00e0 ph\u01b0\u01a1ng \u00e1n nghi\u1ec7m thu, xu\u1ea5t \u0111\u1ee3t l\u1edbn c\u1ee5 th\u1ec3 h\u01a1n; c\u1ea3 hai \u0111\u00e3 s\u1eeda c\u00e1c c\u00f4ng k\u00edch, d\u00f9 b\u1ea3n \u0111\u1ed3 m\u1ed9t s\u1ed1 module v\u1eabn ch\u1ec9 kh\u1ea3o s\u00e1t ch\u1ecdn m\u1eabu.",
+     "survived": [
+      "FIXED \u2014 Attack 1: b\u1ed5 sung chu\u1ed7i t\u1ea1o BUG t\u1eeb NG, l\u1ecdc/triage/batch, quy\u1ec1n Dev, comment v\u00e0 test tr\u01b0\u1edbc retest.",
+      "FIXED \u2014 Attack 2: x\u00e1c \u0111\u1ecbnh ZIP m\u1ed9t snapshot, ph\u00e2n l\u00f4 run ID, manifest, gi\u1edbi h\u1ea1n v\u00e0 gate benchmark cho \u0111\u1ee3t 6.000 run."
+     ],
+     "scores": {
+      "a020": 88.5,
+      "a018": 88.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m06",
+     "a": "a021",
+     "b": "a016",
+     "winner": "a016",
+     "loser": "a021",
+     "reason": "a016 s\u1eeda \u0111\u1ee7 hai ph\u1ea3n bi\u1ec7n v\u00e0 n\u1ed1i \u0111\u00fang b\u01b0\u1edbc DRAFT\u2013scope\u2013activate, trong khi a021 v\u1eabn \u0111\u1ec1 xu\u1ea5t x\u1eed l\u00fd m\u1ed9t cycle v\u01b0\u1ee3t 5.000 run d\u00f9 ExecutionService.java:111 ch\u1eb7n 500 run m\u1ed7i cycle, l\u00e0m sai t\u00ecnh hu\u1ed1ng v\u00e0 c\u0103n c\u1ee9 \u01b0u ti\u00ean export.",
+     "survived": [
+      "FIXED \u2014 B\u1ed5 sung chu\u1ea9n b\u1ecb c\u1ea5u h\u00ecnh/ph\u1ea1m vi, activate, kh\u00f3a baseline v\u00e0 t\u01b0\u01a1ng t\u00e1c giao file; \u0111\u1ed1i chi\u1ebfu ExecutionService.java:97\u2013132 v\u00e0 FileWorkService.java:96\u2013123,180 x\u00e1c nh\u1eadn m\u00f4 t\u1ea3.",
+      "FIXED \u2014 Thay test qu\u1ea3n tr\u1ecb th\u00e0nh vi\u00ean b\u1eb1ng IdentityIntegrationTest.java:90\u2013118,136 \u0111\u00fang contract t\u1ea1o t\u00e0i kho\u1ea3n v\u00e0 thu h\u1ed3i quy\u1ec1n; ki\u1ec3m tra source x\u00e1c nh\u1eadn."
+     ],
+     "scores": {
+      "a021": 62.5,
+      "a016": 88.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m07",
+     "a": "a036",
+     "b": "a032",
+     "winner": "a036",
+     "loser": "a032",
+     "reason": "a036 b\u1ed5 sung c\u00e1c chu\u1ed7i frontend\u2013API\u2013service\u2013schema\u2013test c\u1ee5 th\u1ec3 v\u00e0 ph\u00e1t hi\u1ec7n kho\u1ea3ng tr\u1ed1ng t\u1ea1o Tester cho PM c\u00f3 b\u1eb1ng ch\u1ee9ng source, trong khi a032 ch\u1ee7 y\u1ebfu kh\u1eafc ph\u1ee5c b\u1eb1ng c\u00f4ng khai c\u00e1c t\u1ea7ng ch\u01b0a kh\u1ea3o s\u00e1t n\u00ean \u0111\u1ed9 \u0111\u1ea7y \u0111\u1ee7 v\u00e0 kh\u1ea3 n\u0103ng h\u00e0nh \u0111\u1ed9ng th\u1ea5p h\u01a1n.",
+     "survived": [
+      "FIXED \u2014 Attack 1: b\u1ea3ng B.1 b\u1ed5 sung chu\u1ed7i t\u00e0i kho\u1ea3n, m\u00e1y, bug, AI, s\u1ed5 tay, danh m\u1ee5c v\u00e0 rule; c\u00e1c t\u1ea7ng storage ch\u01b0a ki\u1ec3m \u0111\u01b0\u1ee3c ghi r\u00f5.",
+      "FIXED \u2014 Attack 2: b\u1ecf \u0111\u1ec1 xu\u1ea5t g\u1eafn l\u1ea1i nh\u00e3n l\u1ecbch s\u1eed quy\u1ec1n v\u1ed1n \u0111\u00e3 c\u00f3; F04 ch\u1ec9 c\u00f2n c\u00e2u tr\u1ea1ng th\u00e1i t\u1ed3n d\u01b0 S04:14, \u0111\u00e3 \u0111\u1ed1i chi\u1ebfu source."
+     ],
+     "scores": {
+      "a036": 88.5,
+      "a032": 84.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m08",
+     "a": "a014",
+     "b": "a027",
+     "winner": "a014",
+     "loser": "a027",
+     "reason": "a014 gi\u1eef \u0111\u01b0\u1ee3c \u0111\u1ec1 xu\u1ea5t c\u1ea3nh b\u00e1o gi\u1edbi h\u1ea1n xu\u1ea5t h\u1ee3p l\u1ec7 \u1edf b\u00e1o c\u00e1o nhi\u1ec1u \u0111\u1ee3t v\u00e0 b\u1ed5 sung v\u00f2ng \u0111\u1eddi d\u1ef1 \u00e1n \u0111\u1ea7y \u0111\u1ee7 h\u01a1n, trong khi a027 d\u00f9ng gi\u1edbi h\u1ea1n 500 run m\u1ed7i \u0111\u1ee3t \u0111\u1ec3 ph\u1ee7 nh\u1eadn sai t\u00ecnh hu\u1ed1ng b\u00e1o c\u00e1o t\u1ed5ng 6.000 run.",
+     "survived": [
+      "FIXED \u2014 Attack 1: b\u1ed5 sung FE/API/service/DB/test cho identity, import, BUG/retest v\u00e0 Redmine, n\u00eau r\u00f5 t\u1eebng t\u1ea7ng source ch\u01b0a kh\u1ea3o s\u00e1t.",
+      "FIXED \u2014 Attack 2: b\u1ed5 sung archive/reopen, s\u00e1u blocker, tr\u00e1ch nhi\u1ec7m x\u1eed l\u00fd, c\u1ea3nh b\u00e1o Redmine v\u00e0 test source; \u0111\u00e3 \u0111\u1ed1i chi\u1ebfu ProjectLifecycleService.java:35\u201376."
+     ],
+     "scores": {
+      "a014": 76.5,
+      "a027": 66.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m09",
+     "a": "a030",
+     "b": "a015",
+     "winner": "a015",
+     "loser": "a030",
+     "reason": "a015 s\u1eeda \u0111\u1ee7 hai ph\u1ea3n bi\u1ec7n b\u1eb1ng ma tr\u1eadn ph\u1ea7n \u0111\u00e3/ch\u01b0a ki\u1ec3m tra v\u00e0 lu\u1ed3ng nh\u1eadn vi\u1ec7c c\u00f3 c\u0103n c\u1ee9, \u0111\u1ed3ng th\u1eddi gi\u1eef b\u1ea3ng \u01b0u ti\u00ean d\u00f9ng \u0111\u01b0\u1ee3c; a030 b\u1ed5 sung ph\u1ea1m vi t\u1ed1t nh\u01b0ng l\u00e0m h\u1ecfng hai h\u00e0ng \u0111\u1ec1 xu\u1ea5t v\u00e0 d\u1eabn sai backend c\u1ee7a ActionInbox.",
+     "survived": [
+      "FIXED \u2014 Attack 1: ma tr\u1eadn t\u1eebng l\u1edbp \u0111\u00e1nh d\u1ea5u UNCHECKED r\u00f5 cho m\u1eaft x\u00edch ch\u01b0a kh\u1ea3o s\u00e1t, b\u1ecf tuy\u00ean b\u1ed1 ch\u1ee9ng minh to\u00e0n chu\u1ed7i.",
+      "FIXED \u2014 Attack 2: b\u1ed5 sung ActionInbox, board, client/controller/service/SQL/test, ph\u00e2n vai Dev\u2192Tester\u2192PM v\u00e0 retest v\u00e0o nghi\u1ec7m thu."
+     ],
+     "scores": {
+      "a030": 77.0,
+      "a015": 87.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m10",
+     "a": "a023",
+     "b": "a029",
+     "winner": "a023",
+     "loser": "a029",
+     "reason": "a023 b\u1ed5 sung ch\u00ednh x\u00e1c v\u00f2ng l\u01b0u tr\u1eef/m\u1edf l\u1ea1i c\u00f9ng blocker v\u00e0 nghi\u1ec7m thu, trong khi a029 v\u1eabn b\u1ecf lu\u1ed3ng n\u00e0y v\u00e0 \u01b0u ti\u00ean s\u1eeda di\u1ec5n \u0111\u1ea1t m\u1ecdi build m\u00e0 UI \u0111\u00e3 c\u00f3 t\u1ea1i ReportsPage.jsx:83.",
+     "survived": [
+      "FIXED: b\u1ed5 sung l\u01b0u tr\u1eef/m\u1edf l\u1ea1i d\u1ef1 \u00e1n v\u1edbi UI/API/schema/test, tr\u00e1ch nhi\u1ec7m x\u1eed l\u00fd blocker, ph\u00e2n bi\u1ec7t c\u1ea3nh b\u00e1o Redmine, replay v\u00e0 nghi\u1ec7m thu sau m\u1edf l\u1ea1i; \u0111\u00e3 \u0111\u1ed1i chi\u1ebfu ProjectLifecycleService.java:35\u201376."
+     ],
+     "scores": {
+      "a023": 86.5,
+      "a029": 70.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m11",
+     "a": "a003",
+     "b": "a035",
+     "winner": "a003",
+     "loser": "a035",
+     "reason": "a003 s\u1eeda \u0111\u1ea7y \u0111\u1ee7 hai ph\u1ea3n bi\u1ec7n, bao ph\u1ee7 v\u00f2ng \u0111\u1eddi TASK/REQUEST/IMPROVEMENT v\u00e0 \u0111i\u1ec1u ki\u1ec7n archive r\u00f5 h\u01a1n trong m\u1ed9t b\u00e1o c\u00e1o nh\u1ea5t qu\u00e1n, c\u00f2n a035 d\u00f9 ph\u00e2n t\u00edch s\u00e2u QA/provenance v\u1eabn b\u1ecf m\u1ecfng nh\u00e1nh vi\u1ec7c th\u01b0\u1eddng v\u00e0 \u0111\u1ec3 \u01b0u ti\u00ean quan tr\u1ecdng \u1edf ph\u1ee5 l\u1ee5c.",
+     "survived": [
+      "FIXED: b\u1ed5 sung TASK/REQUEST/IMPROVEMENT, quy\u1ec1n \u0111\u00f3ng/m\u1edf, test v\u00e0 blocker archive.",
+      "FIXED: t\u00e1ch login/CSRF kh\u1ecfi t\u1ea1o t\u00e0i kho\u1ea3n, d\u1eabn \u0111\u00fang UserController \u2192 IdentityService."
+     ],
+     "scores": {
+      "a003": 82.0,
+      "a035": 77.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m12",
+     "a": "a001",
+     "b": "a022",
+     "winner": "a022",
+     "loser": "a001",
+     "reason": "a022 th\u1eafng s\u00e1t n\u00fat nh\u1edd ph\u00e2n bi\u1ec7t r\u00f5 test \u0111\u00e3 \u0111\u1ecdc assertion, m\u1edbi \u0111\u1ecbnh v\u1ecb v\u00e0 ch\u01b0a kh\u1ea3o s\u00e1t, c\u00f9ng ph\u01b0\u01a1ng \u00e1n xu\u1ea5t v\u01b0\u1ee3t tr\u1ea7n c\u00f3 ti\u00eau ch\u00ed snapshot c\u1ee5 th\u1ec3; c\u1ea3 hai \u0111\u00e3 s\u1eeda \u0111\u1ea7y \u0111\u1ee7 c\u00e1c ph\u1ea3n bi\u1ec7n c\u1ee7a tr\u1eadn.",
+     "survived": [
+      "FIXED \u2014 m\u1ed9t \u0111\u1ee3t 6.000 run: F04/D n\u00eau b\u1ed9 l\u1ecdc build kh\u00f4ng gi\u1ea3m run, gi\u1edbi h\u1ea1n th\u00f4ng b\u00e1o v\u00e0 ph\u01b0\u01a1ng \u00e1n chia ph\u1ea7n c\u00f9ng snapshot c\u00f3 \u0111i\u1ec1u ki\u1ec7n.",
+      "FIXED \u2014 thi\u1ebfu t\u1ea7ng ki\u1ec3m th\u1eed: b\u1ea3ng baseline \u0111\u1ee7 c\u00e1c chu\u1ed7i, ph\u00e2n bi\u1ec7t assertion/\u0111\u1ecbnh v\u1ecb/ch\u01b0a kh\u1ea3o s\u00e1t v\u00e0 NOT_RUN; \u0111\u00e3 \u0111\u1ed1i chi\u1ebfu assertion retest v\u00e0 Redmine trong source."
+     ],
+     "scores": {
+      "a001": 87.0,
+      "a022": 89.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m13",
+     "a": "a009",
+     "b": "a026",
+     "winner": "a026",
+     "loser": "a009",
+     "reason": "a026 s\u1eeda \u0111\u1ee7 ba ph\u1ea3n bi\u1ec7n, t\u00e1ch gate revoke/write/replay th\u00e0nh nghi\u1ec7m thu \u0111\u1ed3ng th\u1eddi c\u1ee5 th\u1ec3 v\u00e0 \u01b0u ti\u00ean c\u00e1c v\u1ea5n \u0111\u1ec1 b\u00e1o c\u00e1o \u0111\u00e3 c\u00f3 b\u1eb1ng ch\u1ee9ng r\u00f5, trong khi a009 v\u1eabn ch\u1ec9 g\u1ed9p race quy\u1ec1n v\u00e0o nghi\u1ec7m thu chung.",
+     "survived": [
+      "FIXED A1: b\u1ed5 sung truy v\u1ebft import, QA, Redmine v\u00e0 \u0111\u00e1nh d\u1ea5u t\u1eebng t\u1ea7ng ch\u01b0a kh\u1ea3o s\u00e1t.",
+      "FIXED A2: b\u1ed5 sung v\u00f2ng \u0111\u1eddi c\u00f4ng vi\u1ec7c th\u01b0\u1eddng, quy\u1ec1n PM/Dev v\u00e0 ph\u1ea1m vi ActionInbox.",
+      "FIXED A3: F6 c\u00f9ng k\u1ebf ho\u1ea1ch V29 c\u00e1ch ly, barrier hai connection v\u00e0 hai th\u1ee9 t\u1ef1 revoke/write/replay."
+     ],
+     "scores": {
+      "a009": 86.5,
+      "a026": 89.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m14",
+     "a": "a028",
+     "b": "a017",
+     "winner": "a017",
+     "loser": "a028",
+     "reason": "C\u1ea3 hai \u0111\u00e3 s\u1eeda c\u00e1c ph\u1ea3n bi\u1ec7n (a028: ATTACK 1 v\u00e0 2 FIXED; a017: ATTACK 1 FIXED), nh\u01b0ng a017 \u0111\u01b0a ra nghi\u1ec7m thu ph\u1ee5c h\u1ed3i DB\u2013filesystem v\u00e0 thay \u0111\u1ed5i nh\u1ecf cho gi\u1edbi h\u1ea1n export c\u1ee5 th\u1ec3 h\u01a1n, \u0111\u1ed3ng th\u1eddi ch\u1ee9ng minh r\u1ee7i ro truy v\u1ea5n t\u1eebng d\u00f2ng; c\u1ea3 hai c\u00f2n m\u1ed9t s\u1ed1 lu\u1ed3ng kh\u1ea3o s\u00e1t m\u1ecfng.",
+     "survived": [
+      "FIXED ATTACK 1: b\u1ed5 sung \u0111\u01b0\u1eddng UI/API/service/metadata/blob/test, ph\u00e2n bi\u1ec7t orphan cleanup v\u1edbi m\u1ea5t bytes, b\u1ed5 sung quy\u1ec1n, rollback v\u00e0 ph\u1ee5c h\u1ed3i trong P1/E."
+     ],
+     "scores": {
+      "a028": 87.0,
+      "a017": 88.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m15",
+     "a": "a012",
+     "b": "a040",
+     "winner": "a012",
+     "loser": "a040",
+     "reason": "a012 s\u1eeda \u0111\u00fang c\u1ea3 hai ph\u1ea3n bi\u1ec7n v\u00e0 ki\u1ec3m tra th\u00eam gi\u1edbi h\u1ea1n 500 run/\u0111\u1ee3t, trong khi a040 v\u1eabn \u01b0u ti\u00ean c\u1ea3i ti\u1ebfn d\u1ef1a tr\u00ean v\u00ed d\u1ee5 m\u1ed9t \u0111\u1ee3t 6.000 run kh\u00f4ng t\u1ea1o \u0111\u01b0\u1ee3c qua addScope hi\u1ec7n h\u00e0nh. Hai ph\u1ea3n bi\u1ec7n g\u1ed1c \u0111\u1ed1i v\u1edbi a040 c\u0169ng \u0111\u00e3 FIXED sau khi \u0111\u1ed1i chi\u1ebfu b\u1ea3n s\u1eeda.",
+     "survived": [
+      "FIXED \u2014 ph\u00e2n bi\u1ec7t b\u1ed9 l\u1ecdc build v\u1edbi thu h\u1eb9p s\u1ed1 run, ghi nh\u1eadn b\u1ed9 ch\u1ecdn \u0111\u00e3 t\u1ed3n t\u1ea1i v\u00e0 d\u00f9ng t\u1ed5ng nhi\u1ec1u cycle cho ca 5.001 run.",
+      "FIXED \u2014 b\u1ed5 sung truy v\u1ebft s\u1eeda, duy\u1ec7t revision, run pin revision v\u00e0 ph\u00e2n c\u00f4ng l\u1ea7n 2 c\u00f9ng ca nghi\u1ec7m thu R1/R2."
+     ],
+     "scores": {
+      "a012": 86.5,
+      "a040": 66.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m16",
+     "a": "a010",
+     "b": "a011",
+     "winner": "a011",
+     "loser": "a010",
+     "reason": "a011 truy v\u1ebft lu\u1ed3ng nh\u1eadp Excel v\u00e0 ph\u1ee5c h\u1ed3i th\u00e0nh c\u00f4ng m\u1ed9t ph\u1ea7n \u0111\u1ebfn API, d\u1eef li\u1ec7u v\u00e0 assertion ki\u1ec3m th\u1eed c\u1ee5 th\u1ec3 h\u01a1n, trong khi a010 ch\u1ee7 y\u1ebfu b\u1ed5 sung danh s\u00e1ch m\u1eaft x\u00edch ch\u01b0a kh\u1ea3o s\u00e1t \u1edf nhi\u1ec1u lu\u1ed3ng c\u1ed1t l\u00f5i.",
+     "survived": [
+      "FIXED \u2014 B\u1ed5 sung upload/preview/commit, backend, schema, test v\u00e0 nghi\u1ec7m thu A th\u00e0nh c\u00f4ng/B l\u1ed7i ho\u1eb7c h\u1ebft h\u1ea1n; source ImportExcelDialog x\u00e1c nh\u1eadn retry v\u00e0 tr\u1ea3 t\u00e0i li\u1ec7u \u0111\u00e3 nh\u1eadp khi \u0111\u00f3ng.",
+      "FIXED \u2014 F04/P4 ghi nh\u1eadn nh\u00e3n l\u1ecbch s\u1eed quy\u1ec1n \u0111\u00e3 c\u00f3, b\u1ecf \u0111\u1ec1 ngh\u1ecb g\u1eafn nh\u00e3n l\u1ea1i v\u00e0 h\u1ea1 b\u1ea3ng quy\u1ec1n xu\u1ed1ng c\u1ea3i ti\u1ebfn t\u00f9y ch\u1ecdn; permissions.md:3\u201325 x\u00e1c nh\u1eadn."
+     ],
+     "scores": {
+      "a010": 86.0,
+      "a011": 88.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m17",
+     "a": "a025",
+     "b": "a039",
+     "winner": "a039",
+     "loser": "a025",
+     "reason": "Hai ph\u1ea3n bi\u1ec7n v\u1edbi a025 \u0111\u1ec1u FIXED qua b\u1ed5 sung import/lifecycle v\u00e0 ma tr\u1eadn truy v\u1ebft, nh\u01b0ng a039 th\u1eafng v\u00ec s\u1eeda \u0111\u1ea7y \u0111\u1ee7 ba ph\u1ea3n bi\u1ec7n, \u01b0u ti\u00ean UAT tr\u01b0\u1edbc thay nh\u00e3n \u0111\u00e3 c\u00f3 v\u00e0 t\u00e1ch nghi\u1ec7m thu hai gi\u1edbi h\u1ea1n b\u00e1o c\u00e1o, trong khi a025 v\u1eabn \u01b0u ti\u00ean s\u1eeda UI khi m\u1ee9c nh\u1ea7m ch\u01b0a \u0111\u01b0\u1ee3c quan s\u00e1t.",
+     "survived": [
+      "FIXED \u2014 B\u1ed5 sung ma tr\u1eadn t\u1eebng m\u1eaft x\u00edch FE/API/backend/DB/test, ghi r\u00f5 ph\u1ea7n ch\u01b0a kh\u1ea3o s\u00e1t v\u00e0 truy v\u1ebft transition bug.",
+      "FIXED \u2014 T\u00e1ch export tr\u00ean 5.000 kh\u1ecfi summary tr\u00ean 10.000, n\u00eau thay gate c\u00f3 \u0111i\u1ec1u ki\u1ec7n \u0111o t\u1ea3i v\u00e0 nghi\u1ec7m thu ri\u00eang.",
+      "FIXED \u2014 Ghi nh\u1eadn nh\u00e3n/h\u01b0\u1edbng d\u1eabn t\u00e0i li\u1ec7u hi\u1ec7n h\u1eefu, chuy\u1ec3n s\u1eeda UI th\u00e0nh t\u00f9y ch\u1ecdn sau UAT v\u00e0 ki\u1ec3m \u0111i\u1ec1u h\u01b0\u1edbng tr\u01b0\u1edbc b\u1ed5 sung."
+     ],
+     "scores": {
+      "a025": 78.0,
+      "a039": 89.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m18",
+     "a": "a037",
+     "b": "a008",
+     "winner": "a008",
+     "loser": "a037",
+     "reason": "a008 b\u1ed5 sung truy v\u1ebft c\u00e1c lu\u1ed3ng ch\u00ednh v\u00e0 ph\u00e2n bi\u1ec7t ch\u00ednh x\u00e1c h\u01b0\u1edbng d\u1eabn UI hi\u1ec7n c\u00f3 v\u1edbi thay \u0111\u1ed5i ch\u1ec9 c\u1ea7n l\u00e0m n\u1ebfu UAT ch\u1ee9ng minh, trong khi P2 c\u1ee7a a037 v\u1eabn ch\u01b0a x\u00e1c \u0111\u1ecbnh r\u00f5 ph\u1ea7n ch\u00eanh l\u1ec7ch c\u1ea7n tri\u1ec3n khai.",
+     "survived": [
+      "FIXED \u2014 thi\u1ebfu chu\u1ed7i truy v\u1ebft: b\u1ea3ng b\u1ed5 sung n\u1ed1i frontend/API/service/DB/test cho bug, retest, t\u00e0i li\u1ec7u v\u00e0 th\u1ef1c thi; ghi r\u00f5 m\u1eaft x\u00edch c\u00f2n ch\u01b0a kh\u1ea3o s\u00e1t.",
+      "FIXED \u2014 P2 tr\u00f9ng UI hi\u1ec7n c\u00f3: ghi nh\u1eadn nh\u00e3n v\u00e0 li\u00ean k\u1ebft t\u1ea1i TestDocumentPage:182/189/212, chuy\u1ec3n sang UAT v\u00e0 ch\u1ec9 di chuy\u1ec3n gi\u1ea3i th\u00edch m\u1ed9t chi\u1ec1u khi c\u1ea7n."
+     ],
+     "scores": {
+      "a037": 78.0,
+      "a008": 89.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m19",
+     "a": "a033",
+     "b": "a019",
+     "winner": "a033",
+     "loser": "a019",
+     "reason": "a033 bao ph\u1ee7 r\u00f5 c\u1ea3 QA do PM t\u1ea1o v\u00e0 test l\u1ea7n 2 \u0111\u1ed9c l\u1eadp BUG c\u00f9ng nghi\u1ec7m thu t\u01b0\u01a1ng \u1ee9ng, trong khi a019 tuy ph\u00e2n t\u00edch b\u00e1o c\u00e1o v\u00e0 v\u00f2ng \u0111\u1eddi BUG c\u1ee5 th\u1ec3 h\u01a1n v\u1eabn b\u1ecf lu\u1ed3ng test l\u1ea7n 2 v\u00e0 di\u1ec5n gi\u1ea3i k\u1ebft th\u00fac QA c\u00f2n m\u1ecfng.",
+     "survived": [
+      "FIXED \u2014 QA t\u00e1ch ch\u00ednh TESTER t\u1ea1o x\u00e1c nh\u1eadn v\u1edbi PM t\u1ea1o c\u1ea7n \u0111\u00f3ng ngo\u1ea1i l\u1ec7 ho\u1eb7c ADMIN; \u0111\u1ed1i chi\u1ebfu QaService.java:206\u2013249 x\u00e1c nh\u1eadn \u0111\u00fang.",
+      "FIXED \u2014 th\u00eam test l\u1ea7n 2 \u0111\u1ed9c l\u1eadp BUG t\u1eeb ph\u00e2n c\u00f4ng, DRAFT/ACTIVE \u0111\u1ebfn export v\u00e0 ca \u00e2m; TestDocumentEditingService.java:79\u2013100 x\u00e1c nh\u1eadn ph\u00e2n c\u00f4ng d\u00f9ng run ri\u00eang v\u00e0 kh\u00f3a ng\u1eef c\u1ea3nh."
+     ],
+     "scores": {
+      "a033": 84.0,
+      "a019": 82.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r1-m20",
+     "a": "a031",
+     "b": "a034",
+     "winner": "a034",
+     "loser": "a031",
+     "reason": "C\u1ea3 hai attack g\u1ed1c v\u1edbi a031 v\u00e0 attack v\u1edbi a034 \u0111\u1ec1u FIXED, nh\u01b0ng a034 x\u00e1c minh \u0111\u00fang l\u1ed7i URL thi\u1ebfu d\u1ef1 \u00e1n trong khi \u01b0u ti\u00ean xu\u1ea5t ph\u00e2n \u0111o\u1ea1n c\u1ee7a a031 d\u1ef1a v\u00e0o m\u1ed9t \u0111\u1ee3t 6000 run d\u00f9 ExecutionService.java:111 v\u00e0 FileWorkService.java:174 gi\u1edbi h\u1ea1n m\u1ed7i \u0111\u1ee3t 500 run.",
+     "survived": [
+      "FIXED \u2014 b\u1ed5 sung b\u1ea3n \u0111\u1ed3 UI/client/API/service/schema/test cho QA, retest, inbox, report v\u00e0 Redmine, c\u00f9ng gi\u1edbi h\u1ea1n kh\u1ea3o s\u00e1t c\u1ee5 th\u1ec3 cho c\u00e1c m\u1eaft x\u00edch c\u00f2n thi\u1ebfu."
+     ],
+     "scores": {
+      "a031": 70.5,
+      "a034": 86.5
+     },
+     "source": "judge"
+    }
+   ],
+   "bye": null,
+   "closed": true
+  },
+  {
+   "n": 2,
+   "alive": [
+    "a002",
+    "a003",
+    "a004",
+    "a005",
+    "a008",
+    "a011",
+    "a012",
+    "a014",
+    "a015",
+    "a016",
+    "a017",
+    "a020",
+    "a022",
+    "a023",
+    "a024",
+    "a026",
+    "a033",
+    "a034",
+    "a036",
+    "a039"
+   ],
+   "matches": [
+    {
+     "id": "r2-m01",
+     "a": "a039",
+     "b": "a023",
+     "winner": "a023",
+     "loser": "a039",
+     "reason": "C\u1ea3 hai \u0111\u00e3 s\u1eeda c\u00e1c ph\u1ea3n bi\u1ec7n sau \u0111\u1ed1i chi\u1ebfu source, nh\u01b0ng a023 bao qu\u00e1t r\u00f5 h\u01a1n v\u00f2ng \u0111\u1eddi c\u00f4ng vi\u1ec7c th\u01b0\u1eddng, Dev s\u1eeda l\u1ea1i build v\u00e0 l\u01b0u tr\u1eef/m\u1edf l\u1ea1i d\u1ef1 \u00e1n, \u0111\u1ed3ng th\u1eddi \u01b0u ti\u00ean pilot c\u00f3 \u0111i\u1ec1u ki\u1ec7n v\u00e0 t\u00e1ch nghi\u1ec7m thu hai gi\u1edbi h\u1ea1n b\u00e1o c\u00e1o r\u00f5 r\u00e0ng h\u01a1n.",
+     "survived": [
+      "FIXED: \u0110\u1ed1i chi\u1ebfu h\u01b0\u1edbng d\u1eabn/link DocumentExecution hi\u1ec7n c\u00f3; pilot tr\u01b0\u1edbc, ch\u1ec9 ch\u1ec9nh UI n\u1ebfu quan s\u00e1t th\u1ea5y nh\u1ea7m.",
+      "FIXED: T\u00e1ch export 5.000 v\u00e0 summary 10.000; nghi\u1ec7m thu ri\u00eang 10.001 v\u00e0 n\u00eau r\u00f5 gi\u1edbi h\u1ea1n c\u00f2n t\u1ed3n n\u1ebfu kh\u00f4ng m\u1edf r\u1ed9ng.",
+      "FIXED: B\u1ed5 sung tuy\u1ebfn Dev transition, fixedBuildId, invalidation retest, resolved\u2192resolved tr\u1ea3 s\u1edbm v\u00e0 terminal/reopen TASK/REQUEST/IMPROVEMENT."
+     ],
+     "scores": {
+      "a039": 88.5,
+      "a023": 92.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r2-m02",
+     "a": "a002",
+     "b": "a034",
+     "winner": "a002",
+     "loser": "a034",
+     "reason": "a002 ho\u00e0n thi\u1ec7n c\u1ea3 h\u00e0nh tr\u00ecnh case th\u1ee7 c\u00f4ng, giao test l\u1ea7n 2 v\u00e0 NA/ch\u1ed1t/m\u1edf \u0111\u1ee3t v\u1edbi ki\u1ec3m th\u1eed v\u00e0 nghi\u1ec7m thu ri\u00eang, n\u00ean \u0111\u00e1p \u1ee9ng \u0111\u00e1nh gi\u00e1 to\u00e0n h\u1ec7 th\u1ed1ng \u0111\u1ea7y \u0111\u1ee7 h\u01a1n a034 d\u00f9 a034 c\u00f3 ph\u00e1t hi\u1ec7n URL c\u1ee5 th\u1ec3 v\u00e0 \u0111\u00e3 s\u1eeda c\u1ea3 hai ph\u1ea3n bi\u1ec7n.",
+     "survived": [
+      "FIXED \u2014 Lu\u1ed3ng case th\u1ee7 c\u00f4ng \u0111\u00e3 c\u00f3 UI/API/service/schema/test, t\u00ecm ki\u1ebfm v\u00e0 gi\u1eef revision c\u0169 c\u1ee7a run.",
+      "FIXED \u2014 Test l\u1ea7n 2 \u0111\u00e3 \u0111\u01b0\u1ee3c t\u00e1ch kh\u1ecfi BUG retest, n\u1ed1i ph\u00e2n c\u00f4ng/activate/Tester/d\u00f2ng/export v\u00e0 ghi r\u00f5 gi\u1edbi h\u1ea1n assertions."
+     ],
+     "scores": {
+      "a002": 90.0,
+      "a034": 82.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r2-m03",
+     "a": "a015",
+     "b": "a016",
+     "winner": "a016",
+     "loser": "a015",
+     "reason": "a016 s\u1eeda \u0111\u1ea7y \u0111\u1ee7 hai ph\u1ea3n bi\u1ec7n v\u00e0 m\u00f4 t\u1ea3 \u0111\u00fang giao file trong DRAFT tr\u01b0\u1edbc activate, c\u00f2n lu\u1ed3ng nghi\u1ec7m thu E.1 c\u1ee7a a015 y\u00eau c\u1ea7u th\u00eam scope r\u1ed3i activate r\u1ed3i chia file, tr\u00e1i FileWorkService.java:115,180 v\u00e0 ExecutionService.java:289 n\u00ean ng\u01b0\u1eddi d\u00f9ng s\u1ebd b\u1ecb ch\u1eb7n.",
+     "survived": [
+      "FIXED \u2014 a016 b\u1ed5 sung b\u1ea3n \u0111\u1ed3 ch\u1ee9ng c\u1ee9, quy\u1ec1n g\u1ee1, EVIDENCE_IN_USE, rollback/afterCommit, STORAGE_UNAVAILABLE v\u00e0 nghi\u1ec7m thu ph\u1ee5c h\u1ed3i.",
+      "FIXED \u2014 a016 t\u00e1ch b\u1ed1n \u0111\u1ea7u ra Excel, d\u1eabn implementation/test v\u00e0 ti\u00eau ch\u00ed \u0111\u1ed1i chi\u1ebfu ngu\u1ed3n, group/build, OUT_OF_SCOPE."
+     ],
+     "scores": {
+      "a015": 59.0,
+      "a016": 80.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r2-m04",
+     "a": "a012",
+     "b": "a005",
+     "winner": "a012",
+     "loser": "a005",
+     "reason": "C\u1ea3 hai \u0111\u00e3 s\u1eeda c\u00e1c ph\u1ea3n bi\u1ec7n, nh\u01b0ng a012 n\u1ed1i s\u00e2u h\u01a1n v\u00f2ng \u0111\u1eddi revision, phi\u00ean file/m\u00e1y v\u00e0 ph\u1ee5c h\u1ed3i ch\u1ee9ng c\u1ee9 v\u00e0o nghi\u1ec7m thu \u0111\u1ea7u-cu\u1ed1i, trong khi a005 c\u00f2n \u0111\u1ec3 m\u1ecfng m\u1ed9t s\u1ed1 m\u1eaft x\u00edch th\u1ef1c thi v\u00e0 retest d\u00f9 c\u00e1c \u0111\u1ec1 xu\u1ea5t l\u1ecbch s\u1eed \u00f4/b\u00e1o c\u00e1o c\u1ee5 th\u1ec3 h\u01a1n.",
+     "survived": [
+      "FIXED \u2014 b\u1ed5 sung START/PAUSE/RESUME/COMPLETE/CANCEL, SESSION_OPEN/ASSET_BUSY, quy\u1ec1n h\u1ee7y, pin nh\u00e1p v\u00e0 ca h\u1ee7y\u2013giao l\u1ea1i \u1edf B/D/E.",
+      "FIXED \u2014 b\u1ed5 sung FE/API/service/DDL/test cho ch\u1ee9ng c\u1ee9, EVIDENCE_IN_USE, rollback, m\u1ea5t blob v\u00e0 nghi\u1ec7m thu restore \u1edf B/D/E."
+     ],
+     "scores": {
+      "a012": 91.0,
+      "a005": 89.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r2-m05",
+     "a": "a026",
+     "b": "a036",
+     "winner": "a036",
+     "loser": "a026",
+     "reason": "C\u1ea3 hai \u0111\u00e3 x\u1eed l\u00fd c\u00e1c ph\u1ea3n bi\u1ec7n, nh\u01b0ng a036 cung c\u1ea5p b\u1ea3n \u0111\u1ed3 xuy\u00ean t\u1ea7ng r\u1ed9ng h\u01a1n v\u00e0 t\u00edch h\u1ee3p r\u00f5 chu\u1ed7i th\u1ef1c thi\u2013\u0111\u00f3ng l\u1ed7i c\u00f9ng th\u1ee9 t\u1ef1 \u01b0u ti\u00ean PM t\u1ea1o Tester v\u00e0o b\u00e1o c\u00e1o ch\u00ednh, trong khi a026 c\u00f2n nhi\u1ec1u t\u1ea7ng ch\u01b0a truy v\u00e0 \u0111\u1ec3 c\u00e1c s\u1eeda \u0111\u1ed5i quan tr\u1ecdng sau ph\u1ea7n k\u1ebft lu\u1eadn.",
+     "survived": [
+      "FIXED \u2014 B.2 b\u1ed5 sung m\u1edf/ho\u00e0n th\u00e0nh phi\u00ean, attempt, bug, Dev resolved, coverage, retest v\u00e0 closure v\u1edbi UI/API/service/b\u1ea3ng/test; \u0111i\u1ec1u ki\u1ec7n \u0111\u1ee7 PASS v\u00e0 t\u1eeb ch\u1ed1i COVERAGE_INCOMPLETE kh\u1edbp RetestService:97\u2013101,225.",
+      "FIXED \u2014 D/E \u0111\u01b0a x\u00e1c minh quy\u1ec1n t\u1ea1o Tester c\u1ee7a PM v\u00e0o b\u01b0\u1edbc \u0111\u1ea7u v\u00e0 ho\u00e0n thi\u1ec7n \u0111\u01b0\u1eddng UI th\u00e0nh b\u01b0\u1edbc hai c\u00f3 \u0111i\u1ec1u ki\u1ec7n, tr\u01b0\u1edbc ch\u1ec9nh gi\u1ea3i th\u00edch semantics; gate ADMIN \u0111\u01b0\u1ee3c x\u00e1c nh\u1eadn t\u1ea1i AdminApp:19."
+     ],
+     "scores": {
+      "a026": 87.5,
+      "a036": 92.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r2-m06",
+     "a": "a017",
+     "b": "a003",
+     "winner": "a017",
+     "loser": "a003",
+     "reason": "C\u1ea3 hai \u0111\u00e3 s\u1eeda c\u00e1c ph\u1ea3n bi\u1ec7n b\u1eb1ng n\u1ed9i dung \u0111\u1ed1i chi\u1ebfu \u0111\u01b0\u1ee3c v\u1edbi source, nh\u01b0ng a017 \u0111\u00e1nh gi\u00e1 \u0111\u1ea7y \u0111\u1ee7 h\u01a1n ranh gi\u1edbi metadata/bytes c\u1ee7a ch\u1ee9ng c\u1ee9 v\u00e0 ph\u1ee5c h\u1ed3i, \u0111\u1ed3ng th\u1eddi c\u00f3 \u0111\u1ec1 xu\u1ea5t hi\u1ec7u n\u0103ng c\u00f3 c\u0103n c\u1ee9 v\u00e0 nghi\u1ec7m thu c\u1ee5 th\u1ec3, d\u00f9 b\u1ea3n \u0111\u1ed3 c\u1ea7u n\u1ed1i NG sang bug c\u1ee7a a003 r\u00f5 h\u01a1n.",
+     "survived": [
+      "FIXED: b\u1ed5 sung TASK/REQUEST/IMPROVEMENT xuy\u00ean frontend/API/service/database/test, quy\u1ec1n PM v\u00e0 ADMIN, \u0111\u00f3ng/m\u1edf l\u1ea1i v\u00e0 t\u00e1c \u0111\u1ed9ng blocker archive trong B, P1 v\u00e0 E."
+     ],
+     "scores": {
+      "a017": 91.0,
+      "a003": 89.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r2-m07",
+     "a": "a014",
+     "b": "a004",
+     "winner": "a004",
+     "loser": "a014",
+     "reason": "a004 kh\u1eafc ph\u1ee5c c\u1ea3 hai ph\u1ea3n bi\u1ec7n v\u00e0 bao ph\u1ee7 th\u00eam lu\u1ed3ng c\u00f4ng vi\u1ec7c th\u01b0\u1eddng, l\u1ecdc, batch v\u00e0 ph\u1ee5c h\u1ed3i 409 c\u00f2n thi\u1ebfu \u1edf a014, d\u00f9 b\u1ea3ng c\u1ea3i ti\u1ebfn c\u1ee7a a004 b\u1ecb l\u1ec7ch h\u00e0ng.",
+     "survived": [
+      "FIXED \u2014 b\u1ed5 sung TASK/REQUEST/IMPROVEMENT, quy\u1ec1n, b\u1ed9 l\u1ecdc, batch v\u00e0 409 v\u1edbi source/test c\u1ee5 th\u1ec3.",
+      "FIXED \u2014 x\u00e1c nh\u1eadn URL b\u00e1o c\u00e1o ch\u1ec9 c\u00f3 cycleId, th\u00eam ph\u01b0\u01a1ng \u00e1n v\u00e0 nghi\u1ec7m thu truy ngu\u1ed3n, n\u00e2ng th\u00e0nh \u01b0u ti\u00ean th\u1ee9 hai."
+     ],
+     "scores": {
+      "a014": 81.0,
+      "a004": 83.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r2-m08",
+     "a": "a008",
+     "b": "a020",
+     "winner": "a008",
+     "loser": "a020",
+     "reason": "a008 s\u1eeda \u0111\u1ea7y \u0111\u1ee7 hai ph\u1ea3n bi\u1ec7n v\u00e0 gi\u1edbi h\u1ea1n \u0111\u1ec1 xu\u1ea5t theo lu\u1ed3ng hi\u1ec7n h\u1eefu, c\u00f2n a020 l\u1ea5y m\u1ed9t cycle 6.000 run l\u00e0m c\u0103n c\u1ee9 \u01b0u ti\u00ean m\u1edf r\u1ed9ng ZIP d\u00f9 ExecutionService:111 v\u00e0 FileWorkService:174 ch\u1eb7n 500 run/cycle, \u0111\u1ed3ng th\u1eddi b\u1ecf s\u00f3t gi\u1edbi h\u1ea1n 10.000 bug c\u1ee7a b\u00e1o c\u00e1o.",
+     "survived": [
+      "FIXED: b\u1ed5 sung catalog, handbook, rules v\u1edbi FE/API/service/schema/test v\u00e0 t\u00e1c \u0111\u1ed9ng archive/publish l\u00ean execution/bug",
+      "FIXED: b\u1ed5 sung gi\u1edbi h\u1ea1n bug 10.000/10.001 \u0111\u1ed9c l\u1eadp run, c\u1ea3 summary/export v\u00e0 kh\u00f4ng thu h\u1eb9p theo build"
+     ],
+     "scores": {
+      "a008": 75.5,
+      "a020": 62.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r2-m09",
+     "a": "a024",
+     "b": "a033",
+     "winner": "a024",
+     "loser": "a033",
+     "reason": "C\u1ea3 hai \u0111\u00e3 s\u1eeda c\u00e1c ph\u1ea3n bi\u1ec7n, nh\u01b0ng a024 truy v\u1ebft v\u00e0 \u0111\u00e1nh gi\u00e1 ph\u1ee5c h\u1ed3i c\u1ee5 th\u1ec3 h\u01a1n cho chu\u1ea9n b\u1ecb d\u1ef1 \u00e1n, import, giao vi\u1ec7c v\u00e0 AI, \u0111\u1ed3ng th\u1eddi \u0111\u1ec1 xu\u1ea5t b\u00e1o c\u00e1o b\u00e1m \u0111\u00fang guard hi\u1ec7n h\u1eefu; a033 gi\u1ea3i th\u00edch QA/test l\u1ea7n 2 t\u1ed1t h\u01a1n nh\u01b0ng c\u00f2n nhi\u1ec1u m\u1eaft x\u00edch kh\u1ea3o s\u00e1t ch\u1ec9 \u0111\u01b0\u1ee3c k\u00ea l\u00e0 ch\u01b0a \u0111\u1ecdc.",
+     "survived": [
+      "FIXED: B\u1ed5 sung lu\u1ed3ng AI draft qua FE/API/service/store/schema/test, timeout/retry/conflict v\u00e0 gi\u1edbi h\u1ea1n OAuth/chat r\u00f5 r\u00e0ng.",
+      "FIXED: Kh\u00f4ng c\u00f2n \u0111\u1ec1 xu\u1ea5t t\u00e1ch aggregate/detail \u0111\u00e3 c\u00f3; ch\u1ec9 \u0111\u00fang guard summary d\u00f2ng 56, truy v\u1ea5n c\u1ea7n \u0111o v\u00e0 gi\u1eef cap export."
+     ],
+     "scores": {
+      "a024": 86.5,
+      "a033": 83.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r2-m10",
+     "a": "a011",
+     "b": "a022",
+     "winner": "a011",
+     "loser": "a022",
+     "reason": "C\u1ea3 hai c\u00f4ng k\u00edch \u0111\u1ec1u FIXED (a011 b\u1ed5 sung ch\u1ee9ng c\u1ee9, a022 b\u1ed5 sung inbox v\u00e0 b\u1ecf \u0111\u1ec1 xu\u1ea5t x\u00e2y tr\u00f9ng), nh\u01b0ng a011 th\u1eafng s\u00e1t nh\u1edd \u0111\u00e1nh gi\u00e1 nh\u1eadp Excel v\u00e0 ch\u1ee9ng c\u1ee9 \u0111\u1ea7u-cu\u1ed1i \u0111\u1ea7y \u0111\u1ee7 h\u01a1n, d\u00f9 a022 t\u00ecm \u0111\u01b0\u1ee3c r\u1ee7i ro 409 c\u1ee5 th\u1ec3 h\u01a1n.",
+     "survived": [
+      "FIXED \u2014 B\u1ed5 sung to\u00e0n b\u1ed9 lu\u1ed3ng ch\u1ee9ng c\u1ee9 n\u1ed9i b\u1ed9 FE/API/service/DB/blob/test, x\u1eed l\u00fd t\u1ec7p qu\u00e1 20 MiB, l\u1ed7i upload/download, quy\u1ec1n g\u1ee1 v\u00e0 b\u1ea3o v\u1ec7 ch\u1ee9ng c\u1ee9 \u0111\u00e3 d\u00f9ng; \u0111\u00e3 \u0111\u01b0a v\u00e0o P1 v\u00e0 v\u00ed d\u1ee5 tr\u01b0\u1edbc/sau."
+     ],
+     "scores": {
+      "a011": 82.5,
+      "a022": 81.0
+     },
+     "source": "judge"
+    }
+   ],
+   "bye": null,
+   "closed": true
+  },
+  {
+   "n": 3,
+   "alive": [
+    "a002",
+    "a004",
+    "a008",
+    "a011",
+    "a012",
+    "a016",
+    "a017",
+    "a023",
+    "a024",
+    "a036"
+   ],
+   "matches": [
+    {
+     "id": "r3-m01",
+     "a": "a002",
+     "b": "a011",
+     "winner": "a002",
+     "loser": "a011",
+     "reason": "a002 s\u1eeda \u0111\u00fang ph\u1ea3n v\u00ed d\u1ee5 b\u00e1o c\u00e1o nhi\u1ec1u \u0111\u1ee3t v\u00e0 b\u1ed5 sung ch\u1ee9ng c\u1ee9 hai kho c\u00f9ng nghi\u1ec7m thu c\u1ee5 th\u1ec3, \u0111\u1ed3ng th\u1eddi bao ph\u1ee7 case th\u1ee7 c\u00f4ng, test l\u1ea7n 2 v\u00e0 ch\u1ed1t/m\u1edf \u0111\u1ee3t s\u00e2u h\u01a1n; a011 v\u1eabn d\u00f9ng t\u00ecnh hu\u1ed1ng m\u1ed9t \u0111\u1ee3t 6.000 run tr\u00e1i guard 500 t\u1ea1i ExecutionService.java:111.",
+     "survived": [
+      "FIXED \u2014 Attack 1: B/C/D chuy\u1ec3n sang 11 ho\u1eb7c 21 \u0111\u1ee3t \u00d7500, ph\u00e2n bi\u1ec7t gi\u1edbi h\u1ea1n t\u1eebng \u0111\u1ee3t v\u1edbi t\u1ed5ng d\u1ef1 \u00e1n v\u00e0 c\u00e1ch ch\u1ecdn m\u1ed9t \u0111\u1ee3t.",
+      "FIXED \u2014 Attack 2: B n\u1ed1i EvidencePanel/API/service/metadata/blob/test; D/E th\u00eam upload qu\u00e1 c\u1ee1, retry, Dev t\u1ea3i, b\u1ea3o v\u1ec7 l\u1ecbch s\u1eed v\u00e0 restore DB+kho blob."
+     ],
+     "scores": {
+      "a002": 84.5,
+      "a011": 70.5
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r3-m02",
+     "a": "a008",
+     "b": "a012",
+     "winner": "a012",
+     "loser": "a008",
+     "reason": "C\u1ea3 hai s\u1eeda \u0111\u1ea7y \u0111\u1ee7 c\u00e1c ph\u1ea3n bi\u1ec7n b\u1eb1ng truy v\u1ebft ph\u00f9 h\u1ee3p source, nh\u01b0ng a012 bao ph\u1ee7 \u0111\u1ea7u-cu\u1ed1i t\u1ed1t h\u01a1n nh\u1edd ph\u00e2n t\u00edch c\u1ee5 th\u1ec3 b\u00e0n giao phi\u00ean/m\u00e1y, QA do PM t\u1ea1o v\u00e0 archive/reopen, trong khi a008 v\u1eabn \u0111\u1ec3 c\u00e1c nh\u00e1nh n\u00e0y kh\u00e1 m\u1ecfng.",
+     "survived": [
+      "FIXED: QA do PM t\u1ea1o \u0111\u01b0\u1ee3c t\u00e1ch r\u00f5 \u0111\u00f3ng ngo\u1ea1i l\u1ec7 ho\u1eb7c ADMIN x\u00e1c nh\u1eadn, c\u00f9ng ma tr\u1eadn quy\u1ec1n v\u00e0 nghi\u1ec7m thu \u0111\u00fang QaService.",
+      "FIXED: Archive/reopen \u0111\u01b0\u1ee3c truy v\u1ebft UI/API/DDL, ph\u00e2n bi\u1ec7t blocker v\u1edbi warning v\u00e0 ki\u1ec3m replay kh\u00f4ng \u0111\u1ea3o reopen \u0111\u00fang ProjectLifecycleService."
+     ],
+     "scores": {
+      "a008": 88.5,
+      "a012": 91.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r3-m03",
+     "a": "a016",
+     "b": "a024",
+     "winner": "a016",
+     "loser": "a024",
+     "reason": "a016 \u0111\u00e3 s\u1eeda \u0111\u1ee7 hai ph\u1ea3n bi\u1ec7n v\u00e0 bao ph\u1ee7 k\u1ebft th\u00fac \u0111\u1ee3t, c\u00f4ng vi\u1ec7c th\u01b0\u1eddng, ch\u1ee9ng c\u1ee9 c\u00f9ng b\u1ed1n \u0111\u1ea7u ra Excel c\u1ee5 th\u1ec3 h\u01a1n; a024 \u0111\u00e3 FIXED ph\u1ea3n bi\u1ec7n chat nh\u01b0ng v\u1eabn b\u1ecf kh\u1ea3o s\u00e1t NA/CLOSE/REOPEN v\u00e0 lifecycle c\u00f4ng vi\u1ec7c th\u01b0\u1eddng trong \u0111\u00e1nh gi\u00e1 to\u00e0n h\u1ec7 th\u1ed1ng.",
+     "survived": [
+      "FIXED \u2014 b\u1ed5 sung NA/CLOSE/REOPEN xuy\u00ean t\u1ea7ng, invalidation coverage v\u00e0 ch\u1ed1t c\u00f3 t\u1ed3n \u0111\u1ecdng; kh\u1edbp CycleDecisionService.java:27\u201364.",
+      "FIXED \u2014 b\u1ed5 sung l\u1ecdc/giao/\u0111\u00f3ng/m\u1edf l\u1ea1i TASK/REQUEST/IMPROVEMENT, batch v\u00e0 blocker archive; kh\u1edbp WorkItemService.java:73\u201384,188\u2013240."
+     ],
+     "scores": {
+      "a016": 79.0,
+      "a024": 73.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r3-m04",
+     "a": "a036",
+     "b": "a023",
+     "winner": "a036",
+     "loser": "a023",
+     "reason": "C\u1ea3 hai \u0111\u00e3 s\u1eeda c\u00e1c ph\u1ea3n bi\u1ec7n nh\u1eadn \u0111\u01b0\u1ee3c, nh\u01b0ng a036 x\u00e1c \u0111\u1ecbnh kho\u1ea3ng tr\u1ed1ng UI t\u1ea1o Tester cho PM b\u1eb1ng source v\u00e0 \u01b0u ti\u00ean ph\u01b0\u01a1ng \u00e1n nh\u1ecf c\u00f3 nghi\u1ec7m thu r\u00f5 h\u01a1n vi\u1ec7c a023 \u01b0u ti\u00ean \u0111\u00e1nh d\u1ea5u l\u1ecbch s\u1eed quy\u1ec1n v\u1ed1n \u0111\u00e3 \u0111\u01b0\u1ee3c \u0111\u00e1nh d\u1ea5u r\u00f5.",
+     "survived": [
+      "FIXED: B.3 \u0111\u1ed1i chi\u1ebfu nh\u1eadp nhi\u1ec1u Excel, gi\u1eef th\u00e0nh c\u00f4ng m\u1ed9t ph\u1ea7n, 410, replay/checksum, UI/API/schema/test v\u00e0 gi\u1edbi h\u1ea1n reload.",
+      "FIXED: B.4 \u0111\u1ed1i chi\u1ebfu retest FAIL/reopen, v\u00f4 hi\u1ec7u coverage/build/v\u00f2ng c\u0169, gi\u1eef SUBMITTED, h\u1ee7y OPEN v\u00e0 nghi\u1ec7m thu v\u00f2ng s\u1eeda l\u1ea1i."
+     ],
+     "scores": {
+      "a036": 79.5,
+      "a023": 78.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r3-m05",
+     "a": "a017",
+     "b": "a004",
+     "winner": "a004",
+     "loser": "a017",
+     "reason": "Hai b\u1ea3n \u0111\u1ec1u s\u1eeda \u0111\u1ea7y \u0111\u1ee7 c\u00e1c ph\u1ea3n bi\u1ec7n, nh\u01b0ng a004 tr\u00ecnh b\u00e0y \u01b0u ti\u00ean d\u1ec5 d\u00f9ng h\u01a1n v\u00e0 x\u00e1c minh \u0111\u01b0\u1ee3c kho\u1ea3ng h\u1edf UI t\u1ea1o Tester c\u1ee7a PM, trong khi a017 c\u00f2n b\u1ecf qua \u0111\u01b0\u1eddng thao t\u00e1c n\u00e0y v\u00e0 c\u00f3 c\u00e1c h\u00e0ng F7\u2013F9 t\u00e1ch kh\u1ecfi b\u1ea3ng.",
+     "survived": [
+      "FIXED \u2014 Attack 1: b\u1ea3ng D \u0111\u00e3 gh\u00e9p \u0111\u00fang F01 v\u1edbi ph\u01b0\u01a1ng \u00e1n pilot, c\u00f4ng s\u1ee9c, ph\u1ee5 thu\u1ed9c v\u00e0 nghi\u1ec7m thu trong m\u1ed9t h\u00e0ng.",
+      "FIXED \u2014 Attack 2: \u0111\u00e3 n\u1ed1i import, danh t\u00ednh c\u1ea5p/t\u1ea1o/thu h\u1ed3i, m\u00e1y v\u00e0 phi\u00ean, archive, b\u00e1o c\u00e1o, AI v\u1edbi frontend/API/service/DDL/test; ki\u1ec3m tra source x\u00e1c nh\u1eadn form PM b\u1ecb ch\u1eb7n v\u00e0 \u0111\u01b0\u1eddng cancel phi\u00ean \u0111\u00e3 c\u00f3."
+     ],
+     "scores": {
+      "a017": 87.5,
+      "a004": 88.5
+     },
+     "source": "judge"
+    }
+   ],
+   "bye": null,
+   "closed": true
+  },
+  {
+   "n": 4,
+   "alive": [
+    "a002",
+    "a004",
+    "a012",
+    "a016",
+    "a036"
+   ],
+   "matches": [
+    {
+     "id": "r4-m01",
+     "a": "a004",
+     "b": "a012",
+     "winner": "a012",
+     "loser": "a004",
+     "reason": "C\u1ea3 hai \u0111\u00e3 s\u1eeda c\u00e1c ph\u1ea3n bi\u1ec7n v\u00e0 gi\u1eef \u0111\u00fang gi\u1edbi h\u1ea1n kh\u1ea3o s\u00e1t t\u0129nh, nh\u01b0ng a012 n\u1ed1i \u0111\u1ea7y \u0111\u1ee7 h\u01a1n ba s\u1ea3n ph\u1ea9m b\u00e0n giao Excel, QA do PM t\u1ea1o v\u00e0 k\u1ebft th\u00fac/m\u1edf l\u1ea1i d\u1ef1 \u00e1n v\u00e0o nghi\u1ec7m thu c\u1ee5 th\u1ec3; a004 c\u00f3 \u01b0u ti\u00ean s\u1eeda UI s\u1eafc h\u01a1n nh\u01b0ng c\u00f2n m\u1ecfng \u1edf nh\u1eefng \u0111\u01b0\u1eddng b\u00e0n giao n\u00e0y.",
+     "survived": [
+      "FIXED \u2014 b\u1ed5 sung ba artifact Excel v\u1edbi FE/API/backend/d\u1eef li\u1ec7u/test v\u00e0 nghi\u1ec7m thu ph\u1ea1m vi d\u00f2ng, revision, build, gi\u00e1 tr\u1ecb; \u0111\u00e3 \u0111\u1ed1i chi\u1ebfu FileWorkExecutionService.java:39\u201396"
+     ],
+     "scores": {
+      "a004": 91.5,
+      "a012": 93.0
+     },
+     "source": "judge"
+    },
+    {
+     "id": "r4-m02",
+     "a": "a016",
+     "b": "a002",
+     "winner": "a016",
+     "loser": "a002",
+     "reason": "C\u1ea3 ba ph\u1ea3n bi\u1ec7n \u0111\u1ec1u FIXED sau \u0111\u1ed1i chi\u1ebfu b\u1ea3n s\u1eeda v\u00e0 source, nh\u01b0ng a016 n\u1ed1i th\u00eam rule phi\u00ean b\u1ea3n, s\u1ed5 tay, b\u1ed1n \u0111\u1ea7u ra Excel v\u00e0 lifecycle v\u00e0o b\u1ea3n \u0111\u1ed3/nghi\u1ec7m thu t\u1ed5ng th\u1ec3 r\u00f5 h\u01a1n, trong khi a002 v\u1eabn \u0111\u1ec3 rule/s\u1ed5 tay ngo\u00e0i kh\u1ea3o s\u00e1t s\u00e2u v\u00e0 ph\u00e2n t\u00e1n c\u00e1c b\u1ed5 sung C/D/F trong ph\u1ea7n B; a016 c\u00f2n \u0111i\u1ec3m nh\u1ecf l\u00e0 th\u1ee9 t\u1ef1 vi\u1ec7c th\u1ee9 ba gi\u1eefa D v\u00e0 E ch\u01b0a th\u1ed1ng nh\u1ea5t ho\u00e0n to\u00e0n.",
+     "survived": [
+      "FIXED \u2014 b\u1ed5 sung RulesPanel\u2192RuleService\u2192rule_versions\u2192SettingsReviewTest, pin V1/V2/null v\u00e0 nghi\u1ec7m thu publish/xung \u0111\u1ed9t",
+      "FIXED \u2014 b\u1ed5 sung HandbookPanel\u2192HandbookService\u2192revision/history, quy\u1ec1n, expectedCurrentRevisionId v\u00e0 nghi\u1ec7m thu hai tab"
+     ],
+     "scores": {
+      "a016": 91.0,
+      "a002": 87.5
+     },
+     "source": "judge"
+    }
+   ],
+   "bye": "a036",
+   "closed": true
+  },
+  {
+   "n": 5,
+   "alive": [
+    "a012",
+    "a016",
+    "a036"
+   ],
+   "matches": [
+    {
+     "id": "r5-m01",
+     "a": "a036",
+     "b": "a012",
+     "winner": "a036",
+     "loser": "a012",
+     "reason": "a036 th\u1eafng nh\u1edd truy v\u1ebft xuy\u00ean t\u1ea7ng \u0111\u1ec1u h\u01a1n v\u00e0 ph\u00e1t hi\u1ec7n c\u00f3 c\u0103n c\u1ee9 kho\u1ea3ng tr\u1ed1ng t\u1ea1o Tester c\u1ee7a PM tr\u00ean web \u0111\u1ec3 \u01b0u ti\u00ean s\u1eeda, trong khi a012 ph\u00e2n t\u00edch s\u00e2u lifecycle/ch\u1ee9ng c\u1ee9 nh\u01b0ng b\u1ecf s\u00f3t \u0111i\u1ec3m \u0111\u1ee9t quy tr\u00ecnh t\u00e0i kho\u1ea3n n\u00e0y; c\u1ea3 ba ph\u1ea3n bi\u1ec7n c\u1ee7a tr\u1eadn \u0111\u1ec1u \u0111\u00e3 \u0111\u01b0\u1ee3c s\u1eeda trong b\u1ea3n cu\u1ed1i, g\u1ed3m quy\u1ec1n COMPLETE c\u1ee7a PM trong a012.",
+     "survived": [
+      "FIXED \u2014 QA: B.5 t\u00e1ch Tester/PM t\u1ea1o, \u0111\u01b0\u1eddng ngo\u1ea1i l\u1ec7 ho\u1eb7c ADMIN, \u0111i\u1ec1u ki\u1ec7n x\u00e1c nh\u1eadn v\u00e0 v\u00f4 hi\u1ec7u x\u00e1c nh\u1eadn khi \u0111\u1ed5i Dev/reopen; \u0111\u1ed1i chi\u1ebfu QaService x\u00e1c nh\u1eadn \u0111\u00fang.",
+      "FIXED \u2014 Inbox: B.6 b\u1ed5 sung route, FE, API, scope theo vai tr\u00f2, ngu\u1ed3n d\u1eef li\u1ec7u, refresh, deep link, ph\u00e2n trang v\u00e0 test; ph\u00e2n bi\u1ec7t ki\u1ec3m tra t\u0129nh v\u1edbi runtime."
+     ],
+     "scores": {
+      "a036": 91.0,
+      "a012": 88.5
+     },
+     "source": "judge"
+    }
+   ],
+   "bye": "a016",
+   "closed": true
+  },
+  {
+   "n": 6,
+   "alive": [
+    "a016",
+    "a036"
+   ],
+   "matches": [
+    {
+     "id": "r6-m01",
+     "a": "a036",
+     "b": "a016",
+     "winner": "a016",
+     "loser": "a036",
+     "reason": "C\u1ea3 hai \u0111\u00e3 s\u1eeda c\u00e1c ph\u1ea3n bi\u1ec7n trong v\u00f2ng n\u00e0y, nh\u01b0ng a016 \u0111\u00e1nh gi\u00e1 to\u00e0n h\u1ec7 th\u1ed1ng \u0111\u1ea7y \u0111\u1ee7 h\u01a1n b\u1eb1ng truy v\u1ebft lifecycle c\u00f4ng vi\u1ec7c th\u01b0\u1eddng, NA/ch\u1ed1t/m\u1edf l\u1ea1i \u0111\u1ee3t, b\u1ed1n \u0111\u1ea7u ra Excel, l\u01b0u tr\u1eef ch\u1ee9ng c\u1ee9 v\u00e0 phi\u00ean b\u1ea3n rule/s\u1ed5 tay, \u0111\u1ed3ng th\u1eddi x\u1ebfp \u01b0u ti\u00ean r\u00f5 theo tr\u1edf ng\u1ea1i ng\u01b0\u1eddi d\u00f9ng.",
+     "survived": [
+      "FIXED \u2014 \u0110\u01b0\u1eddng PM t\u1ea1o TESTER: B v\u00e0 F6 x\u00e1c \u0111\u1ecbnh gate ADMIN, D/E b\u1ed5 sung form h\u1eb9p v\u00e0 nghi\u1ec7m thu c\u1ea5p\u2013t\u1ea1o\u2013thu quy\u1ec1n; \u0111\u1ed1i chi\u1ebfu AdminApp.jsx:19,24 v\u00e0 AdminUsers.jsx:21.",
+      "FIXED \u2014 QA do PM t\u1ea1o: F7 v\u00e0 D/E ph\u00e2n bi\u1ec7t quy\u1ec1n CONFIRM, ADMIN v\u00e0 \u0111\u00f3ng ngo\u1ea1i l\u1ec7; \u0111\u1ed1i chi\u1ebfu QaService.java:215,231\u2013239, kh\u00f4ng k\u1ebft lu\u1eadn b\u1ebf t\u1eafc."
+     ],
+     "scores": {
+      "a036": 87.5,
+      "a016": 91.0
+     },
+     "source": "judge"
+    }
+   ],
+   "bye": null,
+   "closed": true
+  }
+ ],
+ "champion": "a016",
+ "final": null
+}

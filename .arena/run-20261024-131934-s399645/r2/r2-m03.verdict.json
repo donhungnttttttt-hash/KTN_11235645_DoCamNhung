@@ -1,0 +1,36 @@
+﻿{
+  "match": "r2-m03",
+  "scores": {
+    "a015": {
+      "correctness": 4,
+      "completeness": 8,
+      "specificity": 8,
+      "robustness": 4,
+      "clarity": 7,
+      "fatal": false
+    },
+    "a016": {
+      "correctness": 9,
+      "completeness": 7,
+      "specificity": 9,
+      "robustness": 7,
+      "clarity": 8,
+      "fatal": false
+    }
+  },
+  "winner": "a016",
+  "reason": "a016 sửa đầy đủ hai phản biện và mô tả đúng giao file trong DRAFT trước activate, còn luồng nghiệm thu E.1 của a015 yêu cầu thêm scope rồi activate rồi chia file, trái FileWorkService.java:115,180 và ExecutionService.java:289 nên người dùng sẽ bị chặn.",
+  "survived": [
+    "FIXED — a016 bổ sung bản đồ chứng cứ, quyền gỡ, EVIDENCE_IN_USE, rollback/afterCommit, STORAGE_UNAVAILABLE và nghiệm thu phục hồi.",
+    "FIXED — a016 tách bốn đầu ra Excel, dẫn implementation/test và tiêu chí đối chiếu nguồn, group/build, OUT_OF_SCOPE."
+  ],
+  "standing": {
+    "a015": [
+      "Hai phản biện nhận được đều FIXED: đã bổ sung vòng đời đợt và chứng cứ; tuy nhiên phát hiện mới MAJOR: E.1 đặt chia file sau thêm scope và activate, làm luồng nghiệm thu không thực hiện được vì tạo nhóm gọi addScope chỉ trong DRAFT và từ chối run trùng.",
+      "MINOR: R4 vẫn ghi 'không xuất một đợt lớn' dù chính phần tình huống đã sửa thành nhiều đợt và giới hạn 500 run/đợt."
+    ],
+    "a016": [
+      "MINOR về độ bao phủ: bản đồ bổ sung chuẩn bị/activate nhưng vẫn thiếu đánh giá chốt/mở lại đợt, NA, guard NOT_RUN/P và snapshot của CycleDecisionService.java:27–64; không làm sai luồng được mô tả nhưng để mỏng đánh giá vòng đời toàn hệ thống."
+    ]
+  }
+}

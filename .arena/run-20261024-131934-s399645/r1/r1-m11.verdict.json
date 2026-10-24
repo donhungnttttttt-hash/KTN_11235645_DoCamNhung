@@ -1,0 +1,37 @@
+﻿{
+    "match":  "r1-m11",
+    "scores":  {
+                   "a003":  {
+                                "correctness":  9,
+                                "completeness":  8,
+                                "specificity":  8,
+                                "robustness":  7,
+                                "clarity":  9,
+                                "fatal":  false
+                            },
+                   "a035":  {
+                                "correctness":  9,
+                                "completeness":  7,
+                                "specificity":  9,
+                                "robustness":  6,
+                                "clarity":  7,
+                                "fatal":  false
+                            }
+               },
+    "winner":  "a003",
+    "reason":  "a003 sửa đầy đủ hai phản biện, bao phủ vòng đời TASK/REQUEST/IMPROVEMENT và điều kiện archive rõ hơn trong một báo cáo nhất quán, còn a035 dù phân tích sâu QA/provenance vẫn bỏ mỏng nhánh việc thường và để ưu tiên quan trọng ở phụ lục.",
+    "survived":  [
+                     "FIXED: bổ sung TASK/REQUEST/IMPROVEMENT, quyền đóng/mở, test và blocker archive.",
+                     "FIXED: tách login/CSRF khỏi tạo tài khoản, dẫn đúng UserController → IdentityService."
+                 ],
+    "standing":  {
+                     "a003":  [
+                                  "Khoảng trống bổ sung: chưa tách đường xác nhận QA do PM tạo khỏi QA do Tester tạo; chưa kiểm chứng đủ nhánh quyền đầu-cuối.",
+                                  "Khoảng trống bổ sung: phân tích nguồn ô tài liệu qua nhiều run/tài liệu còn mỏng; có thừa nhận metadata có thể cần bổ sung nên không coi link nguồn là chắc chắn đã có."
+                              ],
+                     "a035":  [
+                                  "Khoảng trống bổ sung: bảng công việc vẫn không phân tích TASK/REQUEST/IMPROVEMENT, quyền đóng/mở riêng và chuỗi xử lý việc thường trước archive.",
+                                  "Ưu tiên ba và các phát hiện quan trọng nằm trong phần bổ sung, khiến A–F chưa được hợp nhất thành báo cáo cuối dễ sử dụng."
+                              ]
+                 }
+}

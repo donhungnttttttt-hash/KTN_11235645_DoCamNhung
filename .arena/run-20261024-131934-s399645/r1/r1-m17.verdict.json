@@ -1,0 +1,36 @@
+﻿{
+    "match":  "r1-m17",
+    "scores":  {
+                   "a025":  {
+                                "correctness":  8,
+                                "completeness":  8,
+                                "specificity":  8,
+                                "robustness":  7,
+                                "clarity":  8,
+                                "fatal":  false
+                            },
+                   "a039":  {
+                                "correctness":  9,
+                                "completeness":  8,
+                                "specificity":  9,
+                                "robustness":  10,
+                                "clarity":  9,
+                                "fatal":  false
+                            }
+               },
+    "winner":  "a039",
+    "reason":  "Hai phản biện với a025 đều FIXED qua bổ sung import/lifecycle và ma trận truy vết, nhưng a039 thắng vì sửa đầy đủ ba phản biện, ưu tiên UAT trước thay nhãn đã có và tách nghiệm thu hai giới hạn báo cáo, trong khi a025 vẫn ưu tiên sửa UI khi mức nhầm chưa được quan sát.",
+    "survived":  [
+                     "FIXED — Bổ sung ma trận từng mắt xích FE/API/backend/DB/test, ghi rõ phần chưa khảo sát và truy vết transition bug.",
+                     "FIXED — Tách export trên 5.000 khỏi summary trên 10.000, nêu thay gate có điều kiện đo tải và nghiệm thu riêng.",
+                     "FIXED — Ghi nhận nhãn/hướng dẫn tài liệu hiện hữu, chuyển sửa UI thành tùy chọn sau UAT và kiểm điều hướng trước bổ sung."
+                 ],
+    "standing":  {
+                     "a025":  [
+                                  "MINOR mới: D/P1 vẫn đề xuất thêm nhãn \u0027kết quả tài liệu\u0027 và E xếp sửa UI đầu tiên, trong khi TestDocumentPage.jsx:182 đã có nhãn đó, :189 đã mô tả tự lưu; chưa chứng minh mức nhầm qua UAT. Phần giải thích tác động KPI có thể hữu ích nhưng cần tách khỏi nhãn có sẵn."
+                              ],
+                     "a039":  [
+
+                              ]
+                 }
+}

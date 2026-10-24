@@ -1,0 +1,37 @@
+{
+  "match": "r3-m03",
+  "scores": {
+    "a016": {
+      "correctness": 9,
+      "completeness": 7,
+      "specificity": 9,
+      "robustness": 7,
+      "clarity": 7,
+      "fatal": false
+    },
+    "a024": {
+      "correctness": 9,
+      "completeness": 7,
+      "specificity": 9,
+      "robustness": 4,
+      "clarity": 7,
+      "fatal": false
+    }
+  },
+  "winner": "a016",
+  "reason": "a016 đã sửa đủ hai phản biện và bao phủ kết thúc đợt, công việc thường, chứng cứ cùng bốn đầu ra Excel cụ thể hơn; a024 đã FIXED phản biện chat nhưng vẫn bỏ khảo sát NA/CLOSE/REOPEN và lifecycle công việc thường trong đánh giá toàn hệ thống.",
+  "survived": [
+    "FIXED — bổ sung NA/CLOSE/REOPEN xuyên tầng, invalidation coverage và chốt có tồn đọng; khớp CycleDecisionService.java:27–64.",
+    "FIXED — bổ sung lọc/giao/đóng/mở lại TASK/REQUEST/IMPROVEMENT, batch và blocker archive; khớp WorkItemService.java:73–84,188–240."
+  ],
+  "standing": {
+    "a016": [
+      "MINOR, tự phát hiện — hàng AI chỉ liệt kê workspace/draft/chat và test, chưa đánh giá riêng owner, retention, giới hạn ngữ cảnh hoặc phục hồi chat; độ sâu khảo sát module này còn mỏng."
+    ],
+    "a024": [
+      "MAJOR, tự phát hiện — chưa khảo sát quyết định NA/CLOSE/REOPEN và nhánh chốt còn tồn đọng hiện có tại CycleDecisionService.java:27–64; kế hoạch nghiệm thu vẫn dùng nhánh đóng bug rồi báo cáo.",
+      "MAJOR, tự phát hiện — TASK/REQUEST/IMPROVEMENT chủ yếu xuất hiện như phạm vi ngoài inbox, thiếu bản đồ và nghiệm thu đóng/mở lại, quyền, batch và ảnh hưởng archive của WorkItemService.java:188–240.",
+      "MINOR, tự phát hiện — chưa phân biệt đầy đủ export file/build với tài liệu cập nhật và báo cáo tổng hợp, cũng chưa đánh giá lifecycle attachment trong chuỗi bàn giao."
+    ]
+  }
+}

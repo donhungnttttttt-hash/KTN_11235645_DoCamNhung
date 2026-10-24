@@ -1,0 +1,31 @@
+{
+  "match": "r1-m12",
+  "scores": {
+    "a001": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 8,
+      "robustness": 10,
+      "clarity": 8,
+      "fatal": false
+    },
+    "a022": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 10,
+      "clarity": 9,
+      "fatal": false
+    }
+  },
+  "winner": "a022",
+  "reason": "a022 thắng sát nút nhờ phân biệt rõ test đã đọc assertion, mới định vị và chưa khảo sát, cùng phương án xuất vượt trần có tiêu chí snapshot cụ thể; cả hai đã sửa đầy đủ các phản biện của trận.",
+  "survived": [
+    "FIXED — một đợt 6.000 run: F04/D nêu bộ lọc build không giảm run, giới hạn thông báo và phương án chia phần cùng snapshot có điều kiện.",
+    "FIXED — thiếu tầng kiểm thử: bảng baseline đủ các chuỗi, phân biệt assertion/định vị/chưa khảo sát và NOT_RUN; đã đối chiếu assertion retest và Redmine trong source."
+  ],
+  "standing": {
+    "a001": [],
+    "a022": []
+  }
+}

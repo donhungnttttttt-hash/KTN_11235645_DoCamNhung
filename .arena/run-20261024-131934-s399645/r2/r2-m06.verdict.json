@@ -1,0 +1,11 @@
+﻿{
+  "match": "r2-m06",
+  "scores": {
+    "a017": {"correctness": 9, "completeness": 9, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false},
+    "a003": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 9, "fatal": false}
+  },
+  "winner": "a017",
+  "reason": "Cả hai đã sửa các phản biện bằng nội dung đối chiếu được với source, nhưng a017 đánh giá đầy đủ hơn ranh giới metadata/bytes của chứng cứ và phục hồi, đồng thời có đề xuất hiệu năng có căn cứ và nghiệm thu cụ thể, dù bản đồ cầu nối NG sang bug của a003 rõ hơn.",
+  "survived": ["FIXED: bổ sung TASK/REQUEST/IMPROVEMENT xuyên frontend/API/service/database/test, quyền PM và ADMIN, đóng/mở lại và tác động blocker archive trong B, P1 và E."],
+  "standing": {"a017": [], "a003": []}
+}

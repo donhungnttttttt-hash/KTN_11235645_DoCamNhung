@@ -1,0 +1,15 @@
+﻿{
+  "match": "r1-m01",
+  "scores": {
+    "a005": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false},
+    "a006": {"correctness": 9, "completeness": 7, "specificity": 8, "robustness": 10, "clarity": 8, "fatal": false}
+  },
+  "winner": "a005",
+  "reason": "Cả hai đã sửa các phản biện nhận được (a006 sửa phạm vi bug và bổ sung archive/reopen), nhưng a005 nối FE/API/service/schema/test và chỉ rõ tầng chưa khảo sát tốt hơn, đánh giá riêng inbox/test lần 2, đồng thời đưa ra cải tiến lịch sử ô có bằng chứng trực tiếp và nghiệm thu cụ thể hơn; bản đồ nhiều miền của a006 vẫn mỏng và hai ưu tiên đầu cùng thuộc một pilot.",
+  "survived": [
+    "FIXED — Bỏ giả định cycle vượt 500 run; ví dụ 6.000 run thuộc nhiều cycle, dùng lọc cycle hiện có trước khi mở rộng xuất.",
+    "FIXED — Bổ sung inbox, phân công/đổi người test lần 2 và kết quả trở lại tài liệu; không nhầm với retest BUG hoặc mặc định lượt lần 2 xuất hiện trong inbox.",
+    "FIXED — Bổ sung chuỗi FE/API/backend/database/test cho các tuyến trọng tâm và đánh dấu rõ các mắt xích chưa đối chiếu."
+  ],
+  "standing": {"a005": [], "a006": []}
+}

@@ -1,0 +1,19 @@
+﻿{
+  "match": "r1-m02",
+  "scores": {
+    "a004": {"correctness": 9, "completeness": 8, "specificity": 8, "robustness": 10, "clarity": 8, "fatal": false},
+    "a013": {"correctness": 8, "completeness": 8, "specificity": 8, "robustness": 7, "clarity": 8, "fatal": false}
+  },
+  "winner": "a004",
+  "reason": "a004 xử lý đủ hai phản biện và chuyển đề xuất UI trùng hiện trạng thành kiểm chứng UAT có điều kiện, trong khi a013 vẫn ưu tiên sửa nhãn chưa chứng minh khoảng trống dù đã bổ sung tốt vòng đời dự án.",
+  "survived": [
+    "FIXED — Attack 1: bổ sung truy vết import, file execution, QA, retest và Redmine qua component, API, service, schema, test; ghi rõ từng mắt xích chưa khảo sát.",
+    "FIXED — Attack 2: F02/D/E ghi nhận nhãn, lịch sử và liên kết hiện có; kiểm chứng mức hiểu trước khi quyết định sửa UI."
+  ],
+  "standing": {
+    "a004": [],
+    "a013": [
+      "MINOR, phát hiện khi chấm: P2/E.2 vẫn ưu tiên thêm hoặc đặt lại nhãn Kết quả tài liệu mà chưa chỉ rõ bất cập của trợ giúp hiện có tại TestDocumentPage.jsx:182,189,208,212 hoặc bằng chứng UAT; phương án trước/sau chưa phân biệt đủ hiện trạng. Hai attack nhận được đều FIXED: vòng đời dự án đã nối qua API/schema/test và đưa vào P1/E.1; bảng truy vết đã bổ sung các mắt xích và ghi riêng phần chưa xác minh."
+    ]
+  }
+}

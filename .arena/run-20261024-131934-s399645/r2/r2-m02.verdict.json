@@ -1,0 +1,20 @@
+﻿{
+  "match": "r2-m02",
+  "scores": {
+    "a002": {"correctness": 9, "completeness": 9, "specificity": 9, "robustness": 10, "clarity": 7, "fatal": false},
+    "a034": {"correctness": 9, "completeness": 7, "specificity": 9, "robustness": 8, "clarity": 8, "fatal": false}
+  },
+  "winner": "a002",
+  "reason": "a002 hoàn thiện cả hành trình case thủ công, giao test lần 2 và NA/chốt/mở đợt với kiểm thử và nghiệm thu riêng, nên đáp ứng đánh giá toàn hệ thống đầy đủ hơn a034 dù a034 có phát hiện URL cụ thể và đã sửa cả hai phản biện.",
+  "survived": [
+    "FIXED — Luồng case thủ công đã có UI/API/service/schema/test, tìm kiếm và giữ revision cũ của run.",
+    "FIXED — Test lần 2 đã được tách khỏi BUG retest, nối phân công/activate/Tester/dòng/export và ghi rõ giới hạn assertions."
+  ],
+  "standing": {
+    "a002": [],
+    "a034": [
+      "Không còn hai attack gốc: import–duyệt–giao file–session–bug đã FIXED; xử lý đổi caseId cùng tài liệu và Back/Forward đã FIXED trong đề xuất.",
+      "Phát hiện thêm của giám khảo: bản đồ toàn hệ thống vẫn thiếu hành trình tạo/sửa case thủ công và giao test lần 2; NA/chốt/mở đợt chỉ được nhắc rời rạc, chưa đánh giá chuyển trạng thái và tác động coverage/KPI xuyên chuỗi."
+    ]
+  }
+}

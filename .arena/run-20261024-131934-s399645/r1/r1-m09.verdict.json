@@ -1,0 +1,37 @@
+{
+  "match": "r1-m09",
+  "scores": {
+    "a030": {
+      "correctness": 8,
+      "completeness": 8,
+      "specificity": 8,
+      "robustness": 7,
+      "clarity": 7,
+      "fatal": false
+    },
+    "a015": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 9,
+      "clarity": 9,
+      "fatal": false
+    }
+  },
+  "winner": "a015",
+  "reason": "a015 sửa đủ hai phản biện bằng ma trận phần đã/chưa kiểm tra và luồng nhận việc có căn cứ, đồng thời giữ bảng ưu tiên dùng được; a030 bổ sung phạm vi tốt nhưng làm hỏng hai hàng đề xuất và dẫn sai backend của ActionInbox.",
+  "survived": [
+    "FIXED — Attack 1: ma trận từng lớp đánh dấu UNCHECKED rõ cho mắt xích chưa khảo sát, bỏ tuyên bố chứng minh toàn chuỗi.",
+    "FIXED — Attack 2: bổ sung ActionInbox, board, client/controller/service/SQL/test, phân vai Dev→Tester→PM và retest vào nghiệm thu."
+  ],
+  "standing": {
+    "a030": [
+      "Hai phản biện ban đầu đã FIXED: bổ sung sửa tài liệu/test lần 2 và chuẩn bị/archive/reopen với blocker, warning và ca nghiệm thu.",
+      "MINOR mới: bảng D hàng 'chốt hợp đồng vận hành nhỏ' bị chèn nguyên hàng C07, lệch số cột; hàng C06 kế tiếp thiếu cột và không còn ánh xạ rõ vấn đề/cách làm/công sức/nghiệm thu.",
+      "MINOR mới: bảng B ghép ActionInbox với qa/HandoffController.java:10–15, nhưng đó là /handoff-queue; inbox thực dùng fileWorkApi.inbox và ActionInboxController/ActionInboxService."
+    ],
+    "a015": [
+      "MINOR mới: một vài dẫn dòng lệch nhẹ; link targetId của ActionInbox nằm dòng 39 thay vì dòng 38 được nêu, nhưng cơ chế mô tả đúng."
+    ]
+  }
+}

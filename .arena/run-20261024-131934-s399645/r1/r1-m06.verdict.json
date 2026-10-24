@@ -1,0 +1,20 @@
+﻿{
+  "match": "r1-m06",
+  "scores": {
+    "a021": {"correctness": 6, "completeness": 7, "specificity": 8, "robustness": 4, "clarity": 7, "fatal": false},
+    "a016": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false}
+  },
+  "winner": "a016",
+  "reason": "a016 sửa đủ hai phản biện và nối đúng bước DRAFT–scope–activate, trong khi a021 vẫn đề xuất xử lý một cycle vượt 5.000 run dù ExecutionService.java:111 chặn 500 run mỗi cycle, làm sai tình huống và căn cứ ưu tiên export.",
+  "survived": [
+    "FIXED — Bổ sung chuẩn bị cấu hình/phạm vi, activate, khóa baseline và tương tác giao file; đối chiếu ExecutionService.java:97–132 và FileWorkService.java:96–123,180 xác nhận mô tả.",
+    "FIXED — Thay test quản trị thành viên bằng IdentityIntegrationTest.java:90–118,136 đúng contract tạo tài khoản và thu hồi quyền; kiểm tra source xác nhận."
+  ],
+  "standing": {
+    "a021": [
+      "NEW MAJOR — F04 và đề xuất D vẫn dùng một cycle hơn 5.000 run làm tình huống thực tế; ExecutionService.java:111 giới hạn 500 run/cycle và FileWorkService.java:115 cũng gọi addScope. Cần phân tích tổng nhiều cycle và giải pháp lọc cycle hiện có trước đề nghị chia phần.",
+      "NEW MINOR — Bản đồ và hành trình UAT vẫn chưa nêu rõ bước tạo DRAFT/cấu hình/scope rồi activate, một mắt xích thiết yếu trước execution. Ba phản biện gốc đã FIXED: oracle 404/ADMIN đúng source; phụ lục đánh dấu cụ thể tầng chưa đọc; inbox đã nêu bốn nhóm và đường tìm việc thường."
+    ],
+    "a016": []
+  }
+}

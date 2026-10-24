@@ -1,0 +1,31 @@
+﻿{
+  "match": "r1-m05",
+  "scores": {
+    "a020": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 10,
+      "clarity": 8,
+      "fatal": false
+    },
+    "a018": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 8,
+      "robustness": 10,
+      "clarity": 9,
+      "fatal": false
+    }
+  },
+  "winner": "a020",
+  "reason": "a020 nhỉnh hơn nhờ phát hiện phản hồi lưu bị mất khi rời trang có căn cứ trực tiếp và phương án nghiệm thu, xuất đợt lớn cụ thể hơn; cả hai đã sửa các công kích, dù bản đồ một số module vẫn chỉ khảo sát chọn mẫu.",
+  "survived": [
+    "FIXED — Attack 1: bổ sung chuỗi tạo BUG từ NG, lọc/triage/batch, quyền Dev, comment và test trước retest.",
+    "FIXED — Attack 2: xác định ZIP một snapshot, phân lô run ID, manifest, giới hạn và gate benchmark cho đợt 6.000 run."
+  ],
+  "standing": {
+    "a020": [],
+    "a018": []
+  }
+}

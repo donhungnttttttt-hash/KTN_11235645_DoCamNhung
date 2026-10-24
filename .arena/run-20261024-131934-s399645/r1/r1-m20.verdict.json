@@ -1,0 +1,34 @@
+{
+    "match":  "r1-m20",
+    "scores":  {
+                   "a031":  {
+                                "correctness":  6,
+                                "completeness":  9,
+                                "specificity":  8,
+                                "robustness":  5,
+                                "clarity":  8,
+                                "fatal":  false
+                            },
+                   "a034":  {
+                                "correctness":  9,
+                                "completeness":  8,
+                                "specificity":  9,
+                                "robustness":  9,
+                                "clarity":  8,
+                                "fatal":  false
+                            }
+               },
+    "winner":  "a034",
+    "reason":  "Cả hai attack gốc với a031 và attack với a034 đều FIXED, nhưng a034 xác minh đúng lỗi URL thiếu dự án trong khi ưu tiên xuất phân đoạn của a031 dựa vào một đợt 6000 run dù ExecutionService.java:111 và FileWorkService.java:174 giới hạn mỗi đợt 500 run.",
+    "survived":  [
+                     "FIXED — bổ sung bản đồ UI/client/API/service/schema/test cho QA, retest, inbox, report và Redmine, cùng giới hạn khảo sát cụ thể cho các mắt xích còn thiếu."
+                 ],
+    "standing":  {
+                     "a031":  [
+                                  "MAJOR mới: F03 và ưu tiên xuất phân đoạn trong một cycle dựa vào tình huống 6000 run/cycle không đạt được qua đường tạo scope đã khảo sát; giới hạn export 5000 áp dụng toàn phạm vi, còn từng cycle bị chặn ở 500 nên chọn một đợt là đường xử lý hiện hữu, chưa có bằng chứng cần chia một cycle."
+                              ],
+                     "a034":  [
+
+                              ]
+                 }
+}

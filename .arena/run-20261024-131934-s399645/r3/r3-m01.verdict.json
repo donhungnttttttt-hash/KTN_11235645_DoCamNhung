@@ -1,0 +1,36 @@
+﻿{
+  "match": "r3-m01",
+  "scores": {
+    "a002": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 8,
+      "clarity": 8,
+      "fatal": false
+    },
+    "a011": {
+      "correctness": 7,
+      "completeness": 7,
+      "specificity": 8,
+      "robustness": 6,
+      "clarity": 8,
+      "fatal": false
+    }
+  },
+  "winner": "a002",
+  "reason": "a002 sửa đúng phản ví dụ báo cáo nhiều đợt và bổ sung chứng cứ hai kho cùng nghiệm thu cụ thể, đồng thời bao phủ case thủ công, test lần 2 và chốt/mở đợt sâu hơn; a011 vẫn dùng tình huống một đợt 6.000 run trái guard 500 tại ExecutionService.java:111.",
+  "survived": [
+    "FIXED — Attack 1: B/C/D chuyển sang 11 hoặc 21 đợt ×500, phân biệt giới hạn từng đợt với tổng dự án và cách chọn một đợt.",
+    "FIXED — Attack 2: B nối EvidencePanel/API/service/metadata/blob/test; D/E thêm upload quá cỡ, retry, Dev tải, bảo vệ lịch sử và restore DB+kho blob."
+  ],
+  "standing": {
+    "a002": [
+      "MINOR tự phát hiện: bản đồ quản trị/thành viên/handbook vẫn mỏng; hàng dự án/thành viên chủ yếu dẫn kho máy, chưa nối rõ thao tác frontend của PM được cấp quyền tạo Tester."
+    ],
+    "a011": [
+      "Tự phát hiện: F02 mô tả một đợt 6.000 hoặc trên 10.000 run mà không xét guard 500 tại ExecutionService.java:111; do đó lập luận không có đường giảm phạm vi bằng chọn đợt gây hiểu sai, dù giới hạn toàn dự án là có thật.",
+      "Tự phát hiện: thiếu bản đồ và nghiệm thu riêng case thủ công, test lần 2, NA/chốt/mở lại cùng ảnh hưởng coverage/KPI; chuỗi chủ yếu dừng ở đóng BUG."
+    ]
+  }
+}

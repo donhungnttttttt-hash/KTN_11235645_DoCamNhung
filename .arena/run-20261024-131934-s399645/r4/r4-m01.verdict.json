@@ -1,0 +1,11 @@
+﻿{
+  "match": "r4-m01",
+  "scores": {
+    "a004": {"correctness": 10, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false},
+    "a012": {"correctness": 10, "completeness": 9, "specificity": 9, "robustness": 10, "clarity": 7, "fatal": false}
+  },
+  "winner": "a012",
+  "reason": "Cả hai đã sửa các phản biện và giữ đúng giới hạn khảo sát tĩnh, nhưng a012 nối đầy đủ hơn ba sản phẩm bàn giao Excel, QA do PM tạo và kết thúc/mở lại dự án vào nghiệm thu cụ thể; a004 có ưu tiên sửa UI sắc hơn nhưng còn mỏng ở những đường bàn giao này.",
+  "survived": ["FIXED — bổ sung ba artifact Excel với FE/API/backend/dữ liệu/test và nghiệm thu phạm vi dòng, revision, build, giá trị; đã đối chiếu FileWorkExecutionService.java:39–96"],
+  "standing": {"a004": [], "a012": []}
+}

@@ -1,0 +1,15 @@
+﻿{
+  "match": "r2-m01",
+  "scores": {
+    "a039": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false},
+    "a023": {"correctness": 9, "completeness": 9, "specificity": 9, "robustness": 10, "clarity": 9, "fatal": false}
+  },
+  "winner": "a023",
+  "reason": "Cả hai đã sửa các phản biện sau đối chiếu source, nhưng a023 bao quát rõ hơn vòng đời công việc thường, Dev sửa lại build và lưu trữ/mở lại dự án, đồng thời ưu tiên pilot có điều kiện và tách nghiệm thu hai giới hạn báo cáo rõ ràng hơn.",
+  "survived": [
+    "FIXED: Đối chiếu hướng dẫn/link DocumentExecution hiện có; pilot trước, chỉ chỉnh UI nếu quan sát thấy nhầm.",
+    "FIXED: Tách export 5.000 và summary 10.000; nghiệm thu riêng 10.001 và nêu rõ giới hạn còn tồn nếu không mở rộng.",
+    "FIXED: Bổ sung tuyến Dev transition, fixedBuildId, invalidation retest, resolved→resolved trả sớm và terminal/reopen TASK/REQUEST/IMPROVEMENT."
+  ],
+  "standing": {"a039": [], "a023": []}
+}

@@ -1,0 +1,38 @@
+﻿{
+  "match": "r2-m07",
+  "scores": {
+    "a014": {
+      "correctness": 9,
+      "completeness": 7,
+      "specificity": 9,
+      "robustness": 7,
+      "clarity": 9,
+      "fatal": false
+    },
+    "a004": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 8,
+      "clarity": 7,
+      "fatal": false
+    }
+  },
+  "winner": "a004",
+  "reason": "a004 khắc phục cả hai phản biện và bao phủ thêm luồng công việc thường, lọc, batch và phục hồi 409 còn thiếu ở a014, dù bảng cải tiến của a004 bị lệch hàng.",
+  "survived": [
+    "FIXED — bổ sung TASK/REQUEST/IMPROVEMENT, quyền, bộ lọc, batch và 409 với source/test cụ thể.",
+    "FIXED — xác nhận URL báo cáo chỉ có cycleId, thêm phương án và nghiệm thu truy nguồn, nâng thành ưu tiên thứ hai."
+  ],
+  "standing": {
+    "a014": [
+      "Hai phản biện nhận được đều FIXED: đã nối NG→BUG→coverage và bổ sung timeout export 8 giây so với transaction 30 giây.",
+      "Phát hiện thêm: bỏ luồng công việc thường TASK/REQUEST/IMPROVEMENT và đánh giá bộ lọc/chuyển hàng loạt, khiến khảo sát toàn hệ thống thiếu một quy trình thực tế.",
+      "Bản đồ còn thiếu các mắt xích UI/API/DB/test ở nhiều module, dù đã công khai giới hạn."
+    ],
+    "a004": [
+      "Phát hiện thêm MINOR: bảng D bị chèn nhầm hàng F06 vào đề xuất pilot; hàng F01 tiếp theo lệch cột, làm mất liên kết rõ ràng giữa ưu tiên, vấn đề, công sức và nghiệm thu.",
+      "Bản đồ còn thiếu chỗ nối tạo BUG từ NG và một số controller/schema/test, dù đã ghi giới hạn."
+    ]
+  }
+}

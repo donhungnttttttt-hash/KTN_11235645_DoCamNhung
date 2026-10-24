@@ -1,0 +1,14 @@
+﻿{
+  "match": "r2-m04",
+  "scores": {
+    "a012": {"correctness": 9, "completeness": 9, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false},
+    "a005": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 9, "fatal": false}
+  },
+  "winner": "a012",
+  "reason": "Cả hai đã sửa các phản biện, nhưng a012 nối sâu hơn vòng đời revision, phiên file/máy và phục hồi chứng cứ vào nghiệm thu đầu-cuối, trong khi a005 còn để mỏng một số mắt xích thực thi và retest dù các đề xuất lịch sử ô/báo cáo cụ thể hơn.",
+  "survived": [
+    "FIXED — bổ sung START/PAUSE/RESUME/COMPLETE/CANCEL, SESSION_OPEN/ASSET_BUSY, quyền hủy, pin nháp và ca hủy–giao lại ở B/D/E.",
+    "FIXED — bổ sung FE/API/service/DDL/test cho chứng cứ, EVIDENCE_IN_USE, rollback, mất blob và nghiệm thu restore ở B/D/E."
+  ],
+  "standing": {"a012": [], "a005": []}
+}

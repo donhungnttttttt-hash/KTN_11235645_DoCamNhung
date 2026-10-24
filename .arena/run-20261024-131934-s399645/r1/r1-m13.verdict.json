@@ -1,0 +1,34 @@
+{
+  "match": "r1-m13",
+  "scores": {
+    "a009": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 9,
+      "clarity": 8,
+      "fatal": false
+    },
+    "a026": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 10,
+      "clarity": 9,
+      "fatal": false
+    }
+  },
+  "winner": "a026",
+  "reason": "a026 sửa đủ ba phản biện, tách gate revoke/write/replay thành nghiệm thu đồng thời cụ thể và ưu tiên các vấn đề báo cáo đã có bằng chứng rõ, trong khi a009 vẫn chỉ gộp race quyền vào nghiệm thu chung.",
+  "survived": [
+    "FIXED A1: bổ sung truy vết import, QA, Redmine và đánh dấu từng tầng chưa khảo sát.",
+    "FIXED A2: bổ sung vòng đời công việc thường, quyền PM/Dev và phạm vi ActionInbox.",
+    "FIXED A3: F6 cùng kế hoạch V29 cách ly, barrier hai connection và hai thứ tự revoke/write/replay."
+  ],
+  "standing": {
+    "a009": [
+      "MINOR mới: đã nêu revoke race nhưng tiêu chí nghiệm thu F02 chỉ yêu cầu mất quyền/retry chung, chưa phân biệt kiểm tra tuần tự với tranh chấp đồng thời; phản biện A1 về truy vết đã FIXED bằng ma trận luồng lõi."
+    ],
+    "a026": []
+  }
+}

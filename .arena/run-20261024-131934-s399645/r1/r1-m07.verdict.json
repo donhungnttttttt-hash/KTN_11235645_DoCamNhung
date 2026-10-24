@@ -1,0 +1,14 @@
+﻿{
+  "match": "r1-m07",
+  "scores": {
+    "a036": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 8, "fatal": false},
+    "a032": {"correctness": 9, "completeness": 7, "specificity": 8, "robustness": 10, "clarity": 8, "fatal": false}
+  },
+  "winner": "a036",
+  "reason": "a036 bổ sung các chuỗi frontend–API–service–schema–test cụ thể và phát hiện khoảng trống tạo Tester cho PM có bằng chứng source, trong khi a032 chủ yếu khắc phục bằng công khai các tầng chưa khảo sát nên độ đầy đủ và khả năng hành động thấp hơn.",
+  "survived": [
+    "FIXED — Attack 1: bảng B.1 bổ sung chuỗi tài khoản, máy, bug, AI, sổ tay, danh mục và rule; các tầng storage chưa kiểm được ghi rõ.",
+    "FIXED — Attack 2: bỏ đề xuất gắn lại nhãn lịch sử quyền vốn đã có; F04 chỉ còn câu trạng thái tồn dư S04:14, đã đối chiếu source."
+  ],
+  "standing": {"a036": [], "a032": []}
+}

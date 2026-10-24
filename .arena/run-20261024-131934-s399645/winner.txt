@@ -1,0 +1,20 @@
+﻿CHAMPION  a016
+card      Analogy + Three drafts, pick one + Simplest thing that works
+solution  E:\KLTN\System\KTN_11235645_DoCamNhung\.arena\run-20261024-131934-s399645\r6\r6-m01.a016.solution.md
+rounds    6 played, 40 agents in, 1 left, 5 match(es) won
+  round 1  beat a021, 88.5 to 62.5. a016 sửa đủ hai phản biện và nối đúng bước DRAFT–scope–activate, trong khi a021 vẫn đề xuất xử lý một cycle vượt 5.000 run dù ExecutionService.java:111 chặn 500 run mỗi cycle, làm sai tình huống và căn cứ ưu tiên export.
+           survived: FIXED — Bổ sung chuẩn bị cấu hình/phạm vi, activate, khóa baseline và tương tác giao file; đối chiếu ExecutionService.java:97–132 và FileWorkService.java:96–123,180 xác nhận mô tả.
+           survived: FIXED — Thay test quản trị thành viên bằng IdentityIntegrationTest.java:90–118,136 đúng contract tạo tài khoản và thu hồi quyền; kiểm tra source xác nhận.
+  round 2  beat a015, 80 to 59. a016 sửa đầy đủ hai phản biện và mô tả đúng giao file trong DRAFT trước activate, còn luồng nghiệm thu E.1 của a015 yêu cầu thêm scope rồi activate rồi chia file, trái FileWorkService.java:115,180 và ExecutionService.java:289 nên người dùng sẽ bị chặn.
+           survived: FIXED — a016 bổ sung bản đồ chứng cứ, quyền gỡ, EVIDENCE_IN_USE, rollback/afterCommit, STORAGE_UNAVAILABLE và nghiệm thu phục hồi.
+           survived: FIXED — a016 tách bốn đầu ra Excel, dẫn implementation/test và tiêu chí đối chiếu nguồn, group/build, OUT_OF_SCOPE.
+  round 3  beat a024, 79 to 73. a016 đã sửa đủ hai phản biện và bao phủ kết thúc đợt, công việc thường, chứng cứ cùng bốn đầu ra Excel cụ thể hơn; a024 đã FIXED phản biện chat nhưng vẫn bỏ khảo sát NA/CLOSE/REOPEN và lifecycle công việc thường trong đánh giá toàn hệ thống.
+           survived: FIXED — bổ sung NA/CLOSE/REOPEN xuyên tầng, invalidation coverage và chốt có tồn đọng; khớp CycleDecisionService.java:27–64.
+           survived: FIXED — bổ sung lọc/giao/đóng/mở lại TASK/REQUEST/IMPROVEMENT, batch và blocker archive; khớp WorkItemService.java:73–84,188–240.
+  round 4  beat a002, 91 to 87.5. Cả ba phản biện đều FIXED sau đối chiếu bản sửa và source, nhưng a016 nối thêm rule phiên bản, sổ tay, bốn đầu ra Excel và lifecycle vào bản đồ/nghiệm thu tổng thể rõ hơn, trong khi a002 vẫn để rule/sổ tay ngoài khảo sát sâu và phân tán các bổ sung C/D/F trong phần B; a016 còn điểm nhỏ là thứ tự việc thứ ba giữa D và E chưa thống nhất hoàn toàn.
+           survived: FIXED — bổ sung RulesPanel→RuleService→rule_versions→SettingsReviewTest, pin V1/V2/null và nghiệm thu publish/xung đột
+           survived: FIXED — bổ sung HandbookPanel→HandbookService→revision/history, quyền, expectedCurrentRevisionId và nghiệm thu hai tab
+  round 5  bye
+  round 6  beat a036, 91 to 87.5. Cả hai đã sửa các phản biện trong vòng này, nhưng a016 đánh giá toàn hệ thống đầy đủ hơn bằng truy vết lifecycle công việc thường, NA/chốt/mở lại đợt, bốn đầu ra Excel, lưu trữ chứng cứ và phiên bản rule/sổ tay, đồng thời xếp ưu tiên rõ theo trở ngại người dùng.
+           survived: FIXED — Đường PM tạo TESTER: B và F6 xác định gate ADMIN, D/E bổ sung form hẹp và nghiệm thu cấp–tạo–thu quyền; đối chiếu AdminApp.jsx:19,24 và AdminUsers.jsx:21.
+           survived: FIXED — QA do PM tạo: F7 và D/E phân biệt quyền CONFIRM, ADMIN và đóng ngoại lệ; đối chiếu QaService.java:215,231–239, không kết luận bế tắc.

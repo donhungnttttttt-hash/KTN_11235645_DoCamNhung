@@ -1,0 +1,34 @@
+﻿{
+  "match": "r1-m04",
+  "scores": {
+    "a024": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 8,
+      "robustness": 10,
+      "clarity": 8,
+      "fatal": false
+    },
+    "a007": {
+      "correctness": 8,
+      "completeness": 7,
+      "specificity": 8,
+      "robustness": 7,
+      "clarity": 9,
+      "fatal": false
+    }
+  },
+  "winner": "a024",
+  "reason": "a024 bổ sung được chuỗi chuẩn bị xuyên tầng và các đường phục hồi có chứng cứ, đồng thời tránh ví dụ một cycle 5.001 run chưa có căn cứ trong luồng bị giới hạn 500 run mà a007 vẫn dùng.",
+  "survived": [
+    "FIXED — ATTACK 1: công nhận nhãn và liên kết lịch sử hiện hữu, chuyển đề xuất thành UAT có điều kiện thay vì xây trùng.",
+    "FIXED — ATTACK 2: bổ sung dự án/membership, import/preview/commit, duyệt, cycle/scope, giao file và phiên máy với guard, phục hồi và test nguồn."
+  ],
+  "standing": {
+    "a024": [],
+    "a007": [
+      "Phát hiện bổ sung MINOR: F04/D dùng cycle đơn lẻ 5.001 run dù ExecutionService.java:111 và FileWorkService.java:174 chặn scope trên 500; chưa chỉ ra đường tạo hoặc dữ liệu lịch sử cho giả định này. ATTACK 2 gốc đã FIXED ở việc tách nghiệm thu REPORT_LIMIT khỏi xuất thành công.",
+      "Phát hiện bổ sung MINOR: hàng tạo dự án dẫn action-button-audit.test.jsx về người nhận máy, không kiểm chứng tạo dự án; ATTACK 1 gốc đã FIXED bằng ma trận T/C nhưng nhiều mắt xích luồng chính vẫn chưa khảo sát."
+    ]
+  }
+}

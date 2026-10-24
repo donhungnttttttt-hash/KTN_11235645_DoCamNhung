@@ -1,0 +1,30 @@
+﻿{
+  "match": "r1-m14",
+  "scores": {
+    "a028": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 8,
+      "robustness": 10,
+      "clarity": 8,
+      "fatal": false
+    },
+    "a017": {
+      "correctness": 9,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 10,
+      "clarity": 8,
+      "fatal": false
+    }
+  },
+  "winner": "a017",
+  "reason": "Cả hai đã sửa các phản biện (a028: ATTACK 1 và 2 FIXED; a017: ATTACK 1 FIXED), nhưng a017 đưa ra nghiệm thu phục hồi DB–filesystem và thay đổi nhỏ cho giới hạn export cụ thể hơn, đồng thời chứng minh rủi ro truy vấn từng dòng; cả hai còn một số luồng khảo sát mỏng.",
+  "survived": [
+    "FIXED ATTACK 1: bổ sung đường UI/API/service/metadata/blob/test, phân biệt orphan cleanup với mất bytes, bổ sung quyền, rollback và phục hồi trong P1/E."
+  ],
+  "standing": {
+    "a028": [],
+    "a017": []
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "match": "r3-m04",
+  "scores": {
+    "a036": {
+      "correctness": 8,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 7,
+      "clarity": 8,
+      "fatal": false
+    },
+    "a023": {
+      "correctness": 8,
+      "completeness": 8,
+      "specificity": 8,
+      "robustness": 7,
+      "clarity": 8,
+      "fatal": false
+    }
+  },
+  "winner": "a036",
+  "reason": "Cả hai đã sửa các phản biện nhận được, nhưng a036 xác định khoảng trống UI tạo Tester cho PM bằng source và ưu tiên phương án nhỏ có nghiệm thu rõ hơn việc a023 ưu tiên đánh dấu lịch sử quyền vốn đã được đánh dấu rõ.",
+  "survived": [
+    "FIXED: B.3 đối chiếu nhập nhiều Excel, giữ thành công một phần, 410, replay/checksum, UI/API/schema/test và giới hạn reload.",
+    "FIXED: B.4 đối chiếu retest FAIL/reopen, vô hiệu coverage/build/vòng cũ, giữ SUBMITTED, hủy OPEN và nghiệm thu vòng sửa lại."
+  ],
+  "standing": {
+    "a036": [
+      "MINOR, phát hiện thêm: F03/D đề xuất lời giải thích và link ngữ cảnh nhưng chưa đối chiếu hướng dẫn đồng bộ một chiều và link đã có tại DocumentExecution.jsx:65,91–98; cần xác định vị trí thiếu trước khi thêm.",
+      "MINOR, phát hiện thêm: chưa đánh giá sâu quyết định NA/restore/chốt/mở đợt và lifecycle dự án như các luồng execution/retest; bản đồ toàn hệ thống vẫn có phần mỏng."
+    ],
+    "a023": [
+      "MINOR, phát hiện thêm: C03/D/E ưu tiên đánh dấu lịch sử quyền dù permissions.md:5,11,17 đã tuyên bố rõ bị thay thế; lợi ích bổ sung chưa được chứng minh.",
+      "MINOR, phát hiện thêm: chưa nhận diện đường tạo Tester của PM bị AdminApp.jsx:19 chặn, dù API hỗ trợ; bảng tài khoản chưa phân biệt rõ khả năng API với khả năng hoàn tất tác vụ web."
+    ]
+  }
+}

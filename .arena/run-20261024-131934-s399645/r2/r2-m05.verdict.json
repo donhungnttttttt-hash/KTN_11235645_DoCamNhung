@@ -1,0 +1,14 @@
+﻿{
+  "match": "r2-m05",
+  "scores": {
+    "a026": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 10, "clarity": 7, "fatal": false},
+    "a036": {"correctness": 9, "completeness": 9, "specificity": 9, "robustness": 10, "clarity": 9, "fatal": false}
+  },
+  "winner": "a036",
+  "reason": "Cả hai đã xử lý các phản biện, nhưng a036 cung cấp bản đồ xuyên tầng rộng hơn và tích hợp rõ chuỗi thực thi–đóng lỗi cùng thứ tự ưu tiên PM tạo Tester vào báo cáo chính, trong khi a026 còn nhiều tầng chưa truy và để các sửa đổi quan trọng sau phần kết luận.",
+  "survived": [
+    "FIXED — B.2 bổ sung mở/hoàn thành phiên, attempt, bug, Dev resolved, coverage, retest và closure với UI/API/service/bảng/test; điều kiện đủ PASS và từ chối COVERAGE_INCOMPLETE khớp RetestService:97–101,225.",
+    "FIXED — D/E đưa xác minh quyền tạo Tester của PM vào bước đầu và hoàn thiện đường UI thành bước hai có điều kiện, trước chỉnh giải thích semantics; gate ADMIN được xác nhận tại AdminApp:19."
+  ],
+  "standing": {"a026": [], "a036": []}
+}

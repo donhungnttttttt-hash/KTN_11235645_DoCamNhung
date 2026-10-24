@@ -1,0 +1,35 @@
+{
+  "match": "r1-m08",
+  "scores": {
+    "a014": {
+      "correctness": 7,
+      "completeness": 8,
+      "specificity": 9,
+      "robustness": 7,
+      "clarity": 8,
+      "fatal": false
+    },
+    "a027": {
+      "correctness": 6,
+      "completeness": 8,
+      "specificity": 8,
+      "robustness": 4,
+      "clarity": 8,
+      "fatal": false
+    }
+  },
+  "winner": "a014",
+  "reason": "a014 giữ được đề xuất cảnh báo giới hạn xuất hợp lệ ở báo cáo nhiều đợt và bổ sung vòng đời dự án đầy đủ hơn, trong khi a027 dùng giới hạn 500 run mỗi đợt để phủ nhận sai tình huống báo cáo tổng 6.000 run.",
+  "survived": [
+    "FIXED — Attack 1: bổ sung FE/API/service/DB/test cho identity, import, BUG/retest và Redmine, nêu rõ từng tầng source chưa khảo sát.",
+    "FIXED — Attack 2: bổ sung archive/reopen, sáu blocker, trách nhiệm xử lý, cảnh báo Redmine và test source; đã đối chiếu ProjectLifecycleService.java:35–76."
+  ],
+  "standing": {
+    "a014": [
+      "MINOR mới: C03 giả định một đợt trên 5.000 run mà không nêu guard 500 run/đợt tại ExecutionService.java:111 và FileWorkService.java:174; phần báo cáo tổng 6.000 run và đề xuất cảnh báo xuất vẫn hợp lệ."
+    ],
+    "a027": [
+      "MAJOR mới: F03, D5 và E3 suy giới hạn 500 run/đợt làm tình huống báo cáo 6.000 run không có đường tạo hiện hành; ReportsPage.jsx:53 cho chọn tất cả đợt, ReportingService.java:49 và :78 cho cycle=null, nên 12 đợt 500 run đủ đạt 6.000 và xuất vẫn vượt 5.000. Việc hạ ưu tiên cảnh báo xuất vì thế dựa trên suy luận sai."
+    ]
+  }
+}

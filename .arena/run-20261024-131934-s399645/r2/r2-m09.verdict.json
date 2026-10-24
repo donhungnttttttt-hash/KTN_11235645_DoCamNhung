@@ -1,0 +1,14 @@
+﻿{
+  "match": "r2-m09",
+  "scores": {
+    "a024": {"correctness": 9, "completeness": 8, "specificity": 9, "robustness": 9, "clarity": 8, "fatal": false},
+    "a033": {"correctness": 9, "completeness": 7, "specificity": 8, "robustness": 9, "clarity": 9, "fatal": false}
+  },
+  "winner": "a024",
+  "reason": "Cả hai đã sửa các phản biện, nhưng a024 truy vết và đánh giá phục hồi cụ thể hơn cho chuẩn bị dự án, import, giao việc và AI, đồng thời đề xuất báo cáo bám đúng guard hiện hữu; a033 giải thích QA/test lần 2 tốt hơn nhưng còn nhiều mắt xích khảo sát chỉ được kê là chưa đọc.",
+  "survived": [
+    "FIXED: Bổ sung luồng AI draft qua FE/API/service/store/schema/test, timeout/retry/conflict và giới hạn OAuth/chat rõ ràng.",
+    "FIXED: Không còn đề xuất tách aggregate/detail đã có; chỉ đúng guard summary dòng 56, truy vấn cần đo và giữ cap export."
+  ],
+  "standing": {"a024": [], "a033": []}
+}

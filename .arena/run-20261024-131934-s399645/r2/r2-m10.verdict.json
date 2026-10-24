@@ -1,0 +1,35 @@
+﻿{
+    "match":  "r2-m10",
+    "scores":  {
+                   "a011":  {
+                                "correctness":  9,
+                                "completeness":  8,
+                                "specificity":  9,
+                                "robustness":  7,
+                                "clarity":  8,
+                                "fatal":  false
+                            },
+                   "a022":  {
+                                "correctness":  9,
+                                "completeness":  7,
+                                "specificity":  9,
+                                "robustness":  7,
+                                "clarity":  9,
+                                "fatal":  false
+                            }
+               },
+    "winner":  "a011",
+    "reason":  "Cả hai công kích đều FIXED (a011 bổ sung chứng cứ, a022 bổ sung inbox và bỏ đề xuất xây trùng), nhưng a011 thắng sát nhờ đánh giá nhập Excel và chứng cứ đầu-cuối đầy đủ hơn, dù a022 tìm được rủi ro 409 cụ thể hơn.",
+    "survived":  [
+                     "FIXED — Bổ sung toàn bộ luồng chứng cứ nội bộ FE/API/service/DB/blob/test, xử lý tệp quá 20 MiB, lỗi upload/download, quyền gỡ và bảo vệ chứng cứ đã dùng; đã đưa vào P1 và ví dụ trước/sau."
+                 ],
+    "standing":  {
+                     "a011":  [
+                                  "Phát hiện bổ sung của giám khảo: chưa nêu nguy cơ phục hồi 409 giữ toàn bộ form cũ nhưng dùng version mới; đã kiểm WorkItemDetail.jsx:124,129,141 và WorkItemService.java:198, nên ưu tiên cải tiến còn bỏ qua một rủi ro dữ liệu cụ thể.",
+                                  "Một số nhóm chức năng chỉ ánh xạ cấu trúc, chưa có chuỗi đầy đủ tới kiểm thử; bảng lựa chọn định tính ở D ít bổ sung giá trị."
+                              ],
+                     "a022":  [
+                                  "Phát hiện bổ sung của giám khảo: khảo sát toàn hệ thống còn mỏng ở nhập Excel preview/commit/phục hồi từng file, handbook/rule và đặc biệt upload/download/delete chứng cứ đang có tại EvidencePanel.jsx:17–42, WorkItemDetail.jsx:103; câu hỏi retention và giới hạn backup không thay thế bản đồ nghiệp vụ/test cho các luồng này."
+                              ]
+                 }
+}

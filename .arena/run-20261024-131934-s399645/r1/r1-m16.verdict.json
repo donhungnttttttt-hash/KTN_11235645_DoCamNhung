@@ -1,0 +1,35 @@
+﻿{
+    "match":  "r1-m16",
+    "scores":  {
+                   "a010":  {
+                                "correctness":  9,
+                                "completeness":  7,
+                                "specificity":  9,
+                                "robustness":  10,
+                                "clarity":  8,
+                                "fatal":  false
+                            },
+                   "a011":  {
+                                "correctness":  9,
+                                "completeness":  8,
+                                "specificity":  9,
+                                "robustness":  10,
+                                "clarity":  8,
+                                "fatal":  false
+                            }
+               },
+    "winner":  "a011",
+    "reason":  "a011 truy vết luồng nhập Excel và phục hồi thành công một phần đến API, dữ liệu và assertion kiểm thử cụ thể hơn, trong khi a010 chủ yếu bổ sung danh sách mắt xích chưa khảo sát ở nhiều luồng cốt lõi.",
+    "survived":  [
+                     "FIXED — Bổ sung upload/preview/commit, backend, schema, test và nghiệm thu A thành công/B lỗi hoặc hết hạn; source ImportExcelDialog xác nhận retry và trả tài liệu đã nhập khi đóng.",
+                     "FIXED — F04/P4 ghi nhận nhãn lịch sử quyền đã có, bỏ đề nghị gắn nhãn lại và hạ bảng quyền xuống cải tiến tùy chọn; permissions.md:3–25 xác nhận."
+                 ],
+    "standing":  {
+                     "a010":  [
+
+                              ],
+                     "a011":  [
+
+                              ]
+                 }
+}
