@@ -118,7 +118,7 @@ it('does not offer active members again or silently change their existing role',
  const api={project:vi.fn().mockResolvedValue({id:1,name:'Project'}),members:vi.fn().mockResolvedValue([member]),users:vi.fn().mockResolvedValue({items:[{id:'admin',displayName:'Admin PM',username:'admin',role:'ADMIN'}],totalElements:1}),setMember:vi.fn()};
  render(<AdminProjectDetail id="1" api={api}/>);
  await screen.findByText('Admin PM · admin');expect(screen.queryByLabelText('Chọn Admin PM')).not.toBeInTheDocument();
- expect(screen.getByRole('button',{name:'+ Thêm'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Thêm'})).toBeDisabled();
  expect(api.setMember).not.toHaveBeenCalled();
 });
 
@@ -127,7 +127,7 @@ it('adds a new member with the fixed account role and announces completion in th
  const api={project:vi.fn().mockResolvedValue({id:1,name:'Project'}),members:vi.fn().mockResolvedValue([]),users:vi.fn().mockResolvedValue({items:[{id:'a',username:'a',displayName:'Tester A',role:'TESTER'}],totalElements:1}),memberCandidate:vi.fn().mockResolvedValue({membershipVersion:null}),setMember:vi.fn().mockImplementation(()=>new Promise(resolve=>{finish=()=>{api.members.mockResolvedValue([first]);resolve(first);};}))};
  render(<AdminProjectDetail id="1" api={api}/>);fireEvent.click(await screen.findByLabelText('Chọn Tester A'));
  expect(screen.queryByLabelText('Vai trò Tester A')).not.toBeInTheDocument();
- fireEvent.click(screen.getByRole('button',{name:'+ Thêm'}));
+ fireEvent.click(screen.getByRole('button',{name:'Thêm'}));
  expect(screen.getByRole('button',{name:'Đang lưu thành viên…'})).toBeDisabled();expect(screen.getByRole('status')).toHaveTextContent('Đang lưu thành viên');
  await waitFor(()=>expect(api.setMember).toHaveBeenCalledWith('1','a',{projectRole:'TESTER',expectedVersion:null}));finish();await screen.findByRole('button',{name:'Gỡ Tester A'});
  expect(within(screen.getByRole('row',{name:/Tester A · a/})).getByRole('cell',{name:'TESTER'})).toBeVisible();
@@ -139,7 +139,7 @@ it('refreshes partial saves, identifies the failed person and retries only the r
  const api={project:vi.fn().mockResolvedValue({id:1,name:'Project'}),members:vi.fn().mockResolvedValue([]),users:vi.fn().mockResolvedValue({items:[{id:'a',username:'a',displayName:'Tester A',role:'TESTER'},{id:'b',username:'b',displayName:'Tester B',role:'TESTER'}],totalElements:2}),memberCandidate:vi.fn().mockResolvedValue({membershipVersion:null}),setMember:vi.fn().mockImplementationOnce(async()=>{api.members.mockResolvedValue([first]);}).mockRejectedValueOnce(new Error('Mất kết nối')).mockResolvedValue({})};
  render(<AdminProjectDetail id="1" api={api}/>);
  fireEvent.click(await screen.findByLabelText('Chọn Tester A'));fireEvent.click(screen.getByLabelText('Chọn Tester B'));
- fireEvent.click(screen.getByRole('button',{name:'+ Thêm'}));
+ fireEvent.click(screen.getByRole('button',{name:'Thêm'}));
  expect(await screen.findByRole('alert')).toHaveTextContent(/Tester B.*Mất kết nối/);
  await waitFor(()=>expect(api.members.mock.calls.length).toBeGreaterThan(1));
  expect(screen.getByRole('status')).toHaveTextContent('Đã lưu 1 thành viên');
@@ -147,7 +147,7 @@ it('refreshes partial saves, identifies the failed person and retries only the r
  await waitFor(()=>expect(screen.getByRole('alert').parentElement).toHaveFocus());
  expect(screen.queryByLabelText('Chọn Tester A')).not.toBeInTheDocument();
  expect(screen.getByLabelText('Chọn Tester B')).toBeChecked();
- fireEvent.click(screen.getByRole('button',{name:'+ Thêm'}));
+ fireEvent.click(screen.getByRole('button',{name:'Thêm'}));
  await waitFor(()=>expect(api.setMember).toHaveBeenCalledTimes(3));
  expect(api.setMember.mock.calls.map(call=>call[1])).toEqual(['a','b','b']);
  expect(api.setMember).toHaveBeenLastCalledWith('1','b',{projectRole:'TESTER',expectedVersion:null});
@@ -157,7 +157,7 @@ it('restores an inactive member with its candidate version and supports removal'
  const member={userId:'pm',displayName:'Manager',username:'pm',systemRole:'PM',projectRole:'PM',version:3};
  const api={projects:vi.fn().mockResolvedValue({items:[{id:1,code:"AA",name:"Project Alpha"}],totalElements:1}),project:vi.fn().mockResolvedValue({id:1,name:'Project',version:1}),members:vi.fn().mockResolvedValue([member]),users:vi.fn().mockResolvedValue({items:[{id:'d',username:'dev',displayName:'Developer',role:'DEV'}],totalElements:1}),memberCandidate:vi.fn().mockResolvedValue({membershipVersion:5}),setMember:vi.fn().mockResolvedValue({}),removeMember:vi.fn().mockResolvedValue({})};
  render(<AdminProjectDetail id="1" api={api}/>);
- fireEvent.click(await screen.findByLabelText('Chọn Developer'));fireEvent.click(screen.getByRole('button',{name:'+ Thêm'}));
+ fireEvent.click(await screen.findByLabelText('Chọn Developer'));fireEvent.click(screen.getByRole('button',{name:'Thêm'}));
  await waitFor(()=>expect(api.setMember).toHaveBeenCalledWith('1','d',{projectRole:'DEV',expectedVersion:5}));
  expect(api.setMember).toHaveBeenCalledTimes(1);
  fireEvent.click(await screen.findByRole('button',{name:'Gỡ Manager'}));await waitFor(()=>expect(api.removeMember).toHaveBeenCalledWith('1','pm',3));
@@ -183,13 +183,13 @@ it('discards selected additions when navigating to another project and keeps mem
  const view=render(<AdminProjectDetail id="1" api={api}/>);
  await screen.findByRole('button',{name:'Gỡ Manager'});
  fireEvent.click(await screen.findByLabelText('Chọn Developer'));
- expect(screen.getByRole('button',{name:'+ Thêm'})).toBeEnabled();
+ expect(screen.getByRole('button',{name:'Thêm'})).toBeEnabled();
  view.rerender(<AdminProjectDetail id="2" api={api}/>);
  await waitFor(()=>expect(api.members).toHaveBeenCalledWith('2',expect.anything()));
  const row=await screen.findByRole('row',{name:/Manager · pm/});
  expect(within(row).getByRole('cell',{name:'PM'})).toBeVisible();
  expect(await screen.findByLabelText('Chọn Developer')).not.toBeChecked();
- expect(screen.getByRole('button',{name:'+ Thêm'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Thêm'})).toBeDisabled();
  expect(screen.queryByRole('button',{name:'Lưu vai trò Manager'})).not.toBeInTheDocument();
 });
 

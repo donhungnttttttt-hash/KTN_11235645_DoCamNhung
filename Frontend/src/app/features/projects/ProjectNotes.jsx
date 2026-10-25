@@ -1,4 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
+import {Pencil} from 'lucide-react';
 import {notesApi} from '../../services/api/notes';
 import './project-notes.css';
 
@@ -84,7 +85,7 @@ function Notes({projectId,canEdit,api}) {
     {!loading&&data&&!data.items.length&&<p>Chưa có Note trong dự án.</p>}
     {data&&<><div className="project-notes-list">{data.items.map(note=><article key={note.id} className="project-note">
       <div className="project-note-heading"><h2>{note.title}</h2>{canEdit&&<div className="project-notes-actions">
-        <button ref={element=>{if(element)editButtons.current.set(note.id,element);else editButtons.current.delete(note.id);}} type="button" className="cat-btn" aria-label={`Sửa Note ${note.title}`} disabled={busy||!!editor} onClick={()=>openEditor(note)}>Sửa</button>
+        <button ref={element=>{if(element)editButtons.current.set(note.id,element);else editButtons.current.delete(note.id);}} type="button" className="cat-btn ui-action-icon" aria-label={`Sửa Note ${note.title}`} title={`Sửa Note ${note.title}`} disabled={busy||!!editor} onClick={()=>openEditor(note)}><Pencil size={18} aria-hidden="true"/></button>
         <button type="button" className="cat-btn" aria-label={`Xóa Note ${note.title}`} disabled={busy||!!editor} onClick={()=>{setRemoving(note);setActionError('');setNotice('');}}>Xóa</button>
       </div>}</div>
       <p className="project-note-time">Cập nhật {savedTime(note.updatedAt)} · giờ Việt Nam</p><p className="project-note-body">{note.body}</p>

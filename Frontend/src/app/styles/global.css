@@ -299,3 +299,5 @@ body {
   border-radius: 3px;
   padding: 1px 4px;
 }
+.ui-action-icon.ui-action-icon { display:inline-flex; align-items:center; justify-content:center; width:44px; min-width:44px; min-height:44px; padding:8px; flex:none; }
+.ui-action-icon svg { flex-shrink:0; }

@@ -3,7 +3,7 @@ import {SelectionTable} from '../../components/SelectionTable';
 import {adminApi} from '../../services/api/admin';
 import {useAdminRead,ReadState} from '../admin/shared';
 
-export function MemberPicker({value,onChange,api=adminApi,existingUserIds=[],projectId,allowedRoles=['PM','TESTER','DEV','ADMIN']}) {
+export function MemberPicker({value,onChange,api=adminApi,existingUserIds=[],projectId,footerAction,allowedRoles=['PM','TESTER','DEV','ADMIN']}) {
  const [keyword,setKeyword]=useState('');const [role,setRole]=useState('');const [membershipStatus,setMembershipStatus]=useState('');const [page,setPage]=useState(0);
  const load=useCallback(signal=>api.users({keyword,...(role?{role}:{}),enabled:true,unassignedOnly:false,...(projectId?{excludeProjectId:projectId}:{}),...(membershipStatus?{hasProject:membershipStatus==='assigned'}:{}),page,size:20},{signal}),[api,keyword,role,membershipStatus,page,projectId]);
  const state=useAdminRead(`people:${projectId||''}:${existingUserIds.join(',')}:${keyword}:${role}:${membershipStatus}:${page}`,load);
@@ -13,6 +13,6 @@ export function MemberPicker({value,onChange,api=adminApi,existingUserIds=[],pro
  rows={(state.data?.items||[]).filter(u=>!existingUserIds.some(id=>String(id)===String(u.id))).map(u=>({id:u.id,name:u.displayName,description:(u.username||'')+' · '+u.role+' · '+(u.memberships?.length?'Dự án: '+u.memberships.map(m=>m.code+' — '+m.name).join(', '):u.hasProject?'Đã có dự án':'Chưa có dự án'),extra:<strong>{u.role==='ADMIN'?'ADMIN · Làm PM':u.role}</strong>}))}
  onChange={ids=>onChange(ids.map(id=>value.find(m=>m.userId===id)||(()=>{const u=state.data.items.find(u=>u.id===id);return {userId:u.id,projectRole:u.role==='ADMIN'||u.role==='PM'?'PM':u.role==='DEV'?'DEV':'TESTER',displayName:u.displayName,username:u.username};})()))}/>
  <p>Đã chọn {value.length} người · {value.filter(m=>m.projectRole==='PM').length} PM</p>
- {state.data && <div className="admin-pagination"><span>Trang {page+1} / {Math.max(1,Math.ceil(state.data.totalElements/20))} · {state.data.totalElements} người</span><button type="button" disabled={!page} onClick={()=>setPage(page-1)}>Người trước</button><button type="button" disabled={(page+1)*20>=state.data.totalElements} onClick={()=>setPage(page+1)}>Người sau</button></div>}
+ {state.data && <div className="admin-pagination"><span>Trang {page+1} / {Math.max(1,Math.ceil(state.data.totalElements/20))} · {state.data.totalElements} người</span><button type="button" disabled={!page} onClick={()=>setPage(page-1)}>Người trước</button><button type="button" disabled={(page+1)*20>=state.data.totalElements} onClick={()=>setPage(page+1)}>Người sau</button>{footerAction&&<div className="admin-member-footer-action">{footerAction}</div>}</div>}
  </section>;
 }

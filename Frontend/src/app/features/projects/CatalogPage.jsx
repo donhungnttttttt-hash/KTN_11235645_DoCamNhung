@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useProject } from "./ProjectProvider";
 import { projectsApi } from "../../services/api/projects";
 import { useAuth } from "../auth/AuthProvider";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Pencil } from "lucide-react";
 import "./projects.css";
 import { CatalogEditor } from './CatalogEditor';
 
@@ -108,7 +108,7 @@ function ProjectCatalog({ currentProject }) {
           {cells.map((cell,index)=>React.cloneElement(cell,{key:index}))}
           {canEdit && (
             <td>
-              <button className="btn-icon" disabled={archiving!==null || !!editor} onClick={() => setEditor({ item })}>Sửa</button>
+              <button className="btn-icon ui-action-icon" aria-label="Sửa" title={`Sửa ${item.name}`} disabled={archiving!==null || !!editor} onClick={() => setEditor({ item })}><Pencil size={18} aria-hidden="true"/></button>
               {item.active === false || item.archived ? <span>Đã lưu trữ</span> : (
                 <button className="btn-icon text-danger" title="Lưu trữ" disabled={archiving!==null || !!editor} onClick={() => handleArchive(item)}>
                   <Trash2 size={16} />

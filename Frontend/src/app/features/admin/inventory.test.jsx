@@ -54,13 +54,13 @@ it('adds multiple machines directly to a fixed project, retaining only failed ha
 it('refreshes project allocations after handover and blocks new allocations in archived projects',async()=>{
  const api={allocations:vi.fn().mockResolvedValue(page([])),assets:vi.fn().mockResolvedValue(page([asset])),members:vi.fn().mockResolvedValue([{userId:'t',username:'tester',displayName:'Tester',projectRole:'PM',active:true}]),assignDevice:vi.fn().mockResolvedValue({})};
  const view=render(<ProjectDevices projectId={2} api={api} admin/>);
- fireEvent.click(screen.getByRole('button',{name:'Bổ sung máy vào dự án'}));fireEvent.click(await screen.findByLabelText('IP-08 · iPad'));
+ fireEvent.click(await screen.findByRole('button',{name:'Bổ sung máy'}));fireEvent.click(await screen.findByLabelText('IP-08 · iPad'));
  fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'t'}});fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));
  await waitFor(()=>expect(screen.queryByRole('dialog')).toBeNull());await waitFor(()=>expect(api.allocations).toHaveBeenCalledTimes(2));
  expect(screen.getByRole('status')).toHaveTextContent('Đã bàn giao 1 máy');
  expect(screen.getByText(/PM tự phân phối nội bộ bên ngoài phần mềm/)).toBeInTheDocument();
  expect(screen.queryByRole('link',{name:'Danh mục dự án'})).not.toBeInTheDocument();
- view.rerender(<ProjectDevices projectId={2} api={api} admin archived/>);expect(screen.queryByRole('button',{name:'Bổ sung máy vào dự án'})).toBeNull();
+ view.rerender(<ProjectDevices projectId={2} api={api} admin archived/>);expect(screen.queryByRole('button',{name:'Bổ sung máy'})).toBeNull();
 });
 it('late return lookup cannot reopen editor after page scope changed',async()=>{
  let resolve;const api={projects:vi.fn().mockResolvedValue(page([{id:2,code:'AA',name:'Alpha'}])),assets:vi.fn().mockResolvedValue(page([{...asset,status:'ALLOCATED'}])),allocations:vi.fn().mockReturnValue(new Promise(r=>{resolve=r;}))};render(<AdminDevices api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Thu hồi IP-08',exact:true}));await chooseProject('Dự án đang giữ máy');resolve(page([{id:10,version:0,recipientName:'Manager'}]));await waitFor(()=>expect(api.assets).toHaveBeenLastCalledWith(expect.objectContaining({projectId:'2'}),expect.anything()));expect(screen.queryByText('Xác nhận thu hồi')).toBeNull();

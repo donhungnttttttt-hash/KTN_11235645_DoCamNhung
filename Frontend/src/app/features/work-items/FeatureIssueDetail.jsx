@@ -1,4 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
+import {Pencil} from 'lucide-react';
 import {featureIssuesApi} from '../../services/api/featureIssues';
 import {projectsApi} from '../../services/api/projects';
 import {statuses} from './data';
@@ -120,7 +121,7 @@ export function FeatureIssueDetail({projectId,id,api=featureIssuesApi,memberApi=
   <h4>Kết quả mong đợi</h4><p className="wi-pre">{item.expectedResult}</p>
   <h4>Kết quả thực tế</h4><p className="wi-pre">{item.actualResult}</p>
   <div className="wi-actions">
-   {item.canEdit&&!editing&&<button ref={editButton} className="cat-btn" disabled={busy||reloading} onClick={startEdit}>Sửa nội dung Issue</button>}
+   {item.canEdit&&!editing&&<button ref={editButton} className="cat-btn ui-action-icon" aria-label="Sửa nội dung Issue" title="Sửa nội dung Issue" disabled={busy||reloading} onClick={startEdit}><Pencil size={18} aria-hidden="true"/></button>}
    {item.canDelete&&item.monkey&&item.type==='BUG'&&!confirmDelete&&<button ref={deleteButton} className="cat-btn" disabled={busy||reloading} onClick={()=>setConfirmDelete(true)}>Xóa Bug monkey</button>}
   </div>
   {confirmDelete&&item.canDelete&&item.monkey&&item.type==='BUG'&&<section className="feature-issue-confirm" aria-label="Xác nhận xóa Bug monkey">

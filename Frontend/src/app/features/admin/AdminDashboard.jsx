@@ -12,12 +12,12 @@ export function AdminDashboard({projectId,api=adminApi}) {
   const scope=projectId ? `?projectId=${encodeURIComponent(projectId)}` : '';
   const attention=data.attention;
   const inventory=data.inventory;
-  const statusLabels={AVAILABLE:'Sẵn sàng',ALLOCATED:'Đang bàn giao',MAINTENANCE:'Bảo trì',RETIRED:'Ngừng sử dụng'};
+  const statusLabels={AVAILABLE:'Sẵn sàng',ALLOCATED:'Đã bàn giao',MAINTENANCE:'Bảo trì',RETIRED:'Ngừng sử dụng'};
   return <>
     <div className="admin-page-heading"><div><h1>Tổng quan hệ thống</h1><p>{projectId ? 'Phạm vi dự án được chọn' : 'Tất cả dự án'} · Cập nhật {new Date(data.asOf).toLocaleString('vi-VN')}</p></div><button onClick={state.retry}>Tải lại</button></div>
     <div className="admin-kpis">
       {[['Dự án hoạt động',data.activeProjects,`${data.totalProjects} dự án trong phạm vi`],['Tài khoản hoạt động',data.enabledUsers,`${data.totalUsers} tài khoản duy nhất`],['Tiến độ kiểm thử',percent(data.metrics.executionPercent),`${data.metrics.tested??data.metrics.ok+data.metrics.ng+data.metrics.pending+data.metrics.na}/${data.metrics.total} case đã test`],['Bug chưa kết thúc',data.openBugs,`${data.awaitingVerification} đã xử lý, chờ xác minh`]].map(([label,value,note])=><article className="admin-card" key={label}><h2>{label}</h2><strong>{value}</strong><p>{note}</p></article>)}
-      {inventory&&<article className="admin-card"><h2>Máy đang bàn giao / sẵn sàng</h2><strong>{inventory.allocated} / {inventory.available}</strong><p>{inventory.maintenance} bảo trì · {inventory.retired} ngừng sử dụng (ngoài tồn kho)</p></article>}
+      {inventory&&<article className="admin-card"><h2>Máy đã bàn giao / sẵn sàng</h2><strong>{inventory.allocated} / {inventory.available}</strong><p>{inventory.maintenance} bảo trì · {inventory.retired} ngừng sử dụng (ngoài tồn kho)</p></article>}
     </div>
     <div className="admin-chart-grid">
       <section className="admin-card"><h2>Tiến độ theo dự án</h2><p>Hiển thị {data.byProject.length}/{data.totalProjects} dự án; KPI tính trên toàn phạm vi.</p>

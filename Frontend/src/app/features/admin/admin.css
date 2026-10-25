@@ -185,3 +185,8 @@
 @media(prefers-reduced-motion:reduce){.admin-sidebar:not([hidden]){animation:none}.admin-sidebar nav a,.admin-shell .admin-navigation-toggle{transition:none}}
 .admin-shell .admin-member-action-cell { text-align:right; }
 .admin-shell .admin-member-remove { display:inline-flex; align-items:center; justify-content:center; width:44px; min-height:44px; padding:8px; }
+.admin-allocation-return { display:inline-flex; align-items:center; justify-content:center; width:44px; min-width:44px; min-height:44px; padding:8px; white-space:nowrap; }
+.admin-member-footer-action { margin-left:auto; }
+.admin-shell .admin-member-add { display:inline-flex; align-items:center; justify-content:center; gap:8px; white-space:nowrap; }
+.admin-shell .admin-member-add:not(:disabled) { background:#e1f3ec; border-color:#e1f3ec; color:#145e49; font-weight:700; }
+.project-device-footer .project-device-add { margin-left:auto; display:inline-flex; align-items:center; justify-content:center; gap:8px; white-space:nowrap; }

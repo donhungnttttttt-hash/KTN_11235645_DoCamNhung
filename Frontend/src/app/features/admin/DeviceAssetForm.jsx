@@ -1,7 +1,7 @@
 import {AdminFormDialog,useAdminFormClose} from './AdminFormDialog';
 import React,{useEffect,useRef,useState} from 'react';
 import {adminApi} from '../../services/api/admin';
-export const assetStatuses={AVAILABLE:'Sẵn sàng',ALLOCATED:'Đang bàn giao',MAINTENANCE:'Bảo trì',RETIRED:'Ngừng sử dụng'};
+export const assetStatuses={AVAILABLE:'Sẵn sàng',ALLOCATED:'Đã bàn giao',MAINTENANCE:'Bảo trì',RETIRED:'Ngừng sử dụng'};
 export function DeviceAssetForm({asset,onSaved,onCancel,api=adminApi}) {
  const [draft,setDraft]=useState({assetCode:asset?.assetCode||'',type:asset?.type||'IPAD',model:asset?.model||'',serial:asset?.serial||'',osName:asset?.osName||'',osVersion:asset?.osVersion||'',conditionCode:asset?.conditionCode||'AVAILABLE',notes:asset?.notes||''});
  const [version,setVersion]=useState(asset?.version);const [busy,setBusy]=useState(false);const [error,setError]=useState('');const [canReload,setCanReload]=useState(false),[notice,setNotice]=useState('');

@@ -15,7 +15,7 @@ test('reload refreshes management and lifecycle after another Admin archives the
  await waitFor(()=>expect(screen.getByRole('button',{name:'Sửa dự án'})).toBeDisabled());
  expect(await screen.findByRole('button',{name:'Mở lại dự án'})).toBeEnabled();
  expect(api.members).toHaveBeenCalledTimes(2);
- expect(screen.getByRole('button',{name:'+ Thêm'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Thêm'})).toBeDisabled();
 });
 
 test('archive refreshes the real detail, locks its edit actions and focuses the confirmed outcome',async()=>{
