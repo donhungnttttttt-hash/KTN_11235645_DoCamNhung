@@ -28,25 +28,28 @@ it('offers only account-compatible project roles while creating a project and su
  ]})));
 });
 
-it('offers only compatible roles when editing existing project memberships',async()=>{
- const members=people.map(p=>({userId:p.id,displayName:p.displayName,username:p.username,systemRole:p.role,projectRole:p.role,version:3}));
- const api={project:vi.fn().mockResolvedValue({id:1,name:'Alpha',version:1}),members:vi.fn().mockResolvedValue(members),users:vi.fn().mockResolvedValue({items:[],totalElements:0})};
+it('shows existing membership roles as text without role editing controls',async()=>{
+ const members=[...people.map(p=>({userId:p.id,displayName:p.displayName,username:p.username,systemRole:p.role,projectRole:p.role,version:3})),
+  {userId:'reader',displayName:'Reader',username:'reader',systemRole:'TESTER',projectRole:'MEMBER',version:1}];
+ const api={project:vi.fn().mockResolvedValue({id:1,name:'Alpha',version:1}),members:vi.fn().mockResolvedValue(members),users:vi.fn().mockResolvedValue({items:[],totalElements:0}),setMember:vi.fn()};
  render(<AdminProjectDetail id="1" api={api}/>);
- expect(optionValues(await screen.findByLabelText('Vai trò Manager'))).toEqual(['PM','TESTER','MEMBER']);
- expect(optionValues(screen.getByLabelText('Vai trò Tester'))).toEqual(['PM','TESTER','MEMBER']);
- expect(optionValues(screen.getByLabelText('Vai trò Developer'))).toEqual(['DEV']);
+ for(const member of members){
+  const row=await screen.findByRole('row',{name:new RegExp(`${member.displayName} · ${member.username}`)});
+  expect(within(row).queryByRole('combobox')).not.toBeInTheDocument();
+  expect(within(row).getByRole('cell',{name:member.projectRole})).toBeVisible();
+  expect(within(row).getByRole('button',{name:`Gỡ ${member.displayName}`})).toBeEnabled();
+ }
+ expect(screen.queryByRole('button',{name:/^Lưu vai trò/})).not.toBeInTheDocument();
+ expect(api.setMember).not.toHaveBeenCalled();
 });
 
-it('shows an incompatible legacy assignment explicitly until Admin chooses a compatible role',async()=>{
+it('displays a legacy membership role as stored without offering a role change',async()=>{
  const member={userId:'tester',displayName:'Tester',username:'tester',systemRole:'TESTER',projectRole:'DEV',version:3};
  const api={project:vi.fn().mockResolvedValue({id:1,name:'Alpha',version:1}),members:vi.fn().mockResolvedValue([member]),users:vi.fn().mockResolvedValue({items:[],totalElements:0}),setMember:vi.fn().mockResolvedValue({})};
  render(<AdminProjectDetail id="1" api={api}/>);
- const select=await screen.findByLabelText('Vai trò Tester');
- expect(select).toHaveValue('DEV');
- expect(within(select).getByRole('option',{name:'DEV · không phù hợp'})).toBeDisabled();
- expect(screen.getByText(/Vai trò hiện tại không phù hợp với tài khoản/)).toBeInTheDocument();
- expect(screen.getByRole('button',{name:'Lưu vai trò Tester'})).toBeDisabled();
- fireEvent.change(select,{target:{value:'TESTER'}});
- fireEvent.click(screen.getByRole('button',{name:'Lưu vai trò Tester'}));
- await waitFor(()=>expect(api.setMember).toHaveBeenCalledWith('1','tester',{projectRole:'TESTER',expectedVersion:3}));
+ const row=await screen.findByRole('row',{name:/Tester · tester/});
+ expect(within(row).queryByRole('combobox')).not.toBeInTheDocument();
+ expect(within(row).getByRole('cell',{name:'DEV'})).toBeVisible();
+ expect(screen.queryByRole('button',{name:/^Lưu vai trò/})).not.toBeInTheDocument();
+ expect(api.setMember).not.toHaveBeenCalled();
 });

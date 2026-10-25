@@ -7,6 +7,26 @@
   "activeSprint": "S11",
   "phase": "IN_REVIEW",
   "implementationStarted": true,
+  "projectMemberRoleReadonly20261025": {
+    "status": "DONE",
+    "scope": "Remove role editing for existing project members from both frontend components; preserve initial role selection when adding members",
+    "report": "docs/reviews/2026-10-25-project-member-role-readonly.md",
+    "verification": {
+      "frontendTestsPassed": 1202,
+      "frontendTestsFailed": 0,
+      "frontendTestFiles": 129,
+      "buildExitCode": 0,
+      "buildWarning": "JS chunk 504.51 kB exceeds the 500 kB warning threshold",
+      "chrome": "Project 5 on localhost:5173 displays PM/TESTER/DEV as text without role editing controls",
+      "coverage": "NOT_MEASURED_THIS_TASK",
+      "businessDataWrites": 0
+    },
+    "backendApiChanged": false,
+    "migrationOrRestart": false,
+    "commitOrPushAtVerification": false,
+    "deliveryAuthorization": "User requested commit and push of these changes to system-design after verification; no merge or deploy",
+    "remaining": "No outstanding item for this UI request; broader S11/FR-12 UAT and Arena work retain their existing status"
+  },
   "completeDemoMigration20261025": {
     "status": "DONE",
     "scope": "Synthetic complete local demo V34; preserve V1-V33 and existing business data; commit/push authorized by user",
