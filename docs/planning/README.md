@@ -1,5 +1,7 @@
 # Kế hoạch phát triển theo sprint
 
+Thành viên 25/10: [loại thành viên hiện tại, cố định vai trò và quyền thêm của PM/ADMIN](../reviews/2026-10-25-member-selection-policy.md). ADMIN hiển thị **ADMIN · Làm PM**, giữ nguyên quyền hệ thống ADMIN. Backend 37/37, frontend 1.221/1.221 và 48 test liên quan sau chỉnh cuối PASS; Chrome xác nhận nhãn/danh sách. Main 8080 đã chạy bản mới, dữ liệu tài khoản/thành viên/Flyway V33 giữ nguyên. Chưa commit/push; S11/FR-12 vẫn IN_REVIEW. Quyết định mới thay phần cho chọn vai trò lúc thêm ở checkpoint cũ bên dưới.
+
 Bàn giao sửa tài khoản 25/10: đã pull `9487333`, giữ thay đổi local không conflict; sửa 40 warning test profile và 2 warning test bộ lọc vừa pull. JDT 328 source sạch, frontend 1.219/1.219 và backend 50/50 cùng build đạt; [chi tiết bàn giao](../reviews/2026-10-25-admin-user-profile.md). Người dùng đã yêu cầu commit/push lên `system-design`; ghi chú chưa commit/push ngay dưới là checkpoint triển khai trước yêu cầu bàn giao.
 
 Sửa tài khoản 25/10: [kế hoạch](2026-10-25-admin-user-profile.md), [kết quả](../reviews/2026-10-25-admin-user-profile.md). Admin sửa tên hiển thị, username và đặt lại mật khẩu; vai trò giữ nguyên. Frontend 1.218/1.218; 47 test backend liên quan không trùng gồm 8 native, build và Chrome đạt trong phạm vi ghi nhận. Backend 8080 đã chạy bản mới, giữ main V33 bằng target ở process và đối chiếu dữ liệu nguyên vẹn; chưa commit/push. S11/FR-12 vẫn IN_REVIEW.

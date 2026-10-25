@@ -65,17 +65,17 @@ class SettingsReviewTest {
         assertThat(pm.get(path,200).get(0).path("active").asBoolean()).isFalse();
         assertThat(db.queryForObject("SELECT COUNT(*) FROM project_audit WHERE project_id=? AND entity_type='ENVIRONMENT'",Long.class,p)).isEqualTo(3);
     }
-    @Test void membershipUpdatesNeedVersionAndCannotRemoveLastPmOrCreateAccounts() throws Exception {
+    @Test void membershipRolesCannotChangeAndRemovalNeedsVersionAndAnEnabledPm() throws Exception {
         var members=pm.get(base+"/members",200);
         JsonNode worker=members.findValues("userId").stream().filter(x-> !x.asText().equals(db.queryForObject("SELECT created_by FROM projects WHERE id=?",String.class,p))).findFirst().orElseThrow();
         String path=base+"/members/"+worker.asText();
-        pm.write("PUT",path,Map.of("projectRole","MEMBER","expectedVersion",0),200);
-        pm.write("PUT",path,Map.of("projectRole","PM","expectedVersion",0),409);
-        pm.write("DELETE",path+"?expectedVersion=0",null,409);
+        pm.write("PUT",path,Map.of("projectRole","MEMBER","expectedVersion",0),422);
+        pm.write("PUT",path,Map.of("projectRole","PM","expectedVersion",0),422);
+        pm.write("DELETE",path+"?expectedVersion=9",null,409);
         String owner=db.queryForObject("SELECT created_by FROM projects WHERE id=?",String.class,p);
         pm.write("DELETE",base+"/members/"+owner+"?expectedVersion=0",null,409);
         tester.get(base+"/member-candidate?username=pm."+tag,403);
-        pm.write("DELETE",path+"?expectedVersion=1",null,204);
+        pm.write("DELETE",path+"?expectedVersion=0",null,204);
         tester.get(base,404);
         assertThat(db.queryForObject("SELECT COUNT(*) FROM identity_users WHERE username LIKE ?",Long.class,"%."+tag)).isEqualTo(3);
     }
@@ -156,23 +156,23 @@ class SettingsReviewTest {
         String path=base+"/members/"+candidate.path("userId").asText();
         assertThat(candidate.path("membershipVersion").asInt()).isZero();
         pm.write("PUT",path,Map.of("projectRole","PM"),422);
-        pm.write("PUT",path,Map.of("projectRole","PM","expectedVersion",0),200);
+        pm.write("PUT",path,Map.of("projectRole","PM","expectedVersion",0),422);
         tester.write("POST","/users",Map.of("username","forbidden."+tag,"displayName","Must not create","role","TESTER","password","Fixture-only-LongPassword!"),403);
-        pm.write("DELETE",path+"?expectedVersion=1",null,204);tester.get(base+"/handbook",404);
+        pm.write("DELETE",path+"?expectedVersion=0",null,204);tester.get(base+"/handbook",404);
         var removed=pm.get(base+"/member-candidate?username=tester."+tag,200);
         pm.write("PUT",path,Map.of("projectRole","TESTER","expectedVersion",removed.path("membershipVersion").asLong()),200);tester.get(base+"/handbook",200);
         pm.get(base+"/member-candidate?username=missing.user",404);pm.get(base+"/member-candidate?username=x",422);
         pm.write("PUT",base+"/members/nonexistent",Map.of("projectRole","TESTER"),422);
         assertThat(db.queryForObject("SELECT role_code FROM identity_users WHERE id=?",String.class,candidate.path("userId").asText())).isEqualTo("TESTER");
     }
-    @Test void concurrentRoleUpdatesProduceOneWinnerAndOneConflict() throws Exception {
+    @Test void concurrentRoleChangesAreBothRejected() throws Exception {
         String target=pm.get(base+"/member-candidate?username=tester."+tag,200).path("userId").asText();
         byte[] body=json.writeValueAsBytes(Map.of("projectRole","MEMBER","expectedVersion",0));
         var csrf=pm.get("/auth/csrf",200);var start=new java.util.concurrent.CountDownLatch(1);
         try(var executor=java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
             java.util.concurrent.Callable<Integer> request=()->{start.await();return pm.raw("PUT",base+"/members/"+target,body,csrf,Map.of()).statusCode();};
             var first=executor.submit(request);var second=executor.submit(request);start.countDown();
-            assertThat(List.of(first.get(),second.get())).containsExactlyInAnyOrder(200,409);
+            assertThat(List.of(first.get(),second.get())).containsExactlyInAnyOrder(422,422);
         }
     }
     @Test void dateClearingIsExplicitAndInvalidRangesRollbackWithoutChangingVersion() throws Exception {

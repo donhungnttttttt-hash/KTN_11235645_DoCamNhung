@@ -2099,5 +2099,34 @@
       "deploy": false
     },
     "nextAction": "Keep FR-12/S11 IN_REVIEW; retain previous coverage matrix NOT_RUN entries and scoped evidence. No claim all buttons passed."
+  },
+  "projectMemberSelectionPolicy20261025": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-10-25-member-selection-policy.md",
+    "decisions": [
+      "Exclude active current-project members before count and pagination",
+      "No editable membership role; ADMIN account remains ADMIN and is labelled ADMIN · Làm PM",
+      "ADMIN adds all account groups; PM adds only DEV/TESTER to managed projects"
+    ],
+    "verification": {
+      "frontendFullPassed": 1221,
+      "frontendFinalFocusedPassed": 48,
+      "backendPassed": 37,
+      "nativeIncluded": 11,
+      "javaSources": 329,
+      "javaErrors": 0,
+      "javaWarnings": 0,
+      "builds": "PASS",
+      "coverage": "Not newly measured",
+      "chrome": "Admin label and excluded current members verified, no membership writes on main"
+    },
+    "runtime": {
+      "backendPort": 8080,
+      "readiness": "UP",
+      "flywayTarget": 33,
+      "migrationApplied": false,
+      "identityMembershipFlywayHashesUnchanged": true
+    },
+    "commitOrPush": false
   }
 }

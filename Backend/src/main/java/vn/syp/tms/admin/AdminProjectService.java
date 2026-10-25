@@ -68,18 +68,38 @@ public class AdminProjectService {
     }
     @Transactional(readOnly=true)
     public AdminDtos.Page<Map<String,Object>> users(String actor,Long projectId,String keyword,String role,Boolean enabled,boolean unassignedOnly,Boolean hasProject,int page,int size) {
+        return users(actor,projectId,keyword,role,enabled,unassignedOnly,hasProject,null,page,size);
+    }
+    @Transactional(readOnly=true)
+    public AdminDtos.Page<Map<String,Object>> users(String actor,Long projectId,String keyword,String role,Boolean enabled,boolean unassignedOnly,Boolean hasProject,Long excludeProjectId,int page,int size) {
         admin(actor);
+        return queryUsers(projectId,keyword,role,enabled,unassignedOnly,hasProject,excludeProjectId,page,size,false);
+    }
+    @Transactional(readOnly=true)
+    public AdminDtos.Page<Map<String,Object>> memberCandidates(String actor,long projectId,String keyword,String role,Boolean hasProject,int page,int size) {
+        projects.requireMemberCandidateAccess(projectId,actor);
+        boolean pmOnly=!"ADMIN".equals(identity.current(actor).getRole());
+        if(pmOnly && role!=null && !List.of("DEV","TESTER").contains(role))fail(403,"FORBIDDEN","PM chỉ được thêm tài khoản Dev hoặc Tester.");
+        return queryUsers(null,keyword,role,true,false,hasProject,projectId,page,size,pmOnly);
+    }
+    private AdminDtos.Page<Map<String,Object>> queryUsers(Long projectId,String keyword,String role,Boolean enabled,boolean unassignedOnly,Boolean hasProject,Long excludeProjectId,int page,int size,boolean pmOnly) {
+        if(excludeProjectId!=null && excludeProjectId<=0)fail(422,"INVALID_FILTER","Dự án cần loại thành viên không hợp lệ.");
         if(page<0 || size<1 || size>100 || text(keyword).length()>100 || role!=null && !List.of("ADMIN","PM","TESTER","DEV").contains(role))fail(422,"INVALID_FILTER","Bộ lọc không hợp lệ.");
         var args=new ArrayList<Object>();String where=" WHERE 1=1";
+        if(pmOnly)where+=" AND u.role_code IN ('DEV','TESTER')";
         if(unassignedOnly)where+=" AND NOT EXISTS(SELECT 1 FROM project_memberships unassigned WHERE unassigned.user_id=u.id AND unassigned.active=TRUE)";
         if(hasProject!=null)where+=" AND "+(hasProject?"":"NOT ")+"EXISTS(SELECT 1 FROM project_memberships assigned WHERE assigned.user_id=u.id AND assigned.active=TRUE)";
         if(projectId!=null){db.row("SELECT id FROM projects WHERE id=?",projectId);where+=" AND EXISTS(SELECT 1 FROM project_memberships m WHERE m.user_id=u.id AND m.project_id=? AND m.active=TRUE)";args.add(projectId);}
+        if(excludeProjectId!=null){db.row("SELECT id FROM projects WHERE id=?",excludeProjectId);where+=" AND NOT EXISTS(SELECT 1 FROM project_memberships excluded WHERE excluded.user_id=u.id AND excluded.project_id=? AND excluded.active=TRUE)";args.add(excludeProjectId);}
         var search=MultiWordSearch.sql(keyword,"u.username","u.display_name");where+=search.sql();args.addAll(search.args());
         if(role!=null){where+=" AND u.role_code=?";args.add(role);}
         if(enabled!=null){where+=" AND u.enabled=?";args.add(enabled);}
         long count=db.count("SELECT COUNT(*) FROM identity_users u"+where,args.toArray());args.add(size);args.add((long)page*size);
         var items=db.rows("SELECT u.id,u.username,u.display_name AS displayName,u.role_code AS role,u.enabled,u.can_create_users AS canCreateUsers,u.lock_version AS version,u.created_at AS createdAt FROM identity_users u"+where+" ORDER BY u.created_at,u.id LIMIT ? OFFSET ?",args.toArray());
-        for(var user:items)user.put("memberships",db.rows("SELECT p.id AS projectId,p.code,p.name,m.project_role AS projectRole,m.lock_version AS version FROM project_memberships m JOIN projects p ON p.id=m.project_id WHERE m.user_id=? AND m.active=TRUE ORDER BY p.id",user.get("id")));
+        for(var user:items) {
+            if(pmOnly)user.put("hasProject",db.count("SELECT COUNT(*) FROM project_memberships WHERE user_id=? AND active=TRUE",user.get("id"))>0);
+            else user.put("memberships",db.rows("SELECT p.id AS projectId,p.code,p.name,m.project_role AS projectRole,m.lock_version AS version FROM project_memberships m JOIN projects p ON p.id=m.project_id WHERE m.user_id=? AND m.active=TRUE ORDER BY p.id",user.get("id")));
+        }
         return new AdminDtos.Page<>(items,page,size,count);
     }
 }

@@ -10,21 +10,27 @@ const people=[
  {id:'pm',username:'pm',displayName:'Manager',role:'PM'},
  {id:'tester',username:'tester',displayName:'Tester',role:'TESTER'},
  {id:'dev',username:'dev',displayName:'Developer',role:'DEV'},
+ {id:'admin',username:'admin',displayName:'System admin',role:'ADMIN'},
 ];
-const optionValues=select=>within(select).getAllByRole('option').map(option=>option.value);
 
-it('offers only account-compatible project roles while creating a project and submits a usable Dev',async()=>{
+
+it('keeps roles read-only while creating a project and submits each account role',async()=>{
  const api={users:vi.fn().mockResolvedValue({items:people,totalElements:3}),createProject:vi.fn().mockResolvedValue({id:1})};
  render(<AdminProjectForm api={api} onSaved={vi.fn()}/>);
  for(const person of people)fireEvent.click(await screen.findByLabelText(`Chọn ${person.displayName}`));
- expect(optionValues(screen.getByLabelText('Vai trò Manager'))).toEqual(['PM','TESTER']);
- expect(optionValues(screen.getByLabelText('Vai trò Tester'))).toEqual(['PM','TESTER']);
- expect(optionValues(screen.getByLabelText('Vai trò Developer'))).toEqual(['DEV']);
+ for(const person of people){
+  const row=screen.getByLabelText(`Chọn ${person.displayName}`).closest('tr');
+  expect(within(row).queryByRole('combobox')).not.toBeInTheDocument();
+  expect(within(row).getByText(person.role==='ADMIN'?'ADMIN · Làm PM':person.role,{selector:'strong'})).toBeVisible();
+ }
+
+
+
  fireEvent.change(screen.getByLabelText('Mã dự án'),{target:{value:'AA'}});
  fireEvent.change(screen.getByLabelText('Tên dự án'),{target:{value:'Alpha'}});
  fireEvent.click(screen.getByRole('button',{name:'Tạo dự án'}));
  await waitFor(()=>expect(api.createProject).toHaveBeenCalledWith(expect.objectContaining({members:[
-  {userId:'pm',projectRole:'PM'},{userId:'tester',projectRole:'TESTER'},{userId:'dev',projectRole:'DEV'},
+  {userId:'pm',projectRole:'PM'},{userId:'tester',projectRole:'TESTER'},{userId:'dev',projectRole:'DEV'},{userId:'admin',projectRole:'PM'},
  ]})));
 });
 

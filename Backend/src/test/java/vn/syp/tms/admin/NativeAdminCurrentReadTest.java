@@ -48,8 +48,14 @@ class NativeAdminCurrentReadTest {
     @Test void distinctPmRemovalCannotUseOldTwoMemberSnapshot() throws Exception {
         staleSnapshotRace(()->projects.removeMember(project,admin,a,0L),()->projects.removeMember(project,admin,b,0L),"LAST_PM");
     }
-    @Test void distinctPmDemotionCannotUseOldTwoMemberSnapshot() throws Exception {
-        staleSnapshotRace(()->projects.addOrUpdateMember(project,admin,a,new ProjectDtos.SetMember("TESTER",0L)),()->projects.addOrUpdateMember(project,admin,b,new ProjectDtos.SetMember("TESTER",0L)),"LAST_PM");
+    @Test void bothPmRoleChangesAreRejectedWithoutChangingMemberships() throws Exception {
+        try(var workers=Executors.newFixedThreadPool(2)) {
+            var futures=List.of(a,b).stream().map(user->workers.submit(()->
+                assertThatThrownBy(()->projects.addOrUpdateMember(project,admin,user,new ProjectDtos.SetMember("TESTER",0L)))
+                    .isInstanceOfSatisfying(BusinessException.class,e->assertThat(e.code()).isEqualTo("ROLE_CHANGE_NOT_ALLOWED")))).toList();
+            for(var future:futures)future.get(15,TimeUnit.SECONDS);
+        }
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM project_memberships WHERE project_id=? AND project_role='PM' AND active=TRUE",Long.class,project)).isEqualTo(2);
     }
     @Test void sameProjectVersionCannotOverwriteCommittedPatch() throws Exception {
         staleSnapshotRace(()->adminProjects.update(admin,project,new ProjectDtos.UpdateProject("First",null,null,0L)),()->adminProjects.update(admin,project,new ProjectDtos.UpdateProject("Second",null,null,0L)),"VERSION_CONFLICT");

@@ -37,13 +37,13 @@ class CentralMembershipTest {
         assertEquals("LAST_PM",assertThrows(BusinessException.class,()->service.removeMember(1L,"admin","pm",0L)).code());
         verify(memberships,never()).updateCurrent(any(),anyString(),anyBoolean(),anyLong());
     }
-    @Test void distinctPmRemovalOrDemotionUsesCurrentSetInsteadOfOldTwoPmSnapshot() {
+    @Test void lastPmRemovalUsesCurrentSetAndAllRoleChangesAreRejected() {
         admin();member("b","PM");when(users.lockAccount("b")).thenReturn(Optional.of(account("PM")));
         // A was removed by the transaction ahead of us; an earlier RR snapshot still contains both.
         when(memberships.findByProjectIdAndActiveTrue(1L)).thenReturn(List.of(new ProjectMembership(1L,"a","PM"),new ProjectMembership(1L,"b","PM")));
         when(memberships.lockEnabledPmUsers(1L)).thenReturn(List.of("b"));
         assertEquals("LAST_PM",assertThrows(BusinessException.class,()->service.removeMember(1L,"admin","b",0L)).code());
-        assertEquals("LAST_PM",assertThrows(BusinessException.class,()->service.addOrUpdateMember(1L,"admin","b",new ProjectDtos.SetMember("TESTER",0L))).code());
+        assertEquals("ROLE_CHANGE_NOT_ALLOWED",assertThrows(BusinessException.class,()->service.addOrUpdateMember(1L,"admin","b",new ProjectDtos.SetMember("TESTER",0L))).code());
         verify(memberships,never()).findByProjectIdAndActiveTrue(1L);
         verify(memberships,never()).updateCurrent(any(),anyString(),anyBoolean(),anyLong());
     }
@@ -76,10 +76,11 @@ class CentralMembershipTest {
         when(memberships.findByProjectIdAndUserId(1L,"dev")).thenReturn(new ProjectMembership(1L,"dev","DEV"));
         assertEquals(403,assertThrows(BusinessException.class,()->service.requireNotDev(1L,"dev")).status());
     }
-    @Test void pmCannotAdministerMembershipEvenOnOwnProject() {
+    @Test void pmCannotAddMembersToAnotherProject() {
         when(identity.lockCurrent("actor")).thenReturn(account("PM"));
-        assertEquals(403,assertThrows(BusinessException.class,()->service.addOrUpdateMember(1L,"actor","target",new ProjectDtos.SetMember("TESTER"))).status());
-        verifyNoInteractions(users,projects,memberships);
+        when(identity.current("actor")).thenReturn(new IdentityUser("actor","PM","hash","PM"));
+        assertEquals(404,assertThrows(BusinessException.class,()->service.addOrUpdateMember(1L,"actor","target",new ProjectDtos.SetMember("TESTER"))).status());
+        verifyNoInteractions(users,projects);
     }
     @Test void memberListExposesAccountAvailabilityWithoutHidingMembershipHistory() throws Exception {
         var enabled=new IdentityUser("active","Active","hash","TESTER");

@@ -317,7 +317,7 @@
       ],
       "put": {
         "operationId": "setProjectMember",
-        "description": "ADMIN only, including without project membership. expectedVersion chỉ null khi chưa từng có membership. Không đổi quyền hệ thống.",
+        "description": "Thêm hoặc khôi phục thành viên, không đổi vai trò. ADMIN thêm mọi nhóm; PM chỉ thêm DEV/TESTER trong dự án mình quản lý. Backend kiểm tài khoản hiện hành, vai trò cố định và expectedVersion; không sửa systemRole.",
         "security": [
           {
             "sessionCookie": [],
@@ -438,7 +438,7 @@
       ],
       "get": {
         "operationId": "findMemberCandidate",
-        "description": "ADMIN only, including without project membership.  tra username chính xác, không cấp danh sách tài khoản.",
+        "description": "Admin hoặc PM của chính dự án tra tài khoản. PM chỉ nhận ứng viên DEV/TESTER. Trả systemRole và projectRole cố định; ADMIN giữ vai trò hệ thống ADMIN và Làm PM trong dự án. Không cấp quyền đổi vai trò.",
         "security": [
           {
             "sessionCookie": []
@@ -2543,9 +2543,25 @@
             "format": "int64",
             "minimum": 0,
             "nullable": true
+          },
+          "systemRole": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "PM",
+              "TESTER",
+              "DEV"
+            ]
+          },
+          "projectRole": {
+            "type": "string",
+            "description": "ADMIN mới làm PM; tài khoản khác dùng vai trò cố định. Thành viên cũ giữ vai trò đã lưu."
           }
         },
-        "required": []
+        "required": [
+          "systemRole",
+          "projectRole"
+        ]
       },
       "RuleVersion": {
         "type": "object",

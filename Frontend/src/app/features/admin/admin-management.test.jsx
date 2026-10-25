@@ -103,8 +103,8 @@ it('preserves selected people across picker pages and restricts Dev to Dev role'
  const api={projects:vi.fn().mockResolvedValue({items:[{id:1,code:"AA",name:"Project Alpha"}],totalElements:1}),users:vi.fn().mockResolvedValue({items:[{id:'d',username:'dev',displayName:'Developer',role:'DEV'},{id:'t',username:'tester',displayName:'Tester',role:'TESTER'}],totalElements:21})};
  function Picker(){const [value,setValue]=React.useState([]);return <MemberPicker api={api} value={value} onChange={setValue}/>;}
  render(<Picker/>);fireEvent.click(await screen.findByLabelText('Chọn Developer'));
- expect(screen.getByLabelText('Vai trò Developer').options).toHaveLength(1);
- fireEvent.click(screen.getByLabelText('Chọn Tester'));fireEvent.change(screen.getByLabelText('Vai trò Tester'),{target:{value:'PM'}});
+ expect(screen.queryByLabelText('Vai trò Developer')).not.toBeInTheDocument();
+ fireEvent.click(screen.getByLabelText('Chọn Tester'));expect(screen.queryByLabelText('Vai trò Tester')).not.toBeInTheDocument();
  fireEvent.click(screen.getByRole('button',{name:'Người sau'}));await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({page:1}),expect.anything()));
  fireEvent.click(await screen.findByRole('button',{name:'Người trước'}));await screen.findByLabelText('Chọn Developer');
  fireEvent.click(screen.getByLabelText('Chọn Developer'));fireEvent.click(screen.getByLabelText('Chọn Tester'));
@@ -117,20 +117,20 @@ it('does not offer active members again or silently change their existing role',
  const member={userId:'admin',displayName:'Admin PM',username:'admin',systemRole:'ADMIN',projectRole:'PM',version:0};
  const api={project:vi.fn().mockResolvedValue({id:1,name:'Project'}),members:vi.fn().mockResolvedValue([member]),users:vi.fn().mockResolvedValue({items:[{id:'admin',displayName:'Admin PM',username:'admin',role:'ADMIN'}],totalElements:1}),setMember:vi.fn()};
  render(<AdminProjectDetail id="1" api={api}/>);
- expect(await screen.findByLabelText('Chọn Admin PM')).toBeDisabled();
+ await screen.findByText('Admin PM · admin');expect(screen.queryByLabelText('Chọn Admin PM')).not.toBeInTheDocument();
  expect(screen.getByRole('button',{name:'+ Thêm'})).toBeDisabled();
  expect(api.setMember).not.toHaveBeenCalled();
 });
 
-it('adds a new member with the chosen initial role and announces completion in the member section',async()=>{
- let finish;const first={userId:'a',username:'a',displayName:'Tester A',projectRole:'PM',systemRole:'TESTER',version:0};
+it('adds a new member with the fixed account role and announces completion in the member section',async()=>{
+ let finish;const first={userId:'a',username:'a',displayName:'Tester A',projectRole:'TESTER',systemRole:'TESTER',version:0};
  const api={project:vi.fn().mockResolvedValue({id:1,name:'Project'}),members:vi.fn().mockResolvedValue([]),users:vi.fn().mockResolvedValue({items:[{id:'a',username:'a',displayName:'Tester A',role:'TESTER'}],totalElements:1}),memberCandidate:vi.fn().mockResolvedValue({membershipVersion:null}),setMember:vi.fn().mockImplementation(()=>new Promise(resolve=>{finish=()=>{api.members.mockResolvedValue([first]);resolve(first);};}))};
  render(<AdminProjectDetail id="1" api={api}/>);fireEvent.click(await screen.findByLabelText('Chọn Tester A'));
- fireEvent.change(screen.getByLabelText('Vai trò Tester A'),{target:{value:'PM'}});
+ expect(screen.queryByLabelText('Vai trò Tester A')).not.toBeInTheDocument();
  fireEvent.click(screen.getByRole('button',{name:'+ Thêm'}));
  expect(screen.getByRole('button',{name:'Đang lưu thành viên…'})).toBeDisabled();expect(screen.getByRole('status')).toHaveTextContent('Đang lưu thành viên');
- await waitFor(()=>expect(api.setMember).toHaveBeenCalledWith('1','a',{projectRole:'PM',expectedVersion:null}));finish();await screen.findByRole('button',{name:'Gỡ Tester A'});
- expect(within(screen.getByRole('row',{name:/Tester A · a/})).getByRole('cell',{name:'PM'})).toBeVisible();
+ await waitFor(()=>expect(api.setMember).toHaveBeenCalledWith('1','a',{projectRole:'TESTER',expectedVersion:null}));finish();await screen.findByRole('button',{name:'Gỡ Tester A'});
+ expect(within(screen.getByRole('row',{name:/Tester A · a/})).getByRole('cell',{name:'TESTER'})).toBeVisible();
  await waitFor(()=>expect(screen.getByRole('status').parentElement).toHaveFocus());expect(screen.getByRole('status')).toHaveTextContent('Đã lưu 1 thành viên');
 });
 
@@ -145,7 +145,7 @@ it('refreshes partial saves, identifies the failed person and retries only the r
  expect(screen.getByRole('status')).toHaveTextContent('Đã lưu 1 thành viên');
  await screen.findByRole('button',{name:'Gỡ Tester A'});
  await waitFor(()=>expect(screen.getByRole('alert').parentElement).toHaveFocus());
- expect(screen.getByLabelText('Chọn Tester A')).toBeDisabled();
+ expect(screen.queryByLabelText('Chọn Tester A')).not.toBeInTheDocument();
  expect(screen.getByLabelText('Chọn Tester B')).toBeChecked();
  fireEvent.click(screen.getByRole('button',{name:'+ Thêm'}));
  await waitFor(()=>expect(api.setMember).toHaveBeenCalledTimes(3));

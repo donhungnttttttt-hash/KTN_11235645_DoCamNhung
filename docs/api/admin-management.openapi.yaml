@@ -5,7 +5,8 @@ info:
   description: |
     Enabled ADMIN session, rechecked in services. All writes require the token from /auth/csrf using its returned headerName (X-CSRF-TOKEN).
     Identity creation/disable/delegation reuses POST/PATCH /users; role now includes DEV.
-    Delegated PM can still create TESTER only. No self-disable or password changes.
+    Delegated PM can still create TESTER only. Admin profile/password operations are documented in identity.md.
+    Project roles are fixed; ADMIN acts as PM without changing the system ADMIN role. Existing membership roles cannot be edited.
     Public POST /projects now returns CENTRAL_CREATION_REQUIRED to ADMIN; use the central transaction.
     Existing project records are preserved. No quotas; selected initial people are memberships.
 servers: [{url: /api/v1}]
@@ -41,7 +42,7 @@ paths:
                   type: array
                   minItems: 1
                   maxItems: 1000
-                  description: Unique enabled user IDs; at least one PM. DEV identities can only receive DEV membership and DEV membership requires a DEV identity. Creator is not enrolled unless explicitly selected.
+                  description: Unique enabled user IDs; at least one PM. Fixed project roles ADMIN/PM to PM, TESTER to TESTER, DEV to DEV; system roles stay unchanged. Creator is not enrolled unless explicitly selected.
                   items:
                     type: object
                     required: [userId, projectRole]
@@ -84,6 +85,9 @@ paths:
       description: One identity per row, including identities without projects. Project filtering uses EXISTS active membership. Includes public identity fields and active memberships; never secrets.
       parameters:
         - {name: projectId, in: query, schema: {type: integer, format: int64}}
+        - {name: excludeProjectId, in: query, description: Exclude active members of this project before counting and paging; members of other projects remain eligible., schema: {type: integer, format: int64, minimum: 1}}
+        - {name: unassignedOnly, in: query, schema: {type: boolean, default: false}}
+        - {name: hasProject, in: query, description: Whether the account has any active project membership., schema: {type: boolean}}
         - {name: keyword, in: query, schema: {type: string, maxLength: 100}}
         - {name: role, in: query, schema: {type: string, enum: [ADMIN, PM, TESTER, DEV]}}
         - {name: enabled, in: query, schema: {type: boolean}}
@@ -134,7 +138,7 @@ paths:
       - {name: user, in: path, required: true, schema: {type: string}}
     put:
       operationId: adminSetMember
-      description: Legacy PUT /projects/{id}/members/{userId} has the same ADMIN service guard. Candidate lookup supplies version for inactive memberships so restore is versioned.
+      description: Admin adds/restores fixed-role members. The project-scoped PUT additionally allows the project's PM to add DEV/TESTER accounts only. Neither endpoint can change an existing role. Candidate lookup supplies fixed projectRole, systemRole and version for restoration. ADMIN system role is never changed by membership operations.
       requestBody:
         required: true
         content:

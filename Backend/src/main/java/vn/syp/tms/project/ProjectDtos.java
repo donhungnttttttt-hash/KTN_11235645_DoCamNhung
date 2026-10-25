@@ -41,5 +41,5 @@ public interface ProjectDtos {
         @NotBlank @Pattern(regexp="PM|TESTER|DEV|MEMBER") String projectRole,
         @jakarta.validation.constraints.PositiveOrZero Long expectedVersion
     ) { public SetMember(String projectRole) { this(projectRole,null); } }
-    record MemberCandidate(String userId,String username,String displayName,Long membershipVersion) {}
+    record MemberCandidate(String userId,String username,String displayName,Long membershipVersion,String systemRole,String projectRole) {}
 }

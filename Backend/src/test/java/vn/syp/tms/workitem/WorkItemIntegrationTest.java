@@ -42,6 +42,7 @@ class WorkItemIntegrationTest {
         r.add("TMS_ATTACHMENT_ROOT",()->evidenceRoot.toString());
     }
     @Autowired ProjectService projects; @Autowired TestCaseService library; @Autowired CatalogService catalogs; @Autowired WorkItemService workItems;
+    @Autowired MembershipRepository legacyMemberships;
     @Autowired ExecutionService execution; @Autowired IdentityUserRepository users; @Autowired JdbcTemplate db;
     @Autowired MockMvc mvc; @Autowired ObjectMapper json;
     @Autowired vn.syp.tms.attachment.EvidenceService evidence;
@@ -110,7 +111,7 @@ class WorkItemIntegrationTest {
     @Test void onlyProjectPmCanTriageAndFixedBuildNeverChangesNgVerdict() throws Exception {
         long id=create(tester,bug()).path("id").asLong();
         move(tester,id,transition("progress",0),403);
-        projects.addOrUpdateMember(p,pm.getId(),other.getId(),new ProjectDtos.SetMember("MEMBER"));
+        legacyMemberships.saveAndFlush(new ProjectMembership(p,other.getId(),"MEMBER")); // Historical reader fixture; public role editing is disabled.
         move(other,id,transition("progress",0),403); // Global ADMIN is not a project PM.
         move(pm,id,transition("progress",0),200);
         move(pm,id,transition("ready",0),409);
@@ -278,7 +279,7 @@ class WorkItemIntegrationTest {
         assertThat(db.queryForObject("SELECT COUNT(*) FROM work_item_external_references WHERE project_id=?",Long.class,p)).isEqualTo(1);
     }
     @Test void evidenceRemovalNeedsOwnershipOrPmAndMissingStorageHasARecoverableError() throws Exception {
-        long item=create(tester,bug()).path("id").asLong();projects.addOrUpdateMember(p,pm.getId(),other.getId(),new ProjectDtos.SetMember("MEMBER"));
+        long item=create(tester,bug()).path("id").asLong();legacyMemberships.saveAndFlush(new ProjectMembership(p,other.getId(),"MEMBER")); // Historical reader fixture; public role editing is disabled.
         var proof=new org.springframework.mock.web.MockMultipartFile("file","proof.pdf","text/plain","%PDF-1.7\n%%EOF".getBytes());
         var attachment=evidence.upload(p,tester.getId(),item,proof);String attachmentId=attachment.get("id").toString();
         mvc.perform(delete(path("/"+item+"/attachments/"+attachmentId)).with(actor(other)).with(csrf())).andExpect(status().isForbidden());

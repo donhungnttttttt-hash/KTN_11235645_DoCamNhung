@@ -1,24 +1,11 @@
-import {SelectionTable} from '../../components/SelectionTable';
+import {MemberPicker} from '../projects/MemberPicker';
+export {MemberPicker} from '../projects/MemberPicker';
 import {AdminFormDialog,useAdminFormClose} from './AdminFormDialog';
-import React,{useCallback,useEffect,useRef,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {InitialDevicePicker} from './InitialDevicePicker';
 import {adminApi} from '../../services/api/admin';
-import {useAdminRead,ReadState} from './shared';
-import {ProjectRoleSelect} from './ProjectRoleSelect';
 
-export function MemberPicker({value,onChange,api=adminApi,existingUserIds=[]}) {
- const [keyword,setKeyword]=useState('');const [role,setRole]=useState('');const [membershipStatus,setMembershipStatus]=useState('');const [page,setPage]=useState(0);
- const load=useCallback(signal=>api.users({keyword,...(role?{role}:{}),enabled:true,unassignedOnly:false,...(membershipStatus?{hasProject:membershipStatus==='assigned'}:{}),page,size:20},{signal}),[api,keyword,role,membershipStatus,page]);
- const state=useAdminRead(`people:${keyword}:${role}:${membershipStatus}:${page}`,load);
- return <section className="admin-member-picker"><ReadState {...state}/>
- <SelectionTable label="Thành viên" searchable={false} pageScope loading={state.loading} selected={value.map(m=>m.userId)} extraTitle="Vai trò"
- filters={<><label className="ui-field ui-filter-search">Tìm<input aria-label="Tìm tài khoản đang hoạt động" placeholder="Tên hoặc tài khoản…" type="search" value={keyword} onChange={e=>{setKeyword(e.target.value);setPage(0);}}/></label><label className="ui-field ui-filter-role">Vai trò<select aria-label="Lọc vai trò tài khoản" value={role} onChange={e=>{setRole(e.target.value);setPage(0);}}><option value="">Tất cả</option>{['PM','TESTER','DEV','ADMIN'].map(r=><option key={r}>{r}</option>)}</select></label><label className="ui-field ui-filter-role">Trạng thái<select aria-label="Lọc trạng thái dự án" value={membershipStatus} onChange={e=>{setMembershipStatus(e.target.value);setPage(0);}}><option value="">Tất cả</option><option value="assigned">Đã có dự án</option><option value="unassigned">Chưa có dự án</option></select></label></>}
- rows={(state.data?.items||[]).map(u=>{const selected=value.find(m=>m.userId===u.id),existing=existingUserIds.some(id=>String(id)===String(u.id));return {id:u.id,name:u.displayName,disabled:existing,description:(u.username||'')+' · '+u.role+(existing?' · Đã là thành viên':'')+' · '+(u.memberships?.length?'Dự án: '+u.memberships.map(m=>m.code+' — '+m.name).join(', '):'Chưa có dự án'),extra:selected?<ProjectRoleSelect systemRole={u.role} label={'Vai trò '+u.displayName} value={selected.projectRole} onChange={e=>onChange(value.map(m=>m.userId===u.id?{...m,projectRole:e.target.value}:m))}/>:u.role};})}
- onChange={ids=>onChange(ids.map(id=>value.find(m=>m.userId===id)||(()=>{const u=state.data.items.find(u=>u.id===id);return {userId:u.id,projectRole:u.role==='PM'?'PM':u.role==='DEV'?'DEV':'TESTER',displayName:u.displayName,username:u.username};})()))}/>
- <p>Đã chọn {value.length} người · {value.filter(m=>m.projectRole==='PM').length} PM</p>
- {state.data && <div className="admin-pagination"><span>Trang {page+1} / {Math.max(1,Math.ceil(state.data.totalElements/20))} · {state.data.totalElements} người</span><button type="button" disabled={!page} onClick={()=>setPage(page-1)}>Người trước</button><button type="button" disabled={(page+1)*20>=state.data.totalElements} onClick={()=>setPage(page+1)}>Người sau</button></div>}
- </section>;
-}
+
 export function AdminProjectForm({project,onSaved,onCancel,api=adminApi}) {
  const [draft,setDraft]=useState({code:project?.code||'',name:project?.name||'',description:project?.description||'',timezone:project?.timezone||'Asia/Ho_Chi_Minh'});
  const [devices,setDevices]=useState([]);

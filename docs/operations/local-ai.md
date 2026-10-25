@@ -23,6 +23,8 @@ Binding ứng dụng dùng `TMS_BIND_ADDRESS=127.0.0.1`. Không persist `SERVER_
 
 ## Khởi động và giữ cấu hình API hiện có
 
+Nếu máy khác vẫn hiện `gpt-4.1-mini` hoặc API của hệ thống chưa sẵn sàng sau khi pull, xem [cấu hình Caheo trên máy mới](caheo-new-machine.md). Source có hỗ trợ Caheo; API key và cấu hình local không được đồng bộ qua Git.
+
 Sau review helper, controller khởi động lại **đúng** process backend của checkout này. Trước khi stop PID, xác minh listener8080 thuộc Java `TmsApplication` và classpath của workspace; không dừng Java theo tên hoặc dùng PID cũ. Frontend Vite đang hoạt động chỉ cần tải lại khi đổi backend. Helper không tự start/stop runtime.
 
 ```powershell

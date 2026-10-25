@@ -24,6 +24,11 @@ export const projectsApi = {
   create: (data) => projectWrite('/projects', data),
   update: (id, data) => projectUpdate(`/projects/${id}`, data),
   listMembers: (id) => apiRequest(`/projects/${id}/members`),
+  memberCandidates: (id,filters={},options) => {
+    const query=new URLSearchParams();
+    for(const key of ['keyword','role','hasProject','page','size'])if(filters[key]!==undefined && filters[key]!==null && filters[key]!=='')query.set(key,filters[key]);
+    return apiRequest(`/projects/${id}/member-candidates?${query}`,options);
+  },
   addMember: (projectId, userId, data) => projectUpdate(`/projects/${projectId}/members/${userId}`, data, 'PUT'),
   memberCandidate: (projectId, username) => apiRequest(`/projects/${projectId}/member-candidate?username=${encodeURIComponent(username)}`),
   removeMember: (projectId, userId, version) => projectUpdate(`/projects/${projectId}/members/${userId}?expectedVersion=${version}`, null, 'DELETE'),

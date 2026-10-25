@@ -496,6 +496,25 @@ paths:
     $ref: './admin.openapi.yaml#/paths/~1admin~1projects~1{id}'
   /api/v1/admin/users:
     $ref: './admin-management.openapi.yaml#/paths/~1admin~1users'
+  /api/v1/projects/{projectId}/member-candidates:
+    get:
+      operationId: projectMemberCandidates
+      summary: Eligible enabled accounts excluding current active members, counted before pagination
+      description: Admin sees all roles; the project's PM sees DEV/TESTER only. PM responses expose hasProject without names or codes of other projects. Archived projects reject this operation. Account roles cannot be edited.
+      parameters:
+        - {name: projectId, in: path, required: true, schema: {type: integer, format: int64}}
+        - {name: keyword, in: query, schema: {type: string, maxLength: 100}}
+        - {name: role, in: query, schema: {type: string, enum: [ADMIN, PM, TESTER, DEV]}}
+        - {name: hasProject, in: query, schema: {type: boolean}}
+        - {name: page, in: query, schema: {type: integer, minimum: 0, default: 0}}
+        - {name: size, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+      responses:
+        '200': {description: 'Page with items, page, size, totalElements; each item includes id, username, displayName, role and hasProject for PM callers'}
+        '401': {description: Missing session}
+        '403': {description: Not an eligible Admin or project PM, or forbidden role filter}
+        '404': {description: Project missing or outside caller scope}
+        '409': {description: Archived project}
+        '422': {description: Invalid filter or page}
   /api/v1/admin/device-assets:
     $ref: './device-inventory.openapi.yaml#/paths/~1admin~1device-assets'
   /api/v1/admin/device-allocations:

@@ -1,5 +1,13 @@
 # Quyền nội bộ
 
+## Chốt thành viên 25/10/2026 (thay các quy định cũ khác bên dưới)
+
+- Danh sách thêm loại người đang là thành viên của dự án hiện tại từ truy vấn server trước phân trang; người thuộc dự án khác vẫn được chọn. Chỉ tài khoản đang hoạt động được thêm.
+- Admin tổng thêm mọi nhóm tài khoản; PM chỉ thêm DEV/TESTER vào dự án mình quản lý. PM không được gỡ thành viên, không quản trị tài khoản hoặc thêm PM/ADMIN. Dự án lưu trữ chặn thêm/khôi phục.
+- Không đổi vai trò khi thêm hay sửa thành viên. PM → PM, TESTER → TESTER, DEV → DEV. ADMIN vẫn là tài khoản ADMIN và giữ toàn quyền quản trị tổng; hiển thị **ADMIN · Làm PM** vì đảm nhiệm PM ở dự án. Không UPDATE role_code của tài khoản.
+- API từ chối đổi projectRole của membership đã có; khôi phục giữ vai trò đã lưu. Không tự đổi dữ liệu lịch sử. Bộ lọc “Vai trò” chỉ lọc danh sách; chọn vai trò khi tạo tài khoản mới vẫn là nghiệp vụ riêng.
+- Endpoint ứng viên theo dự án kiểm quyền PM và chỉ trả nhóm phù hợp; PM chỉ nhận có/chưa có dự án, không nhận tên/mã dự án ngoài phạm vi.
+
 ## FixReports — quyền hiện hành trong source ngày 19/10/2026
 
 Phần này ưu tiên khi khác mô tả cycle/run/file-session/typed-QA lịch sử bên dưới. Nguồn: [contract FixReports](../api/fixreports-contract.md), [Issue](../api/work-items.md), [AI chat](../api/ai-chat.md), [báo cáo](../api/reporting.md). Contract/source không chứng minh main DB đã được chuyển đổi hoặc UAT hoàn tất.

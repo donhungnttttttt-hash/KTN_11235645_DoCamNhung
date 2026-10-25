@@ -62,7 +62,8 @@ class TestCaseIntegrationTest {
         project=projects.create(owner.getId(),new ProjectDtos.CreateProject("P"+tag,"Dự án thử","","Asia/Ho_Chi_Minh")).id();
         projects.addOrUpdateMember(project,owner.getId(),pm.getId(),new ProjectDtos.SetMember("PM"));
         projects.addOrUpdateMember(project,owner.getId(),tester.getId(),new ProjectDtos.SetMember("TESTER"));
-        projects.addOrUpdateMember(project,owner.getId(),owner.getId(),new ProjectDtos.SetMember("TESTER",0L));
+        // Preserve a legacy ADMIN/TESTER fixture without invoking the removed role-change operation.
+        jdbc.update("UPDATE project_memberships SET project_role='TESTER',lock_version=lock_version+1 WHERE project_id=? AND user_id=?",project,owner.getId());
         suite=service.createSuite(project,pm.getId(),new TestCaseDtos.CreateSuite("AUTH","Đăng nhập","",null,0)).id();
     }
     @NonNull RequestPostProcessor actor(IdentityUser u) {

@@ -33,6 +33,7 @@ it('keeps the displayed member and role without announcing success when removal 
  fireEvent.click(await screen.findByRole('button',{name:'Gỡ Lan'}));
  await screen.findByText('Không lưu được thay đổi.');
  const row=await screen.findByRole('row',{name:/Lan · lan/});
+ expect(api.users).toHaveBeenCalledWith(expect.objectContaining({excludeProjectId:'7'}),expect.anything());
  expect(within(row).getByRole('cell',{name:'TESTER'})).toBeVisible();
  expect(within(row).getByRole('button',{name:'Gỡ Lan'})).toBeEnabled();
  expect(screen.queryByText('Đã lưu vai trò của Lan.')).not.toBeInTheDocument();

@@ -84,9 +84,16 @@ public class ProjectService {
     }
 
     public ProjectDtos.MemberInfo addOrUpdateMember(Long projectId, String actorId, String targetUserId, ProjectDtos.SetMember input) {
-        requireAdmin(actorId);
+        var actor=identityService.lockCurrent(actorId);
+        if(!List.of("ADMIN","PM").contains(actor.getRole()))throw new BusinessException(403,"FORBIDDEN","Chỉ Admin hoặc PM của dự án được thêm thành viên.");
+        if(!"ADMIN".equals(actor.getRole()))requireMemberCandidateAccess(projectId,actorId);
         var targetUser = lockMemberAccount(targetUserId);
-        lockAdminProject(projectId, actorId);
+        if("ADMIN".equals(actor.getRole()))lockAdminProject(projectId,actorId);
+        else {
+            lockWritableProject(projectId,actorId);
+            if(!List.of("DEV","TESTER").contains(targetUser.getRole()) || !List.of("DEV","TESTER").contains(input.projectRole()))
+                throw new BusinessException(403,"FORBIDDEN","PM chỉ được thêm tài khoản Dev hoặc Tester vào dự án mình quản lý.");
+        }
         if (!List.of("PM", "TESTER", "DEV", "MEMBER").contains(input.projectRole())) {
             throw new BusinessException(422, "INVALID_ROLE", "Vai trò dự án không hợp lệ.");
         }
@@ -97,6 +104,10 @@ public class ProjectService {
             throw new BusinessException(422,"INVALID_ROLE","Vai trò Dev cần tài khoản có quyền Dev để nhận và xử lý bug/QA.");
         
         var current = membershipRepository.lockMember(projectId,targetUserId);
+        if(current!=null && !current.getProjectRole().equals(input.projectRole()))
+            throw new BusinessException(422,"ROLE_CHANGE_NOT_ALLOWED","Không hỗ trợ đổi vai trò thành viên dự án.");
+        if(current==null && !initialMemberRole(targetUser.getRole()).equals(input.projectRole()))
+            throw new BusinessException(422,"INVALID_ROLE","Vai trò thành viên được xác định từ tài khoản, không được thay đổi.");
         Long memberId;
         long version;
         if (current == null) {
@@ -105,11 +116,11 @@ public class ProjectService {
             memberId=member.getId();version=member.getVersion();
         } else {
             SettingsVersion.require(current.getVersion(),input.expectedVersion());
-            if (!"PM".equals(input.projectRole())) protectLastPm(projectId,current);
+            if(current.getActive())return new ProjectDtos.MemberInfo(current.getId(),targetUserId,targetUser.getUsername(),targetUser.getDisplayName(),targetUser.getRole(),current.getProjectRole(),true,current.getVersion(),targetUser.getEnabled());
             updateMember(current,input.projectRole(),true);
             memberId=current.getId();version=current.getVersion()+1;
         }
-        audit.record(projectId,actorId,"MEMBERSHIP",memberId,"SET_ROLE");
+        audit.record(projectId,actorId,"MEMBERSHIP",memberId,current==null?"ADD_MEMBER":"RESTORE_MEMBER");
         return new ProjectDtos.MemberInfo(memberId,targetUserId,targetUser.getUsername(),targetUser.getDisplayName(),targetUser.getRole(),input.projectRole(),true,version,targetUser.getEnabled());
     }
 
@@ -219,12 +230,25 @@ public class ProjectService {
     }
 
     public ProjectDtos.MemberCandidate candidate(Long projectId,String actorId,String username) {
-        lockAdminProject(projectId,actorId);
+        requireMemberCandidateAccess(projectId,actorId);
         if(username==null || !username.matches("[A-Za-z0-9._-]{3,64}")) throw new BusinessException(422,"INVALID_USERNAME","Nhập chính xác tên đăng nhập.");
         var user=users.findByUsername(IdentityService.normalize(username)).filter(account -> account.isEnabled())
             .orElseThrow(()->new BusinessException(404,"NOT_FOUND","Không tìm thấy tài khoản đang hoạt động."));
         var member=membershipRepository.findByProjectIdAndUserId(projectId,user.getId());
-        return new ProjectDtos.MemberCandidate(user.getId(),user.getUsername(),user.getDisplayName(),member==null?null:member.getVersion());
+        String role=member==null?initialMemberRole(user.getRole()):member.getProjectRole();
+        if(!isGlobalAdmin(actorId) && (!List.of("DEV","TESTER").contains(user.getRole()) || !List.of("DEV","TESTER").contains(role)))
+            throw new BusinessException(403,"FORBIDDEN","PM chỉ được thêm tài khoản Dev hoặc Tester.");
+        return new ProjectDtos.MemberCandidate(user.getId(),user.getUsername(),user.getDisplayName(),member==null?null:member.getVersion(),user.getRole(),role);
+    }
+
+    public void requireMemberCandidateAccess(Long projectId,String actorId) {
+        if(!List.of("ADMIN","PM").contains(identityService.current(actorId).getRole()))
+            throw new BusinessException(403,"FORBIDDEN","Chỉ Admin hoặc PM của dự án được thêm thành viên.");
+        requirePmOrAdmin(projectId,actorId);
+    }
+
+    private static String initialMemberRole(String systemRole) {
+        return "ADMIN".equals(systemRole)?"PM":systemRole;
     }
 
     public void requireNotDev(Long projectId,String actor) {

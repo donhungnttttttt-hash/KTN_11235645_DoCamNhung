@@ -13,6 +13,7 @@ final class AdminAuditLabels {
         Map.entry("FEATURE","Feature"),Map.entry("TEST_DOCUMENT_ROW","Dòng test case"),Map.entry("TEST_CASE","Test case"),
         Map.entry("CREATE","Tạo mới"),Map.entry("UPDATE","Cập nhật"),Map.entry("ARCHIVE","Lưu trữ"),Map.entry("REOPEN","Mở lại"),
         Map.entry("ASSIGN","Bàn giao"),Map.entry("RETURN","Thu hồi"),Map.entry("SET_ROLE","Gán vai trò"),Map.entry("REMOVE","Gỡ thành viên"),
+        Map.entry("ADD_MEMBER","Thêm thành viên"),Map.entry("RESTORE_MEMBER","Khôi phục thành viên"),
         Map.entry("USER_CREATED","Tạo tài khoản"),Map.entry("USER_UPDATED","Cập nhật tài khoản"),Map.entry("USER_ENABLED","Mở khóa tài khoản"),
         Map.entry("USER_PROFILE_UPDATED","Cập nhật thông tin tài khoản"),Map.entry("USER_PASSWORD_RESET","Đặt lại mật khẩu"),
         Map.entry("USER_DISABLED","Khóa tài khoản"),Map.entry("CREATE_USERS_GRANTED","Cấp quyền tạo Tester"),
