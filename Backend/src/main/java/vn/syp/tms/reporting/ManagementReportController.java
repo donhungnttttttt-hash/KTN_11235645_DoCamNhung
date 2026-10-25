@@ -1,6 +1,7 @@
 package vn.syp.tms.reporting;
 
 import java.util.Map;
+import java.util.Objects;
 import java.nio.charset.StandardCharsets;
 import jakarta.validation.Valid;
 import org.springframework.http.*;
@@ -20,7 +21,7 @@ public class ManagementReportController {
     @PutMapping("/{id}") public Object update(Authentication auth,@PathVariable long projectId,@PathVariable long id,@Valid @RequestBody ManagementReportDtos.Update input) {return reports.update(projectId,actor(auth),id,input);}
     @GetMapping("/{id}/download") public ResponseEntity<byte[]> download(Authentication auth,@PathVariable long projectId,@PathVariable long id) {
         var report=reports.get(projectId,actor(auth),id);
-        return ResponseEntity.ok().contentType(new MediaType("text","markdown",StandardCharsets.UTF_8)).cacheControl(CacheControl.noStore().cachePrivate()).header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"bao-cao-"+id+".md\"").body(report.get("markdown").toString().getBytes(StandardCharsets.UTF_8));
+        return ResponseEntity.ok().contentType(new MediaType("text","markdown",Objects.requireNonNull(StandardCharsets.UTF_8))).cacheControl(CacheControl.noStore().cachePrivate()).header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"bao-cao-"+id+".md\"").body(report.get("markdown").toString().getBytes(StandardCharsets.UTF_8));
     }
     private String actor(Authentication auth) {return ((SessionPrincipal)auth.getPrincipal()).id();}
 }

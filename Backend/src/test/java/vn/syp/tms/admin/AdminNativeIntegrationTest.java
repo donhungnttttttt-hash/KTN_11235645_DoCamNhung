@@ -86,17 +86,20 @@ class AdminNativeIntegrationTest {
     }
     @Autowired jakarta.persistence.EntityManager entityManager;
     @Autowired com.fasterxml.jackson.databind.ObjectMapper json;
+    private @org.springframework.lang.NonNull String encode(Object value) throws com.fasterxml.jackson.core.JsonProcessingException {
+        return Objects.requireNonNull(json.writeValueAsString(value));
+    }
     @Test void adminHttpKpisCountCurrentActiveFeatureCasesAndOnlyVisibleNewBugContexts() throws Exception {
         long f=feature("Current metrics"),archived=feature("Archived metrics");byte[] workbook=fiveCases();
         long d=imported(f,workbook),hidden=imported(f,workbook),oldFeatureDocument=imported(archived,workbook);
         var rows=readDocument(d).get("rows");
         for(int index=2;index<5;index++)mvc.perform(put("/api/v1/projects/"+first+"/test-documents/"+d+"/rows/"+rows.get(index).get("rowId").asLong()+"/result")
-            .with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(json.writeValueAsString(Map.of("status",List.of("OK","P","NA").get(index-2),"expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
+            .with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(encode(Map.of("status",List.of("OK","P","NA").get(index-2),"expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
         long open=bug(f,null,null,"open"),resolved=bug(f,null,null,"resolved");bug(f,null,null,"closed");
         long deleted=bug(f,null,null,"open");mvc.perform(delete("/api/v1/projects/"+first+"/issues/"+deleted).param("expectedVersion","0").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf()))).andExpect(status().isNoContent());
         bug(f,hidden,readDocument(hidden).at("/rows/0/rowId").asLong(),"resolved");bug(archived,null,null,"resolved");
-        mvc.perform(post("/api/v1/projects/"+first+"/features/"+f+"/documents/"+hidden+"/archive").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(json.writeValueAsString(Map.of("expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
-        mvc.perform(post("/api/v1/projects/"+first+"/features/"+archived+"/archive").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(json.writeValueAsString(Map.of("expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
+        mvc.perform(post("/api/v1/projects/"+first+"/features/"+f+"/documents/"+hidden+"/archive").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(encode(Map.of("expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
+        mvc.perform(post("/api/v1/projects/"+first+"/features/"+archived+"/archive").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(encode(Map.of("expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
         long ownerMember=java.util.Objects.requireNonNull(jdbc.queryForObject("SELECT id FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,first,owner.getId()));
         for(int number=900;number<902;number++)jdbc.update("INSERT INTO work_items(project_id,item_no,item_key,item_type,title,description,status_code,created_by,updated_by,created_at,updated_at,request_key,request_checksum) VALUES(?,?,?,'BUG','Legacy no Feature','Historical only',?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),?,REPEAT('a',64))",first,number,"LEGACY-"+UUID.randomUUID(),number==900?"open":"resolved",ownerMember,ownerMember,UUID.randomUUID().toString());
         mvc.perform(get("/api/v1/admin/overview").param("projectId",String.valueOf(first)).with(actor(admin))).andExpect(status().isOk())
@@ -107,7 +110,7 @@ class AdminNativeIntegrationTest {
         assertThat(open).isNotEqualTo(resolved);assertThat(oldFeatureDocument).isNotEqualTo(d);
     }
     private long feature(String name)throws Exception {
-        return json.readTree(mvc.perform(post("/api/v1/projects/"+first+"/features").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(json.writeValueAsString(Map.of("name",name,"environment","test","description","","requestKey",UUID.randomUUID())))).andExpect(status().isCreated()).andReturn().getResponse().getContentAsByteArray()).get("id").asLong();
+        return json.readTree(mvc.perform(post("/api/v1/projects/"+first+"/features").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(encode(Map.of("name",name,"environment","test","description","","requestKey",UUID.randomUUID())))).andExpect(status().isCreated()).andReturn().getResponse().getContentAsByteArray()).get("id").asLong();
     }
     private byte[] fiveCases()throws Exception {
         try(var book=new org.apache.poi.xssf.usermodel.XSSFWorkbook();var output=new java.io.ByteArrayOutputStream()){
@@ -122,8 +125,8 @@ class AdminNativeIntegrationTest {
     private com.fasterxml.jackson.databind.JsonNode readDocument(long document)throws Exception{return json.readTree(mvc.perform(get("/api/v1/projects/"+first+"/test-documents/"+document).with(actor(admin))).andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray());}
     private long bug(long f,Long document,Long row,String state)throws Exception {
         var input=new LinkedHashMap<String,Object>();input.put("featureId",f);input.put("documentId",document);input.put("rowId",row);input.put("type","BUG");input.put("monkey",document==null);input.put("title","Current Feature Bug");input.put("description","Metrics fixture");input.put("steps","Steps");input.put("expectedResult","Expected");input.put("actualResult","Actual");input.put("requestKey",UUID.randomUUID());
-        long id=json.readTree(mvc.perform(post("/api/v1/projects/"+first+"/issues").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(json.writeValueAsString(input))).andExpect(status().isCreated()).andReturn().getResponse().getContentAsByteArray()).get("id").asLong();
-        if(!state.equals("open"))mvc.perform(put("/api/v1/projects/"+first+"/issues/"+id+"/status").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(json.writeValueAsString(Map.of("status",state,"reason","Manual metrics fixture","expectedVersion",0)))).andExpect(status().isOk());return id;
+        long id=json.readTree(mvc.perform(post("/api/v1/projects/"+first+"/issues").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(encode(input))).andExpect(status().isCreated()).andReturn().getResponse().getContentAsByteArray()).get("id").asLong();
+        if(!state.equals("open"))mvc.perform(put("/api/v1/projects/"+first+"/issues/"+id+"/status").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(encode(Map.of("status",state,"reason","Manual metrics fixture","expectedVersion",0)))).andExpect(status().isOk());return id;
     }
     @Autowired AdminProjectService management;
     @Autowired DeviceInventoryService inventory;
@@ -203,7 +206,7 @@ class AdminNativeIntegrationTest {
         long assetId=((Number)inventory.create(admin.getId(),new DeviceInventoryDtos.Asset("FRPM"+UUID.randomUUID(),"IPAD","iPad",null,"iOS","18","AVAILABLE","",null)).get("id")).longValue();
         String body="{\"assetId\":"+assetId+",\"projectId\":"+first+",\"recipientUserId\":\""+tester.getId()+"\",\"expectedVersion\":0}";
         mvc.perform(post("/api/v1/admin/device-allocations").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(body)).andExpect(status().isUnprocessableEntity());
-        mvc.perform(post("/api/v1/admin/device-allocations").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(body.replace(tester.getId(),owner.getId()))).andExpect(status().isCreated()).andExpect(jsonPath("$.recipientName").value("Owner"));
+        mvc.perform(post("/api/v1/admin/device-allocations").with(actor(admin)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content(Objects.requireNonNull(body.replace(tester.getId(),owner.getId())))).andExpect(status().isCreated()).andExpect(jsonPath("$.recipientName").value("Owner"));
     }
     @Test void userSearchAcceptsVietnameseDisplayNamesAndCaseInsensitiveLiteralUsernames() throws Exception {
         jdbc.update("UPDATE identity_users SET display_name=? WHERE id=?","Nguyễn Thị Kiểm thử 100%_",tester.getId());

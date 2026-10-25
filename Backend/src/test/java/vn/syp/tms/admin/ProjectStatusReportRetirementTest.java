@@ -38,12 +38,12 @@ class ProjectStatusReportRetirementTest {
         when(deadlines.milestones(eq(1L),any())).thenReturn(List.of());
         when(db.checksum(any())).thenReturn("hash");
     }
-    RequestPostProcessor person(String role,boolean member){
+    @org.springframework.lang.NonNull RequestPostProcessor person(String role,boolean member){
         var user=new IdentityUser("retired."+UUID.randomUUID(),"Synthetic "+role,"not-login",role);
         when(identity.current(user.getId())).thenReturn(user);
         when(db.rows(Objects.requireNonNull(contains("FROM identity_users")),eq(user.getId()))).thenReturn(List.of(Map.of("role",role)));
         if(member)when(db.rows(Objects.requireNonNull(contains("FROM project_memberships")),eq(1L),eq(user.getId()))).thenReturn(List.of(Map.of("id",3L,"role",role)));
-        return authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),0),null,List.of(new SimpleGrantedAuthority("ROLE_"+role))));
+        return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),0),null,List.of(new SimpleGrantedAuthority("ROLE_"+role)))));
     }
     @Test void ordinaryPmAndOutsideAdminGetRetiredWriteWithoutAnyLegacyGateOrFakeActor()throws Exception {
         for(String role:List.of("PM","ADMIN"))mvc.perform(post("/api/v1/projects/1/status-reports").with(person(role,role.equals("PM"))).with(csrf()).contentType("application/json").content("{}"))

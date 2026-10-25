@@ -119,7 +119,7 @@ public class FeatureIssueService {
 
     private void validate(String type,Long f,Long d,Long row,boolean monkey,String title,String description,String steps,String expected,String actual,UUID key){
         if((!"BUG".equals(type)&&!"QA".equals(type))||monkey&&!"BUG".equals(type)||f==null||f<1||key==null)fail(422,"INVALID_ISSUE","Issue cần Feature, loại Bug/QA và mã yêu cầu hợp lệ.");
-        if((d==null)!=(row==null)||d!=null&&(d<1||row<1))fail(422,"INVALID_CONTEXT","File và case phải được chọn cùng nhau.");
+        if((d==null)!=(row==null)||d!=null&&d<1||row!=null&&row<1)fail(422,"INVALID_CONTEXT","File và case phải được chọn cùng nhau.");
         bounded(title,300,true);bounded(description,20000,"QA".equals(type));bounded(steps,20000,"BUG".equals(type));bounded(expected,20000,"BUG".equals(type));bounded(actual,20000,"BUG".equals(type));
     }
     private static void bounded(String value,int max,boolean required){if(text(value).length()>max||required&&text(value).isEmpty())fail(422,"INVALID_ISSUE","Kiểm tra các trường bắt buộc và độ dài nội dung Issue.");}

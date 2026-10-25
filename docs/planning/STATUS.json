@@ -1,13 +1,198 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-20",
+  "updatedAt": "2026-10-25",
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
   "activeSprint": "S11",
   "phase": "IN_REVIEW",
   "implementationStarted": true,
+  "javaIdeDiagnostics20261025": {
+    "status": "DONE",
+    "scope": "Java source diagnostics and related offline regression only; Arena implementation not started",
+    "report": "docs/reviews/2026-10-25-java-ide-diagnostics.md",
+    "sourceCount": 321,
+    "before": {
+      "errors": 0,
+      "warnings": 411
+    },
+    "after": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "offlineRegression": {
+      "suites": 13,
+      "tests": 103,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "freshMavenVerify": "PASS",
+    "javaRelease": 21,
+    "nativeDatabaseTests": "NOT_RUN",
+    "runtimeRestarted": false,
+    "migrationsChanged": false,
+    "skillsApplied": [
+      "code-review-and-quality",
+      "verification-loop"
+    ],
+    "ideFollowup": {
+      "status": "DONE",
+      "reportedRemainingWarnings": 4,
+      "rootCauses": [
+        "JDT LS cached project preferences did not inherit the repository annotation-search option",
+        "Maven resource folder excluded from editor package lookup"
+      ],
+      "changes": [
+        "Shared workspace Java preferences via java.settings.url",
+        "Move EEA to src/main/java non-Java package resources"
+      ],
+      "batchAfter": {
+        "sourceCount": 321,
+        "errors": 0,
+        "warnings": 0
+      },
+      "openEditorLspVerification": {
+        "beforeWarnings": 4,
+        "afterWarnings": 0,
+        "afterErrors": 0,
+        "documents": [
+          "V32__copy_feature_documents.java",
+          "V33__recover_padded_customer_documents.java"
+        ],
+        "freshImportAndReopenVerified": true,
+        "result": "Backend/target/java-ide-followup/lsp-yK3QYf/result.json",
+        "userProblemsPanelAfterFinalFix": "NOT_DIRECTLY_OBSERVED"
+      },
+      "migrationsChanged": false,
+      "businessTestsRerun": false,
+      "runtimeRestarted": false
+    }
+  },
+  "arenaFollowup20261025": {
+    "status": "PLANNED",
+    "planningOnly": true,
+    "sourceBaseline": "cde58ad",
+    "arenaSourceBaseline": "caf075af7231f207259b6a62808bff5c8445f6af",
+    "arenaWinner": "a016",
+    "decision": "User confirmed 2026-10-25: preserve current Feature/Bug-QA workflow and apply only still-relevant Arena conclusions.",
+    "plan": "docs/superpowers/plans/2026-10-25-arena-followup.md",
+    "subplans": [
+      "docs/superpowers/plans/2026-10-25-arena-current-workflow.md",
+      "docs/superpowers/plans/2026-10-25-arena-lifecycle-settings.md"
+    ],
+    "acceptanceMatrix": "docs/planning/2026-10-25-arena-acceptance-matrix.md",
+    "tasks": [
+      {
+        "id": "AR-00",
+        "status": "PLANNED",
+        "dependsOn": []
+      },
+      {
+        "id": "AR-01",
+        "status": "PLANNED",
+        "dependsOn": [
+          "AR-00"
+        ]
+      },
+      {
+        "id": "AR-02",
+        "status": "PLANNED",
+        "dependsOn": [
+          "AR-00"
+        ]
+      },
+      {
+        "id": "AR-03",
+        "status": "PLANNED",
+        "dependsOn": [
+          "AR-00",
+          "AR-02"
+        ]
+      },
+      {
+        "id": "AR-04",
+        "status": "PLANNED",
+        "dependsOn": [
+          "AR-02",
+          "AR-03"
+        ]
+      },
+      {
+        "id": "AR-05",
+        "status": "PLANNED",
+        "dependsOn": [
+          "AR-00"
+        ]
+      },
+      {
+        "id": "AR-06",
+        "status": "PLANNED",
+        "dependsOn": [
+          "AR-00"
+        ]
+      },
+      {
+        "id": "AR-07",
+        "status": "PLANNED",
+        "dependsOn": [
+          "AR-06"
+        ]
+      },
+      {
+        "id": "AR-08",
+        "status": "PLANNED",
+        "dependsOn": []
+      },
+      {
+        "id": "AR-09",
+        "status": "PLANNED",
+        "dependsOn": [
+          "AR-00",
+          "AR-06"
+        ]
+      },
+      {
+        "id": "AR-10",
+        "status": "PLANNED",
+        "dependsOn": [
+          "AR-01",
+          "AR-02",
+          "AR-03",
+          "AR-04",
+          "AR-05",
+          "AR-06",
+          "AR-07",
+          "AR-08",
+          "AR-09"
+        ]
+      },
+      {
+        "id": "AR-11",
+        "status": "PLANNED",
+        "dependsOn": [
+          "AR-10"
+        ]
+      }
+    ],
+    "verification": {
+      "productTests": "NOT_RUN",
+      "build": "NOT_RUN",
+      "browser": "NOT_RUN",
+      "database": "NOT_RUN",
+      "liveProviders": "NOT_RUN",
+      "humanUat": "NOT_RUN"
+    },
+    "skillsAppliedForPlanning": [
+      "brainstorming",
+      "writing-plans"
+    ],
+    "implementationAuthorizedByThisPlanningRequest": false,
+    "commitPushAuthorizedByThisPlanningRequest": false
+  },
   "notes": [
+    "25/10/2026 user prioritizes Java IDE problems before Arena. JDT321sources0errors411warnings baseline ->0errors0warnings; null contracts/guards/imports/helper annotations corrected without suppressions. Preserve V32/V33 and all SQL migrations via two documented external library null contracts. Align IDE Java21; first Maven run hit staleJava25bytecode/0tests, fresh358file hash-matched copy verified103/103tests13suites0skip plus package onJava21, current workspace class files all65. No nativeDB/provider/restart/commit/push; Arena remains PLANNED and S11/FR-12 IN_REVIEW. docs/reviews/2026-10-25-java-ide-diagnostics.md.",
+    "25/10/2026 planning only: read final Arena a016 and map caf075a findings to current cde58ad/Feature workflow. User confirmed keep current Feature/Bug-QA and apply still-relevant conclusions. Added master/two subplans AR-00-11 and U01-22/G01-07 matrix; existing delegated PM form is verification-first, legacy F3/F5/F7 not restored. Planned approved archive exception only cycles/retests, accurate Rules copy and current-baseline UAT. Product source/archive/data unchanged; no product test/build/browser/DB/provider or commit/push/merge/deploy in planning turn. S11/FR-12 remain IN_REVIEW.",
     "20/10/2026 user explicitly requests commit/push current system-design and clean all392pending paths. Publication scope334original paths;58original Word extracts/scratch copies kept byte-identical locally and ignored. Add manifest/review and ignore rules; preserve741source/scripts hashes,689source files match last1202FE/672BE verification. Fresh frontend build and structural contracts PASS; no source/database/config/migration/restart/merge/deploy changes during handover. docs/reviews/2026-10-20-source-evidence-handover.md. Earlier no-commit/push notes are historical checkpoints; S11/FR-12 remain IN_REVIEW.",
     "19/10/2026 AI report text/silver follow-up: management report alone now uses plain Markdown, tools disabled, multipart text joined and legacy drafts readable; ordinary report save/edit/get unchanged. Global Unexecuted/Chua chay/NOT_RUN silver #C0C0C0, text #333333, actual case chip and Admin charts shared token. Final frontend1202/1202 in129files/build PASS; backend672/672 in76offline suites/verify/package PASS; native4/4 on isolated V33 schema verifies preview/edit/save/reopen/auth/case-issue preservation. Main Chrome one real generation returned1360chars into editor with save enabled; no test report saved on main. Separate probes use synthetic data. Restart only8080 PID26980→27068, healthUP, tmsV33/config unchanged; source672unchanged/16modified/1new/0deleted. Coverage not measured; AI date/time wording limitation documented, not all-role UAT. docs/reviews/2026-10-19-ai-report-text-and-silver-status.md; no commit/push/merge/deploy; S11/FR-12 remain IN_REVIEW.",
     "19/10/2026 Feature filters/heading follow-up: bold Feature/file names, display creation time in Vietnam, add server creation-date range and newest/oldest/name sorting with Apply/Clear, preserve archived/search and pagination. Fix global CSS overriding heading padding (24px desktop/16px mobile) in testing list/file and Issue pages; prevent archive/restore pagination race. Full frontend final1,199/1,199 in129files, build PASS; native backend39/39 plus offline655/655 in75suites and verify/package PASS. Chrome main read-only confirms date boundaries, search/sort/clear/invalid-range feedback and CSS320/768/1024/1440 no page/filter overflow. Restarted only8080 with unchanged configuration/migrations; healthUP. Source preservation677unchanged/9modified/2new/0unexpected. Coverage not measured, all-role UAT not claimed. docs/reviews/2026-10-19-feature-filters-heading-spacing.md; no commit/push/merge/deploy, S11/FR-12 remain IN_REVIEW.",

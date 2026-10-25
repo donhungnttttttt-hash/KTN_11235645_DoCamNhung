@@ -2,11 +2,9 @@ package vn.syp.tms.ai;
 
 import static vn.syp.tms.workitem.WorkItemStore.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.Instant;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.syp.tms.admin.ProjectDeadlines;
 import vn.syp.tms.workitem.WorkItemStore;
 
 /** Bounded, server-selected facts. No arbitrary prompts or cross-project search from the browser. */
@@ -22,13 +20,12 @@ public class AiContextService {
     private final ObjectMapper json;
     private final OpenAiConfiguration config;
     private final AiDraftStore drafts;
-    private final ProjectDeadlines deadlines;
     @org.springframework.beans.factory.annotation.Autowired(required=false)
     private AiProviderGateway providers;
 
     public AiContextService(WorkItemStore db,AiAccess access,ObjectMapper json,OpenAiConfiguration config,
-                            AiDraftStore drafts,ProjectDeadlines deadlines) {
-        this.db=db;this.access=access;this.json=json;this.config=config;this.drafts=drafts;this.deadlines=deadlines;
+                            AiDraftStore drafts) {
+        this.db=db;this.access=access;this.json=json;this.config=config;this.drafts=drafts;
     }
     public Metadata metadata(long p,String actor) {
         var caller=access.authorize(p,actor,false);
@@ -155,9 +152,6 @@ public class AiContextService {
                 add(sources,facts,"related:"+relatedId,"Có từ khóa liên quan: "+related.get("itemKey"),"/board/issue/"+relatedId+"?view=list",number(related,"version"),related);
             }
         }
-    }
-    private static Map<String,Object> select(Map<String,Object> row,String... keys) {
-        var out=new LinkedHashMap<String,Object>();for(String key:keys)out.put(key,row.get(key));return out;
     }
     private static void add(List<AiDraftService.Source> sources,List<Map<String,Object>> facts,String ref,String label,String path,Long version,Object data) {
         sources.add(new AiDraftService.Source(ref,label,path,version));facts.add(Map.of("ref",ref,"facts",data));

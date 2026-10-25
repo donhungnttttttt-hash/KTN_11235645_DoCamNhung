@@ -114,7 +114,7 @@ class FixReportsSnapshotMigrationTest {
                 var after=capture(connection,original);
                 long oldRows=0;
                 for(var entry:original.entrySet()) {
-                    var current=after.get(entry.getKey());require(current!=null,"OLD_TABLE_MISSING_"+entry.getKey());
+                    var current=after.get(entry.getKey());if(current==null)throw new SafeFailure("OLD_TABLE_MISSING_"+entry.getKey());
                     for(var row:entry.getValue().rows().entrySet()) {
                         require(Objects.equals(row.getValue(),current.rows().get(row.getKey())),"ORIGINAL_ROW_CHANGED_"+entry.getKey()+"_PK_SHA_"+row.getKey());oldRows++;
                     }
@@ -144,7 +144,7 @@ class FixReportsSnapshotMigrationTest {
                         require(copiedRows.size()==source.rows().size(),"CLONE_CASE_COUNT_"+document);
                         var bySource=new HashMap<Long,Map<String,Object>>();for(var row:copiedRows)require(bySource.put(n(row,"source_import_row_id"),row)==null,"DUPLICATE_SOURCE_ROW_"+document);
                         for(var old:source.rows()) {
-                            var row=bySource.get(old.id());require(row!=null,"CLONE_ROW_MISSING_"+old.id());long caseId=n(row,"target_case_id"),rowId=n(row,"id"),revision=n(row,"current_revision_id");
+                            var row=bySource.get(old.id());if(row==null)throw new SafeFailure("CLONE_ROW_MISSING_"+old.id());long caseId=n(row,"target_case_id"),rowId=n(row,"id"),revision=n(row,"current_revision_id");
                             require(caseId!=old.caseId()&&clonedCases.add(caseId)&&n(row,"owning_document_id")==document,"MUTABLE_CASE_SHARED_"+caseId);
                             require(n(row,"source_row_number")==old.rowNumber()&&sha(bytes(row.get("raw_data_json"))).equals(old.rawHash()),"CLONE_RAW_JSON_"+rowId);
                             require(revisionHash(connection,source.project(),caseId,revision).equals(old.revisionHash()),"CLONE_CURRENT_REVISION_"+caseId);

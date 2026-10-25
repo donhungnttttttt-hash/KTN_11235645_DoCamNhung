@@ -55,7 +55,7 @@ class AiDraftServiceTest {
             when(store.get(1,"pm",9)).thenReturn(draft("FAILED"));
             assertThat(service.generate(1,"pm",task).state()).isEqualTo("FAILED");
             verify(store).markFailed(1,"pm",9,"AI_INVALID_RESPONSE");verify(store,never()).complete(anyLong(),anyString(),anyLong(),any());
-            assertThat(appender.list).extracting(ch.qos.logback.classic.spi.ILoggingEvent::getFormattedMessage)
+            assertThat(appender.list).extracting(event -> java.util.Objects.requireNonNull(event).getFormattedMessage())
                 .contains("AI draft response rejected: ROOT_SHAPE")
                 .allMatch(message->!message.contains("private-fixture-content-not-for-logs")&&!message.contains("resp_test"));
         } finally {logger.detachAppender(appender);appender.stop();}

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
+import java.util.Objects;
 import vn.syp.tms.identity.SessionPrincipal;
 
 @RestController
@@ -22,7 +23,7 @@ public class ProjectNotesController {
     @PostMapping
     public ResponseEntity<ProjectNote> create(Authentication auth,@PathVariable long projectId,@Valid @RequestBody ProjectNotesDtos.Create input){
         var note=service.create(projectId,actor(auth),input);
-        return ResponseEntity.created(URI.create("/api/v1/projects/"+projectId+"/notes/"+note.id())).body(note);
+        return ResponseEntity.created(Objects.requireNonNull(URI.create("/api/v1/projects/"+projectId+"/notes/"+note.id()))).body(note);
     }
     @PutMapping("/{noteId}")
     public ProjectNote update(Authentication auth,@PathVariable long projectId,@PathVariable long noteId,@Valid @RequestBody ProjectNotesDtos.Update input){return service.update(projectId,actor(auth),noteId,input);}

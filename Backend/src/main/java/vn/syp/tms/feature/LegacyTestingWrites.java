@@ -4,6 +4,7 @@ import jakarta.servlet.http.*;
 import java.util.Set;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -17,8 +18,8 @@ import vn.syp.tms.shared.web.BusinessException;
 public class LegacyTestingWrites implements WebMvcConfigurer,HandlerInterceptor {
     private final ProjectService projects;private final JdbcTemplate db;
     public LegacyTestingWrites(ProjectService projects,JdbcTemplate db){this.projects=projects;this.db=db;}
-    @Override public void addInterceptors(InterceptorRegistry registry){registry.addInterceptor(this).addPathPatterns("/api/v1/projects/**");}
-    @Override public boolean preHandle(HttpServletRequest request,HttpServletResponse response,Object handler){
+    @Override public void addInterceptors(@NonNull InterceptorRegistry registry){registry.addInterceptor(this).addPathPatterns("/api/v1/projects/**");}
+    @Override public boolean preHandle(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull Object handler){
         if(Set.of("GET","HEAD","OPTIONS").contains(request.getMethod())||!(handler instanceof HandlerMethod method))return true;
         var match=java.util.regex.Pattern.compile("^/api/v1/projects/([1-9][0-9]*)/(.*)$").matcher(request.getRequestURI());
         if(!match.matches())return true;

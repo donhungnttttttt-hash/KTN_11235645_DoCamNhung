@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -48,9 +49,9 @@ class FeatureIntegrationTest {
     }
     IdentityUser user(String name,String role){return users.saveAndFlush(new IdentityUser("fr."+name,name,"not-login",role));}
     long member(IdentityUser user){return Objects.requireNonNull(db.queryForObject("SELECT id FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,p,user.getId()));}
-    RequestPostProcessor actor(IdentityUser user){return authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),user.getVersion()),null,List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole()))));}
-    String path(String tail){return "/api/v1/projects/"+p+tail;}
-    String encode(Object value)throws Exception{return json.writeValueAsString(value);}
+    @NonNull RequestPostProcessor actor(IdentityUser user){return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),user.getVersion()),null,List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole())))));}
+    @NonNull String path(String tail){return "/api/v1/projects/"+p+tail;}
+    @NonNull String encode(Object value)throws Exception{return Objects.requireNonNull(json.writeValueAsString(value));}
     JsonNode body(MvcResult result)throws Exception{return json.readTree(result.getResponse().getContentAsByteArray());}
     JsonNode read(long d)throws Exception{return body(mvc.perform(get(path("/test-documents/"+d)).with(actor(a))).andExpect(status().isOk()).andReturn());}
     long feature(String name)throws Exception{return body(mvc.perform(post(path("/features")).with(actor(admin)).with(csrf()).contentType("application/json").content(encode(Map.of("name",name,"environment","server nhập tự do / URL","description","Mô tả","requestKey",UUID.randomUUID())))).andExpect(status().isCreated()).andReturn()).get("id").asLong();}
@@ -174,7 +175,7 @@ class FeatureIntegrationTest {
     }
     @Test void invalidFeatureFiltersReturnClearClientErrorsWithoutQueryingArbitrarySorts()throws Exception {
         for(String field:List.of("createdFrom","createdTo"))for(String value:List.of("2026-02-30","2026-13-01","2026-2-01","2026/10/19","0999-12-31","10000-01-01","2026-10-19T00:00:00Z","' OR 1=1 --"))
-            mvc.perform(get(path("/features")).with(actor(a)).param(field,value)).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("INVALID_FILTER"));
+            mvc.perform(get(path("/features")).with(actor(a)).param(Objects.requireNonNull(field),value)).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("INVALID_FILTER"));
         mvc.perform(get(path("/features")).with(actor(a)).param("createdFrom","2026-10-20").param("createdTo","2026-10-19")).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("INVALID_FILTER"));
         for(String sort:List.of("updated-desc","created_at desc; DROP TABLE testing_features","CREATED-DESC"))mvc.perform(get(path("/features")).with(actor(a)).param("sort",sort)).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("INVALID_FILTER"));
     }

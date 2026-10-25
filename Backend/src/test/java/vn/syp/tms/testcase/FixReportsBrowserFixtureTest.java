@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -138,12 +139,12 @@ class FixReportsBrowserFixtureTest {
     private void person(String tag,String key,String display,String role){
         people.put(key,users.saveAndFlush(new IdentityUser("fr12."+tag+"."+key.toLowerCase(Locale.ROOT),display,passwords.encode(FIXTURE_PASSWORD),role)));
     }
-    private RequestPostProcessor actor(String who){var user=people.get(who);return authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),user.getVersion()),null,List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole()))));}
+    private @NonNull RequestPostProcessor actor(String who){var user=people.get(who);return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),user.getVersion()),null,List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole())))));}
     private String base(long p){return "/api/v1/projects/"+p;}
     private JsonNode body(MvcResult result)throws Exception{return json.readTree(result.getResponse().getContentAsByteArray());}
-    private JsonNode write(String who,String method,String path,Object input,int expected)throws Exception {
+    private JsonNode write(String who,String method,@NonNull String path,Object input,int expected)throws Exception {
         var request=switch(method){case "POST"->post(path);case "PUT"->put(path);default->throw new IllegalArgumentException("Fixture command method");};
-        return body(mvc.perform(request.with(actor(who)).with(csrf()).contentType("application/json").content(json.writeValueAsString(input))).andExpect(status().is(expected)).andReturn());
+        return body(mvc.perform(request.with(actor(who)).with(csrf()).contentType("application/json").content(Objects.requireNonNull(json.writeValueAsString(input)))).andExpect(status().is(expected)).andReturn());
     }
     private long project(String code,String name,List<String> members)throws Exception {
         var roster=members.stream().map(key->Map.of("userId",people.get(key).getId(),"projectRole",people.get(key).getRole())).toList();

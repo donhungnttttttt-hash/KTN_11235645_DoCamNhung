@@ -268,7 +268,7 @@ public class FeatureService {
         try{return json.readValue(String.valueOf(old.get("response_json")),new TypeReference<LinkedHashMap<String,Object>>(){});}catch(Exception e){throw new IllegalStateException("Invalid saved command response",e);}
     }
     private void remember(long p,long f,Long d,String actor,String key,String action,String payload,Object result){db.update("INSERT INTO testing_commands(project_id,feature_id,document_id,actor_id,request_key,request_checksum,action,response_json,created_at) VALUES(?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6))",p,f,d,actor,key,checksum(payload),action,encode(result));}
-    private long insert(String sql,Object... args){var holder=new GeneratedKeyHolder();db.update(connection->{var s=connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);for(int i=0;i<args.length;i++)s.setObject(i+1,args[i]);return s;},holder);return Objects.requireNonNull(holder.getKey()).longValue();}
+    private long insert(String sql,Object... args){var holder=new GeneratedKeyHolder();db.update(connection->{var s=Objects.requireNonNull(connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS));for(int i=0;i<args.length;i++)s.setObject(i+1,args[i]);return s;},holder);return Objects.requireNonNull(holder.getKey()).longValue();}
     private String encode(Object value){try{return json.writeValueAsString(value);}catch(Exception e){throw new IllegalArgumentException("Invalid command",e);}}
     private <T>T decode(String value,Class<T> type){try{return json.readValue(value,type);}catch(Exception e){throw new BusinessException(409,"DOCUMENT_DATA_INVALID","Dữ liệu import không hợp lệ.");}}
     private static String checksum(String value){return TestCaseWorkbook.sha256(value.getBytes(StandardCharsets.UTF_8));}

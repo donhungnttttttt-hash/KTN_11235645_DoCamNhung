@@ -14,7 +14,7 @@ class NativeFeatureRepairMigrationTest {
     @Test void validCustomerPaddingExceptionRecoversWorkbookLatestRevisionAndOverlay()throws Exception{
         String url=System.getenv("TMS_TEST_DB_URL"),user=System.getenv("TMS_TEST_DB_USER"),password=System.getenv("TMS_TEST_DB_PASSWORD");
         if(url==null||!url.matches("jdbc:mysql://(?:127\\.0\\.0\\.1|localhost):3307/tms_docstest_7cb4aee200db\\?.+"))throw new IllegalStateException("Authorized upgrade target required");
-        try(var c=DriverManager.getConnection(url,user,password)){
+        try(var c=java.util.Objects.requireNonNull(DriverManager.getConnection(url,user,password))){
             assertThat(NativeFqFixture.scalar(c,"SELECT CAST(version AS UNSIGNED) FROM flyway_schema_history WHERE success=1 ORDER BY installed_rank DESC LIMIT 1")).isEqualTo(32);
             var f=NativeFqFixture.seed(c,false);byte[] bytes;
             try(var book=new XSSFWorkbook(new ByteArrayInputStream(new TestCaseWorkbook().customerTemplate()));var out=new ByteArrayOutputStream()){

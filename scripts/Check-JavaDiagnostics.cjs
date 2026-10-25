@@ -88,6 +88,7 @@ function run() {
   fs.writeFileSync(preferences, Object.entries(properties).map(([key, value]) => `org.eclipse.jdt.core.compiler.${key}=${value}`).join('\n'));
   const sources = ['main', 'test'].flatMap(kind => sourceFiles(path.join(root, `Backend/src/${kind}/java`)));
   const compilerArgs = ['-jar', compiler, '-21', '-encoding', 'UTF-8', '-parameters',
+    '-annotationpath', path.join(root, 'Backend/src/main/java'),
     '-classpath', fs.readFileSync(classpathFile, 'utf8').trim(), '-properties', preferences,
     '-d', path.join(output, 'classes'), '-log', path.join(output, 'diagnostics.xml'), ...sources];
   // Source paths plus the test classpath exceed Windows' command-line limit as the project grows.

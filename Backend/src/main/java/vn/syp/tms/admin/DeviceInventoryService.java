@@ -57,7 +57,7 @@ public class DeviceInventoryService {
  /** Shared identity locks -> project -> sorted assets -> memberships. FK identity locks use the same shared mode. */
  public void allocateInitial(String actor,long projectId,List<Initial> selections,Set<String> selectedUsers){
   admin(actor);if(selections==null||selections.isEmpty())return;
-  if(selections.stream().map(Initial::recipientUserId).distinct().count()!=1)fail(422,"SINGLE_PM_REQUIRED","Bàn giao tất cả máy đã chọn cho cùng một PM.");
+  if(selections.stream().map(selection->selection.recipientUserId()).distinct().count()!=1)fail(422,"SINGLE_PM_REQUIRED","Bàn giao tất cả máy đã chọn cho cùng một PM.");
   var unique=new HashSet<Long>();for(var s:selections){if(!unique.add(s.assetId()))fail(422,"DUPLICATE_ASSET","Không chọn trùng máy.");if(!selectedUsers.contains(s.recipientUserId()))fail(422,"INVALID_RECIPIENT","Người nhận phải thuộc danh sách nhân sự ban đầu.");}
   selections.stream().map(s->s.recipientUserId()).distinct().sorted().forEach(user->lockRecipient(user));
   var project=lockProject(projectId);var sorted=selections.stream().sorted(Comparator.comparingLong(s->s.assetId())).toList();var locked=new HashMap<Long,Map<String,Object>>();

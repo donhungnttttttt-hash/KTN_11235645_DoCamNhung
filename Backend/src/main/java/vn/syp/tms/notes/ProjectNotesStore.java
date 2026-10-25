@@ -6,12 +6,13 @@ import java.util.Objects;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class ProjectNotesStore {
     private final JdbcTemplate db;
-    private static final RowMapper<ProjectNote> MAP=(r,n)->new ProjectNote(r.getLong("id"),r.getLong("project_id"),r.getString("title"),r.getString("body"),r.getLong("lock_version"),r.getString("created_by"),r.getString("updated_by"),r.getTimestamp("created_at").toInstant(),r.getTimestamp("updated_at").toInstant());
+    @NonNull private static final RowMapper<ProjectNote> MAP=(r,n)->new ProjectNote(r.getLong("id"),r.getLong("project_id"),r.getString("title"),r.getString("body"),r.getLong("lock_version"),r.getString("created_by"),r.getString("updated_by"),r.getTimestamp("created_at").toInstant(),r.getTimestamp("updated_at").toInstant());
     public ProjectNotesStore(JdbcTemplate db){this.db=db;}
     public long count(long project){return Objects.requireNonNull(db.queryForObject("SELECT COUNT(*) FROM project_notes WHERE project_id=? AND archived_at IS NULL",Long.class,project));}
     public List<ProjectNote> list(long project,int size,long offset){return db.query("SELECT * FROM project_notes WHERE project_id=? AND archived_at IS NULL ORDER BY updated_at DESC,id DESC LIMIT ? OFFSET ?",MAP,project,size,offset);}

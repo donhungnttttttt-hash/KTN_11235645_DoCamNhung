@@ -55,7 +55,7 @@ class FeatureAiIntegrationTest extends FeatureIntegrationTest {
     }
     @Test void typedAssignmentTargetsFeatureDocumentsWithoutDeviceOrRunSetup()throws Exception{
         long f=feature("Typed"),d=imported(f,internal());login(pm);
-        assertThat(typed.targets(p,pm.getId(),AiPurpose.PM_ASSIGNMENT_SUGGESTION,"").items()).extracting(AiContextService.Target::id).contains(d);
+        assertThat(typed.targets(p,pm.getId(),AiPurpose.PM_ASSIGNMENT_SUGGESTION,"").items()).extracting(target -> Objects.requireNonNull(target).id()).contains(d);
         var task=typed.prepare(p,pm.getId(),AiPurpose.PM_ASSIGNMENT_SUGGESTION,d,UUID.randomUUID().toString());
         assertThat(task.sourceReference()).isEqualTo("document:"+d);
         assertThat(task.data().toString()).contains("Typed").doesNotContain("allocatedDevices","cycleStatus","doingFiles");

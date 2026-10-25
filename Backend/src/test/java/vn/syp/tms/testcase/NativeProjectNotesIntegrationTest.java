@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -69,12 +71,12 @@ class NativeProjectNotesIntegrationTest {
     IdentityUser user(String name,String role) {
         return users.saveAndFlush(new IdentityUser("notes."+name,name,"not-login",role));
     }
-    RequestPostProcessor actor(IdentityUser user) {
-        return authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),user.getVersion()),null,
-            List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole()))));
+    @NonNull RequestPostProcessor actor(IdentityUser user) {
+        return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),user.getVersion()),null,
+            List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole())))));
     }
-    String path(long p,String tail) {return "/api/v1/projects/"+p+"/notes"+tail;}
-    String encode(Object value) throws Exception {return json.writeValueAsString(value);}
+    @NonNull String path(long p,String tail) {return "/api/v1/projects/"+p+"/notes"+tail;}
+    @NonNull String encode(Object value) throws Exception {return Objects.requireNonNull(json.writeValueAsString(value));}
     JsonNode body(MvcResult result) throws Exception {return json.readTree(result.getResponse().getContentAsByteArray());}
     JsonNode create(long p,IdentityUser user,String title,String text) throws Exception {
         return body(mvc.perform(post(path(p,"")).with(actor(user)).with(csrf()).contentType("application/json")

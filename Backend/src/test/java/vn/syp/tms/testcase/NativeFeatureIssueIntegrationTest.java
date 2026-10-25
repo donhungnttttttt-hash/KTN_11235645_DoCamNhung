@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,9 +39,9 @@ class NativeFeatureIssueIntegrationTest {
  IdentityUser admin,pm,tester,other,dev,outside;long p;
  @BeforeEach void fixture(){String tag=UUID.randomUUID().toString().substring(0,8);admin=user("admin"+tag,"ADMIN");pm=user("pm"+tag,"PM");tester=user("tester"+tag,"TESTER");other=user("other"+tag,"TESTER");dev=user("dev"+tag,"DEV");outside=user("outside"+tag,"PM");var creator=user("creator"+tag,"ADMIN");p=projects.create(creator.getId(),new ProjectDtos.CreateProject("FI"+tag,"Issue project "+tag,"","Asia/Ho_Chi_Minh")).id();for(var entry:Map.of(pm,"PM",tester,"TESTER",other,"TESTER",dev,"DEV").entrySet())projects.addOrUpdateMember(p,admin.getId(),entry.getKey().getId(),new ProjectDtos.SetMember(entry.getValue()));}
  IdentityUser user(String name,String role){return users.saveAndFlush(new IdentityUser("fi."+name,name,"not-login",role));}
- RequestPostProcessor actor(IdentityUser u){return authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(u.getId(),u.getVersion()),null,List.of(new SimpleGrantedAuthority("ROLE_"+u.getRole()))));}
- String path(String tail){return "/api/v1/projects/"+p+tail;}
- String encode(Object value)throws Exception{return json.writeValueAsString(value);}
+ @NonNull RequestPostProcessor actor(IdentityUser u){return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(u.getId(),u.getVersion()),null,List.of(new SimpleGrantedAuthority("ROLE_"+u.getRole())))));}
+ @NonNull String path(String tail){return "/api/v1/projects/"+p+tail;}
+ @NonNull String encode(Object value)throws Exception{return Objects.requireNonNull(json.writeValueAsString(value));}
  JsonNode body(MvcResult result)throws Exception{return json.readTree(result.getResponse().getContentAsByteArray());}
  long feature(String name)throws Exception{return body(mvc.perform(post(path("/features")).with(actor(pm)).with(csrf()).contentType("application/json").content(encode(Map.of("name",name,"environment","test server","description","","requestKey",UUID.randomUUID())))).andExpect(status().isCreated()).andReturn()).get("id").asLong();}
  Map<String,Object> issue(long f,String type,boolean monkey){var input=new LinkedHashMap<String,Object>();input.put("featureId",f);input.put("type",type);input.put("monkey",monkey);input.put("title","Đỗ Cẩm Nhung issue");input.put("description","Question or description");input.put("steps","Steps");input.put("expectedResult","Expected");input.put("actualResult","Actual");input.put("requestKey",UUID.randomUUID());return input;}

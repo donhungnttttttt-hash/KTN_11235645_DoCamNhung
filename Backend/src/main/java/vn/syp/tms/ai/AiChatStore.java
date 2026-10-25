@@ -67,7 +67,7 @@ public class AiChatStore {
             if(project!=null||target!=null)fail(422,"AI_INVALID_TARGET","Phạm vi các dự án của tôi không nhận project hoặc target từ client.");
             source=portfolio.current(actor).reference();
         } else if(AiPortfolioContext.PROJECT_PURPOSE.equals(purpose)) {
-            if(project==null||project<1)fail(422,"AI_INVALID_TARGET","Chat dự án cần một dự án hợp lệ; nguồn tùy chọn là Feature của dự án.");
+            if(project==null||project<1)throw new BusinessException(422,"AI_INVALID_TARGET","Chat dự án cần một dự án hợp lệ; nguồn tùy chọn là Feature của dự án.");
             source=portfolio.currentProject(actor,project,target).reference();
         } else if(project==null) {
             if(purpose!=null||target!=null)fail(422,"AI_INVALID_TARGET","General chat has no project target.");

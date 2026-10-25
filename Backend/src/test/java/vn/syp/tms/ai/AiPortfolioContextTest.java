@@ -25,9 +25,9 @@ class AiPortfolioContextTest {
         when(identity.lockCurrent("owner")).thenReturn(account);
         when(account.getRole()).thenAnswer(call->role);
         when(sessions.current("owner")).thenReturn(new SessionPrincipal("owner",0));
-        when(jdbc.queryForObject(anyString(),eq(Long.class),any(Object[].class))).thenReturn(0L);
+        when(jdbc.queryForObject(Objects.requireNonNull(anyString()),longResultType(),any(Object[].class))).thenReturn(0L);
         projects.add(project(1,"TESTER",11));projects.add(project(2,"DEV",12));
-        when(jdbc.queryForList(anyString(),any(Object[].class))).thenAnswer(call->{
+        when(jdbc.queryForList(Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{
             String sql=call.getArgument(0);queries.add(sql);
             if(sql.contains("FROM projects p")) {
                 Object[] args=(Object[])call.getRawArguments()[1];
@@ -37,6 +37,11 @@ class AiPortfolioContextTest {
             if(sql.contains("AS assignedCases"))return List.of(new LinkedHashMap<>(Map.of("assignedCases",0L,"testedCases",0L)));
             return List.of();
         });
+    }
+    private static @org.springframework.lang.NonNull Class<Long> longResultType() {
+        // Mockito uses the registered matcher; return a non-null sentinel for Spring's API contract.
+        eq(Long.class);
+        return Long.class;
     }
     Map<String,Object> project(long id,String projectRole,long member) {
         var row=new LinkedHashMap<String,Object>();row.put("id",id);row.put("code","P"+id);row.put("name","Dự án "+id);
@@ -63,7 +68,7 @@ class AiPortfolioContextTest {
     }
     @Test void pmCanReadBackgroundProjectsOutsideMembershipWithoutReceivingCrudRights() {
         role="PM";
-        when(jdbc.queryForList(anyString(),any(Object[].class))).thenAnswer(call->{
+        when(jdbc.queryForList(Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{
             String sql=call.getArgument(0);queries.add(sql);
             if(!sql.contains("FROM projects p")) return List.of();
             return sql.contains("LEFT JOIN project_memberships")

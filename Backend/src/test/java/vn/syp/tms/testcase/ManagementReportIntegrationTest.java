@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.*;
@@ -34,7 +35,7 @@ class ManagementReportIntegrationTest {
         if(url==null||!url.matches("jdbc:mysql://(?:127\\.0\\.0\\.1|localhost):3307/tms_docstest_2060e04c986c\\?.+"))throw new IllegalStateException("Authorized report integration schema required");
         try(var c=DriverManager.getConnection(url,System.getenv("TMS_TEST_DB_USER"),System.getenv("TMS_TEST_DB_PASSWORD"));var s=c.createStatement();var rs=s.executeQuery("SELECT DATABASE()")){assertThat(rs.next()).isTrue();assertThat(rs.getString(1)).isEqualTo("tms_docstest_2060e04c986c");}
         r.add("TMS_DB_URL",()->url);r.add("TMS_DB_USER",()->System.getenv("TMS_TEST_DB_USER"));r.add("TMS_DB_PASSWORD",()->System.getenv("TMS_TEST_DB_PASSWORD"));r.add("TMS_MIGRATION_USER",()->System.getenv("TMS_TEST_DB_USER"));r.add("TMS_MIGRATION_PASSWORD",()->System.getenv("TMS_TEST_DB_PASSWORD"));
-        for(String key:List.of("TMS_BOOTSTRAP_ENABLED","TMS_REDMINE_ENABLED","TMS_CHATGPT_LOCAL_ENABLED","TMS_OLLAMA_ENABLED","TMS_OPENAI_ENABLED"))r.add(key,()->"false");
+        for(String key:List.of("TMS_BOOTSTRAP_ENABLED","TMS_REDMINE_ENABLED","TMS_CHATGPT_LOCAL_ENABLED","TMS_OLLAMA_ENABLED","TMS_OPENAI_ENABLED"))r.add(Objects.requireNonNull(key),()->"false");
         r.add("spring.task.scheduling.enabled",()->"false");
         r.add("spring.session.jdbc.cleanup-cron",()->"-");r.add("TMS_AI_DRAFT_CLEANUP_CRON",()->"-");r.add("TMS_AI_CHAT_CLEANUP_CRON",()->"-");
     }
@@ -47,9 +48,9 @@ class ManagementReportIntegrationTest {
         f=body(mvc.perform(post(path("/features")).with(actor(pm)).with(csrf()).contentType("application/json").content(encode(Map.of("name","Report Feature","environment","free URL","description","","requestKey",UUID.randomUUID())))).andExpect(status().isCreated()).andReturn()).get("id").asLong();
     }
     IdentityUser user(String name,String role){return users.saveAndFlush(new IdentityUser("report."+name,name,"not-login",role));}
-    RequestPostProcessor actor(IdentityUser user){return authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),user.getVersion()),null,List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole()))));}
-    String path(String tail){return "/api/v1/projects/"+p+tail;}
-    String encode(Object value)throws Exception{return json.writeValueAsString(value);}
+    @NonNull RequestPostProcessor actor(IdentityUser user){return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),user.getVersion()),null,List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole())))));}
+    @NonNull String path(String tail){return "/api/v1/projects/"+p+tail;}
+    @NonNull String encode(Object value)throws Exception{return Objects.requireNonNull(json.writeValueAsString(value));}
     JsonNode body(MvcResult result)throws Exception{return json.readTree(result.getResponse().getContentAsByteArray());}
     @Test void generatedMarkdownPreviewCanBeEditedAndSavedAsAnOrdinaryReportWithoutProviderTraffic()throws Exception {
         String generated="# Báo cáo AI\n\nChưa có case được kiểm thử.\n\n## Nhận xét\n\nChưa đủ dữ liệu để đánh giá.\n";
@@ -93,7 +94,7 @@ class ManagementReportIntegrationTest {
         assertThat(db.queryForObject("SELECT COUNT(*) FROM ai_generated_drafts WHERE project_id=? AND created_by=? AND id=?",Long.class,p,pm.getId(),expired.id())).isZero();
         assertThat(db.queryForObject("SELECT COUNT(*) FROM ai_generated_drafts WHERE project_id=? AND created_by=? AND id=? AND expires_at>UTC_TIMESTAMP(6)",Long.class,p,pm.getId(),active.id())).isEqualTo(1);
         mvc.perform(get(path("/management-reports/"+id)).with(actor(admin))).andExpect(status().isOk()).andExpect(jsonPath("$.markdown").value(edited));
-        assertThat(mvc.perform(get(path("/management-reports/"+id+"/download")).with(actor(pm))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8)).isEqualTo(edited);
+        assertThat(mvc.perform(get(path("/management-reports/"+id+"/download")).with(actor(pm))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(Objects.requireNonNull(StandardCharsets.UTF_8))).isEqualTo(edited);
         mvc.perform(get(path("/issues")).with(actor(tester))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(10));
         mvc.perform(get(path("/test-documents/"+d)).with(actor(tester))).andExpect(jsonPath("$.rows[0].resultStatus").value("OK"));
         mvc.perform(put(path("/management-reports/"+id)).with(actor(pm)).with(csrf()).contentType("application/json").content(encode(Map.of("title","Stale","markdown","Lost update","expectedVersion",0)))).andExpect(status().isConflict());

@@ -3,6 +3,7 @@ package vn.syp.tms.feature;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.Map;
+import java.util.Objects;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class FeatureController {
         return service.list(projectId,actor(auth),page,size,keyword,archived,createdFrom,createdTo,sort);
     }
     @GetMapping("/features/{id}") public Map<String,Object> get(Authentication auth,@PathVariable long projectId,@PathVariable long id){return service.get(projectId,actor(auth),id);}
-    @PostMapping("/features") public ResponseEntity<Map<String,Object>> create(Authentication auth,@PathVariable long projectId,@Valid @RequestBody FeatureDtos.Create input){var result=service.create(projectId,actor(auth),input);return ResponseEntity.created(URI.create("/api/v1/projects/"+projectId+"/features/"+result.get("id"))).body(result);}
+    @PostMapping("/features") public ResponseEntity<Map<String,Object>> create(Authentication auth,@PathVariable long projectId,@Valid @RequestBody FeatureDtos.Create input){var result=service.create(projectId,actor(auth),input);return ResponseEntity.created(Objects.requireNonNull(URI.create("/api/v1/projects/"+projectId+"/features/"+result.get("id")))).body(result);}
     @PutMapping("/features/{id}") public Map<String,Object> update(Authentication auth,@PathVariable long projectId,@PathVariable long id,@Valid @RequestBody FeatureDtos.Update input){return service.update(projectId,actor(auth),id,input);}
     @PostMapping("/features/{id}/archive") public Map<String,Object> archive(Authentication auth,@PathVariable long projectId,@PathVariable long id,@Valid @RequestBody FeatureDtos.Version input){return service.archive(projectId,actor(auth),id,input,true);}
     @PostMapping("/features/{id}/restore") public Map<String,Object> restore(Authentication auth,@PathVariable long projectId,@PathVariable long id,@Valid @RequestBody FeatureDtos.Version input){return service.archive(projectId,actor(auth),id,input,false);}

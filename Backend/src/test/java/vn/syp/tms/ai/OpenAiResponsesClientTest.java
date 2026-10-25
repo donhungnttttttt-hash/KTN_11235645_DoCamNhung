@@ -131,7 +131,7 @@ class OpenAiResponsesClientTest {
             respond(400,"{\"error\":{\"code\":\""+providerCode+"\",\"message\":\""+SECRET+"\",\"param\":\""+SECRET+"\"}}");
             assertThatThrownBy(this::generate).hasMessage("AI_REQUEST_REJECTED").hasNoCause();
             String knownCode="unsupported_parameter".equals(providerCode)?"unsupported_parameter":"UNKNOWN";
-            assertThat(appender.list).extracting(ch.qos.logback.classic.spi.ILoggingEvent::getFormattedMessage)
+            assertThat(appender.list).extracting(event -> java.util.Objects.requireNonNull(event).getFormattedMessage())
                 .contains("AI provider request rejected: httpStatus=400, code="+knownCode)
                 .allMatch(message->!message.contains(SECRET)&&!message.contains("Bearer"));
             assertThat(calls).hasValue(1);

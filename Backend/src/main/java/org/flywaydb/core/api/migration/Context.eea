@@ -1,0 +1,4 @@
+class org/flywaydb/core/api/migration/Context
+getConnection
+ ()Ljava/sql/Connection;
+ ()L1java/sql/Connection;

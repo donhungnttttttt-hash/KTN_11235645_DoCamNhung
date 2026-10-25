@@ -88,7 +88,7 @@ class NativeAiPortfolioTest {
     long create(String user) throws Exception {
         return json.readTree(mvc.perform(post("/api/v1/ai/chats").with(actor(user)).with(Objects.requireNonNull(csrf())).contentType("application/json")
             .content("{\"provider\":\"OPENAI_API\",\"model\":\"gpt-4.1-mini\",\"purpose\":\"MY_PROJECTS\"}"))
-            .andExpect(status().isCreated()).andExpect(jsonPath("$.sourceReference").value(org.hamcrest.Matchers.startsWith("portfolio-v1:")))
+            .andExpect(status().isCreated()).andExpect(jsonPath("$.sourceReference").value(Objects.requireNonNull(org.hamcrest.Matchers.startsWith("portfolio-v1:"))))
             .andReturn().getResponse().getContentAsByteArray()).path("id").asLong();
     }
     ResultActions send(String user,long id,String key) throws Exception {
@@ -98,7 +98,7 @@ class NativeAiPortfolioTest {
     long createProject(String user,long project) throws Exception {
         return json.readTree(mvc.perform(post("/api/v1/ai/chats").with(actor(user)).with(Objects.requireNonNull(csrf())).contentType("application/json")
             .content("{\"provider\":\"OPENAI_API\",\"model\":\"gpt-4.1-mini\",\"purpose\":\"PROJECT_CHAT\",\"projectId\":"+project+"}"))
-            .andExpect(status().isCreated()).andExpect(jsonPath("$.sourceReference").value(org.hamcrest.Matchers.startsWith("project-chat-v1:")))
+            .andExpect(status().isCreated()).andExpect(jsonPath("$.sourceReference").value(Objects.requireNonNull(org.hamcrest.Matchers.startsWith("project-chat-v1:"))))
             .andReturn().getResponse().getContentAsByteArray()).path("id").asLong();
     }
     @Test void selectedProjectNeedsNoTargetAndNeverIncludesAnotherAuthorizedProject() throws Exception {
@@ -154,7 +154,7 @@ class NativeAiPortfolioTest {
     }
     @Test void adminScopeDoesNotRequireProjectMembership() throws Exception {
         jdbc.update("UPDATE identity_users SET role_code='ADMIN' WHERE id=?",f.pm);
-        long total=jdbc.queryForObject("SELECT COUNT(*) FROM projects",Long.class);
+        long total=Objects.requireNonNull(jdbc.queryForObject("SELECT COUNT(*) FROM projects",Long.class));
         long id=create(f.pm);send(f.pm,id,"portfolio-admin-all").andExpect(status().isOk());
         var capture=org.mockito.ArgumentCaptor.forClass(JsonNode.class);verify(provider).generate(anyString(),capture.capture(),anyString(),any());
         assertThat(capture.getValue().path("snapshot").path("totalProjects").asLong()).isEqualTo(total);
