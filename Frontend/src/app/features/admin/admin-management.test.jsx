@@ -42,7 +42,7 @@ it('shows unassigned users, prevents self-disable and sends versioned PM delegat
  await screen.findByText('Manager');
  expect(screen.getAllByRole('button',{name:'Khóa'})[0]).toBeDisabled();
  expect(screen.getAllByText('Chưa có dự án')).toHaveLength(2);
- fireEvent.click(screen.getByRole('button',{name:'Cấp quyền tạo Tester'}));
+ fireEvent.click(screen.getByRole('button',{name:'Cấp quyền tạo user'}));
  await waitFor(()=>expect(api.updateUser).toHaveBeenCalledWith('pm',{canCreateUsers:true,expectedVersion:4}));
  fireEvent.change(screen.getByLabelText('Vai trò'),{target:{value:'DEV'}});
  await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({role:'DEV',page:0}),expect.anything()));
@@ -107,7 +107,7 @@ it('preserves selected people across picker pages and restricts Dev to Dev role'
  fireEvent.click(screen.getByLabelText('Chọn Tester'));fireEvent.change(screen.getByLabelText('Vai trò Tester'),{target:{value:'PM'}});
  fireEvent.click(screen.getByRole('button',{name:'Người sau'}));await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({page:1}),expect.anything()));
  fireEvent.click(await screen.findByRole('button',{name:'Người trước'}));await screen.findByLabelText('Chọn Developer');
- fireEvent.click(screen.getByLabelText('Chọn Developer'));fireEvent.click(screen.getByRole('button',{name:'Bỏ chọn Tester'}));
+ fireEvent.click(screen.getByLabelText('Chọn Developer'));fireEvent.click(screen.getByLabelText('Chọn Tester'));
  expect(screen.getByText(/Đã chọn 0 người/)).toBeInTheDocument();
  fireEvent.change(screen.getByLabelText('Tìm tài khoản đang hoạt động'),{target:{value:'search'}});
  await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({keyword:'search',page:0}),expect.anything()));
@@ -118,14 +118,14 @@ it('does not offer active members again or silently change their existing role',
  const api={project:vi.fn().mockResolvedValue({id:1,name:'Project'}),members:vi.fn().mockResolvedValue([member]),users:vi.fn().mockResolvedValue({items:[{id:'admin',displayName:'Admin PM',username:'admin',role:'ADMIN'}],totalElements:1}),setMember:vi.fn()};
  render(<AdminProjectDetail id="1" api={api}/>);
  expect(await screen.findByLabelText('Chọn Admin PM')).toBeDisabled();
- expect(screen.getByRole('button',{name:'Lưu thành viên đã chọn'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'+ Thêm'})).toBeDisabled();
  expect(api.setMember).not.toHaveBeenCalled();
 });
 
 it('immediately acknowledges the save click and announces completion in the member section',async()=>{
  let finish;const first={userId:'a',username:'a',displayName:'Tester A',projectRole:'TESTER',systemRole:'TESTER',version:0};
  const api={project:vi.fn().mockResolvedValue({id:1,name:'Project'}),members:vi.fn().mockResolvedValue([]),users:vi.fn().mockResolvedValue({items:[{id:'a',username:'a',displayName:'Tester A',role:'TESTER'}],totalElements:1}),memberCandidate:vi.fn().mockResolvedValue({membershipVersion:null}),setMember:vi.fn().mockImplementation(()=>new Promise(resolve=>{finish=()=>{api.members.mockResolvedValue([first]);resolve(first);};}))};
- render(<AdminProjectDetail id="1" api={api}/>);fireEvent.click(await screen.findByLabelText('Chọn Tester A'));fireEvent.click(screen.getByRole('button',{name:'Lưu thành viên đã chọn'}));
+ render(<AdminProjectDetail id="1" api={api}/>);fireEvent.click(await screen.findByLabelText('Chọn Tester A'));fireEvent.click(screen.getByRole('button',{name:'+ Thêm'}));
  expect(screen.getByRole('button',{name:'Đang lưu thành viên…'})).toBeDisabled();expect(screen.getByRole('status')).toHaveTextContent('Đang lưu thành viên');
  await waitFor(()=>expect(api.setMember).toHaveBeenCalledTimes(1));finish();await screen.findByLabelText('Vai trò Tester A');
  await waitFor(()=>expect(screen.getByRole('status').parentElement).toHaveFocus());expect(screen.getByRole('status')).toHaveTextContent('Đã lưu 1 thành viên');
@@ -136,7 +136,7 @@ it('refreshes partial saves, identifies the failed person and retries only the r
  const api={project:vi.fn().mockResolvedValue({id:1,name:'Project'}),members:vi.fn().mockResolvedValue([]),users:vi.fn().mockResolvedValue({items:[{id:'a',username:'a',displayName:'Tester A',role:'TESTER'},{id:'b',username:'b',displayName:'Tester B',role:'TESTER'}],totalElements:2}),memberCandidate:vi.fn().mockResolvedValue({membershipVersion:null}),setMember:vi.fn().mockImplementationOnce(async()=>{api.members.mockResolvedValue([first]);}).mockRejectedValueOnce(new Error('Mất kết nối')).mockResolvedValue({})};
  render(<AdminProjectDetail id="1" api={api}/>);
  fireEvent.click(await screen.findByLabelText('Chọn Tester A'));fireEvent.click(screen.getByLabelText('Chọn Tester B'));
- fireEvent.click(screen.getByRole('button',{name:'Lưu thành viên đã chọn'}));
+ fireEvent.click(screen.getByRole('button',{name:'+ Thêm'}));
  expect(await screen.findByRole('alert')).toHaveTextContent(/Tester B.*Mất kết nối/);
  await waitFor(()=>expect(api.members.mock.calls.length).toBeGreaterThan(1));
  expect(screen.getByRole('status')).toHaveTextContent('Đã lưu 1 thành viên');
@@ -144,7 +144,7 @@ it('refreshes partial saves, identifies the failed person and retries only the r
  await waitFor(()=>expect(screen.getByRole('alert').parentElement).toHaveFocus());
  expect(screen.getByLabelText('Chọn Tester A')).toBeDisabled();
  expect(screen.getByLabelText('Chọn Tester B')).toBeChecked();
- fireEvent.click(screen.getByRole('button',{name:'Lưu thành viên đã chọn'}));
+ fireEvent.click(screen.getByRole('button',{name:'+ Thêm'}));
  await waitFor(()=>expect(api.setMember).toHaveBeenCalledTimes(3));
  expect(api.setMember.mock.calls.map(call=>call[1])).toEqual(['a','b','b']);
  expect(api.setMember).toHaveBeenLastCalledWith('1','b',{projectRole:'TESTER',expectedVersion:null});
@@ -154,7 +154,7 @@ it('restores an inactive member with its candidate version and supports removal'
  const member={userId:'pm',displayName:'Manager',username:'pm',systemRole:'PM',projectRole:'PM',version:3};
  const api={projects:vi.fn().mockResolvedValue({items:[{id:1,code:"AA",name:"Project Alpha"}],totalElements:1}),project:vi.fn().mockResolvedValue({id:1,name:'Project',version:1}),members:vi.fn().mockResolvedValue([member]),users:vi.fn().mockResolvedValue({items:[{id:'d',username:'dev',displayName:'Developer',role:'DEV'}],totalElements:1}),memberCandidate:vi.fn().mockResolvedValue({membershipVersion:5}),setMember:vi.fn().mockResolvedValue({}),removeMember:vi.fn().mockResolvedValue({})};
  render(<AdminProjectDetail id="1" api={api}/>);
- fireEvent.click(await screen.findByLabelText('Chọn Developer'));fireEvent.click(screen.getByRole('button',{name:'Lưu thành viên đã chọn'}));
+ fireEvent.click(await screen.findByLabelText('Chọn Developer'));fireEvent.click(screen.getByRole('button',{name:'+ Thêm'}));
  await waitFor(()=>expect(api.setMember).toHaveBeenCalledWith('1','d',{projectRole:'DEV',expectedVersion:5}));
  fireEvent.change(await screen.findByLabelText('Vai trò Manager'),{target:{value:'TESTER'}});fireEvent.click(screen.getByRole('button',{name:'Lưu vai trò Manager'}));
  await waitFor(()=>expect(api.setMember).toHaveBeenCalledWith('1','pm',{projectRole:'TESTER',expectedVersion:3}));
@@ -181,12 +181,12 @@ it('discards selected additions and role drafts when navigating to another proje
  const view=render(<AdminProjectDetail id="1" api={api}/>);
  fireEvent.change(await screen.findByLabelText('Vai trò Manager'),{target:{value:'TESTER'}});
  fireEvent.click(await screen.findByLabelText('Chọn Developer'));
- expect(screen.getByRole('button',{name:'Lưu thành viên đã chọn'})).toBeEnabled();
+ expect(screen.getByRole('button',{name:'+ Thêm'})).toBeEnabled();
  view.rerender(<AdminProjectDetail id="2" api={api}/>);
  await waitFor(()=>expect(api.members).toHaveBeenCalledWith('2',expect.anything()));
  expect(await screen.findByLabelText('Vai trò Manager')).toHaveValue('PM');
  expect(await screen.findByLabelText('Chọn Developer')).not.toBeChecked();
- expect(screen.getByRole('button',{name:'Lưu thành viên đã chọn'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'+ Thêm'})).toBeDisabled();
  expect(screen.getByRole('button',{name:'Lưu vai trò Manager'})).toBeDisabled();
 });
 

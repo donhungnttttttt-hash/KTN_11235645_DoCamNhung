@@ -17,7 +17,6 @@ export function MemberPicker({value,onChange,api=adminApi,existingUserIds=[]}) {
  onChange={ids=>onChange(ids.map(id=>value.find(m=>m.userId===id)||(()=>{const u=state.data.items.find(u=>u.id===id);return {userId:u.id,projectRole:u.role==='PM'?'PM':u.role==='DEV'?'DEV':'TESTER',displayName:u.displayName,username:u.username};})()))}/>
  <p>Đã chọn {value.length} người · {value.filter(m=>m.projectRole==='PM').length} PM</p>
  {state.data && <div className="admin-pagination"><span>Trang {page+1} / {Math.max(1,Math.ceil(state.data.totalElements/20))} · {state.data.totalElements} người</span><button type="button" disabled={!page} onClick={()=>setPage(page-1)}>Người trước</button><button type="button" disabled={(page+1)*20>=state.data.totalElements} onClick={()=>setPage(page+1)}>Người sau</button></div>}
- {value.length>0 && <ul className="admin-selected-members">{value.map(m=><li key={m.userId}><span>{m.displayName || m.userId} · {m.projectRole}</span> <button type="button" aria-label={`Bỏ chọn ${m.displayName || m.userId}`} onClick={()=>onChange(value.filter(v=>v.userId!==m.userId))}>Bỏ chọn</button></li>)}</ul>}
  </section>;
 }
 export function AdminProjectForm({project,onSaved,onCancel,api=adminApi}) {

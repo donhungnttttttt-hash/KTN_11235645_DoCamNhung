@@ -43,7 +43,7 @@ it.each(['role','remove'])('keeps role drafts and does not announce success when
  expect(screen.queryByText('Đã gỡ Lan khỏi dự án.')).not.toBeInTheDocument();
 });
 
-it('shows picker page position and names each removal while preserving selections on other pages',async()=>{
+it('preserves selections across pages and removes them with checkboxes without a duplicate list',async()=>{
  const alpha={id:'alpha',displayName:'Alpha',username:'alpha',role:'TESTER'};
  const beta={id:'beta',displayName:'Beta',username:'beta',role:'TESTER'};
  const api={users:vi.fn(({page})=>Promise.resolve({items:page?[beta]:[alpha],totalElements:21}))};
@@ -54,15 +54,15 @@ it('shows picker page position and names each removal while preserving selection
  fireEvent.click(screen.getByRole('button',{name:'Người sau'}));
  await screen.findByText('Trang 2 / 2 · 21 người');
  fireEvent.click(screen.getByLabelText('Chọn Beta'));
- const removeAlpha=screen.getByRole('button',{name:'Bỏ chọn Alpha'});
- expect(removeAlpha).toHaveTextContent('Bỏ chọn');
- fireEvent.click(removeAlpha);
- expect(screen.queryByRole('button',{name:'Bỏ chọn Alpha'})).not.toBeInTheDocument();
- expect(screen.getByRole('button',{name:'Bỏ chọn Beta'})).toBeInTheDocument();
+ expect(screen.queryByRole('button',{name:/Bỏ chọn/})).not.toBeInTheDocument();
+ expect(screen.getByText('Đã chọn 2 người · 0 PM')).toBeInTheDocument();
  expect(screen.getByLabelText('Chọn Beta')).toBeChecked();
  expect(screen.getByRole('button',{name:'Người sau'})).toBeDisabled();
  fireEvent.click(screen.getByRole('button',{name:'Người trước'}));
  await screen.findByText('Trang 1 / 2 · 21 người');
- expect(screen.getByLabelText('Chọn Alpha')).not.toBeChecked();
- expect(screen.getByRole('button',{name:'Bỏ chọn Beta'})).toBeInTheDocument();
+ expect(screen.getByLabelText('Chọn Alpha')).toBeChecked();
+ fireEvent.click(screen.getByLabelText('Chọn Alpha'));
+ expect(screen.getByText('Đã chọn 1 người · 0 PM')).toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'Người sau'}));
+ expect(await screen.findByLabelText('Chọn Beta')).toBeChecked();
 });
