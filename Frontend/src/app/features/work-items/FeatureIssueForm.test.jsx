@@ -1,7 +1,25 @@
 import React from 'react';
-import {render,screen,fireEvent,waitFor} from '@testing-library/react';
+import {render,screen,fireEvent,waitFor,within} from '@testing-library/react';
 import {expect,it,vi} from 'vitest';
 import {FeatureIssueForm} from './FeatureIssueForm';
+
+it('shows current Feature environment and description before creating Bug or QA from a case',async()=>{
+ const api={context:vi.fn().mockResolvedValue({featureId:2,featureName:'Test 25 tháng 10',featureEnvironment:'idec-test100',featureDescription:'Sử dụng test ST app Duolingo',fileName:'A.xlsx',caseNo:'1',title:'Bản vẽ',steps:'Mở bản vẽ',expectedResult:'Hiện bản vẽ'}),create:vi.fn().mockResolvedValue({id:9})};
+ render(<FeatureIssueForm projectId={1} featureId={2} documentId={3} row={{rowId:4}} api={api}/>);
+ const context=within(await screen.findByRole('region',{name:'Thông tin Feature hiện tại'}));
+ expect(context.getByText('Test 25 tháng 10')).toBeInTheDocument();
+ expect(context.getByText('idec-test100')).toBeInTheDocument();
+ expect(context.getByText('Sử dụng test ST app Duolingo')).toBeInTheDocument();
+ expect(screen.getByLabelText('Mô tả')).toHaveValue('');
+ fireEvent.change(screen.getByLabelText('Loại Issue'),{target:{value:'QA'}});
+ expect(context.getByText('idec-test100')).toBeInTheDocument();
+ fireEvent.change(screen.getByLabelText('Nội dung câu hỏi'),{target:{value:'Câu hỏi riêng của Issue'}});
+ fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));
+ await waitFor(()=>expect(api.create).toHaveBeenCalledOnce());
+ expect(api.create.mock.calls[0][1]).toEqual(expect.objectContaining({type:'QA',featureId:2,description:'Câu hỏi riêng của Issue'}));
+ expect(api.create.mock.calls[0][1]).not.toHaveProperty('featureDescription');
+ expect(api.create.mock.calls[0][1]).not.toHaveProperty('featureEnvironment');
+});
 
 it('prefills the exact case and keeps the draft and case context when saving fails',async()=>{
  const api={context:vi.fn().mockResolvedValue({featureName:'Feature A',fileName:'A.xlsx',caseNo:'CASE-2',title:'Icon stamp',steps:'Mở bản vẽ',expectedResult:'Hiện icon'}),create:vi.fn().mockRejectedValue(new Error('Mất kết nối'))};

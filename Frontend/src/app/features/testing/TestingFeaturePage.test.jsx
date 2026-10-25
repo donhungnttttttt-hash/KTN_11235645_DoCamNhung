@@ -4,7 +4,7 @@ import {expect,test,vi} from 'vitest';
 import {TestingFeaturePage} from './TestingFeaturePage';
 import {featuresApi} from '../../services/api/features';
 
-vi.mock('../../services/api/features',()=>({featuresApi:{get:vi.fn(),documents:vi.fn()}}));
+vi.mock('../../services/api/features',()=>({featuresApi:{get:vi.fn(),documents:vi.fn(),testVersions:vi.fn().mockResolvedValue([])}}));
 vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>role==='ADMIN'})}));
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>({currentProject:{id:1,name:'Dự án thử',projectRole:'PM'}})}));
 

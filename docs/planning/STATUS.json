@@ -7,6 +7,27 @@
   "activeSprint": "S11",
   "phase": "IN_REVIEW",
   "implementationStarted": true,
+  "issueCurrentFeature20261025": {
+    "status": "DONE",
+    "scope": "Issue detail and create-from-case form display current Feature name, environment and description; no historical snapshot",
+    "report": "docs/reviews/2026-10-25-issue-current-feature.md",
+    "verification": {
+      "frontendGroupPassed": 91,
+      "frontendFinalDetailPassed": 22,
+      "frontendFormPassed": 4,
+      "backendPassed": 6,
+      "nativeIncluded": 3,
+      "javaSources": 330,
+      "javaErrors": 0,
+      "javaWarnings": 0,
+      "builds": "PASS; existing Vite chunk-size warning",
+      "chrome": "Existing Issue77 and create-from-case1 form (Feature17/file27/project2) show current Feature fields; no main Issue write; create form screenshot timed out",
+      "coverage": "Latest form+shared context: statements94.11/branches80.43/functions89.47/lines93.75; prior detail coverage recorded in report"
+    },
+    "runtime": "8080 verified artifact; health UP; Flyway target33; account/membership/migration fingerprints unchanged",
+    "commitOrPush": false,
+    "remaining": "No required item in this scope; broader S11/FR-12 and Arena retain prior status"
+  },
   "adminUserProfile20261025": {
     "status": "DONE",
     "scope": "Admin edits displayName and username, resets password; system/project roles unchanged",
@@ -75,18 +96,43 @@
     "scope": "Synthetic complete local demo V34; preserve V1-V33 and existing business data; commit/push authorized by user",
     "report": "docs/reviews/2026-10-25-complete-demo-v34.md",
     "guide": "docs/database/demo-v34.md",
-    "nativeScenarios": { "fresh": "PASS", "upgradeFromV33": "PASS", "releaseExcludesDemo": "PASS", "lateFailureRollback": "PASS", "repeatPreservesEdits": "PASS" },
-    "offlineRegression": { "suites": 5, "tests": 21, "failures": 0, "errors": 0, "skipped": 0 },
-    "initializerBehaviorTests": { "tests": 4, "passed": 4 },
+    "nativeScenarios": {
+      "fresh": "PASS",
+      "upgradeFromV33": "PASS",
+      "releaseExcludesDemo": "PASS",
+      "lateFailureRollback": "PASS",
+      "repeatPreservesEdits": "PASS"
+    },
+    "offlineRegression": {
+      "suites": 5,
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "initializerBehaviorTests": {
+      "tests": 4,
+      "passed": 4
+    },
     "mavenVerifyPackage": "PASS",
-    "javaDiagnostics": { "sourceCount": 325, "errors": 0, "warnings": 0 },
+    "javaDiagnostics": {
+      "sourceCount": 325,
+      "errors": 0,
+      "warnings": 0
+    },
     "previousMigrationsUnchanged": 33,
     "mainDatabaseChanged": false,
     "runtimeRestarted": false,
     "initializerEndToEnd": "NOT_RUN",
     "browserUat": "NOT_RUN",
     "migrationCoverage": "NOT_CONSOLIDATED",
-    "skillsApplied": ["brainstorming", "tdd-workflow", "security-review", "code-review-and-quality", "verification-loop"],
+    "skillsApplied": [
+      "brainstorming",
+      "tdd-workflow",
+      "security-review",
+      "code-review-and-quality",
+      "verification-loop"
+    ],
     "sprintStatusUnchanged": "S11/FR-12 IN_REVIEW; Arena PLANNED"
   },
   "javaIdeDiagnostics20261025": {
@@ -155,6 +201,22 @@
     "status": "PLANNED",
     "planningOnly": true,
     "sourceBaseline": "cde58ad",
+    "reanalysis": {
+      "sourceBaseline": "a45974a",
+      "report": "docs/reviews/2026-10-25-arena-plan-reanalysis.md",
+      "acceptanceCases": 26,
+      "plannedArchiveMigration": "V35; recheck all SQL/Java locations before implementation; V34 local demo already exists",
+      "scopeUpdates": [
+        "U23 fixed member roles, candidate exclusion and PM/ADMIN scopes",
+        "U24 account profile/reset-password and session revocation regression",
+        "U25 AI timeout and per-machine configuration, separate live evidence",
+        "U26 hidden/deleted issue blockers: reproduce and clarify semantics before changing policy"
+      ],
+      "priorEvidence": "Previous task receipts are references, not PASS for this Arena campaign",
+      "productTestsBuildBrowserDatabaseLiveThisReview": "NOT_RUN",
+      "implementationStarted": false,
+      "commitPush": false
+    },
     "arenaSourceBaseline": "caf075af7231f207259b6a62808bff5c8445f6af",
     "arenaWinner": "a016",
     "decision": "User confirmed 2026-10-25: preserve current Feature/Bug-QA workflow and apply only still-relevant Arena conclusions.",
@@ -2128,5 +2190,62 @@
       "identityMembershipFlywayHashesUnchanged": true
     },
     "commitOrPush": false
+  },
+  "featureTestVersions20261025": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-10-25-feature-test-versions.md",
+    "scope": "Feature versions and execution date; row dropdown corrects only that case version, preserves status/date and history",
+    "verification": {
+      "frontendGroup": 246,
+      "frontendFinalFocused": 12,
+      "backendPassed": 21,
+      "nativeIncluded": 7,
+      "javaSources": 331,
+      "javaErrors": 0,
+      "javaWarnings": 0,
+      "build": "PASS; existing Vite chunk size warning",
+      "chrome": "Feature17/file27 controls/form verified, no main mutation; screenshot timeout",
+      "coverage": "Not measured this change"
+    },
+    "runtime": {
+      "port": 8080,
+      "flyway": 36,
+      "oldBusinessDataUnchanged": true,
+      "demoV34Seeded": false
+    },
+    "commitOrPush": false,
+    "uiFollowup": {
+      "feature": "Anchored dropdown: existing versions, gray empty text, inline input and Add; success closes and displays new version on trigger",
+      "document": "Compact right-aligned version/date/assignment group: 180px version, 140px date, 40px desktop controls; narrow/touch layouts preserved",
+      "frontendTests": 42,
+      "frontendBuild": "PASS",
+      "backendOrDataChanged": false,
+      "finalDocumentTests": 10,
+      "popupPlacementFix": {
+        "cause": "Portal outside testing-page lost scoped overlay styles",
+        "chromeBefore": "static, outside viewport",
+        "chromeAfter": "fixed, centered inside viewport, input44px, backdrop hit test PASS",
+        "tests": 3,
+        "build": "PASS",
+        "screenshot": "CDP timeout",
+        "supersededBy": "User requested non-modal anchored dropdown with inline creation"
+      }
+    },
+    "deletionFollowup": {
+      "status": "DONE",
+      "decision": "Soft delete: hide from choices; preserve existing results/history/export",
+      "migration": "V36",
+      "frontendTests": 45,
+      "backendTests": 23,
+      "nativeIncluded": 9,
+      "javaErrors": 0,
+      "javaWarnings": 0,
+      "build": "PASS; existing chunk warning",
+      "chrome": "Confirmation centered and Cancel verified on main; successful delete verified in isolated native tests and frontend mocks",
+      "mainPreservation": "8 table fingerprints unchanged; 4 versions retained",
+      "backup": "var/mysql-native/backups/2026-10-25T11-35-18-001Z-tms.sql",
+      "coverage": "Not measured",
+      "commitOrPush": false
+    }
   }
 }

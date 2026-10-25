@@ -30,7 +30,7 @@ rtk proxy powershell -NoProfile -File scripts/Start-Backend.ps1
 
 Dừng đúng backend của dự án đang chiếm cổng trước khi chạy lại. Script sử dụng cấu hình database/migration hiện có của máy đó như các lần khởi động bình thường; không xóa database hoặc reset Flyway để sửa AI.
 
-Chạy riêng `mvn spring-boot:run` không tự đọc `.env.mysql.local`; khi chạy từ IDE/Maven trực tiếp phải truyền các biến môi trường tương đương vào cấu hình chạy.
+Đính chính sau đối chiếu source: profile `local` trong `Backend/src/main/resources/application-local.yml` đã có `spring.config.import` đọc `../.env.mysql.local` theo working directory Backend (hoặc đường dẫn `TMS_LOCAL_CONFIG_FILE`). Vì vậy Maven/IDE trực tiếp **có thể đọc file này khi bật đúng profile và đường dẫn**. Nếu không bật `local`, working directory khác hoặc có override, cấu hình có thể không được nạp như mong đợi. Script Start-Backend vẫn là đường chạy chuẩn vì nạp whitelist AI/DB và đặt profile rõ ràng.
 
 3. Loader ưu tiên **Process > Windows User > file local**. Nếu vẫn hiện 4.1, kiểm tra các override `TMS_OPENAI_MODEL`, `TMS_OPENAI_BASE_URL`, `TMS_OPENAI_ENABLED` ở terminal/IDE/Windows User. Không cần in giá trị key ra terminal. Đồng thời xác nhận frontend đang gọi đúng backend vừa khởi động lại.
 4. Tải lại trang, mở Cấu hình AI. Nguồn API của hệ thống phải hiện `gpt-5.6-luna` và sẵn sàng theo cấu hình. Tạo **hội thoại Mới** để dùng model mới; hội thoại cũ giữ nguyên nguồn/model đã tạo.

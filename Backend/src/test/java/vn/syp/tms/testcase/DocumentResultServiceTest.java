@@ -47,12 +47,17 @@ class DocumentResultServiceTest {
         });
     }
     TestDocumentDtos.UpdateResult input(long expected) {return new TestDocumentDtos.UpdateResult("OK",expected,key);}
-    @Test void memberWritesWithActorVersionAndAudit() {
+    @Test void memberWritesWithActorVersionAndAudit() throws Exception {
         var saved=service.updateResult(1L,"tester",2L,9L,input(0));
         assertThat(saved.status()).isEqualTo("OK");assertThat(saved.version()).isEqualTo(1);
         verify(projects).requireMembership(1L,"tester");
         verify(jdbc).update(Objects.requireNonNull(contains("UPDATE import_rows")),eq("OK"),eq("tester"),eq(key),eq(1L),eq(2L),eq(9L));
-        verify(jdbc).update(Objects.requireNonNull(contains("INSERT INTO project_audit")),eq(1L),eq("tester"),eq(9L),eq("RESULT_UNEXECUTED_OK"));
+        var creator=org.mockito.ArgumentCaptor.forClass(org.springframework.jdbc.core.PreparedStatementCreator.class);
+        verify(jdbc).update(Objects.requireNonNull(Objects.requireNonNullElseGet(creator.capture(),()->connection->Objects.requireNonNull(mock(java.sql.PreparedStatement.class)))),Objects.requireNonNull(Objects.requireNonNullElseGet(any(org.springframework.jdbc.support.KeyHolder.class),org.springframework.jdbc.support.GeneratedKeyHolder::new)));
+        var connection=mock(java.sql.Connection.class);var statement=mock(java.sql.PreparedStatement.class);
+        when(connection.prepareStatement(contains("INSERT INTO project_audit"),eq(java.sql.Statement.RETURN_GENERATED_KEYS))).thenReturn(Objects.requireNonNull(statement));
+        Objects.requireNonNull(creator.getValue()).createPreparedStatement(connection);
+        verify(statement).setLong(1,1L);verify(statement).setString(2,"tester");verify(statement).setLong(3,9L);verify(statement).setString(4,"RESULT_UNEXECUTED_OK");
     }
     @Test void replayIsIdempotentAndDoesNotDuplicateHistory() {
         status="OK";version=1;lastKey=key;actor="tester";

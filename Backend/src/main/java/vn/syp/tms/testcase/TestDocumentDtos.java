@@ -15,9 +15,16 @@ public interface TestDocumentDtos {
             Long rowId, String resultStatus, long resultVersion, Instant resultUpdatedAt, String resultUpdatedBy) {}
     record UpdateResult(@NotNull @Pattern(regexp="UNEXECUTED|OK|P|NG|NA") String status,
             @NotNull @PositiveOrZero Long expectedVersion,
-            @NotNull @Pattern(regexp="[a-fA-F0-9]{8}(-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}") String requestKey) {}
-    record Result(Long rowId,String status,long version,Instant updatedAt,String updatedBy) {}
-    record Change(long id,String before,String after,Instant occurredAt,String actor) {}
+            @NotNull @Pattern(regexp="[a-fA-F0-9]{8}(-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}") String requestKey,
+            @Positive Long testVersionId,java.time.LocalDate executedOn) {
+        public UpdateResult(String status,Long expectedVersion,String requestKey){this(status,expectedVersion,requestKey,null,null);}
+    }
+    record Result(Long rowId,String status,long version,Instant updatedAt,String updatedBy,Long testVersionId,String testVersionName,java.time.LocalDate executedOn) {
+        public Result(Long rowId,String status,long version,Instant updatedAt,String updatedBy){this(rowId,status,version,updatedAt,updatedBy,null,null,null);}
+    }
+    record Change(long id,String before,String after,Instant occurredAt,String actor,String testVersionName,java.time.LocalDate executedOn) {
+        public Change(long id,String before,String after,Instant occurredAt,String actor){this(id,before,after,occurredAt,actor,null,null);}
+    }
     record Detail(Summary document, List<String> headers, List<Row> rows, Map<String,Integer> columns,
             Map<Long,Map<Integer,Long>> cellVersions, List<Map<String,Object>> secondTests) {}
     record EditCell(@NotNull @Size(max=8000) String value, @NotNull @PositiveOrZero Long expectedVersion,

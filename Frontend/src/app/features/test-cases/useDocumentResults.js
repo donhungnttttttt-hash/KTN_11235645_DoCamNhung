@@ -17,7 +17,7 @@ export function useDocumentResults(projectId, documentId, data, onSaved) {
     window.addEventListener('beforeunload',warn);
     return()=>window.removeEventListener('beforeunload',warn);
   },[pending]);
-  function change(row,value) {
+  function change(row,value,executionContext={}) {
     if(failed.current || row.rowId==null)return;
     const status=value.toUpperCase(),requestKey=crypto.randomUUID();
     setOverrides(current=>({...current,[row.rowId]:status}));setPending(n=>n+1);
@@ -25,7 +25,7 @@ export function useDocumentResults(projectId, documentId, data, onSaved) {
       if(failed.current)return;
       try {
         const previous=states.current.get(row.rowId);
-        const saved=await testCasesApi.updateDocumentResult(projectId,documentId,row.rowId,{status,expectedVersion:previous.version,requestKey});
+        const saved=await testCasesApi.updateDocumentResult(projectId,documentId,row.rowId,{status,expectedVersion:previous.version,requestKey,...executionContext});
         states.current.set(row.rowId,saved);
         if(live.current){onSaved(saved);if(failed.current)setOverrides(current=>({...current,[row.rowId]:saved.status}));}
       } catch(err) {

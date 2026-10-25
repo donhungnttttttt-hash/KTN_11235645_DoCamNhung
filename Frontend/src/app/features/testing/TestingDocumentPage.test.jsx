@@ -1,8 +1,60 @@
 import React from 'react';
 import {act,fireEvent,render,screen,waitFor,within} from '@testing-library/react';
-import {expect,test,vi} from 'vitest';
+import {beforeEach,expect,test,vi} from 'vitest';
 import {TestingDocumentPage} from './TestingDocumentPage';
 import {testCasesApi} from '../../services/api/testCases';
+beforeEach(()=>vi.clearAllMocks());
+
+test('keeps a deleted version visible on its old case but unavailable for selection',async()=>{
+ testCasesApi.getDocument.mockResolvedValue({document:{id:9,featureId:2,fileName:'Cases.xlsx'},testVersions:[{id:12,name:'Active version',createdAt:'2026-01-02T00:00:00Z'}],headers:['ID'],columns:{sourceId:0},rows:[{rowId:101,sourceId:'1',cells:['1'],resultStatus:'NG',resultVersion:3,canUpdateResult:true,testVersionId:11,testVersionName:'Old version',executedOn:'2026-01-05'}]});
+ render(<TestingDocumentPage projectId={1} featureId={2} documentId={9}/>);
+ const rowVersion=await screen.findByRole('combobox',{name:'Version test · case 1'});
+ expect(rowVersion).toHaveValue('11');
+ expect(within(rowVersion).getByRole('option',{name:'Old version (đã xóa)'})).toBeDisabled();
+ expect(within(screen.getByLabelText('Version test')).queryByRole('option',{name:/Old version/})).not.toBeInTheDocument();
+ expect(testCasesApi.updateDocumentResult).not.toHaveBeenCalled();
+});
+
+test('stamps the chosen version and execution date only on the case whose status is saved',async()=>{
+ const versions=[{id:11,name:'iPad 1.0 (133)',createdAt:'2026-01-01T00:00:00Z'},{id:12,name:'iPad 1.1 (134)',createdAt:'2026-01-02T00:00:00Z'}];
+ testCasesApi.getDocument.mockResolvedValue({document:{id:9,featureId:2,fileName:'Cases.xlsx'},testVersions:versions,headers:['ID','Ghi chú thực thi&'],columns:{sourceId:0,executionNote:1},rows:[1,2].map(n=>({rowId:100+n,sourceId:String(n),cells:[String(n),'Original note'],resultStatus:'UNEXECUTED',resultVersion:0,canUpdateResult:true}))});
+ testCasesApi.updateDocumentResult.mockResolvedValue({rowId:101,status:'OK',version:1,testVersionId:11,testVersionName:'iPad 1.0 (133)',executedOn:'2026-01-01'});
+ render(<TestingDocumentPage projectId={1} featureId={2} documentId={9} onBack={()=>{}}/>);
+ const version=await screen.findByLabelText('Version test');
+ fireEvent.change(screen.getByLabelText('Ngày thực hiện'),{target:{value:'2026-01-01'}});
+ expect(version).toHaveValue('11');
+ fireEvent.click(screen.getByRole('button',{name:'Kết quả test case 1'}));
+ await waitFor(()=>expect(testCasesApi.updateDocumentResult).toHaveBeenCalledWith(1,9,101,expect.objectContaining({testVersionId:11,executedOn:'2026-01-01',status:'OK'})));
+ const row1=screen.getByRole('button',{name:'1',exact:true}).closest('tr');
+ await waitFor(()=>expect(within(row1).getByText('iPad 1.0 (133)')).toBeInTheDocument());
+ const row2=screen.getByRole('button',{name:'2',exact:true}).closest('tr');
+ expect(within(row2).getByRole('combobox',{name:'Version test · case 2'})).toHaveValue('');
+ fireEvent.change(version,{target:{value:'12'}});
+ expect(within(row1).getByText('iPad 1.0 (133)')).toBeInTheDocument();
+ expect(testCasesApi.updateDocumentResult).toHaveBeenCalledTimes(1);
+});
+test('corrects one case version without changing its status, execution date or neighboring case',async()=>{
+ const versions=[{id:11,name:'Version A',createdAt:'2026-01-01T00:00:00Z'},{id:12,name:'Version B',createdAt:'2026-01-02T00:00:00Z'}];
+ testCasesApi.getDocument.mockResolvedValue({document:{id:9,featureId:2,fileName:'Cases.xlsx'},testVersions:versions,headers:['ID'],columns:{sourceId:0},rows:[1,2].map(n=>({rowId:100+n,sourceId:String(n),cells:[String(n)],resultStatus:'NG',resultVersion:3,canUpdateResult:true,testVersionId:11,testVersionName:'Version A',executedOn:'2026-01-05'}))});
+ testCasesApi.updateDocumentResult.mockResolvedValue({rowId:101,status:'NG',version:4,testVersionId:12,testVersionName:'Version B',executedOn:'2026-01-05'});
+ render(<TestingDocumentPage projectId={1} featureId={2} documentId={9}/>);
+ fireEvent.change(await screen.findByRole('combobox',{name:'Version test · case 1'}),{target:{value:'12'}});
+ await waitFor(()=>expect(testCasesApi.updateDocumentResult).toHaveBeenCalledWith(1,9,101,expect.objectContaining({status:'NG',expectedVersion:3,testVersionId:12,executedOn:'2026-01-05'})));
+ await waitFor(()=>expect(screen.getByRole('combobox',{name:'Version test · case 1'})).toHaveValue('12'));
+ expect(screen.getByRole('combobox',{name:'Version test · case 2'})).toHaveValue('11');
+ expect(screen.getByRole('button',{name:'Kết quả test case 1'})).toHaveTextContent('NG');
+ expect(testCasesApi.updateDocumentResult).toHaveBeenCalledTimes(1);
+});
+test('a rejected version correction keeps the saved version visible and requires reload',async()=>{
+ testCasesApi.getDocument.mockResolvedValue({document:{id:9,featureId:2,fileName:'Cases.xlsx'},testVersions:[{id:11,name:'Version A',createdAt:'2026-01-01T00:00:00Z'},{id:12,name:'Version B',createdAt:'2026-01-02T00:00:00Z'}],headers:['ID'],columns:{sourceId:0},rows:[{rowId:101,sourceId:'1',cells:['1'],resultStatus:'NG',resultVersion:3,canUpdateResult:true,testVersionId:11,executedOn:'2026-01-05'}]});
+ testCasesApi.updateDocumentResult.mockRejectedValueOnce(new Error('Case đã được người khác cập nhật'));
+ render(<TestingDocumentPage projectId={1} featureId={2} documentId={9}/>);
+ fireEvent.change(await screen.findByRole('combobox',{name:'Version test · case 1'}),{target:{value:'12'}});
+ await screen.findByRole('alert');
+ expect(screen.getByRole('combobox',{name:'Version test · case 1'})).toHaveValue('11');
+ expect(screen.getByRole('combobox',{name:'Version test · case 1'})).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Tải lại kết quả'})).toBeEnabled();
+});
 vi.mock('../../services/api/testCases',()=>({testCasesApi:{getDocument:vi.fn(),updateDocumentResult:vi.fn(),exportDocument:vi.fn(),documentCellHistory:vi.fn()}}));
 vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>role==='TESTER'})}));
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>({currentProject:{id:1,name:'Dự án',projectRole:'TESTER'}})}));

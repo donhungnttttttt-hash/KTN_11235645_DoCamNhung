@@ -8,11 +8,11 @@
 
 **Tech Stack:** React JavaScript/Vitest, Java/Spring Boot/JUnit, MySQL native/Flyway, Maven wrapper, Node/PowerShell.
 
-**Spec:** [Kế hoạch chính và quyết định đã chốt](2026-10-25-arena-followup.md), [Arena a016](../../../.arena/run-20261024-131934-s399645/BAO-CAO-DANH-GIA.md), [C01–C14](../../planning/2026-10-19-fixreports-clarification.md), [U01–U22/G01–G07](../../planning/2026-10-25-arena-acceptance-matrix.md).
+**Spec:** [Kế hoạch chính và quyết định đã chốt](2026-10-25-arena-followup.md), [Arena a016](../../../.arena/run-20261024-131934-s399645/BAO-CAO-DANH-GIA.md), [C01–C14](../../planning/2026-10-19-fixreports-clarification.md), [U01–U26/G01–G07](../../planning/2026-10-25-arena-acceptance-matrix.md).
 
 ## Global Constraints
 
-- Áp dụng toàn bộ Global Constraints của kế hoạch chính; source khi lập kế hoạch `cde58ad`, schema source mới nhất V33, xác minh lại khi bắt đầu.
+- Áp dụng toàn bộ Global Constraints của kế hoạch chính. Baseline tái phân tích `a45974a`; core hiện V33, local core+demo có V34; không dùng một số version để đại diện mọi profile/máy. Xác minh locations/version/checksum khi bắt đầu, migration archive dự kiến V37.
 - “Người dùng xác nhận chỉ giữ Bug/QA trên toàn hệ thống”; không khôi phục retired writes hoặc thêm run/session/device gate vào Feature.
 - Status `Unexecuted → OK → NG → P → NA → Unexecuted`; `[U,U,OK,P,NA]` = `3/5 = 60%`, 0 case = 0%; Unexecuted `#C0C0C0`/text `#333333`.
 - PM được cấp chỉ tạo TESTER; ADMIN không được bỏ qua version. AI đọc không mở quyền CRUD/report ngoài project.
@@ -59,7 +59,7 @@
 
   Với target/version sai phát hiện qua SELECT, cho phép read-only SELECT nhưng phải `mavenCalls=0`, không mutation. Có positive fixture giả lập khớp hoàn toàn, chỉ spawn đúng classes và env được kiểm soát.
 - [ ] Chạy RED: root `rtk proxy node --test scripts/Test-CurrentWorkflowNative.test.cjs`; root `rtk proxy powershell -NoProfile -File scripts/Test-Backend.ps1 -Tests "CurrentWorkflowDatabaseGuardTest"`. Trước implementation phải fail vì guard/runner chưa tồn tại, không vì thiếu credential.
-- [ ] Implement interfaces trên. Java thực hiện Flyway **validate + pending check**, không migrate/repair/baseline/clean; require đúng version/checksums và không pending. Sau validate đặt `spring.flyway.enabled=false`, Hibernate `ddl-auto=validate`, tắt SQL/session initialization và jobs. Không cho test tự nâng V33→V34 khi AR-06 thêm migration.
+- [ ] Implement interfaces trên. Java thực hiện Flyway **validate + pending check**, không migrate/repair/baseline/clean; require đúng version/checksums và không pending. Sau validate đặt `spring.flyway.enabled=false`, Hibernate `ddl-auto=validate`, tắt SQL/session initialization và jobs. Không cho integration test tự nâng V33/V34→V37 khi AR-06 thêm migration.
 - [ ] Port bốn dynamic-property guards; hai Feature subclasses kế thừa guard qua parent. Ghi số test thực chạy, không gọi các inherited executions là các scenario độc lập.
 - [ ] Chạy GREEN hai lệnh guard ở trên. Sau đó `--check-only` với manifest đã review: chỉ đọc DB, không Maven/fixture; ghi rõ validate Java chưa chạy nếu chỉ preflight Node.
 - [ ] Chạy một suite allowlist bằng command template dưới; yêu cầu tests>0, failures=0, errors=0, skipped=0 cho **từng suite được chọn**, receipt gắn source/schema. Nếu thiếu target an toàn, đánh dấu native BLOCKED, vẫn hoàn thành offline guard, không tự tạo server/schema.
@@ -74,6 +74,8 @@ rtk proxy node scripts/Test-CurrentWorkflowNative.cjs --mode integration --manif
 Các giá trị trong `<...>` lấy từ receipt AR-00, **không chạy nguyên placeholder**. Mỗi lần dùng thư mục mới; runner không xóa fixture. Migration/fresh/upgrade và browser fixture có quy trình riêng AR-06/09/10, không thêm quyền ghi đó vào runner chung.
 
 **Done:** U01 có bằng chứng offline + positive native hoặc native được ghi BLOCKED cụ thể; chỉ khi native đạt mới mở các gate native phụ thuộc. Checklist hoàn tất task không được che BLOCKED.
+
+**Bổ sung sau pull:** kiểm tra guard/fixture đã có trong `UserProfileNativeTest`, `NativeCurrentDemoMigrationTest` trước khi xây mới. Tái sử dụng assertion/quy trình phù hợp, không copy nguyên test có auto-migration/storage không phù hợp vào runner. AR-00 phải ghi rõ bước provision target rỗng trên MySQL native hiện có và receipt đầu vào của guard; có quyền chuẩn bị target cô lập từ tác vụ trước không cần hỏi lại, nhưng không coi schema cũ có dữ liệu là disposable. Nếu chưa có target an toàn, native vẫn NOT_RUN/BLOCKED, không đánh DONE toàn AR-00. Nên tách output build/test khỏi `Backend/target` đang được Java language server dùng để tránh bytecode/metadata bị ghi đồng thời; receipt ghi đúng nguồn, JDK và artifact.
 
 ## AR-01 — Xác nhận đường PM tạo TESTER và thu quyền
 
@@ -93,6 +95,18 @@ Các giá trị trong `<...>` lấy từ receipt AR-00, **không chạy nguyên 
 - [ ] Browser hai phiên ADMIN/PM, U02/U03: grant→relogin, entry ngoài admin, pending/double click/duplicate/error focus, revoke→reauth, không tạo membership. Lưu API IDs và count, không chụp mật khẩu.
 
 **Done:** U02/U03 cả FE/native/browser có receipt; không lặp implementation F6. Native/browser chưa chạy thì giữ task IN_REVIEW.
+
+### AR-01 bổ sung — thành viên và hồ sơ tài khoản đã có (U23/U24)
+
+**Files:** `Frontend/src/app/features/projects/MemberPicker.jsx`, `ProjectMembers.jsx`, `ProjectSettingsPage.jsx`; `Frontend/src/app/features/admin/AdminProjectDetail.jsx`, `UserEditDialog.jsx`, `UserPasswordResetDialog.jsx`; `Backend/src/main/java/vn/syp/tms/admin/AdminProjectService.java`, `ProjectMemberCandidateController.java`; `Backend/src/main/java/vn/syp/tms/project/ProjectService.java`; `Backend/src/main/java/vn/syp/tms/identity/IdentityService.java`.
+
+- [ ] Đối chiếu tests đã có: `admin-role-compatibility.test.jsx`, `fixreports-members.test.jsx`, `settings.test.jsx`, `admin-user-profile.test.jsx`, `admin-self-account-update.test.jsx`, `account-updated.test.jsx`, `UserProfileNativeTest`, `IdentityProfileControllerTest`, `IdentityUpdatePolicyTest`. Chạy những test đã có trước; không tạo tính năng hoặc RED giả để làm lại `bf3971c`/`9b39f0d`.
+- [ ] U23: danh sách loại active member của đúng dự án **trước count/pagination**, người ở dự án khác vẫn có thể thêm; PM chỉ DEV/TESTER, Admin mọi nhóm; API/UI không đổi role; ADMIN làm PM vẫn `role_code=ADMIN`. Phân biệt quyền tạo TESTER với thêm tài khoản hiện có, không yêu cầu grant `users:create` cho thao tác thêm thành viên.
+- [ ] Kiểm hai người thêm cùng tài khoản; lỗi lưu một phần giữ những lựa chọn chưa thành công; active replay không ghi audit trùng; membership cũ inactive giữ role đã lưu. Bổ sung ca inactive legacy role khác role mặc định: danh sách/lookup/save phải giải thích nhất quán, không hiện chọn được rồi lỗi im lặng và không tự sửa lịch sử.
+- [ ] U24: đổi username/displayName/reset password qua Admin giữ identity ID, memberships, tác giả lịch sử; hết hiệu lực phiên cũ, kiểm self-edit/reauth và nháp. Chỉ tạo fixture disposable để thử mật khẩu; không reset tài khoản dùng thật.
+- [ ] Kiểm icon/nút cuối bảng từ `a45974a`: tên truy cập, hit target, keyboard, pending/error/footerAction; không phục hồi dropdown role bị xóa chỉ để khớp test cũ.
+
+**Interfaces:** giữ endpoint/DTO đã triển khai, không thêm endpoint identity/member mới. Native suite profile có guard khác; giữ runner riêng đã review hoặc port sang guard AR-00 có kiểm storage/migration trước khi đưa vào allowlist. PASS trong báo cáo 37 backend/1.221 frontend cũ là bằng chứng nền, không đánh U23/U24 PASS trên baseline mới.
 
 ## AR-02 — Feature, file, phân công, Status và XLSX
 
@@ -166,6 +180,20 @@ Các giá trị trong `<...>` lấy từ receipt AR-00, **không chạy nguyên 
 
 **Done:** Text AI lưu như text người dùng, scoped reports nhất quán; không claim mọi nội dung AI đúng ngữ nghĩa/ngày giờ chỉ vì schema/text hợp lệ.
 
+### AR-04 bổ sung — timeout và cấu hình hai máy (U25)
+
+Nhánh chẩn đoán này không phụ thuộc fixture AR-02/03. Lượt kiểm tra trước tái phân tích: thread11 thất bại sau30,0542s; GET models200; probe synthetic tối thiểu cũng timeout30,013s; người dùng báo cả hai máy. Đây là lỗi quan sát được của lời gọi inference, chưa xác định nhà cung cấp quá tải, mạng hay cơ chế timeout là nguyên nhân gốc.
+
+**Owners:** `OpenAiConfiguration.java`, `OpenAiResponsesClient.java`, `AiChatService.java`, `AiChatStore.java` trong package ai; `Frontend/src/app/features/ai/aiErrors.js`, `AiChat.jsx`; `Frontend/src/app/services/api/ai.js`; `scripts/local-ai/LocalAi.ps1`; `docs/operations/caheo-new-machine.md`.
+
+- [ ] Viết test phân biệt request timeout/transport timeout với HTTP408/5xx, auth401/403, payment402 và lỗi schema. Chốt mapping contract `AI_TIMEOUT` riêng cho hết hạn local; cập nhật safe-code allowlist và UI nếu mapping mới được triển khai, không log raw provider response/key/prompt. Timeout test dùng local stub; không phụ thuộc Caheo để test xanh.
+- [ ] Test `timeoutKeepsUserMessageAndAllowsExplicitRetry`, `oneClickDoesNotRetryProviderAutomatically`, `lateResponseCannotOverwriteNewThreadOrManualDraft`. UI nói đúng hết thời gian chờ, giữ lịch sử và không tạo thêm request tính phí ngầm.
+- [ ] Hiện backend giới hạn30s, frontend35s, turn quá2phút bị interrupted. Nếu muốn tăng timeout, trước hết đo synthetic có giới hạn và được phép; sau đó thiết kế đồng bộ ba giới hạn cùng probe/request cancellation. Không chỉ sửa env thành60/90 vì `OpenAiConfiguration` hiện từ chối >30; không tự chốt timeout mới hoặc chuyển model.
+- [ ] Đối chiếu profile/config precedence từng máy: process/Windows User/file, file path theo working directory; local profile đã import `.env.mysql.local`. Metadata available chỉ kiểm cấu hình, không chứng minh inference hoạt động. Tạo hội thoại mới khi đổi model, giữ thread cũ.
+- [ ] Run focused: frontend `rtk proxy npm test -- src/app/features/ai/AiChat.test.jsx src/app/services/api/ai.test.js --maxWorkers=2`; backend selector `OpenAiResponsesClientTest,OpenAiEndpointConfigurationTest,AiChatServiceTest` qua Test-Backend. Bổ sung đúng test mới cho error mapping/config. Live receipt tách riêng theo thời điểm/host/provider/model/duration, không gửi dữ liệu dự án để chẩn đoán kết nối.
+
+**Done riêng:** phần lỗi/UX có thể FIXED với deterministic tests; provider live chỉ PASS khi có phản hồi thật. Nếu provider vẫn timeout thì giữ FAILED/BLOCKED ở live và hướng dẫn tiếp tục báo cáo thủ công, không tuyên bố AI hoàn tất.
+
 ## AR-05 — Sổ tay revision và concurrency
 
 **Files:**
@@ -232,11 +260,11 @@ Các giá trị trong `<...>` lấy từ receipt AR-00, **không chạy nguyên 
   ```
 
   Bổ sung chính xác các unit test mới AR-06 vào selector. Đây là tập offline **có tên**, không gọi là toàn backend. Native dùng allowlist AR-00 trên schema cuối; báo riêng số selected/run/skipped. Không ép `SystemJourneyTest`/Admin legacy report expectation200 chạy trên API mới bằng việc bỏ410.
-- [ ] Browser cùng baseline/source/data chạy U02→U04–15→U17–18; thêm U16/U19–22. Kiểm Chrome desktop/mobile CSS320/768/1440, zoom200%, keyboard/focus/Enter/Escape, dialog low-height, text wrap, sidebar/project switching. Emulation không được gọi là thiết bị thật; browser không khả dụng ghi blocker cụ thể.
+- [ ] Browser cùng baseline/source/data chạy U02→U04–15→U17–18; thêm U16/U19–26. Kiểm Chrome desktop/mobile CSS320/768/1440, zoom200%, keyboard/focus/Enter/Escape, dialog low-height, text wrap, sidebar/project switching. Emulation không được gọi là thiết bị thật; browser không khả dụng ghi blocker cụ thể.
 - [ ] Với lỗi mới: receipt RED, sửa nhỏ đúng task, chạy test bị tác động rồi kiểm lại bước browser; nếu sửa code sau full suite, chạy lại phạm vi bị ảnh hưởng và ghi source hash mới. Không đổi code nhưng dùng receipt baseline cũ để đóng toàn chuỗi mới.
 - [ ] Tổng hợp defects và giới hạn live/provider/cross-browser/UAT con người. Không tự ký UAT dù mọi API/test tự động PASS.
 
-**Done:** U01–U22 được điền kết quả có bằng chứng hoặc phần chưa chạy cụ thể; hoàn tất kỹ thuật không đồng nghĩa S11/FR-12 DONE/pilot ready.
+**Done:** U01–U26 được điền kết quả có bằng chứng hoặc phần chưa chạy cụ thể; hoàn tất kỹ thuật không đồng nghĩa S11/FR-12 DONE/pilot ready.
 
 ## AR-11 — Bàn giao và gate khách hàng
 

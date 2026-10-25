@@ -39,7 +39,8 @@ public class FeatureIssueService {
         SELECT w.id,w.item_key AS `key`,w.item_type AS type,w.title,w.description,w.status_code AS status,s.label_vi AS statusLabel,
         w.priority_code AS priority,w.assignee_membership_id AS assigneeMembershipId,assignee.display_name AS assignee,
         w.lock_version AS version,w.created_at AS createdAt,w.updated_at AS updatedAt,x.created_by_user_id AS createdByUserId,
-        author.display_name AS creator,x.feature_id AS featureId,f.name AS featureName,x.document_id AS documentId,d.file_name AS fileName,
+        author.display_name AS creator,x.feature_id AS featureId,f.name AS featureName,
+        f.environment AS featureEnvironment,f.description AS featureDescription,x.document_id AS documentId,d.file_name AS fileName,
         x.row_id AS rowId,COALESCE(NULLIF(ir.source_case_key,''),tc.case_no) AS caseNo,x.monkey,x.deleted_at AS deletedAt,
         f.archived_at AS featureArchivedAt,d.archived_at AS documentArchivedAt,
         COALESCE(b.steps,JSON_UNQUOTE(JSON_EXTRACT(q.context_snapshot,'$.steps')),'') AS steps,
@@ -60,7 +61,7 @@ public class FeatureIssueService {
         return new Actor(user,number(member,"id"),!dev&&"PM".equals(role),!dev&&"TESTER".equals(role),dev&&"DEV".equals(role),archived);
     }
     private Map<String,Object> feature(long p,long id,boolean lock,boolean active){
-        var result=db.row("SELECT id,name,archived_at AS archivedAt FROM testing_features WHERE project_id=? AND id=?"+(lock?" FOR UPDATE":""),p,id);
+        var result=db.row("SELECT id,name,environment,description,archived_at AS archivedAt FROM testing_features WHERE project_id=? AND id=?"+(lock?" FOR UPDATE":""),p,id);
         if(active&&result.get("archivedAt")!=null)fail(409,"ARCHIVED","Feature đã lưu trữ.");return result;
     }
     private Map<String,Object> source(long p,String user,long f,long d,long row,boolean lock){
@@ -71,6 +72,7 @@ public class FeatureIssueService {
         var detail=documents.get(p,user,d);
         var selected=detail.rows().stream().filter(value->Objects.equals(value.rowId(),row)).findFirst().orElseThrow(()->new vn.syp.tms.shared.web.BusinessException(404,"NOT_FOUND","Không tìm thấy case trong file này."));
         var result=new LinkedHashMap<String,Object>();result.put("featureId",f);result.put("featureName",feature.get("name"));result.put("documentId",d);result.put("fileName",document.get("fileName"));result.put("rowId",row);
+        result.put("featureEnvironment",feature.get("environment"));result.put("featureDescription",feature.get("description"));
         result.put("testCaseId",selected.caseId());result.put("revisionId",selected.revisionId());result.put("caseNo",text(selected.sourceId()).isEmpty()?selected.caseNo():selected.sourceId());
         result.put("title",cell(selected.cells(),detail.columns().getOrDefault("titleVi",2)));result.put("steps",cell(selected.cells(),detail.columns().getOrDefault("stepsVi",4)));result.put("expectedResult",cell(selected.cells(),detail.columns().getOrDefault("expectedVi",5)));return result;
     }

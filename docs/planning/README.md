@@ -1,4 +1,14 @@
+Xóa version 25/10: icon hover/focus + xác nhận, soft delete giữ kết quả/lịch sử; frontend45, backend23 (9 native), build/JDT PASS. Main V36/health UP, dữ liệu cũ giữ nguyên; Arena archive dự kiến V37. [Bằng chứng và giới hạn](../reviews/2026-10-25-feature-test-versions.md). Không commit/push.
+
+Version test 25/10: [tạo version theo Feature, lưu theo case và sửa riêng bằng dropdown](../reviews/2026-10-25-feature-test-versions.md). Frontend 246 test nhóm + 12 test tập trung cuối, backend21 (7 native), build/JDT331 và Chrome điều khiển đạt; main V35 giữ dữ liệu, không seed V34. Screenshot chưa lấy được; không commit/push. Arena archive dự kiến V37.
+
 # Kế hoạch phát triển theo sprint
+
+Bổ sung cùng ngày: form **Tạo Issue từ case** cũng hiển thị Feature hiện tại qua API context; dùng chung khối với chi tiết Issue. **91 FE + 6 backend PASS**, build/JDT sạch lỗi, Chrome xác nhận case1 thuộc Feature17/file27. Backend8080 đã cập nhật, giữ Flyway33; [bằng chứng và giới hạn](../reviews/2026-10-25-issue-current-feature.md). Không commit/push.
+
+Issue 25/10: [hiển thị thông tin Feature hiện tại](../reviews/2026-10-25-issue-current-feature.md) đã hoàn tất phạm vi: tên, môi trường/server, mô tả; tải lại lấy dữ liệu mới và giữ nháp Issue. Frontend 89 test nhóm Issue, sau đó 22 test chi tiết cuối PASS; backend 5/5 gồm 2 MySQL native; build/JDT/Chrome đạt theo báo cáo. Main 8080 đã chạy bản sửa, giữ V33; không commit/push. S11/FR-12 giữ IN_REVIEW.
+
+Tái phân tích Arena sau pull `a45974a`: [kết luận và tám điều chỉnh](../reviews/2026-10-25-arena-plan-reanalysis.md). Giữ luồng Feature/Bug–QA; dự kiến migration archive V37 vì V34 demo đã có; bổ sung U23–U26 về thành viên, hồ sơ/phiên, timeout AI và blocker Issue đã ẩn/xóa mềm. Kế hoạch vẫn PLANNED, S11/FR-12 IN_REVIEW. Chỉ sửa tài liệu, chưa triển khai/chạy test sản phẩm/build/browser/database/live hoặc commit/push trong lượt tái phân tích.
 
 Thành viên 25/10: [loại thành viên hiện tại, cố định vai trò và quyền thêm của PM/ADMIN](../reviews/2026-10-25-member-selection-policy.md). ADMIN hiển thị **ADMIN · Làm PM**, giữ nguyên quyền hệ thống ADMIN. Backend 37/37, frontend 1.221/1.221 và 48 test liên quan sau chỉnh cuối PASS; Chrome xác nhận nhãn/danh sách. Main 8080 đã chạy bản mới, dữ liệu tài khoản/thành viên/Flyway V33 giữ nguyên. Chưa commit/push; S11/FR-12 vẫn IN_REVIEW. Quyết định mới thay phần cho chọn vai trò lúc thêm ở checkpoint cũ bên dưới.
 

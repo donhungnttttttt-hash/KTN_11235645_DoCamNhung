@@ -55,6 +55,10 @@ Prefix API `/api/v1/projects/{projectId}`. List dùng page 0-based, size giới 
 
 Giữ schema issue/work-item hiện có nếu mở rộng được: context Feature/file/row và identity author rõ; các required build/env/device cũ được bỏ cho Issue mới. Không giả mapping loại lịch sử sang BUG/QA; API tạo loại cũ bị chặn. Lối mới không gọi state machine retest/QA cũ như điều kiện bắt buộc.
 
+Chốt bổ sung 25/10/2026: chi tiết Issue hiển thị **Feature hiện tại**, không chụp thông tin tại thời điểm tạo Issue. Response Issue có `featureName`, `featureEnvironment`, `featureDescription`, đọc trực tiếp từ Feature cùng dự án. Mở lại hoặc “Tải lại Issue” lấy giá trị mới nhất; không polling. Hai trường môi trường/mô tả có thể rỗng; UI ghi rõ chưa có thông tin. Đổi Feature không sửa nội dung, version hay lịch sử Issue. Không thêm migration hoặc đưa hai trường này vào payload sửa Issue/history snapshot.
+
+Bổ sung cùng ngày cho **Tạo Issue từ case**: `GET /issues/context` cũng trả `featureName`, `featureEnvironment`, `featureDescription` hiện tại. Form hiển thị khối Feature trước các ô nhập Bug/QA, dùng chung component với chi tiết Issue. Mô tả Feature chỉ đọc, không chép vào `description` của Issue và không gửi lại trong payload tạo Issue. Giữ nguyên kiểm tra project/Feature/file/row và cơ chế tải lại khi lấy context thất bại.
+
 ## Quyền AI và metrics dùng chung
 
 - PM và ADMIN được AI đọc liên dự án kể cả không membership; PM không có thêm quyền CRUD. Secret và chat riêng luôn ngoài context.
@@ -78,3 +82,14 @@ Public HTTP/API: role/scope/transaction/concurrency/persistence (A01–08,11–1
 ## Mapping nội dung dự án
 
 Chưa có Spider Plus trong inventory baseline. Người dùng ngày 19/10 đã cho phép bổ sung; dùng mã riêng `SPIDER-PLUS`, tạo qua giao diện nghiệp vụ được phép, không đổi tên/gắn copy vào demo. Nội dung theo `docs/content/spider-plus-project-overview.md`. Không restart runtime hoặc tự apply migration vào main DB.
+# Bổ sung version test — 25/10/2026
+
+- `GET /api/v1/projects/{p}/features/{f}/test-versions`: người có quyền đọc dự án; trả `[{id,name,createdAt}]`, mới nhất trước.
+- `POST .../test-versions`: PM/Admin quản lý Feature đang hoạt động; body `{name,requestKey}`; trả 201, idempotent theo requestKey. Tên không trống, tối đa 255 ký tự, duy nhất trong các version chưa xóa của Feature; không có sửa tên version.
+- `DELETE .../test-versions/{versionId}`: cùng quyền quản lý, yêu cầu CSRF; trả 204, gọi lặp lại không phát sinh thêm audit. V36 ghi `deleted_at/deleted_by`, không xóa cứng. GET và gợi ý version chỉ gồm bản chưa xóa. Kết quả hiện tại, lịch sử và Excel vẫn giữ tên/ngày cũ; ghi kết quả mới với ID đã xóa trả 422 `TEST_VERSION_DELETED`, replay của lệnh đã thành công vẫn hợp lệ. Có thể tạo lại cùng tên bằng ID mới. Không có endpoint khôi phục trong phạm vi này.
+- `GET /api/v1/projects/{p}/test-documents/{d}` của Feature bổ sung `testVersions`; mỗi row có `testVersionId,testVersionName,executedOn` nếu đã ghi metadata. Không suy diễn version cho dữ liệu cũ.
+- `PUT .../rows/{row}/result` nhận thêm `testVersionId,executedOn` (ISO `YYYY-MM-DD`), gửi cùng nhau; version phải thuộc đúng project/Feature. Feature đã có version thì bắt buộc chọn; Feature chưa cấu hình vẫn tương thích ghi Status cũ.
+- Đổi Status lưu metadata chỉ cho row được ghi. Đổi dropdown ở row gửi Status hiện tại, version được chọn và giữ ngày thực hiện đã lưu (row chưa có ngày dùng ngày đang chọn ở toolbar). Không đổi Status/tiến độ của case hoặc các case khác. Lịch sử ghi một bản mới, kể cả Status trước/sau giống nhau.
+- `expectedVersion` chống ghi đè khi sửa đồng thời; replay cùng requestKey/actor/status/version/date không nhân đôi lịch sử; payload khác bị 409. Quyền sửa tuân theo phân công case hiện hành; DEV/không được phân công không được ghi.
+- UI gợi ý version có ngày tạo theo Asia/Ho_Chi_Minh gần nhất không sau ngày thực hiện, cùng ngày chọn createdAt/id mới nhất. Người dùng chọn lại được. Đổi toolbar không ghi database.
+- Lịch sử và Excel hiện hành thêm Version test/Ngày thực hiện; cột ghi chú thực thi gốc được giữ riêng, tải file gốc không thay đổi.

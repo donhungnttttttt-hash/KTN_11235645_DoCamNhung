@@ -4,6 +4,7 @@ import {featureIssuesApi} from '../../services/api/featureIssues';
 import {projectsApi} from '../../services/api/projects';
 import {statuses} from './data';
 import './feature-issues.css';
+import {IssueFeatureContext} from './IssueFeatureContext';
 import {useModalActivity} from './components';
 
 const eventLabels={CREATE:'Tạo Issue',UPDATE:'Sửa nội dung',STATUS:'Chuyển trạng thái',COMMENT:'Thêm ghi chú',DELETE:'Xóa mềm'};
@@ -108,13 +109,13 @@ export function FeatureIssueDetail({projectId,id,api=featureIssuesApi,memberApi=
  return <article className="feature-issue-detail" aria-busy={busy||reloading}>
   <header><h3>{item.key} · {item.title}</h3><button type="button" className="cat-btn" disabled={busy||reloading} onClick={reloadItem}>Tải lại Issue</button></header>
   {reloading&&<p role="status">Đang tải lại Issue…</p>}
-  <p>{[item.featureName,item.fileName,item.caseNo].filter(Boolean).join(' · ')}{item.monkey?' · Bug monkey':''}</p>
+  {item.featureId&&<IssueFeatureContext {...item}/>}
   {item.featureId&&<nav className="feature-issue-source" aria-label="Nguồn Issue">
    <a href={`#/board/testing/features/${item.featureId}?projectId=${projectId}`}>Mở Feature {item.featureName||`#${item.featureId}`}</a>
    {item.documentId&&<a href={`#/board/testing/features/${item.featureId}/documents/${item.documentId}?projectId=${projectId}`}>Mở file {item.fileName||`#${item.documentId}`}</a>}
    {item.documentId&&item.rowId&&<a href={`#/board/testing/features/${item.featureId}/documents/${item.documentId}?projectId=${projectId}&caseId=${item.rowId}`}>Mở case {item.caseNo||`#${item.rowId}`}</a>}
   </nav>}
-  <p>{item.type} · {item.statusLabel||statusLabel(item.status)} · {item.assignee||'Chưa phân công'}</p>
+  <p>{item.monkey?'Bug monkey':item.type} · {item.statusLabel||statusLabel(item.status)} · {item.assignee||'Chưa phân công'}</p>
   <p>Mức ưu tiên: {priorityLabel(item.priority)}</p>
   <p className="wi-pre">{item.description}</p>
   <h4>Các bước thực hiện</h4><p className="wi-pre">{item.steps}</p>

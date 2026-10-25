@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import java.util.List;
 
 public interface FeatureDtos {
+    record CreateTestVersion(@NotBlank @Size(max=255) String name,@NotNull java.util.UUID requestKey) {}
     record Create(@NotBlank @Size(max=255) String name,@NotNull @Size(max=1000) String environment,
             @NotNull @Size(max=4000) String description,@NotNull java.util.UUID requestKey) {}
     record Update(@NotBlank @Size(max=255) String name,@NotNull @Size(max=1000) String environment,

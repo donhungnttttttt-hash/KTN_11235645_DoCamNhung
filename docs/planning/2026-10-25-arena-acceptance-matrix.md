@@ -4,6 +4,8 @@ Ngày lập: 25/10/2026. [Kế hoạch chính](../superpowers/plans/2026-10-25-a
 
 **Toàn bộ ca dưới đây hiện là `NOT_RUN`.** Đây là tiêu chí tương lai, không phải báo cáo test. Không lấy số PASS cũ, score Arena hoặc exit 0 của suite toàn SKIP làm bằng chứng.
 
+Tái phân tích trên `a45974a`: bổ sung U23–U26 theo thay đổi thành viên/hồ sơ và lỗi AI/blocker mới phát hiện. Các receipt trước đó được tham chiếu làm đầu vào, chưa thay thế chạy cả ma trận trên một baseline. Xem [báo cáo tái phân tích](../reviews/2026-10-25-arena-plan-reanalysis.md).
+
 ## Cách ghi receipt
 
 Mỗi lần chạy ghi: `caseId`, `taskId`, source HEAD + hash diff chưa commit, schema + Flyway version/checksum, manifest fixture, browser/build khi có, role/actor giả lập, bước UI/API, expected/actual, ID bản ghi + count/hash trước/sau, command/test-count/skips, evidence path, ngày/người thực hiện, kết luận và người xác nhận UAT. Không lưu token, cookie, mật khẩu hoặc nội dung khách chưa cho phép công bố.
@@ -36,6 +38,10 @@ Trạng thái: `NOT_RUN`, `PASS`, `FAIL`, `BLOCKED`, `NOT_APPLICABLE` có lý do
 | U20 | AR-03/09 / 4 role | Legacy `/tests/**` có hướng dẫn, old mutations410 không ghi; Feature/document/project archive chặn ghi nhưng giữ đọc lịch sử đúng quyền; không đoán ID chuyển route | API counts/hashes trước/sau, route/browser evidence | NOT_RUN |
 | U21 | AR-09 / người vận hành | Evidence cũ download đúng bytes/quyền; missing storage503 không báo thành công; upload/delete cũ410. Backup/restore isolated DB+blob đối chiếu IDs/FK/metadata/hashes; không đụng main | Backup+restore manifest, source/destination proof, hash inventory, errors | NOT_RUN |
 | U22 | AR-10 / 4 role | Chuỗi U02→U04–15→U17 chạy cùng baseline/schema; thêm login Admin/workspace return, member/device batch, Note, Kanban/list, keyboard/dialog/pending/error, mobile/zoom | UI action inventory, screenshots/DOM, API IDs, actual device/browser label, người ký riêng | NOT_RUN |
+| U23 | AR-01/10 / ADMIN, PM, TESTER, DEV | Loại active member đúng project trước count/page; người dự án khác vẫn thêm được; PM chỉ DEV/TESTER, Admin mọi nhóm; không dropdown hoặc API đổi role; ADMIN làm PM giữ system ADMIN. Kiểm restore role lịch sử, tài khoản bị khóa, concurrent add và partial save | Candidate/list/save HTTP, identity role/membership/audit trước sau, browser footerAction/icon/pending/error; không nhầm quyền tạo user với thêm member | NOT_RUN |
+| U24 | AR-01/10 / ADMIN, user bị sửa | Sửa tên hiển thị/username/reset password giữ identity ID/membership/tác giả lịch sử, thu hồi phiên cũ; self-edit và reauth không lộ nháp/giữ quyền cũ; duplicate/stale giữ form | Identity tests/native/browser trên tài khoản disposable, session/auth/version/count; không ghi mật khẩu vào receipt | NOT_RUN |
+| U25 | AR-04/10 / người dùng AI | Timeout local phân biệt với HTTP lỗi provider, câu hỏi/nháp giữ nguyên; retry chủ động không tự gọi lặp; kiểm model/profile/config từng máy; muốn tăng timeout phải đồng bộ backend/frontend/turn TTL. GET models200 không được tính inference PASS | Local stub transport/error tests, sanitized timing/code, live synthetic receipt riêng, không secret/dữ liệu dự án; chưa có kết quả thực thi chiến dịch này | NOT_RUN |
+| U26 | AR-03/06/07 / ADMIN, PM | Tái hiện Bug Monkey mở đã xóa mềm, Issue mở dưới Feature/file đã ẩn so với OPEN_WORK_ITEMS; chỉ rõ blocker/đường xử lý. Không tự miễn blocker hoặc mở API cũ; chốt semantics trước sửa nếu bế tắc được xác nhận | Before/after Issue/context/status/readiness, HTTP/mutation capability, quyết định nghiệp vụ và regression riêng | NOT_RUN |
 
 ## Hành vi cũ được thay thế có chủ đích
 
@@ -60,6 +66,6 @@ Trạng thái: `NOT_RUN`, `PASS`, `FAIL`, `BLOCKED`, `NOT_APPLICABLE` có lý do
 | G04 | Retention/quyền công bố evidence, storage đích, người quản lý backup; bản nào được sao chép/restore | Chủ dữ liệu + vận hành | Dùng dữ liệu thật/publication/restore đích thật; không chặn fixture synthetic | OPEN |
 | G05 | Số project/Feature/case/file size/user đồng thời, mục tiêu latency và RPO/RTO cụ thể | PM + vận hành | Kết luận đạt tải/khôi phục và thay limits; không lấy5.000/10.000run làm scale mới | OPEN |
 | G06 | Danh sách ADMIN/PM/TESTER/DEV tham gia, môi trường, tiêu chí chấp nhận và người ký; provider/model live được phép với bộ dữ liệu nào | Chủ sản phẩm + đại diện người dùng | Pilot ready/UAT signoff; không chặn thực thi automated/synthetic được phép | OPEN |
-| G07 | Nếu còn legacy `OPEN_WORK_ITEMS`, sessions hay outbox không có đường xử lý hiện hành: quyết định đối soát cụ thể theo ID/trạng thái, không tự nới archive exception | ADMIN + chủ sản phẩm | Archive những dự án bị blocker này; không chặn exception chỉ cycles/retests | CONDITIONAL |
+| G07 | Nếu còn legacy `OPEN_WORK_ITEMS`, sessions/outbox hoặc Issue mới đã xóa mềm/thuộc Feature-file ẩn mà không có đường xử lý (U26): xác định ID/trạng thái/đường khôi phục rồi chốt đối soát cụ thể; không tự nới archive exception | ADMIN + chủ sản phẩm | Archive những dự án bị blocker này; không chặn exception chỉ cycles/retests hoặc task độc lập | CONDITIONAL |
 
 Mỗi gate khi chốt bổ sung ngày, người quyết định, văn bản/source, ví dụ và tác động task. Không đổi `OPEN` thành `APPROVED` chỉ vì người dùng đồng ý giữ luồng Feature.

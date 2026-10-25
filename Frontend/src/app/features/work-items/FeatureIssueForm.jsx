@@ -1,6 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {featureIssuesApi} from '../../services/api/featureIssues';
 import {useModalActivity} from './components';
+import {IssueFeatureContext} from './IssueFeatureContext';
 
 const empty={type:'BUG',title:'',description:'',steps:'',expectedResult:'',actualResult:''};
 export function FeatureIssueForm({projectId,featureId,documentId,row,monkey=false,featureName,api=featureIssuesApi,onSaved,onCancel,authorized=true}) {
@@ -30,7 +31,8 @@ export function FeatureIssueForm({projectId,featureId,documentId,row,monkey=fals
   finally{if(!signal.aborted){lock.current=false;setBusy(false);}}
  }
  return <form className="feature-issue-form" onSubmit={submit} aria-busy={loading||busy}>
-  <p className="wi-note">{source?`${source.featureName} · ${source.fileName} · ${source.caseNo}`:featureName||'Feature đã chọn'}{monkey?' · Bug monkey':''}</p>
+  {source&&<IssueFeatureContext {...source} featureId={featureId}/>}
+  <p className="wi-note">{source?[source.fileName,source.caseNo&&`Case ${source.caseNo}`].filter(Boolean).join(' · '):featureName||'Feature đã chọn'}{monkey?' · Bug monkey':''}</p>
   {loading&&<p role="status">Đang lấy nội dung case…</p>}
   {error&&<p role="alert" className="wi-error">{error}</p>}
   {authorized&&rowId&&!source&&!loading&&<button type="button" className="wi-btn" onClick={()=>setSourceReload(value=>value+1)}>Tải lại nội dung case</button>}

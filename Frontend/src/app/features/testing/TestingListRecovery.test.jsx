@@ -5,13 +5,14 @@ import {TestingFeaturesPage} from './TestingFeaturesPage';
 import {TestingFeaturePage} from './TestingFeaturePage';
 import {featuresApi} from '../../services/api/features';
 
-vi.mock('../../services/api/features',()=>({featuresApi:{list:vi.fn(),get:vi.fn(),documents:vi.fn(),archive:vi.fn(),hideDocument:vi.fn()}}));
+vi.mock('../../services/api/features',()=>({featuresApi:{testVersions:vi.fn().mockResolvedValue([]),list:vi.fn(),get:vi.fn(),documents:vi.fn(),archive:vi.fn(),hideDocument:vi.fn()}}));
 vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>role==='ADMIN'})}));
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>({currentProject:{id:1,name:'Dự án thử',projectRole:'PM'}})}));
 const feature={id:2,name:'Feature A',version:0,caseCount:1,testedCaseCount:0};
 const file={id:3,fileName:'Case.xlsx',version:0,caseCount:1,testedCaseCount:0,progressPercent:0};
 beforeEach(()=>{
  vi.resetAllMocks();
+ featuresApi.testVersions.mockResolvedValue([]);
  featuresApi.list.mockResolvedValue({items:[feature],totalItems:1,totalPages:1});
  featuresApi.get.mockResolvedValue(feature);
  featuresApi.documents.mockResolvedValue({items:[file],totalItems:1,totalPages:1});

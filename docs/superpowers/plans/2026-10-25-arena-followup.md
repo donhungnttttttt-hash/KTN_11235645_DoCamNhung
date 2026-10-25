@@ -12,6 +12,9 @@
 
 ## Global Constraints
 
+- **Tái phân tích sau pull 25/10:** baseline đối chiếu mới `a45974a`; checkpoint `cde58ad` bên dưới là lịch sử. Đọc [báo cáo tái phân tích](../../reviews/2026-10-25-arena-plan-reanalysis.md) trước triển khai. Source có V34 demo; migration archive dự kiến V37, phải kiểm lại cả Java/SQL và mọi location. Ma trận bổ sung U23–U26; tất cả vẫn NOT_RUN trong chiến dịch Arena.
+- Quyết định thành viên 25/10 ưu tiên mô tả cũ: không chọn/đổi vai trò membership; ADMIN vẫn là tài khoản ADMIN, hiển thị `ADMIN · Làm PM`; PM chỉ thêm DEV/TESTER của dự án mình quản lý, Admin thêm mọi nhóm. Không đồng nhất quyền thêm thành viên với quyền tạo tài khoản.
+
 - “Người dùng xác nhận chỉ giữ Bug/QA trên toàn hệ thống” — C06. Không tự đổi TASK/REQUEST/IMPROVEMENT cũ thành Bug/QA.
 - “Trao đổi DEV/khách hàng và xác minh lại là quy trình bên ngoài; người dùng yêu cầu không đưa quy trình đó thành workflow code mới.” — C07.
 - “Đổi nhãn cột iPad thành Status; giữ vòng trạng thái Unexecuted → OK → NG → P → NA → Unexecuted.” — C05. Đã test gồm OK/NG/P/NA, mẫu số gồm NA; 0 case hiển thị 0%, không tự coi hoàn thành.
@@ -98,6 +101,10 @@ Kế hoạch chia hai phần có thể review độc lập:
 | AR-10 | Regression, browser 4 role và toàn chuỗi trên baseline cuối | AR-01–09 | P1 / M | PLANNED |
 | AR-11 | Báo cáo truy vết, gate pilot/người ký, quyết định còn mở | Chuẩn bị song song; bàn giao sau AR-10 | P1 / S + chờ bên ngoài | PLANNED |
 
+**Điều chỉnh thứ tự sau tái phân tích:** AR-00 và AR-11 (đối chiếu baseline/gate) trước; nhánh AR-04 chẩn đoán timeout/cấu hình có thể làm độc lập ngay, không chờ dữ liệu AR-02/03. AR-01 bổ sung thành viên/hồ sơ đã có, chỉ kiểm chứng hồi quy. AR-06/07 vẫn là thay đổi nghiệp vụ chính; AR-08 sửa cách diễn đạt có thể làm độc lập. Sau đó AR-02/03/05 và phần số liệu AR-04 → AR-09 → AR-10 → AR-11 bàn giao. Không đổi mọi task thành P0 hoặc để công cụ kiểm thử mới chặn kiểm thử offline sẵn có.
+
+AR-06 cần kiểm thêm `OPEN_WORK_ITEMS` đối với Bug Monkey đã xóa mềm và Issue thuộc Feature/file đã ẩn (U26). Không tự coi chúng là cycles/retests để miễn blocker. Phải phân biệt phát hiện tĩnh, lỗi đã tái hiện và quyết định nghiệp vụ chưa chốt.
+
 S/M chỉ độ lớn tương đối, không là cam kết ngày hoặc giờ. Thiếu credential/schema/người ký chỉ chặn lớp test tương ứng; tiếp tục offline/doc và báo `BLOCKED` ở đúng dòng nghiệm thu.
 
 ```mermaid
@@ -149,7 +156,7 @@ Vị trí skill theo `docs/development-skills.md` và catalog của phiên thự
 ## 5. Định nghĩa hoàn tất và tự review kế hoạch
 
 - [ ] AR-00–11 có receipt: skill → hành động → assertion/command → kết quả → artifact → phần còn thiếu.
-- [ ] U01–U22 có kết quả trên source/schema cuối; tách automated/browser/human, không suy coverage từ số test PASS.
+- [ ] U01–U26 có kết quả trên source/schema cuối; tách automated/browser/human, không suy coverage từ số test PASS.
 - [ ] Migration mới đạt fresh + upgrade fixture + bảo toàn snapshot; không dùng dữ liệu main để thử.
 - [ ] Không còn lỗi nghiêm trọng đã tái hiện trong phạm vi; lỗi mới được định danh và sửa/test hoặc nêu rõ chưa hoàn tất, không tự hạ thành “giới hạn”.
 - [ ] G01–G07 được ghi đúng trạng thái; gate chưa chốt không làm cản các task nội bộ độc lập, nhưng chặn tuyên bố pilot ready tương ứng.

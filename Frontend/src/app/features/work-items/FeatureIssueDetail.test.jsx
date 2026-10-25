@@ -1,7 +1,35 @@
 import React from 'react';
-import {render,screen,fireEvent,waitFor,act} from '@testing-library/react';
+import {render,screen,fireEvent,waitFor,act,within} from '@testing-library/react';
 import {it,expect,vi} from 'vitest';
 import {FeatureIssueDetail} from './FeatureIssueDetail';
+
+it.each(['BUG','QA'])('shows current Feature information for %s and refreshes it without changing an Issue draft',async(type)=>{
+ const item={id:7,key:'P-7',title:'Issue',type,monkey:type==='BUG',featureId:8,featureName:'Test 25 tháng 10',featureEnvironment:'idec-test100',featureDescription:'Sử dụng test ST app Duolingo\nDòng thứ hai',description:'Issue description',canComment:true};
+ const api={get:vi.fn().mockResolvedValueOnce(item).mockResolvedValue({...item,featureName:'Updated Feature',featureEnvironment:'staging-200',featureDescription:'<script>plain text</script>'}),comments:vi.fn().mockResolvedValue([])};
+ render(<FeatureIssueDetail projectId={42} id={7} api={api}/>);
+ const context=within(await screen.findByRole('region',{name:'Thông tin Feature hiện tại'}));
+ expect(context.getByText('Test 25 tháng 10')).toBeInTheDocument();
+ expect(context.getByText('Môi trường / server')).toBeInTheDocument();
+ expect(context.getByText('idec-test100')).toBeInTheDocument();
+ expect(context.getByText(/Sử dụng test ST app Duolingo/)).toHaveTextContent('Dòng thứ hai');
+ const note=screen.getByLabelText('Ghi chú Issue');fireEvent.change(note,{target:{value:'Unsaved note'}});
+ fireEvent.click(screen.getByRole('button',{name:'Tải lại Issue'}));
+ expect(await context.findByText('staging-200')).toBeInTheDocument();
+ expect(context.getByText('Updated Feature')).toBeInTheDocument();
+ expect(context.getByText('<script>plain text</script>')).toBeInTheDocument();
+ expect(context.queryByText('idec-test100')).not.toBeInTheDocument();
+ expect(screen.getByText('Issue description')).toBeInTheDocument();expect(note).toHaveValue('Unsaved note');
+ expect(document.querySelector('.feature-issue-context script')).toBeNull();
+});
+
+it.each([undefined,'  '])('labels missing Feature information explicitly (%s)',async(missing)=>{
+ const api={get:vi.fn().mockResolvedValue({id:7,key:'P-7',title:'Issue',type:'QA',featureId:8,featureName:missing,featureEnvironment:missing,featureDescription:null}),comments:vi.fn().mockResolvedValue([])};
+ render(<FeatureIssueDetail projectId={42} id={7} api={api}/>);
+ const context=within(await screen.findByRole('region',{name:'Thông tin Feature hiện tại'}));
+ expect(context.getByText('Feature #8')).toBeInTheDocument();
+ expect(context.getByText('Chưa ghi môi trường / server')).toBeInTheDocument();
+ expect(context.getByText('Chưa có mô tả Feature')).toBeInTheDocument();
+});
 
 it('links a source Issue back to its Feature, file and case and exposes priority to readers',async()=>{
  const api={get:vi.fn().mockResolvedValue({id:7,key:'P-7',title:'Linked',type:'BUG',featureId:8,featureName:'Login',documentId:9,fileName:'Login.xlsx',rowId:10,caseNo:'TC-001',priority:'HIGH'}),comments:vi.fn().mockResolvedValue([])};

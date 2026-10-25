@@ -78,6 +78,31 @@ public class FeatureService {
         projects.requireReadAccess(p,actor);var result=feature(p,f,false);result.putAll(metrics(p,f,null));return result;
     }
     @Transactional(readOnly=true)
+    public List<Map<String,Object>> testVersions(long p,String actor,long f) {
+        projects.requireReadAccess(p,actor);feature(p,f,false);
+        return db.queryForList("SELECT id,name,created_at AS createdAt FROM feature_test_versions WHERE project_id=? AND feature_id=? AND deleted_at IS NULL ORDER BY created_at DESC,id DESC",p,f);
+    }
+    public void deleteTestVersion(long p,String actor,long f,long id) {
+        writer(p,actor,true);active(feature(p,f,true));
+        var rows=db.queryForList("SELECT deleted_at FROM feature_test_versions WHERE project_id=? AND feature_id=? AND id=? FOR UPDATE",p,f,id);
+        if(rows.isEmpty())throw missing();
+        if(rows.getFirst().get("deleted_at")!=null)return;
+        db.update("UPDATE feature_test_versions SET deleted_at=UTC_TIMESTAMP(6),deleted_by=? WHERE project_id=? AND feature_id=? AND id=?",actor,p,f,id);
+        db.update("INSERT INTO project_audit(project_id,actor_id,entity_type,entity_id,action,occurred_at) VALUES(?,?,'FEATURE_TEST_VERSION',?,'DELETE',UTC_TIMESTAMP(6))",p,actor,id);
+    }
+    public Map<String,Object> createTestVersion(long p,String actor,long f,FeatureDtos.CreateTestVersion input) {
+        writer(p,actor,true);active(feature(p,f,true));
+        String payload=encode(List.of(f,input)),key=input.requestKey().toString();
+        var replay=replay(p,actor,key,"TEST_VERSION_CREATE",payload);if(replay!=null)return replay;
+        String name=input.name().trim();
+        if(name.isEmpty()||name.length()>255)fail(422,"INVALID_TEST_VERSION","Tên version test phải có từ 1 đến 255 ký tự.");
+        if(!db.queryForList("SELECT id FROM feature_test_versions WHERE project_id=? AND feature_id=? AND name=? AND deleted_at IS NULL",p,f,name).isEmpty())
+            fail(409,"TEST_VERSION_EXISTS","Version test này đã có trong Feature.");
+        long id=insert("INSERT INTO feature_test_versions(project_id,feature_id,name,created_by,created_at) VALUES(?,?,?,?,UTC_TIMESTAMP(6))",p,f,name,actor);
+        var result=db.queryForMap("SELECT id,name,created_at AS createdAt FROM feature_test_versions WHERE id=?",id);
+        remember(p,f,null,actor,key,"TEST_VERSION_CREATE",payload,result);return result;
+    }
+    @Transactional(readOnly=true)
     public Map<String,Object> list(long p,String actor,int page,int size,String keyword,boolean archived) {
         return list(p,actor,page,size,keyword,archived,null,null,"created-desc");
     }
@@ -167,6 +192,10 @@ public class FeatureService {
         for(var row:rows){var a=byRow.get(((Number)row.get("rowId")).longValue());if(a!=null)row.putAll(a);row.put("canUpdateResult",writable&&(manager||(self!=null&&a!=null&&Objects.equals(self,a.get("assigneeMembershipId"))&&eligible(p,self))));}
         detail.put("secondTests",List.of());detail.put("assignments",assignments);detail.put("canManage",manager&&writable);detail.put("canAssign",writable&&(manager||(self!=null&&eligible(p,self))));detail.put("canCreateIssue",writable&&(manager||(self!=null&&eligible(p,self))));detail.put("selfMembershipId",self);
         summary.put("canCreateIssue",detail.get("canCreateIssue"));
+        detail.put("testVersions",testVersions(p,actor,f));
+        var executions=new HashMap<Long,Map<String,Object>>();
+        for(var value:db.queryForList("SELECT e.row_id AS rowId,e.test_version_id AS testVersionId,v.name AS testVersionName,e.executed_on AS executedOn FROM test_document_result_executions e JOIN import_rows ir ON ir.project_id=e.project_id AND ir.id=e.row_id AND ir.result_version=e.result_version JOIN feature_test_versions v ON v.id=e.test_version_id WHERE e.project_id=? AND e.document_id=?",p,d))executions.put(num(value,"rowId"),value);
+        for(var value:rows){var execution=executions.get(num(value,"rowId"));if(execution!=null)value.putAll(execution);}
         return detail;
     }
     public Map<String,Object> hideDocument(long p,String actor,long f,long d,FeatureDtos.Version input) {
@@ -236,11 +265,13 @@ public class FeatureService {
         var result=assignments(p,actor,d);remember(p,num(doc,"featureId"),d,actor,key,"ASSIGNMENTS",payload,result);return result;
     }
     public TestDocumentDtos.Result updateResult(long p,String actor,long d,long row,TestDocumentDtos.UpdateResult input) {
-        Actor caller=writer(p,actor,false);lockDocument(p,d);
+        Actor caller=writer(p,actor,false);var document=lockDocument(p,d);
         var rows=db.queryForList("SELECT assignee_membership_id FROM test_document_assignments WHERE project_id=? AND document_id=? AND row_id=? FOR UPDATE",p,d,row);
         if(rows.isEmpty())throw missing();
         if(!caller.manager()&&!Objects.equals(caller.membershipId(),rows.getFirst().get("assignee_membership_id")))fail(403,"FORBIDDEN","Case này không thuộc phạm vi bạn phụ trách.");
         if(!Set.of("UNEXECUTED","OK","NG","P","NA").contains(input.status()))fail(422,"INVALID_STATUS","Status không hợp lệ.");
+        if(input.testVersionId()==null&&!testVersions(p,actor,num(document,"featureId")).isEmpty())
+            fail(422,"TEST_VERSION_REQUIRED","Chọn version test và ngày thực hiện trước khi ghi kết quả.");
         return documents.updateResult(p,actor,d,row,input);
     }
     @Transactional(readOnly=true)
