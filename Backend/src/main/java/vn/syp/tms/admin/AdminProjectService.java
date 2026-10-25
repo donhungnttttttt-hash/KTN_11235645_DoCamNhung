@@ -64,10 +64,15 @@ public class AdminProjectService {
     }
     @Transactional(readOnly=true)
     public AdminDtos.Page<Map<String,Object>> users(String actor,Long projectId,String keyword,String role,Boolean enabled,boolean unassignedOnly,int page,int size) {
+        return users(actor,projectId,keyword,role,enabled,unassignedOnly,null,page,size);
+    }
+    @Transactional(readOnly=true)
+    public AdminDtos.Page<Map<String,Object>> users(String actor,Long projectId,String keyword,String role,Boolean enabled,boolean unassignedOnly,Boolean hasProject,int page,int size) {
         admin(actor);
         if(page<0 || size<1 || size>100 || text(keyword).length()>100 || role!=null && !List.of("ADMIN","PM","TESTER","DEV").contains(role))fail(422,"INVALID_FILTER","Bộ lọc không hợp lệ.");
         var args=new ArrayList<Object>();String where=" WHERE 1=1";
         if(unassignedOnly)where+=" AND NOT EXISTS(SELECT 1 FROM project_memberships unassigned WHERE unassigned.user_id=u.id AND unassigned.active=TRUE)";
+        if(hasProject!=null)where+=" AND "+(hasProject?"":"NOT ")+"EXISTS(SELECT 1 FROM project_memberships assigned WHERE assigned.user_id=u.id AND assigned.active=TRUE)";
         if(projectId!=null){db.row("SELECT id FROM projects WHERE id=?",projectId);where+=" AND EXISTS(SELECT 1 FROM project_memberships m WHERE m.user_id=u.id AND m.project_id=? AND m.active=TRUE)";args.add(projectId);}
         var search=MultiWordSearch.sql(keyword,"u.username","u.display_name");where+=search.sql();args.addAll(search.args());
         if(role!=null){where+=" AND u.role_code=?";args.add(role);}

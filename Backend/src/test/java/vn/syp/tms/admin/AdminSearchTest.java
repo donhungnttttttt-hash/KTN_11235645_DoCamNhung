@@ -13,6 +13,20 @@ class AdminSearchTest {
  final WorkItemStore db=mock(WorkItemStore.class);
  final IdentityService identity=mock(IdentityService.class);
  void admin(){when(identity.current("admin")).thenReturn(new IdentityUser("admin","Admin","hash","ADMIN"));}
+ @Test void membershipStatusFiltersCountAndPageBeforePagination(){
+  admin();var service=new AdminProjectService(db,identity,mock(ProjectService.class),mock(ProjectAudit.class),mock(DeviceInventoryService.class));
+  for(Boolean hasProject:Arrays.asList(true,false,null)){
+   clearInvocations(db);
+   service.users("admin",null,"","TESTER",true,false,hasProject,1,20);
+   var countSql=org.mockito.ArgumentCaptor.forClass(String.class);
+   var pageSql=org.mockito.ArgumentCaptor.forClass(String.class);
+   verify(db).count(countSql.capture(),eq("TESTER"),eq(true));
+   verify(db).rows(pageSql.capture(),eq("TESTER"),eq(true),eq(20),eq(20L));
+   String predicate="EXISTS(SELECT 1 FROM project_memberships assigned WHERE assigned.user_id=u.id AND assigned.active=TRUE)";
+   if(hasProject==null){assertFalse(countSql.getValue().contains(predicate));assertFalse(pageSql.getValue().contains(predicate));}
+   else {String expected=" AND "+(hasProject?"":"NOT ")+predicate;assertTrue(countSql.getValue().contains(expected));assertTrue(pageSql.getValue().contains(expected));}
+  }
+ }
  @Test void unassignedPickerAndSearchUseTheSameGlobalPredicateForCountAndPage(){
   admin();var service=new AdminProjectService(db,identity,mock(ProjectService.class),mock(ProjectAudit.class),mock(DeviceInventoryService.class));
   when(db.count(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{

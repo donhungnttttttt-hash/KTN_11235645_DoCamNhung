@@ -183,3 +183,5 @@
 @media(max-width:768px){.admin-sidebar:not([hidden]){animation:admin-navigation-enter var(--motion-normal,200ms) var(--ease-out,ease-out)}}
 @keyframes admin-navigation-enter{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.admin-sidebar:not([hidden]){animation:none}.admin-sidebar nav a,.admin-shell .admin-navigation-toggle{transition:none}}
+.admin-shell .admin-member-action-cell { text-align:right; }
+.admin-shell .admin-member-remove { display:inline-flex; align-items:center; justify-content:center; width:44px; min-height:44px; padding:8px; }
