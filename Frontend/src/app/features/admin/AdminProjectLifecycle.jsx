@@ -25,7 +25,7 @@ export function AdminProjectLifecycle({projectId,api=adminApi,onSaved,pendingCha
   {current&&<>
    <p>{current.archived?'Dự án chỉ đọc. Vẫn xem và xuất được dữ liệu đã lưu; mở lại để tiếp tục công việc.':'Lưu trữ sau khi xử lý xong việc tồn và thu hồi thiết bị. Chỉ Admin thực hiện; hệ thống kiểm tra lại khi xác nhận.'}</p>
    {current.latestDecision&&<div className="admin-lifecycle-decision"><strong>{current.latestDecision.action==='ARCHIVE'?'Lưu trữ':'Mở lại'} · {current.latestDecision.actorName}</strong><small>{time(current.latestDecision.decidedAt)}</small><p>{current.latestDecision.reason}</p></div>}
-   {pendingChanges&&<p>Hoàn tất hoặc hủy chỉnh sửa dự án, bỏ chọn thành viên và hoàn nguyên vai trò chưa lưu trước khi đổi trạng thái dự án.</p>}
+   {pendingChanges&&<p>Hoàn tất hoặc hủy chỉnh sửa dự án và bỏ chọn thành viên trước khi đổi trạng thái dự án.</p>}
    <div className="admin-actions"><button type="button" disabled={pendingChanges} onClick={()=>setOpen(true)}>{current.archived?'Mở lại dự án':'Kiểm tra lưu trữ'}</button><a href={`#/admin/audit?projectId=${encodeURIComponent(projectId)}`}>Xem nhật ký dự án</a></div>
    {api.lifecycleDecisions&&<LifecycleHistory key={current.version} projectId={projectId} api={api}/>}
   </>}
