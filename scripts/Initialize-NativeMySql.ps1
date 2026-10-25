@@ -7,6 +7,7 @@ param(
 )
 $ErrorActionPreference='Stop'
 $taskRoot=Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'database/native-schema.ps1')
 $client=(Resolve-Path -LiteralPath $MySqlClient).Path
 $jar=Join-Path $taskRoot 'Backend/target/tms-backend-0.1.0-SNAPSHOT.jar'
 $configuration=Join-Path $taskRoot '.env.mysql.local'
@@ -14,7 +15,7 @@ $state=Join-Path $taskRoot 'var/mysql-native'
 if($PlanOnly){
     Write-Output "Native MySQL target: 127.0.0.1:$Port / tms; admin: $AdminUser"
     Write-Output "Client: $client"
-    Write-Output 'Plan: verify admin, refuse existing schema/accounts, create tms and scoped accounts, import optional dump, run Flyway, verify 56 tables/V12, save local configuration.'
+    Write-Output 'Plan: verify admin, refuse existing schema/accounts, create tms and scoped accounts, import optional dump, run and validate resolved migrations including local demo, save local configuration.'
     Write-Output 'No server mutation, config write or password prompt in PlanOnly.'
     exit 0
 }
@@ -82,19 +83,21 @@ try {
         Invoke-NativeSql ([IO.File]::ReadAllText($ImportDumpPath)) 'tms_migrator' $migrationSecret -UseDatabase | Out-Null
     }
     $saved=@{}
-    foreach($name in @('TMS_DB_URL','TMS_MIGRATION_USER','TMS_MIGRATION_PASSWORD')){$saved[$name]=[Environment]::GetEnvironmentVariable($name,'Process')}
+    foreach($name in @('TMS_DB_URL','TMS_MIGRATION_USER','TMS_MIGRATION_PASSWORD','TMS_MIGRATION_INCLUDE_DEMO')){$saved[$name]=[Environment]::GetEnvironmentVariable($name,'Process')}
     try {
         $env:TMS_DB_URL="jdbc:mysql://127.0.0.1:$Port/tms?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&allowPublicKeyRetrieval=true&sslMode=DISABLED"
         $env:TMS_MIGRATION_USER='tms_migrator';$env:TMS_MIGRATION_PASSWORD=$migrationSecret
+        # Match Start-Backend's local profile from the first migration onward.
+        $env:TMS_MIGRATION_INCLUDE_DEMO='true'
         $migration=Start-Process -FilePath rtk -ArgumentList @('proxy','java','-jar',('"'+$jar+'"'),'--tms-migrate') -Wait -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $state 'migration.log') -RedirectStandardError (Join-Path $state 'migration-error.log')
         if($migration.ExitCode -ne 0){throw 'Flyway failed. Preserve pending.env and native database; inspect migration.log. No automatic repair or reset.'}
     } finally {foreach($name in $saved.Keys){[Environment]::SetEnvironmentVariable($name,$saved[$name],'Process')}}
-    $schema=Invoke-NativeSql "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA='tms'; SELECT CONCAT(COUNT(*),':',MAX(CAST(version AS UNSIGNED))) FROM flyway_schema_history WHERE success=1;" 'tms_app' $appSecret -UseDatabase
-    if((($schema -split '\r?\n') -join ',') -ne '56,12:12'){throw 'Unexpected schema count/version. Preserve checkpoint and inspect before starting app.'}
+    $schema=Invoke-NativeSql "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA='tms'; SELECT COUNT(*) FROM flyway_schema_history WHERE success=1; SELECT COUNT(*) FROM flyway_schema_history WHERE success=0;" 'tms_app' $appSecret -UseDatabase
+    $summary=Assert-NativeSchemaSummary -Summary $schema
     Invoke-NativeSql 'SELECT COUNT(*) FROM projects;' 'tms_viewer' $viewerSecret -UseDatabase | Out-Null
     [IO.File]::WriteAllLines($configuration,$lines,[Text.UTF8Encoding]::new($false))
     Move-Item -LiteralPath $pending -Destination (Join-Path $state 'completed.env')
-    Write-Output 'PASS: native tms created, Flyway V12 / 56 tables verified, .env.mysql.local saved. Root password was not saved.'
+    Write-Output "PASS: native tms created, all resolved Flyway migrations validated ($($summary.AppliedMigrations) applied / $($summary.TableCount) tables), .env.mysql.local saved. Root password was not saved."
     Write-Output 'Next: Start-Backend.ps1; Check-System.ps1; Audit-LocalDatabase.cjs. Workbench uses 127.0.0.1 and the port above; Show-MySqlConnection.ps1 prints the local viewer password only when explicitly requested.'
 } finally {
     $adminPassword=$null;$sql=$null
