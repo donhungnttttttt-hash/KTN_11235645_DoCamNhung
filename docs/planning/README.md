@@ -1,5 +1,9 @@
 # Kế hoạch phát triển theo sprint
 
+Bàn giao sửa tài khoản 25/10: đã pull `9487333`, giữ thay đổi local không conflict; sửa 40 warning test profile và 2 warning test bộ lọc vừa pull. JDT 328 source sạch, frontend 1.219/1.219 và backend 50/50 cùng build đạt; [chi tiết bàn giao](../reviews/2026-10-25-admin-user-profile.md). Người dùng đã yêu cầu commit/push lên `system-design`; ghi chú chưa commit/push ngay dưới là checkpoint triển khai trước yêu cầu bàn giao.
+
+Sửa tài khoản 25/10: [kế hoạch](2026-10-25-admin-user-profile.md), [kết quả](../reviews/2026-10-25-admin-user-profile.md). Admin sửa tên hiển thị, username và đặt lại mật khẩu; vai trò giữ nguyên. Frontend 1.218/1.218; 47 test backend liên quan không trùng gồm 8 native, build và Chrome đạt trong phạm vi ghi nhận. Backend 8080 đã chạy bản mới, giữ main V33 bằng target ở process và đối chiếu dữ liệu nguyên vẹn; chưa commit/push. S11/FR-12 vẫn IN_REVIEW.
+
 Vai trò thành viên 25/10: [bỏ sửa vai trò, chỉ hiển thị vai trò hiện có](../reviews/2026-10-25-project-member-role-readonly.md). Đã áp dụng ở cả hai component thành viên; giữ chọn vai trò lúc thêm mới, không đổi backend hoặc dữ liệu. Frontend 1.202/1.202, build và Chrome đạt trong phạm vi này. Sau checkpoint kiểm chứng, người dùng yêu cầu commit/push phần thay đổi này lên `system-design`. Không thay trạng thái S11/FR-12 hoặc triển khai Arena.
 
 Demo Flyway V34 ngày 25/10: [hướng dẫn và tài khoản](../database/demo-v34.md), [báo cáo kiểm chứng](../reviews/2026-10-25-complete-demo-v34.md). Theo phạm vi demo đầy đủ đã được người dùng chốt: 2 dự án, 4 Feature, 8 XLSX/80 case, 32 Issue cùng phân công, lịch sử, thiết bị và báo cáo. Giữ nguyên V1–V33/dữ liệu cũ; 4 mode MySQL cô lập, 21 test Java, 4 test Node PASS; 325 source JDT không lỗi/cảnh báo. Sửa initializer local bỏ kiểm tra cứng V12, release vẫn loại demo. Main không migration/restart; commit/push được người dùng yêu cầu. Không thay trạng thái S11/FR-12 hoặc bắt đầu Arena.

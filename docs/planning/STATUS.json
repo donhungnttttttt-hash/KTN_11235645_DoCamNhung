@@ -7,6 +7,49 @@
   "activeSprint": "S11",
   "phase": "IN_REVIEW",
   "implementationStarted": true,
+  "adminUserProfile20261025": {
+    "status": "DONE",
+    "scope": "Admin edits displayName and username, resets password; system/project roles unchanged",
+    "plan": "docs/planning/2026-10-25-admin-user-profile.md",
+    "report": "docs/reviews/2026-10-25-admin-user-profile.md",
+    "verification": {
+      "frontendPassed": 1218,
+      "frontendFiles": 132,
+      "backendDistinctPassed": 47,
+      "backendBuildRunPassed": 38,
+      "backendAdditionalRunPassed": 26,
+      "backendAdditionalUniqueTests": 9,
+      "nativeTestsIncluded": 8,
+      "frontendBuild": "PASS; 511.42 kB JS chunk warning",
+      "backendVerifyPackage": "PASS in isolated build, source shared with IDE produced one metadata-related failure before fresh compile",
+      "coverage": "FE five components: lines97.87/statements95.8/functions95.45/branches89.78; affected IdentityService methods100% measured lines/branches; not global coverage",
+      "chrome": "Both dialogs opened/closed; main user list reload after backend restart; no account mutation submitted",
+      "independentReview": "No remaining required findings"
+    },
+    "runtime": {
+      "backendPort": 8080,
+      "readiness": "UP",
+      "flywayTargetForThisProcess": "33",
+      "migrationApplied": false,
+      "mainAccountMembershipMigrationFingerprintsUnchanged": true,
+      "commitOrPush": false
+    },
+    "remaining": "No outstanding item for approved scope; broader S11/FR-12 UAT and Arena retain prior status",
+    "handover": {
+      "authorized": "User requested pull, conflict resolution, Problems fix, commit and push",
+      "pulledCommit": "9487333",
+      "conflicts": 0,
+      "javaSources": 328,
+      "javaErrors": 0,
+      "javaWarnings": 0,
+      "frontendPassed": 1219,
+      "backendPassed": 50,
+      "finalAdminSearchRetestPassed": 3,
+      "builds": "PASS",
+      "runtime": "No main restart/migration during handover",
+      "branch": "system-design"
+    }
+  },
   "projectMemberRoleReadonly20261025": {
     "status": "DONE",
     "scope": "Remove role editing for existing project members from both frontend components; preserve initial role selection when adding members",

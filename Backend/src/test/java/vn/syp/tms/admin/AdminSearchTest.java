@@ -10,6 +10,11 @@ import vn.syp.tms.project.*;
 import vn.syp.tms.workitem.WorkItemStore;
 
 class AdminSearchTest {
+ // Mockito registers the capture matcher but returns a dummy null, not the captured SQL.
+ private static @org.springframework.lang.NonNull String captureSql(org.mockito.ArgumentCaptor<String> captor){
+  String placeholder=captor.capture();
+  return placeholder==null?"":placeholder;
+ }
  final WorkItemStore db=mock(WorkItemStore.class);
  final IdentityService identity=mock(IdentityService.class);
  void admin(){when(identity.current("admin")).thenReturn(new IdentityUser("admin","Admin","hash","ADMIN"));}
@@ -20,8 +25,8 @@ class AdminSearchTest {
    service.users("admin",null,"","TESTER",true,false,hasProject,1,20);
    var countSql=org.mockito.ArgumentCaptor.forClass(String.class);
    var pageSql=org.mockito.ArgumentCaptor.forClass(String.class);
-   verify(db).count(countSql.capture(),eq("TESTER"),eq(true));
-   verify(db).rows(pageSql.capture(),eq("TESTER"),eq(true),eq(20),eq(20L));
+   verify(db).count(captureSql(countSql),eq("TESTER"),eq(true));
+   verify(db).rows(captureSql(pageSql),eq("TESTER"),eq(true),eq(20),eq(20L));
    String predicate="EXISTS(SELECT 1 FROM project_memberships assigned WHERE assigned.user_id=u.id AND assigned.active=TRUE)";
    if(hasProject==null){assertFalse(countSql.getValue().contains(predicate));assertFalse(pageSql.getValue().contains(predicate));}
    else {String expected=" AND "+(hasProject?"":"NOT ")+predicate;assertTrue(countSql.getValue().contains(expected));assertTrue(pageSql.getValue().contains(expected));}

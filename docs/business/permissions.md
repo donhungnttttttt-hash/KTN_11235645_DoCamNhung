@@ -96,6 +96,8 @@ Chưa đăng nhập trả 401; request ghi còn cần CSRF. Login sai/disabled/k
 
 Thay enabled/quyền PM thu hồi toàn bộ phiên. Ghi audit cho tạo tài khoản, bật/tắt, cấp/thu hồi quyền và login/logout; không ghi mật khẩu/token.
 
+Mở rộng được người dùng chốt ngày 25/10/2026: ADMIN được sửa `displayName`, `username` và đặt lại mật khẩu của tài khoản nội bộ, gồm tài khoản của chính mình. Không mở sửa vai trò hệ thống; vai trò thành viên dự án vẫn chỉ hiển thị theo quyết định trước đó. PM/TESTER/DEV không được sửa thông tin hoặc đặt lại mật khẩu qua API quản trị này, kể cả PM được cấp quyền tạo Tester. Mọi thay đổi thực sự của tài khoản vẫn thu hồi phiên theo `lock_version` hiện hành; Admin tự sửa phải đăng nhập lại. Không thay ID, membership hoặc liên kết lịch sử. Xem [contract identity](../api/identity.md).
+
 Các kịch bản S03 phải kiểm chứng khi có API dự án: thành viên A không đọc/sửa dự án B bằng đổi URL/ID; không liên kết case/bug khác dự án; role dự án không nâng quyền tạo tài khoản. S02 không khẳng định các API chưa triển khai đã được kiểm tra.
 
 ## Xác nhận S04 ngày 28/09/2026

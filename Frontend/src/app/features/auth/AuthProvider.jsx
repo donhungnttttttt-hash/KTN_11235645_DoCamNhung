@@ -34,9 +34,15 @@ export function AuthProvider({ children, api = authApi }) {
     } catch (error) {
       if (request !== generation.current) return;
       const user = current.current.user;
-      update({ user, status: error.status === 401 ? (user ? "expired" : "anonymous") : "unavailable", error: error.message });
+      update({ user, status: error.status === 401 ? (user ? "expired" : "anonymous") : "unavailable", error: error.message, sessionNotice: current.current.sessionNotice });
     }
   }, [api, update]);
+
+  const accountUpdated = useCallback((account, notice) => {
+    if (current.current.user?.id !== account.id) return;
+    generation.current += 1;
+    update({ ...current.current, user: { ...current.current.user, username: account.username, displayName: account.displayName }, sessionNotice: notice });
+  }, [update]);
 
   useEffect(() => {
     refresh();
@@ -88,7 +94,7 @@ export function AuthProvider({ children, api = authApi }) {
   const can = permission => state.status === "authenticated" && state.user.permissions.includes(permission);
   const hasRole = role => state.status === "authenticated" && state.user.roles.includes(role);
 
-  return <AuthContext.Provider value={{ ...state, login, logout, retry: refresh, can, hasRole }}>
+  return <AuthContext.Provider value={{ ...state, login, logout, retry: refresh, accountUpdated, can, hasRole }}>
     {children}
   </AuthContext.Provider>;
 }

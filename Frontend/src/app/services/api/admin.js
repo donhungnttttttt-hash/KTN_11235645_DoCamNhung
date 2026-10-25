@@ -32,6 +32,7 @@ export const adminApi = {
   users: (filters={},options)=>apiRequest(`/admin/users${query(filters)}`,options),
   createUser: input=>write('/users',input),
   updateUser: (id,input)=>write(`/users/${encodeURIComponent(id)}`,input,'PATCH'),
+  resetUserPassword: (id,input)=>write(`/users/${encodeURIComponent(id)}/password`,input,'PUT'),
   createProject: input=>write('/admin/projects',input),
   updateProject: (id,input)=>write(`/admin/projects/${id}`,input,'PATCH'),
   members: (id,options)=>apiRequest(`/admin/projects/${id}/members`,options),

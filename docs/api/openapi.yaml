@@ -136,7 +136,7 @@ paths:
   /api/v1/users/{id}:
     patch:
       operationId: updateUser
-      description: Chỉ ADMIN. Cần enabled hoặc canCreateUsers; canCreateUsers chỉ áp dụng với PM. Thay đổi thu hồi mọi phiên của người được cập nhật. Không tự vô hiệu hóa tài khoản; không đổi role/password tại đây.
+      description: Chỉ ADMIN. Cần enabled, canCreateUsers, username hoặc displayName; canCreateUsers chỉ áp dụng với PM. Thay đổi thực sự thu hồi mọi phiên của người được cập nhật, kể cả sửa tên hiển thị. Không tự vô hiệu hóa tài khoản; không đổi role/password tại đây. ID và phân công giữ nguyên.
       security: [{ sessionCookie: [], csrfHeader: [] }]
       parameters:
         - { in: path, name: id, required: true, schema: { type: string } }
@@ -150,10 +150,41 @@ paths:
               properties:
                 enabled: { type: boolean }
                 canCreateUsers: { type: boolean }
+                username: { type: string, minLength: 3, maxLength: 64, pattern: '^[A-Za-z0-9][A-Za-z0-9._-]{2,63}$' }
+                displayName: { type: string, minLength: 1, maxLength: 100, description: Không rỗng sau khi trim }
                 expectedVersion: { type: integer, format: int64, minimum: 0 }
       responses:
         '200':
           description: Đã cập nhật, version mới trong response
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+        default: { $ref: '#/components/responses/Error' }
+  /api/v1/users/{id}/password:
+    put:
+      operationId: resetUserPassword
+      description: Chỉ ADMIN. Đặt lại mật khẩu bằng PasswordEncoder hiện hành và thu hồi mọi phiên của tài khoản được sửa, kể cả tài khoản đang đăng nhập. Không đổi vai trò; không trả hoặc ghi log mật khẩu.
+      security: [{ sessionCookie: [], csrfHeader: [] }]
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [newPassword, expectedVersion]
+              properties:
+                newPassword: { type: string, format: password, minLength: 12, maxLength: 128, writeOnly: true }
+                expectedVersion: { type: integer, format: int64, minimum: 0 }
+      responses:
+        '200':
+          description: Đã đặt lại mật khẩu, trả thông tin tài khoản với phiên bản mới
           content:
             application/json:
               schema: { $ref: '#/components/schemas/User' }

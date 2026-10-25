@@ -71,24 +71,58 @@ public class IdentityService {
     }
     @Transactional
     public IdentityDtos.User update(String actorId, String id, IdentityDtos.UpdateUser input, String requestId) {
-        if (!"ADMIN".equals(current(actorId).getRole())) throw forbidden();
-        var user = users.findById(java.util.Objects.requireNonNull(id)).orElseThrow(() -> new BusinessException(404, "NOT_FOUND", "Không tìm thấy tài khoản."));
-        if (user.getVersion() != input.expectedVersion()) throw new BusinessException(409, "VERSION_CONFLICT", "Tài khoản đã thay đổi. Vui lòng tải lại.");
-        if (input.enabled() == null && input.canCreateUsers() == null) throw new BusinessException(422, "VALIDATION_ERROR", "Chưa có thông tin cần cập nhật.");
+        var user = accountForUpdate(actorId, id, input.expectedVersion());
+        if (input.enabled() == null && input.canCreateUsers() == null && input.username() == null && input.displayName() == null)
+            throw new BusinessException(422, "VALIDATION_ERROR", "Chưa có thông tin cần cập nhật.");
         if (Boolean.FALSE.equals(input.enabled()) && actorId.equals(id)) throw new BusinessException(409, "SELF_DISABLE", "Bạn không thể vô hiệu hóa tài khoản của chính mình.");
         if (input.canCreateUsers() != null && !"PM".equals(user.getRole())) throw new BusinessException(422, "VALIDATION_ERROR", "Chỉ cấp quyền tạo tài khoản cho PM.");
-        boolean changed = false;
-        if (input.enabled() != null && user.isEnabled() != input.enabled()) {
-            user.setEnabled(input.enabled()); changed = true;
-            audit.record(actorId, id, input.enabled() ? "USER_ENABLED" : "USER_DISABLED", requestId);
+        String username = input.username() == null ? user.getUsername() : normalize(input.username());
+        String displayName = input.displayName() == null ? user.getDisplayName() : input.displayName().strip();
+        if (displayName.isBlank()) throw new BusinessException(422, "VALIDATION_ERROR", "Tên hiển thị không được để trống.");
+        boolean usernameChanged = !user.getUsername().equals(username);
+        boolean profileChanged = usernameChanged || !user.getDisplayName().equals(displayName);
+        boolean enabledChanged = input.enabled() != null && user.isEnabled() != input.enabled();
+        boolean delegationChanged = input.canCreateUsers() != null && user.isCanCreateUsers() != input.canCreateUsers();
+        if (usernameChanged && users.existsByUsername(username)) throw duplicateUsername();
+        if (!profileChanged && !enabledChanged && !delegationChanged) return view(user);
+
+        user.setUsername(username);
+        user.setDisplayName(displayName);
+        if (enabledChanged) user.setEnabled(input.enabled());
+        if (delegationChanged) user.setCanCreateUsers(input.canCreateUsers());
+        try { users.flush(); }
+        catch (DataIntegrityViolationException duplicate) {
+            if (usernameChanged) throw duplicateUsername();
+            throw duplicate;
         }
-        if (input.canCreateUsers() != null && user.isCanCreateUsers() != input.canCreateUsers()) {
-            user.setCanCreateUsers(input.canCreateUsers()); changed = true;
-            audit.record(actorId, id, input.canCreateUsers() ? "CREATE_USERS_GRANTED" : "CREATE_USERS_REVOKED", requestId);
-        }
-        users.flush();
-        if (changed) jdbc.update("DELETE FROM SPRING_SESSION WHERE PRINCIPAL_NAME = ?", id);
+        if (profileChanged) audit.record(actorId, id, "USER_PROFILE_UPDATED", requestId);
+        if (enabledChanged) audit.record(actorId, id, user.isEnabled() ? "USER_ENABLED" : "USER_DISABLED", requestId);
+        if (delegationChanged) audit.record(actorId, id, user.isCanCreateUsers() ? "CREATE_USERS_GRANTED" : "CREATE_USERS_REVOKED", requestId);
+        revokeSessions(id);
         return view(user);
+    }
+    @Transactional
+    public IdentityDtos.User resetPassword(String actorId, String id, IdentityDtos.ResetPassword input, String requestId) {
+        var user = accountForUpdate(actorId, id, input.expectedVersion());
+        user.setPasswordHash(passwords.encode(input.newPassword()));
+        users.flush();
+        audit.record(actorId, id, "USER_PASSWORD_RESET", requestId);
+        revokeSessions(id);
+        return view(user);
+    }
+    private IdentityUser accountForUpdate(String actorId, String id, Long expectedVersion) {
+        if (!"ADMIN".equals(current(actorId).getRole())) throw forbidden();
+        var user = users.findById(java.util.Objects.requireNonNull(id))
+            .orElseThrow(() -> new BusinessException(404, "NOT_FOUND", "Không tìm thấy tài khoản."));
+        if (expectedVersion == null || expectedVersion < 0)
+            throw new BusinessException(422, "VALIDATION_ERROR", "Cần phiên bản tài khoản hợp lệ.");
+        if (user.getVersion() != expectedVersion)
+            throw new BusinessException(409, "VERSION_CONFLICT", "Tài khoản đã thay đổi. Vui lòng tải lại.");
+        return user;
+    }
+    private void revokeSessions(String id) {
+        // SessionPrincipal uses the same optimistic version, so every actual account edit expires old sessions.
+        jdbc.update("DELETE FROM SPRING_SESSION WHERE PRINCIPAL_NAME = ?", id);
     }
     @Transactional
     public boolean bootstrap(String username, String password, String displayName) {

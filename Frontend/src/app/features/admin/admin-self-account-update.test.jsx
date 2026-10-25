@@ -1,0 +1,30 @@
+import React from 'react';
+import {fireEvent,render,screen,waitFor,within} from '@testing-library/react';
+import {expect,it,vi} from 'vitest';
+import {AuthProvider} from '../auth/AuthProvider';
+import {AuthBoundary} from '../auth/AuthBoundary';
+import {AdminUsers} from './AdminUsers';
+import {ApiError} from '../../services/api/client';
+
+it('reloads the preserved admin list after self-update and login so the next edit uses the new version',async()=>{
+ const before={id:'admin',username:'old.admin',displayName:'Old Admin',role:'ADMIN',enabled:true,version:3,createdAt:'2026-10-25T00:00:00Z',memberships:[]};
+ const after={...before,username:'new.admin',displayName:'New Admin',version:4};
+ const authProfile=row=>({...row,roles:['ADMIN'],permissions:['users:update'],sessionExpiresAt:new Date(Date.now()+1800000).toISOString()});
+ const authApi={me:vi.fn().mockResolvedValueOnce(authProfile(before)).mockRejectedValue(new ApiError('Hết phiên',{status:401})),login:vi.fn().mockResolvedValue(authProfile(after))};
+ const api={projects:vi.fn().mockResolvedValue({items:[],totalElements:0}),users:vi.fn().mockResolvedValueOnce({items:[before],totalElements:1}).mockResolvedValue({items:[after],totalElements:1}),updateUser:vi.fn().mockResolvedValue(after)};
+ render(<AuthProvider api={authApi}><AuthBoundary><AdminUsers api={api}/></AuthBoundary></AuthProvider>);
+ fireEvent.click(await screen.findByRole('button',{name:'Sửa thông tin Old Admin'}));
+ fireEvent.change(screen.getByLabelText('Tên đăng nhập'),{target:{value:'new.admin'}});
+ fireEvent.change(screen.getByLabelText('Tên hiển thị'),{target:{value:'New Admin'}});
+ fireEvent.click(screen.getByRole('button',{name:'Lưu thông tin'}));
+ const login=within(await screen.findByRole('form',{name:'Đăng nhập'}));
+ expect(api.users).toHaveBeenCalledTimes(1);
+ expect(login.getByLabelText('Tên đăng nhập')).toHaveValue('new.admin');
+ fireEvent.change(login.getByLabelText('Mật khẩu'),{target:{value:'synthetic-password'}});
+ fireEvent.submit(screen.getByRole('form',{name:'Đăng nhập'}));
+ fireEvent.click(await screen.findByRole('button',{name:'Sửa thông tin New Admin'}));
+ expect(api.users).toHaveBeenCalledTimes(2);
+ fireEvent.change(screen.getByLabelText('Tên hiển thị'),{target:{value:'New Admin Again'}});
+ fireEvent.click(screen.getByRole('button',{name:'Lưu thông tin'}));
+ await waitFor(()=>expect(api.updateUser).toHaveBeenLastCalledWith('admin',{displayName:'New Admin Again',expectedVersion:4}));
+});

@@ -37,4 +37,7 @@ public class IdentityUser {
     public Instant getCreatedAt() { return createdAt; }
     public void setEnabled(boolean enabled) { this.enabled = enabled; }
     public void setCanCreateUsers(boolean allowed) { this.canCreateUsers = allowed; }
+    public void setUsername(String username) { this.username = username; }
+    public void setDisplayName(String displayName) { this.displayName = displayName; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 }

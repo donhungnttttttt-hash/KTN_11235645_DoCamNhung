@@ -22,8 +22,13 @@ public class UserController {
         return users.create(actor.getName(), input, ApiExceptionHandler.requestId(request));
     }
     @PatchMapping("/{id}")
-    public IdentityDtos.User update(@PathVariable String id, @Valid @RequestBody IdentityDtos.UpdateUser input,
+    public IdentityDtos.User update(@PathVariable("id") String id, @Valid @RequestBody IdentityDtos.UpdateUser input,
                                     Authentication actor, HttpServletRequest request) {
         return users.update(actor.getName(), id, input, ApiExceptionHandler.requestId(request));
+    }
+    @PutMapping("/{id}/password")
+    public IdentityDtos.User resetPassword(@PathVariable("id") String id, @Valid @RequestBody IdentityDtos.ResetPassword input,
+                                           Authentication actor, HttpServletRequest request) {
+        return users.resetPassword(actor.getName(), id, input, ApiExceptionHandler.requestId(request));
     }
 }

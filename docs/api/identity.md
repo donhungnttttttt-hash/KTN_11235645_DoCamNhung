@@ -1,6 +1,6 @@
 # Contract identity S02
 
-API base `/api/v1`, cookie session cùng origin qua Vite proxy. POST/PATCH cần token từ GET `/auth/csrf`, gửi header trả về và cookie; sau login/logout phải lấy token mới. Nội dung JSON; lỗi theo ApiError ở openapi.yaml.
+API base `/api/v1`, cookie session cùng origin qua Vite proxy. POST/PATCH/PUT cần token từ GET `/auth/csrf`, gửi header trả về và cookie; sau login/logout phải lấy token mới. Nội dung JSON; lỗi theo ApiError ở openapi.yaml.
 
 | Method/path | Input | Output / quyền |
 | --- | --- | --- |
@@ -10,13 +10,22 @@ API base `/api/v1`, cookie session cùng origin qua Vite proxy. POST/PATCH cần
 | GET /me | Session | 200 Me; 401 nếu không có phiên hợp lệ |
 | GET /users?page=0&size=20 | page >= 0, size 1–100 | ADMIN; 200 `{items,page,size,totalElements}` sắp createdAt/id; 401/403/422 |
 | POST /users | `{username,displayName,password,role}` | ADMIN tạo ADMIN/PM/TESTER/DEV; PM có quyền chỉ tạo TESTER; 201 User; 403, 409 trùng tên, 422 validation |
-| PATCH /users/{id} | `{enabled?,canCreateUsers?,expectedVersion}` | ADMIN; ít nhất một field cần cập nhật; canCreateUsers chỉ dùng cho PM; 200 User, 404, 409 stale/self-disable; thu hồi phiên khi enabled/quyền thay đổi |
+| PATCH /users/{id} | `{enabled?,canCreateUsers?,username?,displayName?,expectedVersion}` | ADMIN; ít nhất một field cần cập nhật; canCreateUsers chỉ dùng cho PM; 200 User, 404, 409 stale/self-disable/trùng username; mọi thay đổi thực sự thu hồi phiên của tài khoản được sửa |
+| PUT /users/{id}/password | `{newPassword,expectedVersion}` | ADMIN; đặt lại mật khẩu, 200 User không chứa mật khẩu/hash; 404, 409 stale, 422 validation; thu hồi mọi phiên của tài khoản được đặt lại mật khẩu |
 
 Me: `{id,username,displayName,roles,permissions,sessionExpiresAt}`. ADMIN permissions `profile:read`, `users:read`, `users:create`, `users:update`, `users:delegate`; PM được cấp có `profile:read`, `users:create`; PM chưa cấp, TESTER và DEV chỉ `profile:read`. Không có project membership giả. User: `{id,username,displayName,role,enabled,canCreateUsers,version,createdAt}`; không trả hash hoặc session ID. `canCreateUsers` là quyền cấp riêng cho PM, luôn false với ADMIN/TESTER/DEV; ADMIN có quyền mặc định từ role.
 
 Validation: username ASCII theo ADR-002; password 12–128 cho create, login cho phép 1–128; displayName không trống/tối đa 100. expectedVersion không âm. Login trim/lowercase username; create từ chối khoảng trắng trong username rồi chuẩn hóa lowercase. Password giữ nguyên, displayName trim. Pagination sai kiểu trả 400; ID không tồn tại trả 404; dữ liệu vượt giới hạn trả 422. Lỗi DB không được thay bằng dữ liệu mẫu.
 
 Người gọi lấy actor từ session; không nhận actorId/userId của người thao tác trong body. Create/update/audit là transaction. Session chính và user nằm trong MySQL; role không cập nhật qua PATCH S02. Chi tiết quyền: [permissions](../business/permissions.md).
+
+## Sửa thông tin và đặt lại mật khẩu — phạm vi chốt 25/10/2026
+
+Admin được sửa tên hiển thị, tên đăng nhập và đặt lại mật khẩu. Không mở sửa vai trò hệ thống hoặc vai trò thành viên dự án. PATCH dùng quy tắc username như tạo tài khoản (3–64 ký tự ASCII, chuẩn hóa chữ thường), tên hiển thị không được rỗng sau trim và tối đa 100 ký tự. Username đã được tài khoản khác dùng trả 409 `USERNAME_EXISTS`, kể cả xung đột đồng thời. ID, phân công, membership và lịch sử giữ nguyên liên kết.
+
+Đặt lại mật khẩu là thao tác riêng; `newPassword` có 12–128 ký tự, không trim và không trả trong response/audit/log. Frontend yêu cầu nhập lại mật khẩu để xác nhận; backend chỉ nhận một giá trị sau kiểm tra. Mật khẩu lưu bằng PasswordEncoder hiện hành. Không thay đổi role hoặc quyền khi đặt lại mật khẩu.
+
+`expectedVersion` bắt buộc cho cả hai thao tác. Phiên cũ bị thu hồi khi dữ liệu thực sự thay đổi, gồm cả tên hiển thị, theo cơ chế `SessionPrincipal.version` hiện có. PATCH gửi lại giá trị không đổi sau chuẩn hóa không tạo thay đổi hoặc thu hồi phiên; phiên bản cũ vẫn trả 409. Admin sửa chính mình nhận thông báo đã lưu và đăng nhập lại bằng thông tin mới. Audit ghi `USER_PROFILE_UPDATED` / `USER_PASSWORD_RESET` với actor/subject, không ghi giá trị mật khẩu.
 
 ## Thử cấp quyền bằng công cụ API nội bộ
 

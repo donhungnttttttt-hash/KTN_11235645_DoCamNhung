@@ -14,6 +14,7 @@ final class AdminAuditLabels {
         Map.entry("CREATE","Tạo mới"),Map.entry("UPDATE","Cập nhật"),Map.entry("ARCHIVE","Lưu trữ"),Map.entry("REOPEN","Mở lại"),
         Map.entry("ASSIGN","Bàn giao"),Map.entry("RETURN","Thu hồi"),Map.entry("SET_ROLE","Gán vai trò"),Map.entry("REMOVE","Gỡ thành viên"),
         Map.entry("USER_CREATED","Tạo tài khoản"),Map.entry("USER_UPDATED","Cập nhật tài khoản"),Map.entry("USER_ENABLED","Mở khóa tài khoản"),
+        Map.entry("USER_PROFILE_UPDATED","Cập nhật thông tin tài khoản"),Map.entry("USER_PASSWORD_RESET","Đặt lại mật khẩu"),
         Map.entry("USER_DISABLED","Khóa tài khoản"),Map.entry("CREATE_USERS_GRANTED","Cấp quyền tạo Tester"),
         Map.entry("CREATE_USERS_REVOKED","Thu hồi quyền tạo Tester"),Map.entry("ADMIN_BOOTSTRAPPED","Khởi tạo quản trị viên"),
         Map.entry("LOGIN_SUCCEEDED","Đăng nhập"),Map.entry("LOGIN_FAILED","Đăng nhập thất bại"),Map.entry("LOGOUT","Đăng xuất")

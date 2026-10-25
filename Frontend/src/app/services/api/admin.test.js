@@ -32,3 +32,10 @@ test('project lifecycle writes use CSRF and preserve reason, version and replay 
  await adminApi.reopenProject(7,input);
  expect(apiRequest).toHaveBeenLastCalledWith('/admin/projects/7/reopen',expect.objectContaining({method:'POST',headers:{'X-CSRF':'csrf'},body:JSON.stringify(input)}));
 });
+
+test('password resets use PUT, CSRF and the current account version',async()=>{
+ apiRequest.mockResolvedValue({headerName:'X-CSRF',token:'csrf'});
+ const input={newPassword:'synthetic-test-password',expectedVersion:7};
+ await adminApi.resetUserPassword('person/id',input);
+ expect(apiRequest).toHaveBeenLastCalledWith('/users/person%2Fid/password',expect.objectContaining({method:'PUT',headers:{'X-CSRF':'csrf'},body:JSON.stringify(input)}));
+});

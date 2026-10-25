@@ -16,7 +16,18 @@ public final class IdentityDtos {
             @NotBlank @Pattern(regexp = "ADMIN|PM|TESTER|DEV", message = "Vai trò không hợp lệ.") String role) {
         @Override public String toString() { return "CreateUser[redacted]"; }
     }
-    public record UpdateUser(Boolean enabled, Boolean canCreateUsers, @NotNull @PositiveOrZero Long expectedVersion) {}
+    public record UpdateUser(Boolean enabled, Boolean canCreateUsers, @NotNull @PositiveOrZero Long expectedVersion,
+            @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9._-]{2,63}", message = "Tên đăng nhập cần 3–64 ký tự chữ, số, dấu chấm, gạch nối hoặc gạch dưới.") String username,
+            @Size(min = 1, max = 100) @Pattern(regexp = "(?s).*\\S.*", message = "Tên hiển thị không được để trống.") String displayName) {
+        public UpdateUser(Boolean enabled, Boolean canCreateUsers, Long expectedVersion) {
+            this(enabled, canCreateUsers, expectedVersion, null, null);
+        }
+    }
+    public record ResetPassword(
+            @NotBlank @Size(min = 12, max = 128, message = "Mật khẩu cần 12–128 ký tự.") String newPassword,
+            @NotNull @PositiveOrZero Long expectedVersion) {
+        @Override public String toString() { return "ResetPassword[redacted]"; }
+    }
     public record User(String id, String username, String displayName, String role, boolean enabled,
                        boolean canCreateUsers, long version, Instant createdAt) {}
     public record UserPage(List<User> items, int page, int size, long totalElements) {}

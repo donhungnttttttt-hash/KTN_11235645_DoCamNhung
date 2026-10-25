@@ -39,7 +39,7 @@ export function LoginForm() {
 }
 
 export function AuthBoundary({ children }) {
-  const { status, user, retry } = useAuth();
+  const { status, user, retry, sessionNotice } = useAuth();
   const [retrying, setRetrying] = useState(false);
   const authenticated = status === "authenticated";
   return <>
@@ -48,12 +48,13 @@ export function AuthBoundary({ children }) {
     {!authenticated && <main className="auth-page">
       <div className="auth-brand"><span>S+</span><strong>TMS</strong><small>Quản lý dự án & kiểm thử</small></div>
       <section className="auth-card" aria-label="Tài khoản nội bộ">
+        {sessionNotice && <p role="status" className="auth-intro">{sessionNotice}</p>}
         {status === "loading" ? <div role="status" className="auth-wait"><LoaderCircle className="auth-spin" size={26}/><p>Đang tải phiên đăng nhập…</p></div>
           : status === "unavailable" ? <>
             <h1>Chưa thể kết nối</h1>
             <p className="auth-intro" role="alert">Không thể xác nhận phiên đăng nhập. Vui lòng thử lại sau giây lát.{user && " Bản nháp đang mở vẫn được giữ tại đây."}</p>
             <button className="auth-submit" disabled={retrying} onClick={async () => { setRetrying(true); try { await retry(); } finally { setRetrying(false); } }}>{retrying ? "Đang kết nối…" : "Thử lại"}</button>
-          </> : <LoginForm/>}
+          </> : <LoginForm key={user?.username || 'anonymous'}/>}
       </section>
       <p className="auth-footer">Không gian làm việc nội bộ · TMS</p>
     </main>}

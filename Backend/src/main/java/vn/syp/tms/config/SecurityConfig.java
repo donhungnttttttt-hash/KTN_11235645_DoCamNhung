@@ -53,6 +53,7 @@ public class SecurityConfig {
             auth.requestMatchers(HttpMethod.GET, "/api/v1/users").hasRole("ADMIN");
             auth.requestMatchers(HttpMethod.POST, "/api/v1/users").hasAuthority("users:create");
             auth.requestMatchers(HttpMethod.PATCH, "/api/v1/users/*").hasRole("ADMIN");
+            auth.requestMatchers(HttpMethod.PUT, "/api/v1/users/*/password").hasRole("ADMIN");
             if (local) {
                 auth.requestMatchers(HttpMethod.GET, "/api/v1/system/status", "/api/v1/system/checks", "/api/v1/system/csrf").permitAll();
                 auth.requestMatchers(HttpMethod.POST, "/api/v1/system/checks").permitAll();
