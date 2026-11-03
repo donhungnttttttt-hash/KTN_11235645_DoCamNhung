@@ -1,3 +1,5 @@
+> **Sau V37:** bảng tài khoản dưới đây ghi lại dữ liệu seed V34. TESTER/DEV được chuyển thành USER. Tài khoản ADMIN seed không tự có quyền Admin tổng: phải [provision đúng hai UUID đã chọn](unified-user-access-cutover.md) trước khi khởi động ứng dụng. Không chạy lại V34 để đồng bộ dữ liệu đang sử dụng.
+
 # Bộ dữ liệu demo V34
 
 Cập nhật source ngày 25/10/2026. V34 bổ sung dữ liệu giả lập cho luồng **Dự án → Feature → file XLSX → case/Status → Bug hoặc QA**, kèm phân công, thiết bị, ghi chú và báo cáo. Đây là bộ demo công khai để các máy có thể bắt đầu với cùng kịch bản nghiệp vụ; không phải bản sao dữ liệu thật của một máy.

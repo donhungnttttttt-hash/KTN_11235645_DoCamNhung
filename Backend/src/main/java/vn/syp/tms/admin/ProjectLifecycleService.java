@@ -25,6 +25,7 @@ public class ProjectLifecycleService {
         var current=db.rows("SELECT role_code AS role,enabled FROM identity_users WHERE id=? FOR SHARE",actor);
         if(current.isEmpty() || !Boolean.TRUE.equals(current.getFirst().get("enabled")))fail(401,"UNAUTHENTICATED","Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
         if(!"ADMIN".equals(current.getFirst().get("role")))fail(403,"ADMIN_REQUIRED","Chỉ ADMIN được lưu trữ hoặc mở lại dự án.");
+        if(db.rows("SELECT slot FROM system_admin_registry WHERE user_id=? FOR SHARE",actor).isEmpty())fail(401,"UNAUTHENTICATED","Tài khoản không thuộc hai Admin tổng đã thiết lập.");
     }
     public Map<String,Object> readiness(String actor,long projectId) {
         admin(actor);var project=db.row(PROJECT+" FOR SHARE",projectId);
@@ -34,7 +35,7 @@ public class ProjectLifecycleService {
         var blockers=new ArrayList<Map<String,Object>>();
         add(blockers,"ACTIVE_SESSIONS","Phiên kiểm thử đang làm hoặc tạm dừng",db.count("SELECT COUNT(*) FROM file_work_sessions WHERE project_id=? AND state IN ('DOING','PAUSED') FOR SHARE",id));
         add(blockers,"ALLOCATED_DEVICES","Thiết bị chưa thu hồi",db.count("SELECT COUNT(*) FROM device_allocations WHERE project_id=? AND returned_at IS NULL FOR SHARE",id));
-        add(blockers,"OPEN_WORK_ITEMS","Công việc, bug hoặc QA chưa kết thúc",db.count("SELECT COUNT(*) FROM work_items w JOIN work_item_statuses s ON s.code=w.status_code WHERE w.project_id=? AND s.terminal=FALSE FOR SHARE",id));
+        add(blockers,"OPEN_WORK_ITEMS","Công việc, bug hoặc QA chưa kết thúc",db.count("SELECT COUNT(*) FROM work_items w JOIN ticket_workflow_metrics tw ON tw.project_id=w.project_id AND tw.work_item_id=w.id WHERE w.project_id=? AND tw.finalized=FALSE FOR SHARE",id));
         // A direct locking join also sees newly committed runs under an older RR snapshot;
         // an ordinary EXISTS subquery could otherwise retain that transaction's old view.
         add(blockers,"UNFINISHED_CYCLES","Đợt kiểm thử đang hoạt động hoặc bản nháp đã có case",db.count("SELECT COUNT(DISTINCT c.id) FROM test_cycles c LEFT JOIN run_items r ON r.project_id=c.project_id AND r.cycle_id=c.id WHERE c.project_id=? AND (c.status_code='ACTIVE' OR (c.status_code='DRAFT' AND r.id IS NOT NULL)) FOR SHARE",id));

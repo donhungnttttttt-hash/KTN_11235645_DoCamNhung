@@ -5,7 +5,7 @@ import { CatalogPage } from './CatalogPage';
 import { projectsApi } from '../../services/api/projects';
 let project;
 vi.mock('./ProjectProvider',()=>({useProject:()=>({currentProject:project})}));
-vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:()=>false})}));
+vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>role==='PM'})}));
 vi.mock('../../services/api/projects',()=>({projectsApi:{listCatalog:vi.fn(),archiveCatalog:vi.fn(),createCatalog:vi.fn(),updateCatalog:vi.fn()}}));
 beforeEach(()=>{vi.resetAllMocks();project={id:1,name:'Dự án A',projectRole:'PM'};projectsApi.listCatalog.mockResolvedValue([]);});
 it('creates a catalog from the visible form and keeps the draft after a save error',async()=>{

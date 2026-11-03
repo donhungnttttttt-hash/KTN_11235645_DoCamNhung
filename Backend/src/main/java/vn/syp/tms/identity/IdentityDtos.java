@@ -13,7 +13,11 @@ public final class IdentityDtos {
             @NotBlank @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9._-]{2,63}", message = "Tên đăng nhập cần 3–64 ký tự chữ, số, dấu chấm, gạch nối hoặc gạch dưới.") String username,
             @NotBlank @Size(max = 100) String displayName,
             @NotBlank @Size(min = 12, max = 128, message = "Mật khẩu cần 12–128 ký tự.") String password,
-            @NotBlank @Pattern(regexp = "ADMIN|PM|TESTER|DEV", message = "Vai trò không hợp lệ.") String role) {
+            boolean isProjectAdmin, boolean isGuest) {
+        @com.fasterxml.jackson.annotation.JsonAnySetter
+        public void rejectUnknown(String name,Object value) {
+            throw new vn.syp.tms.shared.web.BusinessException(422,"INVALID_ACCOUNT_FIELD","Chỉ sử dụng lựa chọn Admin hoặc Khách khi tạo tài khoản.");
+        }
         @Override public String toString() { return "CreateUser[redacted]"; }
     }
     public record UpdateUser(Boolean enabled, Boolean canCreateUsers, @NotNull @PositiveOrZero Long expectedVersion,

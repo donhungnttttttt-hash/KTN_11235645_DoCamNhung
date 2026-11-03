@@ -24,7 +24,7 @@ it('closes a focus-opened preview with Escape while focus is still on the badge'
  expect(screen.queryByRole('region',{name:'Issue của case'})).toBeNull();
 });
 it('retains the open case draft and disables sending after create permission changes',async()=>{
- const api={list:vi.fn().mockResolvedValue({items:[],totalItems:0}),context:vi.fn().mockResolvedValue({title:'Icon',steps:'Mở',expectedResult:'Có icon'}),create:vi.fn()};
+ const api={options:vi.fn().mockResolvedValue({assignees:[{membershipId:11,displayName:'Contact'}]}),list:vi.fn().mockResolvedValue({items:[],totalItems:0}),context:vi.fn().mockResolvedValue({title:'Icon',steps:'Mở',expectedResult:'Có icon'}),create:vi.fn()};
  const props={projectId:1,featureId:2,documentId:3,row:{rowId:4},api};const view=render(<CaseIssueAction {...props}/>);
  fireEvent.click(await screen.findByRole('button',{name:'Issue (0)'}));
  const title=await screen.findByLabelText('Tiêu đề');fireEvent.change(title,{target:{value:'Nháp chưa gửi'}});
@@ -40,8 +40,10 @@ it('lets Tab enter the preview and continue to the next case control in logical 
 });
 it('guards closing a pending Issue and lets the user keep a failed-save draft',async()=>{
  const user=userEvent.setup();let fail;
- const api={list:vi.fn().mockResolvedValue({items:[],totalItems:0}),context:vi.fn().mockResolvedValue({title:'Icon',steps:'Mở',expectedResult:'Có icon'}),create:vi.fn(()=>new Promise((_resolve,reject)=>{fail=reject;}))};
- render(<CaseIssueAction projectId={1} featureId={2} documentId={3} row={{rowId:4}} api={api}/>);await user.click(await screen.findByRole('button',{name:'Issue (0)'}));await screen.findByDisplayValue('Icon');await user.type(screen.getByLabelText('Kết quả thực tế'),'Không hiển thị');await user.click(screen.getByRole('button',{name:'Lưu Issue'}));
+ const api={options:vi.fn().mockResolvedValue({assignees:[{membershipId:11,displayName:'Contact'}]}),list:vi.fn().mockResolvedValue({items:[],totalItems:0}),context:vi.fn().mockResolvedValue({title:'Icon',steps:'Mở',expectedResult:'Có icon'}),create:vi.fn(()=>new Promise((_resolve,reject)=>{fail=reject;}))};
+ render(<CaseIssueAction projectId={1} featureId={2} documentId={3} row={{rowId:4}} api={api}/>);await user.click(await screen.findByRole('button',{name:'Issue (0)'}));await screen.findByDisplayValue('Icon');await user.type(screen.getByLabelText('Kết quả thực tế'),'Không hiển thị');
+ for(const label of ['Tần suất tái hiện','Môi trường phát hiện','Thiết bị phát hiện'])await user.type(screen.getByLabelText(label),'Manual evidence');
+ await screen.findByRole('option',{name:'Contact'});await user.selectOptions(screen.getByLabelText('Đầu mối tiếp nhận'),'11');await user.click(screen.getByRole('button',{name:'Lưu Issue'}));
  await user.keyboard('{Escape}');expect(screen.getByRole('dialog',{name:'Tạo Issue từ case'})).toBeInTheDocument();
  await act(async()=>fail(new Error('Mất kết nối')));await user.keyboard('{Escape}');await user.click(screen.getByRole('button',{name:'Tiếp tục soạn'}));expect(screen.getByLabelText('Kết quả thực tế')).toHaveValue('Không hiển thị');
 });

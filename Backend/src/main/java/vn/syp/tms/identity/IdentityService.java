@@ -17,32 +17,45 @@ public class IdentityService {
     private final PasswordEncoder passwords;
     private final JdbcTemplate jdbc;
     private final IdentityAudit audit;
+    private final SystemAdminRegistry registry;
     private final String dummyHash;
-    public IdentityService(IdentityUserRepository users, PasswordEncoder passwords, JdbcTemplate jdbc, IdentityAudit audit) {
+    public IdentityService(IdentityUserRepository users, PasswordEncoder passwords, JdbcTemplate jdbc, IdentityAudit audit, SystemAdminRegistry registry) {
         this.users = users; this.passwords = passwords; this.jdbc = jdbc; this.audit = audit;
+        this.registry=registry;
         dummyHash = passwords.encode(UUID.randomUUID().toString());
     }
     public static String normalize(String username) { return username.strip().toLowerCase(Locale.ROOT); }
-    public static List<String> permissions(IdentityUser user) {
+    public List<String> permissions(IdentityUser user) {
+        if (!usable(user.getId(),user.getRole(),user.isEnabled())) return List.of();
         if ("ADMIN".equals(user.getRole())) return List.of("profile:read", "users:read", "users:create", "users:update", "users:delegate");
         if ("PM".equals(user.getRole()) && user.isCanCreateUsers()) return List.of("profile:read", "users:create");
         return List.of("profile:read");
     }
+    public List<org.springframework.security.core.GrantedAuthority> authorities(IdentityUser user) {
+        if(!usable(user.getId(),user.getRole(),user.isEnabled()))throw new BusinessException(401,"UNAUTHENTICATED","Tài khoản không còn quyền truy cập.");
+        var result=new ArrayList<org.springframework.security.core.GrantedAuthority>();
+        result.add(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_"+user.getRole()));
+        permissions(user).forEach(p->result.add(new org.springframework.security.core.authority.SimpleGrantedAuthority(p)));
+        return result;
+    }
+    private boolean usable(String id,String role,boolean enabled) {
+        return enabled && Set.of("ADMIN","PM","USER","GUEST").contains(role) && (!"ADMIN".equals(role)||registry.contains(id));
+    }
     public IdentityUser authenticate(String username, String password) {
         var user = users.findByUsername(normalize(username)).orElse(null);
         boolean matched = passwords.matches(password, user == null ? dummyHash : user.getPasswordHash());
-        if (user == null || !matched || !user.isEnabled()) throw new BusinessException(401, "AUTHENTICATION_FAILED", "Tên đăng nhập hoặc mật khẩu không đúng.");
+        if (user == null || !matched || !usable(user.getId(),user.getRole(),user.isEnabled())) throw new BusinessException(401, "AUTHENTICATION_FAILED", "ID đăng nhập hoặc mật khẩu không đúng.");
         return user;
     }
     public IdentityUser current(String id) {
-        return users.findById(java.util.Objects.requireNonNull(id)).filter(user -> user.isEnabled())
+        return users.findById(java.util.Objects.requireNonNull(id)).filter(user -> usable(user.getId(),user.getRole(),user.isEnabled()))
                 .orElseThrow(() -> new BusinessException(401, "UNAUTHENTICATED", "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."));
     }
     public boolean isAdmin(String userId) {
-        return users.findById(java.util.Objects.requireNonNull(userId)).map(u -> "ADMIN".equals(u.getRole())).orElse(false);
+        return users.findById(java.util.Objects.requireNonNull(userId)).map(u -> "ADMIN".equals(u.getRole()) && usable(u.getId(),u.getRole(),u.isEnabled())).orElse(false);
     }
     public IdentityUserRepository.CurrentAccount lockCurrent(String id) {
-        return users.lockAccount(id).filter(account -> account.getEnabled())
+        return users.lockAccount(id).filter(account -> usable(account.getId(),account.getRole(),account.getEnabled()))
             .orElseThrow(() -> new BusinessException(401,"UNAUTHENTICATED","Phiên đăng nhập đã hết hạn."));
     }
     public IdentityDtos.Me me(IdentityUser user, int timeoutSeconds) {
@@ -59,11 +72,11 @@ public class IdentityService {
     public IdentityDtos.User create(String actorId, IdentityDtos.CreateUser input, String requestId) {
         var actor = current(actorId);
         if (!permissions(actor).contains("users:create")) throw forbidden();
-        // Delegated PMs may create testers, never another privileged account.
-        if (!"ADMIN".equals(actor.getRole()) && !"TESTER".equals(input.role())) throw forbidden();
+        var type=AccountPolicy.creationType(input.isProjectAdmin(),input.isGuest());
+        if (!"ADMIN".equals(actor.getRole()) && type!=AccountType.USER) throw forbidden();
         String username = normalize(input.username());
         if (users.existsByUsername(username)) throw duplicateUsername();
-        var user = new IdentityUser(username, input.displayName().strip(), passwords.encode(input.password()), input.role());
+        var user = new IdentityUser(username, input.displayName().strip(), passwords.encode(input.password()), type.name());
         try { users.saveAndFlush(user); }
         catch (DataIntegrityViolationException duplicate) { throw duplicateUsername(); }
         audit.record(actorId, user.getId(), "USER_CREATED", requestId);
@@ -75,6 +88,8 @@ public class IdentityService {
         if (input.enabled() == null && input.canCreateUsers() == null && input.username() == null && input.displayName() == null)
             throw new BusinessException(422, "VALIDATION_ERROR", "Chưa có thông tin cần cập nhật.");
         if (Boolean.FALSE.equals(input.enabled()) && actorId.equals(id)) throw new BusinessException(409, "SELF_DISABLE", "Bạn không thể vô hiệu hóa tài khoản của chính mình.");
+        if(Boolean.TRUE.equals(input.enabled()) && "ADMIN".equals(user.getRole()) && !registry.contains(user.getId()))
+            throw new BusinessException(422,"UNREGISTERED_SYSTEM_ADMIN","Tài khoản này không thuộc hai Admin tổng đã thiết lập.");
         if (input.canCreateUsers() != null && !"PM".equals(user.getRole())) throw new BusinessException(422, "VALIDATION_ERROR", "Chỉ cấp quyền tạo tài khoản cho PM.");
         String username = input.username() == null ? user.getUsername() : normalize(input.username());
         String displayName = input.displayName() == null ? user.getDisplayName() : input.displayName().strip();
@@ -123,14 +138,6 @@ public class IdentityService {
     private void revokeSessions(String id) {
         // SessionPrincipal uses the same optimistic version, so every actual account edit expires old sessions.
         jdbc.update("DELETE FROM SPRING_SESSION WHERE PRINCIPAL_NAME = ?", id);
-    }
-    @Transactional
-    public boolean bootstrap(String username, String password, String displayName) {
-        jdbc.queryForObject("SELECT id FROM application_info WHERE id = 1 FOR UPDATE", Integer.class);
-        if (users.count() != 0) return false;
-        var user = users.saveAndFlush(new IdentityUser(normalize(username), displayName.strip(), passwords.encode(password), "ADMIN"));
-        audit.record(user.getId(), user.getId(), "ADMIN_BOOTSTRAPPED", null);
-        return true;
     }
     public IdentityDtos.User view(IdentityUser user) {
         return new IdentityDtos.User(user.getId(), user.getUsername(), user.getDisplayName(), user.getRole(), user.isEnabled(),

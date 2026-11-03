@@ -2,7 +2,14 @@
 
 ## FixReports — phân tích và báo cáo quản lý ngày 19/10/2026
 
-Contract hiện hành trong source dùng `P=/api/v1/projects/{projectId}/management-reports`; chỉ PM **của chính dự án** hoặc ADMIN, kể cả ADMIN không membership. Tester/DEV bị403, PM ngoài scope404; quyền AI đọc toàn hệ thống không mở quyền CRUD/xem API management-reports ngoài membership. [Contract chung](fixreports-contract.md), [metrics Feature](../business/metrics.md), [quyền](../business/permissions.md). Session, CSRF cho ghi, version và archive guard giữ hiện hành. Không xác nhận migration main DB/UAT từ source này.
+Contract hiện hành dùng `P=/api/v1/projects/{projectId}/management-reports`. Admin tổng đã đăng ký và PM **của chính dự án** có quyền quản lý; USER không được đọc báo cáo quản lý. GUEST có membership GUEST hoạt động chỉ được GET summary/list/get/download của dự án đó; không có quyền viết. PM/Guest ngoài scope404. [Contract chung](fixreports-contract.md), [metrics Feature](../business/metrics.md), [quyền](../business/permissions.md). Session, CSRF cho ghi, version và archive guard giữ hiện hành. Không suy trạng thái migration main/UAT từ source.
+
+### Projection riêng cho Khách — 02/11/2026
+
+- `GET /api/v1/reporting-projects?page=0&size=100`: chỉ GUEST; page0–100000, size1–100. Trả `{items:[{id,code,name,projectRole}],page,size,totalElements}`; lọc membership GUEST hoạt động trước phân trang, không trả thông tin thành viên/môi trường/tài khoản.
+- `GET P/summary`: `{project:{id,code,name},metrics,asOf,timeZone}`. Metrics chỉ tổng Status/tiến độ. GUEST truyền featureId trả422, không mở context nội bộ theo Feature.
+- `GET P`: `{items:[{id,title,createdAt,updatedAt}],totalItems,page,size,totalPages}`. `GET P/{id}` thêm `markdown`; không trả tác giả, version chỉnh sửa hay Feature ID cho Guest. Download là Markdown đã lưu của báo cáo cùng dự án.
+- Guest bị403 khi gọi workspace/Feature/case/Issue/AI, preview-context và mọi API ghi; DELETE/POST/PATCH/PUT với CSRF hợp lệ vẫn bị từ chối. Khóa tài khoản trả401; gỡ membership khiến lần đọc tiếp theo trả404. UI Guest chỉ tải API reporting, không mount AI/editor/workspace providers.
 
 | Method/path sau P | Contract |
 | --- | --- |

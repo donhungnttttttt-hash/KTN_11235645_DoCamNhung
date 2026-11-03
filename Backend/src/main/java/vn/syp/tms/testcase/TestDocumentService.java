@@ -59,7 +59,7 @@ public class TestDocumentService {
     public TestDocumentDtos.Result updateResult(Long projectId,String actor,Long id,Long rowId,TestDocumentDtos.UpdateResult input) {
         var archived=jdbc.query("SELECT archived_at IS NOT NULL FROM projects WHERE id=? FOR SHARE",(rs,n)->rs.getBoolean(1),projectId);
         if(archived.isEmpty()) throw notFound();
-        projects.requireNotDev(projectId,actor);
+        projects.requireWorkspaceAccess(projectId,actor);
         projects.requireMembership(projectId,actor);
         if(archived.getFirst()) throw new BusinessException(409,"ARCHIVED","Dự án đã được lưu trữ.");
         var values=jdbc.query("""

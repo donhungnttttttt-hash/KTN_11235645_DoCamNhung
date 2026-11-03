@@ -1,4 +1,6 @@
-# Contract identity S02
+# Contract identity — mô hình tài khoản thống nhất 02/11/2026
+
+Bổ sung 03/11: [hồ sơ cá nhân và avatar](self-profile.md), [OpenAPI](self-profile.yaml). Mọi loại tài khoản được sửa hồ sơ của chính mình; API quản trị bên dưới giữ nguyên giới hạn.
 
 API base `/api/v1`, cookie session cùng origin qua Vite proxy. POST/PATCH/PUT cần token từ GET `/auth/csrf`, gửi header trả về và cookie; sau login/logout phải lấy token mới. Nội dung JSON; lỗi theo ApiError ở openapi.yaml.
 
@@ -9,11 +11,11 @@ API base `/api/v1`, cookie session cùng origin qua Vite proxy. POST/PATCH/PUT c
 | POST /auth/logout | Không | 204; hủy phiên và cookie, không chỉ xóa user trên UI |
 | GET /me | Session | 200 Me; 401 nếu không có phiên hợp lệ |
 | GET /users?page=0&size=20 | page >= 0, size 1–100 | ADMIN; 200 `{items,page,size,totalElements}` sắp createdAt/id; 401/403/422 |
-| POST /users | `{username,displayName,password,role}` | ADMIN tạo ADMIN/PM/TESTER/DEV; PM có quyền chỉ tạo TESTER; 201 User; 403, 409 trùng tên, 422 validation |
+| POST /users | `{username,displayName,password,isProjectAdmin?,isGuest?}` | Admin tổng đã đăng ký tạo USER/PM/GUEST; PM được cấp riêng chỉ tạo USER; hai cờ true hoặc field role trả 422; 201 User; 403, 409 trùng tên, 422 validation |
 | PATCH /users/{id} | `{enabled?,canCreateUsers?,username?,displayName?,expectedVersion}` | ADMIN; ít nhất một field cần cập nhật; canCreateUsers chỉ dùng cho PM; 200 User, 404, 409 stale/self-disable/trùng username; mọi thay đổi thực sự thu hồi phiên của tài khoản được sửa |
 | PUT /users/{id}/password | `{newPassword,expectedVersion}` | ADMIN; đặt lại mật khẩu, 200 User không chứa mật khẩu/hash; 404, 409 stale, 422 validation; thu hồi mọi phiên của tài khoản được đặt lại mật khẩu |
 
-Me: `{id,username,displayName,roles,permissions,sessionExpiresAt}`. ADMIN permissions `profile:read`, `users:read`, `users:create`, `users:update`, `users:delegate`; PM được cấp có `profile:read`, `users:create`; PM chưa cấp, TESTER và DEV chỉ `profile:read`. Không có project membership giả. User: `{id,username,displayName,role,enabled,canCreateUsers,version,createdAt}`; không trả hash hoặc session ID. `canCreateUsers` là quyền cấp riêng cho PM, luôn false với ADMIN/TESTER/DEV; ADMIN có quyền mặc định từ role.
+Me: `{id,username,displayName,roles,permissions,sessionExpiresAt}`. ADMIN permissions `profile:read`, `users:read`, `users:create`, `users:update`, `users:delegate`; PM được cấp có `profile:read`, `users:create`; PM chưa cấp, USER và GUEST chỉ `profile:read`. Không có project membership giả. User: `{id,username,displayName,role,enabled,canCreateUsers,version,createdAt}`; không trả hash hoặc session ID. `canCreateUsers` là quyền cấp riêng cho PM, luôn false với ADMIN/USER/GUEST; ADMIN có quyền khi đang hoạt động và UUID thuộc system_admin_registry.
 
 Validation: username ASCII theo ADR-002; password 12–128 cho create, login cho phép 1–128; displayName không trống/tối đa 100. expectedVersion không âm. Login trim/lowercase username; create từ chối khoảng trắng trong username rồi chuẩn hóa lowercase. Password giữ nguyên, displayName trim. Pagination sai kiểu trả 400; ID không tồn tại trả 404; dữ liệu vượt giới hạn trả 422. Lỗi DB không được thay bằng dữ liệu mẫu.
 
@@ -30,8 +32,11 @@ Admin được sửa tên hiển thị, tên đăng nhập và đặt lại mậ
 ## Thử cấp quyền bằng công cụ API nội bộ
 
 1. Dùng cùng cookie jar: GET `/auth/csrf`, POST `/auth/login` bằng Admin và header CSRF vừa nhận. Lấy lại CSRF sau đăng nhập.
-2. POST `/users` với `{username:"pm.demo",displayName:"PM nội bộ",password:"<mật khẩu riêng ít nhất 12 ký tự>",role:"PM"}`. Giữ `id` và `version` trả về. PM mới chưa được tạo tài khoản.
-3. PATCH `/users/{id}` với `{canCreateUsers:true,expectedVersion:0}` (dùng version thực tế từ bước trước). PM đăng nhập lại, `/me` có `users:create`, được POST `/users` với `role:"TESTER"`.
+2. POST `/users` với `{username:"pm.demo",displayName:"PM nội bộ",password:"<mật khẩu riêng ít nhất 12 ký tự>",isProjectAdmin:true,isGuest:false}`. Giữ `id` và `version` trả về. PM mới chưa được tạo tài khoản.
+3. PATCH `/users/{id}` với `{canCreateUsers:true,expectedVersion:0}` (dùng version thực tế từ bước trước). PM đăng nhập lại, `/me` có `users:create`, được POST `/users` với `isProjectAdmin:false,isGuest:false`.
 4. Thu hồi: PATCH cùng ID `{canCreateUsers:false,expectedVersion:<version mới>}`. Phiên cũ của PM mất hiệu lực; sau đăng nhập lại, POST `/users` trả 403.
 
-Tạo/quản trị dùng công cụ API trong S02; không có trang đăng ký công khai hoặc nút cho Tester. Ví dụ dùng tên dữ liệu thử, không seed vào DB. Không copy mật khẩu local vào file request được commit. Muốn bật/tắt tài khoản gửi `enabled` cùng version; không xóa actor/audit.
+Tạo/quản trị dùng công cụ API trong S02; không có trang đăng ký công khai hoặc nút cho User thường/Khách. Ví dụ dùng tên dữ liệu thử, không seed vào DB. Không copy mật khẩu local vào file request được commit. Muốn bật/tắt tài khoản gửi `enabled` cùng version; không xóa actor/audit.
+
+
+`username` là ID đăng nhập (ví dụ `syp_user005`); `displayName` là tên người dùng. UUID `id` nội bộ không đổi. Hai cờ mặc định false tạo USER, chỉ isProjectAdmin tạo PM, chỉ isGuest tạo GUEST. Không sửa loại tài khoản qua PATCH. Hai Admin tổng chỉ được thiết lập bằng [công cụ riêng](../database/unified-user-access-cutover.md). Mật khẩu 8 ký tự đã duyệt chỉ được dùng qua công cụ chuyển đổi riêng; create/reset thông thường vẫn tối thiểu 12.

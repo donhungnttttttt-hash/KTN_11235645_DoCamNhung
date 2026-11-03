@@ -18,6 +18,7 @@ public class TestCaseWorkbook {
     public static final String INTERNAL = "INTERNAL_V1";
     public static final String CUSTOMER = "CUSTOMER_V1";
     private static final List<String> EXPORT_SUFFIX=List.of("Status","Người test đầu tiên","Người test lại gần nhất");
+    private static final List<String> EXECUTION_SUFFIX=List.of("Version test","Ngày thực hiện");
     public record Parsed(String fileName, String checksum, List<TestCaseDtos.ImportRowInput> rows,
             String format, String sheetName, byte[] sourceBytes) {}
 
@@ -42,9 +43,13 @@ public class TestCaseWorkbook {
                     return new Parsed(name, sha256(bytes), rows, CUSTOMER, sheet.getSheetName(), bytes);
                 }
                 if (sheet.getNumMergedRegions() != 0) throw invalid("Mẫu TestCases nội bộ không hỗ trợ gộp ô: " + sheet.getMergedRegion(0).formatAsString() + ".");
-                boolean ownExport=header.getLastCellNum()==HEADERS.size()+EXPORT_SUFFIX.size();
+                int columnCount=header.getLastCellNum();
+                boolean executionExport=columnCount==HEADERS.size()+EXPORT_SUFFIX.size()+EXECUTION_SUFFIX.size();
+                boolean ownExport=columnCount==HEADERS.size()+EXPORT_SUFFIX.size()||executionExport;
                 if(ownExport)for(int index=0;index<EXPORT_SUFFIX.size();index++)
                     if(!EXPORT_SUFFIX.get(index).equals(text(header.getCell(HEADERS.size()+index),1)))ownExport=false;
+                if(executionExport)for(int index=0;index<EXECUTION_SUFFIX.size();index++)
+                    if(!EXECUTION_SUFFIX.get(index).equals(text(header.getCell(HEADERS.size()+EXPORT_SUFFIX.size()+index),1)))ownExport=false;
                 if (header.getLastCellNum()!=HEADERS.size()&&!ownExport) throw invalid("Thiếu hoặc thừa cột trong file mẫu.");
                 for (int col=0; col<HEADERS.size(); col++) {
                     if (!HEADERS.get(col).equals(text(header.getCell(col),1))) throw invalid("Tên hoặc thứ tự cột không khớp file mẫu.");
@@ -53,9 +58,9 @@ public class TestCaseWorkbook {
                 for (int i=1; i<=sheet.getLastRowNum(); i++) {
                     Row row=sheet.getRow(i);
                     if (row==null) continue;
-                    if (row.getLastCellNum()>(ownExport?HEADERS.size()+EXPORT_SUFFIX.size():HEADERS.size())) throw invalid("Dòng " + (i+1) + " có cột ngoài mẫu.");
+                    if (row.getLastCellNum()>columnCount) throw invalid("Dòng " + (i+1) + " có cột ngoài mẫu.");
                     // Validate untrusted metadata cells without importing execution or assignment responsibility.
-                    if(ownExport)for(int col=HEADERS.size();col<HEADERS.size()+EXPORT_SUFFIX.size();col++)text(row.getCell(col),i+1);
+                    if(ownExport)for(int col=HEADERS.size();col<columnCount;col++)text(row.getCell(col),i+1);
                     String[] v=new String[HEADERS.size()];
                     for (int c=0;c<v.length;c++) v[c]=text(row.getCell(c),i+1);
                     if (Arrays.stream(v).allMatch(value -> value.isBlank())) continue;

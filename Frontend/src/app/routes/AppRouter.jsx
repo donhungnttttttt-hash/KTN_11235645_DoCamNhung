@@ -6,7 +6,6 @@ import { NotFoundPage } from '../pages/NotFoundPage';
 import { ProjectSettingsPage } from '../features/projects/ProjectSettingsPage';
 import { useProject } from '../features/projects/ProjectProvider';
 import { useAuth } from '../features/auth/AuthProvider';
-import { isProjectDeveloper } from '../features/projects/projectAccess';
 import { TestingFeaturesPage } from '../features/testing/TestingFeaturesPage';
 import { TestingFeaturePage } from '../features/testing/TestingFeaturePage';
 import { TestingDocumentPage } from '../features/testing/TestingDocumentPage';
@@ -35,7 +34,7 @@ export function AppRouter({ activeRoute, navigate }) {
     if(info.linkedProjectId && Number(project.id)!==info.linkedProjectId) return <p role="status">Đang chọn dự án phù hợp với đường dẫn…</p>;
     const featurePath = scoped(`/board/testing/features/${info.featureId}`);
     let content;
-    if(info.testingDocumentId) content = <TestingDocumentPage key={`${project.id}/${info.featureId}/${info.testingDocumentId}`} projectId={project.id} featureId={info.featureId} documentId={info.testingDocumentId} caseId={info.testingCaseId} onBack={()=>navigate(featurePath)} renderIssueAction={props=><CaseIssueAction {...props} canCreate={props.document?.canCreateIssue===true&&!isProjectDeveloper(project,hasRole)}/>}/>;
+    if(info.testingDocumentId) content = <TestingDocumentPage key={`${project.id}/${info.featureId}/${info.testingDocumentId}`} projectId={project.id} featureId={info.featureId} documentId={info.testingDocumentId} caseId={info.testingCaseId} onBack={()=>navigate(featurePath)} renderIssueAction={props=><CaseIssueAction {...props} canCreate={props.document?.canCreateIssue===true}/>}/>;
     else if(info.featureId) content = <TestingFeaturePage key={`${project.id}/${info.featureId}`} projectId={project.id} featureId={info.featureId} onOpenDocument={id=>navigate(scoped(`/board/testing/features/${info.featureId}/documents/${id}`))} onBack={()=>navigate(testingPath)}/>;
     else content = <TestingFeaturesPage key={project.id} projectId={project.id} onOpenFeature={id=>navigate(scoped(`/board/testing/features/${id}`))}/>;
     return info.testingDocumentId ? content : boardArea(content);
@@ -47,7 +46,7 @@ export function AppRouter({ activeRoute, navigate }) {
   if(path==='/issues') return <WorkBoardPage activeRoute={activeRoute} navigate={navigate}/>;
   if(path==='/board/new') return retired('Cách tạo công việc đã thay đổi','Tạo Bug hoặc QA từ case trong Quản lý kiểm thử; lỗi Monkey có thể tạo trong Quản lý lỗi.','/issues','Mở Quản lý lỗi');
   if(path==='/analysis'||path==='/progress') {
-    if(!hasRole('ADMIN')&&(hasRole('DEV')||project?.projectRole!=='PM')) return <section className="page-container"><h1>Không có quyền truy cập</h1><p>Tổng hợp & Phân tích dành cho PM của dự án và ADMIN.</p></section>;
+    if(!hasRole('ADMIN')&&(!hasRole('PM')||project?.projectRole!=='PM')) return <section className="page-container"><h1>Không có quyền truy cập</h1><p>Tổng hợp & Phân tích dành cho PM của dự án và ADMIN.</p></section>;
     return <AnalysisPage/>;
   }
   if(path==='/settings/catalogs') return retired('Thông tin chung đã thay đổi','Danh mục cũ đã được thay thế bằng Note của dự án.','/settings/notes','Mở Note');

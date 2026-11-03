@@ -228,7 +228,7 @@ class AdminNativeIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,id,admin.getId())).isZero();
         assertThat(management.members(admin.getId(),id)).hasSize(2);
         assertThatThrownBy(()->projects.addOrUpdateMember(id,dev.getId(),tester.getId(),new ProjectDtos.SetMember("TESTER"))).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);
-        assertThatThrownBy(()->projects.requireNotDev(id,dev.getId())).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);
+        assertThatThrownBy(()->projects.requireWorkspaceAccess(id,dev.getId())).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);
     }
     @Test void auditNewFlowVocabularySearchMatchesDisplayedLabelsAcrossPages() throws Exception {
         String tag="frlabels"+UUID.randomUUID().toString().substring(0,8);

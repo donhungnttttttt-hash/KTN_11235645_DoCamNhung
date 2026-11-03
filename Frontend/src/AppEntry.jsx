@@ -10,6 +10,7 @@ import { AiProviderProvider } from "./app/features/ai/AiConnections";
 import { AiChat } from "./app/features/ai/AiChat";
 import { ChatLauncherProvider } from "./app/features/ai/ChatLauncherSlot";
 import { ReportDraftProvider } from "./app/features/reports/ReportDraftProvider";
+import { GuestWorkspace } from "./app/features/reports/GuestWorkspace";
 
 const explicitWorkspace = route => new URLSearchParams(route.split('?')[1]).get('workspace') === '1';
 const workspaceRoute = route => {
@@ -45,12 +46,13 @@ export function RoleApp({workspaceIdentity}) {
       window.history.replaceState(null,'','#/admin');setRoute('/admin');
     }
   },[user,hasRole,workspace,route]);
+  if (user?.roles?.includes('GUEST')) return <ProjectProvider><GuestWorkspace/></ProjectProvider>;
   if (route.startsWith('/admin') || hasRole('ADMIN') && !workspace) return <AdminApp route={route.startsWith('/admin') ? route : '/admin'}/>;
   return <ProjectProvider><ProjectDataProvider><App/></ProjectDataProvider></ProjectProvider>;
 }
 
 function AuthenticatedShell() {
-  const {status}=useAuth();
+  const {status,user}=useAuth();
   // Remains mounted across AuthBoundary's identity-keyed app remounts, so a
   // previous account's workspace opt-in cannot become the next account's default.
   const workspaceIdentity=useRef(null);
@@ -58,7 +60,7 @@ function AuthenticatedShell() {
   // choice. Keep a sentinel: null would opt in again from the URL in RoleApp.
   // Expired sessions retain their choice so reauthentication preserves drafts.
   if(status==='anonymous') workspaceIdentity.current={id:null,optedIn:false};
-  return <AuthBoundary><ReportDraftProvider><AiEditBuffer><AiProviderProvider><ChatLauncherProvider><RoleApp workspaceIdentity={workspaceIdentity}/><AiChat/></ChatLauncherProvider></AiProviderProvider></AiEditBuffer></ReportDraftProvider></AuthBoundary>;
+  return <AuthBoundary>{user?.roles?.includes('GUEST')?<RoleApp workspaceIdentity={workspaceIdentity}/>:<ReportDraftProvider><AiEditBuffer><AiProviderProvider><ChatLauncherProvider><RoleApp workspaceIdentity={workspaceIdentity}/><AiChat/></ChatLauncherProvider></AiProviderProvider></AiEditBuffer></ReportDraftProvider>}</AuthBoundary>;
 }
 
 export default function AppEntry() {

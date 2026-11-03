@@ -1,8 +1,8 @@
 # Chạy ứng dụng nội bộ trên máy phát triển
 
-Ứng dụng có backend Spring Boot, MySQL/Flyway V11 và React nối API cho dự án, thư viện, thực thi, bug/retest và báo cáo nội bộ. Theo dõi kỹ thuật qua **terminal, log và kiểm thử tự động**, không hiển thị trên web. API thực thi tại [OpenAPI](api/openapi.yaml); phạm vi nghiệm thu và phần còn lại tại [kế hoạch](planning/README.md).
+Ứng dụng có backend Spring Boot, MySQL/Flyway (schema hiện hành V38) và React nối API cho dự án, Feature, file/case, Bug–QA và báo cáo nội bộ. Các luồng run/retest cũ đã nghỉ. Theo dõi kỹ thuật qua **terminal, log và kiểm thử tự động**, không hiển thị trên web. API thực thi tại [OpenAPI](api/openapi.yaml); phạm vi nghiệm thu và phần còn lại tại [kế hoạch](planning/README.md).
 
-Sprint 02 thêm đăng nhập nội bộ, cookie session lưu trong MySQL và Flyway V2. Admin quản trị tài khoản; PM chỉ tạo Tester khi được Admin cấp quyền; Tester không tạo tài khoản. Chi tiết ở [quyền](business/permissions.md) và [API identity](api/identity.md).
+Đăng nhập dùng ID tài khoản và cookie session lưu trong MySQL. Admin tổng quản trị tài khoản; Admin dự án (PM) được cấp riêng chỉ tạo User thường. User thường hợp quyền Tester/Dev trong phạm vi được phân công; Khách chỉ đọc tiến độ/báo cáo của dự án được chia sẻ. Cả bốn loại tài khoản tự sửa hồ sơ cá nhân. Chi tiết ở [quyền](business/permissions.md), [API identity](api/identity.md) và [hướng dẫn chuyển đổi/thiết lập hai Admin](database/unified-user-access-cutover.md).
 
 ## Phiên bản đã kiểm tra
 
@@ -75,7 +75,7 @@ Xem tài khoản Admin local bằng lệnh riêng (lệnh này hiển thị mậ
 rtk proxy powershell -NoProfile -File scripts/Show-LocalLogin.ps1
 ```
 
-`Initialize-Auth.ps1` tạo `admin.local` với mật khẩu ngẫu nhiên trong `.env`, không ghi đè cấu hình đã có. Backend chỉ bootstrap khi DB chưa có tài khoản; restart không đặt lại mật khẩu. File `.env.example` tắt bootstrap mặc định. Nếu đã tự tạo `.env` từ example, tự đặt secret và bật `TMS_BOOTSTRAP_ENABLED=true` trước lần khởi động đầu. Sau khi có tài khoản, có thể chuyển về false. Không seed mật khẩu trong migration. `TMS_SESSION_TIMEOUT` mặc định `30m`; HTTPS dùng cookie Secure, có thể bắt buộc bằng biến môi trường `TMS_COOKIE_SECURE=true` khi triển khai sau này.
+`Initialize-Auth.ps1` chỉ chuẩn bị hai tài khoản bootstrap riêng cho database core trống; không sửa cấu hình có sẵn. Sau V37, ADMIN phải có registry; database đã có dữ liệu hoặc có demo cần mapping UUID và chạy [provision riêng](database/unified-user-access-cutover.md). Không reset mật khẩu khi khởi động lại. Create/reset thông thường yêu cầu 12–128 ký tự.
 
 Thanh tài khoản góc phải có tên thật, vai trò và Đăng xuất. Khi hết phiên, ứng dụng khóa và giữ bản nháp trong bộ nhớ cho cùng tài khoản; đăng xuất hoặc đổi tài khoản sẽ xóa cây dữ liệu hiện tại. Tải lại trang mất bản nháp chưa lưu. S02 cung cấp API quản trị tài khoản, chưa mở khách hàng. **Cài đặt dự án** (`#/settings`) quản lý thông tin/thành viên/quy tắc/sổ tay; `#/settings/catalogs` quản lý năm danh mục. Thêm thành viên chỉ dùng tài khoản đã có, không tạo tài khoản hoặc cấp quyền hệ thống.
 

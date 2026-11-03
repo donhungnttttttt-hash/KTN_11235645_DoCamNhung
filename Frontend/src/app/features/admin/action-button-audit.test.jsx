@@ -50,7 +50,7 @@ it('shows a visible project validation summary when native validation blocks sub
 });
 it.each(['account','asset','handbook','rules'])('explains native required validation for %s instead of leaving its save action silent',async kind=>{
  let field;
- if(kind==='account'){render(<AdminUsers api={{users:vi.fn().mockResolvedValue(page([])),projects:vi.fn().mockResolvedValue(page([]))}}/>);fireEvent.click(screen.getByText('Tạo tài khoản'));field=screen.getByLabelText('Tên đăng nhập');}
+ if(kind==='account'){render(<AdminUsers api={{users:vi.fn().mockResolvedValue(page([])),projects:vi.fn().mockResolvedValue(page([]))}}/>);fireEvent.click(screen.getByText('Tạo tài khoản'));field=screen.getByLabelText('ID đăng nhập');}
  if(kind==='asset'){render(<DeviceAssetForm api={{}} onSaved={vi.fn()} onCancel={vi.fn()}/>);field=screen.getByLabelText('Mã tài sản');}
  if(kind==='handbook'){render(<HandbookPanel projectId={1} canEdit/>);fireEvent.click(screen.getByText('Thêm tài liệu'));field=screen.getByLabelText('Mã tài liệu');}
  if(kind==='rules'){projectsApi.listRules.mockResolvedValue([{id:2,code:'INTERNAL_DEMO'}]);projectsApi.listRuleVersions.mockResolvedValue([]);render(<RulesPanel projectId={1} canEdit/>);field=await screen.findByLabelText('Nguồn quy tắc');}

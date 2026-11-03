@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { projectsApi } from '../../services/api/projects';
 import {MemberPicker} from './MemberPicker';
 
-const roles={PM:'Quản lý dự án (PM)',TESTER:'Kiểm thử viên',DEV:'Lập trình viên',MEMBER:'Thành viên'};
+const roles={PM:'Admin dự án',USER:'User thường',GUEST:'Khách',MEMBER:'Thành viên'};
 export function ProjectMembers({projectId,canEdit,canAdd=canEdit,onMembershipChange=()=>{}}) {
   const [members,setMembers]=useState(null);
   const [error,setError]=useState('');
@@ -27,7 +27,7 @@ export function ProjectMembers({projectId,canEdit,canAdd=canEdit,onMembershipCha
     {error && <p role="alert" className="text-danger">{error} <button className="cat-btn" disabled={busy} onClick={()=>setReload(x=>x+1)}>Thử lại</button></p>}
     {adding && <MemberEditor projectId={projectId} members={members || []} onClose={()=>setAdding(false)} onSaved={()=>{setAdding(false);setReload(x=>x+1);onMembershipChange();}}/>}
     {!members ? !error && <p>Đang tải thành viên…</p> : <TableScroll label="Thành viên dự án" className="settings-table-scroll"><table className="data-table"><thead><tr><th>Tên</th><th>Vai trò dự án</th>{canEdit && <th>Thao tác</th>}</tr></thead><tbody>
-      {members.map(member=><tr key={member.userId}><td><strong>{member.displayName}</strong><div>@{member.username}</div></td><td>{member.systemRole==='ADMIN'&&member.projectRole==='PM'?'ADMIN · Làm PM':roles[member.projectRole]}</td>{canEdit && <td><div className="ui-actions"><button className="btn-icon text-danger" disabled={busy || adding} onClick={()=>remove(member)}>Gỡ {member.displayName}</button></div></td>}</tr>)}
+      {members.map(member=><tr key={member.userId}><td><strong>{member.displayName}</strong><div>@{member.username}</div></td><td>{member.systemRole==='ADMIN'&&member.projectRole==='PM'?'Admin tổng · Làm PM':roles[member.projectRole]}</td>{canEdit && <td><div className="ui-actions"><button className="btn-icon text-danger" disabled={busy || adding} onClick={()=>remove(member)}>Gỡ {member.displayName}</button></div></td>}</tr>)}
       {!members.length && <tr><td colSpan={3}>Chưa có thành viên.</td></tr>}
     </tbody></table></TableScroll>}
   </section>;
@@ -46,7 +46,7 @@ function MemberEditor({projectId,members,onClose,onSaved}) {
       for(const person of selected){
         try{
           const candidate=await projectsApi.memberCandidate(projectId,person.username);
-          if(!['DEV','TESTER'].includes(candidate.projectRole))throw new Error('PM chỉ được thêm Dev hoặc Tester.');
+          if(!['USER'].includes(candidate.projectRole))throw new Error('Admin dự án chỉ được thêm User thường.');
           await projectsApi.addMember(projectId,person.userId,{projectRole:candidate.projectRole,expectedVersion:candidate.membershipVersion??null});
           saved++;setAddedIds(values=>[...values,person.userId]);setSelected(values=>values.filter(value=>value.userId!==person.userId));
         }catch(failure){throw new Error(`${person.displayName}: ${failure.message}`);}
@@ -60,8 +60,8 @@ function MemberEditor({projectId,members,onClose,onSaved}) {
     {error && <p role="alert" className="text-danger">{error}</p>}
     {notice && <p role="status">{notice}</p>}
     <fieldset disabled={busy}>
-      <p>PM được thêm Dev và Tester. Vai trò theo tài khoản, không thay đổi tại đây.</p>
-      <MemberPicker projectId={projectId} existingUserIds={[...members.map(member=>member.userId),...addedIds]} api={pickerApi} allowedRoles={['DEV','TESTER']} value={selected} onChange={setSelected}/>
+      <p>Admin dự án được thêm User thường. Vai trò theo tài khoản, không thay đổi tại đây.</p>
+      <MemberPicker projectId={projectId} existingUserIds={[...members.map(member=>member.userId),...addedIds]} api={pickerApi} allowedRoles={['USER']} value={selected} onChange={setSelected}/>
     </fieldset>
     <div className="settings-actions"><button className="cat-btn primary" disabled={busy || !selected.length}>{busy?'Đang thêm thành viên…':'Lưu thành viên'}</button><button className="cat-btn" type="button" disabled={busy} onClick={onClose}>Hủy</button></div>
   </form>;

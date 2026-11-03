@@ -5,9 +5,10 @@ export function isProjectObserver(project, hasRole) {
 
 export function canManageProjectWork(project, hasRole) {
   return Boolean(project && !project.archived && (hasRole?.('ADMIN')
-    || (project.projectRole === 'PM' && !hasRole?.('DEV'))));
+    || (project.projectRole === 'PM' && hasRole?.('PM'))));
 }
 
+// Compatibility guard used only by retired execution views.
 export function isProjectDeveloper(project, hasRole) {
   return !hasRole?.('ADMIN') && Boolean(hasRole?.('DEV') || project?.projectRole === 'DEV');
 }

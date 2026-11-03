@@ -5,7 +5,8 @@ import {afterEach,beforeEach,expect,it,vi} from 'vitest';
 import {AdminLayout} from './AdminLayout';
 import {AdminFormDialog} from './AdminFormDialog';
 
-vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({user:{displayName:'Admin hệ thống'},logout:vi.fn()})}));
+vi.mock('../auth/AuthProvider',async importOriginal=>({...await importOriginal(),useAuth:()=>({user:{id:'admin',displayName:'Admin hệ thống',username:'admin',roles:['ADMIN'],permissions:[]},can:()=>false,logout:vi.fn()})}));
+vi.mock('../../services/api/selfProfile',()=>({selfProfileApi:{get:vi.fn().mockResolvedValue({hasAvatar:false})}}));
 let compact=false,listeners;
 const media={get matches(){return compact;},addEventListener:(_type,listener)=>listeners.add(listener),removeEventListener:(_type,listener)=>listeners.delete(listener)};
 function resize(value){act(()=>{compact=value;listeners.forEach(listener=>listener({matches:value}));});}

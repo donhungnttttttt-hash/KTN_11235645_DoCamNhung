@@ -1,0 +1,23 @@
+import React from 'react';
+import {render,screen,fireEvent,waitFor,within} from '@testing-library/react';
+import {it,expect,vi} from 'vitest';
+import {FeatureIssueForm} from './FeatureIssueForm';
+const initial=[{state:'NEW',closureReason:null,columnId:'new',label:'New'}],progress={state:'IN_PROGRESS',closureReason:null,columnId:'progress',label:'In Progress'},fixed={state:'CLOSED',closureReason:'FIXED',columnId:'fixed',label:'Closed / Fixed'};
+const contacts=[{membershipId:11,displayName:'Self coordinator'},{membershipId:12,displayName:'Other coordinator'}];
+function fill(){for(const [name,value]of [['Tiêu đề','Retained title'],['Các bước thực hiện','Open'],['Kết quả mong đợi','Expected'],['Kết quả thực tế','Actual'],['Tần suất tái hiện','1/2'],['Môi trường phát hiện','Test'],['Thiết bị phát hiện','Desktop']])fireEvent.change(screen.getByLabelText(name),{target:{value}});}
+it('uses server initial combinations for chosen recipient, requires a close reason and sends canonical state/reason',async()=>{
+ const api={options:vi.fn().mockResolvedValue({assignees:contacts,initialTransitions:[...initial,progress,fixed]}),create:vi.fn().mockResolvedValue({id:1})};render(<FeatureIssueForm projectId={1} featureId={2} monkey api={api}/>);await screen.findByRole('option',{name:'Self coordinator'});fill();fireEvent.change(screen.getByLabelText('Đầu mối tiếp nhận'),{target:{value:'11'}});
+ await waitFor(()=>expect(api.options).toHaveBeenCalledWith(1,'BUG',expect.objectContaining({assigneeMembershipId:11})));
+ fireEvent.change(screen.getByLabelText('Trạng thái ban đầu'),{target:{value:'CLOSED'}});expect(screen.getByLabelText('Lý do đóng ban đầu')).toHaveAttribute('required');expect(screen.getByLabelText('Lý do đóng ban đầu')).toHaveValue('');expect(screen.getByRole('button',{name:'Lưu Issue'})).toBeDisabled();
+ fireEvent.change(screen.getByLabelText('Lý do đóng ban đầu'),{target:{value:'FIXED'}});fireEvent.change(screen.getByLabelText('Mô tả'),{target:{value:'Verified reason'}});fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(api.create).toHaveBeenCalledOnce());expect(api.create.mock.lastCall[1]).toMatchObject({ticketState:'CLOSED',closureReason:'FIXED',description:'Verified reason',assigneeMembershipId:11});
+});
+it('preserves self-assigned progress and content when changed recipient revokes that initial option, requiring explicit reset',async()=>{
+ const api={options:vi.fn().mockImplementation((_p,_t,options)=>Promise.resolve({assignees:contacts,initialTransitions:options.assigneeMembershipId===11?[...initial,progress]:initial})),create:vi.fn()};render(<FeatureIssueForm projectId={1} featureId={2} monkey api={api}/>);await screen.findByRole('option',{name:'Self coordinator'});fill();fireEvent.change(screen.getByLabelText('Đầu mối tiếp nhận'),{target:{value:'11'}});await screen.findByRole('option',{name:'Đang xử lý',exact:true});fireEvent.change(screen.getByLabelText('Trạng thái ban đầu'),{target:{value:'IN_PROGRESS'}});fireEvent.change(screen.getByLabelText('Mô tả'),{target:{value:'Retained reason'}});fireEvent.change(screen.getByLabelText('Đầu mối tiếp nhận'),{target:{value:'12'}});
+ await screen.findByRole('option',{name:'Đang xử lý · Không còn được phép'});expect(screen.getByLabelText('Tiêu đề')).toHaveValue('Retained title');expect(screen.getByLabelText('Mô tả')).toHaveValue('Retained reason');expect(screen.getByLabelText('Trạng thái ban đầu')).toHaveValue('IN_PROGRESS');expect(screen.getByRole('button',{name:'Lưu Issue'})).toBeDisabled();expect(api.create).not.toHaveBeenCalled();fireEvent.change(screen.getByLabelText('Trạng thái ban đầu'),{target:{value:'NEW'}});expect(screen.getByRole('button',{name:'Lưu Issue'})).toBeEnabled();
+});
+it('shows only the default when the server supplies no privileged initial combinations',async()=>{
+ const api={options:vi.fn().mockResolvedValue({assignees:contacts,initialTransitions:initial})};render(<FeatureIssueForm projectId={1} featureId={2} monkey api={api}/>);await screen.findByRole('option',{name:'Other coordinator'});const states=screen.getByLabelText('Trạng thái ban đầu');expect(within(states).getAllByRole('option').map(e=>e.value)).toEqual(['NEW']);expect(screen.queryByLabelText('Lý do đóng ban đầu')).not.toBeInTheDocument();
+});
+it('retains the default for older options responses without granting guessed choices',async()=>{
+ render(<FeatureIssueForm projectId={1} featureId={2} monkey api={{options:vi.fn().mockResolvedValue({assignees:contacts})}}/>);await screen.findByRole('option',{name:'Other coordinator'});expect(screen.getByLabelText('Trạng thái ban đầu')).toHaveValue('NEW');expect(within(screen.getByLabelText('Trạng thái ban đầu')).getAllByRole('option')).toHaveLength(1);
+});

@@ -1,6 +1,7 @@
 import {apiRequest,createApiClient} from './client';
 const previewRequest=createApiClient({timeoutMs:35000});
 const base=projectId=>`/projects/${encodeURIComponent(projectId)}/management-reports`;
+export const listReportingProjects=({page=0,size=100,signal}={})=>apiRequest(`/reporting-projects?${new URLSearchParams({page,size})}`,{signal});
 async function write(path,method,body,options={},preview=false){
   const csrf=await apiRequest('/auth/csrf',options);
   return (preview?previewRequest:apiRequest)(path,{...options,method,headers:{[csrf.headerName]:csrf.token},body:JSON.stringify(body)});

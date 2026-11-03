@@ -40,6 +40,8 @@ class FeatureIssueContextNativeTest {
         r.add("spring.session.jdbc.cleanup-cron",()->"-");r.add("TMS_AI_DRAFT_CLEANUP_CRON",()->"-");r.add("TMS_AI_CHAT_CLEANUP_CRON",()->"-");
     }
     @Autowired IdentityUserRepository users;
+    @Autowired SystemAdminRegistry registry;
+    @Autowired org.springframework.jdbc.core.JdbcTemplate registryJdbc;
     @Autowired ProjectService projects;
     @Autowired FeatureService features;
     @Autowired FeatureIssueService issues;
@@ -48,6 +50,7 @@ class FeatureIssueContextNativeTest {
     @Test void createFromCaseContextIncludesCurrentFeatureAndKeepsCaseFieldsSeparate() throws Exception {
         String tag=UUID.randomUUID().toString().substring(0,8);
         String actor=users.saveAndFlush(new IdentityUser("context.case."+tag,"Context admin","not-login","ADMIN")).getId();
+        registryJdbc.update("DELETE FROM system_admin_registry");registry.register(1,actor);
         long p=projects.create(actor,new ProjectDtos.CreateProject("CXC"+tag,"Case context project","","UTC")).id();
         long f=((Number)features.create(p,actor,new FeatureDtos.Create("Case Feature","idec-test100","Feature description",UUID.randomUUID())).get("id")).longValue();
         byte[] bytes;
@@ -75,10 +78,12 @@ class FeatureIssueContextNativeTest {
         String tag=UUID.randomUUID().toString().substring(0,8);
         var admin=users.saveAndFlush(new IdentityUser("context.admin."+tag,"Context admin","not-login","ADMIN"));
         String actor=admin.getId();
+        registryJdbc.update("DELETE FROM system_admin_registry");registry.register(1,actor);
         long p=projects.create(actor,new ProjectDtos.CreateProject("CTX"+tag,"Context project","","UTC")).id();
         var feature=features.create(p,actor,new FeatureDtos.Create("Original Feature","idec-test100","Original description",UUID.randomUUID()));
         long f=((Number)feature.get("id")).longValue();
-        var issue=issues.create(p,actor,new FeatureIssueDtos.Create(type,f,null,null,type.equals("BUG"),"Issue","Issue description","Steps","Expected","Actual",UUID.randomUUID()));
+        long contact=java.util.Objects.requireNonNull(registryJdbc.queryForObject("SELECT id FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,p,actor));
+        var issue=issues.create(p,actor,new FeatureIssueDtos.Create(type,f,null,null,type.equals("BUG"),"Issue","Issue description","Steps","Expected","Actual",UUID.randomUUID(),"","Always","Test","Desktop",contact,null,null,null,null,null));
         long id=((Number)issue.get("id")).longValue();
         assertThat(issue).containsEntry("featureEnvironment","idec-test100").containsEntry("featureDescription","Original description");
         var history=issues.history(p,actor,id);

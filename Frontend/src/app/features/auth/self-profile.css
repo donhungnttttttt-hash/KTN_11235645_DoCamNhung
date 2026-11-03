@@ -1,0 +1,16 @@
+.self-profile{padding:20px 0 24px;display:grid;gap:20px}
+.self-profile-avatar-editor{display:flex;align-items:center;gap:20px;padding-bottom:20px;border-bottom:1px solid var(--color-border,#d8e3e1)}
+.self-profile-avatar{display:grid;place-items:center;flex:0 0 88px;width:88px;height:88px;border-radius:50%;overflow:hidden;background:#e5f3f1;color:#0f766e;font-size:28px;font-weight:650}
+.self-profile-avatar img,.app-user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.self-profile-avatar-editor>div{display:grid;gap:10px;min-width:0}
+.self-profile-upload{display:grid;gap:8px;font-weight:600}.self-profile-upload input{max-width:100%;font:inherit;font-size:13px}
+.self-profile-avatar-editor small,.self-profile-help{color:var(--color-text-muted,#526e6a);font-size:13px;line-height:1.6}
+.self-profile-fields{border:0;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px;min-width:0}
+.self-profile-fields label{display:grid;gap:8px;font-weight:600;min-width:0}
+.self-profile-fields input{width:100%;min-width:0;min-height:42px;padding:10px 12px;border:1px solid var(--color-border,#b6cdca);border-radius:8px;font:inherit;font-weight:400;background:white;color:inherit}
+.self-profile-fields input[readonly]{background:var(--color-bg-sub,#f2f6f5);color:#526e6a}
+.self-profile-wide{grid-column:1/-1}.self-profile-actions{display:flex;justify-content:flex-end;gap:12px;padding-top:16px;border-top:1px solid var(--color-border,#d8e3e1)}
+.admin-form-dialog .self-profile-save{background:#0f766e;color:white;border-color:#0f766e}.admin-form-dialog .self-profile-save:not(:disabled):hover{background:#0c625b;color:white}
+.self-profile-feedback{border:1px solid #e9b9b9;background:#fff5f5;color:#9b2525;padding:12px;border-radius:8px}.self-profile-feedback p{margin:0 0 8px}
+.self-profile-success{background:#eef9f4;color:#176444;padding:12px;border-radius:8px;margin:0}
+@media(max-width:520px){.self-profile-fields{grid-template-columns:minmax(0,1fr)}.self-profile-avatar-editor{align-items:flex-start;gap:12px}.self-profile-avatar{flex-basis:64px;width:64px;height:64px}.self-profile-actions button{flex:1}.self-profile-fields input{min-height:44px}}

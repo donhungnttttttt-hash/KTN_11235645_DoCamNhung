@@ -41,7 +41,13 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    ResponseEntity<ApiError> invalidJson(HttpServletRequest request) {
+    ResponseEntity<ApiError> invalidJson(HttpMessageNotReadableException exception,HttpServletRequest request) {
+        Throwable cause=exception.getCause();
+        while(cause!=null){
+            if(cause instanceof BusinessException business && ("INVALID_ACCOUNT_FIELD".equals(business.code())||"INVALID_PROFILE_FIELD".equals(business.code())))
+                return error(business.status(),business.code(),business.getMessage(),request);
+            cause=cause.getCause();
+        }
         return error(400, "INVALID_REQUEST", "Nội dung yêu cầu không hợp lệ.", request);
     }
 

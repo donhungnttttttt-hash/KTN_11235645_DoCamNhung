@@ -67,6 +67,7 @@ try {
         $prior=@([IO.File]::ReadAllLines($legacyEnv) | Where-Object {$_ -match '^TMS_BOOTSTRAP_(USERNAME|PASSWORD|DISPLAY_NAME)='})
         if(($prior | Where-Object {$_ -match '^TMS_BOOTSTRAP_PASSWORD=.+'}) -and ($prior | Where-Object {$_ -match '^TMS_BOOTSTRAP_USERNAME=.+'})){$bootstrap=@('TMS_BOOTSTRAP_ENABLED=true')+$prior}
     }
+    $bootstrap+=@('TMS_BOOTSTRAP_SECOND_USERNAME=admin2','TMS_BOOTSTRAP_SECOND_DISPLAY_NAME=admin2',('TMS_BOOTSTRAP_SECOND_PASSWORD='+(New-Secret)))
     $lines=@('TMS_MYSQL_HOST=127.0.0.1',"TMS_MYSQL_PORT=$Port",'TMS_DB_NAME=tms',"TMS_MYSQL_CLIENT=$client",'TMS_DB_USER=tms_app',"TMS_DB_PASSWORD=$appSecret",'TMS_MIGRATION_USER=tms_migrator',"TMS_MIGRATION_PASSWORD=$migrationSecret",'TMS_VIEWER_USER=tms_viewer',"TMS_VIEWER_PASSWORD=$viewerSecret",'TMS_REDMINE_ENABLED=false')+$bootstrap
     [IO.Directory]::CreateDirectory($state) | Out-Null
     $pending=Join-Path $state 'pending.env'

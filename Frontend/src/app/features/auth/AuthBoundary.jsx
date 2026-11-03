@@ -24,7 +24,7 @@ export function LoginForm() {
     <h1>{status === "expired" ? "Đăng nhập lại" : "Chào mừng trở lại"}</h1>
     <p className="auth-intro">{status === "expired" ? "Phiên làm việc đã kết thúc. Đăng nhập cùng tài khoản để tiếp tục bản nháp đang mở." : "Đăng nhập để quản lý dự án và công việc kiểm thử của bạn."}</p>
     <form onSubmit={submit} aria-label="Đăng nhập">
-      <label htmlFor="auth-username">Tên đăng nhập</label>
+      <label htmlFor="auth-username">ID đăng nhập</label>
       <input id="auth-username" name="username" autoComplete="username" autoCapitalize="none" spellCheck="false" required maxLength={64} value={username} onChange={e => setUsername(e.target.value)} disabled={busy} autoFocus />
       <label htmlFor="auth-password">Mật khẩu</label>
       <div className="auth-password">

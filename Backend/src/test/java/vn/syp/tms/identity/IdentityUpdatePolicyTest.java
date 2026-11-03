@@ -138,7 +138,8 @@ class IdentityUpdatePolicyTest {
             target = new IdentityUser("target", "Target", "existing-hash", role);
             when(users.findById(java.util.Objects.requireNonNull(admin.getId()))).thenReturn(Optional.of(admin));
             when(users.findById(java.util.Objects.requireNonNull(target.getId()))).thenReturn(Optional.of(target));
-            service = new IdentityService(users, passwords, jdbc, audit);
+            var registry=mock(SystemAdminRegistry.class);when(registry.contains(admin.getId())).thenReturn(true);
+            service = new IdentityService(users, passwords, jdbc, audit, registry);
             clearInvocations(passwords);
         }
         IdentityDtos.User update(IdentityDtos.UpdateUser input) {

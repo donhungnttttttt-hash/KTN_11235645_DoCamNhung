@@ -25,11 +25,11 @@ class AiAccessTest {
                 .thenReturn(project==null?List.of():List.of(Map.of("id",5L,"role",project)));
     }
     @Test void eachRoleHasItsOwnTasks() {
-        for(String role:List.of("PM","TESTER","DEV")) {
+        for(String role:List.of("PM","USER")) {
             role(role,role);
             var context=access.authorize(1,"actor",false);
             assertThat(context.role()).isEqualTo(role);
-            assertThat(AiPurpose.forRole(role)).isNotEmpty().allMatch(p->p.role().equals(role));
+            assertThat(AiPurpose.forRole(role)).isNotEmpty();
         }
     }
     @Test void adminCanReviewProjectWithoutBecomingProjectPm() {
@@ -40,12 +40,12 @@ class AiAccessTest {
         assertThatCode(()->access.require(context,AiPurpose.PM_PROGRESS_REPORT)).doesNotThrowAnyException();
         assertThat(context.membershipId()).isNull();
     }
-    @Test void devGlobalRoleCannotEscalateThroughOldPmMembership() {
-        role("DEV","PM");
-        assertThat(AiPurpose.forRole(access.authorize(1,"actor",false).role())).isEmpty();
+    @Test void userGlobalRoleCannotEscalateThroughOldPmMembership() {
+        role("USER","PM");
+        assertThatThrownBy(()->access.authorize(1,"actor",false)).isInstanceOf(BusinessException.class);
     }
     @Test void membershipIsRequiredForNonAdmin() {
-        role("TESTER",null);
+        role("USER",null);
         assertThatThrownBy(()->access.authorize(1,"actor",false)).isInstanceOf(BusinessException.class);
     }
     @Test void archivedProjectAllowsReadButNoGeneration() {

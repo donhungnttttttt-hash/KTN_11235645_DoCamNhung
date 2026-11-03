@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+  title: Unified account reporting additions
+  version: 2026-11-02
+servers:
+  - url: /api/v1
+paths:
+  /reporting-projects:
+    get:
+      operationId: listGuestReportingProjects
+      description: GUEST only. Active matching membership is required before paging.
+      security: [{sessionCookie: []}]
+      parameters:
+        - {name: page, in: query, schema: {type: integer, minimum: 0, maximum: 100000, default: 0}}
+        - {name: size, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 100}}
+      responses:
+        '200':
+          description: Authorized reporting projects
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, page, size, totalElements]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      required: [id, code, name, projectRole]
+                      properties:
+                        id: {type: integer, format: int64}
+                        code: {type: string}
+                        name: {type: string}
+                        projectRole: {type: string, enum: [GUEST]}
+                  page: {type: integer}
+                  size: {type: integer}
+                  totalElements: {type: integer, format: int64}
+        '401': {description: Session invalid or account disabled}
+        '403': {description: Account is not GUEST}
+        '422': {description: Invalid pagination}
+components:
+  securitySchemes:
+    sessionCookie: {type: apiKey, in: cookie, name: SESSION}

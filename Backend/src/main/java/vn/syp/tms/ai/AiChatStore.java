@@ -44,6 +44,9 @@ public class AiChatStore {
             fail(401,"UNAUTHENTICATED","The session is no longer valid.");
     }
     private void scope(String actor,ThreadView thread,boolean write) {
+        if(!write&&(AiPortfolioContext.PURPOSE.equals(thread.purpose())||AiPortfolioContext.PROJECT_PURPOSE.equals(thread.purpose()))){
+            portfolio.requireReadableHistory(actor,thread.projectId(),thread.targetId(),thread.sourceReference());return;
+        }
         if(AiPortfolioContext.PURPOSE.equals(thread.purpose())){portfolio.assertCurrent(actor,thread.sourceReference());return;}
         if(AiPortfolioContext.PROJECT_PURPOSE.equals(thread.purpose())){portfolio.assertProjectCurrent(actor,thread.projectId(),thread.targetId(),thread.sourceReference(),write);return;}
         if(thread.projectId()==null)return;
@@ -102,10 +105,10 @@ public class AiChatStore {
                     // Filter revoked scopes without throwing through a nested transaction;
                     // an expected invisible row must not poison the whole page's transaction.
                     if(portfolioReference==null)portfolioReference=portfolio.current(actor).reference();
-                    if(!Objects.equals(portfolioReference,candidate.sourceReference()))continue;
+                    if(!Objects.equals(portfolioReference,candidate.sourceReference())&&!portfolio.historyReadable(actor,null,null,candidate.sourceReference()))continue;
                 } else if(AiPortfolioContext.PROJECT_PURPOSE.equals(candidate.purpose())) {
                     var current=candidate.targetId()==null?projectScopes.computeIfAbsent(candidate.projectId(),p->portfolio.currentProject(actor,p)):portfolio.currentProject(actor,candidate.projectId(),candidate.targetId());
-                    if(current.projects().isEmpty()||!Objects.equals(current.reference(),candidate.sourceReference()))continue;
+                    if(current.projects().isEmpty()||(!Objects.equals(current.reference(),candidate.sourceReference())&&!portfolio.historyReadable(actor,candidate.projectId(),candidate.targetId(),candidate.sourceReference())))continue;
                 } else scope(actor,candidate,false);
                 visible.add(candidate);
             }

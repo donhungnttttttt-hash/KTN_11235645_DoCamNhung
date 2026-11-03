@@ -37,6 +37,7 @@ class IdentityIntegrationTest {
     @Autowired IdentityUserRepository users;
     @Autowired PasswordEncoder passwords;
     @Autowired IdentityService service;
+    @Autowired SystemAdminRegistry registry;
     IdentityUser admin, pm, tester;
     static final String PASSWORD = "Fixture-password-2026!";
 
@@ -44,11 +45,12 @@ class IdentityIntegrationTest {
         jdbc.update("DELETE FROM SPRING_SESSION");
         jdbc.update("DELETE FROM identity_audit");
         jdbc.update("DELETE FROM identity_login_buckets");
-        users.deleteAll();
+        jdbc.update("DELETE FROM system_admin_registry");users.deleteAll();
         String hash = passwords.encode(PASSWORD);
         admin = users.saveAndFlush(new IdentityUser("admin.test", "Quản trị thử", hash, "ADMIN"));
+        registry.register(1,admin.getId());
         pm = users.saveAndFlush(new IdentityUser("pm.test", "Quản lý thử", hash, "PM"));
-        tester = users.saveAndFlush(new IdentityUser("tester.test", "Kiểm thử thử", hash, "TESTER"));
+        tester = users.saveAndFlush(new IdentityUser("tester.test", "Kiểm thử thử", hash, "USER"));
     }
 
     @Test void realCookieSessionRotatesPersistsAndLogsOut() throws Exception {
@@ -91,7 +93,7 @@ class IdentityIntegrationTest {
         for (String username : List.of("tester.test", "pm.test")) {
             var client = new Client();
             assertThat(client.login(username, PASSWORD).statusCode()).isEqualTo(200);
-            assertThat(client.write("POST", "/users", createInput("not.allowed", "TESTER")).statusCode()).isEqualTo(403);
+            assertThat(client.write("POST", "/users", createInput("not.allowed", "USER")).statusCode()).isEqualTo(403);
             assertThat(client.get("/users").statusCode()).isEqualTo(403);
             assertThat(client.write("PATCH", "/users/" + pm.getId(), Map.of("canCreateUsers", true, "expectedVersion", 0)).statusCode()).isEqualTo(403);
         }
@@ -107,15 +109,15 @@ class IdentityIntegrationTest {
         assertThat(manager.get("/me").statusCode()).isEqualTo(401);
         var login = manager.login("pm.test", PASSWORD);
         assertThat(body(login).path("permissions").toString()).contains("users:create");
-        assertThat(manager.write("POST", "/users", createInput("new.tester", "TESTER")).statusCode()).isEqualTo(201);
-        assertThat(manager.write("POST", "/users", createInput("new.admin", "ADMIN")).statusCode()).isEqualTo(403);
+        assertThat(manager.write("POST", "/users", createInput("new.tester", "USER")).statusCode()).isEqualTo(201);
+        assertThat(manager.write("POST", "/users", createInput("new.admin", "ADMIN")).statusCode()).isEqualTo(422);
         assertThat(manager.write("POST", "/users", createInput("new.pm", "PM")).statusCode()).isEqualTo(403);
         assertThat(manager.write("PATCH", "/users/" + pm.getId(), Map.of("canCreateUsers", true, "expectedVersion", 1)).statusCode()).isEqualTo(403);
         long version = body(grant).path("version").asLong();
         assertThat(owner.write("PATCH", "/users/" + pm.getId(), Map.of("canCreateUsers", false, "expectedVersion", version)).statusCode()).isEqualTo(200);
         assertThat(manager.get("/me").statusCode()).isEqualTo(401);
         manager.login("pm.test", PASSWORD);
-        assertThat(manager.write("POST", "/users", createInput("another.tester", "TESTER")).statusCode()).isEqualTo(403);
+        assertThat(manager.write("POST", "/users", createInput("another.tester", "USER")).statusCode()).isEqualTo(403);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM identity_audit WHERE event_code IN ('CREATE_USERS_GRANTED', 'CREATE_USERS_REVOKED')", Integer.class)).isEqualTo(2);
     }
 
@@ -133,7 +135,7 @@ class IdentityIntegrationTest {
 
     @Test void expiredSessionsAndMissingCsrfAreRejected() throws Exception {
         var client = new Client(); client.login("admin.test", PASSWORD);
-        assertThat(client.send("POST", "/users", createInput("no.csrf", "TESTER"), null).statusCode()).isEqualTo(403);
+        assertThat(client.send("POST", "/users", createInput("no.csrf", "USER"), null).statusCode()).isEqualTo(403);
         jdbc.update("UPDATE SPRING_SESSION SET EXPIRY_TIME = 0, LAST_ACCESS_TIME = 0 WHERE PRINCIPAL_NAME = ?", admin.getId());
         assertThat(client.get("/me").statusCode()).isEqualTo(401);
         assertThat(new Client().get("/users").statusCode()).isEqualTo(401);
@@ -141,13 +143,13 @@ class IdentityIntegrationTest {
 
     @Test void validatesAccountsHashesPasswordsAndNeverReturnsSecrets() throws Exception {
         var client = new Client(); client.login("admin.test", PASSWORD);
-        var created = client.write("POST", "/users", createInput("New.Tester", "TESTER"));
+        var created = client.write("POST", "/users", createInput("New.Tester", "USER"));
         assertThat(created.statusCode()).isEqualTo(201);
         var saved = users.findByUsername("new.tester").orElseThrow();
         assertThat(saved.getPasswordHash()).startsWith("{pbkdf2-v5_8}").doesNotContain(PASSWORD);
         assertThat(passwords.matches(PASSWORD, saved.getPasswordHash())).isTrue();
-        assertThat(client.write("POST", "/users", createInput("new.tester", "TESTER")).statusCode()).isEqualTo(409);
-        assertThat(client.write("POST", "/users", Map.of("username", "bad", "displayName", "", "password", "short", "role", "TESTER")).statusCode()).isEqualTo(422);
+        assertThat(client.write("POST", "/users", createInput("new.tester", "USER")).statusCode()).isEqualTo(409);
+        assertThat(client.write("POST", "/users", Map.of("username", "bad", "displayName", "", "password", "short", "role", "USER")).statusCode()).isEqualTo(422);
         var list = client.get("/users?page=0&size=2");
         assertThat(body(list).path("items").size()).isEqualTo(2);
         assertThat(body(list).path("totalElements").asInt()).isEqualTo(4);
@@ -157,18 +159,20 @@ class IdentityIntegrationTest {
     }
 
     @Test void bootstrapIsExplicitAndNeverResetsExistingAccounts() {
-        assertThat(service.bootstrap("bootstrap.admin", "Another-fixture-password", "Admin")).isFalse();
+        assertThatThrownBy(()->provisioner.bootstrap("bootstrap.admin","Admin","Another-fixture-password","bootstrap.admin2","Admin2","Another-fixture-password")).isInstanceOf(IllegalArgumentException.class);
         assertThat(users.count()).isEqualTo(3);
-        users.deleteAll();
-        assertThat(service.bootstrap("bootstrap.admin", "Another-fixture-password", "Admin")).isTrue();
+        jdbc.update("DELETE FROM system_admin_registry");users.deleteAll();
+        assertThat(provisioner.bootstrap("bootstrap.admin","Admin","Another-fixture-password","bootstrap.admin2","Admin2","Another-fixture-password")).isTrue();
         String original = users.findByUsername("bootstrap.admin").orElseThrow().getPasswordHash();
-        assertThat(service.bootstrap("bootstrap.admin", "Changed-fixture-password", "Admin")).isFalse();
+        assertThat(provisioner.bootstrap("bootstrap.admin","Admin","Changed-fixture-password","bootstrap.admin2","Admin2","Changed-fixture-password")).isFalse();
         assertThat(users.findByUsername("bootstrap.admin").orElseThrow().getPasswordHash()).isEqualTo(original);
     }
 
     Map<String, Object> createInput(String username, String role) {
-        return Map.of("username", username, "displayName", "Thành viên thử", "password", PASSWORD, "role", role);
+        if("ADMIN".equals(role))return Map.of("username",username,"displayName","Rejected admin","password",PASSWORD,"role",role);
+        return Map.of("username", username, "displayName", "Thành viên thử", "password", PASSWORD, "isProjectAdmin", "PM".equals(role),"isGuest","GUEST".equals(role));
     }
+    @org.springframework.beans.factory.annotation.Autowired SystemAdminProvisioner provisioner;
     JsonNode body(HttpResponse<String> response) throws Exception { return json.readTree(response.body()); }
     class Client {
         CookieManager cookies = new CookieManager(null, CookiePolicy.ACCEPT_ALL);

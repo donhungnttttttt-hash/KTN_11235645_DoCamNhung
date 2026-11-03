@@ -31,7 +31,9 @@ public class AdminOverviewService {
         COALESCE(m.members,0) AS activeMembers,COALESCE(m.pmCount,0) AS activePmCount,m.pmNames,
         COALESCE(r.total,0) AS total,COALESCE(r.na,0) AS na,COALESCE(r.ok,0) AS ok,COALESCE(r.ng,0) AS ng,COALESCE(r.pending,0) AS pending,
         (SELECT COUNT(*) FROM device_allocations l WHERE l.project_id=p.id AND l.returned_at IS NULL) AS heldDevices,
-        COALESCE(b.openBugs,0) AS openBugs,COALESCE(b.awaitingVerification,0) AS awaitingVerification
+        COALESCE(b.openBugs,0) AS openBugs,COALESCE(b.awaitingVerification,0) AS awaitingVerification,
+        COALESCE(b.fixedBugs,0) AS fixedBugs,COALESCE(b.cannotReproduceBugs,0) AS cannotReproduceBugs,
+        COALESCE(b.wontFixBugs,0) AS wontFixBugs,COALESCE(b.legacyBugs,0) AS legacyBugs
         FROM projects p
         LEFT JOIN (SELECT m.project_id,COUNT(*) AS members,SUM(m.project_role='PM') AS pmCount,
             GROUP_CONCAT(CASE WHEN m.project_role='PM' THEN u.display_name END ORDER BY u.display_name SEPARATOR ', ') AS pmNames
@@ -42,8 +44,10 @@ public class AdminOverviewService {
             JOIN testing_features f ON f.project_id=d.project_id AND f.id=d.feature_id
             WHERE r.target_case_id IS NOT NULL AND d.status='COMMITTED' AND d.archived_at IS NULL AND f.archived_at IS NULL
             GROUP BY r.project_id) r ON r.project_id=p.id
-        LEFT JOIN (SELECT w.project_id,SUM(NOT s.terminal) AS openBugs,SUM(w.status_code='resolved') AS awaitingVerification
-            FROM work_items w JOIN work_item_statuses s ON s.code=w.status_code
+        LEFT JOIN (SELECT w.project_id,SUM(NOT tw.finalized) AS openBugs,SUM(tw.awaiting_verification) AS awaitingVerification,
+            SUM(COALESCE(tw.fixed,FALSE)) AS fixedBugs,SUM(x.closure_reason='CANNOT_REPRODUCE') AS cannotReproduceBugs,
+            SUM(x.closure_reason='WONT_FIX') AS wontFixBugs,SUM(tw.legacy_workflow) AS legacyBugs
+            FROM work_items w JOIN ticket_workflow_metrics tw ON tw.project_id=w.project_id AND tw.work_item_id=w.id
             JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id
             JOIN testing_features f ON f.project_id=x.project_id AND f.id=x.feature_id
             LEFT JOIN import_batches d ON d.project_id=x.project_id AND d.id=x.document_id
@@ -81,6 +85,7 @@ public class AdminOverviewService {
         authorize(actor);scope(projectId);Instant asOf=Instant.now();
         var projects=db.rows(PROJECTS+filter(projectId)+" ORDER BY p.id",args(projectId));projects.forEach(this::enrich);
         var metrics=ReportMetrics.aggregate(projects.stream().map(p->(Map<String,Object>)p.get("metrics")).toList());
+        for(String outcome:List.of("fixedBugs","cannotReproduceBugs","wontFixBugs","legacyBugs"))metrics.put(outcome,projects.stream().mapToLong(p->number(p,outcome)).sum());
         String userScope=projectId==null?"":" WHERE EXISTS(SELECT 1 FROM project_memberships m WHERE m.user_id=u.id AND m.active=TRUE AND m.project_id=?)";
         var roles=db.rows("SELECT u.role_code AS role,COUNT(*) AS total,SUM(u.enabled) AS enabled FROM identity_users u"+userScope+" GROUP BY u.role_code ORDER BY u.role_code",args(projectId));
         long totalUsers=roles.stream().mapToLong(r->number(r,"total")).sum();long enabledUsers=roles.stream().mapToLong(r->number(r,"enabled")).sum();
@@ -118,7 +123,7 @@ public class AdminOverviewService {
         return new ProjectDeadlines(db).milestones(projectId,asOf);
     }
     private List<Map<String,Object>> awaitingBugs(Long projectId) {
-        return db.rows("SELECT w.id,w.project_id AS projectId,p.name AS projectName,w.item_key AS itemKey,w.title FROM work_items w JOIN projects p ON p.id=w.project_id JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id JOIN testing_features f ON f.project_id=x.project_id AND f.id=x.feature_id LEFT JOIN import_batches d ON d.project_id=x.project_id AND d.id=x.document_id WHERE w.item_type='BUG' AND w.status_code='resolved' AND x.deleted_at IS NULL AND f.archived_at IS NULL AND d.archived_at IS NULL"+filter(projectId)+" ORDER BY w.id LIMIT 20",args(projectId));
+        return db.rows("SELECT w.id,w.project_id AS projectId,p.name AS projectName,w.item_key AS itemKey,w.title FROM work_items w JOIN ticket_workflow_metrics tw ON tw.project_id=w.project_id AND tw.work_item_id=w.id JOIN projects p ON p.id=w.project_id JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id JOIN testing_features f ON f.project_id=x.project_id AND f.id=x.feature_id LEFT JOIN import_batches d ON d.project_id=x.project_id AND d.id=x.document_id WHERE w.item_type='BUG' AND tw.awaiting_verification=TRUE AND x.deleted_at IS NULL AND f.archived_at IS NULL AND d.archived_at IS NULL"+filter(projectId)+" ORDER BY w.id LIMIT 20",args(projectId));
     }
     private void addDeadlineCounts(List<Map<String,Object>> projects,List<Map<String,Object>> milestones) {
         var overdue=new HashMap<Long,Long>();var missing=new HashMap<Long,Long>();

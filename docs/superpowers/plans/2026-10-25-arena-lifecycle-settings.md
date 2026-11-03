@@ -17,7 +17,7 @@
 - Không đóng/xóa/đổi trạng thái child để archive; giữ nguyên dữ liệu, history, audit, reopen và ordinary-command replay.
 - “Trao đổi DEV/khách hàng và xác minh lại là quy trình bên ngoài; người dùng yêu cầu không đưa quy trình đó thành workflow code mới.” Không phục hồi QA answer-confirm/retest/scope engine.
 - Không đổi PM/TESTER/DEV thành người archive; ADMIN vẫn chịu version và quyền hiện hành tại thời điểm submit.
-- Không sửa migration đã áp dụng. Sau pull, `db/demo/V34__complete_local_demo.java` đã tồn tại. Dùng V37 dự kiến cho archive; kiểm cả SQL/Java và tất cả locations trước khi đặt số. Core/release hiện cuối V33; local core+demo cuối V34.
+- Không sửa migration đã áp dụng. Sau pull, `db/demo/V34__complete_local_demo.java` đã tồn tại. Dùng V39 dự kiến cho archive; kiểm cả SQL/Java và tất cả locations trước khi đặt số. Core/release hiện cuối V33; local core+demo cuối V34.
 - Không tự commit/push/merge/deploy hoặc migration/restart main. Fresh/upgrade chỉ chạy trên target cô lập đã được xác nhận.
 
 ## Review Focus
@@ -34,7 +34,7 @@
 
 - Modify: `Backend/src/main/java/vn/syp/tms/admin/ProjectLifecycleService.java`, `ProjectLifecycleController.java` cùng thư mục.
 - Create: `Backend/src/main/java/vn/syp/tms/admin/LegacyArchiveSnapshot.java` — canonical snapshot/hash policy, không thêm repository/service tổng quát.
-- Create: `Backend/src/main/resources/db/migration/V37__project_archive_legacy_exception.sql` — dự kiến V37, kiểm lại số khi thực thi; không trùng hoặc sửa V34 demo.
+- Create: `Backend/src/main/resources/db/migration/V39__project_archive_legacy_exception.sql` — dự kiến V39, kiểm lại số khi thực thi; không trùng hoặc sửa V34 demo.
 - Create: `Backend/src/test/java/vn/syp/tms/admin/LegacyArchiveSnapshotTest.java`, `ProjectArchiveLegacyExceptionTest.java`, `NativeCurrentProjectLifecycleIntegrationTest.java`, `NativeCurrentProjectLifecycleConcurrencyTest.java`.
 - Create: `Backend/src/test/java/vn/syp/tms/filework/NativeArchiveExceptionMigrationTest.java` — guard riêng cho hai target fresh/upgrade, **không** nằm trong runner integration.
 - Preserve/port assertions: `Backend/src/test/java/vn/syp/tms/filework/NativeProjectLifecycleIntegrationTest.java`, `NativeProjectLifecycleConcurrencyTest.java`, `NativeProjectLifecycleMigrationTest.java`.
@@ -81,7 +81,7 @@
 
 **Điều chỉnh migration/kiểm tra blocker sau tái phân tích:**
 
-- [ ] Migration matrix phải gồm fresh core, fresh core+demo, upgrade core V33→V37 và upgrade local V34→V37. Release không cần migration demo V34 để lên core V37; không thêm V34 giả vào release, không đổi checksum cũ. Assertions bảo toàn dữ liệu phải kiểm cả project/file/Issue demo và cột snapshot mới null cho quyết định cũ.
+- [ ] Migration matrix phải gồm fresh core, fresh core+demo, upgrade core V33→V39 và upgrade local V34→V39. Release không cần migration demo V34 để lên core V39; không thêm V34 giả vào release, không đổi checksum cũ. Assertions bảo toàn dữ liệu phải kiểm cả project/file/Issue demo và cột snapshot mới null cho quyết định cũ.
 - [ ] U26: lập fixture Bug Monkey trạng thái mở → xóa mềm; và Issue mở → archive Feature/ẩn file. `ProjectLifecycleService` hiện đếm work_items nonterminal không lọc context.deleted_at, trong khi board lọc deleted/archived và mutation bị chặn khi context archived. Tái hiện bằng test/HTTP trước khi kết luận mức ảnh hưởng; lưu ID blocker và đường xử lý còn khả dụng.
 - [ ] Không tự bỏ mọi hidden/deleted Issue khỏi blocker hoặc mở rộng ngoại lệ ngoài cycles/retests. Nếu tái hiện bế tắc, đưa phương án rõ để chốt: xóa mềm có chấm dứt nghĩa vụ hay không; archive Feature/file phải chặn khi Issue còn mở hay cần lối khôi phục/đối soát. Đây là quyết định khác với ngoại lệ cycles/retests đã được duyệt; cập nhật contract/tests sau quyết định, tiếp tục phần độc lập.
 

@@ -1,0 +1,5 @@
+.guest-header{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;padding:1rem 1.5rem;background:var(--surface,#fff);border-bottom:1px solid var(--border,#d7e3e3)}
+.guest-header>.account-menu{margin-left:auto}
+.guest-workspace>main{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+.guest-workspace h1,.guest-workspace h2{margin-bottom:1rem}
+.guest-workspace .management-report-workspace li{margin-block:.5rem}

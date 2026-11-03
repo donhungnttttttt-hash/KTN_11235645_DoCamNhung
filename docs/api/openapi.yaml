@@ -5,7 +5,7 @@ info:
   description: |
     Contract foundation S01 và identity nội bộ S02. Cookie session + CSRF cùng origin.
     /api/v1/system/** chỉ được đăng ký/cho phép ở profile local, backend bind loopback.
-    Quyền tạo tài khoản chỉ cho ADMIN hoặc PM được ADMIN cấp; PM chỉ tạo TESTER.
+    Quyền tạo tài khoản chỉ cho ADMIN hoặc PM được ADMIN cấp; PM chỉ tạo USER.
 servers:
   - url: http://127.0.0.1:8080
     description: Backend local (giao diện dùng proxy cùng origin 5173)
@@ -13,6 +13,24 @@ servers:
 # ./admin.openapi.yaml (overview), ./admin-management.openapi.yaml (projects/users),
 # ./device-inventory.openapi.yaml (physical inventory), ./admin-reporting.openapi.yaml (PM reports/audit).
 paths:
+  /api/v1/projects/{projectId}/issues/{issueId}/actions:
+    $ref: "./ticket-workflow.yaml#/paths/~1api~1v1~1projects~1{projectId}~1issues~1{issueId}~1actions"
+  /api/v1/projects/{projectId}/issues/board:
+    $ref: "./ticket-workflow.yaml#/paths/~1api~1v1~1projects~1{projectId}~1issues~1board"
+  /api/v1/projects/{projectId}/issues/options:
+    $ref: "./ticket-workflow.yaml#/paths/~1api~1v1~1projects~1{projectId}~1issues~1options"
+  /api/v1/projects/{projectId}/ticket-responsibilities:
+    $ref: "./ticket-workflow.yaml#/paths/~1api~1v1~1projects~1{projectId}~1ticket-responsibilities"
+  /api/v1/projects/{projectId}/ticket-responsibilities/{membershipId}:
+    $ref: "./ticket-workflow.yaml#/paths/~1api~1v1~1projects~1{projectId}~1ticket-responsibilities~1{membershipId}"
+  /api/v1/me/ticket-notifications:
+    $ref: "./ticket-workflow.yaml#/paths/~1api~1v1~1me~1ticket-notifications"
+  /api/v1/me/ticket-notifications/{notificationId}/read:
+    $ref: "./ticket-workflow.yaml#/paths/~1api~1v1~1me~1ticket-notifications~1{notificationId}~1read"
+  /api/v1/me/profile:
+    $ref: "./self-profile.yaml#/paths/~1api~1v1~1me~1profile"
+  /api/v1/me/avatar:
+    $ref: "./self-profile.yaml#/paths/~1api~1v1~1me~1avatar"
   /api/v1/projects/{projectId}/action-inbox:
     $ref: "./file-work.openapi.json#/paths/~1api~1v1~1projects~1{projectId}~1action-inbox"
   /api/v1/projects/{projectId}/file-work-groups/preparation:
@@ -108,7 +126,7 @@ paths:
         default: { $ref: '#/components/responses/Error' }
     post:
       operationId: createUser
-      description: ADMIN tạo ADMIN/PM/TESTER/DEV. PM có users:create chỉ tạo TESTER. TESTER và PM chưa được cấp luôn 403. PM mới mặc định chưa được cấp quyền.
+      description: Admin tổng tạo USER/PM/GUEST bằng hai cờ; không tạo ADMIN qua web. PM có users:create chỉ tạo USER. Cả hai cờ cùng true trả 422. Không nhận role hoặc field không xác định.
       security: [{ sessionCookie: [], csrfHeader: [] }]
       requestBody:
         required: true
@@ -116,12 +134,14 @@ paths:
           application/json:
             schema:
               type: object
-              required: [username, displayName, password, role]
+              required: [username, displayName, password]
+              additionalProperties: false
               properties:
                 username: { type: string, pattern: '^[A-Za-z0-9][A-Za-z0-9._-]{2,63}$' }
                 displayName: { type: string, minLength: 1, maxLength: 100 }
                 password: { type: string, minLength: 12, maxLength: 128, writeOnly: true }
-                role: { type: string, enum: [ADMIN, PM, TESTER, DEV] }
+                isProjectAdmin: { type: boolean, default: false }
+                isGuest: { type: boolean, default: false }
       responses:
         '201':
           description: Đã tạo tài khoản
@@ -500,11 +520,11 @@ paths:
     get:
       operationId: projectMemberCandidates
       summary: Eligible enabled accounts excluding current active members, counted before pagination
-      description: Admin sees all roles; the project's PM sees DEV/TESTER only. PM responses expose hasProject without names or codes of other projects. Archived projects reject this operation. Account roles cannot be edited.
+      description: Admin sees all roles; the project's PM sees USER only. PM responses expose hasProject without names or codes of other projects. Archived projects reject this operation. Account roles cannot be edited.
       parameters:
         - {name: projectId, in: path, required: true, schema: {type: integer, format: int64}}
         - {name: keyword, in: query, schema: {type: string, maxLength: 100}}
-        - {name: role, in: query, schema: {type: string, enum: [ADMIN, PM, TESTER, DEV]}}
+        - {name: role, in: query, schema: {type: string, enum: [ADMIN, PM, USER, GUEST]}}
         - {name: hasProject, in: query, schema: {type: boolean}}
         - {name: page, in: query, schema: {type: integer, minimum: 0, default: 0}}
         - {name: size, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
@@ -595,7 +615,7 @@ components:
         id: { type: string, format: uuid }
         username: { type: string }
         displayName: { type: string }
-        roles: { type: array, items: { type: string, enum: [ADMIN, PM, TESTER, DEV] } }
+        roles: { type: array, items: { type: string, enum: [ADMIN, PM, USER, GUEST] } }
         permissions: { type: array, items: { type: string, enum: ['profile:read', 'users:read', 'users:create', 'users:update', 'users:delegate'] } }
         sessionExpiresAt: { type: string, format: date-time }
     User:
@@ -605,7 +625,7 @@ components:
         id: { type: string, format: uuid }
         username: { type: string }
         displayName: { type: string }
-        role: { type: string, enum: [ADMIN, PM, TESTER, DEV] }
+        role: { type: string, enum: [ADMIN, PM, USER, GUEST] }
         enabled: { type: boolean }
         canCreateUsers: { type: boolean, description: Cờ cấp riêng cho PM; ADMIN có quyền từ role dù cờ này false. }
         version: { type: integer, format: int64, minimum: 0 }

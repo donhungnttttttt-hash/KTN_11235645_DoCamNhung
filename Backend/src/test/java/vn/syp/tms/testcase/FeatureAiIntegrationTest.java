@@ -46,11 +46,12 @@ class FeatureAiIntegrationTest extends FeatureIntegrationTest {
     @Test void selectedFeatureKeepsAuthorizedProjectBackgroundAndCurrentMetric()throws Exception{
         long f=feature("Selected"),d=imported(f,internal());long other=feature("Background"),otherDoc=imported(other,internal());
         var rows=read(d).path("rows");result(d,rows.get(0).path("rowId").asLong(),admin,"OK",0,200);result(d,rows.get(1).path("rowId").asLong(),admin,"P",0,200);result(d,rows.get(2).path("rowId").asLong(),admin,"NA",0,200);
-        login(outside);var scope=portfolio.currentProject(outside.getId(),p,f);var data=facts(portfolio.prepareProject(outside.getId(),p,f,scope.reference(),UUID.randomUUID().toString(),"Tiến độ"));
+        login(pm);var scope=portfolio.currentProject(pm.getId(),p,f);var data=facts(portfolio.prepareProject(pm.getId(),p,f,scope.reference(),UUID.randomUUID().toString(),"Tiến độ"));
         assertThat(data.path("execution").path("executionPercent").asDouble()).isEqualTo(60);
         assertThat(data.path("sourceFiles").toString()).doesNotContain("\"documentId\":"+otherDoc+",");
         assertThat(data.path("projectBackground").path("sourceFiles").toString()).contains("Background");
-        mvc.perform(get("/api/v1/ai/projects/"+p+"/features").with(actor(outside))).andExpect(status().isOk());
+        mvc.perform(get("/api/v1/ai/projects/"+p+"/features").with(actor(pm))).andExpect(status().isOk());
+        mvc.perform(get("/api/v1/ai/projects/"+p+"/features").with(actor(outside))).andExpect(status().isNotFound());
         mvc.perform(post(path("/features")).with(actor(outside)).with(vn.syp.tms.support.MockMvcContracts.csrf()).contentType("application/json").content(encode(Map.of("name","No CRUD","environment","","description","","requestKey",UUID.randomUUID())))).andExpect(status().isNotFound());
     }
     @Test void typedAssignmentTargetsFeatureDocumentsWithoutDeviceOrRunSetup()throws Exception{
@@ -93,7 +94,9 @@ class FeatureAiIntegrationTest extends FeatureIntegrationTest {
             assertThat(row.sourceColumns()).containsKeys("result","tester","latestTester");
             assertThat(row.sourceCells().get(row.sourceColumns().get("tester"))).isEqualTo(b.getDisplayName());assertThat(row.sourceCells().get(row.sourceColumns().get("latestTester"))).isEqualTo(a.getDisplayName());
         }else try(var book=new org.apache.poi.xssf.usermodel.XSSFWorkbook(new java.io.ByteArrayInputStream(second))){
-            assertThat(book.getSheetAt(0).getRow(0).getLastCellNum()).isEqualTo((short)14);
+            assertThat(book.getSheetAt(0).getRow(0).getLastCellNum()).isEqualTo((short)16);
+            assertThat(book.getSheetAt(0).getRow(0).getCell(14).getStringCellValue()).isEqualTo("Version test");
+            assertThat(book.getSheetAt(0).getRow(0).getCell(15).getStringCellValue()).isEqualTo("Ngày thực hiện");
             assertThat(book.getSheetAt(0).getRow(1).getCell(12).getStringCellValue()).isEqualTo(b.getDisplayName());assertThat(book.getSheetAt(0).getRow(1).getCell(13).getStringCellValue()).isEqualTo(a.getDisplayName());
         }
         login(admin);var scope=portfolio.currentProject(admin.getId(),p,f2);var facts=facts(portfolio.prepareProject(admin.getId(),p,f2,scope.reference(),UUID.randomUUID().toString(),"Kinh nghiệm"));

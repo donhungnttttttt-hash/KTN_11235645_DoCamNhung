@@ -36,7 +36,7 @@ function Cycles({ project, navigate }) {
     {!project && <p>Chọn dự án để xem các đợt kiểm thử.</p>}
     <ErrorNotice error={error} retry={() => setReload(x => x + 1)} />
     {form && <form className="ex-panel ex-fields" onSubmit={create}>
-      <Field label="Mã đợt"><input className="cat-input" required maxLength={32} pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,31}" value={form.code} onChange={e => setForm({ ...form, code: e.target.value })} /></Field>
+      <Field label="Mã đợt"><input className="cat-input" required maxLength={32} pattern="[A-Za-z0-9][A-Za-z0-9_\-]{0,31}" value={form.code} onChange={e => setForm({ ...form, code: e.target.value })} /></Field>
       <Field label="Tên đợt"><input className="cat-input" required maxLength={100} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></Field>
       <button className="cat-btn cat-btn-mint" disabled={busy}>{busy ? 'Đang tạo…' : 'Tạo bản nháp'}</button><button type="button" className="cat-btn" disabled={busy} onClick={() => setForm(null)}>Hủy</button>
     </form>}

@@ -26,8 +26,8 @@ const overview = {
 const unauthorized = () => new ApiError('Phiên không hợp lệ', {status:401});
 async function signIn(user) {
   const form = within(await screen.findByRole('form', {name:'Đăng nhập'}));
-  await user.clear(form.getByLabelText('Tên đăng nhập'));
-  await user.type(form.getByLabelText('Tên đăng nhập'), 'landing.test');
+  await user.clear(form.getByLabelText('ID đăng nhập'));
+  await user.type(form.getByLabelText('ID đăng nhập'), 'landing.test');
   await user.type(form.getByLabelText('Mật khẩu'), 'sample-only-password');
   await user.click(form.getByRole('button', {name:'Đăng nhập', exact:true}));
 }

@@ -51,8 +51,8 @@ it.each(['/board/testing/features/0','/board/testing/features/01','/board/testin
 it('FR05 does not mount the current project under another linked project identity',()=>{
  render(<AppRouter activeRoute='/board/testing/features/42?projectId=2' navigate={vi.fn()}/>);expect(screen.queryByText('Feature 1/42')).toBeNull();expect(screen.getByRole('status')).toHaveTextContent('dự án');
 });
-it('FR05 supplies read-only Issue action to DEV and permits global Admin without membership',()=>{
- state.roles=['DEV'];state.project={...state.project,projectRole:'DEV'};const view=render(<AppRouter activeRoute='/board/testing/features/42/documents/7' navigate={vi.fn()}/>);expect(screen.getByText('Issue create false')).toBeVisible();
+it('uses server Issue creation capability for User and global Admin',()=>{
+ state.roles=['USER'];state.project={...state.project,projectRole:'USER'};const view=render(<AppRouter activeRoute='/board/testing/features/42/documents/7' navigate={vi.fn()}/>);expect(screen.getByText('Issue create true')).toBeVisible();
  state.roles=['ADMIN'];state.project={...state.project,projectRole:null};view.rerender(<AppRouter activeRoute='/board/testing/features/42/documents/7' navigate={vi.fn()}/>);expect(screen.getByText('Issue create true')).toBeVisible();
 });
 it('uses server scoped capability for archived documents rather than project role alone',()=>{

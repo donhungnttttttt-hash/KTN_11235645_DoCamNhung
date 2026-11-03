@@ -1,3 +1,5 @@
+**Phân quyền mới (02/11/2026):** sau V37, demo ADMIN chưa thuộc registry sẽ không đăng nhập được. Trước khi chạy bản này trên database có dữ liệu, làm theo [chuyển đổi hai Admin](docs/database/unified-user-access-cutover.md); không reset database. USER thay Tester/Dev, PM là Admin dự án và GUEST chỉ đọc báo cáo. Các hướng dẫn demo bên dưới mô tả dữ liệu nguồn; mật khẩu demo không tự cấp quyền Admin tổng.
+
 # Hệ thống quản lý kiểm thử phần mềm — SY Partners
 
 ## Chạy sau khi pull code

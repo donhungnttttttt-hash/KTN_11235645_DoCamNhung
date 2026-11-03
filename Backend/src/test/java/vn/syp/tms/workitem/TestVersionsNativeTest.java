@@ -32,10 +32,13 @@ import vn.syp.tms.testcase.*;
 class TestVersionsNativeTest {
  @DynamicPropertySource static void database(DynamicPropertyRegistry r) {FeatureIssueContextNativeTest.database(r);}
  @Autowired MockMvc mvc; @Autowired ObjectMapper json; @Autowired IdentityUserRepository users;
+    @Autowired SystemAdminRegistry registry;
+    @Autowired org.springframework.jdbc.core.JdbcTemplate registryJdbc;
  @Autowired ProjectService projects; @Autowired FeatureService features; @Autowired TestDocumentService documents;
  IdentityUser admin; long p,f,d,row;
  @BeforeEach void fixture() throws Exception {
   String tag=UUID.randomUUID().toString().substring(0,8);admin=users.saveAndFlush(new IdentityUser("versions."+tag,"Versions admin","not-login","ADMIN"));
+  registryJdbc.update("DELETE FROM system_admin_registry");registry.register(1,admin.getId());
   p=projects.create(admin.getId(),new ProjectDtos.CreateProject("VER"+tag,"Version test","","UTC")).id();
   f=((Number)features.create(p,admin.getId(),new FeatureDtos.Create("Feature","server","",UUID.randomUUID())).get("id")).longValue();
   byte[] bytes;try(var book=new XSSFWorkbook();var out=new ByteArrayOutputStream()) {
@@ -72,8 +75,8 @@ class TestVersionsNativeTest {
  }
  @Test void deleteEnforcesManagerScopeCsrfAndFeatureLifecycle()throws Exception {
   long v=version("Protected");
-  var tester=users.saveAndFlush(new IdentityUser("delete.tester."+UUID.randomUUID().toString().substring(0,8),"Tester","not-login","TESTER"));
-  projects.addOrUpdateMember(p,admin.getId(),tester.getId(),new ProjectDtos.SetMember("TESTER"));
+  var tester=users.saveAndFlush(new IdentityUser("delete.tester."+UUID.randomUUID().toString().substring(0,8),"User","not-login","USER"));
+  projects.addOrUpdateMember(p,admin.getId(),tester.getId(),new ProjectDtos.SetMember("USER"));
   mvc.perform(delete(path("/features/"+f+"/test-versions/"+v)).with(actor(tester)).with(csrf())).andExpect(status().isForbidden());
   mvc.perform(delete(path("/features/"+f+"/test-versions/"+v)).with(actor(admin))).andExpect(status().isForbidden());
   long other=((Number)features.create(p,admin.getId(),new FeatureDtos.Create("Other","","",UUID.randomUUID())).get("id")).longValue();
@@ -99,8 +102,8 @@ class TestVersionsNativeTest {
   }
  }
  @Test void onlyManagersCreateAndVersionCannotCrossFeature()throws Exception {
-  var tester=users.saveAndFlush(new IdentityUser("version.tester."+UUID.randomUUID().toString().substring(0,8),"Tester","not-login","TESTER"));
-  projects.addOrUpdateMember(p,admin.getId(),tester.getId(),new ProjectDtos.SetMember("TESTER"));
+  var tester=users.saveAndFlush(new IdentityUser("version.tester."+UUID.randomUUID().toString().substring(0,8),"User","not-login","USER"));
+  projects.addOrUpdateMember(p,admin.getId(),tester.getId(),new ProjectDtos.SetMember("USER"));
   mvc.perform(post(path("/features/"+f+"/test-versions")).with(actor(tester)).with(csrf()).contentType("application/json").content(encode(Map.of("name","Forbidden","requestKey",UUID.randomUUID())))).andExpect(status().isForbidden());
   long original=f;f=((Number)features.create(p,admin.getId(),new FeatureDtos.Create("Other","","",UUID.randomUUID())).get("id")).longValue();long foreign=version("Other version");f=original;
   mvc.perform(put(path("/test-documents/"+d+"/rows/"+row+"/result")).with(actor(admin)).with(csrf()).contentType("application/json").content(encode(Map.of("status","NG","expectedVersion",0,"requestKey",UUID.randomUUID(),"testVersionId",foreign,"executedOn","2026-10-25")))).andExpect(status().isUnprocessableEntity());

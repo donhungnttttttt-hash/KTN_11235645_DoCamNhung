@@ -14,14 +14,15 @@ import vn.syp.tms.shared.web.*;
 public class SessionAccountFilter extends OncePerRequestFilter {
     private final IdentityService users;
     private final ObjectMapper json;
-    public SessionAccountFilter(IdentityService users, ObjectMapper json) { this.users = users; this.json = json; }
+    private final CurrentSessionIdentity sessions;
+    public SessionAccountFilter(IdentityService users, ObjectMapper json, CurrentSessionIdentity sessions) { this.users = users; this.json = json; this.sessions=sessions; }
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof SessionPrincipal principal) {
             try {
                 var user = users.current(principal.id());
-                if (user.getVersion() != principal.version()) throw new BusinessException(401, "UNAUTHENTICATED", "Phiên đăng nhập đã thay đổi.");
+                if (user.getVersion() != principal.version() && !sessions.restore(request,user,users)) throw new BusinessException(401, "UNAUTHENTICATED", "Phiên đăng nhập đã thay đổi.");
             } catch (BusinessException expired) {
                 var session = request.getSession(false);
                 if (session != null) session.invalidate();

@@ -79,7 +79,7 @@ class DocumentResultServiceTest {
         doAnswer(inv->{
             assertThat(mockingDetails(jdbc).getInvocations()).anySatisfy(call->assertThat(call.getArguments()[0].toString()).contains("FROM projects","FOR SHARE"));
             throw new BusinessException(403,"DEV_READ_ONLY_RESULTS","revoked");
-        }).when(projects).requireNotDev(1L,"tester");
+        }).when(projects).requireWorkspaceAccess(1L,"tester");
         assertThatThrownBy(()->service.updateResult(1L,"tester",2L,9L,input(0))).isInstanceOf(BusinessException.class);
         verify(jdbc,never()).update(Objects.requireNonNull(anyString()),any(Object[].class));
     }

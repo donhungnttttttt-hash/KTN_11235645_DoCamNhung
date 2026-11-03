@@ -1,0 +1,263 @@
+openapi: 3.0.3
+info:
+  title: TMS Ticket workflow
+  version: 0.1.0
+  description: |
+    Implementation contract for Feature Bug/QA tickets. Requires active project access;
+    Guest is denied. Ordinary USER responsibilities do not change account roles.
+    Existing issue content/list/context contracts are described in ticket-workflow.md.
+    Verification status is recorded in ../../docs/reviews/2026-11-03-ticket-workflow-implementation.md.
+security: [{sessionCookie: []}]
+paths:
+  /api/v1/projects/{projectId}/issues/{issueId}/actions:
+    parameters:
+      - {$ref: '#/components/parameters/ProjectId'}
+      - {$ref: '#/components/parameters/IssueId'}
+    post:
+      operationId: actOnFeatureTicket
+      security: [{sessionCookie: [], csrfHeader: []}]
+      description: |
+        Atomically saves comment, workflow and assignment changes, history and internal notifications.
+        Omitted fields preserve values. At least one change or a nonblank comment is required.
+        Reusing requestKey with a different payload is a conflict. The server checks current capabilities.
+        CLOSED/PROCESSED awaits verification and is not finalized. QA conversion preserves ticket identity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/Action'}
+      responses:
+        '200':
+          description: Enriched ticket with current version and server-computed capabilities
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/TicketWorkflowFields'}
+        '403': {description: Actor or recipient no longer authorized; no partial changes}
+        '404': {description: Ticket unavailable in caller scope}
+        '409': {description: Stale version or conflicting retry; keep draft}
+        '400': {description: Explicit null state, assignee or verifier is invalid}
+        '422': {description: Invalid combination or required fields missing}
+  /api/v1/projects/{projectId}/issues/board:
+    parameters:
+      - {$ref: '#/components/parameters/ProjectId'}
+      - {in: query, name: featureId, schema: {type: integer, format: int64}}
+      - {in: query, name: type, schema: {type: string, enum: [BUG, QA]}}
+      - {in: query, name: keyword, schema: {type: string}}
+      - {in: query, name: status, schema: {type: string}}
+      - {in: query, name: column, schema: {type: string}}
+    get:
+      operationId: featureTicketBoardCounts
+      responses:
+        '200':
+          description: Counts over all filtered tickets, independent of list pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [columns, legacyCount, totalItems]
+                properties:
+                  columns:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: {type: string}
+                        label: {type: string}
+                        count: {type: integer, format: int64}
+                  legacyCount: {type: integer, format: int64}
+                  totalItems: {type: integer, format: int64}
+        '403': {description: No internal project access}
+  /api/v1/projects/{projectId}/issues/options:
+    parameters:
+      - {$ref: '#/components/parameters/ProjectId'}
+      - {in: query, name: type, required: true, schema: {type: string, enum: [BUG, QA]}}
+      - {in: query, name: assigneeMembershipId, required: false, schema: {type: integer, format: int64}}
+    get:
+      operationId: featureTicketCreateOptions
+      responses:
+        '200':
+          description: Active project managers and designated ordinary USER contacts for the selected type
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  canManageResponsibilities: {type: boolean}
+                  assignees:
+                    type: array
+                    items: {$ref: '#/components/schemas/Member'}
+                  initialTransitions:
+                    type: array
+                    description: Current actor/recipient creation choices; default only without recipient, empty if recipient is no longer eligible.
+                    items: {$ref: '#/components/schemas/Transition'}
+        '403': {description: No internal project access}
+  /api/v1/projects/{projectId}/ticket-responsibilities:
+    parameters:
+      - {$ref: '#/components/parameters/ProjectId'}
+    get:
+      operationId: getTicketResponsibilities
+      responses:
+        '200':
+          description: Eligible active members and project duties; also supplies worker/verifier choices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  canManage: {type: boolean}
+                  members:
+                    type: array
+                    items: {$ref: '#/components/schemas/Member'}
+        '403': {description: No internal project access}
+  /api/v1/projects/{projectId}/ticket-responsibilities/{membershipId}:
+    parameters:
+      - {$ref: '#/components/parameters/ProjectId'}
+      - {in: path, name: membershipId, required: true, schema: {type: integer, format: int64}}
+    put:
+      operationId: setTicketResponsibilities
+      security: [{sessionCookie: [], csrfHeader: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [duties, expectedVersion]
+              properties:
+                duties:
+                  type: array
+                  uniqueItems: true
+                  items: {type: string, enum: [SPEC_REVIEWER, BUG_COORDINATOR]}
+                expectedVersion: {type: integer, format: int64, minimum: 0}
+      responses:
+        '200': {description: Updated duties; no account or membership role changed}
+        '403': {description: Only project manager or global Admin may manage duties}
+        '409': {description: Version changed or member no longer eligible}
+        '422': {description: Unknown duty or invalid request}
+  /api/v1/me/ticket-notifications:
+    get:
+      operationId: getOwnTicketNotifications
+      parameters:
+        - {in: query, name: page, schema: {type: integer, minimum: 0, default: 0}}
+        - {in: query, name: size, schema: {type: integer, minimum: 1, default: 20}}
+      responses:
+        '200':
+          description: Own notices only; excludes tickets outside current project access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unreadCount: {type: integer, format: int64}
+                  totalItems: {type: integer, format: int64}
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: {type: integer, format: int64}
+                        projectId: {type: integer, format: int64}
+                        ticketId: {type: integer, format: int64}
+                        ticketKey: {type: string}
+                        title: {type: string}
+                        actorName: {type: string}
+                        message: {type: string}
+                        createdAt: {type: string}
+                        readAt: {type: string, nullable: true}
+        '403': {description: Guest denied internal ticket notifications}
+  /api/v1/me/ticket-notifications/{notificationId}/read:
+    parameters:
+      - {in: path, name: notificationId, required: true, schema: {type: integer, format: int64}}
+    put:
+      operationId: acknowledgeOwnTicketNotification
+      security: [{sessionCookie: [], csrfHeader: []}]
+      responses:
+        '200':
+          description: Idempotently acknowledged own accessible notice
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: {type: integer, format: int64}
+                  readAt: {type: string}
+        '403': {description: Guest denied}
+        '404': {description: Notice is not owned or not currently accessible}
+components:
+  securitySchemes:
+    sessionCookie: {type: apiKey, in: cookie, name: TMS_SESSION}
+    csrfHeader: {type: apiKey, in: header, name: X-CSRF-TOKEN}
+  parameters:
+    ProjectId: {in: path, name: projectId, required: true, schema: {type: integer, format: int64}}
+    IssueId: {in: path, name: issueId, required: true, schema: {type: integer, format: int64}}
+  schemas:
+    State: {type: string, enum: [SPEC_CONFIRM, NEW, IN_PROGRESS, WAITING_CONFIRM, CLOSED]}
+    Reason: {type: string, enum: [PROCESSED, FIXED, CANNOT_REPRODUCE, WONT_FIX, UNSUPPORTED], nullable: true}
+    Action:
+      type: object
+      required: [expectedVersion, requestKey]
+      properties:
+        body: {type: string}
+        state: {$ref: '#/components/schemas/State'}
+        closureReason: {$ref: '#/components/schemas/Reason'}
+        assigneeMembershipId: {type: integer, format: int64}
+        verifierUserId: {type: string}
+        convertToBug: {type: boolean}
+        expectedVersion: {type: integer, format: int64, minimum: 0}
+        requestKey: {type: string, format: uuid}
+    Transition:
+      type: object
+      properties:
+        state: {$ref: '#/components/schemas/State'}
+        closureReason: {$ref: '#/components/schemas/Reason'}
+        columnId: {type: string}
+        label: {type: string}
+    Member:
+      type: object
+      properties:
+        membershipId: {type: integer, format: int64}
+        userId: {type: string}
+        displayName: {type: string}
+        username: {type: string}
+        projectRole: {type: string}
+        systemRole: {type: string}
+        duties:
+          type: array
+          items: {type: string, enum: [SPEC_REVIEWER, BUG_COORDINATOR]}
+        version: {type: integer, format: int64}
+    TicketWorkflowFields:
+      type: object
+      description: Additional fields alongside existing ticket identity, content and live Feature context.
+      properties:
+        ticketState:
+          type: string
+          nullable: true
+          enum: [SPEC_CONFIRM, NEW, IN_PROGRESS, WAITING_CONFIRM, CLOSED, null]
+          description: Null only for historical workflow requiring reconciliation
+        closureReason: {$ref: '#/components/schemas/Reason'}
+        boardColumn: {type: string}
+        legacyWorkflow: {type: boolean}
+        convertedFromQa: {type: boolean}
+        projectId: {type: integer, format: int64}
+        awaitingVerification: {type: boolean}
+        finalized: {type: boolean}
+        version: {type: integer, format: int64, description: Optimistic lock; not the test version}
+        preconditions: {type: string, nullable: true}
+        frequency: {type: string, nullable: true}
+        environment: {type: string, nullable: true}
+        device: {type: string, nullable: true}
+        testVersionId: {type: integer, format: int64, nullable: true}
+        testVersionName: {type: string, nullable: true}
+        executedOn: {type: string, format: date, nullable: true}
+        testObject: {type: string, nullable: true}
+        caseReference: {type: string, nullable: true}
+        coordinatorMembershipId: {type: integer, format: int64, nullable: true}
+        verifierUserId: {type: string, nullable: true}
+        verifierName: {type: string, nullable: true}
+        canConvertToBug: {type: boolean}
+        canAssign: {type: boolean}
+        canEdit: {type: boolean}
+        canComment: {type: boolean}
+        allowedTransitions:
+          type: array
+          items: {$ref: '#/components/schemas/Transition'}

@@ -35,7 +35,7 @@ class AdminOverviewServiceTest {
         when(identity.current("actor")).thenReturn(new IdentityUser("admin","Admin","SECRET","ADMIN"));
         when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{String sql=call.getArgument(0);
             if(!sql.contains("FROM milestones ms"))return List.of();
-            assertThat(sql).contains("work_item_feature_context","w.milestone_id=ms.id","NOT s.terminal").doesNotContain("test_cycles");
+            assertThat(sql).contains("work_item_feature_context","w.milestone_id=ms.id","ticket_workflow_metrics","NOT tw.finalized").doesNotContain("test_cycles");
             var overdue=new LinkedHashMap<String,Object>(Map.of("id",1L,"projectId",1L,"timezone","Pacific/Kiritimati","dueOn",java.sql.Date.valueOf("2000-01-01"),"scopeCount",1L,"unfinished",true));
             var missing=new LinkedHashMap<String,Object>(overdue);missing.put("id",2L);missing.put("dueOn",null);
             var noScope=new LinkedHashMap<String,Object>(overdue);noScope.put("id",3L);noScope.put("scopeCount",0L);
@@ -80,7 +80,8 @@ class AdminOverviewServiceTest {
     }
     private Map<String,Object> project(long id,long total,long na,long ok,long ng,long pending) {
         var p=new LinkedHashMap<String,Object>();p.put("id",id);p.put("code","P"+id);p.put("name","Project "+id);p.put("activePmCount",0L);p.put("archivedAt",null);
-        p.put("total",total);p.put("na",na);p.put("ok",ok);p.put("ng",ng);p.put("pending",pending);p.put("openBugs",1L);p.put("awaitingVerification",1L);return p;
+        p.put("total",total);p.put("na",na);p.put("ok",ok);p.put("ng",ng);p.put("pending",pending);p.put("openBugs",1L);p.put("awaitingVerification",1L);
+        p.put("fixedBugs",2L);p.put("cannotReproduceBugs",1L);p.put("wontFixBugs",3L);p.put("legacyBugs",1L);return p;
     }
     @Test void aggregatesCaseStatusCountsBeforeDividingAndIncludesPAndNaInProgress() {
         var db=mock(WorkItemStore.class);var identity=mock(IdentityService.class);var service=new AdminOverviewService(db,identity);
@@ -90,6 +91,7 @@ class AdminOverviewServiceTest {
             if(sql.contains("u.role_code AS role")) return List.of(Map.of("role","TESTER","total",3L,"enabled",2L));
             return List.of();});
         var all=service.overview("actor",null);
+        assertThat(all.metrics()).containsEntry("fixedBugs",4L).containsEntry("cannotReproduceBugs",2L).containsEntry("wontFixBugs",6L).containsEntry("legacyBugs",2L);
         // R03/C05: total=12; tested=4 OK+2 NG+3 P+2 NA=11; pass=4/12.
         assertThat(all.metrics()).containsEntry("executionPercent",91.67).containsEntry("passPercent",33.33).containsEntry("applicable",12L).containsEntry("na",2L).containsEntry("pending",3L).containsEntry("notRun",1L);
         assertThat(all.totalUsers()).isEqualTo(3);assertThat(all.enabledUsers()).isEqualTo(2);

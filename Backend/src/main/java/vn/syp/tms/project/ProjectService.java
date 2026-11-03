@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.syp.tms.shared.web.BusinessException;
 import vn.syp.tms.identity.IdentityService;
 import vn.syp.tms.identity.IdentityUser;
+import vn.syp.tms.identity.AccountPolicy;
+import vn.syp.tms.identity.AccountType;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,7 @@ public class ProjectService {
     }
 
     public List<ProjectDtos.ProjectSummary> list(String userId) {
+        if("GUEST".equals(identityService.current(userId).getRole()))throw new BusinessException(403,"FORBIDDEN","Khách chỉ được xem tiến độ và báo cáo dự án.");
         boolean admin = "ADMIN".equals(identityService.current(userId).getRole());
         var roles = membershipRepository.findByUserIdAndActiveTrue(userId).stream()
                 .collect(Collectors.toMap(member->member.getProjectId(), member->member.getProjectRole()));
@@ -91,17 +94,12 @@ public class ProjectService {
         if("ADMIN".equals(actor.getRole()))lockAdminProject(projectId,actorId);
         else {
             lockWritableProject(projectId,actorId);
-            if(!List.of("DEV","TESTER").contains(targetUser.getRole()) || !List.of("DEV","TESTER").contains(input.projectRole()))
-                throw new BusinessException(403,"FORBIDDEN","PM chỉ được thêm tài khoản Dev hoặc Tester vào dự án mình quản lý.");
+            if(!"USER".equals(targetUser.getRole()) || !"USER".equals(input.projectRole()))
+                throw new BusinessException(403,"FORBIDDEN","Admin dự án chỉ được thêm User thường vào dự án mình quản lý.");
         }
-        if (!List.of("PM", "TESTER", "DEV", "MEMBER").contains(input.projectRole())) {
+        if (!List.of("PM", "USER", "GUEST").contains(input.projectRole())) {
             throw new BusinessException(422, "INVALID_ROLE", "Vai trò dự án không hợp lệ.");
         }
-        
-        if("DEV".equals(targetUser.getRole()) && !"DEV".equals(input.projectRole()))
-            throw new BusinessException(422,"INVALID_ROLE","Tài khoản Dev chỉ được giao vai trò Dev.");
-        if(!"DEV".equals(targetUser.getRole()) && "DEV".equals(input.projectRole()))
-            throw new BusinessException(422,"INVALID_ROLE","Vai trò Dev cần tài khoản có quyền Dev để nhận và xử lý bug/QA.");
         
         var current = membershipRepository.lockMember(projectId,targetUserId);
         if(current!=null && !current.getProjectRole().equals(input.projectRole()))
@@ -141,7 +139,7 @@ public class ProjectService {
     }
 
     public vn.syp.tms.identity.IdentityUserRepository.CurrentAccount lockMemberAccount(String userId) {
-        return users.lockAccount(userId).filter(account -> account.getEnabled())
+        return users.lockAccount(userId).filter(account -> account.getEnabled() && List.of("ADMIN","PM","USER","GUEST").contains(account.getRole()) && (!"ADMIN".equals(account.getRole())||identityService.isAdmin(userId)))
             .orElseThrow(() -> new BusinessException(422,"INVALID_MEMBER","Tài khoản không tồn tại hoặc đã bị khóa."));
     }
 
@@ -161,6 +159,9 @@ public class ProjectService {
 
     /** Global ADMIN can access every existing project without an active project membership. */
     public void requireReadAccess(Long projectId, String userId) {
+        requireWorkspaceAccess(projectId,userId);
+    }
+    public void requireWorkspaceAccess(Long projectId,String userId) {
         if ("ADMIN".equals(identityService.current(userId).getRole())) {
             if (!projectRepository.existsById(java.util.Objects.requireNonNull(projectId)))
                 throw new BusinessException(404, "NOT_FOUND", "Không tìm thấy dự án.");
@@ -169,10 +170,20 @@ public class ProjectService {
 
     public void requireMembership(Long projectId, String userId) {
         if (isGlobalAdmin(userId)) { requireReadAccess(projectId,userId); return; }
+        String role=identityService.current(userId).getRole();
+        if("GUEST".equals(role))throw new BusinessException(403,"FORBIDDEN","Khách chỉ được xem tiến độ và báo cáo dự án.");
         ProjectMembership m = membershipRepository.findByProjectIdAndUserId(projectId, userId);
-        if (m == null || !m.isActive()) {
+        if (m == null || !m.isActive() || !List.of("PM","USER").contains(m.getProjectRole()) || !role.equals(m.getProjectRole())) {
             throw new BusinessException(404, "NOT_FOUND", "Dự án không tồn tại hoặc bạn không có quyền truy cập");
         }
+    }
+    public void requireReportingAccess(Long projectId,String userId) {
+        String role=identityService.current(userId).getRole();
+        if("ADMIN".equals(role)){requireWorkspaceAccess(projectId,userId);return;}
+        if(!List.of("PM","GUEST").contains(role))throw new BusinessException(403,"FORBIDDEN","Không có quyền xem báo cáo quản trị.");
+        var member=membershipRepository.findByProjectIdAndUserId(projectId,userId);
+        if(member==null||!member.isActive()||!role.equals(member.getProjectRole()))
+            throw new BusinessException(404,"NOT_FOUND","Dự án không nằm trong phạm vi được phép.");
     }
 
     public void requirePmOrAdmin(Long projectId, String userId) {
@@ -183,7 +194,7 @@ public class ProjectService {
     }
 
     private void requirePmOrAdminRole(Long projectId,String userId) {
-        requireNotDev(projectId,userId);
+        requireWorkspaceAccess(projectId,userId);
         requireMembership(projectId, userId);
         ProjectMembership m = membershipRepository.findByProjectIdAndUserId(projectId, userId);
         boolean isPm = m != null && m.isActive() && "PM".equals(m.getProjectRole());
@@ -222,7 +233,7 @@ public class ProjectService {
 
     public void requireProjectPm(Long projectId, String userId) {
         if (isGlobalAdmin(userId)) { requireReadAccess(projectId,userId); return; }
-        requireNotDev(projectId,userId);
+        requireWorkspaceAccess(projectId,userId);
         requireMembership(projectId, userId);
         if (!"PM".equals(membershipRepository.findByProjectIdAndUserId(projectId, userId).getProjectRole())) {
             throw new BusinessException(403, "PROJECT_PM_REQUIRED", "Chỉ PM của dự án được phê duyệt phiên bản test case.");
@@ -236,8 +247,8 @@ public class ProjectService {
             .orElseThrow(()->new BusinessException(404,"NOT_FOUND","Không tìm thấy tài khoản đang hoạt động."));
         var member=membershipRepository.findByProjectIdAndUserId(projectId,user.getId());
         String role=member==null?initialMemberRole(user.getRole()):member.getProjectRole();
-        if(!isGlobalAdmin(actorId) && (!List.of("DEV","TESTER").contains(user.getRole()) || !List.of("DEV","TESTER").contains(role)))
-            throw new BusinessException(403,"FORBIDDEN","PM chỉ được thêm tài khoản Dev hoặc Tester.");
+        if(!isGlobalAdmin(actorId) && (!"USER".equals(user.getRole()) || !"USER".equals(role)))
+            throw new BusinessException(403,"FORBIDDEN","Admin dự án chỉ được thêm User thường.");
         return new ProjectDtos.MemberCandidate(user.getId(),user.getUsername(),user.getDisplayName(),member==null?null:member.getVersion(),user.getRole(),role);
     }
 
@@ -248,15 +259,9 @@ public class ProjectService {
     }
 
     private static String initialMemberRole(String systemRole) {
-        return "ADMIN".equals(systemRole)?"PM":systemRole;
+        return AccountPolicy.defaultMembershipRole(AccountType.fromCode(systemRole));
     }
 
-    public void requireNotDev(Long projectId,String actor) {
-        if (isGlobalAdmin(actor)) return;
-        var member=membershipRepository.findByProjectIdAndUserId(projectId,actor);
-        if ("DEV".equals(identityService.current(actor).getRole()) || member!=null && "DEV".equals(member.getProjectRole()))
-            throw new BusinessException(403,"DEV_READ_ONLY_RESULTS","Dev không được ghi kết quả kiểm thử.");
-    }
     public void lockAdminProject(Long projectId,String actor) {
         requireAdmin(actor);
         var project=projectRepository.lockAdminState(projectId).orElseThrow(()->new BusinessException(404,"NOT_FOUND","Không tìm thấy dự án."));

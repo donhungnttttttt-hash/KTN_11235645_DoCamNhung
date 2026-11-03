@@ -1,6 +1,126 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-25",
+  "updatedAt": "2026-11-03",
+  "sourceHandover20261103": {
+    "request": "thuc hien xong thi commit di",
+    "branch": "system-design",
+    "localCommitAuthorized": true,
+    "pushAuthorized": false,
+    "scope": "Completed unified accounts, self profile/avatar and Ticket Bug/QA with migrations V37-V39, related tests, scripts and documentation",
+    "verificationSkill": "verification-loop: compare source against verified snapshots, review candidate files and exclude private configuration/backups/logs",
+    "report": "docs/reviews/2026-11-03-ticket-workflow-implementation.md",
+    "note": "Earlier commitOrPush=false fields describe implementation checkpoints before this explicit handover request. Git history records the actual commit."
+  },
+  "ticketWorkflowAnalysis20261103": {
+    "status": "DONE",
+    "scope": "Approved Bug/QA workflow implementation: 9 Kanban columns, project duties, source snapshots and notifications",
+    "report": "docs/reviews/2026-11-03-ticket-workflow-analysis.md",
+    "implementationStarted": true,
+    "approval": "tooi duyet nen thucj hien di",
+    "plan": "docs/superpowers/plans/2026-11-03-ticket-workflow.md",
+    "implementationReport": "docs/reviews/2026-11-03-ticket-workflow-implementation.md",
+    "tasks": {
+      "backend": "DONE",
+      "frontend": "DONE",
+      "integrationAndLocalRollout": "DONE"
+    },
+    "verification": {
+      "backend": "87/87 broader native regression, focused14/14 includingnewrepairregression, finalexact1/1;0skipped",
+      "javaDiagnostics": "374sources,0errors/warnings",
+      "frontend": "1293/1293 tests in145files; finalfocused59/buildPASS",
+      "frontendCoverage": "Final3changedfiles:lines99.19%,branches88.86%,functions93%,statements92.78%;notwholeapp",
+      "migration": "V38toV39 main and fresh restoredcopy:89oldnonhistory/non-sessiontables preserved;all38oldmigrationdefinitions andoldFlywayhistoryunchanged",
+      "runningMain": "V39,8080PID21868healthUP;frontend5173retained;ownedtest8087/5174stopped",
+      "chrome": "43isolatedchecks+11mainchecks;admin/admin2loginPASS;ownChromeprofile",
+      "finalReview": "2Importantfixed inonewave;scopedrereviewApproved,0remainingfindings"
+    },
+    "pending": [
+      "Meaning of No bug / ID bug in source workbook (question pending; independent implementation proceeds)"
+    ],
+    "commitOrPush": false,
+    "completedAt": "2026-11-03T03:18:49.624Z"
+  },
+  "accountAvatarTrigger20261103": {
+    "status": "DONE",
+    "scope": "Compact circular avatar account trigger shared by all workspaces",
+    "report": "docs/reviews/2026-11-03-self-profile-and-cutover.md",
+    "verification": {
+      "frontendTests": "53/53 PASS in 9 files",
+      "build": "PASS; existing bundle size warning remains",
+      "chrome": "Admin and project workspace at 1440px/375px: circle dimensions, menu, profile, keyboard and focus PASS; no page errors",
+      "coverage": "Not remeasured for this visual change"
+    },
+    "commitOrPush": false
+  },
+  "unifiedUserAccess20261102": {
+    "status": "DONE",
+    "spec": "docs/superpowers/specs/2026-11-02-unified-user-access-design.md",
+    "specApprovedAt": "2026-11-02",
+    "specApproval": "Duyệt rồi nha",
+    "plan": "docs/superpowers/plans/2026-11-02-unified-user-access.md",
+    "baselineCommit": "13737f4",
+    "implementationAuthorized": true,
+    "implementationStarted": true,
+    "skills": [
+      "using-superpowers",
+      "brainstorming",
+      "writing-plans",
+      "executing-plans",
+      "using-git-worktrees",
+      "test-driven-development",
+      "tdd-workflow",
+      "backend-patterns",
+      "api-design",
+      "security-review",
+      "frontend-patterns",
+      "verification-loop",
+      "browser-testing-with-devtools",
+      "code-review"
+    ],
+    "decisions": {
+      "user": "Union of previous TESTER and DEV permissions; preserve action-specific assignment, ownership and lifecycle checks",
+      "creation": "Default USER; exclusive Admin/Guest flags; conflicting flags show confirmation-style warning without creation",
+      "systemAdmins": {
+        "admin.local": "admin",
+        "syp.demo.admin": "admin2"
+      },
+      "disabledAccount": "handover.admin; preserve identity and history",
+      "loginId": "Reuse username for human-readable login ID; preserve internal UUID"
+    },
+    "verification": "Frontend 1248/1248 full suite, build PASS; added Guest shell group 10/10. Backend broad 742 executed PASS, 97 skipped; migration/policy 7, provisioning 6 native PASS. Snapshot restore and V37/provision rehearsal preserve 81 domain tables, UUIDs and prior Flyway history. See report for coverage and final focused checks. Final Feature/AI/retired/parser group65/65 PASS; final JDT354 sources zero warnings/errors; runner guards3/3; current git diff --check PASS. No tracked V1-V36 changes. Final independent migration/provision/policy run13/13 PASS,0skipped (expected rejection log for invalid membership).",
+    "next": "Unified identity and approved self-profile extension complete locally; no commit/push.",
+    "commitOrPush": false,
+    "planApprovedAt": "2026-11-02",
+    "executionMethod": "Native",
+    "report": "docs/reviews/2026-11-02-unified-user-access.md",
+    "mainCutover": true,
+    "browserVerified": true,
+    "blocker": null,
+    "tasks": {
+      "U01": "DONE",
+      "U02": "DONE",
+      "U03": "DONE",
+      "U04": "DONE",
+      "U05": "DONE",
+      "U06": "DONE",
+      "U07": "DONE",
+      "U08": "DONE",
+      "U09": "DONE",
+      "U10": "DONE"
+    },
+    "runtime": {
+      "port": 8080,
+      "flyway": 38,
+      "readiness": "UP",
+      "adminIds": [
+        "admin",
+        "admin2"
+      ],
+      "disabled": "handover.admin",
+      "domainTablesPreserved": 81,
+      "v34Applied": false
+    }
+  },
   "baselineCommit": "bd7e482",
   "branchAtPlanning": "feature/Fontend-design",
   "integrationBranch": "develop",
@@ -2245,6 +2365,47 @@
       "mainPreservation": "8 table fingerprints unchanged; 4 versions retained",
       "backup": "var/mysql-native/backups/2026-10-25T11-35-18-001Z-tms.sql",
       "coverage": "Not measured",
+      "commitOrPush": false
+    }
+  },
+  "selfProfile20261103": {
+    "status": "DONE",
+    "scope": "Self name, avatar, email, phone, job title, department; username and account type readonly",
+    "authorization": "User accepted proposed scope; all account types including Guest",
+    "commitOrPush": false,
+    "report": "docs/reviews/2026-11-03-self-profile-and-cutover.md",
+    "verification": {
+      "frontend": 1255,
+      "backend": 44,
+      "backendSkipped": 0,
+      "javaSources": 363,
+      "javaErrors": 0,
+      "javaWarnings": 0,
+      "chrome": "4 roles, 1440/375px, upload/delete/save/reload; main two Admin read/login",
+      "build": "PASS; existing chunk warning",
+      "migration": "Fresh core/demo + V37->V38 + main snapshot rehearsal PASS",
+      "reaudit": "Chrome ID validation, 375px focus/draft/session recovery; atomic session renewal rollback and revocation; 43 migration artifacts unchanged",
+      "dockerIntegration": "IdentityIntegrationTest unavailable: no Docker; native HTTP equivalents passed"
+    },
+    "runtime": {
+      "port": 8080,
+      "pid": 26660,
+      "flyway": 38,
+      "readiness": "UP",
+      "oldTablesPreserved": 88,
+      "profileFixturesWrittenToMain": 0,
+      "jarSha256": "b4c9ac888fd2ca1b71ee39c8d6c0d527ca3cafaf876e45a338b2a53325e30e8d"
+    },
+    "reaudit": {
+      "status": "DONE",
+      "report": "docs/reviews/2026-11-03-self-profile-and-cutover.md",
+      "fixed": [
+        "Same-session concurrent rename invalidation",
+        "HTML ID patterns rejected by Chrome",
+        "Missing localized audit actions",
+        "Stale current-state documentation"
+      ],
+      "review": "Independent Standards + Spec; session fix reviewed again",
       "commitOrPush": false
     }
   }

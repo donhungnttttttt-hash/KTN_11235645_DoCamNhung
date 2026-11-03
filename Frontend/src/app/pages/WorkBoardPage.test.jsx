@@ -9,9 +9,9 @@ const state=vi.hoisted(()=>({project:null,role:'PM'}));
 vi.mock('../features/projects/ProjectProvider',()=>({useProject:()=>({currentProject:state.project})}));
 vi.mock('../features/auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>role===state.role})}));
 vi.mock('../services/api/features',()=>({featuresApi:{list:vi.fn().mockResolvedValue({items:[{id:8,name:'Vòng A'}],totalPages:1})}}));
-vi.mock('../services/api/featureIssues',()=>({featureIssuesApi:{list:vi.fn()}}));
-const items=[{id:7,key:'P-7',title:'Lỗi đăng nhập',type:'BUG',status:'open',featureName:'Vòng A'},
- {id:9,key:'P-9',title:'Câu hỏi nguồn',type:'QA',status:'open',featureName:'Vòng A'}];
+vi.mock('../services/api/featureIssues',()=>({featureIssuesApi:{board:vi.fn().mockResolvedValue({columns:[],totalItems:21,legacyCount:0}),list:vi.fn()}}));
+const items=[{id:7,key:'P-7',title:'Lỗi đăng nhập',type:'BUG',status:'open',boardColumn:'new',featureName:'Vòng A'},
+ {id:9,key:'P-9',title:'Câu hỏi nguồn',type:'QA',status:'open',boardColumn:'new',featureName:'Vòng A'}];
 beforeEach(()=>{vi.clearAllMocks();state.project={id:1,projectRole:'PM',archived:false};state.role='PM';featureIssuesApi.list.mockResolvedValue({items,totalItems:21,totalPages:2});});
 
 it('shows both Bug and QA, and keeps separate Kanban and list views',async()=>{
@@ -43,7 +43,7 @@ it('offers only the defined monkey creation point in error management',async()=>
  expect(screen.getByRole('button',{name:'Ghi lỗi monkey'})).toBeEnabled();expect(screen.queryByRole('button',{name:'Thêm công việc'})).toBeNull();
  view.rerender(<WorkBoardPage activeRoute="/board" navigate={vi.fn()}/>);expect(screen.queryByRole('button',{name:'Ghi lỗi monkey'})).toBeNull();
 });
-it.each([{role:'TESTER',archived:false,allowed:true},{role:'DEV',archived:false,allowed:false},{role:'PM',archived:true,allowed:false},{role:'ADMIN',archived:false,allowed:true}])('respects active project creation rights %j',async({role,archived,allowed})=>{
+it.each([{role:'USER',archived:false,allowed:true},{role:'DEV',archived:false,allowed:false},{role:'PM',archived:true,allowed:false},{role:'ADMIN',archived:false,allowed:true}])('respects active project creation rights %j',async({role,archived,allowed})=>{
  state.role=role;state.project={id:1,projectRole:role==='ADMIN'?null:role,archived};render(<WorkBoardPage activeRoute="/issues" navigate={vi.fn()}/>);
  await screen.findByText('Lỗi đăng nhập');expect(!!screen.queryByRole('button',{name:'Ghi lỗi monkey'})).toBe(allowed);
 });

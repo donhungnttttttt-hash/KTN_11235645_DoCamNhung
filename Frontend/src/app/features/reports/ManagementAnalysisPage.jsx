@@ -5,12 +5,12 @@ import {useAiProviders} from '../ai/AiConnections';
 import {aiError} from '../ai/aiErrors';
 import {managementReportsApi} from '../../services/api/managementReports';
 import {TableScroll} from '../../components/TableScroll';
+import {ProgressSummary} from './ProgressSummary';
 import {SafeMarkdown} from './SafeMarkdown';
 import {useReportDrafts} from './ReportDraftProvider';
 import {statuses as issueStatuses} from '../work-items/data';
 import './management-analysis.css';
 
-const statuses=[['ok','OK'],['ng','NG'],['pending','P'],['na','NA'],['notRun','Unexecuted']];
 const time=value=>value?new Date(value).toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'}):'';
 const percent=value=>Number.isFinite(Number(value))?Math.max(0,Math.min(100,Number(value))):0;
 const displayPercent=value=>Math.round(percent(value)*100)/100;
@@ -27,7 +27,7 @@ export function ManagementAnalysisPage({project:providedProject,api=managementRe
   const hasRole=role=>auth?.hasRole?.(role)||auth?.user?.roles?.includes(role);
   if(providedProject===undefined&&context?.loading)return <p role="status">Đang tải dự án…</p>;
   if(!project)return <section className="page-container"><h1>Tổng hợp & Phân tích</h1><p>Chọn dự án để xem phân tích.</p></section>;
-  if(!hasRole('ADMIN')&&(hasRole('DEV')||project.projectRole!=='PM'))return <section className="page-container"><h1>Không có quyền truy cập</h1><p>Tổng hợp & Phân tích dành cho PM của dự án và ADMIN.</p></section>;
+  if(!hasRole('ADMIN')&&(!hasRole('PM')||project.projectRole!=='PM'))return <section className="page-container"><h1>Không có quyền truy cập</h1><p>Tổng hợp & Phân tích dành cho PM của dự án và ADMIN.</p></section>;
   return <DraftWorkspaceGate key={project.id} project={project} api={api}/>;
 }
 
@@ -173,10 +173,7 @@ function ManagementWorkspace({project,api}){
 }
 
 function ManagementSummary({data}){
-  const metrics=data.metrics,total=Number(metrics.total)||0;
-  return <section className="management-summary"><h2>Tiến độ kiểm thử</h2><p className="management-summary-scope">Phạm vi số liệu: {data.feature?.name||'Toàn bộ dự án'}</p><p className="management-progress-text">{total?`${metrics.tested} / ${total} case đã test · ${displayPercent(metrics.executionPercent)}%`:'Chưa có case trong phạm vi này.'}</p><p>Đã test gồm OK, NG, P và NA; tiến độ không thay cho xác nhận nghiệm thu.</p>
-    <div className="management-status-bar" role="img" aria-label={statuses.map(([key,label])=>`${label}: ${metrics[key]??0}`).join(' · ')}>{statuses.map(([key,label])=><span key={key} className={`management-status-${key}`} title={`${label}: ${metrics[key]??0}`} style={{width:`${total?(Number(metrics[key])||0)*100/total:0}%`}}/>)}</div>
-    <ul className="management-status-legend">{statuses.map(([key,label])=><li key={key}><span className={`management-status-${key}`} aria-hidden="true"/>{label}: {metrics[key]??0}</li>)}</ul><p className="management-as-of">Cập nhật {time(data.asOf)} · giờ Việt Nam</p>
+  return <section className="management-summary"><p className="management-summary-scope">Phạm vi số liệu: {data.feature?.name||'Toàn bộ dự án'}</p><ProgressSummary metrics={data.metrics} asOf={data.asOf}/>
     <h3>Đối chiếu tiến độ toàn dự án</h3><p>Bảng so sánh các Feature đang sử dụng của toàn dự án.</p><TableScroll label="Tiến độ theo Feature"><table className="management-feature-table"><thead><tr><th>Feature</th><th>Môi trường</th><th>Đã test / Tổng case</th><th>Tiến độ</th></tr></thead><tbody>{data.features.map(feature=><tr key={feature.id}><td>{feature.name}</td><td>{feature.environment||'—'}</td><td>{feature.testedCaseCount} / {feature.caseCount}</td><td><div className="management-feature-progress" role="progressbar" aria-label={`Tiến độ ${feature.name}`} aria-valuenow={percent(feature.progressPercent)} aria-valuemin={0} aria-valuemax={100}><span style={{width:`${percent(feature.progressPercent)}%`}}/></div>{feature.caseCount?`${displayPercent(feature.progressPercent)}%`:'Chưa có case'}</td></tr>)}{!data.features.length&&<tr><td colSpan={4}>Chưa có Feature.</td></tr>}</tbody></table></TableScroll>
     <h3>Bug/QA trong phạm vi</h3><TableScroll label="Số lượng Bug và QA"><table><thead><tr><th>Loại</th><th>Trạng thái</th><th>Số lượng</th></tr></thead><tbody>{data.issues.map((issue,index)=><tr key={`${issue.type}/${issue.status}/${index}`}><td>{issue.type==='BUG'?'Bug':issue.type}</td><td>{issueStatusLabel(issue.status)}</td><td>{issue.total}</td></tr>)}{!data.issues.length&&<tr><td colSpan={3}>Chưa có Bug/QA.</td></tr>}</tbody></table></TableScroll>
   </section>;

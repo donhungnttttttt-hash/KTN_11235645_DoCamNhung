@@ -62,6 +62,6 @@ class DeviceInventoryServiceTest {
   admin();when(db.row(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(i->((String)i.getArgument(0)).contains("FROM projects")?Map.of("timezone","UTC"):Map.of("version",0L,"conditionCode","AVAILABLE"));
   when(db.rows(java.util.Objects.requireNonNull(contains("project_memberships")),any(Object[].class))).thenReturn(List.of(Map.of("id",3L,"projectRole","PM")));
   service.assign("admin",new DeviceInventoryDtos.Assign(1,2,"member",null,"",0L));
-  var order=inOrder(db);order.verify(db).rows(java.util.Objects.requireNonNull(contains("enabled=TRUE FOR SHARE")),eq("member"));order.verify(db).row(java.util.Objects.requireNonNull(contains("FROM projects")),eq(2L));order.verify(db).row(java.util.Objects.requireNonNull(contains("FROM device_assets")),eq(1L));order.verify(db).rows(java.util.Objects.requireNonNull(contains("active=TRUE FOR UPDATE")),eq(2L),eq("member"));
+  var order=inOrder(db);order.verify(db).rows(java.util.Objects.requireNonNull(matches("(?s).*u.enabled=TRUE.*system_admin_registry.*FOR SHARE")),eq("member"));order.verify(db).row(java.util.Objects.requireNonNull(contains("FROM projects")),eq(2L));order.verify(db).row(java.util.Objects.requireNonNull(contains("FROM device_assets")),eq(1L));order.verify(db).rows(java.util.Objects.requireNonNull(contains("active=TRUE FOR UPDATE")),eq(2L),eq("member"));
  }
 }

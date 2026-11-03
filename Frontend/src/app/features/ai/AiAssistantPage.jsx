@@ -18,7 +18,7 @@ const descriptions={
  TESTER_BUG_DRAFT:'Rà soát bug bạn tạo hoặc được giao; chỉ ra thông tin thiếu và gợi ý mô tả rõ hơn.',
  DEV_TICKET_REVIEW:'Rà soát BUG/QA được giao, tìm ticket có từ khóa liên quan trong dự án và soạn câu hỏi cần làm rõ.',
 };
-const roleNames={ADMIN:'Admin',PM:'PM',TESTER:'Tester',DEV:'Dev'};
+const roleNames={ADMIN:'Admin tổng',PM:'Admin dự án',USER:'User thường',GUEST:'Khách'};
 const stateNames={READY:'Đã lưu',GENERATING:'Đang xử lý',FAILED:'Chưa tạo được'};
 const providerNames={OPENAI_API:'API của hệ thống',CHATGPT:'ChatGPT cá nhân',OLLAMA:'Ollama local'};
 const provenance=draft=>`${providerNames[draft.provider||'OPENAI_API']||draft.provider} · ${draft.model||'Chưa có model trả về'}`;

@@ -32,7 +32,7 @@ public class ProjectStatusReportService {
   if("ADMIN".equals(role))return;
   var members=db.rows("SELECT id,project_role AS role FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE",projectId,actor);
   if(members.isEmpty())fail(404,"NOT_FOUND","Dự án không tồn tại hoặc bạn không có quyền truy cập.");
-  if(!"PM".equals(members.getFirst().get("role"))||"DEV".equals(role))fail(403,"PROJECT_PM_REQUIRED","Báo cáo quản lý dành cho PM của dự án và ADMIN.");
+  if(!"PM".equals(members.getFirst().get("role"))||!"PM".equals(role))fail(403,"PROJECT_PM_REQUIRED","Báo cáo quản lý dành cho PM của dự án và ADMIN.");
  }
  public Map<String,Object> create(String actor,long projectId,Input ignored) {
   authorize(actor,projectId,false);

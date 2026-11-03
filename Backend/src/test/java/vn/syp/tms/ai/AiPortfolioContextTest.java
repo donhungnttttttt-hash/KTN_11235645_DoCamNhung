@@ -20,13 +20,13 @@ class AiPortfolioContextTest {
     final AiPortfolioContext context=new AiPortfolioContext(new WorkItemStore(jdbc,json),identity,sessions,json);
     final List<Map<String,Object>> projects=new ArrayList<>();
     final List<String> queries=new ArrayList<>();
-    String role="TESTER";
+    String role="USER";
     @BeforeEach void setup() {
         when(identity.lockCurrent("owner")).thenReturn(account);
         when(account.getRole()).thenAnswer(call->role);
         when(sessions.current("owner")).thenReturn(new SessionPrincipal("owner",0));
         when(jdbc.queryForObject(Objects.requireNonNull(anyString()),longResultType(),any(Object[].class))).thenReturn(0L);
-        projects.add(project(1,"TESTER",11));projects.add(project(2,"DEV",12));
+        projects.add(project(1,"USER",11));projects.add(project(2,"USER",12));
         when(jdbc.queryForList(Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{
             String sql=call.getArgument(0);queries.add(sql);
             if(sql.contains("FROM projects p")) {
@@ -45,7 +45,7 @@ class AiPortfolioContextTest {
     }
     Map<String,Object> project(long id,String projectRole,long member) {
         var row=new LinkedHashMap<String,Object>();row.put("id",id);row.put("code","P"+id);row.put("name","Dự án "+id);
-        row.put("role",projectRole);row.put("membershipId",member);row.put("membershipVersion",0L);row.put("archived",false);return row;
+        row.put("role",projectRole);row.put("membershipRole",projectRole);row.put("membershipId",member);row.put("membershipVersion",0L);row.put("archived",false);return row;
     }
     @Test void scopeUsesOnlyCurrentMembershipAndFingerprintExcludesPresentationChanges() {
         var first=context.current("owner");assertThat(first.projects()).hasSize(2);
@@ -66,8 +66,8 @@ class AiPortfolioContextTest {
     @Test void globalAdminCanUseAllProjectsWithoutMembership() {
         role="ADMIN";context.current("owner");assertThat(queries.getFirst()).doesNotContain("WHERE m.user_id");
     }
-    @Test void pmCanReadBackgroundProjectsOutsideMembershipWithoutReceivingCrudRights() {
-        role="PM";
+    @Test void pmCannotReadProjectsOutsideMembership() {
+        role="PM";projects.forEach(p->{p.put("role","PM");p.put("membershipRole","PM");});
         when(jdbc.queryForList(Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{
             String sql=call.getArgument(0);queries.add(sql);
             if(!sql.contains("FROM projects p")) return List.of();
@@ -75,10 +75,10 @@ class AiPortfolioContextTest {
                 ? projects.stream().map(LinkedHashMap::new).toList() : List.of();
         });
         var scope=context.current("owner");
-        assertThat(scope.projects()).hasSize(2);
+        assertThat(scope.projects()).isEmpty();
         assertThat(scope.role()).isEqualTo("PM");
     }
-    @Test void testerSnapshotDoesNotRetrieveProjectManagementTotals() {
+    @Test void ordinaryUserSnapshotDoesNotRetrieveProjectManagementTotals() {
         var scope=context.current("owner");
         var task=context.prepare("owner",scope.reference(),"restricted-context-key");
         var facts=task.data().path("sources").get(0).path("facts");
@@ -107,6 +107,7 @@ class AiPortfolioContextTest {
     }
     @Test void managementSnapshotCountsPendingAndNaAsTestedInTheFullDenominator() {
         role="PM";
+        projects.forEach(p->{p.put("role","PM");p.put("membershipRole","PM");});
         String ref=context.current("owner").reference();var task=context.prepare("owner",ref,"portfolio-key");
         assertThat(task.data().path("scope").asText()).isEqualTo("MY_PROJECTS");
         assertThat(task.data().path("totalProjects").asInt()).isEqualTo(2);
@@ -117,7 +118,7 @@ class AiPortfolioContextTest {
         assertThat(task.data().path("limitations").asText()).contains("NA","P");
     }
     @Test void manyProjectsDiscloseSnapshotLimitsAndKeepTheFullPermissionFingerprint() {
-        for(int i=3;i<=45;i++)projects.add(project(i,"TESTER",100+i));
+        for(int i=3;i<=45;i++)projects.add(project(i,"USER",100+i));
         String ref=context.current("owner").reference();var task=context.prepare("owner",ref,"portfolio-key");
         assertThat(task.sources()).hasSize(AiPortfolioContext.MAX_PROJECTS);
         assertThat(task.data().path("totalProjects").asInt()).isEqualTo(45);
@@ -127,6 +128,25 @@ class AiPortfolioContextTest {
     @Test void emptyScopeDoesNotInventProjectFacts() {
         projects.clear();var scope=context.current("owner");var task=context.prepare("owner",scope.reference(),"portfolio-key");
         assertThat(task.sources()).isEmpty();assertThat(task.data().path("totalProjects").asInt()).isZero();
+    }
+    @Test void migratedPortfolioAndProjectHistoryStayReadableOnlyWhileOriginalGrantsRemain() {
+        var journal=List.of(
+            new LinkedHashMap<String,Object>(Map.of("entityType","ACCOUNT","entityId","owner","previousRole","TESTER","previousVersion",0L)),
+            new LinkedHashMap<String,Object>(Map.of("entityType","MEMBERSHIP","entityId","11","previousRole","TESTER","previousVersion",0L)),
+            new LinkedHashMap<String,Object>(Map.of("entityType","MEMBERSHIP","entityId","12","previousRole","TESTER","previousVersion",0L)));
+        var db=new WorkItemStore(jdbc,json);
+        var oldGrants=List.of(List.of(1L,"TESTER",11L,0L),List.of(2L,"TESTER",12L,0L));
+        String oldPortfolio="portfolio-v1:"+db.checksum(List.of("TESTER",oldGrants));
+        String oldProject="project-chat-v1:"+db.checksum(List.of("TESTER",oldGrants,2L));
+        projects.forEach(p->p.put("membershipVersion",1L));
+        when(jdbc.queryForList(Objects.requireNonNull(contains("identity_role_migration_journal")),any(Object[].class))).thenReturn(new ArrayList<>(journal));
+        assertThat(context.historyReadable("owner",null,null,oldPortfolio)).isTrue();
+        assertThat(context.historyReadable("owner",2L,null,oldProject)).isTrue();
+        assertThatThrownBy(()->context.prepare("owner",oldPortfolio,"old-write")).isInstanceOf(BusinessException.class);
+        projects.getFirst().put("membershipVersion",3L);
+        assertThat(context.historyReadable("owner",null,null,oldPortfolio)).isFalse();
+        projects.removeFirst();
+        assertThat(context.historyReadable("owner",2L,null,oldProject)).isFalse();
     }
     @Test void archivedProjectsRemainIdentifiableWithoutFetchingNewBusinessFacts() {
         projects.getFirst().put("archived",true);var scope=context.current("owner");

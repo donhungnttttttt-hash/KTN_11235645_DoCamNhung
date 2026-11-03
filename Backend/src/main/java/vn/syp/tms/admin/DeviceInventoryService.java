@@ -44,7 +44,7 @@ public class DeviceInventoryService {
  public Map<String,Object> assign(String actor,Assign input){
   admin(actor);lockRecipient(input.recipientUserId());var project=lockProject(input.projectId());var asset=lockAsset(input.assetId());return assignLocked(actor,input,project,asset);
  }
- private void lockRecipient(String user){if(db.rows("SELECT id FROM identity_users WHERE id=? AND enabled=TRUE FOR SHARE",user).isEmpty())fail(422,"INVALID_RECIPIENT","Người nhận phải là tài khoản đang hoạt động.");}
+ private void lockRecipient(String user){if(db.rows("SELECT u.id FROM identity_users u WHERE u.id=? AND u.enabled=TRUE AND (u.role_code='PM' OR (u.role_code='ADMIN' AND EXISTS(SELECT 1 FROM system_admin_registry r WHERE r.user_id=u.id))) FOR SHARE",user).isEmpty())fail(422,"INVALID_RECIPIENT","Người nhận phải là Admin dự án hoặc Admin tổng đang hoạt động.");}
  private Map<String,Object> assignLocked(String actor,Assign input,Map<String,Object> project,Map<String,Object> asset){
   if(project.get("archivedAt")!=null)fail(409,"ARCHIVED","Dự án lưu trữ không thể nhận máy.");version(asset,input.expectedVersion());
   if(!"AVAILABLE".equals(asset.get("conditionCode"))||!db.rows("SELECT id FROM device_allocations WHERE active_asset_id=? FOR UPDATE",input.assetId()).isEmpty())fail(409,"ASSET_UNAVAILABLE","Máy không còn sẵn sàng để bàn giao.");

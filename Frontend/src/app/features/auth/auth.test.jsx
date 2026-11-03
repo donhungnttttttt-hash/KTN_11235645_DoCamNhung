@@ -22,7 +22,7 @@ function setup(api, children = <ProtectedApp/>) {
 }
 async function signIn(user) {
   const login=within(screen.getByRole('form',{name:'Đăng nhập'}));
-  const username = login.getByLabelText("Tên đăng nhập");
+  const username = login.getByLabelText("ID đăng nhập");
   if (!username.value) await user.type(username, "tester.test");
   await user.type(login.getByLabelText("Mật khẩu"), "test-password");
   await user.click(login.getByRole("button", { name: "Đăng nhập", exact: true }));
@@ -48,7 +48,7 @@ describe("internal authentication", () => {
   it("logs in, hides password, and never stores credentials in browser storage", async () => {
     const api = { me: vi.fn().mockRejectedValue(unauthorized()), login: vi.fn().mockResolvedValue(profile()) };
     const user = setup(api);
-    await screen.findByLabelText("Tên đăng nhập");
+    await screen.findByLabelText("ID đăng nhập");
     expect(screen.getByLabelText("Mật khẩu")).toHaveAttribute("type", "password");
     await signIn(user);
     expect(await screen.findByLabelText("Bản nháp")).toBeVisible();
@@ -59,12 +59,12 @@ describe("internal authentication", () => {
   });
 
   it("shows rejected login and preserves username but clears password", async () => {
-    const api = { me: vi.fn().mockRejectedValue(unauthorized()), login: vi.fn().mockRejectedValue(new ApiError("Tên đăng nhập hoặc mật khẩu không đúng.", { status: 401 })) };
+    const api = { me: vi.fn().mockRejectedValue(unauthorized()), login: vi.fn().mockRejectedValue(new ApiError("ID đăng nhập hoặc mật khẩu không đúng.", { status: 401 })) };
     const user = setup(api);
-    await screen.findByLabelText("Tên đăng nhập");
+    await screen.findByLabelText("ID đăng nhập");
     await signIn(user);
-    expect(await screen.findByRole("alert")).toHaveTextContent("Tên đăng nhập hoặc mật khẩu không đúng");
-    expect(screen.getByLabelText("Tên đăng nhập")).toHaveValue("tester.test");
+    expect(await screen.findByRole("alert")).toHaveTextContent("ID đăng nhập hoặc mật khẩu không đúng");
+    expect(screen.getByLabelText("ID đăng nhập")).toHaveValue("tester.test");
     expect(screen.getByLabelText("Mật khẩu")).toHaveValue("");
     expect(screen.queryByLabelText("Bản nháp")).not.toBeInTheDocument();
   });
@@ -73,7 +73,7 @@ describe("internal authentication", () => {
     let resolve;
     const api = { me: vi.fn().mockRejectedValue(unauthorized()), login: vi.fn().mockImplementation(() => new Promise(done => { resolve = done; })) };
     const user = setup(api);
-    await screen.findByLabelText("Tên đăng nhập");
+    await screen.findByLabelText("ID đăng nhập");
     await signIn(user);
     expect(screen.getByRole("button", { name: "Đang đăng nhập…" })).toBeDisabled();
     expect(api.login).toHaveBeenCalledTimes(1);
@@ -101,7 +101,7 @@ describe("internal authentication", () => {
     let resolve;
     const api = { me: vi.fn().mockRejectedValue(unauthorized()), login: vi.fn(() => new Promise(done => { resolve = done; })) };
     const user = setup(api);
-    await screen.findByLabelText("Tên đăng nhập");
+    await screen.findByLabelText("ID đăng nhập");
     await user.click(screen.getByRole("button", { name: "Hiện mật khẩu", exact: true }));
     await signIn(user);
     expect(screen.getByLabelText("Mật khẩu")).toHaveAttribute("type", "password");
@@ -166,13 +166,13 @@ describe("internal authentication", () => {
     const account=profile({roles:['PM'],permissions:['profile:read','users:create']});
     const user=setup({me:vi.fn().mockResolvedValue(account),login:vi.fn().mockResolvedValue(account)});
     await user.click(await screen.findByRole('button',{name:'Tài khoản: Tester nội bộ'}));
-    await user.click(screen.getByRole('button',{name:'Tạo tài khoản Tester'}));
-    await user.type(screen.getByLabelText('Tên hiển thị'),'Tên còn đang nhập');
+    await user.click(screen.getByRole('button',{name:'Tạo tài khoản'}));
+    await user.type(screen.getByLabelText('Tên'),'Tên còn đang nhập');
     await rejectSession();
-    expect(screen.getByLabelText('Tên hiển thị')).not.toBeVisible();
+    expect(screen.getByLabelText('Tên')).not.toBeVisible();
     await signIn(user);
-    expect(await screen.findByRole('dialog',{name:'Tạo tài khoản Tester'})).toBeVisible();
-    expect(screen.getByLabelText('Tên hiển thị')).toHaveValue('Tên còn đang nhập');
+    expect(await screen.findByRole('dialog',{name:'Tạo tài khoản'})).toBeVisible();
+    expect(screen.getByLabelText('Tên')).toHaveValue('Tên còn đang nhập');
   });
 
   it('releases a retained Admin dialog scroll lock during reauthentication',async()=>{
@@ -198,7 +198,7 @@ describe("internal authentication", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Chưa thể đăng xuất");
     expect(screen.getByLabelText("Bản nháp")).toHaveValue("Bản nháp riêng");
     await user.click(screen.getByRole("button", { name: "Đăng xuất" }));
-    await screen.findByLabelText("Tên đăng nhập");
+    await screen.findByLabelText("ID đăng nhập");
     expect(screen.queryByLabelText("Bản nháp")).not.toBeInTheDocument();
   });
 
@@ -207,8 +207,8 @@ describe("internal authentication", () => {
     const api = { me: vi.fn().mockResolvedValue(account) };
     const user = setup(api, <Header navigate={vi.fn()} phase="Regression" setPhase={vi.fn()}/>);
     await user.click(await screen.findByRole("button", { name: "Tài khoản: Nguyễn An" }));
-    expect(screen.getByText("Quản lý dự án")).toBeVisible();
-    expect(screen.getByText("Được cấp quyền tạo tài khoản Tester")).toBeVisible();
+    expect(screen.getByText("Admin dự án")).toBeVisible();
+    expect(screen.getByText("Được cấp quyền tạo User thường")).toBeVisible();
     expect(screen.queryByText(/Nguyen Xuan/)).not.toBeInTheDocument();
   });
 });

@@ -242,21 +242,22 @@ it('a late generic identity read cannot render the departed QA in the current pr
 
 // FR11: the historical direct components above remain compatibility coverage.
 // Active QA creation now belongs to a copied Feature case, never to old run/group URLs.
-const copiedCase={featureName:'Feature copied A',fileName:'A.xlsx',caseNo:'CASE-2',title:'Imported condition',steps:'Open drawing',expectedResult:'Icon visible'};
-function currentApi(){return {context:vi.fn().mockResolvedValue(copiedCase),create:vi.fn().mockResolvedValue({id:77,type:'QA',key:'REAL-77'}),list:vi.fn().mockResolvedValue({items:[],totalItems:0,totalPages:0})};}
+const copiedCase={featureName:'Feature copied A',fileName:'A.xlsx',caseNo:'CASE-2',caseReference:'CASE-2',revisionId:12,resultVersion:3,title:'Imported condition',steps:'Open drawing',expectedResult:'Icon visible'};
+function currentApi(){return {options:vi.fn().mockResolvedValue({assignees:[{membershipId:11,displayName:'Contact'}]}),context:vi.fn().mockResolvedValue(copiedCase),create:vi.fn().mockResolvedValue({id:77,type:'QA',key:'REAL-77'}),list:vi.fn().mockResolvedValue({items:[],totalItems:0,totalPages:0})};}
 const sourceProps={projectId:1,featureId:42,documentId:7,row:{rowId:1001,caseId:501}};
 async function fillCurrentQa(){
  await waitFor(()=>expect(screen.getByLabelText('Tiêu đề')).toHaveValue(copiedCase.title));
  fireEvent.change(screen.getByLabelText('Loại Issue'),{target:{value:'QA'}});
  fireEvent.change(screen.getByLabelText('Tiêu đề'),{target:{value:'Question from copied case'}});
  fireEvent.change(screen.getByLabelText('Nội dung câu hỏi'),{target:{value:'Expected rule for icon?'}});
+ await screen.findByRole('option',{name:'Contact'});fireEvent.change(screen.getByLabelText('Đầu mối tiếp nhận'),{target:{value:'11'}});
 }
 it('current case QA sends exact Feature/document/row identity and only Bug/QA types, without old execution IDs',async()=>{
  const api=currentApi(),saved=vi.fn();render(<FeatureIssueForm {...sourceProps} api={api} onSaved={saved}/>);await fillCurrentQa();
  expect(Array.from(screen.getByLabelText('Loại Issue').options).map(option=>option.value)).toEqual(['BUG','QA']);
  expect(api.context).toHaveBeenCalledWith(1,42,7,1001,expect.objectContaining({signal:expect.any(AbortSignal)}));
  fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(saved).toHaveBeenCalledWith({id:77,type:'QA',key:'REAL-77'}));
- const payload=api.create.mock.calls[0][1];expect(payload).toMatchObject({featureId:42,documentId:7,rowId:1001,type:'QA',monkey:false,title:'Question from copied case',description:'Expected rule for icon?',steps:copiedCase.steps,expectedResult:copiedCase.expectedResult});
+ const payload=api.create.mock.calls[0][1];expect(payload).toMatchObject({featureId:42,documentId:7,rowId:1001,type:'QA',monkey:false,title:'[A.xlsx][CASE-2] Question from copied case',description:'Expected rule for icon?',steps:copiedCase.steps,expectedResult:copiedCase.expectedResult});
  for(const key of ['groupId','runItemId','revisionId','attemptId','caseId'])expect(payload).not.toHaveProperty(key);
  expect(qaApi.create).not.toHaveBeenCalled();expect(workItemsApi.create).not.toHaveBeenCalled();
 });
@@ -304,8 +305,8 @@ it('a failed Issue badge read retries in place without creating QA',async()=>{
 it('Monkey creation stays Bug with its chosen Feature and no case/run source, while its title is free',async()=>{
  const api=currentApi(),saved=vi.fn();render(<FeatureIssueForm projectId={1} featureId={42} featureName='Feature copied A' monkey api={api} onSaved={saved}/>);
  const type=screen.getByLabelText('Loại Issue');expect(type).toHaveValue('BUG');expect(type).toBeDisabled();expect(Array.from(type.options).map(option=>option.value)).toEqual(['BUG','QA']);
- for(const [label,value]of [['Tiêu đề','Free Monkey title'],['Các bước thực hiện','Explore'],['Kết quả mong đợi','Expected'],['Kết quả thực tế','Observed']])fireEvent.change(screen.getByLabelText(label),{target:{value}});
- fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(saved).toHaveBeenCalledOnce());expect(api.context).not.toHaveBeenCalled();expect(api.create).toHaveBeenCalledWith(1,expect.objectContaining({type:'BUG',title:'Free Monkey title',featureId:42,documentId:null,rowId:null,monkey:true}),expect.anything());expect(workItemsApi.create).not.toHaveBeenCalled();
+ for(const [label,value]of [['Tiêu đề','Free Monkey title'],['Các bước thực hiện','Explore'],['Kết quả mong đợi','Expected'],['Kết quả thực tế','Observed'],['Tần suất tái hiện','1/1'],['Môi trường phát hiện','ST'],['Thiết bị phát hiện','Desktop']])fireEvent.change(screen.getByLabelText(label),{target:{value}});
+ await screen.findByRole('option',{name:'Contact'});fireEvent.change(screen.getByLabelText('Đầu mối tiếp nhận'),{target:{value:'11'}});await waitFor(()=>expect(screen.getByRole('button',{name:'Lưu Issue'})).toBeEnabled());fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(saved).toHaveBeenCalledOnce());expect(api.context).not.toHaveBeenCalled();expect(api.create.mock.calls[0][1]).not.toHaveProperty('documentId');expect(api.create.mock.calls[0][1]).not.toHaveProperty('rowId');expect(api.create).toHaveBeenCalledWith(1,expect.objectContaining({type:'BUG',title:'[Feature copied A][Monkey] Free Monkey title',featureId:42,monkey:true}),expect.anything());expect(workItemsApi.create).not.toHaveBeenCalled();
 });
 it.each([
  'create=QA&documentId=10&groupId=20&runItemId=30&revisionId=40',

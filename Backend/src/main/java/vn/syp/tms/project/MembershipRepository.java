@@ -16,7 +16,7 @@ public interface MembershipRepository extends JpaRepository<ProjectMembership, L
     @org.springframework.data.jpa.repository.Query(value="SELECT id,user_id AS userId,project_role AS projectRole,active,lock_version AS version FROM project_memberships WHERE project_id=:project AND user_id=:user FOR UPDATE",nativeQuery=true)
     CurrentMember lockMember(@org.springframework.data.repository.query.Param("project") Long project,@org.springframework.data.repository.query.Param("user") String user);
     // The join is a current read, but only memberships are locked: identity locks precede projects.
-    @org.springframework.data.jpa.repository.Query(value="SELECT m.user_id FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=:project AND m.active=TRUE AND m.project_role='PM' AND u.enabled=TRUE ORDER BY m.id FOR UPDATE OF m",nativeQuery=true)
+    @org.springframework.data.jpa.repository.Query(value="SELECT m.user_id FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=:project AND m.active=TRUE AND m.project_role='PM' AND u.enabled=TRUE AND (u.role_code='PM' OR (u.role_code='ADMIN' AND EXISTS (SELECT 1 FROM system_admin_registry s WHERE s.user_id=u.id))) ORDER BY m.id FOR UPDATE OF m",nativeQuery=true)
     List<String> lockEnabledPmUsers(@org.springframework.data.repository.query.Param("project") Long project);
     @org.springframework.data.jpa.repository.Modifying
     @org.springframework.data.jpa.repository.Query(value="UPDATE project_memberships SET project_role=:role,active=:active,lock_version=lock_version+1,updated_at=UTC_TIMESTAMP(6) WHERE id=:id AND lock_version=:version",nativeQuery=true)

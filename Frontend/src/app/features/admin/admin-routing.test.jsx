@@ -7,7 +7,8 @@ import { AdminApp } from './AdminApp';
 import { AdminLayout } from './AdminLayout';
 
 const mocks=vi.hoisted(()=>({id:'a',role:'ADMIN',projectProvider:vi.fn(),projects:vi.fn(),overview:vi.fn(),project:vi.fn(),logout:vi.fn()}));
-vi.mock('../auth/AuthProvider',()=>({AuthProvider:({children})=>children,useAuth:()=>({user:{id:mocks.id,username:'admin.local',displayName:'Admin'},hasRole:role=>mocks.role===role,logout:mocks.logout})}));
+vi.mock('../auth/AuthProvider',async importOriginal=>({...await importOriginal(),AuthProvider:({children})=>children,useAuth:()=>({user:{id:mocks.id,username:'admin.local',displayName:'Admin',roles:[mocks.role],permissions:[]},can:()=>false,hasRole:role=>mocks.role===role,logout:mocks.logout})}));
+vi.mock('../../services/api/selfProfile',()=>({selfProfileApi:{get:vi.fn().mockResolvedValue({hasAvatar:false})}}));
 vi.mock('../projects/ProjectProvider',()=>({ProjectProvider:({children})=>{mocks.projectProvider();return children;}}));
 vi.mock('../work-items/ProjectData',()=>({ProjectDataProvider:({children})=>children}));
 vi.mock('../../../App',()=>({default:()=> <div>Project workspace</div>}));

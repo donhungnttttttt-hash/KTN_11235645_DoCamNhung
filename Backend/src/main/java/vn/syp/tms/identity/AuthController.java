@@ -2,11 +2,9 @@ package vn.syp.tms.identity;
 
 import jakarta.servlet.http.*;
 import jakarta.validation.Valid;
-import java.util.ArrayList;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
@@ -43,9 +41,7 @@ public class AuthController {
             throw invalid;
         }
         audit.record(user.getId(), user.getId(), "LOGIN_SUCCEEDED", ApiExceptionHandler.requestId(request));
-        var authorities = new ArrayList<SimpleGrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
-        IdentityService.permissions(user).forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission)));
+        var authorities = users.authorities(user);
         var authentication = UsernamePasswordAuthenticationToken.authenticated(new SessionPrincipal(user.getId(), user.getVersion()), null, authorities);
         request.getSession(true);
         new ChangeSessionIdAuthenticationStrategy().onAuthentication(authentication, request, response);

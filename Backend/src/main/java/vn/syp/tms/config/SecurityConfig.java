@@ -14,6 +14,7 @@ import vn.syp.tms.shared.web.ApiError;
 import vn.syp.tms.shared.web.ApiExceptionHandler;
 import vn.syp.tms.identity.IdentityService;
 import vn.syp.tms.identity.SessionAccountFilter;
+import vn.syp.tms.identity.CurrentSessionIdentity;
 import org.springframework.security.crypto.password.*;
 import org.springframework.security.web.context.*;
 import org.springframework.security.web.csrf.*;
@@ -23,6 +24,12 @@ import java.util.Map;
 
 @Configuration
 public class SecurityConfig {
+    // Keep identity changes and renewal of the caller's session atomic. Outside an
+    // existing transaction, REQUIRED still opens a transaction for normal session IO.
+    @Bean("springSessionTransactionOperations")
+    org.springframework.transaction.support.TransactionOperations sessionTransactions(org.springframework.transaction.PlatformTransactionManager manager) {
+        return new org.springframework.transaction.support.TransactionTemplate(java.util.Objects.requireNonNull(manager));
+    }
     @Bean
     PasswordEncoder passwordEncoder() {
         return new DelegatingPasswordEncoder("pbkdf2-v5_8", Map.of("pbkdf2-v5_8", Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8()));
@@ -41,7 +48,7 @@ public class SecurityConfig {
     }
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, Environment environment, ObjectMapper json, IdentityService users,
-                                            SecurityContextRepository contexts, CsrfTokenRepository csrfTokens) throws Exception {
+                                            SecurityContextRepository contexts, CsrfTokenRepository csrfTokens, CurrentSessionIdentity sessions) throws Exception {
         boolean local = environment.acceptsProfiles(Profiles.of("local"));
         http.authorizeHttpRequests(auth -> {
             auth.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll();
@@ -49,6 +56,17 @@ public class SecurityConfig {
             auth.requestMatchers(HttpMethod.GET, "/api/v1/auth/csrf").permitAll();
             auth.requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/logout").permitAll();
             auth.requestMatchers(HttpMethod.GET, "/api/v1/me").authenticated();
+            auth.requestMatchers(HttpMethod.GET,"/api/v1/me/ticket-notifications").authenticated();
+            auth.requestMatchers(HttpMethod.PUT,"/api/v1/me/ticket-notifications/*/read").authenticated();
+            // A Guest may maintain their own identity while project data remains report-only.
+            auth.requestMatchers(HttpMethod.GET,"/api/v1/me/profile","/api/v1/me/avatar").authenticated();
+            auth.requestMatchers(HttpMethod.PUT,"/api/v1/me/profile","/api/v1/me/avatar").authenticated();
+            auth.requestMatchers(HttpMethod.DELETE,"/api/v1/me/avatar").authenticated();
+            auth.requestMatchers(request -> {
+                var principal=org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+                return principal!=null&&principal.getAuthorities().stream().anyMatch(a->"ROLE_GUEST".equals(a.getAuthority()));
+            }).access(new GuestRequestAuthorization());
+            auth.requestMatchers(HttpMethod.GET,"/api/v1/reporting-projects").authenticated();
             auth.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
             auth.requestMatchers(HttpMethod.GET, "/api/v1/users").hasRole("ADMIN");
             auth.requestMatchers(HttpMethod.POST, "/api/v1/users").hasAuthority("users:create");
@@ -85,7 +103,7 @@ public class SecurityConfig {
             }));
         http.csrf(csrf -> csrf.csrfTokenRepository(csrfTokens));
         http.securityContext(context -> context.securityContextRepository(contexts).requireExplicitSave(true));
-        http.addFilterBefore(new SessionAccountFilter(users, json), AuthorizationFilter.class);
+        http.addFilterBefore(new SessionAccountFilter(users, json, sessions), AuthorizationFilter.class);
         http.requestCache(configurer -> configurer.disable());
         http.formLogin(configurer -> configurer.disable()).httpBasic(configurer -> configurer.disable()).logout(configurer -> configurer.disable());
         return http.build();

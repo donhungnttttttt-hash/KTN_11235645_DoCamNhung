@@ -30,7 +30,7 @@ class IdentityProfileControllerTest {
     private final JdbcTemplate jdbc = mock(JdbcTemplate.class);
     private final IdentityAudit audit = mock(IdentityAudit.class);
     private final IdentityUser admin = new IdentityUser("admin", "Admin", "admin-hash", "ADMIN");
-    private final IdentityUser target = new IdentityUser("tester.old", "Old name", "existing-hash", "TESTER");
+    private final IdentityUser target = new IdentityUser("tester.old", "Old name", "existing-hash", "USER");
     private final ObjectMapper json = new ObjectMapper();
     private MockMvc mvc;
     private Principal actor;
@@ -39,7 +39,8 @@ class IdentityProfileControllerTest {
         when(users.findById(requireId(admin))).thenReturn(Optional.of(admin));
         when(users.findById(requireId(target))).thenReturn(Optional.of(target));
         when(passwords.encode(anyString())).thenReturn("new-encoded-hash");
-        var service = new IdentityService(users, passwords, jdbc, audit);
+        var registry=mock(SystemAdminRegistry.class);when(registry.contains(admin.getId())).thenReturn(true);
+        var service = new IdentityService(users, passwords, jdbc, audit, registry);
         clearInvocations(passwords);
         mvc = MockMvcBuilders.standaloneSetup(new UserController(service))
             .setControllerAdvice(new ApiExceptionHandler()).build();
@@ -50,7 +51,7 @@ class IdentityProfileControllerTest {
         mvc.perform(request(patch(path()), Map.of("username", "Tester.New", "displayName", "  Nguyễn Nhung  ", "expectedVersion", 0)))
             .andExpect(status().isOk()).andExpect(jsonPath("username").value("tester.new"))
             .andExpect(jsonPath("displayName").value("Nguyễn Nhung"))
-            .andExpect(jsonPath("id").value(target.getId())).andExpect(jsonPath("role").value("TESTER"))
+            .andExpect(jsonPath("id").value(target.getId())).andExpect(jsonPath("role").value("USER"))
             .andExpect(jsonPath("passwordHash").doesNotExist());
         assertThat(target.getPasswordHash()).isEqualTo("existing-hash");
         assertThat(target.isEnabled()).isTrue();
@@ -115,7 +116,7 @@ class IdentityProfileControllerTest {
         mvc.perform(request(put(path()+"/password"), Map.of("newPassword", newPassword, "expectedVersion", 0)))
             .andExpect(status().isOk()).andExpect(jsonPath("username").value("tester.old"))
             .andExpect(jsonPath("displayName").value("Old name"))
-            .andExpect(jsonPath("role").value("TESTER"))
+            .andExpect(jsonPath("role").value("USER"))
             .andExpect(jsonPath("password").doesNotExist()).andExpect(jsonPath("passwordHash").doesNotExist())
             .andExpect(content().string(requireNonNull(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(newPassword)))));
         verify(passwords).encode(newPassword);
@@ -164,7 +165,7 @@ class IdentityProfileControllerTest {
     @Test void acceptsExactLengthBoundariesAndDoesNotAcceptRoleEdits() throws Exception {
         for (String username : new String[]{"abc", "u".repeat(64)}) {
             mvc.perform(request(patch(path()), Map.of("username", username, "displayName", "N".repeat(100), "role", "ADMIN", "expectedVersion", 0)))
-                .andExpect(status().isOk()).andExpect(jsonPath("role").value("TESTER"));
+                .andExpect(status().isOk()).andExpect(jsonPath("role").value("USER"));
         }
         for (String password : new String[]{"p".repeat(12), "p".repeat(128)}) {
             mvc.perform(request(put(path()+"/password"), Map.of("newPassword", password, "expectedVersion", 0)))

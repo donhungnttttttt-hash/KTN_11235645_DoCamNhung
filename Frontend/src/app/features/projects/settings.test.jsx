@@ -11,16 +11,16 @@ let project;
 let admin=false;
 const refresh=vi.fn();
 vi.mock('./ProjectProvider',()=>({useProject:()=>({currentProject:project,refreshProjects:refresh})}));
-vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>admin&&role==='ADMIN'})}));
+vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>admin?role==='ADMIN':role===(project?.projectRole==='PM'?'PM':'USER')})}));
 vi.mock('../../services/api/projects',()=>({projectsApi:{get:vi.fn(),update:vi.fn(),listMembers:vi.fn(),memberCandidate:vi.fn(),memberCandidates:vi.fn(),addMember:vi.fn(),removeMember:vi.fn(),listHandbook:vi.fn(),getHandbook:vi.fn(),createHandbook:vi.fn(),addRevision:vi.fn(),listRules:vi.fn(),listRuleVersions:vi.fn(),createRuleset:vi.fn(),createRuleVersion:vi.fn(),publishRule:vi.fn()}}));
 vi.mock('../../services/api/notes',()=>({notesApi:{list:vi.fn(),create:vi.fn(),update:vi.fn(),remove:vi.fn()}}));
-const member={userId:'tester',displayName:'Lan',username:'lan',projectRole:'TESTER',version:4};
+const member={userId:'tester',displayName:'Lan',username:'lan',projectRole:'USER',version:4};
 const revision={id:7,revisionNo:1,contentHtml:'<img src=x onerror=alert(1)>',createdAt:'2026-09-30T00:00:00Z',editedBy:1};
 const document={id:1,code:'GUIDE',name:'Hướng dẫn A',currentRevision:revision,history:[revision]};
 const version={id:11,versionNo:1,contentJson:JSON.stringify({sourceReference:'ADR-006',titlePrefix:'[QA]'}),createdAt:'2026-09-30T00:00:00Z',createdBy:1};
 beforeEach(()=>{
   vi.resetAllMocks();admin=false;project={id:1,code:'A',name:'Dự án A',projectRole:'PM'};
-  projectsApi.memberCandidates.mockResolvedValue({items:[{id:'tester',username:'lan',displayName:'Lan',role:'TESTER'}],totalElements:1});
+  projectsApi.memberCandidates.mockResolvedValue({items:[{id:'tester',username:'lan',displayName:'Lan',role:'USER'}],totalElements:1});
   projectsApi.memberCandidate.mockResolvedValue({...member,membershipVersion:4});
   projectsApi.get.mockResolvedValue({...project,timezone:'Asia/Ho_Chi_Minh',version:3});projectsApi.listMembers.mockResolvedValue([member]);
   projectsApi.listHandbook.mockResolvedValue([document]);projectsApi.getHandbook.mockResolvedValue(document);
@@ -29,7 +29,7 @@ beforeEach(()=>{
 });
 it('opens Note in settings with PM/Admin writes and member read only',async()=>{
  const view=render(<ProjectSettingsPage activeRoute='/settings/notes'/>);await screen.findByText('Chưa có Note trong dự án.');expect(screen.getByRole('button',{name:'Thêm Note'})).toBeVisible();
- project={...project,projectRole:'TESTER'};view.rerender(<ProjectSettingsPage activeRoute='/settings/notes'/>);await screen.findByText('Chưa có Note trong dự án.');expect(screen.queryByRole('button',{name:'Thêm Note'})).toBeNull();
+ project={...project,projectRole:'USER'};view.rerender(<ProjectSettingsPage activeRoute='/settings/notes'/>);await screen.findByText('Chưa có Note trong dự án.');expect(screen.queryByRole('button',{name:'Thêm Note'})).toBeNull();
  admin=true;view.rerender(<ProjectSettingsPage activeRoute='/settings/notes'/>);await screen.findByText('Chưa có Note trong dự án.');expect(screen.getByRole('button',{name:'Thêm Note'})).toBeVisible();
  project={...project,archived:true};view.rerender(<ProjectSettingsPage activeRoute='/settings/notes'/>);await screen.findByText('Chưa có Note trong dự án.');expect(screen.queryByRole('button',{name:'Thêm Note'})).toBeNull();
 });
@@ -48,7 +48,7 @@ it('keeps general edits after conflict and allows explicitly reloading',async()=
   fireEvent.click(screen.getByRole('button',{name:'Tải lại thông tin'}));await waitFor(()=>expect(screen.getByLabelText('Tên dự án')).toHaveValue('Dự án A'));
 });
 it('hides write actions from a tester and handles an empty project',async()=>{
-  project={...project,projectRole:'TESTER'};const view=render(<ProjectSettingsPage/>);expect(await screen.findByLabelText('Tên dự án')).toBeDisabled();expect(screen.queryByText('Lưu thay đổi')).toBeNull();
+  project={...project,projectRole:'USER'};const view=render(<ProjectSettingsPage/>);expect(await screen.findByLabelText('Tên dự án')).toBeDisabled();expect(screen.queryByText('Lưu thay đổi')).toBeNull();
   view.rerender(<ProjectSettingsPage activeRoute='/settings/members'/>);await screen.findByText('Lan');expect(screen.queryByText('Thêm thành viên')).toBeNull();
   project=null;view.rerender(<ProjectSettingsPage/>);expect(screen.getByText('Vui lòng chọn một dự án.')).toBeVisible();
 });
@@ -85,14 +85,14 @@ it('looks up an existing account and restores membership using its returned vers
   projectsApi.memberCandidate.mockResolvedValue({...member,membershipVersion:8});projectsApi.addMember.mockResolvedValue(member);
   render(<ProjectMembers projectId={1} canEdit/>);await screen.findByText('Chưa có thành viên.');fireEvent.click(screen.getByText('Thêm thành viên'));
   fireEvent.click(await screen.findByLabelText('Chọn Lan'));
-  expect(screen.getByLabelText('Lọc vai trò tài khoản').options).toHaveLength(3);
-  fireEvent.click(screen.getByText('Lưu thành viên'));await waitFor(()=>expect(projectsApi.addMember).toHaveBeenCalledWith(1,'tester',{projectRole:'TESTER',expectedVersion:8}));
+  expect(screen.getByLabelText('Lọc vai trò tài khoản').options).toHaveLength(2);
+  fireEvent.click(screen.getByText('Lưu thành viên'));await waitFor(()=>expect(projectsApi.addMember).toHaveBeenCalledWith(1,'tester',{projectRole:'USER',expectedVersion:8}));
 });
 it('displays existing project roles as text without offering a role editor',async()=>{
-  projectsApi.listMembers.mockResolvedValue([member,{...member,userId:'pm',displayName:'Mai',username:'mai',projectRole:'PM'},{...member,userId:'dev',displayName:'An',username:'an',projectRole:'DEV'}]);
+  projectsApi.listMembers.mockResolvedValue([member,{...member,userId:'pm',displayName:'Mai',username:'mai',projectRole:'PM'},{...member,userId:'dev',displayName:'An',username:'an',projectRole:'USER'}]);
   render(<ProjectMembers projectId={1} canEdit/>);
   const table=await screen.findByRole('table');
-  for(const label of ['Kiểm thử viên','Quản lý dự án (PM)','Lập trình viên'])expect(within(table).getByRole('cell',{name:label})).toBeVisible();
+  expect(within(table).getAllByRole('cell',{name:'User thường'})).toHaveLength(2);expect(within(table).getByRole('cell',{name:'Admin dự án'})).toBeVisible();
   expect(within(table).queryByRole('combobox')).not.toBeInTheDocument();
   expect(within(table).queryAllByRole('button',{name:/Sửa vai trò/})).toHaveLength(0);
   expect(screen.queryByRole('button',{name:'Lưu thành viên'})).not.toBeInTheDocument();
@@ -111,9 +111,9 @@ it('keeps the returned role read-only and preserves the candidate when adding fa
   projectsApi.addMember.mockRejectedValue(new Error('Thành viên đã thay đổi'));render(<ProjectMembers projectId={1} canEdit/>);
   await screen.findByText('Chưa có thành viên.');fireEvent.click(screen.getByText('Thêm thành viên'));
   fireEvent.click(await screen.findByLabelText('Chọn Lan'));
-  expect(screen.getByLabelText('Lọc vai trò tài khoản').options).toHaveLength(3);
+  expect(screen.getByLabelText('Lọc vai trò tài khoản').options).toHaveLength(2);
   expect(within(screen.getByLabelText('Chọn Lan').closest('tr')).queryByRole('combobox')).not.toBeInTheDocument();fireEvent.click(screen.getByText('Lưu thành viên'));
-  await screen.findByText('Lan: Thành viên đã thay đổi');expect(projectsApi.addMember).toHaveBeenCalledWith(1,'tester',{projectRole:'TESTER',expectedVersion:8});expect(screen.getByLabelText('Chọn Lan')).toBeChecked();fireEvent.click(screen.getByText('Hủy'));
+  await screen.findByText('Lan: Thành viên đã thay đổi');expect(projectsApi.addMember).toHaveBeenCalledWith(1,'tester',{projectRole:'USER',expectedVersion:8});expect(screen.getByLabelText('Chọn Lan')).toBeChecked();fireEvent.click(screen.getByText('Hủy'));
 });
 it('requires confirmation before removing members, surfaces errors and retries',async()=>{
   const confirm=vi.spyOn(window,'confirm').mockReturnValue(false);projectsApi.removeMember.mockRejectedValue(new Error('PM cuối cùng'));

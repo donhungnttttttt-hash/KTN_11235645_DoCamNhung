@@ -17,11 +17,11 @@ beforeEach(()=>{auth.retry.mockReset();auth.accountUpdated.mockReset();});
 
 it('edits only changed profile fields with the current version and leaves roles read-only',async()=>{
  const api=setup();const dialog=await edit();
- expect(within(dialog).getByLabelText('Tên đăng nhập')).toHaveValue('tester.one');
+ expect(within(dialog).getByLabelText('ID đăng nhập')).toHaveValue('tester.one');
  expect(within(dialog).queryByRole('combobox')).not.toBeInTheDocument();
  expect(within(dialog).getByText(/TESTER/)).toBeVisible();
  expect(within(dialog).getByRole('button',{name:'Lưu thông tin'})).toBeDisabled();
- change('Tên hiển thị','  Tester Updated  ');
+ change('Tên','  Tester Updated  ');
  api.users.mockResolvedValue({items:[{...account,displayName:'Tester Updated',version:4}],totalElements:1});
  fireEvent.click(screen.getByRole('button',{name:'Lưu thông tin'}));
  await waitFor(()=>expect(api.updateUser).toHaveBeenCalledWith('tester',{displayName:'Tester Updated',expectedVersion:3}));
@@ -31,28 +31,28 @@ it('edits only changed profile fields with the current version and leaves roles 
 });
 
 it('normalizes a changed username and preserves the draft on duplicate errors',async()=>{
- const api=setup();api.updateUser.mockRejectedValueOnce(Object.assign(new Error('Tên đăng nhập đã được sử dụng.'),{status:409,code:'USERNAME_EXISTS'}));
- await edit();change('Tên đăng nhập','Tester.NEW');
+ const api=setup();api.updateUser.mockRejectedValueOnce(Object.assign(new Error('ID đăng nhập đã được sử dụng.'),{status:409,code:'USERNAME_EXISTS'}));
+ await edit();change('ID đăng nhập','Tester.NEW');
  fireEvent.click(screen.getByRole('button',{name:'Lưu thông tin'}));
- expect(await screen.findByRole('alert')).toHaveTextContent('Tên đăng nhập đã được sử dụng');
- expect(screen.getByRole('alert')).toHaveFocus();expect(screen.getByLabelText('Tên đăng nhập')).toHaveValue('Tester.NEW');
+ expect(await screen.findByRole('alert')).toHaveTextContent('ID đăng nhập đã được sử dụng');
+ expect(screen.getByRole('alert')).toHaveFocus();expect(screen.getByLabelText('ID đăng nhập')).toHaveValue('Tester.NEW');
  expect(screen.getByRole('button',{name:'Lưu thông tin'})).toBeEnabled();
  expect(api.updateUser).toHaveBeenCalledWith('tester',{username:'tester.new',expectedVersion:3});
 });
 
 it('blocks invalid and unchanged normalized names without issuing an update',async()=>{
- const api=setup();await edit();change('Tên đăng nhập','TESTER.ONE');change('Tên hiển thị',' Tester One ');
+ const api=setup();await edit();change('ID đăng nhập','TESTER.ONE');change('Tên',' Tester One ');
  expect(screen.getByRole('button',{name:'Lưu thông tin'})).toBeDisabled();
- change('Tên hiển thị','   ');fireEvent.submit(screen.getByRole('button',{name:'Lưu thông tin'}).closest('form'));
- expect(await screen.findByRole('alert')).toHaveTextContent('Tên hiển thị');expect(api.updateUser).not.toHaveBeenCalled();
- change('Tên hiển thị','Name');change('Tên đăng nhập','bad name');fireEvent.submit(screen.getByRole('button',{name:'Lưu thông tin'}).closest('form'));
- expect(screen.getByRole('alert')).toHaveTextContent('Tên đăng nhập');expect(api.updateUser).not.toHaveBeenCalled();
+ change('Tên','   ');fireEvent.submit(screen.getByRole('button',{name:'Lưu thông tin'}).closest('form'));
+ expect(await screen.findByRole('alert')).toHaveTextContent('Tên');expect(api.updateUser).not.toHaveBeenCalled();
+ change('Tên','Name');change('ID đăng nhập','bad name');fireEvent.submit(screen.getByRole('button',{name:'Lưu thông tin'}).closest('form'));
+ expect(screen.getByRole('alert')).toHaveTextContent('ID đăng nhập');expect(api.updateUser).not.toHaveBeenCalled();
 });
 
 it('keeps stale drafts but requires closing and reloading before another save',async()=>{
  const api=setup();api.updateUser.mockRejectedValue(Object.assign(new Error('Phiên bản đã thay đổi.'),{status:409,code:'VERSION_CONFLICT'}));
- await edit();change('Tên hiển thị','Draft');fireEvent.click(screen.getByRole('button',{name:'Lưu thông tin'}));
- await screen.findByRole('alert');expect(screen.getByLabelText('Tên hiển thị')).toHaveValue('Draft');
+ await edit();change('Tên','Draft');fireEvent.click(screen.getByRole('button',{name:'Lưu thông tin'}));
+ await screen.findByRole('alert');expect(screen.getByLabelText('Tên')).toHaveValue('Draft');
  expect(screen.getByRole('button',{name:'Lưu thông tin'})).toBeDisabled();
  fireEvent.click(screen.getByRole('button',{name:'Đóng và tải lại'}));
  expect(screen.getByRole('dialog',{name:'Bỏ nội dung chưa lưu?'})).toBeVisible();
@@ -97,7 +97,7 @@ it('clears passwords after a failed write and when discarding and reopening a re
 
 it.each(['profile','password'])('reports a successful self %s update before refreshing the revoked session',async mode=>{
  const own={...account,id:'admin',username:'admin.local',displayName:'Admin Local',role:'ADMIN'},api=setup(own);
- if(mode==='profile'){await edit('Admin Local');change('Tên đăng nhập','admin.renamed');api.updateUser.mockResolvedValue({...own,username:'admin.renamed',version:4});}
+ if(mode==='profile'){await edit('Admin Local');change('ID đăng nhập','admin.renamed');api.updateUser.mockResolvedValue({...own,username:'admin.renamed',version:4});}
  else {await reset('Admin Local');change('Mật khẩu mới','example-long-password');change('Nhập lại mật khẩu mới','example-long-password');}
  expect(screen.getByText(/Bạn sẽ cần đăng nhập lại/)).toBeVisible();
  fireEvent.click(screen.getByRole('button',{name:mode==='profile'?'Lưu thông tin':'Lưu mật khẩu mới'}));
@@ -108,9 +108,9 @@ it.each(['profile','password'])('reports a successful self %s update before refr
 });
 
 it('prevents duplicate profile submissions and keeps dirty fields when cancelling discard',async()=>{
- let finish;const api=setup();await edit();change('Tên hiển thị','Draft Name');
+ let finish;const api=setup();await edit();change('Tên','Draft Name');
  fireEvent.click(screen.getByRole('button',{name:'Hủy'}));fireEvent.click(screen.getByRole('button',{name:'Tiếp tục soạn'}));
- expect(screen.getByLabelText('Tên hiển thị')).toHaveValue('Draft Name');
+ expect(screen.getByLabelText('Tên')).toHaveValue('Draft Name');
  api.updateUser.mockImplementation(()=>new Promise(resolve=>{finish=resolve;}));
  const form=screen.getByRole('button',{name:'Lưu thông tin'}).closest('form');fireEvent.submit(form);fireEvent.submit(form);
  expect(api.updateUser).toHaveBeenCalledTimes(1);expect(screen.getByRole('button',{name:'Đóng'})).toBeDisabled();

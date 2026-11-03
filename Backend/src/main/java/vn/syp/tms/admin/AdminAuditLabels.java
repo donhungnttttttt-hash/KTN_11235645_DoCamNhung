@@ -16,8 +16,10 @@ final class AdminAuditLabels {
         Map.entry("ADD_MEMBER","Thêm thành viên"),Map.entry("RESTORE_MEMBER","Khôi phục thành viên"),
         Map.entry("USER_CREATED","Tạo tài khoản"),Map.entry("USER_UPDATED","Cập nhật tài khoản"),Map.entry("USER_ENABLED","Mở khóa tài khoản"),
         Map.entry("USER_PROFILE_UPDATED","Cập nhật thông tin tài khoản"),Map.entry("USER_PASSWORD_RESET","Đặt lại mật khẩu"),
-        Map.entry("USER_DISABLED","Khóa tài khoản"),Map.entry("CREATE_USERS_GRANTED","Cấp quyền tạo Tester"),
-        Map.entry("CREATE_USERS_REVOKED","Thu hồi quyền tạo Tester"),Map.entry("ADMIN_BOOTSTRAPPED","Khởi tạo quản trị viên"),
+        Map.entry("SELF_PROFILE_UPDATED","Cập nhật hồ sơ cá nhân"),Map.entry("SELF_AVATAR_UPDATED","Cập nhật ảnh đại diện"),Map.entry("SELF_AVATAR_REMOVED","Xóa ảnh đại diện"),
+        Map.entry("SYSTEM_ADMIN_PROVISIONED","Thiết lập Admin tổng"),Map.entry("SYSTEM_ADMIN_DISABLED","Khóa Admin tổng cũ"),
+        Map.entry("USER_DISABLED","Khóa tài khoản"),Map.entry("CREATE_USERS_GRANTED","Cấp quyền tạo User thường"),
+        Map.entry("CREATE_USERS_REVOKED","Thu hồi quyền tạo User thường"),Map.entry("ADMIN_BOOTSTRAPPED","Khởi tạo quản trị viên"),
         Map.entry("LOGIN_SUCCEEDED","Đăng nhập"),Map.entry("LOGIN_FAILED","Đăng nhập thất bại"),Map.entry("LOGOUT","Đăng xuất")
     ));
         labels.put("MANAGEMENT_REPORT","Báo cáo quản trị");

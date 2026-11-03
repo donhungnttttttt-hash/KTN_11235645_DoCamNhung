@@ -48,3 +48,24 @@
 .feature-issue-form .wi-field input,.feature-issue-form .wi-field select,.feature-issue-form .wi-field textarea,.feature-issue-detail .wi-field input,.feature-issue-detail .wi-field select,.feature-issue-detail .wi-field textarea{min-height:44px;border-radius:var(--radius-control,8px)}
 @keyframes fi-preview-enter{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.case-issue-preview{animation:none}.feature-issue-form .wi-btn{transition:none}}
+.ticket-field-grid,.ticket-composer-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.ticket-composer-grid { grid-template-columns:minmax(0,1.4fr) minmax(220px,1fr); align-items:start; }
+.ticket-action-options { min-width:0; margin:0; }
+.ticket-source-evidence,.ticket-duty-member { padding:16px; margin-block:16px; border:1px solid var(--color-border,#dde5e1); border-radius:8px; background:#fff; }
+.ticket-source-evidence dl { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.ticket-source-evidence dd { margin:6px 0 0; white-space:pre-wrap; overflow-wrap:anywhere; }
+.ticket-source-evidence dt { font-weight:600; }
+.ticket-checkbox { display:flex; align-items:center; gap:8px; margin-block:12px; }
+.ticket-checkbox input { width:18px; height:18px; flex:none; }
+.ticket-legacy-summary { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:12px 0; }
+.ticket-awaiting { border-left:3px solid #0d9488; padding:8px 12px; }
+.ticket-column-select { margin:12px 12px 0; }
+.ticket-column-note { padding:0 12px; }
+.feature-kanban-column.is-selected { border-color:var(--color-mint,#0d9488); }
+.ticket-notification-bell { display:inline-flex; position:relative; align-items:center; justify-content:center; flex:none; width:36px; height:36px; padding:6px; border:1px solid var(--color-border,#dde5e1); border-radius:50%; background:#fff; color:var(--color-text,#283e35); cursor:pointer; }
+.ticket-notification-bell>span { position:absolute; top:-5px; right:-5px; min-width:17px; height:17px; padding:1px 3px; background:#b91c1c; color:#fff; border-radius:9px; font-size:10px; }
+.ticket-notification-bell:focus-visible { outline:2px solid var(--color-mint,#0d9488); outline-offset:3px; }
+.ticket-notification-item { border-bottom:1px solid var(--color-border,#dde5e1); padding:12px 0; overflow-wrap:anywhere; }
+.ticket-notification-item time { display:block; font-size:12px; margin-block:8px; }
+.ticket-title-prefix { overflow-wrap:anywhere; }
+@media(max-width:650px) { .ticket-field-grid,.ticket-composer-grid,.ticket-source-evidence dl { grid-template-columns:minmax(0,1fr); } .ticket-source-evidence,.ticket-duty-member { padding:12px; } }

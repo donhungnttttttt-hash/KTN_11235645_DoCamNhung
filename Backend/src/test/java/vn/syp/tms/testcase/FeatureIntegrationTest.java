@@ -7,7 +7,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static vn.syp.tms.support.MockMvcContracts.csrf;
 import com.fasterxml.jackson.databind.*;
 import java.io.*;
-import java.sql.DriverManager;
 import java.util.*;
 import java.util.concurrent.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -29,22 +28,15 @@ import vn.syp.tms.project.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@EnabledIfEnvironmentVariable(named="TMS_TEST_FEATURE_MODE",matches="integration")
+@EnabledIfEnvironmentVariable(named="TMS_TEST_USERS_URL",matches="jdbc:mysql://(?:127\\.0\\.0\\.1|localhost):[0-9]+/tms_userstest_[a-f0-9]{12}\\?.+")
 class FeatureIntegrationTest {
-    @DynamicPropertySource static void database(DynamicPropertyRegistry r)throws Exception {
-        String url=System.getenv("TMS_TEST_DB_URL");
-        if(url==null||!url.matches("jdbc:mysql://(?:127\\.0\\.0\\.1|localhost):3307/tms_docstest_2060e04c986c\\?.+"))throw new IllegalStateException("Authorized integration schema required");
-        try(var c=DriverManager.getConnection(url,System.getenv("TMS_TEST_DB_USER"),System.getenv("TMS_TEST_DB_PASSWORD"));var s=c.createStatement();var rows=s.executeQuery("SELECT DATABASE()")){assertThat(rows.next()).isTrue();assertThat(rows.getString(1)).isEqualTo("tms_docstest_2060e04c986c");}
-        r.add("TMS_DB_URL",()->url);r.add("TMS_DB_USER",()->System.getenv("TMS_TEST_DB_USER"));r.add("TMS_DB_PASSWORD",()->System.getenv("TMS_TEST_DB_PASSWORD"));
-        r.add("TMS_MIGRATION_USER",()->System.getenv("TMS_TEST_DB_USER"));r.add("TMS_MIGRATION_PASSWORD",()->System.getenv("TMS_TEST_DB_PASSWORD"));r.add("TMS_BOOTSTRAP_ENABLED",()->"false");r.add("TMS_REDMINE_ENABLED",()->"false");
-        r.add("TMS_CHATGPT_LOCAL_ENABLED",()->"false");r.add("TMS_OLLAMA_ENABLED",()->"false");r.add("TMS_OPENAI_ENABLED",()->"false");
-        r.add("spring.session.jdbc.cleanup-cron",()->"-");r.add("TMS_AI_DRAFT_CLEANUP_CRON",()->"-");r.add("TMS_AI_CHAT_CLEANUP_CRON",()->"-");
-    }
+    @DynamicPropertySource static void database(DynamicPropertyRegistry r){vn.syp.tms.support.UnifiedAccessFixtures.database(r);}
+    @Autowired SystemAdminRegistry registry;
     @Autowired MockMvc mvc;@Autowired ObjectMapper json;@Autowired JdbcTemplate db;@Autowired IdentityUserRepository users;@Autowired ProjectService projects;
     IdentityUser admin,pm,a,b,dev,outside;long p,am,bm;
-    @BeforeEach void setup(){String tag=UUID.randomUUID().toString().substring(0,8);admin=user("admin"+tag,"ADMIN");pm=user("pm"+tag,"PM");a=user("a"+tag,"TESTER");b=user("b"+tag,"TESTER");dev=user("dev"+tag,"DEV");outside=user("outside"+tag,"PM");
-        var creator=user("creator"+tag,"ADMIN");p=projects.create(creator.getId(),new ProjectDtos.CreateProject("FR"+tag,"Feature thử","","Asia/Ho_Chi_Minh")).id();
-        for(var entry:Map.of(pm,"PM",a,"TESTER",b,"TESTER",dev,"DEV").entrySet())projects.addOrUpdateMember(p,admin.getId(),entry.getKey().getId(),new ProjectDtos.SetMember(entry.getValue()));
+    @BeforeEach void setup(){String tag=UUID.randomUUID().toString().substring(0,8);admin=user("admin"+tag,"ADMIN");pm=user("pm"+tag,"PM");a=user("a"+tag,"USER");b=user("b"+tag,"USER");dev=user("dev"+tag,"USER");outside=user("outside"+tag,"PM");
+        var creator=user("creator"+tag,"ADMIN");db.update("DELETE FROM system_admin_registry");registry.register(1,admin.getId());registry.register(2,creator.getId());p=projects.create(creator.getId(),new ProjectDtos.CreateProject("FR"+tag,"Feature thử","","Asia/Ho_Chi_Minh")).id();
+        for(var entry:Map.of(pm,"PM",a,"USER",b,"USER",dev,"USER").entrySet())projects.addOrUpdateMember(p,admin.getId(),entry.getKey().getId(),new ProjectDtos.SetMember(entry.getValue()));
         am=member(a);bm=member(b);
     }
     IdentityUser user(String name,String role){return users.saveAndFlush(new IdentityUser("fr."+name,name,"not-login",role));}
@@ -125,12 +117,10 @@ class FeatureIntegrationTest {
         assertThat(detail.path("canManage").asBoolean()).isFalse();assertThat(detail.path("canAssign").asBoolean()).isFalse();
         assertThat(detail.path("canCreateIssue").asBoolean()).isFalse();assertThat(detail.at("/rows/0/canUpdateResult").asBoolean()).isFalse();
     }
-    @Test void systemDevWithHistoricalPmMembershipHasNoWriteCapabilities()throws Exception{
-        long f=feature("DEV historical role"),d=imported(f,internal());
+    @Test void userWithInconsistentPmMembershipCannotEnterWorkspace()throws Exception{
+        long f=feature("Mismatched membership"),d=imported(f,internal());
         db.update("UPDATE project_memberships SET project_role='PM' WHERE project_id=? AND user_id=?",p,dev.getId());
-        var detail=body(mvc.perform(get(path("/test-documents/"+d)).with(actor(dev))).andExpect(status().isOk()).andReturn());
-        assertThat(detail.path("canManage").asBoolean()).isFalse();assertThat(detail.path("canAssign").asBoolean()).isFalse();assertThat(detail.path("canCreateIssue").asBoolean()).isFalse();
-        assertThat(detail.at("/rows/0/canUpdateResult").asBoolean()).isFalse();
+        mvc.perform(get(path("/test-documents/"+d)).with(actor(dev))).andExpect(status().isNotFound());
     }
     @Test void activeTesterCanCreateIssueWithoutBeingAssignedTheCase()throws Exception{
         long d=imported(feature("Issue capability"),internal());

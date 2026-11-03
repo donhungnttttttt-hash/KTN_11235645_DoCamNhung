@@ -1,5 +1,7 @@
 import React from "react";
 import { Menu } from "lucide-react";
+import { TicketNotifications } from "../features/work-items/TicketNotifications";
+import { useAuth } from "../features/auth/AuthProvider";
 import { AccountMenu } from "../features/auth/AccountMenu";
 import { ProjectSelector } from "../features/projects/ProjectSelector";
 import { useChatLauncherSlot } from "../features/ai/ChatLauncherSlot";
@@ -7,6 +9,8 @@ import "../features/projects/projects.css";
 
 export function Header({ navigate, onOpenMenu, menuOpen = false }) {
   const registerChatSlot = useChatLauncherSlot();
+  const auth=useAuth();
+  const internal=auth?.status==='authenticated'&&auth.user?.roles?.some(role=>['ADMIN','PM','USER'].includes(role));
   return (
     <header className="app-header">
       <button
@@ -31,6 +35,7 @@ export function Header({ navigate, onOpenMenu, menuOpen = false }) {
       </div>
       <div className="app-chat-launcher-slot" ref={registerChatSlot} />
       <div className="app-header-details">
+        {internal&&<TicketNotifications key={auth.user.id} navigate={navigate}/>}
         <AccountMenu />
       </div>
     </header>

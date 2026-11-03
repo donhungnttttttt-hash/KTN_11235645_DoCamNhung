@@ -190,3 +190,7 @@
 .admin-shell .admin-member-add { display:inline-flex; align-items:center; justify-content:center; gap:8px; white-space:nowrap; }
 .admin-shell .admin-member-add:not(:disabled) { background:#e1f3ec; border-color:#e1f3ec; color:#145e49; font-weight:700; }
 .project-device-footer .project-device-add { margin-left:auto; display:inline-flex; align-items:center; justify-content:center; gap:8px; white-space:nowrap; }
+.account-type-options { display: grid; gap: .6rem; padding: 1rem 0; }
+.account-type-options > label { display: flex; align-items: center; gap: .55rem; font-weight: 600; }
+.account-type-options input[type="checkbox"] { width: 1.1rem; height: 1.1rem; margin: 0; flex: 0 0 auto; }
+.account-type-options > small { margin-left: 1.65rem; }

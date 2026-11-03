@@ -28,7 +28,7 @@ public class AiPortfolioContext {
             + "Tested means Status other than UNEXECUTED: OK, NG, P and NA. NA remains in total; 100% is not customer acceptance. "
             + "myCaseSample/myWorkSample are personal assignments; caseSample/issueSample are bounded ordinary project-readable details. "
             + "personal contains only the current actor's assignment progress and recorded Status changes, scoped to the selected Feature when present. selectedFileProgress contains up to three explicitly named readable files; sourceFiles alone is only a ten-file metadata sample for workers. Case lookup prioritizes literal filename, source case ID or title matches within authorized scope, with at most five results. If a requested file/case cannot be identified, ask for its name/ID rather than extrapolating a sample. Each case includes at most ten recent actual resultHistory records; MIGRATED_SOURCE is older source provenance, not an execution in the copied round. Missing history is not proof nobody tested. "
-            + "PM and ADMIN can read all projects through AI, without new PM business write rights. Restricted users cannot obtain management reports or bulk exports. "+
+            + "ADMIN can read all projects; PM and USER require current matching active membership. Restricted users cannot obtain management reports or bulk exports. "+
             "Use actual audit actors for experience, including prior actors and resets. Recorded Status changes are not physical test execution counts or competence scores. mappedFeatures describes migration provenance, not tests performed in each clone. Never infer experience from imported tester names. Suggestions never assign or change records. "
             + "Disclose totalProjects, includedProjects and truncation when the snapshot is partial. "
             + "If there are no projects, say there are no assigned projects in the provided scope. Do not invent facts. ";
@@ -56,7 +56,8 @@ public class AiPortfolioContext {
     private Scope current(String actor,Long project) {
         sessions.current(actor);
         String role=identity.lockCurrent(actor).getRole();
-        boolean admin="ADMIN".equals(role)||"PM".equals(role);
+        if(!Set.of("ADMIN","PM","USER").contains(role))WorkItemStore.fail(403,"AI_FORBIDDEN","Tài khoản này không được dùng AI.");
+        boolean admin="ADMIN".equals(role);
         String query=admin ? """
             SELECT p.id,p.code,p.name,(p.archived_at IS NOT NULL) AS archived,'ADMIN' AS role,
                    m.project_role AS membershipRole,COALESCE(m.id,0) AS membershipId,COALESCE(m.lock_version,0) AS membershipVersion
@@ -69,6 +70,7 @@ public class AiPortfolioContext {
             """;
         query+=" ORDER BY p.id FOR SHARE";
         var allRows=db.rows(query,actor);
+        if(!admin)allRows=allRows.stream().filter(row->role.equals(row.get("membershipRole"))).toList();
         if(admin)allRows.forEach(row->row.put("role",role));
         var rows=project==null?allRows:allRows.stream().filter(row->WorkItemStore.number(row,"id")==project).toList();
         var grants=allRows.stream().map(row->List.of(row.get("id"),row.get("role"),row.get("membershipId"),row.get("membershipVersion"))).toList();
@@ -76,6 +78,47 @@ public class AiPortfolioContext {
     }
     public void assertCurrent(String actor, String expected) {
         requireReference(current(actor),expected);
+    }
+    /** Read-only compatibility for the exact V37 conversion, never a substitute for current grants. */
+    public boolean historyReadable(String actor,Long project,Long feature,String expected) {
+        var current=project==null?current(actor):currentProject(actor,project,feature);
+        if(project!=null&&current.projects().isEmpty())return false;
+        if(Objects.equals(expected,current.reference()))return true;
+        var all=current(actor);
+        var journal=db.rows("""
+            SELECT j.entity_type AS entityType,j.entity_id AS entityId,j.previous_role AS previousRole,j.previous_version AS previousVersion
+            FROM identity_role_migration_journal j
+            WHERE (j.entity_type='ACCOUNT' AND j.entity_id=?) OR
+              (j.entity_type='MEMBERSHIP' AND j.entity_id IN (SELECT CAST(m.id AS CHAR) FROM project_memberships m WHERE m.user_id=? AND m.active=TRUE))
+            FOR SHARE
+            """,actor,actor);
+        if(journal.isEmpty())return false;
+        String oldRole=all.role();
+        var memberJournal=new HashMap<Long,Map<String,Object>>();
+        for(var entry:journal){
+            if("ACCOUNT".equals(entry.get("entityType"))&&"USER".equals(all.role()))oldRole=(String)entry.get("previousRole");
+            if("MEMBERSHIP".equals(entry.get("entityType")))memberJournal.put(Long.parseLong(entry.get("entityId").toString()),entry);
+        }
+        var grants=new ArrayList<List<Object>>();
+        for(var row:all.projects()){
+            long member=WorkItemStore.number(row,"membershipId"),version=WorkItemStore.number(row,"membershipVersion");
+            Object memberRole=row.get("membershipRole");var converted=memberJournal.get(member);
+            if(converted!=null){
+                long previous=WorkItemStore.number(converted,"previousVersion");
+                if(!"USER".equals(memberRole)||version!=previous+1)return false;
+                memberRole=converted.get("previousRole");version=previous;
+            }
+            Object grantRole=Set.of("ADMIN","PM").contains(oldRole)?oldRole:memberRole;
+            if(grantRole==null)return false;
+            grants.add(List.of(row.get("id"),grantRole,member,version));
+        }
+        String reconstructed=(project==null?"portfolio-v1:":"project-chat-v1:")+
+            db.checksum(project==null?List.of(oldRole,grants):List.of(oldRole,grants,project));
+        if(feature!=null)reconstructed="project-chat-v1:"+db.checksum(List.of(reconstructed,feature));
+        return Objects.equals(expected,reconstructed);
+    }
+    public void requireReadableHistory(String actor,Long project,Long feature,String expected){
+        if(!historyReadable(actor,project,feature,expected))WorkItemStore.fail(404,"NOT_FOUND","Phạm vi hội thoại không còn được phép.");
     }
     public void assertProjectCurrent(String actor,long project,String expected,boolean write) {
         requireProject(currentProject(actor,project),expected,write);

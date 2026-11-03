@@ -51,4 +51,13 @@ class TestCaseWorkbookTest {
         byte[] bytes=mutate(book->{var sheet=book.getSheetAt(0);var headers=java.util.List.of("Status","Người test đầu tiên","Người test lại gần nhất");for(int i=0;i<3;i++){sheet.getRow(0).createCell(11+i).setCellValue(headers.get(i));sheet.getRow(1).createCell(11+i).setCellValue("Imported metadata");}sheet.getRow(1).getCell(13).setCellFormula("1+1");});
         assertThatThrownBy(()->parser.parse(file(bytes))).isInstanceOf(BusinessException.class).hasMessageContaining("công thức");
     }
+    @Test void currentExportAcceptsVersionAndDateAsUntrustedMetadataOnly()throws Exception{
+        byte[] bytes=mutate(book->{var sheet=book.getSheetAt(0);var headers=java.util.List.of("Status","Người test đầu tiên","Người test lại gần nhất","Version test","Ngày thực hiện");for(int i=0;i<headers.size();i++){sheet.getRow(0).createCell(11+i).setCellValue(headers.get(i));sheet.getRow(1).createCell(11+i).setCellValue("Old execution metadata");}});
+        var original=parser.parse(file(parser.template("AUTH"))).rows().getFirst();
+        assertThat(parser.parse(file(bytes)).rows().getFirst()).isEqualTo(original);
+        try(var book=new XSSFWorkbook(new ByteArrayInputStream(bytes));var out=new ByteArrayOutputStream()){
+            book.getSheetAt(0).getRow(1).getCell(15).setCellFormula("1+1");book.write(out);
+            assertThatThrownBy(()->parser.parse(file(out.toByteArray()))).isInstanceOf(BusinessException.class).hasMessageContaining("công thức");
+        }
+    }
 }

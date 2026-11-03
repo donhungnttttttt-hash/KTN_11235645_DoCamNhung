@@ -43,51 +43,49 @@ class CentralMembershipTest {
         when(memberships.findByProjectIdAndActiveTrue(1L)).thenReturn(List.of(new ProjectMembership(1L,"a","PM"),new ProjectMembership(1L,"b","PM")));
         when(memberships.lockEnabledPmUsers(1L)).thenReturn(List.of("b"));
         assertEquals("LAST_PM",assertThrows(BusinessException.class,()->service.removeMember(1L,"admin","b",0L)).code());
-        assertEquals("ROLE_CHANGE_NOT_ALLOWED",assertThrows(BusinessException.class,()->service.addOrUpdateMember(1L,"admin","b",new ProjectDtos.SetMember("TESTER",0L))).code());
+        assertEquals("ROLE_CHANGE_NOT_ALLOWED",assertThrows(BusinessException.class,()->service.addOrUpdateMember(1L,"admin","b",new ProjectDtos.SetMember("USER",0L))).code());
         verify(memberships,never()).findByProjectIdAndActiveTrue(1L);
         verify(memberships,never()).updateCurrent(any(),anyString(),anyBoolean(),anyLong());
     }
-    @Test void currentIdentityRejectsDevPromotionDespiteCachedTesterAccount() {
-        admin();when(users.findById("target")).thenReturn(Optional.of(new IdentityUser("target","T","hash","TESTER")));
-        when(users.lockAccount("target")).thenReturn(Optional.of(account("DEV")));
+    @Test void currentIdentityRejectsUserPromotionDespiteCachedPmAccount() {
+        admin();when(users.findById("target")).thenReturn(Optional.of(new IdentityUser("target","T","hash","PM")));
+        when(users.lockAccount("target")).thenReturn(Optional.of(account("USER")));
         assertEquals("INVALID_ROLE",assertThrows(BusinessException.class,()->service.addOrUpdateMember(1L,"admin","target",new ProjectDtos.SetMember("PM"))).code());
         var order=inOrder(identity,users,projects);
         order.verify(identity).lockCurrent("admin");order.verify(users).lockAccount("target");order.verify(identity).lockCurrent("admin");order.verify(projects).lockAdminState(1L);
-        verify(users,never()).findById("target");verifyNoInteractions(memberships);
+        verify(users,never()).findById("target");verify(memberships).lockMember(1L,"target");
+        assertTrue(mockingDetails(memberships).getInvocations().stream().noneMatch(call->call.getMethod().getName().equals("saveAndFlush")));
     }
     @Test void currentMembershipVersionWinsOverCachedEntity() {
-        admin();var current=member("tester","TESTER");when(current.getVersion()).thenReturn(2L);
-        when(memberships.findByProjectIdAndUserId(1L,"tester")).thenReturn(new ProjectMembership(1L,"tester","TESTER"));
+        admin();var current=member("tester","USER");when(current.getVersion()).thenReturn(2L);
+        when(memberships.findByProjectIdAndUserId(1L,"tester")).thenReturn(new ProjectMembership(1L,"tester","USER"));
         assertEquals("VERSION_CONFLICT",assertThrows(BusinessException.class,()->service.removeMember(1L,"admin","tester",0L)).code());
         verify(memberships,never()).findByProjectIdAndUserId(1L,"tester");
     }
     @Test void removalUsesCurrentStateAndVersionPredicate() {
-        admin();member("tester","TESTER");when(memberships.updateCurrent(9L,"TESTER",false,0L)).thenReturn(1);
+        admin();member("tester","USER");when(memberships.updateCurrent(9L,"USER",false,0L)).thenReturn(1);
         service.removeMember(1L,"admin","tester",0L);
         var order=inOrder(identity,projects,memberships);
         order.verify(identity).lockCurrent("admin");order.verify(projects).lockAdminState(1L);
-        order.verify(memberships).lockMember(1L,"tester");order.verify(memberships).updateCurrent(9L,"TESTER",false,0L);
+        order.verify(memberships).lockMember(1L,"tester");order.verify(memberships).updateCurrent(9L,"USER",false,0L);
     }
-    @Test void devCannotWriteResultsEvenWithOldTesterMembership() {
-        when(identity.current("dev")).thenReturn(new IdentityUser("dev","Dev","hash","DEV"));
-        when(memberships.findByProjectIdAndUserId(1L,"dev")).thenReturn(new ProjectMembership(1L,"dev","TESTER"));
-        assertEquals(403,assertThrows(BusinessException.class,()->service.requireNotDev(1L,"dev")).status());
-        when(identity.current("dev")).thenReturn(new IdentityUser("tester","Tester","hash","TESTER"));
-        when(memberships.findByProjectIdAndUserId(1L,"dev")).thenReturn(new ProjectMembership(1L,"dev","DEV"));
-        assertEquals(403,assertThrows(BusinessException.class,()->service.requireNotDev(1L,"dev")).status());
+    @Test void guestCannotReadWorkspaceEvenWithInconsistentUserMembership() {
+        when(identity.current("guest")).thenReturn(new IdentityUser("guest","Guest","hash","GUEST"));
+        when(memberships.findByProjectIdAndUserId(1L,"guest")).thenReturn(new ProjectMembership(1L,"guest","USER"));
+        assertThrows(BusinessException.class,()->service.requireWorkspaceAccess(1L,"guest"));
     }
     @Test void pmCannotAddMembersToAnotherProject() {
         when(identity.lockCurrent("actor")).thenReturn(account("PM"));
         when(identity.current("actor")).thenReturn(new IdentityUser("actor","PM","hash","PM"));
-        assertEquals(404,assertThrows(BusinessException.class,()->service.addOrUpdateMember(1L,"actor","target",new ProjectDtos.SetMember("TESTER"))).status());
+        assertEquals(404,assertThrows(BusinessException.class,()->service.addOrUpdateMember(1L,"actor","target",new ProjectDtos.SetMember("USER"))).status());
         verifyNoInteractions(users,projects);
     }
     @Test void memberListExposesAccountAvailabilityWithoutHidingMembershipHistory() throws Exception {
-        var enabled=new IdentityUser("active","Active","hash","TESTER");
-        var disabled=new IdentityUser("locked","Locked","hash","TESTER");disabled.setEnabled(false);
+        var enabled=new IdentityUser("active","Active","hash","USER");
+        var disabled=new IdentityUser("locked","Locked","hash","USER");disabled.setEnabled(false);
         when(identity.current("admin")).thenReturn(new IdentityUser("admin","Admin","hash","ADMIN"));
         when(projects.existsById(1L)).thenReturn(true);
-        when(memberships.findByProjectIdAndActiveTrue(1L)).thenReturn(List.of(new ProjectMembership(1L,"a","TESTER"),new ProjectMembership(1L,"b","TESTER")));
+        when(memberships.findByProjectIdAndActiveTrue(1L)).thenReturn(List.of(new ProjectMembership(1L,"a","USER"),new ProjectMembership(1L,"b","USER")));
         when(users.findById("a")).thenReturn(Optional.of(enabled));when(users.findById("b")).thenReturn(Optional.of(disabled));
         var result=new com.fasterxml.jackson.databind.ObjectMapper().valueToTree(service.listMembers(1L,"admin"));
         assertTrue(result.get(0).has("enabled"));assertTrue(result.get(0).get("enabled").asBoolean());

@@ -39,7 +39,7 @@ function selectedPage(activeRoute) {
 export function Sidebar({ activeRoute, navigate, collapsed, onToggle, onClose, panelRef, overlayOpen = false }) {
   const {currentProject} = useProject() || {}, auth = useAuth();
   const hasRole = role => auth?.hasRole?.(role) || auth?.user?.roles?.includes(role);
-  const canAnalyze = hasRole('ADMIN') || (currentProject?.projectRole === 'PM' && !hasRole('DEV'));
+  const canAnalyze = hasRole('ADMIN') || (currentProject?.projectRole === 'PM' && hasRole('PM'));
   const active = activeRoute.split('?')[0].split('/')[1];
   const [openGroup, setOpenGroup] = useState(active);
   const selected = selectedPage(activeRoute);

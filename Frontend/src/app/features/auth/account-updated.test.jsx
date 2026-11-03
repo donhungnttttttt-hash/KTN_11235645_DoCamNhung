@@ -16,7 +16,7 @@ it('retains self-save success and the new username during reauthentication and c
  fireEvent.click(await screen.findByRole('button',{name:'Saved'}));
  expect(await screen.findByRole('status')).toHaveTextContent('Đã cập nhật tài khoản');
  expect(screen.getByRole('heading',{name:'Đăng nhập lại'})).toBeVisible();
- expect(screen.getByLabelText('Tên đăng nhập')).toHaveValue('new.admin');
+ expect(screen.getByLabelText('ID đăng nhập')).toHaveValue('new.admin');
  fireEvent.change(screen.getByLabelText('Mật khẩu'),{target:{value:'new-synthetic-password'}});
  fireEvent.submit(screen.getByRole('form',{name:'Đăng nhập'}));
  await waitFor(()=>expect(screen.queryByRole('form',{name:'Đăng nhập'})).not.toBeInTheDocument());
@@ -41,7 +41,7 @@ it('updates the login username if another request expired the session before the
  const api={me:vi.fn().mockResolvedValueOnce(profile).mockRejectedValue(new ApiError('Hết phiên',{status:401}))};
  render(<AuthProvider api={api}><AuthBoundary><Probe/></AuthBoundary></AuthProvider>);
  await screen.findByText('Profile loaded');await act(async()=>auth.retry());
- expect(screen.getByLabelText('Tên đăng nhập')).toHaveValue('old.admin');
+ expect(screen.getByLabelText('ID đăng nhập')).toHaveValue('old.admin');
  act(()=>auth.accountUpdated({id:'admin',username:'new.admin',displayName:'New Admin'},'Đã cập nhật tài khoản.'));
- expect(screen.getByLabelText('Tên đăng nhập')).toHaveValue('new.admin');
+ expect(screen.getByLabelText('ID đăng nhập')).toHaveValue('new.admin');
 });

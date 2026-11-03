@@ -19,7 +19,9 @@ public enum AiPurpose {
     public String role() { return role; }
     public String label() { return label; }
     public String target() { return target; }
-    public static List<AiPurpose> forRole(String role) { return Arrays.stream(values()).filter(p->p.role.equals(role)).toList(); }
+    public static List<AiPurpose> forRole(String role) {
+        return Arrays.stream(values()).filter(p->"USER".equals(role)?List.of("TESTER","DEV").contains(p.role):List.of("ADMIN","PM").contains(role)&&p.role.equals(role)).toList();
+    }
     public static AiPurpose parse(String code) {
         try { return valueOf(code); }
         catch (IllegalArgumentException | NullPointerException e) {

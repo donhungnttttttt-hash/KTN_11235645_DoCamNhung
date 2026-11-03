@@ -12,7 +12,7 @@ import { projectsApi } from '../../services/api/projects';
 
 const ctx=vi.hoisted(()=>({currentProject:{id:1,name:'Dự án A',projectRole:'PM'}}));
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>ctx}));
-vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({user:{id:'tester'},hasRole:()=>false})}));
+vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({user:{id:'tester'},hasRole:role=>role===(ctx.currentProject?.projectRole==='PM'?'PM':'USER')})}));
 vi.mock('../../services/api/execution',()=>({executionApi:{cycles:vi.fn(),create:vi.fn(),attempts:vi.fn(),record:vi.fn(),run:vi.fn(),scope:vi.fn(),configure:vi.fn(),cycle:vi.fn(),configurations:vi.fn(),runs:vi.fn(),assignments:vi.fn(),assign:vi.fn(),activate:vi.fn()}}));
 vi.mock('../../services/api/testCases',()=>({testCasesApi:{listCases:vi.fn(),listDocuments:vi.fn(),getDocument:vi.fn()}}));
 vi.mock('../../services/api/projects',()=>({projectsApi:{listMembers:vi.fn(),listCatalog:vi.fn()}}));

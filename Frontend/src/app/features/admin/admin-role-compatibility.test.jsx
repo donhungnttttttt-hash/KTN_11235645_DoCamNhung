@@ -1,3 +1,4 @@
+import {roleLabels,membershipLabel} from '../auth/accountTypes';
 import React from 'react';
 import {render,screen,fireEvent,waitFor,within} from '@testing-library/react';
 import {it,expect,vi} from 'vitest';
@@ -8,8 +9,8 @@ vi.mock('./AdminProjects',()=>({AdminProjectDetail:()=> <h1>Project summary</h1>
 
 const people=[
  {id:'pm',username:'pm',displayName:'Manager',role:'PM'},
- {id:'tester',username:'tester',displayName:'Tester',role:'TESTER'},
- {id:'dev',username:'dev',displayName:'Developer',role:'DEV'},
+ {id:'tester',username:'tester',displayName:'Tester',role:'USER'},
+ {id:'dev',username:'dev',displayName:'Developer',role:'USER'},
  {id:'admin',username:'admin',displayName:'System admin',role:'ADMIN'},
 ];
 
@@ -21,7 +22,7 @@ it('keeps roles read-only while creating a project and submits each account role
  for(const person of people){
   const row=screen.getByLabelText(`Chọn ${person.displayName}`).closest('tr');
   expect(within(row).queryByRole('combobox')).not.toBeInTheDocument();
-  expect(within(row).getByText(person.role==='ADMIN'?'ADMIN · Làm PM':person.role,{selector:'strong'})).toBeVisible();
+  expect(within(row).getByText(person.role==='ADMIN'?'Admin tổng · Làm PM':roleLabels[person.role],{selector:'strong'})).toBeVisible();
  }
 
 
@@ -30,32 +31,32 @@ it('keeps roles read-only while creating a project and submits each account role
  fireEvent.change(screen.getByLabelText('Tên dự án'),{target:{value:'Alpha'}});
  fireEvent.click(screen.getByRole('button',{name:'Tạo dự án'}));
  await waitFor(()=>expect(api.createProject).toHaveBeenCalledWith(expect.objectContaining({members:[
-  {userId:'pm',projectRole:'PM'},{userId:'tester',projectRole:'TESTER'},{userId:'dev',projectRole:'DEV'},{userId:'admin',projectRole:'PM'},
+  {userId:'pm',projectRole:'PM'},{userId:'tester',projectRole:'USER'},{userId:'dev',projectRole:'USER'},{userId:'admin',projectRole:'PM'},
  ]})));
 });
 
 it('shows existing membership roles as text without role editing controls',async()=>{
  const members=[...people.map(p=>({userId:p.id,displayName:p.displayName,username:p.username,systemRole:p.role,projectRole:p.role,version:3})),
-  {userId:'reader',displayName:'Reader',username:'reader',systemRole:'TESTER',projectRole:'MEMBER',version:1}];
+  {userId:'reader',displayName:'Reader',username:'reader',systemRole:'USER',projectRole:'MEMBER',version:1}];
  const api={project:vi.fn().mockResolvedValue({id:1,name:'Alpha',version:1}),members:vi.fn().mockResolvedValue(members),users:vi.fn().mockResolvedValue({items:[],totalElements:0}),setMember:vi.fn()};
  render(<AdminProjectDetail id="1" api={api}/>);
  for(const member of members){
   const row=await screen.findByRole('row',{name:new RegExp(`${member.displayName} · ${member.username}`)});
   expect(within(row).queryByRole('combobox')).not.toBeInTheDocument();
-  expect(within(row).getByRole('cell',{name:member.projectRole})).toBeVisible();
+  expect(within(row).getByRole('cell',{name:membershipLabel(member.systemRole,member.projectRole)})).toBeVisible();
   expect(within(row).getByRole('button',{name:`Gỡ ${member.displayName}`})).toBeEnabled();
  }
  expect(screen.queryByRole('button',{name:/^Lưu vai trò/})).not.toBeInTheDocument();
  expect(api.setMember).not.toHaveBeenCalled();
 });
 
-it('displays a legacy membership role as stored without offering a role change',async()=>{
- const member={userId:'tester',displayName:'Tester',username:'tester',systemRole:'TESTER',projectRole:'DEV',version:3};
+it('displays the fixed ordinary-user membership without offering a role change',async()=>{
+ const member={userId:'tester',displayName:'Tester',username:'tester',systemRole:'USER',projectRole:'USER',version:3};
  const api={project:vi.fn().mockResolvedValue({id:1,name:'Alpha',version:1}),members:vi.fn().mockResolvedValue([member]),users:vi.fn().mockResolvedValue({items:[],totalElements:0}),setMember:vi.fn().mockResolvedValue({})};
  render(<AdminProjectDetail id="1" api={api}/>);
  const row=await screen.findByRole('row',{name:/Tester · tester/});
  expect(within(row).queryByRole('combobox')).not.toBeInTheDocument();
- expect(within(row).getByRole('cell',{name:'DEV'})).toBeVisible();
+ expect(within(row).getByRole('cell',{name:'User thường'})).toBeVisible();
  expect(screen.queryByRole('button',{name:/^Lưu vai trò/})).not.toBeInTheDocument();
  expect(api.setMember).not.toHaveBeenCalled();
 });

@@ -58,7 +58,11 @@ public class ReportingService {
         var bugs=bugs(p,cycle);
         if(metrics==null)metrics=ReportMetrics.calculate(rows);
         metrics.put("bugs",bugs.size());metrics.put("openBugs",bugs.stream().filter(b->!ReportMetrics.excluded(b.get("terminal"))).count());
-        metrics.put("awaitingVerification",bugs.stream().filter(b->"resolved".equals(b.get("status"))).count());
+        metrics.put("awaitingVerification",bugs.stream().filter(b->ReportMetrics.excluded(b.get("awaitingVerification"))).count());
+        metrics.put("fixedBugs",bugs.stream().filter(b->ReportMetrics.excluded(b.get("fixed"))).count());
+        metrics.put("cannotReproduceBugs",bugs.stream().filter(b->"CANNOT_REPRODUCE".equals(b.get("closureReason"))).count());
+        metrics.put("wontFixBugs",bugs.stream().filter(b->"WONT_FIX".equals(b.get("closureReason"))).count());
+        metrics.put("legacyBugs",bugs.stream().filter(b->ReportMetrics.excluded(b.get("legacyWorkflow"))).count());
         var report=new LinkedHashMap<String,Object>();report.put("metricDefinitionVersion","internal-v1");report.put("asOf",asOf);report.put("timeZone",project.get("timezone"));report.put("project",project);
         var filters=new LinkedHashMap<String,Object>();filters.put("cycleId",cycle);filters.put("buildId",build);report.put("filters",filters);
         report.put("metrics",metrics);
@@ -114,9 +118,9 @@ public class ReportingService {
         String filter=cycle==null?"":" AND r.cycle_id=?";
         var args=new ArrayList<Object>();args.add(p);if(cycle!=null){args.add(cycle);args.add(cycle);}
         var bugs=db.rows("""
-            SELECT w.id,w.item_key AS `key`,w.title,w.status_code AS status,s.label_vi AS statusLabel,s.terminal,
+            SELECT w.id,w.item_key AS `key`,w.title,w.status_code AS status,s.label_vi AS statusLabel,tw.finalized AS terminal,tw.awaiting_verification AS awaitingVerification,tw.fixed,tw.legacy_workflow AS legacyWorkflow,x.ticket_state AS ticketState,x.closure_reason AS closureReason,
             w.priority_code AS priority,CASE w.priority_code WHEN 'HIGH' THEN 'Cao' WHEN 'LOW' THEN 'Thấp' ELSE 'Trung bình' END AS priorityLabel
-            FROM work_items w JOIN work_item_statuses s ON s.code=w.status_code WHERE w.project_id=? AND w.item_type='BUG'
+            FROM work_items w JOIN work_item_statuses s ON s.code=w.status_code JOIN ticket_workflow_metrics tw ON tw.project_id=w.project_id AND tw.work_item_id=w.id LEFT JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id WHERE w.project_id=? AND w.item_type='BUG'
             AND (EXISTS(SELECT 1 FROM work_item_execution_links l JOIN run_items r ON r.project_id=l.project_id AND r.id=l.run_item_id
                 JOIN test_cycles c ON c.project_id=r.project_id AND c.id=r.cycle_id WHERE l.project_id=w.project_id AND l.work_item_id=w.id AND c.status_code<>'DRAFT'
             """+filter+") OR EXISTS(SELECT 1 FROM bug_coverage_items i JOIN bug_retest_state st ON st.project_id=i.project_id AND st.work_item_id=i.work_item_id AND st.current_coverage_id=i.coverage_revision_id JOIN run_items r ON r.project_id=i.project_id AND r.id=i.run_item_id JOIN test_cycles c ON c.project_id=r.project_id AND c.id=r.cycle_id WHERE i.project_id=w.project_id AND i.work_item_id=w.id AND c.status_code<>'DRAFT'"+filter+")) ORDER BY w.id LIMIT 10001",args.toArray());

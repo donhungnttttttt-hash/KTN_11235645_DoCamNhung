@@ -205,7 +205,7 @@ public class ExecutionService {
     private Map<String,Object> recordCanonical(long p,String actor,long id,ExecutionDtos.Attempt input,String origin,FileWorkGuard.Context file,Object provenanceContext) {
         // Lock before any consistent read, also serializing member revocation and catalog changes.
         row("SELECT id,archived_at FROM projects WHERE id=? FOR UPDATE",p);
-        projects.requireNotDev(p,actor);
+        projects.requireWorkspaceAccess(p,actor);
         projects.requireMembership(p,actor);
         if(row("SELECT archived_at FROM projects WHERE id=?",p).get("archived_at")!=null) fail(409,"ARCHIVED","Dự án đã được lưu trữ.");
         long executor=member(p,actor);

@@ -49,6 +49,7 @@ try {
     $env:TMS_ATTACHMENT_ROOT=Join-Path $state 'evidence'
     $env:TMS_BOOTSTRAP_ENABLED='true'; $env:TMS_BOOTSTRAP_USERNAME='release.check.admin'
     $env:TMS_BOOTSTRAP_PASSWORD=New-LocalSecret; $env:TMS_BOOTSTRAP_DISPLAY_NAME='Admin kiểm tra gói'
+    $env:TMS_BOOTSTRAP_SECOND_USERNAME='release.check.admin2'; $env:TMS_BOOTSTRAP_SECOND_DISPLAY_NAME='Admin kiểm tra gói 2'; $env:TMS_BOOTSTRAP_SECOND_PASSWORD=New-LocalSecret
     $runtimeProcess=Start-Process -FilePath 'java' -ArgumentList @('-jar', ('"'+$jar+'"')) -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $state 'runtime.log') -RedirectStandardError (Join-Path $state 'runtime-error.log')
     $ready=$false
     for($attempt=0;$attempt -lt 60;$attempt++) {

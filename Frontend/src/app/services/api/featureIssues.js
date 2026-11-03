@@ -7,6 +7,13 @@ async function write(path,body,method='POST',options={}) {
 }
 export const featureIssuesApi={
  list:(p,filters={},options={})=>apiRequest(`${base(p)}?${query(filters)}`,options),
+ board:(p,filters={},options={})=>apiRequest(`${base(p)}/board?${query(filters)}`,options),
+ options:(p,type,{assigneeMembershipId,...options}={})=>apiRequest(`${base(p)}/options?${query({type,assigneeMembershipId})}`,options),
+ action:(p,id,body,options={})=>write(`${base(p)}/${id}/actions`,body,'POST',options),
+ responsibilities:(p,options={})=>apiRequest(`/projects/${p}/ticket-responsibilities`,options),
+ updateResponsibilities:(p,membershipId,body,options={})=>write(`/projects/${p}/ticket-responsibilities/${membershipId}`,body,'PUT',options),
+ notifications:(filters={},options={})=>apiRequest(`/me/ticket-notifications?${query(filters)}`,options),
+ readNotification:(id,options={})=>write(`/me/ticket-notifications/${id}/read`,null,'PUT',options),
  context:(p,featureId,documentId,rowId,options={})=>apiRequest(`${base(p)}/context?${query({featureId,documentId,rowId})}`,options),
  get:(p,id,options={})=>apiRequest(`${base(p)}/${id}`,options),
  create:(p,body,options={})=>write(base(p),body,'POST',options),

@@ -22,13 +22,15 @@ public class ManagementReportService {
     private static final String SELECT="SELECT id,project_id AS projectId,feature_id AS featureId,title,markdown,lock_version AS version,created_at AS createdAt,updated_at AS updatedAt FROM project_management_reports";
     private void authorize(long p,String actor,boolean write) {
         if(write){projects.lockWritableProject(p,actor);return;}
-        projects.requireReadAccess(p,actor);
-        if(!identity.isAdmin(actor)&&db.count("SELECT COUNT(*) FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.user_id=? AND m.active=TRUE AND m.project_role='PM' AND u.enabled=TRUE AND u.role_code<>'DEV'",p,actor)!=1)
-            WorkItemStore.fail(403,"MANAGEMENT_REPORT_FORBIDDEN","Bạn không có quyền truy cập báo cáo quản trị của dự án.");
+        projects.requireReportingAccess(p,actor);
     }
     @Transactional(readOnly=true)
     public Map<String,Object> summary(long p,String actor,Long feature) {
         authorize(p,actor,false);
+        if("GUEST".equals(identity.current(actor).getRole())){
+            if(feature!=null)WorkItemStore.fail(422,"INVALID_REPORT_SCOPE","Khách xem tổng quan tiến độ của dự án.");
+            return GuestReportView.summary(db,p);
+        }
         var result=new LinkedHashMap<String,Object>();
         result.put("project",db.row("SELECT id,code,name,description FROM projects WHERE id=?",p));
         result.put("feature",feature==null?null:db.row("SELECT id,name,environment,description FROM testing_features WHERE project_id=? AND id=? AND archived_at IS NULL",p,feature));
@@ -41,12 +43,13 @@ public class ManagementReportService {
     }
     public Map<String,Object> previewContext(long p,String actor,Long feature) {authorize(p,actor,true);return summary(p,actor,feature);}
     @Transactional(readOnly=true)
-    public Map<String,Object> get(long p,String actor,long id) {authorize(p,actor,false);return db.row(SELECT+" WHERE project_id=? AND id=?",p,id);}
+    public Map<String,Object> get(long p,String actor,long id) {authorize(p,actor,false);var result=db.row(SELECT+" WHERE project_id=? AND id=?",p,id);return "GUEST".equals(identity.current(actor).getRole())?GuestReportView.report(result):result;}
     @Transactional(readOnly=true)
     public Map<String,Object> list(long p,String actor,int page,int size) {
         authorize(p,actor,false);if(page<0||size<1||size>100)WorkItemStore.fail(422,"INVALID_PAGE","Phân trang không hợp lệ.");
         long total=db.count("SELECT COUNT(*) FROM project_management_reports WHERE project_id=?",p);
         var items=db.rows("SELECT id,project_id AS projectId,feature_id AS featureId,title,lock_version AS version,created_at AS createdAt,updated_at AS updatedAt FROM project_management_reports WHERE project_id=? ORDER BY updated_at DESC,id DESC LIMIT ? OFFSET ?",p,size,(long)page*size);
+        if("GUEST".equals(identity.current(actor).getRole()))items=items.stream().map(GuestReportView::report).toList();
         return Map.of("items",items,"totalItems",total,"page",page,"size",size,"totalPages",(total+size-1)/size);
     }
     @Transactional(readOnly=true)

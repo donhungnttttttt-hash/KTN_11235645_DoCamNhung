@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useState, useRef } from "react";
 import { projectsApi } from "../../services/api/projects";
+import {listReportingProjects} from '../../services/api/managementReports';
 import { useAuth } from "../auth/AuthProvider";
 
 const ProjectContext = createContext(null);
@@ -10,6 +11,8 @@ export function useProject() {
 
 export function ProjectProvider({ children }) {
   const { status, user } = useAuth();
+  const guest=user?.roles?.includes('GUEST')===true;
+  const pending=useRef(null);
   const generation = useRef(0);
   const selectionKey = `tms_selected_project_${user?.id || 'anonymous'}`;
   const [projects, setProjects] = useState([]);
@@ -19,10 +22,15 @@ export function ProjectProvider({ children }) {
 
   const refreshProjects = useCallback(async (preferredId) => {
     const request = ++generation.current;
+    pending.current?.abort();const controller=new AbortController();pending.current=controller;
     if (status !== "authenticated") return;
     setLoading(true);
     try {
-      const data = await projectsApi.list();
+      let data;
+      if(guest){
+        data=[];let page=0,total;
+        do{const result=await listReportingProjects({page,size:100,signal:controller.signal});if(request!==generation.current)return;data.push(...result.items);total=result.totalElements;page++;if(!result.items.length)break;}while(data.length<total);
+      }else data = await projectsApi.list();
       if (request !== generation.current) return;
       setProjects(data);
       
@@ -47,11 +55,11 @@ export function ProjectProvider({ children }) {
     } finally {
       if (request === generation.current) setLoading(false);
     }
-  }, [status, selectionKey]);
+  }, [status, selectionKey,guest]);
 
   useEffect(() => {
     refreshProjects();
-    return () => { generation.current++; };
+    return () => { generation.current++;pending.current?.abort(); };
   }, [refreshProjects]);
 
   useEffect(() => {

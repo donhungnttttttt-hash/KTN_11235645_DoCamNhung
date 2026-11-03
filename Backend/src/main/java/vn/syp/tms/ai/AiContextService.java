@@ -117,7 +117,7 @@ public class AiContextService {
     private void assignment(long p,long document,List<AiDraftService.Source> sources,List<Map<String,Object>> facts) {
         var file=db.row("SELECT b.id,b.lock_version AS version,b.file_name AS fileName,b.feature_id AS featureId,f.name AS featureName,f.environment FROM import_batches b JOIN testing_features f ON f.project_id=b.project_id AND f.id=b.feature_id WHERE b.project_id=? AND b.id=? AND b.status='COMMITTED' AND b.archived_at IS NULL AND f.archived_at IS NULL",p,document);
         var projection=new FeatureFacts(db);
-        file.put("candidates",db.rows("SELECT m.id AS membershipId,u.display_name AS displayName,COUNT(CASE WHEN f.id IS NOT NULL THEN a.row_id END) AS assignedCases,COALESCE(SUM(f.id IS NOT NULL AND r.result_status='UNEXECUTED'),0) AS remainingCases FROM project_memberships m JOIN identity_users u ON u.id=m.user_id LEFT JOIN test_document_assignments a ON a.project_id=m.project_id AND a.assignee_membership_id=m.id LEFT JOIN import_rows r ON r.project_id=a.project_id AND r.id=a.row_id LEFT JOIN import_batches b ON b.project_id=r.project_id AND b.id=r.batch_id AND b.status='COMMITTED' AND b.archived_at IS NULL LEFT JOIN testing_features f ON f.project_id=b.project_id AND f.id=b.feature_id AND f.archived_at IS NULL WHERE m.project_id=? AND m.active=TRUE AND m.project_role='TESTER' AND u.enabled=TRUE AND u.role_code<>'DEV' GROUP BY m.id,u.display_name ORDER BY assignedCases,m.id LIMIT 10",p));
+        file.put("candidates",db.rows("SELECT m.id AS membershipId,u.display_name AS displayName,COUNT(CASE WHEN f.id IS NOT NULL THEN a.row_id END) AS assignedCases,COALESCE(SUM(f.id IS NOT NULL AND r.result_status='UNEXECUTED'),0) AS remainingCases FROM project_memberships m JOIN identity_users u ON u.id=m.user_id LEFT JOIN test_document_assignments a ON a.project_id=m.project_id AND a.assignee_membership_id=m.id LEFT JOIN import_rows r ON r.project_id=a.project_id AND r.id=a.row_id LEFT JOIN import_batches b ON b.project_id=r.project_id AND b.id=r.batch_id AND b.status='COMMITTED' AND b.archived_at IS NULL LEFT JOIN testing_features f ON f.project_id=b.project_id AND f.id=b.feature_id AND f.archived_at IS NULL WHERE m.project_id=? AND m.active=TRUE AND m.project_role='USER' AND u.enabled=TRUE AND u.role_code='USER' GROUP BY m.id,u.display_name ORDER BY assignedCases,m.id LIMIT 10",p));
         file.put("recordedHistory",projection.experience(p,number(file,"featureId")));
         add(sources,facts,"document:"+document,Objects.toString(file.get("fileName")),"/board/testing/features/"+number(file,"featureId")+"/documents/"+document,number(file,"version"),file);
     }
@@ -128,11 +128,14 @@ public class AiContextService {
     private void ticket(long p,long id,AiPurpose purpose,List<AiDraftService.Source> sources,List<Map<String,Object>> facts) {
         var row=db.row("""
             SELECT w.item_key AS itemKey,w.item_type AS type,w.title,LEFT(w.description,1500) AS description,
-            w.status_code AS status,w.lock_version AS version,LEFT(b.steps,1200) AS steps,
+            w.status_code AS status,w.lock_version AS version,x.ticket_state AS ticketState,x.closure_reason AS closureReason,
+            tw.finalized,tw.awaiting_verification AS awaitingVerification,tw.legacy_workflow AS legacyWorkflow,LEFT(b.steps,1200) AS steps,
             LEFT(b.expected_result,800) AS expected,LEFT(b.actual_result,800) AS actual,
             bu.version_label AS build,d.model,d.os_name AS os,d.os_version AS osVersion,
             LEFT(q.question,1200) AS question,LEFT(a.body,1000) AS latestAnswer
             FROM work_items w LEFT JOIN bug_details b ON b.project_id=w.project_id AND b.work_item_id=w.id
+            LEFT JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id
+            JOIN ticket_workflow_metrics tw ON tw.project_id=w.project_id AND tw.work_item_id=w.id
             LEFT JOIN builds bu ON bu.project_id=b.project_id AND bu.id=b.build_id
             LEFT JOIN devices d ON d.project_id=b.project_id AND d.id=b.device_id
             LEFT JOIN qa_details q ON q.project_id=w.project_id AND q.work_item_id=w.id

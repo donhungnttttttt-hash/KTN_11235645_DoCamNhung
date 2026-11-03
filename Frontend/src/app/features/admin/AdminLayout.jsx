@@ -5,6 +5,8 @@ import { adminApi } from '../../services/api/admin';
 import { AdminUserProjectFilter } from './AdminUserProjectFilter';
 import { useChatLauncherSlot } from '../ai/ChatLauncherSlot';
 import {useDialogFocus} from '../../hooks/useDialogFocus';
+import {AccountMenu} from '../auth/AccountMenu';
+import {TicketNotifications} from '../work-items/TicketNotifications';
 
 function useCompactAdminNavigation(){
   const query='(max-width: 768px)';
@@ -45,7 +47,7 @@ export function AdminLayout({path,projectId,navigate,children,api=adminApi}) {
   async function signOut() {setBusy(true);setLogoutError('');try{await logout();}catch(error){setLogoutError(error.message);}finally{setBusy(false);}}
   return <div className={`admin-shell${collapsed&&!compact?' admin-shell-collapsed':''}`}>
     <a className="admin-skip" href="#admin-main" onClick={event=>{event.preventDefault();mainRef.current?.focus({preventScroll:true});}}>Đến nội dung</a>
-    <header className="admin-header" inert={drawerOpen?'':undefined}><div>{compact&&<button ref={menuButton} type="button" className="admin-navigation-toggle" aria-label="Mở menu quản trị" aria-controls="admin-navigation" aria-expanded={drawerOpen} onClick={()=>setMobileOpen(true)}><Menu size={20} aria-hidden="true"/></button>}<strong>TMS</strong><span>Quản trị hệ thống</span></div><div><span className="admin-current-user">{user.displayName}</span><button onClick={signOut} disabled={busy}>{busy ? 'Đang đăng xuất…' : 'Đăng xuất'}</button><div className="admin-chat-launcher-slot" ref={registerChatSlot}/></div></header>
+    <header className="admin-header" inert={drawerOpen?'':undefined}><div>{compact&&<button ref={menuButton} type="button" className="admin-navigation-toggle" aria-label="Mở menu quản trị" aria-controls="admin-navigation" aria-expanded={drawerOpen} onClick={()=>setMobileOpen(true)}><Menu size={20} aria-hidden="true"/></button>}<strong>TMS</strong><span>Quản trị hệ thống</span></div><div><TicketNotifications key={user?.id} navigate={navigate}/><AccountMenu hideLogout/><button onClick={signOut} disabled={busy}>{busy ? 'Đang đăng xuất…' : 'Đăng xuất'}</button><div className="admin-chat-launcher-slot" ref={registerChatSlot}/></div></header>
     <aside ref={sidebarRef} id="admin-navigation" className="admin-sidebar" hidden={compact&&!drawerOpen} role={drawerOpen?'dialog':undefined} aria-modal={drawerOpen?'true':undefined} aria-label={drawerOpen?'Menu quản trị':'Điều hướng quản trị'} tabIndex={drawerOpen?-1:undefined}>
       <div className="admin-sidebar-controls"><span>Điều hướng quản trị</span>{compact?<button type="button" className="admin-navigation-toggle" aria-label="Đóng menu quản trị" onClick={()=>setMobileOpen(false)}><X size={20} aria-hidden="true"/></button>:<button ref={collapseButton} type="button" className="admin-navigation-toggle" aria-label={collapsed?'Mở rộng menu quản trị':'Thu gọn menu quản trị'} title={collapsed?'Mở rộng menu quản trị':'Thu gọn menu quản trị'} aria-expanded={!collapsed} aria-controls="admin-navigation" onClick={()=>setCollapsed(value=>!value)}>{collapsed?<PanelLeftOpen size={20} aria-hidden="true"/>:<PanelLeftClose size={20} aria-hidden="true"/>}</button>}</div>
       <nav aria-label="Quản trị">

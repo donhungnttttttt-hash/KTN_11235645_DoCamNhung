@@ -13,7 +13,7 @@ class AiProviderAuthorizationTest {
     @AfterEach void clear(){SecurityContextHolder.clearContext();RequestContextHolder.resetRequestAttributes();}
     @Test void localOwnerAndDirectLoopbackAreRequiredEvenForAdmin() {
         var config=new LocalAiConfiguration(true,"owner","urn:uuid:12345678-1234-1234-1234-123456789012","C:/test-vault","","127.0.0.1",false,"http://127.0.0.1:11434");
-        var identity=mock(IdentityService.class);var user=mock(IdentityUser.class);when(identity.current("owner")).thenReturn(user);when(user.getVersion()).thenReturn(1L);
+        var identity=mock(IdentityService.class);var user=mock(IdentityUser.class);when(identity.current("owner")).thenReturn(user);when(user.getVersion()).thenReturn(1L);when(user.getRole()).thenReturn("USER");
         var access=new LocalAiAccess(config,identity);var request=new MockHttpServletRequest();request.setRemoteAddr("127.0.0.1");request.getSession(true);RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal("owner",1),null,java.util.List.of()));
         assertThat(access.requireLocal("owner")).isNotNull();
@@ -33,7 +33,7 @@ class AiProviderAuthorizationTest {
     }
     @Test void callbackRechecksRepositoryInsteadOfTrustingCapturedSessionAfterLogout() {
         var config=new LocalAiConfiguration(false,"","","","","",false,"http://127.0.0.1:11434");
-        var identity=mock(IdentityService.class);var user=mock(IdentityUser.class);when(identity.current("owner")).thenReturn(user);when(user.getVersion()).thenReturn(1L);
+        var identity=mock(IdentityService.class);var user=mock(IdentityUser.class);when(identity.current("owner")).thenReturn(user);when(user.getVersion()).thenReturn(1L);when(user.getRole()).thenReturn("USER");
         var repository=new org.springframework.session.MapSessionRepository(new java.util.concurrent.ConcurrentHashMap<>());
         var persisted=repository.createSession();var principal=new SessionPrincipal("owner",1);var context=SecurityContextHolder.createEmptyContext();context.setAuthentication(new UsernamePasswordAuthenticationToken(principal,null,java.util.List.of()));
         persisted.setAttribute("SPRING_SECURITY_CONTEXT",context);repository.save(persisted);
@@ -44,7 +44,7 @@ class AiProviderAuthorizationTest {
     @Test void generationCapturesImmutableSessionIdentityAndRejectsRotationOrDifferentPrincipal() {
         var config=new LocalAiConfiguration(false,"","","","","",false,"http://127.0.0.1:11434");
         var identity=mock(IdentityService.class);var user=mock(IdentityUser.class);
-        when(identity.current("owner")).thenReturn(user);when(user.getVersion()).thenReturn(1L);
+        when(identity.current("owner")).thenReturn(user);when(user.getVersion()).thenReturn(1L);when(user.getRole()).thenReturn("USER");
         var repository=new org.springframework.session.MapSessionRepository(new java.util.concurrent.ConcurrentHashMap<>());
         var persisted=repository.createSession();var principal=new SessionPrincipal("owner",1);
         var context=SecurityContextHolder.createEmptyContext();context.setAuthentication(new UsernamePasswordAuthenticationToken(principal,null,java.util.List.of()));

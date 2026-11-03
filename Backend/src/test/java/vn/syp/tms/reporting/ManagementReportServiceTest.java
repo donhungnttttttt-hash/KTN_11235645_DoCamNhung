@@ -14,11 +14,11 @@ class ManagementReportServiceTest {
     final WorkItemStore db=mock(WorkItemStore.class);
     final ManagementReportService service=new ManagementReportService(db,projects,identity,mock(ProjectAudit.class));
     @Test void testerCannotReadManagementSummaryEvenWithProjectMembership() {
-        when(identity.isAdmin("tester")).thenReturn(false);
+        doThrow(new BusinessException(403,"FORBIDDEN","No reporting permission")).when(projects).requireReportingAccess(1L,"tester");
         assertThatThrownBy(()->service.summary(1,"tester",null)).isInstanceOfSatisfying(BusinessException.class,error->assertThat(error.status()).isEqualTo(403));
     }
     @Test void fabricatedProjectIsDeniedBeforeAnyReportCanBeRead() {
-        doThrow(new BusinessException(404,"NOT_FOUND","No grant")).when(projects).requireReadAccess(9L,"outside");
+        doThrow(new BusinessException(404,"NOT_FOUND","No grant")).when(projects).requireReportingAccess(9L,"outside");
         assertThatThrownBy(()->service.get(9,"outside",1)).isInstanceOfSatisfying(BusinessException.class,error->assertThat(error.status()).isEqualTo(404));
     }
 }

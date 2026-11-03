@@ -22,7 +22,7 @@ public class AdminProjectService {
     public AdminProjectService(WorkItemStore db,IdentityService identity,ProjectService projects,ProjectAudit audit,DeviceInventoryService inventory) {
         this.db=db;this.identity=identity;this.projects=projects;this.audit=audit;this.inventory=inventory;
     }
-    public record InitialMember(@NotBlank String userId,@NotBlank @Pattern(regexp="PM|TESTER|DEV") String projectRole) {}
+    public record InitialMember(@NotBlank String userId,@NotBlank @Pattern(regexp="PM|USER|GUEST") String projectRole) {}
     public record Create(@Valid @NotNull ProjectDtos.CreateProject project,@NotEmpty @Size(max=1000) List<@NotNull @Valid InitialMember> members,@Size(max=1000) List<@NotNull @Valid Initial> devices) {
         public Create(ProjectDtos.CreateProject project,List<InitialMember> members){this(project,members,List.of());}
     }
@@ -79,14 +79,14 @@ public class AdminProjectService {
     public AdminDtos.Page<Map<String,Object>> memberCandidates(String actor,long projectId,String keyword,String role,Boolean hasProject,int page,int size) {
         projects.requireMemberCandidateAccess(projectId,actor);
         boolean pmOnly=!"ADMIN".equals(identity.current(actor).getRole());
-        if(pmOnly && role!=null && !List.of("DEV","TESTER").contains(role))fail(403,"FORBIDDEN","PM chỉ được thêm tài khoản Dev hoặc Tester.");
+        if(pmOnly && role!=null && !"USER".equals(role))fail(403,"FORBIDDEN","Admin dự án chỉ được thêm User thường.");
         return queryUsers(null,keyword,role,true,false,hasProject,projectId,page,size,pmOnly);
     }
     private AdminDtos.Page<Map<String,Object>> queryUsers(Long projectId,String keyword,String role,Boolean enabled,boolean unassignedOnly,Boolean hasProject,Long excludeProjectId,int page,int size,boolean pmOnly) {
         if(excludeProjectId!=null && excludeProjectId<=0)fail(422,"INVALID_FILTER","Dự án cần loại thành viên không hợp lệ.");
-        if(page<0 || size<1 || size>100 || text(keyword).length()>100 || role!=null && !List.of("ADMIN","PM","TESTER","DEV").contains(role))fail(422,"INVALID_FILTER","Bộ lọc không hợp lệ.");
+        if(page<0 || size<1 || size>100 || text(keyword).length()>100 || role!=null && !List.of("ADMIN","PM","USER","GUEST").contains(role))fail(422,"INVALID_FILTER","Bộ lọc không hợp lệ.");
         var args=new ArrayList<Object>();String where=" WHERE 1=1";
-        if(pmOnly)where+=" AND u.role_code IN ('DEV','TESTER')";
+        if(pmOnly)where+=" AND u.role_code='USER'";
         if(unassignedOnly)where+=" AND NOT EXISTS(SELECT 1 FROM project_memberships unassigned WHERE unassigned.user_id=u.id AND unassigned.active=TRUE)";
         if(hasProject!=null)where+=" AND "+(hasProject?"":"NOT ")+"EXISTS(SELECT 1 FROM project_memberships assigned WHERE assigned.user_id=u.id AND assigned.active=TRUE)";
         if(projectId!=null){db.row("SELECT id FROM projects WHERE id=?",projectId);where+=" AND EXISTS(SELECT 1 FROM project_memberships m WHERE m.user_id=u.id AND m.project_id=? AND m.active=TRUE)";args.add(projectId);}

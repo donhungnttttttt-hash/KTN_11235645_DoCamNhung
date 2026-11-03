@@ -12,8 +12,8 @@
 | Bug/QA/Monkey | [work-items](work-items.md): `/issues`, capability hiện hành, context Feature/file/row; old generic và typed writes nghỉ dùng |
 | Legacy HTTP và retained history | [file-work](file-work.md): các mã410, GET lịch sử theo quyền, không đoán mapping ID cũ |
 | Management analysis/report | [reporting](reporting.md): PM của dự án/ADMIN; bản Markdown lưu riêng, exact download, preview không autosave |
-| AI target/background/owner | [ai-chat](ai-chat.md): projects/features selector theo server policy, PROJECT_CHAT optional Feature, PM AI global read không thành CRUD |
-| Status/progress/quyền | [metrics](../business/metrics.md), [permissions](../business/permissions.md): P/NA tính tested, total gồm NA, Tester/DEV không management report |
+| AI target/background/owner | [ai-chat](ai-chat.md): projects/features selector theo server policy, PROJECT_CHAT optional Feature, PM AI chỉ đọc các dự án được phân quyền; ADMIN tổng có phạm vi toàn hệ thống |
+| Status/progress/quyền | [metrics](../business/metrics.md), [permissions](../business/permissions.md): P/NA tính tested, total gồm NA, USER không management report; GUEST chỉ GET báo cáo của dự án được thêm |
 
 Source đối chiếu: [FeatureController](../../Backend/src/main/java/vn/syp/tms/feature/FeatureController.java), [FeatureIssueController](../../Backend/src/main/java/vn/syp/tms/workitem/FeatureIssueController.java), [ProjectNotesController](../../Backend/src/main/java/vn/syp/tms/notes/ProjectNotesController.java), [ManagementReportController](../../Backend/src/main/java/vn/syp/tms/reporting/ManagementReportController.java), [AiReadScopeController](../../Backend/src/main/java/vn/syp/tms/ai/AiReadScopeController.java), [LegacyTestingWrites](../../Backend/src/main/java/vn/syp/tms/feature/LegacyTestingWrites.java), [FeatureIssueLegacyWrites](../../Backend/src/main/java/vn/syp/tms/workitem/FeatureIssueLegacyWrites.java). Kiểm lại implementation cuối khi root đóng băng source; liên kết tới source không thay bằng chứng chạy HTTP.
 
@@ -47,11 +47,11 @@ Prefix API `/api/v1/projects/{projectId}`. List dùng page 0-based, size giới 
 | `GET/POST /features`, `GET/PUT /features/{id}` | name, environment, description; id/projectId/version/archive/progress | Member đọc; PM dự án/ADMIN ghi; wrong scope 404, forbidden 403, validation 422, stale 409 |
 | Archive/restore Feature | expectedVersion | PM/ADMIN; không hard delete |
 | Feature documents + import preview/commit | featureId bắt buộc trên đường mới; parser hiện có; file/progress/tester ranges | PM/ADMIN import/hide; cùng workbook ở Feature khác hợp lệ |
-| Document detail/cell/result/export | Giữ rowId/caseId/revision/version; Status mới và assignment riêng | Active scope; cell editing theo quyền; Status Tester trách nhiệm hoặc PM/ADMIN; version/idempotency conflict 409 |
-| Document assignments | membershipId, ranges, expectedVersion | PM/ADMIN quản lý; Tester chỉ phần mình; overlap/out-of-range 422/409; một transaction |
-| `/issues` | BUG/QA, featureId, documentId/rowId tùy context, title/details; monkey flag, version/requestKey | Case context kiểm server; monkey Tester own CRUD, PM/ADMIN quản lý, DEV xử lý được giao; soft-delete; không NG/build/device/retest gate |
+| Document detail/cell/result/export | Giữ rowId/caseId/revision/version; Status mới và assignment riêng | Active scope; cell editing theo quyền; Status USER được phân công hoặc PM/ADMIN; version/idempotency conflict 409 |
+| Document assignments | membershipId, ranges, expectedVersion | PM/ADMIN quản lý; USER chỉ phần mình; overlap/out-of-range 422/409; một transaction |
+| `/issues` | BUG/QA, featureId, documentId/rowId tùy context, title/details; monkey flag, version/requestKey | Case context kiểm server; USER tạo/sửa monkey của mình và xử lý Issue được giao; PM/ADMIN quản lý; soft-delete; không NG/build/device/retest gate |
 | `/notes` | title/body, expectedVersion; saved identity/time/version | PM/ADMIN CRUD, member đọc; scope 404, role 403, stale 409 |
-| `/management-reports` | project + optional Feature, Markdown text/version | PM dự án/ADMIN read/create/edit/export; Tester/DEV 403; tách TTL chat/draft; không ghi ngược nghiệp vụ |
+| `/management-reports` | project + optional Feature, Markdown text/version | PM dự án/ADMIN read/create/edit/export; USER 403; GUEST có membership hợp lệ được GET summary/list/detail/download với DTO riêng, không ghi; tách TTL chat/draft; không ghi ngược nghiệp vụ |
 
 Giữ schema issue/work-item hiện có nếu mở rộng được: context Feature/file/row và identity author rõ; các required build/env/device cũ được bỏ cho Issue mới. Không giả mapping loại lịch sử sang BUG/QA; API tạo loại cũ bị chặn. Lối mới không gọi state machine retest/QA cũ như điều kiện bắt buộc.
 
@@ -61,8 +61,8 @@ Bổ sung cùng ngày cho **Tạo Issue từ case**: `GET /issues/context` cũng
 
 ## Quyền AI và metrics dùng chung
 
-- PM và ADMIN được AI đọc liên dự án kể cả không membership; PM không có thêm quyền CRUD. Secret và chat riêng luôn ngoài context.
-- Tester/DEV chỉ truy xuất chi tiết case/Issue/công việc trong quyền; management analysis/report/bulk export bị chặn tại API/capability. Ngoài quyền chỉ context kinh nghiệm đã tổng hợp, không tên/identity/raw tài liệu/số liệu riêng. Lọc trước retrieval/model và kiểm output/citation.
+- ADMIN đã đăng ký được AI đọc liên dự án; PM chỉ đọc dự án có membership hợp lệ và không có thêm quyền CRUD. Secret và chat riêng luôn ngoài context.
+- USER chỉ truy xuất chi tiết case/Issue/công việc trong quyền; management analysis/report/bulk export bị chặn tại API/capability. Ngoài quyền chỉ context kinh nghiệm đã tổng hợp, không tên/identity/raw tài liệu/số liệu riêng. Lọc trước retrieval/model và kiểm output/citation.
 - Project/Feature đã chọn là target; background policy độc lập. Kết quả trải nghiệm dựa trên actor thực tế sau migration, không dùng source tester làm bằng chứng mới.
 - tested = count(Status != UNEXECUTED), total gồm NA; 2U+OK+P+NA = 3/5 = 60%; total0 cho tiến độ0 với nhãn chưa có case. Các consumer đọc cùng identity và công thức, không đếm theo số assignee.
 - Cấu hình AI trong chat dùng provider UI hiện có, per-account; thread/in-flight đã pin không thay nguồn/model/scope.
@@ -74,7 +74,7 @@ Public HTTP/API: role/scope/transaction/concurrency/persistence (A01–08,11–1
 ## Bổ sung đối chiếu source 19/10/2026 — R01/R02/R03/R07/R08
 
 - KPI Admin hiện hành là `feature-cases-v1`, từ Status của case thuộc file/Feature hoạt động; Bug counters chỉ từ Issue context hoạt động. Milestone chỉ tính BUG/QA được liên kết rõ, không dùng cycle/Task cũ làm cảnh báo mới. [Định nghĩa metrics](../business/metrics.md).
-- Legacy `POST /api/v1/projects/{p}/status-reports` trả410 `USE_FEATURE_REPORTS` sau quyền PM dự án/ADMIN; lịch sử GET giữ tác giả/nội dung, `canPost:false`, không cho Tester/DEV hoặc PM ngoài scope. [Chi tiết API và Admin-only history](reporting.md).
+- Legacy `POST /api/v1/projects/{p}/status-reports` trả410 `USE_FEATURE_REPORTS` sau quyền PM dự án/ADMIN; lịch sử GET giữ tác giả/nội dung, `canPost:false`, không cho USER/GUEST hoặc PM ngoài scope. [Chi tiết API và Admin-only history](reporting.md).
 - Current export/import lại hỗ trợ mẫu khách và đúng mẫu nội bộ11/14 cột, tái sử dụng ba cột Status/first/latest thay vì nhân thêm. Import vào Feature mới giữ bytes nguồn và reset Status/phân công mới, không tạo lịch sử tester từ ô nhập. [Contract export roundtrip](test-documents.md).
 
 Đây là đối chiếu source đã đóng băng và contract; kết quả browser, MySQL cô lập, live AI, main DB và UAT là các bằng chứng riêng, không suy từ đoạn này.
@@ -90,6 +90,6 @@ Chưa có Spider Plus trong inventory baseline. Người dùng ngày 19/10 đã 
 - `GET /api/v1/projects/{p}/test-documents/{d}` của Feature bổ sung `testVersions`; mỗi row có `testVersionId,testVersionName,executedOn` nếu đã ghi metadata. Không suy diễn version cho dữ liệu cũ.
 - `PUT .../rows/{row}/result` nhận thêm `testVersionId,executedOn` (ISO `YYYY-MM-DD`), gửi cùng nhau; version phải thuộc đúng project/Feature. Feature đã có version thì bắt buộc chọn; Feature chưa cấu hình vẫn tương thích ghi Status cũ.
 - Đổi Status lưu metadata chỉ cho row được ghi. Đổi dropdown ở row gửi Status hiện tại, version được chọn và giữ ngày thực hiện đã lưu (row chưa có ngày dùng ngày đang chọn ở toolbar). Không đổi Status/tiến độ của case hoặc các case khác. Lịch sử ghi một bản mới, kể cả Status trước/sau giống nhau.
-- `expectedVersion` chống ghi đè khi sửa đồng thời; replay cùng requestKey/actor/status/version/date không nhân đôi lịch sử; payload khác bị 409. Quyền sửa tuân theo phân công case hiện hành; DEV/không được phân công không được ghi.
+- `expectedVersion` chống ghi đè khi sửa đồng thời; replay cùng requestKey/actor/status/version/date không nhân đôi lịch sử; payload khác bị 409. Quyền sửa tuân theo phân công case hiện hành; USER không được phân công không được ghi.
 - UI gợi ý version có ngày tạo theo Asia/Ho_Chi_Minh gần nhất không sau ngày thực hiện, cùng ngày chọn createdAt/id mới nhất. Người dùng chọn lại được. Đổi toolbar không ghi database.
 - Lịch sử và Excel hiện hành thêm Version test/Ngày thực hiện; cột ghi chú thực thi gốc được giữ riêng, tải file gốc không thay đổi.

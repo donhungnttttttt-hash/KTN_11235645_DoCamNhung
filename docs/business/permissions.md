@@ -1,5 +1,33 @@
 # Quyền nội bộ
 
+## Ticket Bug/QA — quyết định 03/11/2026
+
+Quyền Ticket mới bổ sung cho source V39; trạng thái nghiệm thu/runtime xem [báo cáo triển khai](../reviews/2026-11-03-ticket-workflow-implementation.md). Phần này ưu tiên khi khác mô tả triage/phân công Issue ngày02/11 bên dưới; không mở quyền quản lý Feature hoặc đổi loại tài khoản.
+
+- BA/BrSE (`SPEC_REVIEWER`) và PM Dev (`BUG_COORDINATOR`) là trách nhiệm theo dự án, có thể chỉ định USER thường. Admin tổng hoặc PM của dự án quản lý các trách nhiệm này. PM đang hoạt động trong dự án cũng là đầu mối hợp lệ; không thêm role Tester/Dev/BA mới vào tài khoản.
+- Người tạo sửa nội dung ticket của mình. Người nhận QA đang có trách nhiệm xác nhận spec được chuyển cùng ticket thành Bug hoặc đóng Không được hỗ trợ. Người điều phối Bug được giao việc và quyết định Không xử lý trong phạm vi ticket mình điều phối. Chỉ Admin tổng/PM được đổi người xác nhận.
+- Người đang được giao xử lý chuyển Bug từ Chưa xử lý sang Đang xử lý, rồi Đóng–Đã xử lý hoặc Chờ xác nhận. Người xác nhận được chỉ định (mặc định người tạo) kết luận Đã sửa/Không thể tái hiện hoặc mở lại theo nhánh tương ứng. Một USER có thể đảm nhiệm nhiều trách nhiệm; không tạo tài khoản giả để tách bước xác nhận.
+- Admin tổng/PM có quyền quản lý và điều chỉnh có lý do, nhưng vẫn phải tuân thủ tổ hợp loại/trạng thái/lý do hợp lệ, phiên bản hiện hành và phạm vi dữ liệu. Bình luận đơn thuần không đổi người nhận/trạng thái và không cấp thêm quyền.
+- Backend kiểm lại identity, membership, trách nhiệm và người nhận trong giao dịch lưu; idempotency không bỏ qua quyền hiện hành. Thu hồi quyền có hiệu lực cả với form đã mở. Guest và người ngoài dự án không có quyền ticket, trách nhiệm hay thông báo nội bộ.
+- Thông báo chỉ cho người nhận hiện còn quyền truy cập ticket; không gửi ra email/dịch vụ ngoài. Đóng–Đã xử lý vẫn chờ xác nhận, không tính hoàn tất trong báo cáo/lưu trữ; đổi trạng thái ticket không tự sửa kết quả OK/NG của case.
+
+Chi tiết contract: [Ticket API](../api/ticket-workflow.md).
+
+## Bổ sung hồ sơ cá nhân 03/11/2026
+
+Mọi tài khoản đang hoạt động, bao gồm Khách, được GET/PUT hồ sơ và GET/PUT/DELETE avatar của **chính mình** qua `/api/v1/me/profile` và `/api/v1/me/avatar`. Không được sửa ID/loại tài khoản hoặc xem thông tin liên hệ người khác. Đây là ngoại lệ riêng cho hồ sơ cá nhân; quyền dự án và giới hạn ghi/AI của Khách bên dưới giữ nguyên. Xem [contract](../api/self-profile.md).
+
+## Quyết định hiện hành 02/11/2026 — thay các quy định vai trò cũ bên dưới
+
+- ADMIN: Admin tổng, phải hoạt động và thuộc một trong hai slot `system_admin_registry`; không được tạo qua web. PM: Admin dự án; USER: User thường hợp quyền Tester và Dev; GUEST: Khách.
+- USER chỉ trong dự án có membership USER hoạt động: thực thi case được giao, tự nhận phạm vi theo guard hiện có; tạo Bug/QA và xử lý Issue theo quyền người tạo/người được giao. Không được quản lý Feature, import hoặc xem báo cáo quản lý. Triage/phân công Ticket chỉ mở theo trách nhiệm được chỉ định ở phần03/11 phía trên; không phải quyền mặc định mọi USER. Resolved không tự đổi case thành OK.
+- PM phải có membership PM ở dự án. Chỉ thêm USER; chỉ tạo USER khi được Admin tổng cấp riêng. Admin tổng thêm mọi loại; ADMIN được thêm với membership PM, nhãn Admin tổng · Làm PM, giữ nguyên loại tài khoản.
+- GUEST chỉ đọc GET reporting-projects và summary/list/get/download management-reports của dự án có membership GUEST; không xem workspace, Feature/case/Issue, context AI, tạo/sửa hoặc gọi API ghi. Backend allowlist và kiểm quyền mỗi lần đọc, không chỉ ẩn UI.
+- AI: USER dùng hợp ba purpose Tester/Dev cũ trong phạm vi hiện hành; PM chỉ dự án mình được thêm; ADMIN toàn hệ thống. Guest không AI. Hội thoại cũ sau V37 được đọc khi fingerprint trước chuyển đổi khớp journal và toàn bộ quyền vẫn nguyên vẹn; phải tạo hội thoại mới để suy luận bằng quyền mới.
+- Không đổi vai trò thành viên. ID đăng nhập là username, tên là displayName, UUID và lịch sử được giữ. Chi tiết: [thiết kế đã duyệt](../superpowers/specs/2026-11-02-unified-user-access-design.md), [identity API](../api/identity.md).
+
+Các mục ngày cũ dưới đây là lịch sử quyết định, không phải quyền hiện hành.
+
 ## Chốt thành viên 25/10/2026 (thay các quy định cũ khác bên dưới)
 
 - Danh sách thêm loại người đang là thành viên của dự án hiện tại từ truy vấn server trước phân trang; người thuộc dự án khác vẫn được chọn. Chỉ tài khoản đang hoạt động được thêm.

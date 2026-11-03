@@ -27,7 +27,7 @@ const document = { id: 9, fileName: 'Nguồn.xlsx', sheetName: 'Nguồn', totalR
 beforeEach(() => {
   vi.resetAllMocks(); sessionStorage.clear();
   state.currentProject = { id: 1, name: 'Dự án A', projectRole: 'TESTER', timezone: 'Asia/Ho_Chi_Minh' };
-  state.hasRole = () => false;
+  state.hasRole = role => role===(state.currentProject?.projectRole==='PM'?'PM':'USER');
   executionApi.cycles.mockResolvedValue({ ...empty, items: [{ id: 8, name: 'Regression', statusCode: 'ACTIVE' }], totalPages: 1 });
   executionApi.cycle.mockResolvedValue({ id: 8, name: 'Regression', statusCode: 'ACTIVE', runCount: 1 });
   executionApi.configurations.mockResolvedValue([{ id: 2, environmentName: 'QA', deviceName: 'iPad' }]);

@@ -17,8 +17,8 @@ async function openHeaderDialogOverDrawer(){
  expect(screen.getByRole('dialog',{name:'Menu dự án'})).toBeVisible();
  // The header remains pointer-accessible above the navigation backdrop.
  await user.click(screen.getByRole('button',{name:'Tài khoản: PM được cấp quyền'}));
- await user.click(screen.getByRole('button',{name:'Tạo tài khoản Tester'}));
- return {user,dialog:screen.getByRole('dialog',{name:'Tạo tài khoản Tester'})};
+ await user.click(screen.getByRole('button',{name:'Tạo tài khoản'}));
+ return {user,dialog:screen.getByRole('dialog',{name:'Tạo tài khoản'})};
 }
 
 it('keeps keyboard focus in an account dialog opened above the navigation drawer',async()=>{
@@ -30,5 +30,5 @@ it('keeps keyboard focus in an account dialog opened above the navigation drawer
 it('dismisses the visible account dialog before the navigation drawer on Escape',async()=>{
  const {user}=await openHeaderDialogOverDrawer();
  await user.keyboard('{Escape}');
- expect(screen.queryByRole('dialog',{name:'Tạo tài khoản Tester'})).not.toBeInTheDocument();
+ expect(screen.queryByRole('dialog',{name:'Tạo tài khoản'})).not.toBeInTheDocument();
 });

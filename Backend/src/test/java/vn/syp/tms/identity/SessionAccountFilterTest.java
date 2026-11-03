@@ -21,13 +21,13 @@ class SessionAccountFilterTest {
             java.util.Objects.requireNonNull(request.getSession()).setAttribute("draft","keep");request.setAttribute(RequestIdFilter.ATTRIBUTE,"request-fixture");
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal("user",0),null,List.of()));
             when(users.current("user")).thenThrow(failure);var calls=new AtomicInteger();
-            new SessionAccountFilter(users,new ObjectMapper()).doFilter(request,response,(a,b)->calls.incrementAndGet());
+            new SessionAccountFilter(users,new ObjectMapper(),mock(CurrentSessionIdentity.class)).doFilter(request,response,(a,b)->calls.incrementAndGet());
             assertThat(response.getStatus()).isEqualTo(503);assertThat(response.getContentAsString()).contains("DATABASE_UNAVAILABLE","request-fixture").doesNotContain("private");
             assertThat(java.util.Objects.requireNonNull(request.getSession(false)).getAttribute("draft")).isEqualTo("keep");assertThat(calls.get()).isZero();
         }
     }
     @Test void changedOrDisabledAccountRevokesSessionButHealthyAndAnonymousRequestsContinue() throws Exception {
-        var users=mock(IdentityService.class);var filter=new SessionAccountFilter(users,new ObjectMapper());var calls=new AtomicInteger();
+        var users=mock(IdentityService.class);var filter=new SessionAccountFilter(users,new ObjectMapper(),mock(CurrentSessionIdentity.class));var calls=new AtomicInteger();
         filter.doFilter(new MockHttpServletRequest(),new MockHttpServletResponse(),(a,b)->calls.incrementAndGet());
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("anonymousUser",null,List.of()));
         filter.doFilter(new MockHttpServletRequest(),new MockHttpServletResponse(),(a,b)->calls.incrementAndGet());verifyNoInteractions(users);

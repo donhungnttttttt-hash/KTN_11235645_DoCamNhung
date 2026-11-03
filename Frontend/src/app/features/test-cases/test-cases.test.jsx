@@ -9,13 +9,13 @@ import { CreateCaseDialog } from './CreateCaseDialog';
 import { TestSpecsPage } from '../../pages/TestSpecsPage';
 import { testCasesApi } from '../../services/api/testCases';
 
-const context = vi.hoisted(() => ({currentProject:{id:1,name:'Dự án A',projectRole:'PM'},systemRole:'TESTER'}));
+const context = vi.hoisted(() => ({currentProject:{id:1,name:'Dự án A',projectRole:'PM'},systemRole:'PM'}));
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>context}));
 vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>role===context.systemRole})}));
 vi.mock('../../services/api/testCases',()=>({testCasesApi:{createCase:vi.fn(),createSuite:vi.fn(),createImportPreview:vi.fn(),commitImportPreview:vi.fn(),importTemplate:vi.fn(),getCase:vi.fn(),getRevision:vi.fn(),addRevision:vi.fn(),approveRevision:vi.fn(),listCases:vi.fn(),listSuites:vi.fn()}}));
 
 beforeEach(()=> {
-  vi.resetAllMocks(); context.currentProject={id:1,name:'Dự án A',projectRole:'PM'}; context.systemRole='TESTER';
+  vi.resetAllMocks(); context.currentProject={id:1,name:'Dự án A',projectRole:'PM'}; context.systemRole='PM';
   testCasesApi.listCases.mockResolvedValue({items:[],totalItems:0,totalPages:0}); testCasesApi.listSuites.mockResolvedValue([]);
 });
 it('reveals missing required Vietnamese fields when saving from the Japanese tab',async()=>{

@@ -24,6 +24,7 @@ public class LocalAiAccess {
     }
     public void verify(SessionPrincipal principal) {
         var user=identity.current(principal.id());
+        if(!java.util.Set.of("ADMIN","PM","USER").contains(user.getRole()))throw new BusinessException(403,"AI_FORBIDDEN","Tài khoản này không được dùng AI.");
         if(user.getVersion()!=principal.version())throw denied();
     }
     public SessionIdentity captureSession(String actor) {

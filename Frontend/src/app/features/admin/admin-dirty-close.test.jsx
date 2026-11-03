@@ -11,7 +11,7 @@ import {DialogVisibilityContext} from '../auth/DialogVisibilityContext';
 afterEach(()=>vi.restoreAllMocks());
 
 const families=[
- ['account',UserCreateDialog,{},'Tên hiển thị'],
+ ['account',UserCreateDialog,{},'Tên'],
  ['project',AdminProjectForm,{api:{users:vi.fn().mockResolvedValue({items:[],totalElements:0})}},'Tên dự án'],
  ['asset',DeviceAssetForm,{},'Mã tài sản'],
  ['handover',DeviceAllocationDialog,{asset:{id:8,assetCode:'IP-08',version:2}},'Ghi chú bàn giao / thu hồi'],
@@ -53,10 +53,10 @@ it('guards selected project members even when text fields are unchanged',async()
 it('blocks close while account creation is pending and lets success finish without discard confirmation',async()=>{
  let finish;const saved=vi.fn(),close=vi.fn();
  render(<UserCreateDialog api={{createUser:()=>new Promise(resolve=>{finish=resolve;})}} onCancel={close} onSaved={saved}/>);
- fireEvent.change(screen.getByLabelText('Tên hiển thị'),{target:{value:'Tester mới'}});
- fireEvent.change(screen.getByLabelText('Tên đăng nhập'),{target:{value:'tester.new'}});
+ fireEvent.change(screen.getByLabelText('Tên'),{target:{value:'Tester mới'}});
+ fireEvent.change(screen.getByLabelText('ID đăng nhập'),{target:{value:'tester.new'}});
  fireEvent.change(screen.getByLabelText('Mật khẩu'),{target:{value:'test-password-123'}});
- fireEvent.submit(screen.getByLabelText('Tên hiển thị').closest('form'));
+ fireEvent.submit(screen.getByLabelText('Tên').closest('form'));
  expect(screen.getByRole('button',{name:'Đóng'})).toBeDisabled();
  expect(screen.getByRole('button',{name:'Hủy'})).toBeDisabled();
  attemptClose('Escape');expect(close).not.toHaveBeenCalled();expect(screen.queryByRole('dialog',{name:'Bỏ nội dung chưa lưu?'})).toBeNull();
@@ -65,7 +65,7 @@ it('blocks close while account creation is pending and lets success finish witho
 it('returns focus to the opener only after explicitly discarding the dirty account form',async()=>{
  function Page(){const [open,setOpen]=useState(false);return <><button onClick={()=>setOpen(true)}>Tạo Tester</button>{open&&<UserCreateDialog onSaved={()=>{}} onCancel={()=>setOpen(false)}/>}</>;}
  render(<Page/>);const opener=screen.getByRole('button',{name:'Tạo Tester'});opener.focus();fireEvent.click(opener);
- const field=screen.getByLabelText('Tên hiển thị');field.focus();fireEvent.change(field,{target:{value:'Nháp'}});
+ const field=screen.getByLabelText('Tên');field.focus();fireEvent.change(field,{target:{value:'Nháp'}});
  attemptClose('Escape');expect(screen.getByRole('button',{name:'Tiếp tục soạn'})).toHaveFocus();
  attemptClose('Escape');expect(field).toHaveFocus();expect(screen.queryByRole('dialog',{name:'Bỏ nội dung chưa lưu?'})).toBeNull();
  attemptClose('Escape');fireEvent.click(screen.getByRole('button',{name:'Bỏ bản nháp'}));await waitFor(()=>expect(screen.queryByRole('dialog')).toBeNull());expect(opener).toHaveFocus();
@@ -74,12 +74,12 @@ it('dismisses only the discard prompt while auth is locked and restores the reta
  const close=vi.fn();
  function Retained({active}){return <div hidden={!active} inert={!active?'':undefined}><DialogVisibilityContext.Provider value={active}><UserCreateDialog onSaved={()=>{}} onCancel={close}/></DialogVisibilityContext.Provider></div>;}
  const view=render(<Retained active/>);
- fireEvent.change(screen.getByLabelText('Tên hiển thị'),{target:{value:'Nháp giữ qua đăng nhập'}});
+ fireEvent.change(screen.getByLabelText('Tên'),{target:{value:'Nháp giữ qua đăng nhập'}});
  attemptClose('Escape');expect(screen.getByRole('dialog',{name:'Bỏ nội dung chưa lưu?'})).toBeVisible();
  view.rerender(<Retained active={false}/>);attemptClose('Escape');expect(close).not.toHaveBeenCalled();
  expect(screen.queryByRole('dialog')).toBeNull();
  view.rerender(<Retained active/>);
- expect(screen.getByLabelText('Tên hiển thị')).toHaveValue('Nháp giữ qua đăng nhập');
+ expect(screen.getByLabelText('Tên')).toHaveValue('Nháp giữ qua đăng nhập');
  expect(screen.queryByRole('dialog',{name:'Bỏ nội dung chưa lưu?'})).toBeNull();
  attemptClose('Escape');expect(screen.getByRole('button',{name:'Tiếp tục soạn'})).toHaveFocus();
 });
@@ -96,7 +96,7 @@ it.each(['Tiếp tục soạn','Escape','Bỏ bản nháp'])('restores the right
  function Page(){const [open,setOpen]=useState(false);return <><button onClick={()=>setOpen(true)}>Tạo Tester</button>{open&&<UserCreateDialog onSaved={()=>{}} onCancel={()=>setOpen(false)}/>}</>;}
  const user=userEvent.setup();render(<Page/>);
  const opener=screen.getByRole('button',{name:'Tạo Tester'});await user.click(opener);
- const field=screen.getByLabelText('Tên hiển thị');await user.type(field,'focus-draft');
+ const field=screen.getByLabelText('Tên');await user.type(field,'focus-draft');
  await user.keyboard('{Escape}');
  expect(blurredByInert).toBe(true);
  expect(screen.getByRole('button',{name:'Tiếp tục soạn'})).toHaveFocus();

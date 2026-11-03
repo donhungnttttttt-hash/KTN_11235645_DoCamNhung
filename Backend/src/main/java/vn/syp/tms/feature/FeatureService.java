@@ -46,8 +46,9 @@ public class FeatureService {
         var members=db.queryForList("SELECT id,project_role FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",p,actor);
         if(members.isEmpty())throw missing();
         String role=String.valueOf(members.getFirst().get("project_role"));
-        boolean pm="PM".equals(role) && !"DEV".equals(user.getRole());
-        if((manager&&!pm)||(!pm&&(!"TESTER".equals(role)||"DEV".equals(user.getRole()))))fail(403,"FORBIDDEN","Bạn không có quyền thay đổi dữ liệu kiểm thử này.");
+        boolean pm="PM".equals(role) && "PM".equals(user.getRole());
+        boolean worker="USER".equals(role) && "USER".equals(user.getRole());
+        if((manager&&!pm)||(!pm&&!worker))fail(403,"FORBIDDEN","Bạn không có quyền thay đổi dữ liệu kiểm thử này.");
         return new Actor(pm,num(members.getFirst(),"id"));
     }
     private Map<String,Object> feature(long p,long f,boolean lock) {
@@ -255,7 +256,7 @@ public class FeatureService {
         String payload=encode(List.of(d,input)),key=input.requestKey().toString();var replay=replay(p,actor,key,"ASSIGNMENTS",payload);if(replay!=null)return replay;
         version(doc,input.expectedVersion());var current=new LinkedHashMap<Long,Long>();
         for(var row:db.queryForList("SELECT row_id,assignee_membership_id FROM test_document_assignments WHERE project_id=? AND document_id=? ORDER BY row_id FOR UPDATE",p,d))current.put(num(row,"row_id"),(Long)row.get("assignee_membership_id"));
-        for(var scope:input.changes())if(!eligible(p,scope.assigneeMembershipId()))fail(422,"TESTER_REQUIRED","Chọn Tester đang hoạt động trong dự án.");
+        for(var scope:input.changes())if(!eligible(p,scope.assigneeMembershipId()))fail(422,"USER_REQUIRED","Chọn User thường đang hoạt động trong dự án.");
         var next=AssignmentPlan.apply(current,input.changes().stream().map(s->new AssignmentPlan.Change(s.assigneeMembershipId(),s.rowIds())).toList(),caller.membershipId(),caller.manager());
         for(var entry:next.entrySet())if(!Objects.equals(current.get(entry.getKey()),entry.getValue())){
             db.update("UPDATE test_document_assignments SET latest_tester_membership_id=CASE WHEN first_tester_membership_id IS NOT NULL AND ? IS NOT NULL THEN ? ELSE latest_tester_membership_id END,first_tester_membership_id=COALESCE(first_tester_membership_id,?),assignee_membership_id=? WHERE project_id=? AND row_id=?",entry.getValue(),entry.getValue(),entry.getValue(),entry.getValue(),p,entry.getKey());
@@ -289,9 +290,9 @@ public class FeatureService {
         long total=num(result,"caseCount"),tested=num(result,"testedCaseCount");result.put("progressPercent",total==0?0d:100d*tested/total);return result;
     }
     private boolean eligible(long p,long member) {
-        return Objects.requireNonNull(db.queryForObject("SELECT COUNT(*) FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.id=? AND m.active=TRUE AND m.project_role='TESTER' AND u.enabled=TRUE AND u.role_code<>'DEV'",Long.class,p,member))==1;
+        return Objects.requireNonNull(db.queryForObject("SELECT COUNT(*) FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.id=? AND m.active=TRUE AND m.project_role='USER' AND u.enabled=TRUE AND u.role_code='USER'",Long.class,p,member))==1;
     }
-    private boolean isProjectPm(long p,String actor){return Objects.requireNonNull(db.queryForObject("SELECT COUNT(*) FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.user_id=? AND m.active=TRUE AND m.project_role='PM' AND u.enabled=TRUE AND u.role_code<>'DEV'",Long.class,p,actor))==1;}
+    private boolean isProjectPm(long p,String actor){return Objects.requireNonNull(db.queryForObject("SELECT COUNT(*) FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.user_id=? AND m.active=TRUE AND m.project_role='PM' AND u.enabled=TRUE AND u.role_code='PM'",Long.class,p,actor))==1;}
     private Long membership(long p,String actor){var rows=db.queryForList("SELECT id FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE",Long.class,p,actor);return rows.isEmpty()?null:rows.getFirst();}
     private Map<String,Object> replay(long p,String actor,String key,String action,String payload) {
         var rows=db.queryForList("SELECT actor_id,action,request_checksum,response_json FROM testing_commands WHERE project_id=? AND request_key=?",p,key);if(rows.isEmpty())return null;

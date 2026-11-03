@@ -40,6 +40,7 @@ class UserProfileNativeTest {
     @Autowired PasswordEncoder passwords;
     @Autowired JdbcTemplate jdbc;
     @Autowired ProjectService projects;
+    @Autowired SystemAdminRegistry registry;
     IdentityUser admin,target;
     static final String PASSWORD="Profile-fixture-only-2026!";
     static final String NEW_PASSWORD="Updated-fixture-only-2026!";
@@ -47,14 +48,16 @@ class UserProfileNativeTest {
     @BeforeEach void fixture() {
         // Isolate the shared HTTP test client's rate bucket in this guarded test schema only.
         jdbc.update("DELETE FROM identity_login_buckets WHERE bucket_key=SHA2('ip|127.0.0.1',256)");
+        jdbc.update("DELETE FROM system_admin_registry");
         String suffix=UUID.randomUUID().toString().substring(0,8);
         String hash=passwords.encode(PASSWORD);
         admin=users.saveAndFlush(new IdentityUser("profile.admin."+suffix,"Admin profile",hash,"ADMIN"));
-        target=users.saveAndFlush(new IdentityUser("profile.tester."+suffix,"Tester original",hash,"TESTER"));
+        registry.register(1,admin.getId());
+        target=users.saveAndFlush(new IdentityUser("profile.tester."+suffix,"Tester original",hash,"USER"));
     }
     @Test void profileUpdatePreservesIdentityAndAssignmentsAndRevokesAllOldSessions() throws Exception {
         long project=projects.create(admin.getId(),new ProjectDtos.CreateProject("UP"+UUID.randomUUID().toString().substring(0,8),"Profile test","","UTC")).id();
-        projects.addOrUpdateMember(project,admin.getId(),target.getId(),new ProjectDtos.SetMember("TESTER"));
+        projects.addOrUpdateMember(project,admin.getId(),target.getId(),new ProjectDtos.SetMember("USER"));
         var memberships=jdbc.queryForList("SELECT * FROM project_memberships WHERE user_id=?",target.getId());
         String oldHash=target.getPasswordHash();
         var owner=loggedIn(admin);var first=loggedIn(target);var second=loggedIn(target);
@@ -65,7 +68,7 @@ class UserProfileNativeTest {
         assertThat(body.path("id").asText()).isEqualTo(target.getId());
         assertThat(body.path("username").asText()).isEqualTo(username.toLowerCase(Locale.ROOT));
         assertThat(body.path("displayName").asText()).isEqualTo("Tên đã sửa");
-        assertThat(body.path("role").asText()).isEqualTo("TESTER");
+        assertThat(body.path("role").asText()).isEqualTo("USER");
         assertThat(jdbc.queryForList("SELECT * FROM project_memberships WHERE user_id=?",target.getId())).isEqualTo(memberships);
         assertThat(saved(target).getPasswordHash()).isEqualTo(oldHash);
         assertThat(first.get("/me").statusCode()).isEqualTo(401);
@@ -81,14 +84,14 @@ class UserProfileNativeTest {
         long other=projects.create(admin.getId(),new ProjectDtos.CreateProject("CB"+tag.substring(10),"Other project","","UTC")).id();
         var accounts=new ArrayList<IdentityUser>();
         for(String name:List.of("current","other","removed","free","disabled")) {
-            var account=new IdentityUser(tag+"."+name,name,target.getPasswordHash(),"TESTER");
+            var account=new IdentityUser(tag+"."+name,name,target.getPasswordHash(),"USER");
             if(name.equals("disabled"))account.setEnabled(false);
             accounts.add(users.saveAndFlush(account));
         }
-        projects.addOrUpdateMember(current,admin.getId(),accounts.get(0).getId(),new ProjectDtos.SetMember("TESTER"));
-        projects.addOrUpdateMember(other,admin.getId(),accounts.get(0).getId(),new ProjectDtos.SetMember("TESTER"));
-        projects.addOrUpdateMember(other,admin.getId(),accounts.get(1).getId(),new ProjectDtos.SetMember("TESTER"));
-        projects.addOrUpdateMember(current,admin.getId(),accounts.get(2).getId(),new ProjectDtos.SetMember("TESTER"));
+        projects.addOrUpdateMember(current,admin.getId(),accounts.get(0).getId(),new ProjectDtos.SetMember("USER"));
+        projects.addOrUpdateMember(other,admin.getId(),accounts.get(0).getId(),new ProjectDtos.SetMember("USER"));
+        projects.addOrUpdateMember(other,admin.getId(),accounts.get(1).getId(),new ProjectDtos.SetMember("USER"));
+        projects.addOrUpdateMember(current,admin.getId(),accounts.get(2).getId(),new ProjectDtos.SetMember("USER"));
         jdbc.update("UPDATE project_memberships SET active=FALSE WHERE project_id=? AND user_id=?",current,accounts.get(2).getId());
         var owner=loggedIn(admin);
         String query="/admin/users?keyword="+tag+"&enabled=true&excludeProjectId="+current;
@@ -124,23 +127,24 @@ class UserProfileNativeTest {
         assertThat(owner.write("PUT",path,Map.of("projectRole","PM")).statusCode()).isEqualTo(422);
         var candidate=owner.get("/projects/"+project+"/member-candidate?username="+target.getUsername());
         assertThat(candidate.statusCode()).isEqualTo(200);
-        assertThat(body(candidate).path("projectRole").asText()).isEqualTo("TESTER");
-        assertThat(owner.write("PUT",path,Map.of("projectRole","TESTER")).statusCode()).isEqualTo(200);
+        assertThat(body(candidate).path("projectRole").asText()).isEqualTo("USER");
+        assertThat(owner.write("PUT",path,Map.of("projectRole","USER")).statusCode()).isEqualTo(200);
         var before=jdbc.queryForList("SELECT * FROM project_memberships WHERE project_id=? AND user_id=?",project,target.getId());
         assertThat(owner.write("PUT",path,Map.of("projectRole","PM","expectedVersion",0)).statusCode()).isEqualTo(422);
         assertThat(owner.write("PUT","/projects/"+project+"/members/"+target.getId(),Map.of("projectRole","MEMBER","expectedVersion",0)).statusCode()).isEqualTo(422);
         assertThat(jdbc.queryForList("SELECT * FROM project_memberships WHERE project_id=? AND user_id=?",project,target.getId())).isEqualTo(before);
     }
-    @Test void pmCanAddOnlyDevAndTesterToOwnProjectWhileAdminCanAddAdminAsPm() throws Exception {
+    @Test void pmCanAddOnlyOrdinaryUsersToOwnProjectWhileAdminCanAddAdminAsPm() throws Exception {
         String tag=UUID.randomUUID().toString().substring(0,8);
         long project=projects.create(admin.getId(),new ProjectDtos.CreateProject("PM"+tag,"PM members","","UTC")).id();
         long other=projects.create(admin.getId(),new ProjectDtos.CreateProject("OT"+tag,"Other","","UTC")).id();
         var pm=users.saveAndFlush(new IdentityUser("manager."+tag,"Manager",target.getPasswordHash(),"PM"));
-        var dev=users.saveAndFlush(new IdentityUser("worker."+tag,"Developer",target.getPasswordHash(),"DEV"));
+        var dev=users.saveAndFlush(new IdentityUser("worker."+tag,"Developer",target.getPasswordHash(),"USER"));
         var secondPm=users.saveAndFlush(new IdentityUser("second."+tag,"Second PM",target.getPasswordHash(),"PM"));
         var secondAdmin=users.saveAndFlush(new IdentityUser("root."+tag,"Second admin",target.getPasswordHash(),"ADMIN"));
+        registry.register(2,secondAdmin.getId());
         projects.addOrUpdateMember(project,admin.getId(),pm.getId(),new ProjectDtos.SetMember("PM"));
-        projects.addOrUpdateMember(other,admin.getId(),dev.getId(),new ProjectDtos.SetMember("DEV"));
+        projects.addOrUpdateMember(other,admin.getId(),dev.getId(),new ProjectDtos.SetMember("USER"));
         var manager=loggedIn(pm);
         var candidates=manager.get("/projects/"+project+"/member-candidates?keyword="+tag);
         assertThat(candidates.statusCode()).isEqualTo(200);
@@ -148,13 +152,13 @@ class UserProfileNativeTest {
         assertThat(body(candidates).path("items").get(0).path("id").asText()).isEqualTo(dev.getId());
         assertThat(body(candidates).path("items").get(0).has("memberships")).isFalse();
         assertThat(body(candidates).path("items").get(0).path("hasProject").asBoolean()).isTrue();
-        assertThat(manager.write("PUT","/projects/"+project+"/members/"+dev.getId(),Map.of("projectRole","DEV")).statusCode()).isEqualTo(200);
-        assertThat(manager.write("PUT","/projects/"+project+"/members/"+target.getId(),Map.of("projectRole","TESTER")).statusCode()).isEqualTo(200);
+        assertThat(manager.write("PUT","/projects/"+project+"/members/"+dev.getId(),Map.of("projectRole","USER")).statusCode()).isEqualTo(200);
+        assertThat(manager.write("PUT","/projects/"+project+"/members/"+target.getId(),Map.of("projectRole","USER")).statusCode()).isEqualTo(200);
         assertThat(manager.write("PUT","/projects/"+project+"/members/"+secondPm.getId(),Map.of("projectRole","PM")).statusCode()).isEqualTo(403);
         assertThat(manager.write("PUT","/projects/"+project+"/members/"+secondAdmin.getId(),Map.of("projectRole","PM")).statusCode()).isEqualTo(403);
         assertThat(manager.get("/projects/"+project+"/member-candidate?username="+secondAdmin.getUsername()).statusCode()).isEqualTo(403);
         assertThat(manager.get("/projects/"+other+"/member-candidates").statusCode()).isIn(403,404);
-        assertThat(manager.write("PUT","/projects/"+other+"/members/"+dev.getId(),Map.of("projectRole","DEV")).statusCode()).isIn(403,404);
+        assertThat(manager.write("PUT","/projects/"+other+"/members/"+dev.getId(),Map.of("projectRole","USER")).statusCode()).isIn(403,404);
         assertThat(manager.get("/admin/users").statusCode()).isEqualTo(403);
         assertThat(loggedIn(dev).get("/projects/"+project+"/member-candidates").statusCode()).isEqualTo(403);
         assertThat(body(manager.get("/projects/"+project+"/member-candidates?keyword="+tag)).path("totalElements").asInt()).isZero();
@@ -169,7 +173,7 @@ class UserProfileNativeTest {
         IdentityUser saved=saved(target);
         assertThat(saved.getUsername()).isEqualTo(target.getUsername());
         assertThat(saved.getDisplayName()).isEqualTo(target.getDisplayName());
-        assertThat(saved.getRole()).isEqualTo("TESTER");
+        assertThat(saved.getRole()).isEqualTo("USER");
         assertThat(saved.isCanCreateUsers()).isFalse();
         assertThat(passwords.matches(NEW_PASSWORD,saved.getPasswordHash())).isTrue();
         assertThat(passwords.matches(PASSWORD,saved.getPasswordHash())).isFalse();
@@ -221,14 +225,14 @@ class UserProfileNativeTest {
         assertThat(audits(target,"USER_PASSWORD_RESET")).isZero();
         var injected=owner.write("PUT",path(target)+"/password",Map.of("newPassword",NEW_PASSWORD,"expectedVersion",0,"role","ADMIN","canCreateUsers",true));
         assertThat(injected.statusCode()).isIn(200,400,422);
-        assertThat(saved(target).getRole()).isEqualTo("TESTER");
+        assertThat(saved(target).getRole()).isEqualTo("USER");
         assertThat(saved(target).isCanCreateUsers()).isFalse();
     }
     @Test void requiresAdminAndCsrfForBothMutations() throws Exception {
         var owner=loggedIn(admin);
         assertThat(owner.send("PATCH",path(target),Map.of("displayName","Denied","expectedVersion",0),null).statusCode()).isEqualTo(403);
         assertThat(owner.send("PUT",path(target)+"/password",Map.of("newPassword",NEW_PASSWORD,"expectedVersion",0),null).statusCode()).isEqualTo(403);
-        for(String role:List.of("PM","TESTER","DEV")) {
+        for(String role:List.of("PM","USER","GUEST")) {
             var account=users.saveAndFlush(new IdentityUser("denied."+UUID.randomUUID().toString().substring(0,8),role,target.getPasswordHash(),role));
             if(role.equals("PM")){account.setCanCreateUsers(true);account=users.saveAndFlush(account);}
             var caller=loggedIn(account);
@@ -239,7 +243,7 @@ class UserProfileNativeTest {
         assertThat(saved(target).getVersion()).isZero();
     }
     @Test void concurrentDuplicateUsernameRollsBackTheLosingUpdateAndAudit() throws Exception {
-        var other=users.saveAndFlush(new IdentityUser("other."+UUID.randomUUID().toString().substring(0,8),"Other original",target.getPasswordHash(),"TESTER"));
+        var other=users.saveAndFlush(new IdentityUser("other."+UUID.randomUUID().toString().substring(0,8),"Other original",target.getPasswordHash(),"USER"));
         var a=loggedIn(admin);var b=loggedIn(admin);var sessionA=loggedIn(target);var sessionB=loggedIn(other);
         JsonNode csrfA=a.csrf(),csrfB=b.csrf();
         String username="shared."+UUID.randomUUID().toString().substring(0,8);

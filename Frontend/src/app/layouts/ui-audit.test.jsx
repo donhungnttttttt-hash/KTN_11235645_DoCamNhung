@@ -70,6 +70,8 @@ it('restores focus after Escape from the account popup', async () => {
   const user = userEvent.setup(); render(<AccountMenu/>);
   const trigger = screen.getByRole('button',{name:'Tài khoản: Tester'});
   await user.click(trigger); await user.tab();
+  expect(screen.getByRole('button',{name:'Thông tin cá nhân'})).toHaveFocus();
+  await user.tab();
   expect(screen.getByRole('button',{name:'Đăng xuất'})).toHaveFocus();
   await user.keyboard('{Escape}'); expect(trigger).toHaveFocus();
 });

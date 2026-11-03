@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info: {title: TMS Self Profile, version: 1.0.0}
+security: [{sessionCookie: []}]
+paths:
+  /api/v1/me/profile:
+    get:
+      operationId: getOwnProfile
+      description: All authenticated account types including Guest; own identity only.
+      responses:
+        '200': {$ref: '#/components/responses/Profile'}
+        '401': {description: Session unavailable or revoked}
+    put:
+      operationId: updateOwnProfile
+      security: [{sessionCookie: [], csrfHeader: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/Update'}
+      responses:
+        '200': {$ref: '#/components/responses/Profile'}
+        '401': {description: Session unavailable or revoked}
+        '403': {description: CSRF required}
+        '409': {description: Version changed; preserve draft}
+        '422': {description: Invalid or unknown fields}
+  /api/v1/me/avatar:
+    get:
+      operationId: getOwnAvatar
+      responses:
+        '200':
+          description: Normalized PNG; Cache-Control private/no-store
+          content:
+            image/png:
+              schema: {type: string, format: binary}
+        '401': {description: Session unavailable or revoked}
+        '404': {description: No avatar}
+    put:
+      operationId: uploadOwnAvatar
+      security: [{sessionCookie: [], csrfHeader: []}]
+      parameters:
+        - {$ref: '#/components/parameters/ProfileVersion'}
+        - {$ref: '#/components/parameters/AccountVersion'}
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: {type: string, format: binary, description: JPEG/PNG up to 2 MiB and 4096 pixels each dimension; normalized to max 512 pixels}
+      responses:
+        '200': {$ref: '#/components/responses/Profile'}
+        '401': {description: Session unavailable or revoked}
+        '403': {description: CSRF required}
+        '409': {description: Version changed}
+        '422': {description: Invalid image or version}
+    delete:
+      operationId: removeOwnAvatar
+      security: [{sessionCookie: [], csrfHeader: []}]
+      parameters:
+        - {$ref: '#/components/parameters/ProfileVersion'}
+        - {$ref: '#/components/parameters/AccountVersion'}
+      responses:
+        '200': {$ref: '#/components/responses/Profile'}
+        '401': {description: Session unavailable or revoked}
+        '403': {description: CSRF required}
+        '409': {description: Version changed}
+components:
+  securitySchemes:
+    sessionCookie: {type: apiKey, in: cookie, name: TMS_SESSION}
+    csrfHeader: {type: apiKey, in: header, name: X-CSRF-TOKEN}
+  parameters:
+    ProfileVersion: {in: query, name: expectedVersion, required: true, schema: {type: integer, format: int64, minimum: 0}}
+    AccountVersion: {in: query, name: expectedAccountVersion, required: true, schema: {type: integer, format: int64, minimum: 0}}
+  responses:
+    Profile:
+      description: Current own profile; no password hash or other user's contact data
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Profile'}
+  schemas:
+    Update:
+      type: object
+      additionalProperties: false
+      required: [displayName, expectedVersion, expectedAccountVersion]
+      properties:
+        displayName: {type: string, minLength: 1, maxLength: 100}
+        email: {type: string, maxLength: 254, nullable: true, description: Optional email; blank allowed}
+        phone: {type: string, maxLength: 30, nullable: true, pattern: '[+0-9() .-]*'}
+        jobTitle: {type: string, maxLength: 100, nullable: true}
+        department: {type: string, maxLength: 100, nullable: true}
+        expectedVersion: {type: integer, format: int64, minimum: 0}
+        expectedAccountVersion: {type: integer, format: int64, minimum: 0}
+    Profile:
+      type: object
+      required: [id, username, displayName, role, createdAt, hasAvatar, version, accountVersion]
+      properties:
+        id: {type: string, format: uuid, readOnly: true}
+        username: {type: string, readOnly: true}
+        displayName: {type: string}
+        role: {type: string, enum: [ADMIN, PM, USER, GUEST], readOnly: true}
+        createdAt: {type: string, format: date-time, readOnly: true}
+        email: {type: string, nullable: true}
+        phone: {type: string, nullable: true}
+        jobTitle: {type: string, nullable: true}
+        department: {type: string, nullable: true}
+        hasAvatar: {type: boolean}
+        version: {type: integer, format: int64}
+        accountVersion: {type: integer, format: int64}

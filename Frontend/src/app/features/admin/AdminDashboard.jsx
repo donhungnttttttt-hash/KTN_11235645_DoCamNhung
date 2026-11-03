@@ -1,3 +1,4 @@
+import {roleLabels} from '../auth/accountTypes';
 import React, { useCallback } from 'react';
 import {MetricBars} from './MetricBars';
 import { AdminHealthCharts } from './AdminHealthCharts';
@@ -28,7 +29,7 @@ export function AdminDashboard({projectId,api=adminApi}) {
         <div className="admin-result-chart" aria-label="Phân bố kết quả thực thi">{[['OK','ok'],['NG','ng'],['P','pending'],['Chưa chạy','notRun'],['NA','na']].map(([label,key])=><div key={key}><span>{label}: {data.metrics[key]}</span><div className="admin-bar-track"><span className={`result-${key}`} style={{width:`${data.metrics.total ? data.metrics[key]/data.metrics.total*100 : 0}%`}}/></div></div>)}</div>
         <p>Tỷ lệ đạt: {percent(data.metrics.passPercent)}</p>
       </section>
-      <section className="admin-card"><h2>Tài khoản theo vai trò hệ thống</h2><table><thead><tr><th>Vai trò</th><th>Tổng</th><th>Hoạt động</th></tr></thead><tbody>{data.byRole.map(r=><tr key={r.role}><th>{r.role}</th><td>{r.total}</td><td>{r.enabled}</td></tr>)}</tbody></table><h3>Membership hoạt động theo dự án</h3><MetricBars label="Membership theo dự án" rows={data.byProject.map(p=>({key:p.id,label:p.name,value:p.activeMembers}))}/><p>Thành viên từng dự án được đếm theo membership; một người có thể tham gia nhiều dự án.</p></section>
+      <section className="admin-card"><h2>Tài khoản theo vai trò hệ thống</h2><table><thead><tr><th>Vai trò</th><th>Tổng</th><th>Hoạt động</th></tr></thead><tbody>{data.byRole.map(r=><tr key={r.role}><th>{roleLabels[r.role]||r.role}</th><td>{r.total}</td><td>{r.enabled}</td></tr>)}</tbody></table><h3>Membership hoạt động theo dự án</h3><MetricBars label="Membership theo dự án" rows={data.byProject.map(p=>({key:p.id,label:p.name,value:p.activeMembers}))}/><p>Thành viên từng dự án được đếm theo membership; một người có thể tham gia nhiều dự án.</p></section>
       <section className="admin-card"><h2>Kho thiết bị</h2>{inventory?<><MetricBars label="Máy theo loại và tình trạng" rows={inventory.byTypeAndStatus.map(r=>({label:r.type+' · '+statusLabels[r.status],value:r.total}))}/><p>Chỉ tính máy vật lý; mỗi máy đang giao thuộc một dự án. Ngừng sử dụng hiển thị riêng, ngoài tồn kho.</p><a href={'#/admin/devices'+scope}>Mở kho máy</a></>:<p>Chưa nhận được số liệu kho máy.</p>}</section>
     </div>
     <section className="admin-card"><h2>Dự án trong biểu đồ</h2>{data.byProject.length ? <ProjectTable items={data.byProject} scope={scope}/> : <p>Chưa có dự án.</p>}<a href={`#/admin/projects${scope}`}>Xem toàn bộ dự án</a></section>

@@ -7,7 +7,7 @@ import './status-reports.css';
 
 export function ProjectStatusReports(props) {
  const auth=useAuth(),project=useProject()?.currentProject;
- const allowed=auth?.hasRole?.('ADMIN')||!props.admin&&String(project?.id)===String(props.projectId)&&project?.projectRole==='PM'&&!auth?.hasRole?.('DEV');
+ const allowed=auth?.hasRole?.('ADMIN')||!props.admin&&String(project?.id)===String(props.projectId)&&project?.projectRole==='PM'&&auth?.hasRole?.('PM');
  if(!allowed)return <p role="alert">Báo cáo quản lý dành cho PM của dự án và ADMIN.</p>;
  return <Reports key={`${props.projectId}:${!!props.admin}`} {...props}/>;
 }

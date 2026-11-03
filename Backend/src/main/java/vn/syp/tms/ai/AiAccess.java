@@ -17,6 +17,7 @@ public class AiAccess {
 
     public Context authorize(long projectId,String actor,boolean write) {
         var account=identity.lockCurrent(actor);
+        if(!java.util.Set.of("ADMIN","PM","USER").contains(account.getRole()))fail(403,"FORBIDDEN","Tài khoản này không được dùng AI.");
         var auth=SecurityContextHolder.getContext().getAuthentication();
         if(auth!=null && auth.getPrincipal() instanceof SessionPrincipal principal) {
             var current=db.row("SELECT lock_version AS version FROM identity_users WHERE id=? AND enabled=TRUE FOR SHARE",actor);
@@ -26,18 +27,16 @@ public class AiAccess {
         var project=db.row("SELECT archived_at AS archivedAt FROM projects WHERE id=? FOR UPDATE",projectId);
         var members=db.rows("SELECT id,project_role AS role FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE FOR UPDATE",projectId,actor);
         boolean admin="ADMIN".equals(account.getRole());
-        boolean pm="PM".equals(account.getRole());
-        if(!admin && !pm && members.isEmpty())fail(404,"NOT_FOUND","Bạn không có quyền truy cập dự án này.");
+        if(!admin && (members.isEmpty()||!account.getRole().equals(members.getFirst().get("role"))))fail(404,"NOT_FOUND","Bạn không có quyền truy cập dự án này.");
         Long memberId=members.isEmpty()?null:number(members.getFirst(),"id");
-        String role=admin?"ADMIN":pm?"PM":(String)members.getFirst().get("role");
-        if("DEV".equals(account.getRole()) && !"DEV".equals(role))role="NONE";
+        String role=account.getRole();
         boolean archived=project.get("archivedAt")!=null;
         if(write && archived)fail(409,"ARCHIVED","Dự án đã được lưu trữ.");
         return new Context(memberId,role,archived);
     }
 
     public void require(Context context,AiPurpose purpose) {
-        if(!"ADMIN".equals(context.role())&&!purpose.role().equals(context.role()))fail(403,"FORBIDDEN","Tác vụ AI không thuộc vai trò hiện hành của bạn trong dự án.");
+        if(!"ADMIN".equals(context.role())&&!AiPurpose.forRole(context.role()).contains(purpose))fail(403,"FORBIDDEN","Tác vụ AI không thuộc vai trò hiện hành của bạn trong dự án.");
     }
 
     public void requireSource(long p,Context caller,AiPurpose purpose,String source) {

@@ -26,12 +26,12 @@ public class ProjectDeadlines {
     LEFT JOIN import_batches d ON d.project_id=x.project_id AND d.id=x.document_id
     WHERE w.project_id=ms.project_id AND w.milestone_id=ms.id AND w.item_type IN ('BUG','QA')
     AND x.deleted_at IS NULL AND f.archived_at IS NULL AND d.archived_at IS NULL) AS scopeCount,
-   EXISTS(SELECT 1 FROM work_items w JOIN work_item_statuses s ON s.code=w.status_code
+   EXISTS(SELECT 1 FROM work_items w JOIN ticket_workflow_metrics tw ON tw.project_id=w.project_id AND tw.work_item_id=w.id
     JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id
     JOIN testing_features f ON f.project_id=x.project_id AND f.id=x.feature_id
     LEFT JOIN import_batches d ON d.project_id=x.project_id AND d.id=x.document_id
     WHERE w.project_id=ms.project_id AND w.milestone_id=ms.id AND w.item_type IN ('BUG','QA')
-    AND x.deleted_at IS NULL AND f.archived_at IS NULL AND d.archived_at IS NULL AND NOT s.terminal) AS unfinished
+    AND x.deleted_at IS NULL AND f.archived_at IS NULL AND d.archived_at IS NULL AND NOT tw.finalized) AS unfinished
    FROM milestones ms JOIN projects p ON p.id=ms.project_id WHERE ms.archived_at IS NULL
    """+(projectId==null?"":" AND p.id=?")+" ORDER BY ms.due_on,ms.id",projectId==null?new Object[0]:new Object[]{projectId});
   rows.forEach(row->{

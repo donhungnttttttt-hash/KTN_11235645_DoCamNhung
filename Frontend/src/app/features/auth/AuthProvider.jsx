@@ -3,7 +3,7 @@ import { authApi } from "../../services/api/auth";
 import { onUnauthorized } from "../../services/api/client";
 
 const AuthContext = createContext(null);
-export const roleLabels = { ADMIN: "Quản trị viên", PM: "Quản lý dự án", TESTER: "Kiểm thử viên" };
+export {roleLabels} from './accountTypes';
 export function initials(name = "") {
   return name.trim().split(/\s+/).slice(-2).map(part => part[0]).join("").toUpperCase();
 }

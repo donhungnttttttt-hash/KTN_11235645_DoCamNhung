@@ -1,3 +1,13 @@
+Bàn giao source 03/11: người dùng yêu cầu commit local các thay đổi đã hoàn tất trên `system-design`, gồm tài khoản hợp nhất, hồ sơ/avatar và Ticket Bug/QA với migration V37–V39. Không push/merge. Những ghi chú chưa commit bên dưới là checkpoint trước yêu cầu bàn giao.
+
+Ticket Bug/QA 03/11 DONE: chín cột, trách nhiệm USER, bằng chứng case, bình luận/phân công/thông báo; main V39/8080 UP. Frontend1.293, backend87 hồi quy và14 tập trung, JDT374 sạch;43 kiểm tra Chrome riêng +11 main. Giữ89 bảng cũ và38 migration cũ. [Báo cáo hiện hành](../reviews/2026-11-03-ticket-workflow-implementation.md). Các checkpoint bên dưới giữ để tra lịch sử.
+
+Hồ sơ cá nhân 03/11 DONE, đã rà lại và sửa thêm lỗi phiên đổi tên đồng thời/HTML pattern/nhãn audit. Main V38/8080 UP; admin/admin2 Chrome PASS; 1.255 frontend, 44 backend, JDT 363 source sạch. [Báo cáo hiện hành](../reviews/2026-11-03-self-profile-and-cutover.md). Không commit/push; các checkpoint cũ bên dưới giữ để tra lịch sử.
+
+Cập nhật 03/11: U01–U10 DONE, main V37/health UP; admin/admin2 đăng nhập Chrome thành công, 81 bảng nghiệp vụ giữ nguyên. [Báo cáo](../reviews/2026-11-02-unified-user-access.md). Hồ sơ cá nhân đã chốt phạm vi, đang triển khai riêng; không commit/push. Các ghi chú bên dưới là checkpoint lịch sử.
+
+Phân quyền02/11: thiết kế và kế hoạch U01–U10 đã được duyệt, đang triển khai Native trên system-design. Source có USER hợp Tester/Dev, PM/Guest, registry hai Admin và provision riêng. [Báo cáo kiểm chứng](../reviews/2026-11-02-unified-user-access.md); U10 IN_REVIEW: hồi quy/coverage/diễn tập bản sao đã có bằng chứng; Chrome bị dừng bởi công cụ, chưa cutover main, chưa commit/push. S11/FR-12 và Arena giữ trạng thái riêng.
+
 Xóa version 25/10: icon hover/focus + xác nhận, soft delete giữ kết quả/lịch sử; frontend45, backend23 (9 native), build/JDT PASS. Main V36/health UP, dữ liệu cũ giữ nguyên; Arena archive dự kiến V37. [Bằng chứng và giới hạn](../reviews/2026-10-25-feature-test-versions.md). Không commit/push.
 
 Version test 25/10: [tạo version theo Feature, lưu theo case và sửa riêng bằng dropdown](../reviews/2026-10-25-feature-test-versions.md). Frontend 246 test nhóm + 12 test tập trung cuối, backend21 (7 native), build/JDT331 và Chrome điều khiển đạt; main V35 giữ dữ liệu, không seed V34. Screenshot chưa lấy được; không commit/push. Arena archive dự kiến V37.
