@@ -42,3 +42,20 @@ Dừng đúng backend của dự án đang chiếm cổng trước khi chạy l�
 - Test loader `node --test scripts/local-ai/start-loader.test.cjs`: 1/1 PASS; kiểm tra nạp endpoint/model/key giả từ file mà không ghi registry hoặc gọi model.
 - `.env.mysql.local` được Git ignore. Không chép key thực vào bản bàn giao; không gọi AI có tính phí để kiểm tra vấn đề cấu hình máy khác.
 - Không thay default toàn hệ thống sang Caheo: endpoint, key và model phải cùng nhà cung cấp và được thiết lập rõ cho từng backend.
+
+## Đối chiếu thực tế ngày 03/11/2026 trong Arena
+
+Trên máy kiểm tra hiện tại, loader xác định cả `TMS_OPENAI_ENABLED`, Base URL, model, timeout và key đều đến từ file local; không có Process/Windows User ghi đè các trường này. Metadata chỉ ghi key có tồn tại, không ghi giá trị. Chưa kiểm tra trực tiếp cấu hình máy khác.
+
+Hai yêu cầu chẩn đoán riêng dùng nội dung tổng hợp, không gửi dữ liệu dự án, không lưu phía provider (`store:false`) và không tự gửi lại:
+
+| Lần kiểm tra | Giới hạn output | Kết quả |
+| --- | --- | --- |
+| Kiểm tra tối thiểu, 15:00:27 UTC | 64 token | HTTP200 sau5.995 giây, `completed`, không thu được `output_text` dùng được |
+| Đối chiếu cấu trúc với mức cấu hình hiện tại, 15:01:20 UTC | 1536 token | HTTP200 sau19.322 giây, `completed`, trả message/assistant/output_text hợp lệ là câu trả lời `OK` |
+
+Deadline cả hai yêu cầu là30 giây; không đổi model, cấu hình timeout hoặc key. Bằng chứng local: `var/arena-followup/ar04-live-synthetic-20261103/receipt.json` và `var/arena-followup/ar04-live-shape-20261103/receipt.json`. Lần đầu không lưu cấu trúc phản hồi chi tiết nên chưa kết luận nguyên nhân thiếu text; khác biệt hai lần không đủ chứng minh do giới hạn token. Lần sau xác nhận inference phản hồi được tại thời điểm kiểm tra, không bảo đảm các lần sau đều nhanh, báo cáo dự án chính xác hoặc máy khác có cùng cấu hình. Timeout30 giây quan sát trước đó vẫn là một kết quả thực tế, không bị xóa bởi lần thành công này.
+
+### Kiểm tra báo cáo thực tế 03/11/2026
+
+Sau hai probe tổng hợp ở trên, một lần bấm **Tạo gợi ý AI** trên Chrome riêng với project/Feature synthetic đã chạm deadline30 giây: thời gian30,270s, HTTP200 bao `state=FAILED`, `failureCode=AI_TIMEOUT`. Không retry tự động. Như vậy kết quả probe “OK” không chứng minh tạo báo cáo ổn định. Luồng lưu văn bản thủ công/mở lại/tải xuống vẫn đạt; phần READY dùng response stub được ghi riêng, không coi là live. Receipt `var/arena-followup/ar04-browser-verified-20261103/receipt.json`. Không đổi model/deadline/key/cấu hình main; nguồn live chỉ bật tạm trên18081 rồi tắt lại. Máy khác chưa kiểm chứng.

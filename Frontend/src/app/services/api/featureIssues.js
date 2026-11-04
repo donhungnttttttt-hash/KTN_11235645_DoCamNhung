@@ -20,6 +20,7 @@ export const featureIssuesApi={
  update:(p,id,body,options={})=>write(`${base(p)}/${id}`,body,'PUT',options),
  transition:(p,id,body,options={})=>write(`${base(p)}/${id}/status`,body,'PUT',options),
  remove:(p,id,expectedVersion,options={})=>write(`${base(p)}/${id}?expectedVersion=${expectedVersion}`,null,'DELETE',options),
+ restore:(p,id,body,options={})=>write(`${base(p)}/${id}/restore`,body,'POST',options),
  history:(p,id,options={})=>apiRequest(`${base(p)}/${id}/history`,options),
  comments:(p,id,options={})=>apiRequest(`${base(p)}/${id}/comments`,options),
  comment:(p,id,body,options={})=>write(`${base(p)}/${id}/comments`,body,'POST',options),

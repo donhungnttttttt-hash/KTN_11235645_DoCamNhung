@@ -106,3 +106,11 @@ test('keeps pagination locked while archiving and reloads the same applied page'
  await waitFor(()=>expect(screen.getByRole('button',{name:'Trang sau'})).toBeEnabled());
  expect(screen.getByText('Trang 2/3')).toBeVisible();
 });
+test('returns to the remaining page after archiving the last item on page two',async()=>{
+ let archived=false;featuresApi.archive.mockImplementation(async()=>{archived=true;});
+ featuresApi.list.mockImplementation(async(p,{page})=>({items:archived&&page===1?[]:[{id:21,name:'Remaining feature',version:0}],totalItems:archived?20:21,totalPages:archived?1:2}));
+ render(<TestingFeaturesPage projectId={1}/>);await screen.findByRole('button',{name:'Remaining feature'});
+ fireEvent.click(screen.getByRole('button',{name:'Trang sau'}));await screen.findByText('Trang 2/2');
+ fireEvent.click(screen.getByRole('button',{name:'Lưu trữ'}));
+ await screen.findByText('Trang 1/1');expect(screen.getByRole('button',{name:'Remaining feature'})).toBeVisible();
+});

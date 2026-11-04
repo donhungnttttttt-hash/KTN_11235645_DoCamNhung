@@ -22,10 +22,12 @@ import vn.syp.tms.shared.web.RequestIdFilter;
 class AdminManagementSecurityTest {
     @org.springframework.test.context.bean.override.mockito.MockitoBean vn.syp.tms.feature.LegacyTestingWrites legacyTestingWrites;
     @Autowired MockMvc mvc;@MockitoBean AdminProjectService service;@MockitoBean IdentityService identity;
+    @MockitoBean org.springframework.transaction.PlatformTransactionManager transactionManager;
+    @MockitoBean CurrentSessionIdentity sessionIdentity;
     @org.springframework.lang.NonNull RequestPostProcessor actor(String role){var user=new IdentityUser("person","Person","hash",role);when(identity.current(user.getId())).thenReturn(user);return java.util.Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),0),null,List.of(new SimpleGrantedAuthority("ROLE_"+role)))));}
     @Test void nonAdminsAndMissingCsrfCannotMutate() throws Exception {
-        for(String role:List.of("PM","TESTER","DEV"))mvc.perform(put("/api/v1/admin/projects/1/members/person").with(actor(role)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content("{\"projectRole\":\"DEV\"}")).andExpect(status().isForbidden());
-        mvc.perform(put("/api/v1/admin/projects/1/members/person").with(actor("ADMIN")).contentType("application/json").content("{\"projectRole\":\"DEV\"}")).andExpect(status().isForbidden());
+        for(String role:List.of("PM","USER","GUEST"))mvc.perform(put("/api/v1/admin/projects/1/members/person").with(actor(role)).with(java.util.Objects.requireNonNull(csrf())).contentType("application/json").content("{\"projectRole\":\"USER\"}")).andExpect(status().isForbidden());
+        mvc.perform(put("/api/v1/admin/projects/1/members/person").with(actor("ADMIN")).contentType("application/json").content("{\"projectRole\":\"USER\"}")).andExpect(status().isForbidden());
         verifyNoInteractions(service);
     }
     @Test void invalidRoleIsRejectedBeforeService() throws Exception {

@@ -27,6 +27,7 @@ public final class FeatureIssueDtos {
     public record Status(@NotBlank @Size(max=32) String status,@NotBlank @Size(max=1000) String reason,
         @NotNull @PositiveOrZero Long expectedVersion) {}
     public record Comment(@NotBlank @Size(max=20000) String body,@NotNull @PositiveOrZero Long expectedVersion,@NotNull UUID requestKey) {}
+    public record Restore(@NotNull @PositiveOrZero Long expectedVersion,@NotNull UUID requestKey) {}
     /** Bean fields distinguish omitted optional mutations from an explicit invalid null. */
     public static final class Action {
         @Size(max=20000) public String body;
@@ -44,7 +45,8 @@ public final class FeatureIssueDtos {
         public Boolean convertToBug(){return convertToBug;} public Long expectedVersion(){return expectedVersion;} public UUID requestKey(){return requestKey;}
     }
     public record Responsibilities(@NotNull List<String> duties,@NotNull @PositiveOrZero Long expectedVersion) {}
-    public record Filter(int page,int size,Long featureId,Long documentId,Long rowId,String type,String status,String keyword,String column) {
+    public record Filter(int page,int size,Long featureId,Long documentId,Long rowId,String type,String status,String keyword,String column,boolean deleted) {
+        public Filter(int page,int size,Long featureId,Long documentId,Long rowId,String type,String status,String keyword,String column){this(page,size,featureId,documentId,rowId,type,status,keyword,column,false);}
         public Filter(int page,int size,Long featureId,Long documentId,Long rowId,String type,String status,String keyword){this(page,size,featureId,documentId,rowId,type,status,keyword,null);}
     }
 }

@@ -1,5 +1,7 @@
 # Arena follow-up — Implementation Plan
 
+**Triển khai được người dùng yêu cầu ngày 03/11/2026, baseline `ba2ccb5`. Kết quả kỹ thuật đã ghi nhận; review toàn diff đã chấp thuận.** [Kết quả và giới hạn](../../reviews/2026-11-03-arena-final.md). Đọc [điều chỉnh hiện hành](../../planning/2026-11-03-arena-execution-adjustments.md) trước các task: USER/GUEST, Ticket V39, archive tiếp theo V40 và bằng chứng từng lớp. Mô tả “chỉ lập kế hoạch”, TESTER/DEV và manual QA ở bản 25/10 bên dưới là checkpoint lịch sử, đã được quyết định mới thay thế ở đúng phạm vi. [Báo cáo tiến độ](../../reviews/2026-11-03-arena-followup.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Áp dụng kết luận Arena còn phù hợp vào hệ thống hiện tại, khép các thiếu sót có căn cứ và tạo bằng chứng nghiệm thu xuyên màn hình/API/database trên cùng baseline.
@@ -88,18 +90,19 @@ Kế hoạch chia hai phần có thể review độc lập:
 
 | Task | Đầu ra review độc lập | Phụ thuộc | Ưu tiên / cỡ tương đối | Trạng thái |
 | --- | --- | --- | --- | --- |
-| AR-00 | Baseline, runner test native hiện hành an toàn, manifest | Không | P0 / M | PLANNED |
-| AR-01 | Bằng chứng PM được cấp tạo TESTER, revoke/reauth | AR-00 cho native; offline làm song song | P1 / S | PLANNED |
-| AR-02 | Chuỗi Feature/import/assignment/Status/export nhất quán | AR-00 | P1 / M | PLANNED |
-| AR-03 | Bug/QA đúng capability, legacy retirement giữ nguyên | AR-00, fixture AR-02 | P1 / S–M | PLANNED |
-| AR-04 | Report/AI text/scopes và số liệu xuyên màn hình | AR-02/03 | P1 / M | PLANNED |
-| AR-05 | Sổ tay revision/concurrency/history | AR-00 | P1 / S | PLANNED |
-| AR-06 | Backend/migration ngoại lệ archive có snapshot/audit | AR-00 | P1 / M | PLANNED |
-| AR-07 | UI archive xác nhận rõ, retry/conflict và lịch sử | AR-06 contract | P1 / S–M | PLANNED |
-| AR-08 | Rules nói đúng phạm vi lịch sử, không hứa áp dụng Bug mới | Không; kiểm native dùng AR-00 | P1 / S | PLANNED |
-| AR-09 | Bảo toàn legacy/evidence, restore cô lập có đối chiếu | AR-00; chạy với schema cuối AR-06 | P1 / M | PLANNED |
-| AR-10 | Regression, browser 4 role và toàn chuỗi trên baseline cuối | AR-01–09 | P1 / M | PLANNED |
-| AR-11 | Báo cáo truy vết, gate pilot/người ký, quyết định còn mở | Chuẩn bị song song; bàn giao sau AR-10 | P1 / S + chờ bên ngoài | PLANNED |
+| AR-00 | Baseline, runner test native hiện hành an toàn, manifest | Không | P0 / M | DONE |
+| AR-01 | Bằng chứng PM được cấp tạo USER theo quyết định mới, revoke/reauth | AR-00 cho native; offline làm song song | P1 / S | DONE |
+| AR-02 | Chuỗi Feature/import/assignment/Status/export nhất quán | AR-00 | P1 / M | DONE |
+| AR-03 | Bug/QA đúng capability, legacy retirement giữ nguyên | AR-00, fixture AR-02 | P1 / S–M | DONE |
+| AR-04 | Report/AI text/scopes và số liệu xuyên màn hình | AR-02/03 | P1 / M | DONE |
+| AR-05 | Sổ tay revision/concurrency/history | AR-00 | P1 / S | DONE |
+| AR-06 | Backend/migration ngoại lệ archive có snapshot/audit | AR-00 | P1 / M | DONE |
+| AR-07 | UI archive xác nhận rõ, retry/conflict và lịch sử | AR-06 contract | P1 / S–M | DONE |
+| AR-08 | Rules nói đúng phạm vi lịch sử, không hứa áp dụng Bug mới | Không; kiểm native dùng AR-00 | P1 / S | DONE |
+| AR-09 | Bảo toàn legacy/evidence, restore cô lập có đối chiếu | AR-00; chạy với schema cuối AR-06 | P1 / M | DONE |
+| AR-12 | Khôi phục Monkey đã xóa/file đã ẩn, giữ nghĩa vụ và lịch sử | AR-03/06; quyết định U26 đã duyệt | P1 / M | DONE |
+| AR-10 | Regression, browser 4 role và toàn chuỗi trên baseline cuối | AR-01–09, AR-12 | P1 / M | DONE |
+| AR-11 | Báo cáo truy vết, gate pilot/người ký, quyết định còn mở | Chuẩn bị song song; bàn giao sau AR-10 | P1 / S + chờ bên ngoài | DONE |
 
 **Điều chỉnh thứ tự sau tái phân tích:** AR-00 và AR-11 (đối chiếu baseline/gate) trước; nhánh AR-04 chẩn đoán timeout/cấu hình có thể làm độc lập ngay, không chờ dữ liệu AR-02/03. AR-01 bổ sung thành viên/hồ sơ đã có, chỉ kiểm chứng hồi quy. AR-06/07 vẫn là thay đổi nghiệp vụ chính; AR-08 sửa cách diễn đạt có thể làm độc lập. Sau đó AR-02/03/05 và phần số liệu AR-04 → AR-09 → AR-10 → AR-11 bàn giao. Không đổi mọi task thành P0 hoặc để công cụ kiểm thử mới chặn kiểm thử offline sẵn có.
 
@@ -141,15 +144,15 @@ Khi **triển khai**, đọc SKILL.md tương ứng rồi ghi vào receipt của
 
 | Task | Skill dự kiến | Mục đích / chứng cứ phải lưu |
 | --- | --- | --- |
-| AR-00 | `tdd-workflow`, `security-review`, `verification-loop` | Guard fail-before-connect; negative tests; manifest schema/source |
-| AR-01 | `security-review`, `tdd-workflow`, `frontend-patterns` | Ma trận quyền/revoke, UI draft, số bản ghi user/audit |
+| AR-00 | `tdd-workflow`, `security-review`, `verification-loop` | DONE |
+| AR-01 | `security-review`, `tdd-workflow`, `frontend-patterns` | DONE |
 | AR-02/03 | `api-design`, `tdd-workflow`, `frontend-patterns`, `security-review` | Contract/version/idempotency, source IDs, workbook hashes, role/race receipts |
-| AR-04 | `api-design`, `security-review`, `tdd-workflow` | Phạm vi report/AI trước retrieval, text round-trip, không sửa số liệu nguồn |
-| AR-05 | `tdd-workflow`, `frontend-patterns`, `security-review` | Hai tab conflict, draft, actor/revision/plain text |
+| AR-04 | `api-design`, `security-review`, `tdd-workflow` | DONE |
+| AR-05 | `tdd-workflow`, `frontend-patterns`, `security-review` | DONE |
 | AR-06/07 | `api-design`, `security-review`, `tdd-workflow`, `frontend-patterns` | Snapshot contract, migration preservation, race/idempotency, confirmation UI |
-| AR-08 | `frontend-patterns`, `tdd-workflow` | Câu chữ đúng phạm vi và test không thay luật Feature Issue |
+| AR-08 | `frontend-patterns`, `tdd-workflow` | DONE |
 | AR-09/10 | `verification-loop`, `browser-testing-with-devtools` hoặc skill browser thực tế của môi trường | Phân biệt mock/native/browser/live; restore hashes; screenshot/DOM/network đã làm sạch secret |
-| AR-11 | `writing-plans`, `verification-loop` | Truy vết từng task/AC, giới hạn bằng chứng và gate ký nghiệm thu |
+| AR-11 | `writing-plans`, `verification-loop` | DONE |
 
 Vị trí skill theo `docs/development-skills.md` và catalog của phiên thực thi. Không tự cài công cụ hoặc đổi stack nếu một skill nêu ví dụ Node/Docker không phù hợp. Nếu skill thiếu, ghi rõ và dùng quy trình tương đương trong task; không giả vờ đã đọc/dùng.
 
@@ -175,3 +178,7 @@ Tự review của người lập kế hoạch ngày 25/10 (khác checklist tri�
 Kiểm tra tài liệu ngày 25/10: bốn tài liệu mới không có link nội bộ hỏng hoặc whitespace cuối dòng; đủ định nghĩa AR-00–AR-11 và dependency hợp lệ. JSON STATUS parse được; các field/trạng thái/notes cũ giữ nguyên, chỉ thêm mục kế hoạch và ngày cập nhật. `rtk proxy git diff --check` đạt; `rtk proxy git diff --exit-code HEAD -- Backend Frontend scripts .arena` không có thay đổi. Các đường dẫn chưa tồn tại trong plan đều là file được đánh dấu **Create**, không là khẳng định đã triển khai.
 
 Review bổ sung đã được xử lý: cô lập attachment storage trước Spring startup (cleanup startup không phụ thuộc cron); phân biệt revoke trước/sau authorization của request đang chạy; loại `SettingsReviewTest` dùng Testcontainers/legacy HTTP khỏi lệnh offline. Đây là kiểm tra kế hoạch/source, không phải kết quả thực chạy hệ thống.
+
+### U26 bổ sung sau quyết định người dùng 03/11/2026
+
+AR-12 được thêm trước AR-10: khôi phục Monkey đã xóa và file đã ẩn, giữ nghĩa vụ xử lý Ticket, ID/lịch sử và hard blocker. Quyền theo phạm vi xóa/ẩn hiện hành; không tự khôi phục cha. Xem quyết định hiện hành và U26 trong ma trận. AR-09 tiếp tục phần restore độc lập; AR-10 dùng baseline gồm AR-12.

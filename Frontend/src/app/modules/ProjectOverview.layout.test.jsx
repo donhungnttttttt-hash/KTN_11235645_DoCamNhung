@@ -5,9 +5,9 @@ import userEvent from '@testing-library/user-event';
 import {ProjectOverview} from './ProjectOverview';
 
 const state=vi.hoisted(()=>({project:null,loading:false,error:''}));
-const api=vi.hoisted(()=>({list:vi.fn(),catalog:vi.fn()}));
+const api=vi.hoisted(()=>({list:vi.fn(),board:vi.fn(),catalog:vi.fn()}));
 vi.mock('../features/projects/ProjectProvider',()=>({useProject:()=>({currentProject:state.project,loading:state.loading,error:state.error})}));
-vi.mock('../services/api/featureIssues',()=>({featureIssuesApi:{list:api.list}}));
+vi.mock('../services/api/featureIssues',()=>({featureIssuesApi:{list:api.list,board:api.board}}));
 vi.mock('../services/api/projects',()=>({projectsApi:{listCatalog:api.catalog}}));
 beforeEach(()=>{
  state.project={id:12,code:'SPIDER-PLUS',name:'Spider Plus'};state.loading=false;state.error='';vi.clearAllMocks();
@@ -16,6 +16,18 @@ beforeEach(()=>{
   return {items:[],totalItems:status==='open'?4:status==='closed'?2:0,page,size,totalPages:0};
  });
  api.catalog.mockResolvedValue([{id:5,projectId:12,code:'R1',name:'Phát hành tháng 12',startsOn:null,dueOn:'2026-12-12',archived:false,version:0}]);
+ api.board.mockResolvedValue({columns:[{id:'new',count:4},{id:'fixed',count:2}],legacyCount:0,totalItems:6});
+});
+it('ARENA-D01 uses canonical Ticket columns and excludes processed and historical records from final totals',async()=>{
+ api.board.mockResolvedValue({columns:[{id:'new',count:1},{id:'processed',count:2},{id:'fixed',count:3},{id:'unsupported',count:1}],legacyCount:2,totalItems:9});
+ const navigate=vi.fn();render(<ProjectOverview navigate={navigate}/>);
+ expect(await screen.findByRole('button',{name:'Đóng – Đã xử lý 2'})).toBeVisible();
+ expect(screen.getByText('4/9 Issue đã kết thúc · 44%')).toBeVisible();
+ expect(screen.getByRole('button',{name:'Cần đối chiếu lịch sử 2'})).toBeVisible();
+ expect(screen.queryByRole('button',{name:/SYP kiểm tra lại|Sẵn sàng xử lý|Lập kế hoạch|Hoàn thành/})).toBeNull();
+ fireEvent.click(screen.getByRole('button',{name:'Đóng – Đã xử lý 2'}));
+ expect(navigate).toHaveBeenCalledWith('/board/list?projectId=12&column=processed');
+ expect(api.board).toHaveBeenCalledTimes(1);expect(api.list).not.toHaveBeenCalled();
 });
 it('replaces only the recent-work block while keeping the project overview and its status and milestone sections',async()=>{
  render(<ProjectOverview/>);
@@ -36,10 +48,10 @@ it('opens the selected status in the current project rather than depending on th
  fireEvent.click(await screen.findByRole('button',{name:'Chưa xử lý 4'}));
  expect(navigate).toHaveBeenCalledOnce();
  const [route,query]=navigate.mock.calls[0][0].split('?');
- expect(route).toBe('/board/list');expect(new URLSearchParams(query).get('projectId')).toBe('12');expect(new URLSearchParams(query).get('status')).toBe('open');
+ expect(route).toBe('/board/list');expect(new URLSearchParams(query).get('projectId')).toBe('12');expect(new URLSearchParams(query).get('column')).toBe('new');
 });
 it('keeps the project information and milestones when status loading fails and retries only that read',async()=>{
- api.list.mockRejectedValueOnce(new Error('Không tải được trạng thái Issue'));
+ api.board.mockRejectedValueOnce(new Error('Không tải được trạng thái Issue'));
  render(<ProjectOverview/>);
  const statuses=screen.getByRole('region',{name:'Trạng thái công việc'});
  expect(await within(statuses).findByRole('alert')).toHaveTextContent('Không tải được trạng thái Issue');
@@ -50,7 +62,7 @@ it('keeps the project information and milestones when status loading fails and r
  expect(api.catalog).toHaveBeenCalledTimes(1);
 });
 it('shows empty states instead of sample counts or clickable milestone filters that are no longer supported',async()=>{
- api.list.mockResolvedValue({items:[],totalItems:0,page:0,size:1,totalPages:0});api.catalog.mockResolvedValue([]);
+ api.board.mockResolvedValue({columns:[],legacyCount:0,totalItems:0});api.catalog.mockResolvedValue([]);
  render(<ProjectOverview/>);
  expect(await screen.findByText('Chưa có Bug hoặc QA trong dự án.')).toBeVisible();
  expect(await screen.findByText('Chưa có mốc phát hành được cấu hình.')).toBeVisible();

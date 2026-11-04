@@ -27,6 +27,8 @@ class ProjectNotesSecurityTest {
     @Autowired MockMvc mvc;
     @MockitoBean ProjectNotesService service;
     @MockitoBean IdentityService identity;
+    @MockitoBean org.springframework.transaction.PlatformTransactionManager transactionManager;
+    @MockitoBean CurrentSessionIdentity sessionIdentity;
     @org.springframework.lang.NonNull RequestPostProcessor actor(String role){
         var user=new IdentityUser("person","Person","hash",role);when(identity.current("person")).thenReturn(user);
         return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal("person",0),null,List.of(new SimpleGrantedAuthority("ROLE_"+role)))));

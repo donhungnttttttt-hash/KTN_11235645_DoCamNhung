@@ -157,6 +157,13 @@ it('FR12 displays the same Vietnamese Issue status labels as the work board',asy
  expect(screen.getByRole('cell',{name:'Chưa xử lý',exact:true})).toBeVisible();
  expect(screen.queryByRole('cell',{name:'progress',exact:true})).toBeNull();
 });
+it('ARENA-D01 distinguishes Ticket closure reasons from legacy status mirrors',async()=>{
+ api.summary.mockResolvedValue({...summary,issues:[{type:'BUG',status:'closed',ticketState:'CLOSED',closureReason:'FIXED',total:3},{type:'BUG',status:'resolved',ticketState:'CLOSED',closureReason:'PROCESSED',total:2},{type:'QA',status:'closed',ticketState:'CLOSED',closureReason:'UNSUPPORTED',total:1}]});
+ mount();expect(await screen.findByRole('cell',{name:'Đóng – Đã sửa',exact:true})).toBeVisible();
+ expect(screen.getByRole('cell',{name:'Đóng – Đã xử lý',exact:true})).toBeVisible();
+ expect(screen.getByRole('cell',{name:'QA – Đóng – Không được hỗ trợ',exact:true})).toBeVisible();
+ expect(screen.queryByRole('cell',{name:'Hoàn thành',exact:true})).toBeNull();
+});
 it('FR12 explains why AI generation is disabled without losing the manual report draft',async()=>{
  provider.ready=false;mount();await screen.findByText('3 / 5 case đã test · 60%');
  fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Nháp thủ công đang viết'}});

@@ -227,14 +227,22 @@ class OpenAiResponsesClientTest {
         assertThatThrownBy(this::generate).hasMessage("AI_UNAVAILABLE");
     }
 
-    @Test void timeoutHasNoProviderOrKeyDetails() {
+    @Test void timeoutHasNoProviderOrKeyDetailsAndNeverRetries() {
         client = client(true, SECRET, 20, 1);
         server.createContext("/", exchange -> {
             calls.incrementAndGet();
             try { Thread.sleep(1500); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
             exchange.close();
         });
-        assertThatThrownBy(this::generate).hasMessage("AI_UNAVAILABLE").hasNoCause();
+        assertThatThrownBy(this::generate).hasMessage("AI_TIMEOUT").hasNoCause();
         assertThat(calls).hasValue(1);
+    }
+    @Test void transportRequestTimeoutRemainsDistinctFromUnavailability() throws Exception {
+        var http=org.mockito.Mockito.mock(HttpClient.class);
+        org.mockito.Mockito.when(http.sendAsync(org.mockito.ArgumentMatchers.any(java.net.http.HttpRequest.class),org.mockito.ArgumentMatchers.<java.net.http.HttpResponse.BodyHandler<byte[]>>any()))
+            .thenReturn(java.util.concurrent.CompletableFuture.failedFuture(new java.net.http.HttpTimeoutException(SECRET)));
+        client=new OpenAiResponsesClient(new OpenAiConfiguration(true,SECRET,"gpt-4.1-mini",1,512,20),json,http,URI.create("http://127.0.0.1/"));
+        assertThatThrownBy(this::generate).hasMessage("AI_TIMEOUT").hasNoCause();
+        org.mockito.Mockito.verify(http,org.mockito.Mockito.times(1)).sendAsync(org.mockito.ArgumentMatchers.any(java.net.http.HttpRequest.class),org.mockito.ArgumentMatchers.<java.net.http.HttpResponse.BodyHandler<byte[]>>any());
     }
 }

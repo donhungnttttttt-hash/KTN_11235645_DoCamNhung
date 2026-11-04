@@ -2,9 +2,9 @@
 .self-profile-avatar-editor{display:flex;align-items:center;gap:20px;padding-bottom:20px;border-bottom:1px solid var(--color-border,#d8e3e1)}
 .self-profile-avatar{display:grid;place-items:center;flex:0 0 88px;width:88px;height:88px;border-radius:50%;overflow:hidden;background:#e5f3f1;color:#0f766e;font-size:28px;font-weight:650}
 .self-profile-avatar img,.app-user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.self-profile-avatar-editor>div{display:grid;gap:10px;min-width:0}
-.self-profile-upload{display:grid;gap:8px;font-weight:600}.self-profile-upload input{max-width:100%;font:inherit;font-size:13px}
-.self-profile-avatar-editor small,.self-profile-help{color:var(--color-text-muted,#526e6a);font-size:13px;line-height:1.6}
+.self-profile-avatar-editor>div{display:grid;gap:10px;min-width:0;flex:1}
+.self-profile-upload{display:grid;gap:8px;font-weight:600;min-width:0;overflow-wrap:anywhere}.self-profile-upload input{width:100%;min-width:0;max-width:100%;font:inherit;font-size:13px}
+.self-profile-avatar-editor small,.self-profile-help{color:var(--color-text-muted,#526e6a);font-size:13px;line-height:1.6;overflow-wrap:anywhere}
 .self-profile-fields{border:0;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px;min-width:0}
 .self-profile-fields label{display:grid;gap:8px;font-weight:600;min-width:0}
 .self-profile-fields input{width:100%;min-width:0;min-height:42px;padding:10px 12px;border:1px solid var(--color-border,#b6cdca);border-radius:8px;font:inherit;font-weight:400;background:white;color:inherit}

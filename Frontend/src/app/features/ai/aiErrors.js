@@ -26,6 +26,7 @@ const messages={
  AI_MODEL_NOT_ALLOWED:'Model chưa được phép hoặc chưa cài. Tải lại danh sách model.',
  AI_RATE_LIMITED:'Nguồn AI đang giới hạn tốc độ. Bạn có thể thử lại sau bằng thao tác riêng.',
  AI_UNAVAILABLE:'Nguồn AI chưa phản hồi. Kiểm tra kết nối và thử lại sau.',
+ AI_TIMEOUT:'Nguồn AI đã hết thời gian chờ. Tin nhắn và bản đang soạn được giữ lại. Chỉ gửi lại khi bạn chọn thử lại.',
  AI_AUTH_FAILED:'Cấu hình kết nối AI chưa hợp lệ. Liên hệ quản trị viên.',
  AI_BUSY:'AI đang xử lý yêu cầu khác. Đợi rồi kiểm tra lại; chưa tự tạo yêu cầu mới.',
  AI_CREDENTIAL_STORE_FAILED:'Chưa hoàn tất lưu kết nối an toàn. Đợi rồi kiểm tra lại cùng yêu cầu.',

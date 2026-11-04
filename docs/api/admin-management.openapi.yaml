@@ -184,7 +184,7 @@ paths:
     post:
       operationId: adminArchiveProject
       parameters: [{$ref: '#/components/parameters/Id'}]
-      description: Archives only if no blockers. Never deletes, completes work, or reassigns resources. A retry with the same actor/action/version/normalized reason/key returns current state without another decision, even after a later reopen.
+      description: Requires an enabled current ADMIN in the two-admin registry. Ordinary archive requires no blockers. An acknowledged legacyException with the current snapshot fingerprint may exempt only UNFINISHED_CYCLES and OPEN_RETESTS; every hard blocker still prevents archive. Never deletes, completes work, or reassigns resources. A retry with the same actor/action/version/normalized reason/key and the same exception presence, acknowledgment and snapshot fingerprint returns current state without another decision, even after a later reopen.
       requestBody:
         required: true
         content:
@@ -199,8 +199,8 @@ paths:
         '401': {description: Missing or disabled session}
         '403': {description: Current account not ADMIN or CSRF missing}
         '404': {description: Project not found}
-        '409': {description: ARCHIVE_BLOCKED, VERSION_CONFLICT, PROJECT_STATE_CONFLICT or IDEMPOTENCY_CONFLICT}
-        '422': {description: Invalid reason, version or request key}
+        '409': {description: ARCHIVE_BLOCKED, LEGACY_BLOCKERS_CHANGED, VERSION_CONFLICT, PROJECT_STATE_CONFLICT or IDEMPOTENCY_CONFLICT}
+        '422': {description: 'INVALID_COMMAND for invalid reason, version or request key, or an invalid legacyException object including missing/false acknowledgment or missing/invalid snapshot fingerprint'}
   /admin/projects/{id}/reopen:
     post:
       operationId: adminReopenProject
@@ -221,7 +221,7 @@ paths:
         '403': {description: Current account not ADMIN or CSRF missing}
         '404': {description: Project not found}
         '409': {description: VERSION_CONFLICT, PROJECT_STATE_CONFLICT or IDEMPOTENCY_CONFLICT}
-        '422': {description: Invalid reason, version or request key}
+        '422': {description: 'INVALID_COMMAND for invalid reason, version or request key, or any non-null legacyException object on reopen'}
   /admin/projects/{id}/lifecycle-decisions:
     get:
       operationId: adminProjectLifecycleHistory
@@ -255,9 +255,17 @@ components:
         expectedVersion: {type: integer, format: int64, minimum: 0}
         reason: {type: string, minLength: 1, maxLength: 2000, description: Nonblank after trimming}
         requestKey: {type: string, pattern: '^[A-Za-z0-9_-]{8,100}$'}
+        legacyException:
+          type: object
+          nullable: true
+          description: Archive only. Omitted/null keeps ordinary behavior. Any object on reopen returns 422 INVALID_COMMAND.
+          required: [acknowledged, snapshotFingerprint]
+          properties:
+            acknowledged: {type: boolean, enum: [true]}
+            snapshotFingerprint: {type: string, pattern: '^[0-9a-f]{64}$'}
     ProjectLifecycleDecision:
       type: object
-      required: [id, action, reason, actorName, decidedAt, resultVersion]
+      required: [id, action, reason, actorName, decidedAt, resultVersion, legacyException]
       properties:
         id: {type: integer, format: int64}
         action: {type: string, enum: [ARCHIVE, REOPEN]}
@@ -265,9 +273,24 @@ components:
         actorName: {type: string}
         decidedAt: {type: string, format: date-time}
         resultVersion: {type: integer, format: int64}
+        legacyException:
+          type: object
+          nullable: true
+          required: [policyVersion, fingerprint, blockers]
+          properties:
+            policyVersion: {type: integer, enum: [1]}
+            fingerprint: {type: string, pattern: '^[0-9a-f]{64}$'}
+            blockers:
+              type: array
+              items:
+                type: object
+                required: [code, count]
+                properties:
+                  code: {type: string, enum: [UNFINISHED_CYCLES, OPEN_RETESTS]}
+                  count: {type: integer, format: int64, minimum: 1}
     ProjectLifecycleReadiness:
       type: object
-      required: [projectId, projectCode, projectName, version, archived, archivedAt, canArchive, canReopen, asOf, blockers, warnings, latestDecision]
+      required: [projectId, projectCode, projectName, version, archived, archivedAt, canArchive, canArchiveWithLegacyException, legacyExceptionFingerprint, canReopen, asOf, blockers, warnings, latestDecision]
       properties:
         projectId: {type: integer, format: int64}
         projectCode: {type: string}
@@ -276,6 +299,8 @@ components:
         archived: {type: boolean}
         archivedAt: {type: string, format: date-time, nullable: true}
         canArchive: {type: boolean}
+        canArchiveWithLegacyException: {type: boolean, description: Active project with legacy blockers and no hard blockers}
+        legacyExceptionFingerprint: {type: string, nullable: true, pattern: '^[0-9a-f]{64}$', description: Present only when eligible legacy blockers exist; includes project version}
         canReopen: {type: boolean}
         asOf: {type: string, format: date-time}
         latestDecision:
@@ -296,9 +321,10 @@ components:
           type: array
           items:
             type: object
-            required: [code, label, count]
+            required: [code, label, count, exceptionEligible]
             properties:
               code: {type: string, enum: [ACTIVE_SESSIONS, ALLOCATED_DEVICES, OPEN_WORK_ITEMS, UNFINISHED_CYCLES, OPEN_RETESTS, PENDING_PUBLICATIONS]}
+              exceptionEligible: {type: boolean, description: True only for UNFINISHED_CYCLES and OPEN_RETESTS}
               label: {type: string}
               count: {type: integer, format: int64, minimum: 1}
   securitySchemes:

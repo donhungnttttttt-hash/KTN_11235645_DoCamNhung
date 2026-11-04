@@ -18,6 +18,21 @@ describe('Self profile',()=>{
  it('avatar upload preserves text draft and uses new version for the following save',async()=>{
   const {user,api}=setup();await screen.findByDisplayValue('Nguyễn An');await user.type(screen.getByLabelText('Chức danh'),'Tester');const file=new File(['image'],'avatar.png',{type:'image/png'});await user.upload(screen.getByLabelText('Chọn ảnh đại diện'),file);await screen.findByText('Đã cập nhật ảnh đại diện.');expect(screen.getByLabelText('Chức danh')).toHaveValue('Tester');await user.click(screen.getByRole('button',{name:'Lưu thông tin'}));await waitFor(()=>expect(api.update).toHaveBeenCalledWith(expect.objectContaining({jobTitle:'Tester',expectedVersion:1})));
  });
+ it('keeps avatar controls and the draft usable after a long filename upload fails',async()=>{
+  let rejectUpload;const upload=vi.fn().mockImplementation(()=>new Promise((resolve,reject)=>{rejectUpload=reject;}));
+  const {user}=setup({upload});await screen.findByDisplayValue('Nguyễn An');
+  await user.type(screen.getByLabelText('Phòng ban'),'QA draft');
+  const input=screen.getByLabelText('Chọn ảnh đại diện');
+  const file=new File(['image'],'anh-dai-dien-'+ 'tenratdai'.repeat(30)+'.png',{type:'image/png'});
+  await user.upload(input,file);expect(upload).toHaveBeenCalledWith(file,profile);
+  expect(input).toBeDisabled();expect(screen.getByRole('button',{name:'Đang lưu…'})).toBeDisabled();
+  rejectUpload(new Error('Chưa tải được ảnh'));await screen.findByText('Chưa tải được ảnh');
+  expect(input).toBeEnabled();expect(input).toHaveValue('');
+  expect(screen.getByText(/PNG\/JPEG/)).toBeVisible();expect(screen.getByLabelText('Phòng ban')).toHaveValue('QA draft');
+  const save=screen.getByRole('button',{name:'Lưu thông tin'});expect(save).toBeEnabled();await user.click(save);
+  await screen.findByText('Đã lưu thông tin cá nhân.');
+  expect(screen.getAllByRole('button',{name:'Đóng',exact:true}).at(-1)).toBeEnabled();
+ });
  it('shows load retry and does not submit a conflicting stale draft again',async()=>{
   const get=vi.fn().mockRejectedValueOnce(new Error('Chưa tải được')).mockResolvedValue(profile),update=vi.fn().mockRejectedValue(Object.assign(new Error('Hồ sơ đã thay đổi'),{status:409}));const {user}=setup({get,update});await screen.findByText('Chưa tải được');await user.click(screen.getByRole('button',{name:'Thử lại'}));await screen.findByDisplayValue('Nguyễn An');await user.type(screen.getByLabelText('Phòng ban'),'QA');await user.click(screen.getByRole('button',{name:'Lưu thông tin'}));await screen.findByText('Hồ sơ đã thay đổi');expect(screen.getByRole('button',{name:'Lưu thông tin'})).toBeDisabled();expect(screen.getByLabelText('Phòng ban')).toHaveValue('QA');
  });

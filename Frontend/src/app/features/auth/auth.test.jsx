@@ -9,6 +9,7 @@ import { ApiError, createApiClient } from "../../services/api/client";
 import { Header } from "../../components/Header";
 import { Modal } from "../work-items/components";
 import {AdminFormDialog} from '../admin/AdminFormDialog';
+import {adminApi} from '../../services/api/admin';
 
 const unauthorized = () => new ApiError("Phiên không hợp lệ", { status: 401 });
 const profile = (overrides = {}) => ({ id: "user-1", username: "tester.test", displayName: "Tester nội bộ", roles: ["TESTER"], permissions: ["profile:read"], sessionExpiresAt: new Date(Date.now() + 1800000).toISOString(), ...overrides });
@@ -173,6 +174,23 @@ describe("internal authentication", () => {
     await signIn(user);
     expect(await screen.findByRole('dialog',{name:'Tạo tài khoản'})).toBeVisible();
     expect(screen.getByLabelText('Tên')).toHaveValue('Tên còn đang nhập');
+  });
+
+  it('removes a delegated User creation draft after the same PM reauthenticates without the grant',async()=>{
+    const account=profile({roles:['PM'],permissions:['profile:read','users:create']});
+    const create=vi.spyOn(adminApi,'createUser').mockResolvedValue({id:'unused'});
+    try {
+      const user=setup({me:vi.fn().mockResolvedValue(account),login:vi.fn().mockResolvedValue({...account,permissions:['profile:read']})});
+      await user.click(await screen.findByRole('button',{name:'Tài khoản: Tester nội bộ'}));
+      await user.click(screen.getByRole('button',{name:'Tạo tài khoản'}));
+      await user.type(screen.getByLabelText('Tên'),'Nháp không còn quyền');
+      await rejectSession();
+      await signIn(user);
+      await waitFor(()=>expect(screen.queryByRole('dialog',{name:'Tạo tài khoản'})).not.toBeInTheDocument());
+      await user.click(screen.getByRole('button',{name:'Tài khoản: Tester nội bộ'}));
+      expect(screen.queryByRole('button',{name:'Tạo tài khoản'})).not.toBeInTheDocument();
+      expect(create).not.toHaveBeenCalled();
+    } finally { create.mockRestore(); }
   });
 
   it('releases a retained Admin dialog scroll lock during reauthentication',async()=>{

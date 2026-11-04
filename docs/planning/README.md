@@ -1,4 +1,8 @@
-Bàn giao source 03/11: người dùng yêu cầu commit local các thay đổi đã hoàn tất trên `system-design`, gồm tài khoản hợp nhất, hồ sơ/avatar và Ticket Bug/QA với migration V37–V39. Không push/merge. Những ghi chú chưa commit bên dưới là checkpoint trước yêu cầu bàn giao.
+Bàn giao Arena 04/11/2026: người dùng yêu cầu commit và push phần thay đổi đã review lên `system-design`. Đối chiếu 97 file với snapshot review: source sản phẩm không đổi; remote chưa đi trước tại bước kiểm tra. Yêu cầu này không bao gồm merge/deploy hoặc nâng main. Git và thông báo bàn giao ghi kết quả thực thi; các ghi chú chưa commit/push dưới đây là checkpoint trước yêu cầu này.
+
+Arena03/11: triển khai AR-00–12 và bằng chứng kỹ thuật đã được ghi nhận; review toàn diff đã chấp thuận, không có Critical/Important. [Báo cáo kết quả, giới hạn và phần chưa nghiệm thu](../reviews/2026-11-03-arena-final.md). USER/Khách, TicketV39, archiveV40 và khôi phụcMonkey/file đã kiểm trên môi trường riêng; main chưa nâng, chưa commit/push hoặc kýUAT. Các mục dưới là checkpoint lịch sử.
+
+Bàn giao source 03/11: tài khoản hợp nhất, hồ sơ/avatar và Ticket Bug/QA với migration V37–V39 đã commit `ba2ccb5` và push `origin/system-design` theo hai yêu cầu riêng của người dùng. Không merge. Những ghi chú chưa commit bên dưới là checkpoint trước yêu cầu bàn giao; quyền push lần đó không áp dụng tự động cho Arena mới.
 
 Ticket Bug/QA 03/11 DONE: chín cột, trách nhiệm USER, bằng chứng case, bình luận/phân công/thông báo; main V39/8080 UP. Frontend1.293, backend87 hồi quy và14 tập trung, JDT374 sạch;43 kiểm tra Chrome riêng +11 main. Giữ89 bảng cũ và38 migration cũ. [Báo cáo hiện hành](../reviews/2026-11-03-ticket-workflow-implementation.md). Các checkpoint bên dưới giữ để tra lịch sử.
 

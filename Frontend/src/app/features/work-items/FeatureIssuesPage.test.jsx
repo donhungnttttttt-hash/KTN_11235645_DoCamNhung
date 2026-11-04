@@ -4,6 +4,31 @@ import {it,expect,vi} from 'vitest';
 import {FeatureIssuesPage} from './FeatureIssuesPage';
 import userEvent from '@testing-library/user-event';
 
+it('offers a deleted Monkey list and restores with version while recovering the last page',async()=>{
+ let restored=false;const api={board:vi.fn().mockResolvedValue({columns:[],totalItems:0}),list:vi.fn().mockImplementation(async(p,filter)=>({items:filter.deleted&&!restored?[{id:7,key:'A-7',type:'BUG',title:'Deleted Monkey',monkey:true,version:4,canRestore:true}]:[],totalItems:restored?0:21,totalPages:restored?0:2})),restore:vi.fn().mockImplementation(async()=>{restored=true;})},featureApi={list:async()=>({items:[],totalPages:0})};
+ render(<FeatureIssuesPage projectId={1} activeRoute="/issues?deleted=true&page=1&keyword=Monkey" api={api} featureApi={featureApi}/>);
+ const button=await screen.findByRole('button',{name:'Khôi phục Monkey'});fireEvent.click(button);
+ await screen.findByText('Đã khôi phục Monkey.');await waitFor(()=>expect(api.list.mock.lastCall[1]).toMatchObject({deleted:true,page:0,keyword:'Monkey'}));expect(api.restore).toHaveBeenCalledWith(1,7,expect.objectContaining({expectedVersion:4,requestKey:expect.any(String)}));
+ expect(screen.queryByRole('region',{name:'Bảng trạng thái Bug và QA'})).not.toBeInTheDocument();
+});
+it('shows archived-parent recovery reason and does not expose a usable restore control',async()=>{
+ const api={board:vi.fn().mockResolvedValue({columns:[],totalItems:0}),list:async()=>({items:[{id:7,key:'A-7',type:'BUG',title:'Deleted Monkey',featureId:2,monkey:true,canRestore:false,restoreBlockedReason:'Khôi phục Feature trước.'}],totalItems:1,totalPages:1})};
+ render(<FeatureIssuesPage projectId={1} activeRoute="/issues?deleted=true" api={api} featureApi={{list:async()=>({items:[],totalPages:0})}}/>);
+ expect(await screen.findByText('Khôi phục Feature trước.')).toBeVisible();expect(screen.getByRole('button',{name:'Khôi phục Monkey'})).toBeDisabled();expect(screen.getByRole('button',{name:'Mở danh sách Feature'})).toBeVisible();
+});
+it('does not report success or retry a failed Monkey restore when reloading',async()=>{
+ const api={board:vi.fn().mockResolvedValue({columns:[],totalItems:0}),list:vi.fn().mockResolvedValue({items:[{id:7,key:'A-7',type:'BUG',title:'Deleted Monkey',version:4,canRestore:true}],totalItems:1,totalPages:1}),restore:vi.fn().mockRejectedValue(new Error('Restore rejected'))};
+ render(<FeatureIssuesPage projectId={1} activeRoute="/issues?deleted=true" api={api} featureApi={{list:async()=>({items:[],totalPages:0})}}/>);fireEvent.click(await screen.findByRole('button',{name:'Khôi phục Monkey'}));await screen.findByText('Restore rejected');expect(screen.queryByText('Đã khôi phục Monkey.')).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'Tải lại'}));await waitFor(()=>expect(api.list).toHaveBeenCalledTimes(2));expect(api.restore).toHaveBeenCalledTimes(1);
+});
+it('keyboard restore gives pending feedback and prevents duplicate requests',async()=>{
+ const user=userEvent.setup();let finish;const api={board:vi.fn().mockResolvedValue({columns:[],totalItems:0}),list:vi.fn().mockResolvedValue({items:[{id:7,key:'A-7',type:'BUG',title:'Deleted Monkey',version:4,canRestore:true}],totalItems:1,totalPages:1}),restore:vi.fn().mockImplementation(()=>new Promise(resolve=>{finish=resolve;}))};
+ render(<FeatureIssuesPage projectId={1} activeRoute="/issues?deleted=true" api={api} featureApi={{list:async()=>({items:[],totalPages:0})}}/>);const restore=await screen.findByRole('button',{name:'Khôi phục Monkey'});restore.focus();await user.keyboard('{Enter}');expect(restore).toBeDisabled();expect(screen.getByText('Đang khôi phục Monkey…')).toBeVisible();fireEvent.click(restore);expect(api.restore).toHaveBeenCalledTimes(1);finish({});await screen.findByText('Đã khôi phục Monkey.');
+});
+it('reports current deleted visibility instead of restored success for an old restore replay',async()=>{
+ const api={board:vi.fn().mockResolvedValue({columns:[],totalItems:0}),list:vi.fn().mockResolvedValue({items:[{id:7,key:'A-7',type:'BUG',title:'Deleted Monkey',version:4,canRestore:true}],totalItems:1,totalPages:1}),restore:vi.fn().mockResolvedValue({id:7,deletedAt:'2026-11-03',version:6})};
+ render(<FeatureIssuesPage projectId={1} activeRoute="/issues?deleted=true" api={api} featureApi={{list:async()=>({items:[],totalPages:0})}}/>);fireEvent.click(await screen.findByRole('button',{name:'Khôi phục Monkey'}));await screen.findByText('Yêu cầu trước đã xử lý; Monkey hiện đã xóa lại.');expect(screen.queryByText('Đã khôi phục Monkey.')).not.toBeInTheDocument();
+});
+
 it('returns focus to the monkey opener after discarding a dirty draft through nested confirmation',async()=>{
  const user=userEvent.setup(),api={board:vi.fn().mockResolvedValue({columns:[{id:'spec',count:0},{id:'new',count:1},{id:'progress',count:1},{id:'verify',count:0},{id:'processed',count:0},{id:'fixed',count:0},{id:'cannot_reproduce',count:0},{id:'wont_fix',count:0},{id:'unsupported',count:0}],legacyCount:0,totalItems:99}),options:vi.fn().mockResolvedValue({assignees:[]}),list:vi.fn().mockResolvedValue({items:[],totalItems:0,totalPages:0})},featureApi={list:async()=>({items:[{id:1,name:'Feature A'}],totalPages:1})};
  render(<FeatureIssuesPage projectId={1} activeRoute="/issues" api={api} featureApi={featureApi} canCreate/>);

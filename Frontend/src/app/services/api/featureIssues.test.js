@@ -23,3 +23,6 @@ it('uses CSRF with atomic actions, duties and notification acknowledgement, with
 it('requests initial combinations for a chosen contact without leaking query fields into fetch options',async()=>{
  const signal=new AbortController().signal;await featureIssuesApi.options(42,'BUG',{assigneeMembershipId:11,signal});expect(apiRequest).toHaveBeenCalledWith('/projects/42/issues/options?type=BUG&assigneeMembershipId=11',{signal});
 });
+it('uses deleted-only scope and CSRF versioned explicit Monkey restore',async()=>{
+ await featureIssuesApi.list(42,{deleted:true,page:2});expect(apiRequest.mock.lastCall[0]).toBe('/projects/42/issues?deleted=true&page=2');const input={expectedVersion:7,requestKey:'a44f1485-82ed-40d4-b719-42f3f28ea72b'};await featureIssuesApi.restore(42,8,input);expect(apiRequest.mock.lastCall).toEqual(['/projects/42/issues/8/restore',{method:'POST',headers:{'X-CSRF':'test-csrf'},body:JSON.stringify(input)}]);
+});

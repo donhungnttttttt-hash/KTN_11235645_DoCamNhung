@@ -28,17 +28,19 @@ import vn.syp.tms.project.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@EnabledIfEnvironmentVariable(named="TMS_TEST_USERS_URL",matches="jdbc:mysql://(?:127\\.0\\.0\\.1|localhost):[0-9]+/tms_userstest_[a-f0-9]{12}\\?.+")
+@EnabledIfEnvironmentVariable(named="TMS_TEST_FEATURE_MODE",matches="integration")
 class FeatureIntegrationTest {
-    @DynamicPropertySource static void database(DynamicPropertyRegistry r){vn.syp.tms.support.UnifiedAccessFixtures.database(r);}
-    @Autowired SystemAdminRegistry registry;
+    @DynamicPropertySource static void database(DynamicPropertyRegistry r){vn.syp.tms.support.CurrentWorkflowDatabaseGuard.configure(r);}
     @Autowired MockMvc mvc;@Autowired ObjectMapper json;@Autowired JdbcTemplate db;@Autowired IdentityUserRepository users;@Autowired ProjectService projects;
+    @Autowired org.springframework.transaction.PlatformTransactionManager transactions;
     IdentityUser admin,pm,a,b,dev,outside;long p,am,bm;
-    @BeforeEach void setup(){String tag=UUID.randomUUID().toString().substring(0,8);admin=user("admin"+tag,"ADMIN");pm=user("pm"+tag,"PM");a=user("a"+tag,"USER");b=user("b"+tag,"USER");dev=user("dev"+tag,"USER");outside=user("outside"+tag,"PM");
-        var creator=user("creator"+tag,"ADMIN");db.update("DELETE FROM system_admin_registry");registry.register(1,admin.getId());registry.register(2,creator.getId());p=projects.create(creator.getId(),new ProjectDtos.CreateProject("FR"+tag,"Feature thử","","Asia/Ho_Chi_Minh")).id();
+    List<Map<String,Object>> registeredAdmins;
+    @BeforeEach void setup(){String tag=UUID.randomUUID().toString().substring(0,8);registeredAdmins=db.queryForList("SELECT slot,user_id FROM system_admin_registry ORDER BY slot");assertThat(registeredAdmins).hasSize(2);admin=users.findById(String.valueOf(registeredAdmins.getFirst().get("user_id"))).orElseThrow();pm=user("pm"+tag,"PM");a=user("a"+tag,"USER");b=user("b"+tag,"USER");dev=user("dev"+tag,"USER");outside=user("outside"+tag,"PM");
+        var creator=users.findById(String.valueOf(registeredAdmins.getLast().get("user_id"))).orElseThrow();p=projects.create(creator.getId(),new ProjectDtos.CreateProject("FR"+tag,"Feature thử","","Asia/Ho_Chi_Minh")).id();
         for(var entry:Map.of(pm,"PM",a,"USER",b,"USER",dev,"USER").entrySet())projects.addOrUpdateMember(p,admin.getId(),entry.getKey().getId(),new ProjectDtos.SetMember(entry.getValue()));
         am=member(a);bm=member(b);
     }
+    @AfterEach void registryWasPreserved(){assertThat(db.queryForList("SELECT slot,user_id FROM system_admin_registry ORDER BY slot")).isEqualTo(registeredAdmins);}
     IdentityUser user(String name,String role){return users.saveAndFlush(new IdentityUser("fr."+name,name,"not-login",role));}
     long member(IdentityUser user){return Objects.requireNonNull(db.queryForObject("SELECT id FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,p,user.getId()));}
     @NonNull RequestPostProcessor actor(IdentityUser user){return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(user.getId(),user.getVersion()),null,List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole())))));}
@@ -90,6 +92,89 @@ class FeatureIntegrationTest {
         long d=imported(feature("Concurrency"),internal()),row=read(d).at("/rows/0/rowId").asLong();
         try(var executor=Executors.newFixedThreadPool(2)){var ready=new CountDownLatch(2);var start=new CountDownLatch(1);var outcomes=new ArrayList<Future<Integer>>();for(var user:List.of(a,b))outcomes.add(executor.submit(()->{ready.countDown();start.await();return assign(d,user,0,List.of(scope(user==a?am:bm,List.of(row)))).getResponse().getStatus();}));assertThat(ready.await(5,TimeUnit.SECONDS)).isTrue();start.countDown();var codes=new ArrayList<Integer>();for(var task:outcomes)codes.add(task.get(10,TimeUnit.SECONDS));assertThat(codes).containsExactlyInAnyOrder(200,409);}
         var current=read(d).at("/rows/0/assigneeMembershipId").asLong();IdentityUser other=current==am?b:a;assertThat(assign(d,other,1,List.of(scope(current==am?bm:am,List.of(row)))).getResponse().getStatus()).isEqualTo(409);
+    }
+    @Test void competingSelfClaimsHaveOneWinner()throws Exception{
+        long d=imported(feature("Two real connections"),internal()),row=read(d).at("/rows/0/rowId").asLong();
+        var connections=ConcurrentHashMap.<Long>newKeySet();var ready=new CountDownLatch(2);var start=new CountDownLatch(1);
+        try(var executor=Executors.newFixedThreadPool(2)){
+            var outcomes=new ArrayList<Future<Integer>>();
+            for(var user:List.of(a,b))outcomes.add(executor.submit(()->new org.springframework.transaction.support.TransactionTemplate(transactions).execute(tx->{
+                connections.add(db.queryForObject("SELECT CONNECTION_ID()",Long.class));ready.countDown();
+                try{assertThat(start.await(5,TimeUnit.SECONDS)).isTrue();int code=assign(d,user,0,List.of(scope(user==a?am:bm,List.of(row)))).getResponse().getStatus();if(code>=400)tx.setRollbackOnly();return code;}
+                catch(Exception error){throw new IllegalStateException(error);}
+            })));
+            assertThat(ready.await(5,TimeUnit.SECONDS)).isTrue();assertThat(connections).hasSize(2);start.countDown();
+            var codes=new ArrayList<Integer>();for(var task:outcomes)codes.add(task.get(15,TimeUnit.SECONDS));
+            assertThat(codes).containsExactlyInAnyOrder(200,409);
+            java.nio.file.Files.write(java.nio.file.Path.of(System.getenv("TMS_CURRENT_WORKFLOW_EVIDENCE_DIR"),"ar02-concurrency.json"),json.writerWithDefaultPrettyPrinter().writeValueAsBytes(Map.of("projectId",p,"documentId",d,"rowId",row,"connectionIds",connections,"httpStatuses",codes)));
+        }
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM test_document_assignment_changes WHERE project_id=? AND document_id=?",Long.class,p,d)).isEqualTo(1);
+        assertThat(read(d).at("/document/version").asLong()).isEqualTo(1);
+    }
+    @Test void failedAssignmentBatchWritesNothing()throws Exception{
+        long d=imported(feature("Atomic assignment batch"),internal());var before=read(d);long row=before.at("/rows/0/rowId").asLong();
+        assertThat(assign(d,pm,0,List.of(scope(am,List.of(row)),scope(bm,List.of(Long.MAX_VALUE))))).extracting(r->r.getResponse().getStatus()).isEqualTo(422);
+        assertThat(read(d)).isEqualTo(before);
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM test_document_assignment_changes WHERE project_id=? AND document_id=?",Long.class,p,d)).isZero();
+    }
+    @Test void assignmentReplayDoesNotDuplicateHistoryOrReplaceOtherScopes()throws Exception{
+        long d=imported(feature("Assignment replay"),internal());var rows=read(d).get("rows");long first=rows.get(0).path("rowId").asLong(),second=rows.get(1).path("rowId").asLong();
+        assertThat(assign(d,b,0,List.of(scope(bm,List.of(second)))).getResponse().getStatus()).isEqualTo(200);
+        String request=encode(Map.of("expectedVersion",1,"requestKey",UUID.randomUUID(),"changes",List.of(scope(am,List.of(first)))));
+        for(int retry=0;retry<2;retry++)mvc.perform(put(path("/test-documents/"+d+"/assignments")).with(actor(a)).with(csrf()).contentType("application/json").content(request)).andExpect(status().isOk()).andExpect(jsonPath("$.version").value(2));
+        var after=read(d);assertThat(after.at("/rows/0/assigneeMembershipId").asLong()).isEqualTo(am);assertThat(after.at("/rows/1/assigneeMembershipId").asLong()).isEqualTo(bm);
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM test_document_assignment_changes WHERE project_id=? AND document_id=?",Long.class,p,d)).isEqualTo(2);
+        assertThat(db.queryForObject("SELECT actor_id FROM test_document_assignment_changes WHERE project_id=? AND document_id=? AND row_id=?",String.class,p,d,first)).isEqualTo(a.getId());
+    }
+    @Test void statusReplayKeepsActualActorAndVersion()throws Exception{
+        long f=feature("Replay actual actor"),d=imported(f,internal());long row=read(d).at("/rows/0/rowId").asLong();
+        assertThat(assign(d,a,0,List.of(scope(am,List.of(row)))).getResponse().getStatus()).isEqualTo(200);
+        long version=body(mvc.perform(post(path("/features/"+f+"/test-versions")).with(actor(pm)).with(csrf()).contentType("application/json").content(encode(Map.of("name","Arena version","requestKey",UUID.randomUUID())))).andExpect(status().isCreated()).andReturn()).path("id").asLong();
+        String request=encode(Map.of("status","NG","expectedVersion",0,"requestKey",UUID.randomUUID(),"testVersionId",version,"executedOn","2026-11-03"));
+        JsonNode saved=null;
+        for(int retry=0;retry<2;retry++){
+            var current=body(mvc.perform(put(path("/test-documents/"+d+"/rows/"+row+"/result")).with(actor(a)).with(csrf()).contentType("application/json").content(request)).andExpect(status().isOk()).andReturn());
+            if(saved==null)saved=current;else assertThat(current).isEqualTo(saved);
+        }
+        assertThat(Objects.requireNonNull(saved).path("updatedBy").asText()).isEqualTo(a.getDisplayName());assertThat(saved.path("version").asLong()).isEqualTo(1);
+        mvc.perform(put(path("/test-documents/"+d+"/rows/"+row+"/result")).with(actor(pm)).with(csrf()).contentType("application/json").content(request)).andExpect(status().isConflict());
+        var history=body(mvc.perform(get(path("/test-documents/"+d+"/rows/"+row+"/result-history")).with(actor(a))).andExpect(status().isOk()).andReturn());
+        assertThat(history.size()).isEqualTo(1);assertThat(history.at("/0/actor").asText()).isEqualTo(a.getDisplayName());
+        assertThat(history.at("/0/testVersionName").asText()).isEqualTo("Arena version");assertThat(history.at("/0/executedOn").asText()).isEqualTo("2026-11-03");
+        assertThat(read(d).at("/rows/0/resultVersion").asLong()).isEqualTo(1);
+    }
+    @Test void previewErrorsNeverCommitAndCommitRetryCreatesNoDuplicateRowsOrHistory()throws Exception{
+        long f=feature("Import retry"),d=imported(f,internal());
+        var before=read(d);long cases=db.queryForObject("SELECT COUNT(*) FROM test_cases WHERE project_id=?",Long.class,p);
+        long audit=db.queryForObject("SELECT COUNT(*) FROM project_audit WHERE project_id=?",Long.class,p);
+        for(int retry=0;retry<2;retry++)mvc.perform(post(path("/features/"+f+"/import-previews/"+d+"/commit")).with(actor(pm)).with(csrf())).andExpect(status().isOk());
+        assertThat(read(d)).isEqualTo(before);assertThat(db.queryForObject("SELECT COUNT(*) FROM test_cases WHERE project_id=?",Long.class,p)).isEqualTo(cases);
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM project_audit WHERE project_id=?",Long.class,p)).isEqualTo(audit);
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM import_batches WHERE project_id=? AND feature_id=?",Long.class,p,f)).isEqualTo(1);
+        byte[] invalid;try(var book=new XSSFWorkbook(new ByteArrayInputStream(internal()));var out=new ByteArrayOutputStream()){book.getSheetAt(0).getRow(1).getCell(5).setCellValue("");book.write(out);invalid=out.toByteArray();}
+        mvc.perform(multipart(path("/features/"+f+"/import-previews")).file(new MockMultipartFile("file","invalid.xlsx","",invalid)).with(actor(pm)).with(csrf())).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("IMPORT_HAS_ERRORS"));
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM import_batches WHERE project_id=? AND feature_id=?",Long.class,p,f)).isEqualTo(1);
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM test_cases WHERE project_id=?",Long.class,p)).isEqualTo(cases);
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM import_batches WHERE project_id=? AND feature_id=? AND status='COMMITTED'",Long.class,p,f)).isEqualTo(1);
+    }
+    @Test void independentCopiesAndAllRowsExport()throws Exception{
+        byte[] source;try(var input=getClass().getResourceAsStream("/workbooks/arena-inline-strings.xlsx")){source=Objects.requireNonNull(input).readAllBytes();}
+        long projectA=p,fa=feature("Arena handoff A"),da=imported(fa,source);var beforeA=read(da);var rowsA=beforeA.get("rows");
+        long projectB=projects.create(admin.getId(),new ProjectDtos.CreateProject("AR02"+UUID.randomUUID().toString().substring(0,8),"Arena handoff B","","Asia/Ho_Chi_Minh")).id();
+        for(var entry:Map.of(pm,"PM",a,"USER",b,"USER").entrySet())projects.addOrUpdateMember(projectB,admin.getId(),entry.getKey().getId(),new ProjectDtos.SetMember(entry.getValue()));
+        p=projectB;long fb=feature("Arena handoff B"),dB=imported(fb,source);var beforeB=read(dB);p=projectA;
+        long row=rowsA.get(0).path("rowId").asLong();assertThat(assign(da,a,0,List.of(scope(am,List.of(row)))).getResponse().getStatus()).isEqualTo(200);result(da,row,a,"NG",0,200);
+        byte[] exported=mvc.perform(get(path("/test-documents/"+da+"/export")).param("page","1").param("size","1").param("keyword","no match").with(actor(a))).andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
+        try(var book=new XSSFWorkbook(new ByteArrayInputStream(exported))){var sheet=book.getSheetAt(0);assertThat(sheet.getLastRowNum()).isEqualTo(rowsA.size());
+            for(int i=0;i<rowsA.size();i++)assertThat(sheet.getRow(i+1).getCell(0).getStringCellValue()).isEqualTo(rowsA.get(i).at("/cells/0").asText());
+            assertThat(sheet.getRow(1).getCell(9).getStringCellValue()).isEqualTo("NG");assertThat(sheet.getRow(1).getCell(15).getStringCellValue()).isEqualTo("Giữ nguyên cột riêng 1");}
+        byte[] original=mvc.perform(get(path("/test-documents/"+da+"/export")).param("original","true").with(actor(a))).andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
+        assertThat(original).isEqualTo(source);
+        mvc.perform(get(path("/test-documents/"+dB)).with(actor(a))).andExpect(status().isNotFound());
+        p=projectB;assertThat(read(dB)).isEqualTo(beforeB);p=projectA;
+        assertThat(rowsA.get(0).path("caseId").asLong()).isNotEqualTo(beforeB.at("/rows/0/caseId").asLong());
+        var fixture=new LinkedHashMap<String,Object>();fixture.put("projectA",projectA);fixture.put("projectB",projectB);fixture.put("featureA",fa);fixture.put("featureB",fb);fixture.put("documentA",da);fixture.put("documentB",dB);fixture.put("rowsA",read(da).get("rows"));fixture.put("rowsB",beforeB.get("rows"));fixture.put("testerUserIds",List.of(a.getId(),b.getId()));fixture.put("testerMembershipsA",List.of(am,bm));p=projectB;fixture.put("testerMembershipsB",List.of(member(a),member(b)));p=projectA;fixture.put("pmUserId",pm.getId());fixture.put("originalSha256",HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(source)));fixture.put("expectedStatusCounts",Map.of("A",Map.of("NG",1,"UNEXECUTED",23),"B",Map.of("UNEXECUTED",24)));
+        var evidence=java.nio.file.Path.of(System.getenv("TMS_CURRENT_WORKFLOW_EVIDENCE_DIR"));java.nio.file.Files.write(evidence.resolve("ar02-owned-fixtures.json"),json.writerWithDefaultPrettyPrinter().writeValueAsBytes(fixture));java.nio.file.Files.write(evidence.resolve("ar02-current.xlsx"),exported);java.nio.file.Files.write(evidence.resolve("ar02-original.xlsx"),original);
     }
     @Test void archiveRestoreAndHidePreserveWorkbookAndRows()throws Exception{
         byte[] bytes=internal();long f=feature("Archive"),d=imported(f,bytes);long row=read(d).at("/rows/0/rowId").asLong();

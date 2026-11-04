@@ -247,6 +247,8 @@ public class ProjectService {
             .orElseThrow(()->new BusinessException(404,"NOT_FOUND","Không tìm thấy tài khoản đang hoạt động."));
         var member=membershipRepository.findByProjectIdAndUserId(projectId,user.getId());
         String role=member==null?initialMemberRole(user.getRole()):member.getProjectRole();
+        if(member!=null && !role.equals(initialMemberRole(user.getRole())))
+            throw new BusinessException(422,"INCOMPATIBLE_MEMBERSHIP","Tài khoản có vai trò thành viên lịch sử không còn được hỗ trợ. Giữ nguyên lịch sử và không thể thêm lại tại đây.");
         if(!isGlobalAdmin(actorId) && (!"USER".equals(user.getRole()) || !"USER".equals(role)))
             throw new BusinessException(403,"FORBIDDEN","Admin dự án chỉ được thêm User thường.");
         return new ProjectDtos.MemberCandidate(user.getId(),user.getUsername(),user.getDisplayName(),member==null?null:member.getVersion(),user.getRole(),role);

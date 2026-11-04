@@ -1,53 +1,51 @@
 # Lưu trữ và mở lại dự án
 
-Quyết định ngày 08/10/2026: người dùng giao chọn quy tắc phù hợp khách hàng. Chỉ ADMIN đang hoạt động được quyết định. Lưu trữ là chuyển dự án sang chế độ chỉ đọc, không phải xóa hoặc tự hoàn thành công việc. PM/Tester/Dev còn membership vẫn được xem lịch sử và xuất dữ liệu theo quyền hiện có.
+Chỉ tài khoản ADMIN đang hoạt động thuộc registry hai Admin tổng được quyết định. Lưu trữ chuyển dự án sang chỉ đọc, không xóa hoặc tự hoàn thành công việc. PM/USER/Khách còn quyền xem vẫn đọc lịch sử và xuất dữ liệu trong phạm vi được phép. Contract hiện hành gồm ngoại lệ luồng cũ AR-06, migration V40; không khôi phục API execution/retest/QA answer đã nghỉ.
 
 ## Kiểm tra trước khi lưu trữ
 
 `GET /api/v1/admin/projects/{id}/archive-readiness`
 
-Trả về `projectId`, `projectCode`, `projectName`, `version`, `archived`, `archivedAt`, `canArchive`, `canReopen`, `asOf`, `blockers`, `warnings`, `latestDecision`.
+Trả `projectId`, `projectCode`, `projectName`, `version`, `archived`, `archivedAt`, `canArchive`, `canArchiveWithLegacyException`, `legacyExceptionFingerprint`, `canReopen`, `asOf`, `blockers`, `warnings`, `latestDecision`.
 
-Mỗi blocker có `{code, label, count}`; chỉ trả các loại có số lượng lớn hơn 0:
+Blocker `{code,label,count,exceptionEligible}` chỉ xuất hiện khi count > 0:
 
-| Code | Điều kiện | Hướng xử lý |
+| Code | Điều kiện | Ngoại lệ |
 | --- | --- | --- |
-| `ACTIVE_SESSIONS` | Phiên file `DOING` hoặc `PAUSED` | Tester hoàn tất hoặc PM hủy phiên với lý do theo luồng hiện có |
-| `ALLOCATED_DEVICES` | Thiết bị bàn giao chưa có thời điểm thu hồi | Admin nhận lại thiết bị |
-| `OPEN_WORK_ITEMS` | Công việc có trạng thái chưa kết thúc trong danh mục, bao gồm bug và QA | PM/Tester/Dev xử lý theo từng luồng; không bỏ qua retest hoặc xác nhận QA |
-| `UNFINISHED_CYCLES` | Đợt `ACTIVE`, hoặc `DRAFT` đã có run item | PM xử lý và chốt đợt theo các điều kiện hiện có |
-| `OPEN_RETESTS` | Bất kỳ yêu cầu retest còn `OPEN`, kể cả dữ liệu cũ có bug đã kết thúc | Xử lý retest trước khi lưu trữ |
-| `PENDING_PUBLICATIONS` | Redmine `QUEUED`, `RETRY_WAIT` hoặc `RUNNING` | Chờ/khắc phục lần gửi để không cắt ngang tác vụ ngoài hệ thống |
+| `ACTIVE_SESSIONS` | Phiên file `DOING` hoặc `PAUSED` | Không; giữ nghĩa vụ đối soát luồng cũ, không bật lại mutation đã nghỉ |
+| `ALLOCATED_DEVICES` | Thiết bị chưa thu hồi | Không; Admin thu hồi theo luồng hiện hành |
+| `OPEN_WORK_ITEMS` | `ticket_workflow_metrics.finalized = FALSE`, gồm Ticket chưa kết thúc, CLOSED/PROCESSED chờ xác minh và ordinary work cũ | Không; Ticket xử lý theo trách nhiệm hiện hành, ordinary work cũ cần quyết định riêng |
+| `UNFINISHED_CYCLES` | Cycle ACTIVE hoặc DRAFT có run | Có, chỉ khi Admin xác nhận snapshot |
+| `OPEN_RETESTS` | Retest OPEN, kể cả bug đã kết thúc | Có, chỉ khi Admin xác nhận snapshot |
+| `PENDING_PUBLICATIONS` | Redmine QUEUED/RETRY_WAIT/RUNNING | Không; đối soát tác vụ ngoài hệ thống |
 
-Đợt nháp rỗng được giữ nguyên khi lưu trữ vì chưa chứa công việc thực thi. Hệ thống không gán nháp đó thành hoàn tất. Lỗi gửi Redmine đã dừng (`FAILED`, `CONFLICT`, `UNCERTAIN`) không được tính là tác vụ đang gửi; lịch sử vẫn giữ và Admin có thể mở lại dự án để xử lý tiếp. Không tự gửi lại khi mở lại dự án.
+`canArchive` chỉ true khi active và không blocker. `canArchiveWithLegacyException` chỉ true khi active, có ít nhất một legacy blocker và không hard blocker. Fingerprint trả khi có legacy blocker, kể cả lúc hard blocker khiến ngoại lệ chưa dùng được. Draft rỗng được giữ nguyên; server không gán hoàn thành.
 
-Cảnh báo cần xử lý trên tổng quan (`attention.overdueMilestones`, `overdueMilestoneCount`, `insufficientMilestoneData`) chỉ tính dự án chưa lưu trữ. Chi tiết dự án vẫn giữ mốc và số liệu lịch sử, kể cả đợt nháp rỗng quá hạn; mỗi mốc có `projectArchived` và `projectArchivedAt` để hiển thị ngữ cảnh đã lưu trữ, không tự đổi trạng thái lịch sử.
+`warnings` là cảnh báo không chặn PUBLICATION_REVIEW khi publication mới nhất mỗi binding là FAILED/CONFLICT/UNCERTAIN; không đếm thất bại đã có lượt mới hơn. Mở lại không tự gửi lại Redmine. Cảnh báo milestone trên tổng quan chỉ tính project active; chi tiết vẫn giữ lịch sử cùng `projectArchived`/`projectArchivedAt`.
 
-`warnings` trả cảnh báo không chặn `{code: PUBLICATION_REVIEW, label, count}` khi bản công bố mới nhất của một binding là `FAILED`, `CONFLICT` hoặc `UNCERTAIN`. Người dùng được nhắc kiểm tra trước khi lưu trữ; muốn đối chiếu sau đó phải mở lại dự án. Không đếm thất bại lịch sử đã có lượt mới hơn thành công.
-
-`latestDecision` là `null` khi chưa có quyết định; nếu có, trả `{id, action, reason, actorName, decidedAt, resultVersion}`.
+Ticket đã xóa mềm hoặc nằm trong Feature/file ẩn vẫn chặn. AR-06 không coi xóa/ẩn là hoàn tất nghĩa vụ và không mở rộng ngoại lệ ra Ticket. Feature có endpoint restore; việc phục hồi Bug Monkey đã xóa/file đã ẩn và chính sách xử lý được theo dõi riêng tại U26.
 
 ## Quyết định có phiên bản và chống gửi trùng
 
 - `POST /api/v1/admin/projects/{id}/archive`
 - `POST /api/v1/admin/projects/{id}/reopen`
 
-Body: `{expectedVersion, reason, requestKey}`. Phiên bản không âm; lý do sau bỏ khoảng trắng đầu/cuối dài 1–2000 ký tự; khóa khớp `[A-Za-z0-9_-]{8,100}`. Client giữ nguyên khóa khi thử lại cùng thao tác, tạo khóa mới khi người dùng sửa nội dung hoặc chấp nhận phiên bản mới.
+Body thường `{expectedVersion,reason,requestKey}`: version >= 0, reason trim dài 1–2000, key khớp `[A-Za-z0-9_-]{8,100}`. Archive có thể thêm `legacyException: {acknowledged:true,snapshotFingerprint:"<64 lowercase hex>"}`. Bỏ trường/null là lệnh thường; object thiếu/sai hoặc gửi object vào reopen trả 422 INVALID_COMMAND. Service cũng validate direct calls. Không nhận IDs/counts/policy do client cung cấp.
 
-Trả HTTP 200 với readiness hiện tại. Gửi lại khóa đã thành công với cùng actor, action, expectedVersion và lý do đã chuẩn hóa không tạo thêm audit/quyết định. Một lệnh lưu trữ cũ thử lại sau khi dự án đã mở lại trả trạng thái hiện tại, không lưu trữ lại. Dùng khóa cũ cho nội dung hoặc người khác trả 409 `IDEMPOTENCY_CONFLICT`.
+Snapshot policy1 dựng server-side bằng locking reads, chứa projectId/projectVersion, cycle `{id,status,version,runIds}` và retest `{id,status,version}`. Sort ID tăng dần, runIds distinct/sort. SHA-256 trên canonical JSON UTF-8 không chứa chính fingerprint, label, asOf hoặc counts. Thứ tự trường cố định được ghi tại [contract FixReports](fixreports-contract.md) và test `LegacyArchiveSnapshotTest`. Snapshot persisted thêm fingerprint và blocker counts; không đổi child.
 
-Mỗi lần thành công tăng `projects.lock_version`, cập nhật `updated_at/updated_by`, ghi `project_lifecycle_decisions` có lý do và ghi `project_audit` với `PROJECT/ARCHIVE` hoặc `PROJECT/REOPEN`. Mở lại chỉ bỏ `archived_at`; không bàn giao thiết bị, tạo lại phiên hoặc gán lại thành viên.
+Digest thường giữ đúng `checksum(List.of(action,expectedVersion,trimmedReason))`; ngoại lệ dùng `checksum(List.of("PROJECT_LIFECYCLE_LEGACY_EXCEPTION_V1",action,expectedVersion,trimmedReason,true,snapshotFingerprint))`. Không fallback sang hash thường. Client giữ key khi retry cùng thao tác; key mới khi sửa payload.
 
-Các lỗi chính: 401 tài khoản không hoạt động; 403 `ADMIN_REQUIRED`; 404 dự án không tồn tại; 409 `VERSION_CONFLICT`, `PROJECT_STATE_CONFLICT`, `ARCHIVE_BLOCKED`, `IDEMPOTENCY_CONFLICT`; 422 input không hợp lệ. POST vẫn yêu cầu CSRF của phiên hiện có.
+Thứ tự quyết định: current identity/registry lock → project lock → validate → replay actor/hash → version/state → snapshot và mọi blocker → fingerprint/eligibility → project/decision/audit trong một transaction. Retry thành công trả readiness hiện tại HTTP200, không thêm decision/audit và không archive lại sau reopen, kể cả snapshot hiện tại đã đổi. Mở lại chỉ bỏ archived_at, tăng version; không tạo lại phiên, allocation hoặc membership.
 
-Readiness là thông tin tại thời điểm đọc. POST kiểm tra lại trong cùng transaction khóa identity hiện hành → project → dữ liệu phụ thuộc, dùng khóa chung với các writer dự án. Không có tham số bỏ qua blocker.
+Lỗi: 401 identity/registry không hợp lệ; 403 ADMIN_REQUIRED; 404 project không tồn tại; 409 VERSION_CONFLICT, PROJECT_STATE_CONFLICT, IDEMPOTENCY_CONFLICT, LEGACY_BLOCKERS_CHANGED hoặc ARCHIVE_BLOCKED; 422 INVALID_COMMAND. POST vẫn cần CSRF. Preview không phải bảo đảm submit; server đọc lại dưới khóa.
 
 ## Lịch sử
 
 `GET /api/v1/admin/projects/{id}/lifecycle-decisions?page=0&size=20`
 
-Page `{items, page, size, totalElements}`, sắp xếp quyết định mới nhất trước; size 1–100. `items` dùng các trường công khai như `latestDecision`. Không trả request key, payload hash, session hoặc thông tin xác thực.
+Page `{items,page,size,totalElements}`, mới nhất trước, size1–100. Mỗi decision và latestDecision gồm `{id,action,reason,actorName,decidedAt,resultVersion,legacyException}`; latestDecision null khi chưa có quyết định. `legacyException` null cho row cũ/lệnh thường/reopen; ngoại lệ trả `{policyVersion,fingerprint,blockers:[{code,count}]}`. Actor/reason/time là thẩm quyền lịch sử. Không trả requestKey, payload hash, session hoặc credential.
 
 ## Migration và kiểm chứng
 
-V21 thêm duy nhất bảng quyết định; không sửa nội dung case/Excel hay dữ liệu lịch sử. Migration demo V20 giữ ở location demo hiện có. Native integration chạy trên schema riêng ở V21 qua mode `lifecycle-integration`; mode F/Q `integration` vẫn bắt buộc V19 và không được nâng cấp ngầm.
+V21 tạo bảng quyết định; V40 chỉ thêm `legacy_exception_snapshot JSON NULL`, giữ bytes V1–V39. Release core không cần demo V34. Matrix gồm fresh core/core+demo, upgrade coreV33/demoV34, core/core+demoV39 lên V40. Migration test có guard/manifest riêng và không chạy trong integration runner. Native current suites dùng schema V40 đã provision và receipt mới; integration runner không migrate/clean/repair/reset. Historical V21 migration test giữ riêng; current service không fallback khi thiếu cột mới.

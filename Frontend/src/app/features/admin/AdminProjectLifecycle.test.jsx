@@ -1,5 +1,5 @@
 import React from 'react';
-import {render,screen,fireEvent,waitFor,within} from '@testing-library/react';
+import {act,render,screen,fireEvent,waitFor,within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {beforeEach,expect,test,vi} from 'vitest';
 import {AdminProjectLifecycle} from './AdminProjectLifecycle';
@@ -11,6 +11,24 @@ async function open(label='Kiểm tra lưu trữ') {
  await userEvent.click(await screen.findByRole('button',{name:label}));
  return screen.findByRole('dialog');
 }
+test.each([false,true])('readiness refresh while a dialog is open keeps its mode and reason without dereferencing missing data: legacy=%s',async legacy=>{
+ const preview=legacy?legacyReady:ready;api.archiveReadiness.mockResolvedValue(preview);
+ const view=render(<AdminProjectLifecycle projectId={7} api={api}/>);await open();
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:'Giữ nháp qua tải lại'}});
+ if(legacy)fireEvent.click(screen.getByRole('checkbox'));
+ let finish;const refreshedApi={...api,archiveReadiness:vi.fn().mockReturnValue(new Promise(resolve=>{finish=resolve;}))};
+ refreshedApi.archiveProject.mockResolvedValue({...ready,archived:true});
+ view.rerender(<AdminProjectLifecycle projectId={7} api={refreshedApi}/>);
+ await waitFor(()=>expect(refreshedApi.archiveReadiness).toHaveBeenCalledTimes(2));
+ expect(screen.getByRole('dialog')).toBeInTheDocument();expect(screen.getByLabelText('Lý do lưu trữ')).toHaveValue('Giữ nháp qua tải lại');
+ expect(screen.getByRole('button',{name:'Xác nhận lưu trữ'})).toBeDisabled();
+ await act(async()=>finish({...preview,version:4,legacyExceptionFingerprint:legacy?'b'.repeat(64):null}));
+ if(legacy){expect(screen.getByRole('checkbox')).not.toBeChecked();expect(screen.getByRole('button',{name:'Xác nhận lưu trữ'})).toBeDisabled();fireEvent.click(screen.getByRole('checkbox'));}
+ expect(screen.getByRole('button',{name:'Xác nhận lưu trữ'})).toBeEnabled();
+ fireEvent.click(screen.getByRole('button',{name:'Xác nhận lưu trữ'}));
+ await waitFor(()=>expect(refreshedApi.archiveProject).toHaveBeenCalledWith(7,expect.objectContaining({expectedVersion:4,reason:'Giữ nháp qua tải lại'})));
+ if(legacy)expect(refreshedApi.archiveProject.mock.calls[0][1].legacyException.snapshotFingerprint).toBe('b'.repeat(64));
+});
 test('explains blockers with counts, correct project links, and never allows a blocked archive',async()=>{
  api.archiveReadiness.mockResolvedValue({...ready,canArchive:false,blockers:[{code:'ACTIVE_SESSIONS',count:2,label:'Phiên chưa kết thúc'},{code:'ALLOCATED_DEVICES',count:3,label:'Máy chưa thu hồi'},{code:'OPEN_WORK_ITEMS',count:4,label:'Ticket chưa kết thúc'}]});
  render(<AdminProjectLifecycle projectId={7} api={api}/>);
@@ -18,10 +36,147 @@ test('explains blockers with counts, correct project links, and never allows a b
  expect(within(dialog).getByText('Phiên chưa kết thúc')).toBeInTheDocument();
  expect(within(dialog).getByText('3')).toBeInTheDocument();
  expect(within(dialog).getByRole('link',{name:'Thu hồi thiết bị'})).toHaveAttribute('href','#/admin/devices?projectId=7');
- expect(within(dialog).getByText(/PM kiểm tra Công việc theo file của dự án/)).toBeInTheDocument();
+ expect(within(dialog).getByText(/Phiên thuộc luồng cũ cần Admin và PM đối soát/)).toBeInTheDocument();
  fireEvent.change(within(dialog).getByLabelText('Lý do lưu trữ'),{target:{value:'Dự án đã bàn giao'}});
  expect(within(dialog).getByRole('button',{name:'Xác nhận lưu trữ'})).toBeDisabled();
  expect(api.archiveProject).not.toHaveBeenCalled();
+});
+
+const acknowledgement='Tôi xác nhận lưu trữ dù còn đợt kiểm thử/yêu cầu kiểm thử lại thuộc luồng cũ; dữ liệu và lịch sử được giữ nguyên.';
+const legacyReady={...ready,canArchive:false,canArchiveWithLegacyException:true,legacyExceptionFingerprint:'a'.repeat(64),blockers:[{code:'UNFINISHED_CYCLES',label:'Đợt kiểm thử chưa chốt',count:2,exceptionEligible:true},{code:'OPEN_RETESTS',label:'Yêu cầu kiểm thử lại còn mở',count:3,exceptionEligible:true}]};
+test('requiresExplicitLegacyAcknowledgementAndReason',async()=>{
+ api.archiveReadiness.mockResolvedValue(legacyReady);
+ api.archiveProject.mockResolvedValue({...ready,archived:true});
+ render(<AdminProjectLifecycle projectId={7} api={api}/>);const dialog=await open();
+ const checkbox=within(dialog).getByRole('checkbox',{name:acknowledgement});
+ const confirm=within(dialog).getByRole('button',{name:'Xác nhận lưu trữ'});
+ expect(checkbox).not.toBeChecked();expect(confirm).toBeDisabled();
+ expect(confirm).toHaveAccessibleDescription(/xác nhận ngoại lệ/i);
+ fireEvent.click(checkbox);expect(confirm).toBeDisabled();
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:'   '}});expect(confirm).toBeDisabled();
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:'  Giữ nguyên dữ liệu cũ để đối soát  '}});
+ expect(confirm).toBeEnabled();
+ fireEvent.click(checkbox);expect(confirm).toBeDisabled();fireEvent.click(checkbox);fireEvent.click(confirm);
+ await waitFor(()=>expect(api.archiveProject).toHaveBeenCalledWith(7,{expectedVersion:3,reason:'Giữ nguyên dữ liệu cũ để đối soát',requestKey:expect.any(String),legacyException:{acknowledged:true,snapshotFingerprint:'a'.repeat(64)}}));
+});
+test.each(['ACTIVE_SESSIONS','ALLOCATED_DEVICES','OPEN_WORK_ITEMS','PENDING_PUBLICATIONS'])('neverOffersExceptionForHardBlockers: %s',async code=>{
+ api.archiveReadiness.mockResolvedValue({...legacyReady,canArchiveWithLegacyException:false,blockers:[...legacyReady.blockers,{code,label:`Hard ${code}`,count:1,exceptionEligible:false}]});
+ render(<AdminProjectLifecycle projectId={7} api={api}/>);const dialog=await open();
+ expect(within(dialog).getAllByRole('listitem')).toHaveLength(3);
+ expect(within(dialog).queryByRole('checkbox')).not.toBeInTheDocument();
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:'Không được miễn'}});
+ expect(screen.getByRole('button',{name:'Xác nhận lưu trữ'})).toBeDisabled();
+ expect(within(dialog).getAllByText(/Có thể xác nhận ngoại lệ luồng cũ/)).toHaveLength(2);
+ expect(api.archiveProject).not.toHaveBeenCalled();
+});
+test('does not infer exception permission from blocker counts or labels for a read-only actor',async()=>{
+ api.archiveReadiness.mockResolvedValue({...legacyReady,canArchiveWithLegacyException:false});
+ render(<AdminProjectLifecycle projectId={7} api={api}/>);await open();
+ expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+ expect(screen.getByRole('button',{name:'Xác nhận lưu trữ'})).toBeDisabled();
+ expect(screen.queryByRole('link',{name:/đợt|retest/i})).not.toBeInTheDocument();
+});
+test('uncertainRetryKeepsExactCommand',async()=>{
+ api.archiveReadiness.mockResolvedValue(legacyReady);
+ api.archiveProject.mockRejectedValueOnce(Object.assign(new Error('Quá thời gian chờ'),{code:'TIMEOUT'})).mockResolvedValueOnce({...ready,archived:true});
+ render(<AdminProjectLifecycle projectId={7} api={api}/>);await open();
+ fireEvent.click(screen.getByRole('checkbox',{name:acknowledgement}));
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:'Chấp nhận tồn đọng cũ'}});
+ fireEvent.click(screen.getByRole('button',{name:'Xác nhận lưu trữ'}));await screen.findByRole('alert');
+ expect(screen.getByRole('checkbox')).toBeDisabled();expect(screen.getByLabelText('Lý do lưu trữ')).toBeDisabled();
+ api.archiveReadiness.mockResolvedValue({...legacyReady,legacyExceptionFingerprint:'b'.repeat(64)});
+ fireEvent.click(screen.getByRole('button',{name:'Thử lưu lại'}));
+ await waitFor(()=>expect(api.archiveProject).toHaveBeenCalledTimes(2));
+ expect(api.archiveProject.mock.calls[1][1]).toEqual(api.archiveProject.mock.calls[0][1]);
+ expect(api.archiveProject.mock.calls[1][1].legacyException.snapshotFingerprint).toBe('a'.repeat(64));
+ expect(api.archiveReadiness).toHaveBeenCalledTimes(2);
+});
+test.each(['LEGACY_BLOCKERS_CHANGED','VERSION_CONFLICT'])('conflictRefreshClearsAcknowledgementButKeepsReason: %s',async code=>{
+ api.archiveReadiness.mockResolvedValue(legacyReady);
+ api.archiveProject.mockRejectedValueOnce(Object.assign(new Error('Snapshot đã thay đổi'),{status:409,code})).mockResolvedValue({...ready,archived:true});
+ render(<AdminProjectLifecycle projectId={7} api={api}/>);await open();
+ const typedReason='Giữ lý do khi dữ liệu đổi';
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:typedReason}});fireEvent.click(screen.getByRole('checkbox'));
+ api.archiveReadiness.mockResolvedValue({...legacyReady,version:4,legacyExceptionFingerprint:'b'.repeat(64)});
+ fireEvent.click(screen.getByRole('button',{name:'Xác nhận lưu trữ'}));await screen.findByRole('alert');
+ await waitFor(()=>expect(api.archiveReadiness).toHaveBeenCalledTimes(3));
+ const checkbox=await screen.findByRole('checkbox');expect(checkbox).not.toBeChecked();
+ expect(screen.getByLabelText('Lý do lưu trữ')).toHaveValue(typedReason);
+ expect(screen.getByRole('button',{name:'Xác nhận lưu trữ'})).toBeDisabled();
+ fireEvent.click(checkbox);fireEvent.click(screen.getByRole('button',{name:'Xác nhận lưu trữ'}));
+ await waitFor(()=>expect(api.archiveProject).toHaveBeenCalledTimes(2));
+ const [oldCommand,newCommand]=api.archiveProject.mock.calls.map(call=>call[1]);
+ expect(newCommand).toMatchObject({expectedVersion:4,reason:typedReason,legacyException:{acknowledged:true,snapshotFingerprint:'b'.repeat(64)}});
+ expect(newCommand.requestKey).not.toBe(oldCommand.requestKey);
+});
+test('manual refresh clears acknowledgement even when counts and version stay unchanged',async()=>{
+ api.archiveReadiness.mockResolvedValue(legacyReady);
+ render(<AdminProjectLifecycle projectId={7} api={api}/>);await open();
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:'Giữ nháp'}});fireEvent.click(screen.getByRole('checkbox'));
+ api.archiveReadiness.mockResolvedValue({...legacyReady,legacyExceptionFingerprint:'c'.repeat(64)});
+ fireEvent.click(screen.getByRole('button',{name:'Kiểm tra lại, giữ lý do'}));
+ await waitFor(()=>expect(api.archiveReadiness).toHaveBeenCalledTimes(3));
+ expect(await screen.findByRole('checkbox')).not.toBeChecked();expect(screen.getByLabelText('Lý do lưu trữ')).toHaveValue('Giữ nháp');
+ expect(screen.getByRole('button',{name:'Xác nhận lưu trữ'})).toBeDisabled();
+});
+test('historyShowsAcceptedLegacyCounts',async()=>{
+ const decision={id:44,action:'ARCHIVE',actorName:'<img src=x onerror=alert(1)>',reason:'<script>archive()</script>',decidedAt:'2026-11-03T01:00:00Z',legacyException:{policyVersion:1,fingerprint:'a'.repeat(64),blockers:[{code:'UNFINISHED_CYCLES',count:2},{code:'OPEN_RETESTS',count:3}]}};
+ api.archiveReadiness.mockResolvedValue({...ready,latestDecision:decision});
+ api.lifecycleDecisions.mockResolvedValue({items:[decision,{id:45,action:'REOPEN',actorName:'Admin',reason:'Mở lại thường',legacyException:null}],page:0,size:20,totalElements:2});
+ render(<AdminProjectLifecycle projectId={7} api={api}/>);
+ await screen.findByText('Ngoại lệ tồn đọng luồng cũ');
+ await userEvent.click(screen.getByRole('button',{name:'Lịch sử lưu trữ / mở lại'}));
+ const history=await screen.findByRole('region',{name:'Lịch sử vòng đời dự án'});
+ expect(await within(history).findByText('Ngoại lệ tồn đọng luồng cũ')).toBeVisible();
+ expect(history).toHaveTextContent('Đợt kiểm thử chưa chốt (UNFINISHED_CYCLES): 2');
+ expect(history).toHaveTextContent('Yêu cầu kiểm thử lại còn mở (OPEN_RETESTS): 3');
+ expect(history).toHaveTextContent(decision.actorName);expect(history).toHaveTextContent(decision.reason);
+ expect(history.querySelector('script, img')).toBeNull();
+ const ordinary=within(history).getByText('Mở lại thường').closest('li');
+ expect(ordinary).not.toHaveTextContent('Ngoại lệ tồn đọng luồng cũ');
+});
+test('revocation locks exception submission even after refreshing readiness',async()=>{
+ api.archiveReadiness.mockResolvedValue(legacyReady);
+ api.archiveProject.mockRejectedValue(Object.assign(new Error('Quyền Admin bị thu hồi'),{status:403}));
+ const onSaved=vi.fn();render(<AdminProjectLifecycle projectId={7} api={api} onSaved={onSaved}/>);await open();
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:'Không mất lý do'}});fireEvent.click(screen.getByRole('checkbox'));
+ fireEvent.click(screen.getByRole('button',{name:'Xác nhận lưu trữ'}));await screen.findByRole('alert');
+ fireEvent.click(screen.getByRole('button',{name:'Kiểm tra lại, giữ lý do'}));
+ await waitFor(()=>expect(api.archiveReadiness).toHaveBeenCalledTimes(3));
+ expect(screen.getByRole('button',{name:'Xác nhận lưu trữ'})).toBeDisabled();
+ expect(within(screen.getByRole('alert')).getByText(/Quyền của tài khoản không còn/)).toBeVisible();
+ expect(onSaved).not.toHaveBeenCalled();
+});
+test('pending exception command locks checkbox, submit, reason, cancel and Escape',async()=>{
+ let finish;api.archiveReadiness.mockResolvedValue(legacyReady);api.archiveProject.mockReturnValue(new Promise(resolve=>{finish=resolve;}));
+ render(<AdminProjectLifecycle projectId={7} api={api}/>);await open();
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:'Giữ bản ghi cũ'}});fireEvent.click(screen.getByRole('checkbox'));
+ fireEvent.click(screen.getByRole('button',{name:'Xác nhận lưu trữ'}));
+ expect(screen.getByRole('checkbox')).toBeDisabled();expect(screen.getByLabelText('Lý do lưu trữ')).toBeDisabled();
+ expect(screen.getByRole('button',{name:'Đang lưu…'})).toBeDisabled();expect(screen.getByRole('button',{name:'Hủy'})).toBeDisabled();
+ await userEvent.keyboard('{Escape}');expect(screen.getByRole('dialog')).toBeInTheDocument();expect(api.archiveProject).toHaveBeenCalledTimes(1);
+ finish({...ready,archived:true});await waitFor(()=>expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+});
+test('snapshot conflict that discovers a hard blocker removes the exception offer',async()=>{
+ api.archiveReadiness.mockResolvedValue(legacyReady);
+ api.archiveProject.mockRejectedValue(Object.assign(new Error('Tồn đọng đã thay đổi'),{status:409,code:'ARCHIVE_BLOCKED'}));
+ render(<AdminProjectLifecycle projectId={7} api={api}/>);await open();
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:'Giữ lý do'}});fireEvent.click(screen.getByRole('checkbox'));
+ api.archiveReadiness.mockResolvedValue({...legacyReady,canArchiveWithLegacyException:false,blockers:[...legacyReady.blockers,{code:'OPEN_WORK_ITEMS',label:'Ticket đã ẩn vẫn chưa kết thúc',count:1,exceptionEligible:false}]});
+ fireEvent.click(screen.getByRole('button',{name:'Xác nhận lưu trữ'}));await screen.findByText('Ticket đã ẩn vẫn chưa kết thúc');
+ expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Xác nhận lưu trữ'})).toBeDisabled();
+ expect(screen.getByLabelText('Lý do lưu trữ')).toHaveValue('Giữ lý do');expect(api.archiveProject).toHaveBeenCalledTimes(1);
+});
+test('editing a rejected exception reason creates a new command key',async()=>{
+ api.archiveReadiness.mockResolvedValue(legacyReady);
+ api.archiveProject.mockRejectedValueOnce(Object.assign(new Error('Kiểm tra lý do'),{status:422})).mockResolvedValue({...ready,archived:true});
+ render(<AdminProjectLifecycle projectId={7} api={api}/>);await open();
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:'Lý do đầu'}});fireEvent.click(screen.getByRole('checkbox'));
+ fireEvent.click(screen.getByRole('button',{name:'Xác nhận lưu trữ'}));await screen.findByRole('alert');
+ fireEvent.change(screen.getByLabelText('Lý do lưu trữ'),{target:{value:'Lý do đã sửa'}});fireEvent.click(screen.getByRole('button',{name:'Xác nhận lưu trữ'}));
+ await waitFor(()=>expect(api.archiveProject).toHaveBeenCalledTimes(2));
+ expect(api.archiveProject.mock.calls[1][1].requestKey).not.toBe(api.archiveProject.mock.calls[0][1].requestKey);
+ expect(api.archiveProject.mock.calls[1][1].legacyException).toEqual(api.archiveProject.mock.calls[0][1].legacyException);
 });
 test('requires a nonblank reason, obtains a fresh preview, and archives only once while saving',async()=>{
  let complete;api.archiveProject.mockReturnValue(new Promise(resolve=>{complete=resolve;}));

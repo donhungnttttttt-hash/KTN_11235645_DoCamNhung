@@ -72,3 +72,6 @@ Backend/.idea/
 /var/word-report-2026-10-19/original-inventory.json
 /var/admin-login-landing-2026-10-19/AppEntry.before.jsx
 /var/uiux-dashboard-testing-2026-10-19/testing/testing-css-draft.css
+
+# Arena isolated builds, runtime receipts, fixtures and private local configuration.
+/var/arena-followup/

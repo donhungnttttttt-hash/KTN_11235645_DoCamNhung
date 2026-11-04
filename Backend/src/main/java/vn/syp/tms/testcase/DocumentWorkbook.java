@@ -31,7 +31,7 @@ final class DocumentWorkbook {
                     var cell=header.getCell(c);
                     if(cell!=null && CustomerWorkbook.value(cell,1).equals(headers.get(c)))continue;
                     if(cell==null){cell=header.createCell(c);sheet.setColumnWidth(c,30*256);}
-                    cell.setCellValue(headers.get(c));
+                    replaceText(cell,headers.get(c));
                 }
             }
             for (var data : rows) {
@@ -43,10 +43,16 @@ final class DocumentWorkbook {
                     if (cell != null && CustomerWorkbook.value(cell, data.rowNumber()).equals(value)) continue;
                     if (cell == null) cell = row.createCell(c);
                     cell.removeHyperlink();
-                    cell.setCellValue(value); // A leading '=' remains a string, never a formula.
+                    replaceText(cell,value); // A leading '=' remains a string, never a formula.
                 }
             }
             book.write(out); return out.toByteArray();
         } catch (IOException e) { throw new IllegalStateException("Cannot export test document", e); }
+    }
+    private static void replaceText(Cell cell,String value) {
+        // Imported inline strings must lose their old <is> payload before POI writes new text.
+        // Clearing the value keeps the existing style, dimensions and unrelated workbook cells.
+        cell.setBlank();
+        cell.setCellValue(value);
     }
 }

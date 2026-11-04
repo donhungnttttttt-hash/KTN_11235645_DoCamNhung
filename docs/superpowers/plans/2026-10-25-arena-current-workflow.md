@@ -1,5 +1,7 @@
 # Arena current workflow — Implementation Plan
 
+**Cập nhật thực thi 03/11:** áp dụng [quyết định hiện hành](../../planning/2026-11-03-arena-execution-adjustments.md) về USER/GUEST, Ticket V39 và test native/build/storage cô lập. Không khôi phục vai trò hoặc workflow cũ để làm test 25/10 xanh.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Chứng minh các vai trò phối hợp đúng trên luồng Feature hiện hành và khép các lỗi được tái hiện, với bằng chứng gắn cùng source/schema.
@@ -162,7 +164,7 @@ Các giá trị trong `<...>` lấy từ receipt AR-00, **không chạy nguyên 
 - Test: `Backend/src/test/java/vn/syp/tms/testcase/ManagementReportIntegrationTest.java`, `FeatureAiIntegrationTest.java`; `Backend/src/test/java/vn/syp/tms/reporting/ManagementReportServiceTest.java`; `Backend/src/test/java/vn/syp/tms/ai/AiManagementReportGeneratorTest.java`, `AiManagementReportTextTest.java`.
 - Test: `Frontend/src/app/features/reports/ManagementAnalysisPage.ai.test.jsx`, `ManagementAnalysisPage.providers.test.jsx`, các test `ManagementAnalysisPage*.test.jsx` hiện có; `Frontend/src/app/features/ai/AiChat.test.jsx`.
 
-**Interfaces:** Consumes fixture totals/issue IDs AR-02/03. Management report CRUD/version/download giữ nguyên text; generator chỉ trả preview Markdown, không save/source mutation. AI project/Feature/all scope phải enforce trước retrieval; PM AI global read không vượt report CRUD scope.
+**Interfaces:** Consumes fixture totals/issue IDs AR-02/03. Management report CRUD/version/download giữ nguyên text; generator chỉ trả preview Markdown, không save/source mutation. AI project/Feature/all scope phải enforce trước retrieval; ADMIN có AI đọc liên dự án; PM/USER chỉ đọc trong membership hiện hành, và quyền AI không mở report CRUD ngoài phạm vi.
 
 - [ ] Kiểm/bổ sung `savedMarkdownIsVerbatimAndDoesNotChangeSource`, `staleReportSaveKeepsDraft`, `featureFilterKeepsFullSelectorCatalog`, `lateAiResponseNeverOverwritesManualDraft`, `reportPermissionIsNotAiGlobalPermission`.
 

@@ -106,7 +106,7 @@ public class FeatureIssueService {
     }
     private record Query(String sql,List<Object> args) {}
     private Query filtered(long p,FeatureIssueDtos.Filter filter){
-        String where=" WHERE w.project_id=? AND x.deleted_at IS NULL AND f.archived_at IS NULL AND (d.id IS NULL OR d.archived_at IS NULL) AND w.item_type IN ('BUG','QA')";var args=new ArrayList<Object>(List.of(p));
+        String where=" WHERE w.project_id=? AND "+(filter.deleted()?"x.deleted_at IS NOT NULL AND x.monkey=TRUE":"x.deleted_at IS NULL AND f.archived_at IS NULL AND (d.id IS NULL OR d.archived_at IS NULL)")+" AND w.item_type IN ('BUG','QA')";var args=new ArrayList<Object>(List.of(p));
         Long[] ids={filter.featureId(),filter.documentId(),filter.rowId()};String[] fields={"x.feature_id","x.document_id","x.row_id"};
         for(int i=0;i<ids.length;i++)if(ids[i]!=null){if(ids[i]<1)fail(422,"INVALID_FILTER","Phạm vi Issue không hợp lệ.");where+=" AND "+fields[i]+"=?";args.add(ids[i]);}
         if(!text(filter.type()).isEmpty()){where+=" AND w.item_type=?";args.add(filter.type());}
@@ -126,8 +126,12 @@ public class FeatureIssueService {
         var columns=TicketWorkflow.COLUMNS.stream().map(c->Map.of("id",c.columnId(),"label",c.label(),"count",counts.getOrDefault(c.columnId(),0L))).toList();return Map.of("columns",columns,"legacyCount",legacy,"totalItems",total);
     }
     Map<String,Object> item(long p,long id,boolean lock){
-        if(lock)db.row("SELECT w.id,w.lock_version AS version FROM work_items w JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id WHERE w.project_id=? AND w.id=? AND x.deleted_at IS NULL FOR UPDATE",p,id);
-        return db.row(SELECT+FROM+" WHERE w.project_id=? AND w.id=? AND x.deleted_at IS NULL AND w.item_type IN ('BUG','QA')",p,id);
+        return item(p,id,lock,false);
+    }
+    private Map<String,Object> item(long p,long id,boolean lock,boolean includeDeleted){
+        String scope=includeDeleted?"":" AND x.deleted_at IS NULL";
+        if(lock)db.row("SELECT w.id,w.lock_version AS version FROM work_items w JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id WHERE w.project_id=? AND w.id=?"+scope+" FOR UPDATE",p,id);
+        return db.row(SELECT+FROM+" WHERE w.project_id=? AND w.id=?"+scope+" AND w.item_type IN ('BUG','QA')",p,id);
     }
     void activeContext(long p,Map<String,Object> item){
         feature(p,number(item,"featureId"),true,true);
@@ -147,7 +151,12 @@ public class FeatureIssueService {
         return transitions(actor,item).stream().map(t->Map.<String,Object>of("id",TicketWorkflow.mirror(t),"label",t.label())).toList();
     }
     private void capabilities(Actor actor,Map<String,Object> item){
-        boolean active=!actor.archived()&&item.get("featureArchivedAt")==null&&item.get("documentArchivedAt")==null;
+        boolean parentActive=!actor.archived()&&item.get("featureArchivedAt")==null&&item.get("documentArchivedAt")==null;
+        boolean deleted=item.get("deletedAt")!=null;
+        boolean recoveryAuthority=Boolean.TRUE.equals(item.get("monkey"))&&(actor.manager()||ownMonkey(actor,item));
+        item.put("canRestore",deleted&&parentActive&&recoveryAuthority);
+        item.put("restoreBlockedReason",!deleted?"":actor.archived()?"Khôi phục dự án tại Quản lý dự án trước.":item.get("featureArchivedAt")!=null?"Khôi phục Feature tại Danh sách Feature trước.":!recoveryAuthority?"Chỉ PM/Admin hoặc người tạo Monkey được khôi phục.":"");
+        boolean active=parentActive&&!deleted;
         item.remove("featureArchivedAt");item.remove("documentArchivedAt");
         item.put("canEdit",active&&(actor.manager()||owner(actor,item)));item.put("canDelete",active&&Boolean.TRUE.equals(item.get("monkey"))&&(actor.manager()||ownMonkey(actor,item)));
         var rights=rights(actor,item);item.put("canAssign",active&&(actor.manager()||rights.coordinator()));
@@ -226,6 +235,21 @@ public class FeatureIssueService {
         if(!Boolean.TRUE.equals(old.get("monkey"))||!actor.manager()&&!ownMonkey(actor,old))fail(403,"FORBIDDEN","Chỉ PM/Admin hoặc Tester tạo Bug monkey được xóa mềm Bug monkey.");
         db.update("UPDATE work_item_feature_context SET deleted_at=UTC_TIMESTAMP(6) WHERE project_id=? AND work_item_id=?",p,id);bump(p,id,actor);
         record(p,id,user,"DELETE",snapshot(old),Map.of("deleted",true));audit.record(p,user,"WORK_ITEM",id,"ARCHIVE");
+    }
+    public Map<String,Object> restore(long p,String user,long id,FeatureIssueDtos.Restore input){
+        var actor=authorize(p,user,true);var old=item(p,id,true,true);activeContext(p,old);
+        if(!Boolean.TRUE.equals(old.get("monkey"))||!actor.manager()&&!ownMonkey(actor,old))fail(403,"FORBIDDEN","Chỉ PM/Admin hoặc người tạo Monkey được khôi phục.");
+        String checksum=db.checksum(List.of("MONKEY_RESTORE",id,input));
+        var prior=db.rows("SELECT actor_user_id AS actor,request_checksum AS checksum FROM ticket_commands WHERE project_id=? AND work_item_id=? AND request_key=?",p,id,input.requestKey().toString());
+        if(!prior.isEmpty()){
+            if(!user.equals(prior.getFirst().get("actor"))||!checksum.equals(prior.getFirst().get("checksum")))fail(409,"IDEMPOTENCY_CONFLICT","Mã yêu cầu đã được dùng cho nội dung hoặc người khác.");
+            var current=item(p,id,false,true);capabilities(actor,current);return current;
+        }
+        version(old,input.expectedVersion());if(old.get("deletedAt")==null)fail(409,"NOT_DELETED","Monkey đang hoạt động. Tải lại danh sách.");
+        db.update("UPDATE work_item_feature_context SET deleted_at=NULL WHERE project_id=? AND work_item_id=?",p,id);bump(p,id,actor);
+        var result=detail(p,actor,id);long history=record(p,id,user,"RESTORE",snapshot(old),snapshot(result));
+        db.update("INSERT INTO ticket_commands(project_id,work_item_id,request_key,actor_user_id,request_checksum,history_id,created_at) VALUES(?,?,?,?,?,?,UTC_TIMESTAMP(6))",p,id,input.requestKey().toString(),user,checksum,history);
+        audit.record(p,user,"WORK_ITEM",id,"RESTORE");return result;
     }
     private void bump(long p,long id,Actor actor){db.update("UPDATE work_items SET lock_version=lock_version+1,updated_by=?,updated_at=UTC_TIMESTAMP(6) WHERE project_id=? AND id=?",actor.membership(),p,id);}
     Map<String,Object> snapshot(Map<String,Object> item){var value=new LinkedHashMap<String,Object>();for(String key:List.of("id","key","type","title","description","status","priority","assigneeMembershipId","featureId","documentId","rowId","monkey","steps","expectedResult","actualResult","version","ticketState","closureReason","coordinatorMembershipId","verifierUserId","preconditions","frequency","environment","device","testVersionId","testVersionName","executedOn","testObject","caseReference"))value.put(key,item.get(key));return value;}

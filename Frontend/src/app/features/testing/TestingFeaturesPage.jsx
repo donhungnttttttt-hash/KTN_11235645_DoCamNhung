@@ -1,5 +1,5 @@
 import {Pencil} from 'lucide-react';
-import React,{useRef,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {featuresApi} from '../../services/api/features';
 import {useAuth} from '../auth/AuthProvider';
 import {useProject} from '../projects/ProjectProvider';
@@ -23,6 +23,7 @@ function Features({projectId,project,onOpenFeature}) {
   const [page,setPage]=useState(0),[filters,setFilters]=useState(defaultFeatureFilters),[form,setForm]=useState(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
   const {archived}=filters,hasSearch=!!(filters.keyword||filters.createdFrom||filters.createdTo);
   const lock=useRef(false),query=useTestingQuery(()=>featuresApi.list(projectId,{page,...filters}),[projectId,page,filters]);
+  useEffect(()=>{if(!query.loading&&query.data&&page>=Math.max(1,query.data.totalPages))setPage(Math.max(0,query.data.totalPages-1));},[query.loading,query.data,page]);
   function applyFilters(next){setPage(0);setFilters(next);setError('');}
   function reloadList(){setError('');return query.load();}
   async function toggle(feature){if(lock.current)return;lock.current=true;setBusy(true);setError('');

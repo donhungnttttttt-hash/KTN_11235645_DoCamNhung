@@ -174,6 +174,12 @@ class QaEvidenceTest {
         doThrow(new BusinessException(404,"NOT_FOUND","wrong project")).when(work).get(1,"actor",70);
         clearInvocations(db);denied(()->service.download(1,"actor",70,id),"NOT_FOUND");denied(()->service.list(1,"actor",70),"NOT_FOUND");verifyNoInteractions(db);
     }
+    @Test void missingHistoricalBlobReturns503WithoutMetadataDeletionOrSuccess() throws Exception {
+        var error=assertThrows(BusinessException.class,()->service.download(1,"actor",70,id));
+        assertEquals(503,error.status());assertEquals("STORAGE_UNAVAILABLE",error.code());
+        verify(work).get(1,"actor",70);verify(db,never()).update(anyString(),any(Object[].class));
+        verifyNoInteractions(audit,qa);assertTrue(files().isEmpty());
+    }
     @Test void qaCapableReadTransactionsRemainCompatibleWithTypedLocks() throws Exception {
         var tx=EvidenceService.class.getAnnotation(Transactional.class);assertNotNull(tx);assertFalse(tx.readOnly());
         assertEquals(org.springframework.transaction.annotation.Propagation.REQUIRED,tx.propagation());

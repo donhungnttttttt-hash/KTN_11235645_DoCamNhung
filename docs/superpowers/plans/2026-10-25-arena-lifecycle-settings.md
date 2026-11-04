@@ -1,5 +1,7 @@
 # Arena lifecycle and settings — Implementation Plan
 
+**Cập nhật thực thi 03/11:** áp dụng [quyết định hiện hành](../../planning/2026-11-03-arena-execution-adjustments.md). V39 đã thuộc Ticket; migration archive tiếp theo dự kiến V40. Giữ finality Ticket V39 và mọi hard blocker; ngoại lệ vẫn chỉ cho cycles/retests cũ.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Cho ADMIN lưu trữ dự án có tồn đọng cycles/retests cũ bằng ngoại lệ có lý do và lịch sử, đồng thời làm Rules diễn đạt đúng phạm vi đang có.

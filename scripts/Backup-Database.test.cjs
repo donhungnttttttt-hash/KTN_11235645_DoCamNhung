@@ -1,4 +1,10 @@
 const test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+test('selected isolated backup records actual schema and configured attachment root',()=>{
+ const writes=new Map();const config={TMS_MYSQL_HOST:'127.0.0.1',TMS_MYSQL_PORT:'3307',TMS_MYSQL_CLIENT:'C:/mysql/mysql.exe',TMS_DB_USER:'fixture',TMS_DB_PASSWORD:'synthetic',TMS_DB_NAME:'tms_docstest_123456abcdef',TMS_ATTACHMENT_ROOT:'D:/owned/source/attachments'};
+ const fakeFs={mkdirSync(){},readFileSync(){return 'config';},writeFileSync(file,bytes){writes.set(file,bytes);}};
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'Backup-Database.cjs'),'utf8'),{__dirname,Buffer,process:{argv:['node','script','--config','isolated.env'],env:{}},console:{log(){},error(message){throw Error(message);}},require:name=>name==='node:fs'?fakeFs:name==='node:child_process'?{execFileSync:()=>Buffer.from('SQL dump')}:name==='./database/mysql-client.cjs'?{parseConfig:()=>config,query:sql=>sql.includes('flyway_schema_history')?['40']:['spring_session','spring_session_attributes']}:require(name)});
+ const manifest=JSON.parse([...writes].find(([file])=>file.endsWith('.json'))[1]);assert.equal(manifest.schema,config.TMS_DB_NAME);assert.equal(manifest.evidenceDirectory,config.TMS_ATTACHMENT_ROOT);
+});
 test('native backup manifest records the database Flyway version instead of a fixed sprint version',()=>{
   const writes=new Map();const config={TMS_MYSQL_HOST:'127.0.0.1',TMS_MYSQL_PORT:'3307',TMS_MYSQL_CLIENT:'C:/mysql/mysql.exe',TMS_DB_USER:'test',TMS_DB_PASSWORD:'not-a-real-secret',TMS_DB_NAME:'tms'};
   const fakeFs={mkdirSync(){},readFileSync(){return 'local config';},writeFileSync(file,bytes){writes.set(file,bytes);}};

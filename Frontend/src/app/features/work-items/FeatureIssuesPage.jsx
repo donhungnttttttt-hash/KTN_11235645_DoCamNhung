@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {featureIssuesApi} from '../../services/api/featureIssues';
 import {featuresApi} from '../../services/api/features';
 import {TableScroll} from '../../components/TableScroll';
@@ -9,12 +9,13 @@ import {TicketResponsibilities} from './TicketResponsibilities';
 import {FeatureIssueForm} from './FeatureIssueForm';
 import {FeatureIssueDetail} from './FeatureIssueDetail';
 import {FeatureIssueBoard} from './FeatureIssueBoard';
+import {requestKey} from '../testing/testingState';
 import './feature-issues.css';
 import './feature-kanban.css';
 
 function routeFilters(route) {
  const params=new URLSearchParams(route.split('?')[1]||'');
- return {page:Number(params.get('page'))||0,size:20,column:params.get('column')||'',type:params.get('type')||'',status:params.get('status')||'',keyword:params.get('keyword')||'',featureId:params.get('featureId')||''};
+ return {page:Number(params.get('page'))||0,size:20,deleted:params.get('deleted')==='true',column:params.get('column')||'',type:params.get('type')||'',status:params.get('status')||'',keyword:params.get('keyword')||'',featureId:params.get('featureId')||''};
 }
 function MonkeyFeatureSelect({features,value,onChange,authorized}){
  const activity=useModalState();return <><label className="wi-field">Feature phát hiện lỗi<select value={value} disabled={!authorized||activity?.busy||activity?.dirty} onChange={event=>onChange(event.target.value)}><option value="">Chọn Feature</option>{features.map(feature=><option key={feature.id} value={feature.id}>{feature.name}</option>)}</select></label>{activity?.dirty&&<p className="wi-note">Bản nháp thuộc Feature đã chọn. Dùng Hủy nếu muốn bỏ bản nháp và chọn Feature khác.</p>}</>;
@@ -26,14 +27,16 @@ export function FeatureIssuesPage({projectId,activeRoute='/board',navigate=()=>{
  const match=/^\/board\/issue\/([1-9]\d*)$/.exec(path),detailId=match?Number(match[1]):null;
  const [board,setBoard]=useState(null),[boardError,setBoardError]=useState(''),[duties,setDuties]=useState(false);
  const [filters,setFilters]=useState(()=>routeFilters(activeRoute));
+ const [restoring,setRestoring]=useState(false),restoreLock=useRef(false);
+ const deleted=errorsView&&filters.deleted;
  const [data,setData]=useState(null),[features,setFeatures]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState(''),[featureError,setFeatureError]=useState(''),[reload,setReload]=useState(0),[featureReload,setFeatureReload]=useState(0),[monkey,setMonkey]=useState(false),[monkeyFeature,setMonkeyFeature]=useState(''),[notice,setNotice]=useState(''),[move,setMove]=useState(null);
  useEffect(()=>{const next=routeFilters(activeRoute);setFilters(current=>Object.keys(next).every(key=>next[key]===current[key])?current:next);},[activeRoute]);
  useEffect(()=>{const abort=new AbortController();setLoading(true);setError('');
-  api.list(projectId,filters,{signal:abort.signal}).then(value=>{if(!abort.signal.aborted)setData(value);}).catch(e=>{if(!abort.signal.aborted)setError(e.message);}).finally(()=>{if(!abort.signal.aborted)setLoading(false);});
+  api.list(projectId,{...filters,deleted},{signal:abort.signal}).then(value=>{if(!abort.signal.aborted){setData(value);if(filters.page>=Math.max(1,value.totalPages))setFilters(current=>({...current,page:Math.max(0,value.totalPages-1)}));}}).catch(e=>{if(!abort.signal.aborted)setError(e.message);}).finally(()=>{if(!abort.signal.aborted)setLoading(false);});
   return()=>abort.abort();
- },[api,projectId,filters,reload]);
+ },[api,projectId,filters,deleted,reload]);
  useEffect(()=>{const abort=new AbortController();setBoard(null);setBoardError('');
-  const {page,size,column,...scope}=filters;
+  const {page,size,column,deleted,...scope}=filters;
   api.board(projectId,scope,{signal:abort.signal}).then(value=>{if(!abort.signal.aborted)setBoard(value);}).catch(e=>{if(!abort.signal.aborted)setBoardError(e.message);});return()=>abort.abort();
  },[api,projectId,filters,reload]);
  useEffect(()=>{const abort=new AbortController();setFeatureError('');setFeatures([]);
@@ -45,18 +48,20 @@ export function FeatureIssuesPage({projectId,activeRoute='/board',navigate=()=>{
  function openIssue(id,status){setMove(status?{id,status}:null);navigate(route('/board/issue/'+id));}
  function close(){setMove(null);navigate(route(errorsView?'/issues':list?'/board/list':'/board'));}
  function changed(){setReload(value=>value+1);setNotice('Đã cập nhật Issue.');}
+ async function restore(item){if(restoreLock.current)return;restoreLock.current=true;setRestoring(true);setError('');setNotice('');try{const result=await api.restore(projectId,item.id,{expectedVersion:item.version,requestKey:requestKey()});setReload(value=>value+1);setNotice(result?.deletedAt?'Yêu cầu trước đã xử lý; Monkey hiện đã xóa lại.':'Đã khôi phục Monkey.');}catch(e){setError(e.message||'Chưa khôi phục được Monkey. Tải lại để đối chiếu.');}finally{restoreLock.current=false;setRestoring(false);}}
  function requestMove(item,status){if(!item?.allowedTransitions?.some(value=>value.columnId===status)){setNotice('Bạn không có quyền chuyển Issue sang trạng thái này.');return;}openIssue(item.id,status);}
  const items=data?.items||[];
  return <section className="cat-container feature-issues-page">
-  <header className="td-heading-row"><div><h1 className="ui-page-title">{errorsView?'Quản lý lỗi':'Bảng trạng thái'}</h1><p className="td-muted">Bug và QA của dự án · {board?.totalItems??'—'} Issue theo bộ lọc</p></div><div className="wi-actions"><button className="cat-btn" onClick={()=>setDuties(true)}>Trách nhiệm Ticket</button>{errorsView&&canCreate&&<button className="cat-btn cat-btn-mint" onClick={()=>setMonkey(true)}>Ghi lỗi monkey</button>}</div></header>
+  <header className="td-heading-row"><div><h1 className="ui-page-title">{errorsView?'Quản lý lỗi':'Bảng trạng thái'}</h1><p className="td-muted">{deleted?`Monkey đã xóa · ${data?.totalItems??'—'} Issue theo bộ lọc`:`Bug và QA của dự án · ${board?.totalItems??'—'} Issue theo bộ lọc`}</p></div><div className="wi-actions"><button className="cat-btn" onClick={()=>setDuties(true)}>Trách nhiệm Ticket</button>{errorsView&&canCreate&&<button className="cat-btn cat-btn-mint" onClick={()=>setMonkey(true)}>Ghi lỗi monkey</button>}</div></header>
   {!errorsView&&<div role="group" aria-label="Chế độ xem công việc" className="feature-issue-view-switch"><button className="cat-btn" aria-pressed={!list} onClick={()=>navigate(route('/board'))}>Kanban</button><button className="cat-btn" aria-pressed={list} onClick={()=>navigate(route('/board/list'))}>Danh sách</button></div>}
+  {errorsView&&<label>Hiển thị lỗi<select disabled={restoring} value={deleted?'deleted':'active'} onChange={e=>updateFilters({...filters,deleted:e.target.value==='deleted',page:0,column:'',status:'',type:''})}><option value="active">Đang hoạt động</option><option value="deleted">Monkey đã xóa</option></select></label>}
   <div className="feature-issue-filters"><label>Feature<select value={filters.featureId} onChange={e=>change('featureId',e.target.value)}><option value="">Tất cả Feature</option>{features.map(f=><option key={f.id} value={f.id}>{f.name}</option>)}</select></label><label>Loại<select value={filters.type} onChange={e=>change('type',e.target.value)}><option value="">Bug và QA</option><option value="BUG">Bug</option><option value="QA">QA</option></select></label><label>Cột Ticket<select value={filters.column} onChange={e=>change('column',e.target.value)}><option value="">Tất cả cột</option>{ticketColumns.map(column=><option key={column.id} value={column.id}>{column.label}</option>)}<option value="legacy">Cần đối chiếu lịch sử</option></select></label><label>Tìm Issue<input type="search" value={filters.keyword} onChange={e=>change('keyword',e.target.value)} maxLength={200} placeholder="Mã, tiêu đề hoặc tên Feature"/></label><button className="cat-btn" disabled={loading} onClick={()=>setReload(value=>value+1)}>Tải lại</button></div>
   {filters.status&&<p className="ticket-legacy-summary">Trạng thái lịch sử từ liên kết: {statuses.find(value=>value.id===filters.status)?.label||filters.status}. Không suy diễn lý do đóng. <button className="cat-btn" onClick={()=>change('status','')}>Bỏ lọc trạng thái lịch sử</button></p>}
   {featureError&&<p role="alert">{featureError} <button className="cat-btn" onClick={()=>setFeatureReload(value=>value+1)}>Tải lại Feature</button></p>}
   {boardError&&<p role="alert">Chưa tải được tổng Ticket: {boardError} <button className="cat-btn" onClick={()=>setReload(value=>value+1)}>Tải lại tổng</button></p>}
   <section className="ticket-legacy-summary" aria-label="Đối chiếu Ticket lịch sử"><span>{board?.legacyCount??'—'} Ticket cần đối chiếu lịch sử · Giữ nguyên kết luận cũ, không suy diễn Đã sửa.</span><button className="cat-btn" aria-pressed={filters.column==='legacy'} onClick={()=>change('column','legacy')}>Xem Ticket lịch sử</button>{filters.column&&<button className="cat-btn" onClick={()=>change('column','')}>Xem tất cả cột</button>}</section>
-  {error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}{loading&&<p role="status">Đang tải Issue…</p>}
-  {!loading&&!error&&(list||filters.column==='legacy'?<TableScroll label="Danh sách Bug và QA"><table className="td-file-table"><thead><tr><th>Mã / loại</th><th>Tiêu đề</th><th>Feature / file</th><th>Người phụ trách</th><th>Trạng thái</th></tr></thead><tbody>{items.map(item=><tr key={item.id}><td><button className="td-file-link" onClick={()=>openIssue(item.id)}>{item.key}</button><small>{item.type}</small></td><td><button className="td-file-link" onClick={()=>openIssue(item.id)}>{item.title}</button></td><td>{item.featureName}<small>{item.fileName}</small></td><td>{item.assignee||'Chưa phân công'}</td><td><span>{ticketLabel(item)}</span></td></tr>)}</tbody></table></TableScroll>:<>
+  {error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}{loading&&<p role="status">Đang tải Issue…</p>}{restoring&&<p role="status">Đang khôi phục Monkey…</p>}
+  {!loading&&!error&&(list||deleted||filters.column==='legacy'?<TableScroll label="Danh sách Bug và QA"><table className="td-file-table"><thead><tr><th>Mã / loại</th><th>Tiêu đề</th><th>Feature / file</th><th>Người phụ trách</th><th>Trạng thái</th>{deleted&&<th>Khôi phục</th>}</tr></thead><tbody>{items.map(item=><tr key={item.id}><td>{deleted?item.key:<button className="td-file-link" onClick={()=>openIssue(item.id)}>{item.key}</button>}<small>{item.type}</small></td><td>{deleted?item.title:<button className="td-file-link" onClick={()=>openIssue(item.id)}>{item.title}</button>}</td><td>{item.featureName}<small>{item.fileName}</small></td><td>{item.assignee||'Chưa phân công'}</td><td><span>{ticketLabel(item)}</span></td>{deleted&&<td><button className="cat-btn" disabled={restoring||!item.canRestore} onClick={()=>restore(item)}>Khôi phục Monkey</button>{item.restoreBlockedReason&&<p>{item.restoreBlockedReason}</p>}{item.restoreBlockedReason?.includes('Feature')&&<button className="cat-btn" onClick={()=>navigate(route('/board/testing',{featureId:'',page:0}))}>Mở danh sách Feature</button>}{item.restoreBlockedReason?.includes('dự án')&&<button className="cat-btn" onClick={()=>navigate('/admin/projects/'+projectId)}>Mở Quản lý dự án</button>}</td>}</tr>)}</tbody></table></TableScroll>:<>
    <FeatureIssueBoard items={items} columns={board?.columns} selectedColumn={filters.column} onColumn={value=>change('column',value)} onOpen={openIssue} onMove={requestMove}/>
   </>)}
   {!loading&&!error&&!items.length&&data?.totalItems===0&&<p>Chưa có Issue phù hợp. Tạo Issue tại case hoặc ghi lỗi monkey ở Quản lý lỗi.</p>}

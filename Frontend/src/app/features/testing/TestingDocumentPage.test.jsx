@@ -121,3 +121,13 @@ test('explains that another Status is disabled while the current result is savin
  render(<TestingDocumentPage projectId={1} featureId={2} documentId={9} onBack={()=>{}}/>);fireEvent.click(await screen.findByRole('button',{name:'Kết quả test case 1'}));await screen.findByText('Đang lưu Status…');
  expect(screen.getByRole('button',{name:'Kết quả test case 2'})).toHaveAttribute('title','Đang lưu Status. Vui lòng chờ.');await act(async()=>finish({status:'OK',version:1}));
 });
+test('reloads a saved Status after a lost response without writing again',async()=>{
+ const document={document:{id:9,featureId:2,fileName:'Cases.xlsx'},headers:['ID'],columns:{sourceId:0},rows:[{rowId:101,sourceId:'1',cells:['1'],resultStatus:'UNEXECUTED',resultVersion:0,canUpdateResult:true}]};
+ testCasesApi.getDocument.mockResolvedValueOnce(document).mockResolvedValueOnce({...document,rows:[{...document.rows[0],resultStatus:'OK',resultVersion:1,resultUpdatedBy:'Actual USER'}]});
+ testCasesApi.updateDocumentResult.mockRejectedValueOnce(new Error('Response lost after commit'));
+ render(<TestingDocumentPage projectId={1} featureId={2} documentId={9}/>);
+ fireEvent.click(await screen.findByRole('button',{name:'Kết quả test case 1'}));await screen.findByRole('alert');
+ fireEvent.click(screen.getByRole('button',{name:'Tải lại kết quả'}));
+ await waitFor(()=>expect(screen.getByRole('button',{name:'Kết quả test case 1'})).toHaveTextContent('OK'));
+ expect(testCasesApi.updateDocumentResult).toHaveBeenCalledTimes(1);expect(testCasesApi.getDocument).toHaveBeenCalledTimes(2);
+});

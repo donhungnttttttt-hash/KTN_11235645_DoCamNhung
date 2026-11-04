@@ -32,7 +32,7 @@ export function HandbookPanel({projectId,canEdit=false}) {
     <p className="settings-hint">Hướng dẫn nội bộ và nguồn đặc tả. Chỉ lưu thông tin tham chiếu nơi cấp phát tài khoản, không ghi mật khẩu hoặc khóa truy cập.</p>
     {error && <p role="alert" className="text-danger">{error} <button className="cat-btn" onClick={()=>setReload(x=>x+1)}>Thử lại</button></p>}
     {notice && <p role="status">{notice}</p>}
-    {editor && <HandbookEditor key={editor.item?.id || 'new'} projectId={projectId} item={editor.item} formRef={editorRef} onClose={closeEditor} onSaved={saved}/>}
+    {editor && <HandbookEditor key={editor.item?.id || 'new'} projectId={projectId} item={editor.item} canEdit={canEdit} formRef={editorRef} onClose={closeEditor} onSaved={saved}/>}
     {!items ? !error && <p>Đang tải sổ tay…</p> : !items.length ? <p>Chưa có tài liệu trong dự án.</p> : <div className="handbook-layout">
       <nav className="handbook-list" aria-label="Tài liệu dự án">{items.map(item=><button key={item.id} className="cat-btn" aria-current={selected===item.id?'page':undefined} onClick={()=>setSelected(item.id)}>{item.name} · v{item.currentRevision?.revisionNo}</button>)}</nav>
       {selected && <HandbookDetail key={selected} projectId={projectId} id={selected} canEdit={canEdit && !editor} triggerRef={revisionButton} onEdit={item=>{pendingFocus.current=null;setEditor({item});}}/>}
@@ -50,21 +50,30 @@ function HandbookDetail({projectId,id,canEdit,onEdit,triggerRef}) {
     <details><summary>Lịch sử chỉnh sửa ({data.history.length})</summary>{data.history.map(revision=><section key={revision.id} className="handbook-revision"><strong>Phiên bản {revision.revisionNo}</strong><p>{formatTime(revision.createdAt)} (UTC) · Thành viên #{revision.editedBy}</p><pre className="handbook-text">{revision.contentHtml}</pre></section>)}</details>
   </article>;
 }
-function HandbookEditor({projectId,item,onSaved,onClose,formRef}) {
+function HandbookEditor({projectId,item,canEdit,onSaved,onClose,formRef}) {
   const [form,setForm]=useState({code:'',name:'',resourceType:'GUIDE',contentHtml:item?.currentRevision?.contentHtml || ''});
+  const [current,setCurrent]=useState(item),[compared,setCompared]=useState(false),[needsReload,setNeedsReload]=useState(false);
   const [error,setError]=useState(''),[busy,setBusy]=useState(false);
-  async function save(event){event.preventDefault();if(busy)return;setBusy(true);setError('');try{
-    if(item)await projectsApi.addRevision(projectId,item.id,{contentHtml:form.contentHtml,visibility:'INTERNAL',expectedCurrentRevisionId:item.currentRevision.id});
+  const writable=canEdit&&!current?.archived&&!needsReload;
+  async function readCurrent(){if(busy)return;setBusy(true);setError('');try{
+    const latest=await projectsApi.getHandbook(projectId,item.id);
+    setCurrent(latest);setCompared(true);setNeedsReload(false);
+  }catch(failure){setError(failure.message);setNeedsReload(true);}finally{setBusy(false);}}
+  async function save(event){event.preventDefault();if(busy||!writable)return;setBusy(true);setError('');try{
+    if(item)await projectsApi.addRevision(projectId,item.id,{contentHtml:form.contentHtml,visibility:'INTERNAL',expectedCurrentRevisionId:current.currentRevision.id});
     else await projectsApi.createHandbook(projectId,{...form,visibility:'INTERNAL'});
     onSaved();
-  }catch(failure){setError(failure.message);}finally{setBusy(false);}}
+  }catch(failure){setError(failure.message);if(item&&failure.status===409)setNeedsReload(true);}finally{setBusy(false);}}
   return <form ref={formRef} className="settings-editor" onSubmit={save} onInvalid={()=>setError('Kiểm tra các trường bắt buộc được đánh dấu trước khi lưu tài liệu.')}>
     <h3>{item?`Phiên bản mới: ${item.name}`:'Tài liệu mới'}</h3>{error && <p role="alert" className="text-danger">{error}</p>}
+    {compared && <section aria-label="Đối chiếu phiên bản hiện tại"><p role="status">Phiên bản hiện tại: {current.currentRevision?.revisionNo}</p><pre className="handbook-text">{current.currentRevision?.contentHtml}</pre><p className="settings-hint">Bản nháp bên dưới được giữ nguyên. Đối chiếu và chỉ lưu khi bạn muốn tạo phiên bản mới.</p></section>}
+    {current?.archived && <p role="alert">Tài liệu đã lưu trữ. Bản nháp được giữ để tham khảo.</p>}
+    {!canEdit && <p role="alert">Bạn không còn quyền sửa. Bản nháp được giữ để tham khảo.</p>}
     <fieldset disabled={busy}>
       {!item && <div className="settings-fields"><label className="form-group">Mã tài liệu<input autoFocus required maxLength={32} value={form.code} onChange={e=>setForm({...form,code:e.target.value})}/></label><label className="form-group">Tên tài liệu<input required maxLength={100} value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label>
       <label className="form-group">Loại tài liệu<select value={form.resourceType} onChange={e=>setForm({...form,resourceType:e.target.value})}><option value="GUIDE">Hướng dẫn</option><option value="SPEC_REFERENCE">Nguồn đặc tả</option><option value="TEST_ACCOUNT_REFERENCE">Nơi cấp tài khoản kiểm thử</option></select></label></div>}
       <label className="form-group">Nội dung<textarea autoFocus={!!item} required rows={9} maxLength={10000} value={form.contentHtml} onChange={e=>setForm({...form,contentHtml:e.target.value})}/></label>
     </fieldset>
-    <div className="settings-actions"><button className="cat-btn primary" disabled={busy}>Lưu tài liệu</button><button type="button" className="cat-btn" disabled={busy} onClick={onClose}>Hủy</button></div>
+    <div className="settings-actions"><button className="cat-btn primary" disabled={busy||!writable}>Lưu tài liệu</button>{item && <button type="button" className="cat-btn" disabled={busy} onClick={readCurrent}>Tải phiên bản hiện tại để đối chiếu</button>}<button type="button" className="cat-btn" disabled={busy} onClick={onClose}>Hủy</button></div>
   </form>;
 }

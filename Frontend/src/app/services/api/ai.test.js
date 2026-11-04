@@ -29,6 +29,11 @@ it('does not send generation if CSRF is denied',async()=>{
  const fetch=vi.fn().mockResolvedValue(new Response('{}',{status:403,headers:{'content-type':'application/json'}}));vi.stubGlobal('fetch',fetch);
  await expect(aiApi.generate(1,{})).rejects.toMatchObject({status:403});expect(fetch).toHaveBeenCalledTimes(1);
 });
+it('preserves the sanitized backend timeout code without automatically retrying chat',async()=>{
+ const fetch=vi.fn().mockResolvedValueOnce(response({headerName:'X-CSRF-TOKEN',token:'synthetic'})).mockResolvedValueOnce(new Response(JSON.stringify({code:'AI_TIMEOUT',message:'AI chat request could not be completed.'}),{status:422,headers:{'content-type':'application/json'}}));vi.stubGlobal('fetch',fetch);
+ await expect(aiApi.chatSend(7,{text:'synthetic question',requestKey:'timeout-key'})).rejects.toMatchObject({status:422,code:'AI_TIMEOUT'});
+ expect(fetch).toHaveBeenCalledTimes(2);expect(fetch.mock.calls[1][0]).toBe('/api/v1/ai/chats/7/messages');
+});
 it('keeps the AI request alive past the normal eight-second timeout and cancels at 35 seconds',async()=>{
  vi.useFakeTimers();const fetch=vi.fn().mockResolvedValueOnce(response({headerName:'X-CSRF-TOKEN',token:'test'})).mockImplementation((_url,{signal})=>new Promise((_resolve,reject)=>signal.addEventListener('abort',()=>reject(new DOMException('Abort','AbortError')))));
  vi.stubGlobal('fetch',fetch);const promise=aiApi.generate(1,{});const assertion=expect(promise).rejects.toMatchObject({code:'TIMEOUT'});

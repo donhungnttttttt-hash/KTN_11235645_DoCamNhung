@@ -9,6 +9,33 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 
 class DocumentWorkbookTest {
+    @Test void reopensInlineStringUpdatesIncludingHeadersAndExecutionFields() throws Exception {
+        byte[] original;
+        try(var input=getClass().getResourceAsStream("/workbooks/arena-inline-strings.xlsx")){original=Objects.requireNonNull(input).readAllBytes();}
+        byte[] untouched=original.clone();
+        var parsed=new TestCaseWorkbook().parse(new MockMultipartFile("file","arena.xlsx","",original));
+        List<String> headers;
+        try(var book=new XSSFWorkbook(new ByteArrayInputStream(original))){headers=new ArrayList<>(CustomerWorkbook.headers(book.getSheetAt(0)));}
+        headers.set(9,"Status");headers.set(10,"Version test");
+        var cells=new ArrayList<>(parsed.rows().getFirst().sourceCells());
+        cells.set(2,"=Edited literal title");cells.set(9,"NG");cells.set(10,"Arena version 1");cells.set(12,"Owned USER");
+        byte[] exported=DocumentWorkbook.export(original,parsed.sheetName(),headers,List.of(new DocumentWorkbook.RowCells(2,cells)));
+        try(var book=new XSSFWorkbook(new ByteArrayInputStream(exported));var source=new XSSFWorkbook(new ByteArrayInputStream(original))) {
+            var sheet=book.getSheetAt(0);var row=sheet.getRow(1);
+            assertThat(sheet.getRow(0).getCell(9).getStringCellValue()).isEqualTo("Status");
+            assertThat(sheet.getRow(0).getCell(10).getStringCellValue()).isEqualTo("Version test");
+            assertThat(row.getCell(2).getStringCellValue()).isEqualTo("=Edited literal title");
+            assertThat(row.getCell(2).getCellType()).isEqualTo(CellType.STRING);
+            assertThat(row.getCell(9).getStringCellValue()).isEqualTo("NG");
+            assertThat(row.getCell(10).getStringCellValue()).isEqualTo("Arena version 1");
+            assertThat(row.getCell(12).getStringCellValue()).isEqualTo("Owned USER");
+            assertThat(row.getCell(15).getStringCellValue()).isEqualTo(source.getSheetAt(0).getRow(1).getCell(15).getStringCellValue());
+            assertThat(row.getHeight()).isEqualTo(source.getSheetAt(0).getRow(1).getHeight());
+            assertThat(row.getCell(2).getCellStyle().getIndex()).isEqualTo(source.getSheetAt(0).getRow(1).getCell(2).getCellStyle().getIndex());
+            assertThat(sheet.getLastRowNum()).isEqualTo(24);
+        }
+        assertThat(original).isEqualTo(untouched);
+    }
     @Test void updatesReorderedFieldsAndPreservesSupplementalColumns() throws Exception {
         var bytes=CustomerWorkbookFixture.reorderedBytes();
         var parsed=new TestCaseWorkbook().parse(new MockMultipartFile("file","reordered.xlsx","",bytes));

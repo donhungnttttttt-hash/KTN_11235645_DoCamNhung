@@ -155,11 +155,70 @@ it('creates the explicit internal ruleset when none exists',async()=>{
 });
 it('creates a typed policy draft with a source and the fixed minimum fields',async()=>{
   render(<RulesPanel projectId={1} canEdit/>);fireEvent.change(await screen.findByLabelText('Nguồn quy tắc'),{target:{value:'ADR-006'}});fireEvent.change(screen.getByLabelText('Tiền tố tiêu đề (tùy chọn)'),{target:{value:'[QA]'}});fireEvent.click(screen.getByText('Lưu bản nháp'));
-  await waitFor(()=>expect(projectsApi.createRuleVersion).toHaveBeenCalled());const payload=JSON.parse(projectsApi.createRuleVersion.mock.calls[0][2].contentJson);expect(payload).toMatchObject({scope:'INTERNAL_DEMO',sourceReference:'ADR-006',titlePrefix:'[QA]'});expect(payload.requiredFields).toHaveLength(7);
+  await waitFor(()=>expect(projectsApi.createRuleVersion).toHaveBeenCalled());const payload=JSON.parse(projectsApi.createRuleVersion.mock.calls[0][2].contentJson);expect(payload).toMatchObject({schemaVersion:1,scope:'INTERNAL_DEMO',sourceReference:'ADR-006',titlePrefix:'[QA]'});expect(payload.requiredFields).toEqual(['title','steps','expectedResult','actualResult','buildId','environmentId','deviceId']);
 });
 it('confirms publication with the previously read active version and displays conflicts',async()=>{
   vi.spyOn(window,'confirm').mockReturnValue(true);projectsApi.publishRule.mockRejectedValue(new Error('Quy tắc đã thay đổi'));render(<RulesPanel projectId={1} canEdit/>);fireEvent.click(await screen.findByText('Công bố phiên bản 1'));await screen.findByRole('alert');expect(projectsApi.publishRule).toHaveBeenCalledWith(1,1,11,0);
 });
-it('keeps published policies read-only to testers and displays active history',async()=>{
-  projectsApi.listRules.mockResolvedValue([{id:1,code:'INTERNAL_DEMO',activeVersion:{...version,publishedAt:'2026-09-30T00:00:00Z'}}]);projectsApi.listRuleVersions.mockResolvedValue([{...version,publishedAt:'2026-09-30T00:00:00Z',publishedBy:1}]);render(<RulesPanel projectId={1} canEdit={false}/>);await screen.findByText('Phiên bản 1 · Đang áp dụng');expect(screen.queryByText('Lưu bản nháp')).toBeNull();expect(screen.queryByText('Công bố phiên bản 1')).toBeNull();
+it.each(['PM','ADMIN','USER','GUEST'].flatMap(role=>[false,true].map(existing=>({role,existing}))))('rulesExplainLegacyScopeForEmptyAndExistingSets: $role existing=$existing',async({role,existing})=>{
+  admin=role==='ADMIN';project={...project,projectRole:role==='ADMIN'?'USER':role};
+  const published={...version,publishedAt:'2026-09-30T00:00:00Z',publishedBy:1};
+  projectsApi.listRules.mockResolvedValue(existing?[{id:1,code:'INTERNAL_DEMO',activeVersion:published}]:[]);
+  projectsApi.listRuleVersions.mockResolvedValue([published,{...version,id:12,versionNo:2}]);
+  render(<ProjectSettingsPage activeRoute='/settings/rules'/>);
+  expect(await screen.findByRole('heading',{name:'Quy tắc nội bộ của luồng cũ'})).toBeVisible();
+  expect(screen.getByText('Các phiên bản này lưu cấu hình của luồng báo lỗi cũ. Bug/QA trong Feature hiện tại không áp dụng bộ quy tắc này.')).toBeVisible();
+  const writable=role==='PM'||role==='ADMIN';
+  if(existing){
+    await screen.findByText('Lịch sử phiên bản');
+    expect(screen.getByText('Phiên bản được công bố trong cấu hình cũ: Phiên bản 1.')).toBeVisible();
+    expect(screen.getByText('Phiên bản 1 · Bản công bố hiện tại của cấu hình cũ')).toBeVisible();
+    expect(Boolean(screen.queryByRole('button',{name:'Lưu bản nháp'}))).toBe(writable);
+    expect(Boolean(screen.queryByRole('button',{name:'Công bố phiên bản 2'}))).toBe(writable);
+    if(writable){
+      expect(screen.getByRole('heading',{name:'Thêm phiên bản cấu hình cũ'})).toBeVisible();
+      expect(screen.getByText(/Các trường dưới đây thuộc cấu trúc quy tắc cũ, không phải điều kiện để tạo Bug\/QA trong Feature\./)).toBeVisible();
+    }
+  }else{
+    await screen.findByText('Chưa có bộ quy tắc nội bộ.');
+    expect(Boolean(screen.queryByRole('button',{name:'Tạo bộ quy tắc nội bộ'}))).toBe(writable);
+    expect(screen.queryByRole('button',{name:'Lưu bản nháp'})).toBeNull();
+    expect(screen.queryByRole('button',{name:/Công bố phiên bản/})).toBeNull();
+  }
+  expect(screen.queryByText(/Đang áp dụng|cho bug mới trong dự án/)).toBeNull();
+});
+it('publishingLegacyVersionDoesNotPromiseFeatureEnforcement',async()=>{
+  const confirm=vi.spyOn(window,'confirm').mockReturnValue(false);
+  const published={...version,publishedAt:'2026-09-30T00:00:00Z',publishedBy:1};
+  const draft={...version,id:12,versionNo:2};
+  projectsApi.listRules.mockResolvedValue([{id:1,code:'INTERNAL_DEMO',activeVersion:published}]);
+  projectsApi.listRuleVersions.mockResolvedValue([draft,published]);
+  render(<RulesPanel projectId={1} canEdit/>);
+  fireEvent.click(await screen.findByRole('button',{name:'Công bố phiên bản 2'}));
+  expect(confirm).toHaveBeenCalledWith('Công bố phiên bản 2 trong cấu hình cũ? Thao tác này không thay đổi quy tắc của Bug/QA trong Feature hiện tại.');
+  expect(projectsApi.publishRule).not.toHaveBeenCalled();
+  confirm.mockReturnValue(true);
+  projectsApi.publishRule.mockResolvedValue({});
+  projectsApi.listRules.mockResolvedValue([{id:1,code:'INTERNAL_DEMO',activeVersion:{...draft,publishedAt:published.publishedAt}}]);
+  projectsApi.listRuleVersions.mockResolvedValue([{...draft,publishedAt:published.publishedAt},published]);
+  fireEvent.click(screen.getByRole('button',{name:'Công bố phiên bản 2'}));
+  await screen.findByText('Đã công bố phiên bản 2 trong cấu hình cũ.');
+  expect(projectsApi.publishRule).toHaveBeenCalledWith(1,1,12,11);
+  await screen.findByText('Phiên bản 2 · Bản công bố hiện tại của cấu hình cũ');
+  expect(screen.getByText('Phiên bản 1 · Đã công bố')).toBeVisible();
+});
+it.each([403,409])('preserves legacy history and avoids success after publish HTTP %s',async status=>{
+  vi.spyOn(window,'confirm').mockReturnValue(true);
+  const published={...version,publishedAt:'2026-09-30T00:00:00Z',publishedBy:1};
+  projectsApi.listRules.mockResolvedValue([{id:1,code:'INTERNAL_DEMO',activeVersion:published}]);
+  projectsApi.listRuleVersions.mockResolvedValue([{...version,id:12,versionNo:2},published]);
+  projectsApi.publishRule.mockRejectedValue(Object.assign(new Error(`HTTP ${status}`),{status}));
+  render(<RulesPanel projectId={1} canEdit/>);
+  fireEvent.click(await screen.findByRole('button',{name:'Công bố phiên bản 2'}));
+  expect(await screen.findByRole('alert')).toHaveTextContent(`HTTP ${status}`);
+  expect(projectsApi.publishRule).toHaveBeenCalledWith(1,1,12,11);
+  expect(screen.queryByRole('status')).toBeNull();
+  expect(screen.getByText('Phiên bản 1 · Bản công bố hiện tại của cấu hình cũ')).toBeVisible();
+  expect(screen.getByText('Phiên bản 2 · Bản nháp')).toBeVisible();
+  expect(screen.getByRole('button',{name:'Công bố phiên bản 2'})).toBeEnabled();
 });

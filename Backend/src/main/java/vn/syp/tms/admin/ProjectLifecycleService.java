@@ -2,6 +2,7 @@ package vn.syp.tms.admin;
 
 import static vn.syp.tms.workitem.WorkItemStore.*;
 import jakarta.validation.constraints.*;
+import jakarta.validation.Valid;
 import java.time.Instant;
 import java.util.*;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,18 @@ import vn.syp.tms.workitem.WorkItemStore;
 public class ProjectLifecycleService {
     public record Command(@NotNull @PositiveOrZero Long expectedVersion,
             @NotBlank @Size(max=2000) String reason,
-            @NotBlank @Pattern(regexp="[A-Za-z0-9_-]{8,100}") String requestKey) {}
+            @NotBlank @Pattern(regexp="[A-Za-z0-9_-]{8,100}") String requestKey,
+            @Valid LegacyException legacyException) {
+        public Command {reason=reason==null?null:reason.trim();}
+        public Command(Long expectedVersion,String reason,String requestKey){this(expectedVersion,reason,requestKey,null);}
+    }
+    public record LegacyException(@NotNull @AssertTrue Boolean acknowledged,
+            @NotNull @Pattern(regexp="[0-9a-f]{64}") String snapshotFingerprint) {}
     private final WorkItemStore db;
     private final ProjectAudit audit;
     public ProjectLifecycleService(WorkItemStore db,ProjectAudit audit){this.db=db;this.audit=audit;}
     private static final String PROJECT="SELECT id,code,name,archived_at AS archivedAt,lock_version AS version FROM projects WHERE id=?";
-    private static final String HISTORY="SELECT d.id,d.action,d.reason,d.result_version AS resultVersion,d.decided_at AS decidedAt,u.display_name AS actorName FROM project_lifecycle_decisions d JOIN identity_users u ON u.id=d.actor_id WHERE d.project_id=?";
+    private static final String HISTORY="SELECT d.id,d.action,d.reason,d.result_version AS resultVersion,d.decided_at AS decidedAt,u.display_name AS actorName,d.legacy_exception_snapshot AS legacyException FROM project_lifecycle_decisions d JOIN identity_users u ON u.id=d.actor_id WHERE d.project_id=?";
     private void admin(String actor) {
         // Current locking projection avoids cached session/JPA roles and old RR snapshots.
         var current=db.rows("SELECT role_code AS role,enabled FROM identity_users WHERE id=? FOR SHARE",actor);
@@ -32,35 +39,58 @@ public class ProjectLifecycleService {
         return readiness(projectId,project);
     }
     private Map<String,Object> readiness(long id,Map<String,Object> project) {
+        return readiness(id,project,snapshot(id,project));
+    }
+    private LegacyArchiveSnapshot snapshot(long id,Map<String,Object> project) {
+        return new LegacyArchiveSnapshot(id,number(project,"version"),
+            db.rows("SELECT c.id,c.status_code AS status,c.lock_version AS version,r.id AS runId FROM test_cycles c LEFT JOIN run_items r ON r.project_id=c.project_id AND r.cycle_id=c.id WHERE c.project_id=? AND (c.status_code='ACTIVE' OR (c.status_code='DRAFT' AND r.id IS NOT NULL)) FOR SHARE",id),
+            db.rows("SELECT id,status,lock_version AS version FROM retest_requests WHERE project_id=? AND status='OPEN' FOR SHARE",id));
+    }
+    private Map<String,Object> readiness(long id,Map<String,Object> project,LegacyArchiveSnapshot snapshot) {
         var blockers=new ArrayList<Map<String,Object>>();
         add(blockers,"ACTIVE_SESSIONS","Phiên kiểm thử đang làm hoặc tạm dừng",db.count("SELECT COUNT(*) FROM file_work_sessions WHERE project_id=? AND state IN ('DOING','PAUSED') FOR SHARE",id));
         add(blockers,"ALLOCATED_DEVICES","Thiết bị chưa thu hồi",db.count("SELECT COUNT(*) FROM device_allocations WHERE project_id=? AND returned_at IS NULL FOR SHARE",id));
         add(blockers,"OPEN_WORK_ITEMS","Công việc, bug hoặc QA chưa kết thúc",db.count("SELECT COUNT(*) FROM work_items w JOIN ticket_workflow_metrics tw ON tw.project_id=w.project_id AND tw.work_item_id=w.id WHERE w.project_id=? AND tw.finalized=FALSE FOR SHARE",id));
         // A direct locking join also sees newly committed runs under an older RR snapshot;
         // an ordinary EXISTS subquery could otherwise retain that transaction's old view.
-        add(blockers,"UNFINISHED_CYCLES","Đợt kiểm thử đang hoạt động hoặc bản nháp đã có case",db.count("SELECT COUNT(DISTINCT c.id) FROM test_cycles c LEFT JOIN run_items r ON r.project_id=c.project_id AND r.cycle_id=c.id WHERE c.project_id=? AND (c.status_code='ACTIVE' OR (c.status_code='DRAFT' AND r.id IS NOT NULL)) FOR SHARE",id));
-        add(blockers,"OPEN_RETESTS","Yêu cầu kiểm thử lại chưa kết thúc",db.count("SELECT COUNT(*) FROM retest_requests WHERE project_id=? AND status='OPEN' FOR SHARE",id));
+        add(blockers,"UNFINISHED_CYCLES","Đợt kiểm thử đang hoạt động hoặc bản nháp đã có case",snapshot.cycleCount());
+        add(blockers,"OPEN_RETESTS","Yêu cầu kiểm thử lại chưa kết thúc",snapshot.retestCount());
         add(blockers,"PENDING_PUBLICATIONS","Yêu cầu Redmine đang chờ hoặc đang gửi",db.count("SELECT COUNT(*) FROM redmine_outbox WHERE project_id=? AND status IN ('QUEUED','RETRY_WAIT','RUNNING') FOR SHARE",id));
         boolean archived=project.get("archivedAt")!=null;
         var result=new LinkedHashMap<String,Object>();
         result.put("projectId",id);result.put("projectCode",project.get("code"));result.put("projectName",project.get("name"));
         result.put("version",project.get("version"));result.put("archived",archived);result.put("archivedAt",project.get("archivedAt"));
         result.put("canArchive",!archived&&blockers.isEmpty());result.put("canReopen",archived);result.put("asOf",Instant.now());result.put("blockers",blockers);
+        result.put("canArchiveWithLegacyException",!archived&&snapshot.hasBlockers()&&blockers.stream().allMatch(b->Boolean.TRUE.equals(b.get("exceptionEligible"))));
+        result.put("legacyExceptionFingerprint",snapshot.hasBlockers()?snapshot.fingerprint():null);
         var warnings=new ArrayList<Map<String,Object>>();
         // Only the latest publication per binding needs attention; an older failure followed
         // by a successful delivery is retained history, not an unresolved warning.
         add(warnings,"PUBLICATION_REVIEW","Công bố Redmine cần kiểm tra",db.count("SELECT COUNT(*) FROM redmine_outbox o LEFT JOIN redmine_outbox newer ON newer.project_id=o.project_id AND newer.binding_id=o.binding_id AND newer.id>o.id WHERE o.project_id=? AND o.status IN ('FAILED','CONFLICT','UNCERTAIN') AND newer.id IS NULL FOR SHARE",id));
         result.put("warnings",warnings);
         var latest=db.rows(HISTORY+" ORDER BY d.id DESC LIMIT 1 FOR SHARE",id);
-        result.put("latestDecision",latest.isEmpty()?null:latest.getFirst());return result;
+        result.put("latestDecision",latest.isEmpty()?null:decision(latest.getFirst()));return result;
     }
-    private void add(List<Map<String,Object>> blockers,String code,String label,long count){if(count>0)blockers.add(Map.of("code",code,"label",label,"count",count));}
+    private Map<String,Object> decision(Map<String,Object> row){var result=new LinkedHashMap<>(row);result.put("legacyException",LegacyArchiveSnapshot.summary(row.get("legacyException")));return result;}
+    private void add(List<Map<String,Object>> blockers,String code,String label,long count){
+        if(count<=0)return;
+        if("PUBLICATION_REVIEW".equals(code))blockers.add(Map.of("code",code,"label",label,"count",count));
+        else blockers.add(Map.of("code",code,"label",label,"count",count,"exceptionEligible",Set.of("UNFINISHED_CYCLES","OPEN_RETESTS").contains(code)));
+    }
+    static void validateCommand(Command input,boolean archive) {
+        if(input==null||text(input.reason()).isEmpty()||text(input.reason()).length()>2000||input.expectedVersion()==null||input.expectedVersion()<0||input.requestKey()==null||!input.requestKey().matches("[A-Za-z0-9_-]{8,100}"))fail(422,"INVALID_COMMAND","Lý do, phiên bản và mã yêu cầu không hợp lệ.");
+        var exception=input.legacyException();
+        if(exception!=null&&(!archive||!Boolean.TRUE.equals(exception.acknowledged())||exception.snapshotFingerprint()==null||!exception.snapshotFingerprint().matches("[0-9a-f]{64}")))fail(422,"INVALID_COMMAND","Xác nhận ngoại lệ lưu trữ không hợp lệ.");
+    }
+    static String commandDigest(WorkItemStore db,String action,Command input) {
+        return input.legacyException()==null?db.checksum(List.of(action,input.expectedVersion(),text(input.reason()))):
+            db.checksum(List.of("PROJECT_LIFECYCLE_LEGACY_EXCEPTION_V1",action,input.expectedVersion(),text(input.reason()),true,input.legacyException().snapshotFingerprint()));
+    }
     public Map<String,Object> decide(String actor,long projectId,Command input,boolean archive) {
         admin(actor);var project=db.row(PROJECT+" FOR UPDATE",projectId);
-        required(input.reason(),"lý do lưu trữ hoặc mở lại");
-        if(text(input.reason()).length()>2000 || input.expectedVersion()==null || input.expectedVersion()<0 || input.requestKey()==null || !input.requestKey().matches("[A-Za-z0-9_-]{8,100}"))fail(422,"INVALID_COMMAND","Lý do, phiên bản và mã yêu cầu không hợp lệ.");
+        validateCommand(input,archive);
         String action=archive?"ARCHIVE":"REOPEN",reason=text(input.reason());
-        String hash=db.checksum(List.of(action,input.expectedVersion(),reason));
+        String hash=commandDigest(db,action,input);
         var previous=db.rows("SELECT actor_id AS actor,payload_hash AS hash FROM project_lifecycle_decisions WHERE project_id=? AND request_key=? FOR UPDATE",projectId,input.requestKey());
         if(!previous.isEmpty()) {
             if(!actor.equals(previous.getFirst().get("actor")) || !hash.equals(previous.getFirst().get("hash")))fail(409,"IDEMPOTENCY_CONFLICT","Mã yêu cầu đã được sử dụng với người thực hiện hoặc nội dung khác.");
@@ -69,11 +99,19 @@ public class ProjectLifecycleService {
         }
         version(project,input.expectedVersion());
         if(archive==(project.get("archivedAt")!=null))fail(409,"PROJECT_STATE_CONFLICT",archive?"Dự án đã được lưu trữ.":"Dự án đang hoạt động.");
-        if(archive && !Boolean.TRUE.equals(readiness(projectId,project).get("canArchive")))fail(409,"ARCHIVE_BLOCKED","Còn việc chưa xử lý. Tải lại kiểm tra và hoàn tất các mục đang chặn trước khi lưu trữ.");
+        String storedSnapshot=null;
+        if(archive) {
+            var snapshot=snapshot(projectId,project);var ready=readiness(projectId,project,snapshot);
+            if(input.legacyException()!=null) {
+                if(!snapshot.fingerprint().equals(input.legacyException().snapshotFingerprint()))fail(409,"LEGACY_BLOCKERS_CHANGED","Các mục luồng cũ đã thay đổi. Tải lại kiểm tra trước khi xác nhận.");
+                if(!Boolean.TRUE.equals(ready.get("canArchiveWithLegacyException")))fail(409,"ARCHIVE_BLOCKED","Còn mục chặn không được miễn khi lưu trữ.");
+                storedSnapshot=snapshot.persistedJson();
+            } else if(!Boolean.TRUE.equals(ready.get("canArchive")))fail(409,"ARCHIVE_BLOCKED","Còn việc chưa xử lý. Tải lại kiểm tra và hoàn tất các mục đang chặn trước khi lưu trữ.");
+        }
         int changed=db.update("UPDATE projects SET archived_at="+(archive?"UTC_TIMESTAMP(6)":"NULL")+",lock_version=lock_version+1,updated_at=UTC_TIMESTAMP(6),updated_by=? WHERE id=? AND lock_version=?",actor,projectId,input.expectedVersion());
         if(changed!=1)fail(409,"VERSION_CONFLICT","Dự án đã thay đổi. Tải lại để kiểm tra.");
-        db.insert("INSERT INTO project_lifecycle_decisions(project_id,action,reason,expected_version,result_version,request_key,payload_hash,actor_id,decided_at) VALUES(?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6))",
-            projectId,action,reason,input.expectedVersion(),input.expectedVersion()+1,input.requestKey(),hash,actor);
+        db.insert("INSERT INTO project_lifecycle_decisions(project_id,action,reason,expected_version,result_version,request_key,payload_hash,actor_id,decided_at,legacy_exception_snapshot) VALUES(?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6),?)",
+            projectId,action,reason,input.expectedVersion(),input.expectedVersion()+1,input.requestKey(),hash,actor,storedSnapshot);
         audit.record(projectId,actor,"PROJECT",projectId,action);
         return readiness(projectId,db.row(PROJECT+" FOR SHARE",projectId));
     }
@@ -81,6 +119,6 @@ public class ProjectLifecycleService {
         admin(actor);db.row(PROJECT+" FOR SHARE",projectId);
         if(page<0||size<1||size>100)fail(422,"INVALID_FILTER","Kích thước trang từ 1 đến 100, trang từ 0.");
         long count=db.count("SELECT COUNT(*) FROM project_lifecycle_decisions WHERE project_id=? FOR SHARE",projectId);
-        return new AdminDtos.Page<>(db.rows(HISTORY+" ORDER BY d.id DESC LIMIT ? OFFSET ? FOR SHARE",projectId,size,(long)page*size),page,size,count);
+        return new AdminDtos.Page<>(db.rows(HISTORY+" ORDER BY d.id DESC LIMIT ? OFFSET ? FOR SHARE",projectId,size,(long)page*size).stream().map(this::decision).toList(),page,size,count);
     }
 }

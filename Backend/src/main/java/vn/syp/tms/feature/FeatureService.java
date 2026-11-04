@@ -167,14 +167,21 @@ public class FeatureService {
     }
     @Transactional(readOnly=true)
     public Map<String,Object> listDocuments(long p,String actor,long f,int page,int size,String keyword) {
-        projects.requireReadAccess(p,actor);feature(p,f,false);validatePage(page,size,keyword);
-        String where=" WHERE project_id=? AND feature_id=? AND status='COMMITTED' AND archived_at IS NULL";
+        return listDocuments(p,actor,f,page,size,keyword,false);
+    }
+    @Transactional(readOnly=true)
+    public Map<String,Object> listDocuments(long p,String actor,long f,int page,int size,String keyword,boolean archived) {
+        projects.requireReadAccess(p,actor);var parent=feature(p,f,false);validatePage(page,size,keyword);
+        boolean projectActive=Boolean.TRUE.equals(db.queryForObject("SELECT archived_at IS NULL FROM projects WHERE id=?",Boolean.class,p));
+        boolean manager=projects.isGlobalAdmin(actor)||isProjectPm(p,actor);
+        String blocked=!projectActive?"Khôi phục dự án tại Quản lý dự án trước.":parent.get("archivedAt")!=null?"Khôi phục Feature tại Danh sách Feature trước.":!manager?"Chỉ PM dự án hoặc Admin được khôi phục file.":"";
+        String where=" WHERE project_id=? AND feature_id=? AND status='COMMITTED' AND archived_at IS "+(archived?"NOT NULL":"NULL");
         List<Object> args=new ArrayList<>(List.of(p,f));
         var search=MultiWordSearch.sql(keyword,"file_name");where+=search.sql();args.addAll(search.args());
         long total=Objects.requireNonNull(db.queryForObject("SELECT COUNT(*) FROM import_batches"+where,Long.class,args.toArray()));
         args.add(size);args.add((long)page*size);
-        var items=db.queryForList("SELECT id,feature_id AS featureId,file_name AS fileName,sheet_name AS sheetName,mapping_version AS format,lock_version AS version,created_at AS createdAt,committed_at AS updatedAt,(source_workbook IS NOT NULL) AS hasSourceFile FROM import_batches"+where+" ORDER BY id DESC LIMIT ? OFFSET ?",args.toArray());
-        for(var item:items){long id=num(item,"id");item.putAll(metrics(p,f,id));item.put("assignees",db.queryForList("SELECT DISTINCT a.assignee_membership_id AS membershipId,u.display_name AS name FROM test_document_assignments a JOIN project_memberships m ON m.project_id=a.project_id AND m.id=a.assignee_membership_id JOIN identity_users u ON u.id=m.user_id WHERE a.project_id=? AND a.document_id=?",p,id));}
+        var items=db.queryForList("SELECT id,feature_id AS featureId,file_name AS fileName,sheet_name AS sheetName,mapping_version AS format,lock_version AS version,archived_at AS archivedAt,created_at AS createdAt,committed_at AS updatedAt,(source_workbook IS NOT NULL) AS hasSourceFile FROM import_batches"+where+" ORDER BY id DESC LIMIT ? OFFSET ?",args.toArray());
+        for(var item:items){long id=num(item,"id");item.putAll(metrics(p,f,id));item.put("canRestore",archived&&blocked.isEmpty());item.put("restoreBlockedReason",archived?blocked:"");item.put("assignees",db.queryForList("SELECT DISTINCT a.assignee_membership_id AS membershipId,u.display_name AS name FROM test_document_assignments a JOIN project_memberships m ON m.project_id=a.project_id AND m.id=a.assignee_membership_id JOIN identity_users u ON u.id=m.user_id WHERE a.project_id=? AND a.document_id=?",p,id));}
         return page(items,total,page,size);
     }
     @Transactional(readOnly=true)
@@ -200,13 +207,24 @@ public class FeatureService {
         return detail;
     }
     public Map<String,Object> hideDocument(long p,String actor,long f,long d,FeatureDtos.Version input) {
+        return documentVisibility(p,actor,f,d,input,true);
+    }
+    public Map<String,Object> restoreDocument(long p,String actor,long f,long d,FeatureDtos.Version input) {
+        return documentVisibility(p,actor,f,d,input,false);
+    }
+    private Map<String,Object> documentVisibility(long p,String actor,long f,long d,FeatureDtos.Version input,boolean hide) {
         writer(p,actor,true);active(feature(p,f,true));
         var matches=db.queryForList("SELECT id,feature_id AS featureId,lock_version AS version,archived_at AS archivedAt FROM import_batches WHERE project_id=? AND feature_id=? AND id=? AND status='COMMITTED' FOR UPDATE",p,f,d);
         if(matches.isEmpty())throw missing();var doc=matches.getFirst();
-        String payload=encode(List.of(f,d,input)),key=input.requestKey().toString();var replay=replay(p,actor,key,"DOCUMENT_ARCHIVE",payload);if(replay!=null)return replay;
-        active(doc);
-        version(doc,input.expectedVersion());db.update("UPDATE import_batches SET archived_at=UTC_TIMESTAMP(6),lock_version=lock_version+1 WHERE project_id=? AND id=?",p,d);
-        Map<String,Object> result=new LinkedHashMap<>(doc);result.put("version",num(doc,"version")+1);result.put("archived",true);remember(p,f,d,actor,key,"DOCUMENT_ARCHIVE",payload,result);return result;
+        String action=hide?"DOCUMENT_ARCHIVE":"DOCUMENT_RESTORE";
+        String payload=encode(List.of(f,d,input)),key=input.requestKey().toString();var replay=replay(p,actor,key,action,payload);
+        if(replay!=null){if(hide)return replay;var current=new LinkedHashMap<>(doc);current.put("archived",doc.get("archivedAt")!=null);return current;}
+        version(doc,input.expectedVersion());
+        if(hide)active(doc);else if(doc.get("archivedAt")==null)fail(409,"NOT_ARCHIVED","File đang hoạt động. Tải lại danh sách.");
+        db.update("UPDATE import_batches SET archived_at="+(hide?"UTC_TIMESTAMP(6)":"NULL")+",lock_version=lock_version+1 WHERE project_id=? AND feature_id=? AND id=?",p,f,d);
+        Map<String,Object> result=new LinkedHashMap<>(doc);result.put("version",num(doc,"version")+1);result.put("archived",hide);result.put("archivedAt",hide?db.queryForObject("SELECT archived_at FROM import_batches WHERE project_id=? AND id=?",java.sql.Timestamp.class,p,d):null);remember(p,f,d,actor,key,action,payload,result);
+        if(!hide)db.update("INSERT INTO project_audit(project_id,actor_id,entity_type,entity_id,action,occurred_at) VALUES(?,?,'TEST_DOCUMENT',?,'RESTORE',UTC_TIMESTAMP(6))",p,actor,d);
+        return result;
     }
     public Map<String,Object> preview(long p,String actor,long f,MultipartFile file) {
         writer(p,actor,true);active(feature(p,f,true));var parsed=workbook.parse(file);
@@ -285,8 +303,8 @@ public class FeatureService {
         return db.queryForList("SELECT a.row_id AS rowId,a.assignee_membership_id AS assigneeMembershipId,u.display_name AS assigneeName,f.display_name AS firstTesterName,l.display_name AS latestTesterName FROM test_document_assignments a LEFT JOIN project_memberships m ON m.project_id=a.project_id AND m.id=a.assignee_membership_id LEFT JOIN identity_users u ON u.id=m.user_id LEFT JOIN project_memberships fm ON fm.project_id=a.project_id AND fm.id=a.first_tester_membership_id LEFT JOIN identity_users f ON f.id=fm.user_id LEFT JOIN project_memberships lm ON lm.project_id=a.project_id AND lm.id=a.latest_tester_membership_id LEFT JOIN identity_users l ON l.id=lm.user_id WHERE a.project_id=? AND a.document_id=? ORDER BY a.row_id",p,d);
     }
     private Map<String,Object> metrics(long p,long f,Long d) {
-        List<Object> args=new ArrayList<>(List.of(p,f));String filter=d==null?"":" AND b.id=?";if(d!=null)args.add(d);
-        var result=db.queryForMap("SELECT COUNT(DISTINCT b.id) AS documentCount,COUNT(ir.id) AS caseCount,COALESCE(SUM(ir.result_status<>'UNEXECUTED'),0) AS testedCaseCount FROM import_batches b LEFT JOIN import_rows ir ON ir.project_id=b.project_id AND ir.batch_id=b.id AND ir.target_case_id IS NOT NULL WHERE b.project_id=? AND b.feature_id=? AND b.status='COMMITTED' AND b.archived_at IS NULL"+filter,args.toArray());
+        List<Object> args=new ArrayList<>(List.of(p,f));String filter=d==null?" AND b.archived_at IS NULL":" AND b.id=?";if(d!=null)args.add(d);
+        var result=db.queryForMap("SELECT COUNT(DISTINCT b.id) AS documentCount,COUNT(ir.id) AS caseCount,COALESCE(SUM(ir.result_status<>'UNEXECUTED'),0) AS testedCaseCount FROM import_batches b LEFT JOIN import_rows ir ON ir.project_id=b.project_id AND ir.batch_id=b.id AND ir.target_case_id IS NOT NULL WHERE b.project_id=? AND b.feature_id=? AND b.status='COMMITTED'"+filter,args.toArray());
         long total=num(result,"caseCount"),tested=num(result,"testedCaseCount");result.put("progressPercent",total==0?0d:100d*tested/total);return result;
     }
     private boolean eligible(long p,long member) {

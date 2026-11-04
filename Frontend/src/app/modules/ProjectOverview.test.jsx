@@ -8,7 +8,7 @@ vi.mock('../features/projects/ProjectProvider',()=>({useProject:()=>({currentPro
 vi.mock('../features/work-items/ProjectData',()=>({useProjectData:()=>({projectId:1}),presentItem:x=>x}));
 vi.mock('../services/api/workItems',()=>({workItemsApi:{overview:forbidden.overview}}));
 vi.mock('../services/api/qa',()=>({qaApi:{handoff:forbidden.handoff}}));
-vi.mock('../services/api/featureIssues',()=>({featureIssuesApi:{list:async()=>({items:[],totalItems:0,page:0,size:1,totalPages:0})}}));
+vi.mock('../services/api/featureIssues',()=>({featureIssuesApi:{board:async()=>({columns:[],legacyCount:0,totalItems:0})}}));
 vi.mock('../services/api/projects',()=>({projectsApi:{listCatalog:async()=>[]}}));
 beforeEach(()=>{state.project={id:1,code:'SPIDER-PLUS',name:'Spider Plus',description:'Mô tả'};state.loading=false;state.error='';vi.clearAllMocks();forbidden.overview.mockResolvedValue({items:[],statuses:[],milestones:[]});});
 it('shows approved project information only for exact Spider Plus identity',()=>{

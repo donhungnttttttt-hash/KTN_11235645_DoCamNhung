@@ -1,6 +1,18 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-03",
+  "updatedAt": "2026-11-04",
+  "arenaSourceHandover20261104": {
+    "request": "commit va push di",
+    "branch": "system-design",
+    "commitAuthorized": true,
+    "pushAuthorized": true,
+    "scope": "97 reviewed Arena source, test, migration, script and documentation files",
+    "review": "Approved; no Critical or Important findings",
+    "productSourceUnchangedSinceReview": true,
+    "report": "docs/reviews/2026-11-03-arena-final.md",
+    "mergeDeployOrMainCutoverAuthorized": false,
+    "note": "Earlier commitPush=false fields are verification checkpoints before this request. Git history and the handover response record actual commit/push results."
+  },
   "sourceHandover20261103": {
     "request": "thuc hien xong thi commit di",
     "branch": "system-design",
@@ -318,8 +330,8 @@
     }
   },
   "arenaFollowup20261025": {
-    "status": "PLANNED",
-    "planningOnly": true,
+    "status": "DONE",
+    "planningOnly": false,
     "sourceBaseline": "cde58ad",
     "reanalysis": {
       "sourceBaseline": "a45974a",
@@ -349,26 +361,26 @@
     "tasks": [
       {
         "id": "AR-00",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": []
       },
       {
         "id": "AR-01",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": [
           "AR-00"
         ]
       },
       {
         "id": "AR-02",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": [
           "AR-00"
         ]
       },
       {
         "id": "AR-03",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": [
           "AR-00",
           "AR-02"
@@ -376,7 +388,7 @@
       },
       {
         "id": "AR-04",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": [
           "AR-02",
           "AR-03"
@@ -384,33 +396,33 @@
       },
       {
         "id": "AR-05",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": [
           "AR-00"
         ]
       },
       {
         "id": "AR-06",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": [
           "AR-00"
         ]
       },
       {
         "id": "AR-07",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": [
           "AR-06"
         ]
       },
       {
         "id": "AR-08",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": []
       },
       {
         "id": "AR-09",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": [
           "AR-00",
           "AR-06"
@@ -418,7 +430,7 @@
       },
       {
         "id": "AR-10",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": [
           "AR-01",
           "AR-02",
@@ -428,31 +440,65 @@
           "AR-06",
           "AR-07",
           "AR-08",
-          "AR-09"
+          "AR-09",
+          "AR-12"
         ]
       },
       {
         "id": "AR-11",
-        "status": "PLANNED",
+        "status": "DONE",
         "dependsOn": [
           "AR-10"
         ]
+      },
+      {
+        "id": "AR-12",
+        "status": "DONE",
+        "dependsOn": [
+          "AR-03",
+          "AR-06"
+        ],
+        "scope": "U26 user-approved Monkey/file recovery; preserve hard blockers and history"
       }
     ],
     "verification": {
-      "productTests": "NOT_RUN",
-      "build": "NOT_RUN",
-      "browser": "NOT_RUN",
-      "database": "NOT_RUN",
-      "liveProviders": "NOT_RUN",
-      "humanUat": "NOT_RUN"
+      "productTests": "FE full1359 beforeD08 + finalaffected24; offline composite307/34classes; native composite138/10classes; zero skips. Not fullbackend/single invocation. AR10 independent review Approved; broad final review Approved; no Critical/Important.",
+      "build": "Final backend/frontend PASS; JAR181a704de7ff4e6dda7bb8c90da47df01a8b579c946048e2ccc9275862290063; frontendinput bbace387bc7da84e259c38ff97f69cb5557335da63d5061b0702cf568f41df0e",
+      "browser": "119 observed action entries/18 groups; task-specificChrome plus final4role/D07 checks. D01/02/04/05/06/07/08 fixed;D03NOT_REPRODUCED.320/375/768/1440+actual200%zoom; fullallrole-state chain NOT_RUN. ChatREADYexplicitUIstub.",
+      "database": "Six isolated migration paths toV40 PASS; last successful main readV39. Final read via testcredential failed (serverUUID verified); no privilege change, migration or restartmain.",
+      "liveProviders": "PARTIAL: synthetic simple probe200 validtext19.322s; actual isolated Chrome report30.270s FAILED/AI_TIMEOUT. No automatic retry. READY UI fixture is a browser stub. Provider disabled again; other machine/human UAT NOT_RUN.",
+      "humanUat": "NOT_RUN",
+      "restore": "AR09 actual restore PASS: 95 base tables + 1 view, 240 FK checks/0 orphans, all row IDs/data/blob hashes match. Failed first destination retained; successful third target tms_docstest_7f393dfc8d07. 77 scoped tests, zero skips; independent review Approved. RPO/RTO and human UAT NOT_ASSESSED/NOT_RUN.",
+      "recovery": "AR12 reviewed and ChromePASS scoped; Monkey35/data/history/replay and doc11rows/originalbytes/assignments retained; parentguards+D07metric recheck on finalJAR PASS.",
+      "coverage": "FEfullpreD08 S87.96/B84.81/F82.28/L88.77; finalD08 NOT_MEASURED; backendselected coverage only, not80%wholebackend.",
+      "preservation": "94tables+Adminregistry unchanged in138run;10 operational login-bucket hashes changed by realHTTPlogin TTL/counters, rawFAILretained. Finalfocused19 all95tables preserved."
     },
     "skillsAppliedForPlanning": [
       "brainstorming",
       "writing-plans"
     ],
     "implementationAuthorizedByThisPlanningRequest": false,
-    "commitPushAuthorizedByThisPlanningRequest": false
+    "commitPushAuthorizedByThisPlanningRequest": false,
+    "implementationAuthorizedByUser20261103": true,
+    "executionBaseline": "ba2ccb5",
+    "executionAdjustments": "docs/planning/2026-11-03-arena-execution-adjustments.md",
+    "u26Decision": {
+      "date": "2026-11-03",
+      "monkey": "Keep obligation; restore deleted Ticket",
+      "file": "Allow hiding; restore hidden file",
+      "status": "IMPLEMENTED_REVIEWED_SCOPED_BROWSER_PASS"
+    },
+    "finalReport": "docs/reviews/2026-11-03-arena-final.md",
+    "finalReview": "APPROVED_NO_CRITICAL_OR_IMPORTANT",
+    "commitPush": false,
+    "mainCutover": false,
+    "completionScope": "Technical implementation and evidence-specific verification/reporting; U22 scoped PARTIAL and U25 live report timeout retained. Not pilot/UAT or main cutover.",
+    "maintenanceFindings": [
+      "Rename stale lifecycle recovery test names",
+      "Clarify owned-storage guard test name",
+      "Improve readability of dense guard validation",
+      "Track Flyway/MySQL9.7, dynamicagent, deprecation and Vite chunk warnings"
+    ]
   },
   "notes": [
     "25/10/2026 user prioritizes Java IDE problems before Arena. JDT321sources0errors411warnings baseline ->0errors0warnings; null contracts/guards/imports/helper annotations corrected without suppressions. Preserve V32/V33 and all SQL migrations via two documented external library null contracts. Align IDE Java21; first Maven run hit staleJava25bytecode/0tests, fresh358file hash-matched copy verified103/103tests13suites0skip plus package onJava21, current workspace class files all65. No nativeDB/provider/restart/commit/push; Arena remains PLANNED and S11/FR-12 IN_REVIEW. docs/reviews/2026-10-25-java-ide-diagnostics.md.",

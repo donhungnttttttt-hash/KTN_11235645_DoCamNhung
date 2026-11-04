@@ -15,6 +15,7 @@ export function TicketActionComposer({projectId,item,api,initialStatus,blocked=f
  const hasDraft=!!body.trim()||!!state||!!assignee||!!verifier||convert;
  const revoked=!!body.trim()&&!item.canComment||convert&&!item.canConvertToBug||!!state&&!transition||!!assignee&&!item.canAssign&&!convert||!!verifier&&!directory?.canManage;
  const directoryNeeded=item.canAssign||item.canConvertToBug||transitions.length>0;
+ const hasActionOptions=transitions.length>0||item.canConvertToBug||item.canAssign||convert||directory?.canManage||state==='CLOSED';
  useEffect(()=>{const controller=new AbortController();lifetime.current=controller;return()=>controller.abort();},[projectId,item.id,api]);
  useEffect(()=>{onActivity?.({busy,dirty:!!body.trim()||!!state||!!assignee||!!verifier||convert});return()=>onActivity?.({busy:false,dirty:false});},[onActivity,busy,body,state,assignee,verifier,convert]);
  useEffect(()=>{if(confirmation)cancel.current?.focus();else if(previousConfirmation.current)submitButton.current?.focus();previousConfirmation.current=confirmation;},[confirmation]);
@@ -50,9 +51,9 @@ export function TicketActionComposer({projectId,item,api,initialStatus,blocked=f
  return <section className="ticket-action" aria-label="Cập nhật Ticket" aria-busy={busy}>
   <h4>Bình luận và xử lý</h4>
   <form onSubmit={submit}>
-   <div className="ticket-composer-grid">
+   <div className={hasActionOptions?'ticket-composer-grid':undefined}>
     {(item.canComment||body)&&<label className="wi-field">Ghi chú Issue<textarea readOnly={!item.canComment} rows={6} maxLength={20000} value={body} onChange={event=>setBody(event.target.value)}/></label>}
-    <fieldset disabled={busy||blocked} className="ticket-action-options"><legend>Thay đổi cùng bình luận</legend>
+    {hasActionOptions&&<fieldset disabled={busy||blocked} className="ticket-action-options"><legend>Thay đổi cùng bình luận</legend>
      {transitions.length>0&&<label className="wi-field">Trạng thái mới<select value={state} disabled={convert} onChange={event=>changeState(event.target.value)}><option value="">Giữ nguyên trạng thái</option>{states.map(value=><option key={value} value={value}>{ticketStateLabel(value)}</option>)}</select></label>}
      {state==='CLOSED'&&<label className="wi-field">Lý do đóng<select required value={reason} onChange={event=>{setReason(event.target.value);setConfirmation(false);}}>{reasons.map(value=><option key={value.closureReason} value={value.closureReason}>{ticketTransitionLabel(value)}</option>)}</select></label>}
      {item.canConvertToBug&&<label className="ticket-checkbox"><input type="checkbox" checked={convert} onChange={event=>toggleConvert(event.target.checked)}/>Chuyển QA thành Bug</label>}
@@ -60,11 +61,11 @@ export function TicketActionComposer({projectId,item,api,initialStatus,blocked=f
      {directory?.canManage&&<label className="wi-field">Người xác nhận lại<select value={verifier} disabled={loading||!!directoryError} onChange={event=>{setVerifier(event.target.value);setConfirmation(false);}}><option value="">Giữ nguyên: {item.verifierName||'Chưa ghi'}</option>{verifier&&!directory.members.some(value=>String(value.userId)===verifier)&&<option disabled value={verifier}>Người xác nhận không còn đủ điều kiện</option>}{directory.members.map(member=><option key={member.userId} value={member.userId}>{member.displayName}</option>)}</select></label>}
      {transition?.closureReason==='PROCESSED'&&<p className="wi-note">Đã xử lý, đang chờ tester xác nhận. Chưa hoàn tất.</p>}
      {coordinatorNotice&&<p className="wi-note">{coordinatorNotice}</p>}
-    </fieldset>
+    </fieldset>}
    </div>
    {loading&&<p role="status">Đang tải người phụ trách…</p>}{directoryError&&<p role="alert">{directoryError}</p>}
    {directoryNeeded&&<button type="button" className="cat-btn" disabled={loading||busy} onClick={()=>setReload(value=>value+1)}>Tải lại người phụ trách</button>}
-   <p className="wi-note">Bỏ trống lựa chọn để giữ nguyên. Bình luận và thay đổi được lưu cùng nhau. Chuyển trạng thái quản lý, Không xử lý hoặc Không được hỗ trợ cần ghi chú lý do.</p>
+   {hasActionOptions&&<p className="wi-note">Bỏ trống lựa chọn để giữ nguyên. Bình luận và thay đổi được lưu cùng nhau. Chuyển trạng thái quản lý, Không xử lý hoặc Không được hỗ trợ cần ghi chú lý do.</p>}
    {revoked&&<p role="alert">Quyền xử lý đã thay đổi. Bản nháp được giữ để đối chiếu; không thể gửi thay đổi chưa được cấp quyền.</p>}
    <button ref={submitButton} type="submit" className="cat-btn cat-btn-mint" disabled={busy||blocked||!hasChanges||revoked||((!!assignee||!!verifier||convert)&&(loading||!!directoryError))}>{busy?'Đang lưu…':'Gửi cập nhật'}</button>
   </form>

@@ -8,7 +8,7 @@ import {TicketActionComposer} from './TicketActionComposer';
 import {chronological,ticketContentFields as contentFields,ticketLabel,ticketClosureLabel,ticketTransitionLabel} from './ticketWorkflow';
 import './feature-issues.css';
 
-const eventLabels={CREATE:'Tạo Issue',UPDATE:'Sửa nội dung',STATUS:'Chuyển trạng thái',COMMENT:'Thêm ghi chú',DELETE:'Xóa mềm',CONVERT_TO_BUG:'Chuyển QA thành Bug',TICKET_ACTION:'Cập nhật Ticket'};
+const eventLabels={CREATE:'Tạo Issue',UPDATE:'Sửa nội dung',STATUS:'Chuyển trạng thái',COMMENT:'Thêm ghi chú',DELETE:'Xóa mềm',RESTORE:'Khôi phục',CONVERT_TO_BUG:'Chuyển QA thành Bug',TICKET_ACTION:'Cập nhật Ticket'};
 function eventTime(value){
  if(!value)return 'Không rõ thời điểm';
  const text=String(value).replace(' ','T'),date=new Date(/(?:Z|[+-]\d{2}:\d{2})$/i.test(text)?text:text+'Z');

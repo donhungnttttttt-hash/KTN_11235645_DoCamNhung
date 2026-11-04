@@ -107,6 +107,16 @@ it.each(['response','http'])('explains provider payment rejection and retains th
  expect(input()).toHaveValue('Bản nháp thủ công');expect(screen.getByRole('button',{name:'Tạo gợi ý AI'})).toBeEnabled();
  expect(api.preview).toHaveBeenCalledTimes(1);expect(api.create).not.toHaveBeenCalled();expect(api.update).not.toHaveBeenCalled();
 });
+it.each(['response','http'])('AI_TIMEOUT keeps the draft and permits manual saving without a provider retry (%s)',async mode=>{
+ if(mode==='response')api.preview.mockResolvedValue({state:'FAILED',failureCode:'AI_TIMEOUT'});
+ else api.preview.mockRejectedValue(Object.assign(new Error('private timeout detail'),{status:422,code:'AI_TIMEOUT'}));
+ api.create.mockImplementation(async(projectId,body)=>({id:102,version:0,...body}));
+ await mount();fireEvent.change(input(),{target:{value:'Bản thủ công qua timeout'}});generate();
+ expect(await screen.findByRole('alert')).toHaveTextContent('Nguồn AI đã hết thời gian chờ');
+ expect(input()).toHaveValue('Bản thủ công qua timeout');expect(api.preview).toHaveBeenCalledTimes(1);
+ fireEvent.click(screen.getByRole('button',{name:'Lưu báo cáo'}));await screen.findByText('Đã lưu báo cáo.');
+ expect(api.create).toHaveBeenCalledTimes(1);expect(api.preview).toHaveBeenCalledTimes(1);
+});
 
 it.each(['response','http'])('distinguishes a failed AI generation from saving the editable report (%s)',async mode=>{
  if(mode==='response')api.preview.mockResolvedValue({state:'FAILED',failureCode:'AI_INVALID_RESPONSE'});

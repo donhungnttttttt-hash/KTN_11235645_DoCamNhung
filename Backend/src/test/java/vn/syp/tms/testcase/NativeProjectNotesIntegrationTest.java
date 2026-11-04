@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +41,7 @@ import vn.syp.tms.project.ProjectService;
 class NativeProjectNotesIntegrationTest {
     @DynamicPropertySource
     static void database(DynamicPropertyRegistry registry) throws Exception {
-        // Reuse only the guarded property helper, never inherit the parent's @Test methods.
-        // It admits localhost:3307/tms_docstest_2060e04c986c, checks SELECT DATABASE(),
-        // disables bootstrap/providers/Redmine and draft/chat/session cleanup schedules.
-        FeatureIntegrationTest.database(registry);
+        vn.syp.tms.support.CurrentWorkflowDatabaseGuard.configure(registry);
     }
 
     @Autowired MockMvc mvc;
@@ -54,18 +52,27 @@ class NativeProjectNotesIntegrationTest {
 
     IdentityUser creator, admin, pm, tester, dev, outsidePm;
     long project, otherProject;
+    List<Map<String,Object>> registeredAdmins;
 
     @BeforeEach
     void fixture() {
         String tag=UUID.randomUUID().toString().substring(0,8);
-        creator=user("creator"+tag,"ADMIN");admin=user("admin"+tag,"ADMIN");
-        pm=user("pm"+tag,"PM");tester=user("tester"+tag,"TESTER");
-        dev=user("dev"+tag,"DEV");outsidePm=user("outside"+tag,"PM");
+        registeredAdmins=db.queryForList("SELECT slot,user_id FROM system_admin_registry ORDER BY slot");
+        assertThat(registeredAdmins).as("prepared target must contain two registered Admins").hasSize(2);
+        admin=users.findById(String.valueOf(registeredAdmins.getFirst().get("user_id"))).orElseThrow();
+        creator=users.findById(String.valueOf(registeredAdmins.getLast().get("user_id"))).orElseThrow();
+        pm=user("pm"+tag,"PM");tester=user("tester"+tag,"USER");
+        dev=user("dev"+tag,"USER");outsidePm=user("outside"+tag,"PM");
         project=projects.create(creator.getId(),new ProjectDtos.CreateProject("NT"+tag,"Notes native","Fixture-owned notes project","Asia/Ho_Chi_Minh")).id();
         otherProject=projects.create(creator.getId(),new ProjectDtos.CreateProject("NO"+tag,"Other notes","Separate fixture-owned project","Asia/Ho_Chi_Minh")).id();
-        for(var member:Map.of(pm,"PM",tester,"TESTER",dev,"DEV").entrySet())
+        for(var member:Map.of(pm,"PM",tester,"USER",dev,"USER").entrySet())
             projects.addOrUpdateMember(project,creator.getId(),member.getKey().getId(),new ProjectDtos.SetMember(member.getValue()));
         projects.addOrUpdateMember(otherProject,creator.getId(),outsidePm.getId(),new ProjectDtos.SetMember("PM"));
+    }
+
+    @AfterEach
+    void registryWasPreserved() {
+        assertThat(db.queryForList("SELECT slot,user_id FROM system_admin_registry ORDER BY slot")).isEqualTo(registeredAdmins);
     }
 
     IdentityUser user(String name,String role) {

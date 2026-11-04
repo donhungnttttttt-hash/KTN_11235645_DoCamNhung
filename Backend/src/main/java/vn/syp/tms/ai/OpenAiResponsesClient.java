@@ -117,7 +117,7 @@ public class OpenAiResponsesClient {
             Thread.currentThread().interrupt();
             throw failure("AI_INTERRUPTED");
         } catch (Exception e) {
-            throw failure("AI_UNAVAILABLE");
+            throw failure(isTimeout(e)?"AI_TIMEOUT":"AI_UNAVAILABLE");
         } finally {
             if (future != null && !future.isDone()) future.cancel(true);
         }
@@ -187,6 +187,12 @@ public class OpenAiResponsesClient {
     }
 
     private static Failure failure(String code) { return new Failure(code); }
+
+    /** Only local wall-clock/request deadlines map to timeout; HTTP status codes do not. */
+    static boolean isTimeout(Throwable error) {
+        while((error instanceof ExecutionException||error instanceof CompletionException)&&error.getCause()!=null)error=error.getCause();
+        return error instanceof TimeoutException||error instanceof HttpTimeoutException;
+    }
 
     private static final class LimitedBody implements HttpResponse.BodySubscriber<byte[]> {
         private final CompletableFuture<byte[]> body = new CompletableFuture<>();

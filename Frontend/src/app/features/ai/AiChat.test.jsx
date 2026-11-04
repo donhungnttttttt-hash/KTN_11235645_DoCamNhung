@@ -10,6 +10,17 @@ let api;const thread={id:1,provider:'OPENAI_API',model:'m',projectId:null};
 beforeEach(()=>{identity.status='authenticated';identity.user={id:1};api={providers:vi.fn().mockResolvedValue({providers:[{code:'OPENAI_API',label:'API của hệ thống',available:true,models:[{id:'m',label:'m'}]}]}),chatList:vi.fn().mockResolvedValue({items:[],nextBefore:null}),chatCreate:vi.fn().mockResolvedValue(thread),chatGet:vi.fn().mockResolvedValue({thread,turns:[],nextBefore:null}),chatSend:vi.fn().mockResolvedValue({id:2,text:'Xin chào',state:'READY',content:{text:'Trả lời',sources:[]},provider:'OPENAI_API'})};});
 const mount=()=>render(<AiProviderProvider api={api}><AiChat api={api} projectApi={{list:async()=>[]}}/></AiProviderProvider>);
 const deferred=()=>{let resolve,reject;const promise=new Promise((done,fail)=>{resolve=done;reject=fail;});return {promise,resolve,reject};};
+it('timeoutKeepsUserMessageAndAllowsExplicitRetryWithoutAutomaticProviderRetry',async()=>{
+ const first=deferred();api.chatSend.mockReturnValueOnce(first.promise).mockResolvedValueOnce({id:3,text:'Giữ câu hỏi',state:'READY',content:{text:'Đã thử lại',sources:[]}});
+ mount();await open();fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Giữ câu hỏi'}});fireEvent.click(screen.getByRole('button',{name:'Gửi tin nhắn'}));
+ await waitFor(()=>expect(api.chatSend).toHaveBeenCalledTimes(1));fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Nháp mới'}});
+ await act(async()=>first.resolve({id:2,text:'Giữ câu hỏi',state:'FAILED',failureCode:'AI_TIMEOUT'}));
+ expect(await screen.findByRole('alert')).toHaveTextContent('Nguồn AI đã hết thời gian chờ');
+ expect(screen.getByText('Giữ câu hỏi')).toBeVisible();expect(screen.getByLabelText('Tin nhắn AI')).toHaveValue('Nháp mới');
+ expect(api.chatSend).toHaveBeenCalledTimes(1);fireEvent.click(screen.getByRole('button',{name:'Gửi lại tin nhắn'}));await screen.findByText('Đã thử lại');
+ expect(api.chatSend).toHaveBeenCalledTimes(2);expect(api.chatSend.mock.calls[1][1].requestKey).not.toBe(api.chatSend.mock.calls[0][1].requestKey);
+ expect(screen.getByLabelText('Tin nhắn AI')).toHaveValue('Nháp mới');
+});
 it('retries a failed initial project and history read without losing a typed draft or sending',async()=>{
  api.chatList.mockRejectedValueOnce(Object.assign(new Error('offline'),{code:'NETWORK_ERROR'})).mockResolvedValueOnce({items:[],nextBefore:null});
  mount();await open();fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Nháp khi mất mạng'}});

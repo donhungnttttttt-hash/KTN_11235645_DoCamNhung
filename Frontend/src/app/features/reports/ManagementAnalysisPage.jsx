@@ -9,12 +9,13 @@ import {ProgressSummary} from './ProgressSummary';
 import {SafeMarkdown} from './SafeMarkdown';
 import {useReportDrafts} from './ReportDraftProvider';
 import {statuses as issueStatuses} from '../work-items/data';
+import {ticketLabel} from '../work-items/ticketWorkflow';
 import './management-analysis.css';
 
 const time=value=>value?new Date(value).toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'}):'';
 const percent=value=>Number.isFinite(Number(value))?Math.max(0,Math.min(100,Number(value))):0;
 const displayPercent=value=>Math.round(percent(value)*100)/100;
-const issueStatusLabel=value=>issueStatuses.find(status=>status.id===String(value).toLowerCase())?.label||value;
+const issueStatusLabel=issue=>issue.ticketState?ticketLabel(issue):issueStatuses.find(status=>status.id===String(issue.status).toLowerCase())?.label||issue.status;
 const providerLabels={OPENAI_API:'API của hệ thống',CHATGPT:'ChatGPT cá nhân',OLLAMA:'Ollama local'};
 const reportAiError=(code,provider)=>code==='AI_INPUT_TOO_LARGE'
   ?'Phạm vi báo cáo quá lớn. Chọn một Feature trong Phạm vi Feature rồi tạo lại gợi ý. Bản đang soạn được giữ nguyên.'
@@ -175,6 +176,6 @@ function ManagementWorkspace({project,api}){
 function ManagementSummary({data}){
   return <section className="management-summary"><p className="management-summary-scope">Phạm vi số liệu: {data.feature?.name||'Toàn bộ dự án'}</p><ProgressSummary metrics={data.metrics} asOf={data.asOf}/>
     <h3>Đối chiếu tiến độ toàn dự án</h3><p>Bảng so sánh các Feature đang sử dụng của toàn dự án.</p><TableScroll label="Tiến độ theo Feature"><table className="management-feature-table"><thead><tr><th>Feature</th><th>Môi trường</th><th>Đã test / Tổng case</th><th>Tiến độ</th></tr></thead><tbody>{data.features.map(feature=><tr key={feature.id}><td>{feature.name}</td><td>{feature.environment||'—'}</td><td>{feature.testedCaseCount} / {feature.caseCount}</td><td><div className="management-feature-progress" role="progressbar" aria-label={`Tiến độ ${feature.name}`} aria-valuenow={percent(feature.progressPercent)} aria-valuemin={0} aria-valuemax={100}><span style={{width:`${percent(feature.progressPercent)}%`}}/></div>{feature.caseCount?`${displayPercent(feature.progressPercent)}%`:'Chưa có case'}</td></tr>)}{!data.features.length&&<tr><td colSpan={4}>Chưa có Feature.</td></tr>}</tbody></table></TableScroll>
-    <h3>Bug/QA trong phạm vi</h3><TableScroll label="Số lượng Bug và QA"><table><thead><tr><th>Loại</th><th>Trạng thái</th><th>Số lượng</th></tr></thead><tbody>{data.issues.map((issue,index)=><tr key={`${issue.type}/${issue.status}/${index}`}><td>{issue.type==='BUG'?'Bug':issue.type}</td><td>{issueStatusLabel(issue.status)}</td><td>{issue.total}</td></tr>)}{!data.issues.length&&<tr><td colSpan={3}>Chưa có Bug/QA.</td></tr>}</tbody></table></TableScroll>
+    <h3>Bug/QA trong phạm vi</h3><TableScroll label="Số lượng Bug và QA"><table><thead><tr><th>Loại</th><th>Trạng thái</th><th>Số lượng</th></tr></thead><tbody>{data.issues.map((issue,index)=><tr key={`${issue.type}/${issue.status}/${index}`}><td>{issue.type==='BUG'?'Bug':issue.type}</td><td>{issueStatusLabel(issue)}</td><td>{issue.total}</td></tr>)}{!data.issues.length&&<tr><td colSpan={3}>Chưa có Bug/QA.</td></tr>}</tbody></table></TableScroll>
   </section>;
 }

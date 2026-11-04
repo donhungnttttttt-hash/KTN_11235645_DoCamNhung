@@ -37,7 +37,7 @@ class ProviderHttp {
     }
     static void requireTimeRemaining() {
         if (DEADLINE.get() != null && System.nanoTime() >= DEADLINE.get())
-            throw new OpenAiResponsesClient.Failure("AI_UNAVAILABLE");
+            throw new OpenAiResponsesClient.Failure("AI_TIMEOUT");
     }
     static long remainingNanos() {
         Long deadline = DEADLINE.get();
@@ -55,7 +55,7 @@ class ProviderHttp {
     }
     private byte[] request(URI uri,String method,String token,String contentType,byte[] body,int limit,boolean oauth) {
         long remaining=DEADLINE.get()==null?TIMEOUT.toMillis():Math.min(TIMEOUT.toMillis(),TimeUnit.NANOSECONDS.toMillis(DEADLINE.get()-System.nanoTime()));
-        if(remaining<=0)throw new OpenAiResponsesClient.Failure("AI_UNAVAILABLE");
+        if(remaining<=0)throw new OpenAiResponsesClient.Failure("AI_TIMEOUT");
         var builder=HttpRequest.newBuilder(uri).timeout(Duration.ofMillis(remaining)).header("Accept","application/json, text/event-stream");
         if(token!=null)builder.header("Authorization","Bearer "+token);
         if(contentType!=null)builder.header("Content-Type",contentType);
@@ -69,7 +69,7 @@ class ProviderHttp {
             return response.body();
         } catch(OpenAiResponsesClient.Failure e){throw e;}
         catch(InterruptedException e){Thread.currentThread().interrupt();throw new OpenAiResponsesClient.Failure("AI_INTERRUPTED");}
-        catch(Exception e){throw new OpenAiResponsesClient.Failure("AI_UNAVAILABLE");}
+        catch(Exception e){throw new OpenAiResponsesClient.Failure(OpenAiResponsesClient.isTimeout(e)?"AI_TIMEOUT":"AI_UNAVAILABLE");}
         finally {if(future!=null&&!future.isDone())future.cancel(true);}
     }
     JsonNode read(byte[] body) {
@@ -88,6 +88,7 @@ class ProviderHttp {
         if(status==429)return "AI_RATE_LIMITED";
         if(status==401)return "AI_AUTH_FAILED";
         if(status==403)return "AI_PERMISSION_DENIED";
+        if(status==402)return "AI_PAYMENT_REQUIRED";
         return status>=500||status==408?"AI_UNAVAILABLE":"AI_REQUEST_REJECTED";
     }
     static String structuredError(JsonNode error) {
@@ -129,7 +130,7 @@ class ProviderHttp {
         public CompletionStage<byte[]> getBody(){return result;}
         public void onSubscribe(Flow.Subscription s){subscription=s;s.request(1);}
         public void onNext(List<ByteBuffer> buffers){for(var b:buffers){if(data.size()+b.remaining()>max){subscription.cancel();result.completeExceptionally(new IllegalStateException());return;}byte[] part=new byte[b.remaining()];b.get(part);data.writeBytes(part);}subscription.request(1);}
-        public void onError(Throwable e){result.completeExceptionally(new IllegalStateException("AI_UNAVAILABLE"));}
+        public void onError(Throwable e){result.completeExceptionally(e instanceof HttpTimeoutException?e:new IllegalStateException("AI_UNAVAILABLE"));}
         public void onComplete(){result.complete(data.toByteArray());}
     }
 }

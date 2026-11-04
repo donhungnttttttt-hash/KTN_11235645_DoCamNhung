@@ -90,7 +90,11 @@ public class AdminProjectService {
         if(unassignedOnly)where+=" AND NOT EXISTS(SELECT 1 FROM project_memberships unassigned WHERE unassigned.user_id=u.id AND unassigned.active=TRUE)";
         if(hasProject!=null)where+=" AND "+(hasProject?"":"NOT ")+"EXISTS(SELECT 1 FROM project_memberships assigned WHERE assigned.user_id=u.id AND assigned.active=TRUE)";
         if(projectId!=null){db.row("SELECT id FROM projects WHERE id=?",projectId);where+=" AND EXISTS(SELECT 1 FROM project_memberships m WHERE m.user_id=u.id AND m.project_id=? AND m.active=TRUE)";args.add(projectId);}
-        if(excludeProjectId!=null){db.row("SELECT id FROM projects WHERE id=?",excludeProjectId);where+=" AND NOT EXISTS(SELECT 1 FROM project_memberships excluded WHERE excluded.user_id=u.id AND excluded.project_id=? AND excluded.active=TRUE)";args.add(excludeProjectId);}
+        if(excludeProjectId!=null){
+            db.row("SELECT id FROM projects WHERE id=?",excludeProjectId);
+            where+=" AND NOT EXISTS(SELECT 1 FROM project_memberships excluded WHERE excluded.user_id=u.id AND excluded.project_id=? AND (excluded.active=TRUE OR excluded.project_role<>CASE WHEN u.role_code='ADMIN' THEN 'PM' ELSE u.role_code END))";
+            args.add(excludeProjectId);
+        }
         var search=MultiWordSearch.sql(keyword,"u.username","u.display_name");where+=search.sql();args.addAll(search.args());
         if(role!=null){where+=" AND u.role_code=?";args.add(role);}
         if(enabled!=null){where+=" AND u.enabled=?";args.add(enabled);}

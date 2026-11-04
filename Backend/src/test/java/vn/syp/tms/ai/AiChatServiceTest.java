@@ -42,6 +42,16 @@ class AiChatServiceTest {
         verify(store).markFailed("owner",2,"AI_INTERRUPTED");
         verify(store,never()).complete(anyString(),anyLong(),any());
     }
+    @Test void timeoutKeepsReservedUserMessageAndDoesNotRetryProviderAutomatically() {
+        assertThat(AiChatService.safeCode("AI_TIMEOUT")).isEqualTo("AI_TIMEOUT");
+        assertThat(AiChatService.safeCode("private-timeout-message")).isEqualTo("AI_UNAVAILABLE");
+        when(gateway.generate(anyString(),any(),anyString(),any(),anyString(),any())).thenThrow(new OpenAiResponsesClient.Failure("AI_TIMEOUT"));
+        service.send("owner",1,"Keep my question","timeout-key-001");
+        verify(store).reserve(eq("owner"),eq(1L),eq("Keep my question"),eq("timeout-key-001"),eq(selection),any(),anyBoolean());
+        verify(store).markFailed("owner",2,"AI_TIMEOUT");
+        verify(gateway,times(1)).generate(anyString(),any(),anyString(),any(),anyString(),any());
+        verify(store,never()).complete(anyString(),anyLong(),any());
+    }
     @Test void sessionInvalidatedBeforeAdmissionSettlesReservedTurnWithoutInference() {
         var captured=new LocalAiAccess.SessionIdentity("original",new vn.syp.tms.identity.SessionPrincipal("owner",1));
         when(gateway.captureSession("owner")).thenReturn(captured);

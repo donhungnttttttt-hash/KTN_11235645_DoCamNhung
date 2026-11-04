@@ -3,7 +3,7 @@ import {useProject} from '../features/projects/ProjectProvider';
 import {ProjectInformation} from '../features/projects/ProjectInformation';
 import {featureIssuesApi} from '../services/api/featureIssues';
 import {projectsApi} from '../services/api/projects';
-import {statuses} from '../features/work-items/data';
+import {ticketColumns} from '../features/work-items/ticketWorkflow';
 import '../features/work-items/work-items.css';
 import '../styles/work-board.css';
 import '../styles/project-overview.css';
@@ -14,14 +14,15 @@ function OverviewSummary({projectId,navigate}) {
   const [statusRevision,setStatusRevision]=useState(0),[milestoneRevision,setMilestoneRevision]=useState(0);
   useEffect(()=>{
     const abort=new AbortController();setCounts({loading:true});
-    // Each response contributes its server total, never a page length or demo count.
-    // Requests are bounded by the status catalog, independent of project size.
-    Promise.all(statuses.map(async({id,label,color})=>{
-      const page=await featureIssuesApi.list(projectId,{status:id,page:0,size:1},{signal:abort.signal});
-      const count=Number(page.totalItems);
+    featureIssuesApi.board(projectId,{}, {signal:abort.signal}).then(board=>{
+      const items=[...ticketColumns,{id:'legacy',label:'Cần đối chiếu lịch sử',color:'#78716c'}].map(column=>{
+      const count=Number(column.id==='legacy'?board.legacyCount:board.columns.find(item=>item.id===column.id)?.count||0);
       if(!Number.isSafeInteger(count)||count<0)throw new Error('Không đọc được số lượng Issue. Hãy tải lại trạng thái.');
-      return {id,label,color,count};
-    })).then(items=>{if(!abort.signal.aborted)setCounts({items,loading:false});})
+      return {...column,count};
+      });
+      if(items.reduce((sum,item)=>sum+item.count,0)!==Number(board.totalItems))throw new Error('Không đọc được số lượng Issue. Hãy tải lại trạng thái.');
+      if(!abort.signal.aborted)setCounts({items,loading:false});
+    })
       .catch(error=>{if(!abort.signal.aborted)setCounts({error:error.message,loading:false});});
     return()=>abort.abort();
   },[projectId,statusRevision]);
@@ -33,7 +34,7 @@ function OverviewSummary({projectId,navigate}) {
     return()=>{current=false;};
   },[projectId,milestoneRevision]);
   const total=counts.items?.reduce((sum,item)=>sum+item.count,0)||0;
-  const completed=counts.items?.find(item=>item.id==='closed')?.count||0;
+  const completed=counts.items?.filter(item=>['fixed','cannot_reproduce','wont_fix','unsupported'].includes(item.id)).reduce((sum,item)=>sum+item.count,0)||0;
   return <aside className="d-home-aside">
     <section aria-labelledby="overview-status-heading">
       <h2 id="overview-status-heading">Trạng thái công việc</h2>
@@ -43,9 +44,9 @@ function OverviewSummary({projectId,navigate}) {
         {counts.error&&<div><p role="alert">{counts.error}</p><button type="button" className="cat-btn" onClick={()=>setStatusRevision(value=>value+1)}>Tải lại trạng thái</button></div>}
         {counts.items&&<>
           <div className="d-progress-track" aria-hidden="true">{counts.items.filter(item=>item.count>0).map(item=><span key={item.id} style={{flex:item.count,background:item.color}}/>)}</div>
-          <p className="d-completion">{completed}/{total} Issue ở trạng thái Hoàn thành · {total?Math.round(completed/total*100):0}%</p>
+          <p className="d-completion">{completed}/{total} Issue đã kết thúc · {total?Math.round(completed/total*100):0}%</p>
           {!total&&<p>Chưa có Bug hoặc QA trong dự án.</p>}
-          <div className="d-status-summary">{counts.items.map(item=><button type="button" key={item.id} onClick={()=>navigate(`/board/list?projectId=${projectId}&status=${encodeURIComponent(item.id)}`)}><span>{item.label}</span><b style={{background:item.color}}>{item.count}</b></button>)}</div>
+          <div className="d-status-summary">{counts.items.filter(item=>item.id!=='legacy'||item.count>0).map(item=><button type="button" key={item.id} onClick={()=>navigate(`/board/list?projectId=${projectId}&column=${encodeURIComponent(item.id)}`)}><span>{item.label}</span><b style={{background:item.color}}>{item.count}</b></button>)}</div>
         </>}
       </div>
     </section>

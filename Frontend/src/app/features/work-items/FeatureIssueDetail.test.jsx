@@ -4,6 +4,26 @@ import {it,expect,vi} from 'vitest';
 import {FeatureIssueDetail} from './FeatureIssueDetail';
 const ticketDefaults=()=>({responsibilities:vi.fn().mockResolvedValue({canManage:false,members:[{membershipId:11,userId:'u11',displayName:'Eligible User',projectRole:'USER',systemRole:'USER',duties:[],version:0}]})});
 
+it('lets a comment-only creator send a note without an empty change panel or change instructions',async()=>{
+ const item={id:7,key:'P-7',title:'Assigned to another User',type:'BUG',monkey:true,version:5,canComment:true,canAssign:false,canConvertToBug:false,allowedTransitions:[]};
+ const api={...ticketDefaults(),get:vi.fn().mockResolvedValue(item),comments:vi.fn().mockResolvedValue([]),action:vi.fn().mockResolvedValue({...item,version:6})};
+ render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);
+ const note=await screen.findByLabelText('Ghi chú Issue');
+ expect(screen.queryByRole('group',{name:'Thay đổi cùng bình luận'})).not.toBeInTheDocument();
+ expect(screen.queryByText(/Bỏ trống lựa chọn để giữ nguyên/)).not.toBeInTheDocument();
+ expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+ fireEvent.change(note,{target:{value:'Creator follow-up'}});fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));
+ await waitFor(()=>expect(api.action).toHaveBeenCalledTimes(1));
+ expect(api.action.mock.calls[0][2]).toEqual({expectedVersion:5,body:'Creator follow-up',requestKey:expect.any(String)});
+ expect(api.responsibilities).not.toHaveBeenCalled();await waitFor(()=>expect(note).toHaveValue(''));
+});
+
+it('renders the restored Monkey history event in Vietnamese',async()=>{
+ const api={...ticketDefaults(),get:vi.fn().mockResolvedValue({id:7,key:'P-7',title:'Restored Monkey',type:'BUG',monkey:true}),comments:vi.fn().mockResolvedValue([]),history:vi.fn().mockResolvedValue([{id:3,eventType:'RESTORE',actorName:'Project PM',createdAt:'2026-11-03T12:00:00Z'}])};
+ render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Xem lịch sử Issue'}));
+ expect(await screen.findByText(/· Khôi phục/)).toBeVisible();expect(screen.queryByText(/· RESTORE/)).not.toBeInTheDocument();
+});
+
 
 it.each(['BUG','QA'])('shows current Feature information for %s and refreshes it without changing an Issue draft',async(type)=>{
  const item={id:7,key:'P-7',title:'Issue',type,monkey:type==='BUG',featureId:8,featureName:'Test 25 tháng 10',featureEnvironment:'idec-test100',featureDescription:'Sử dụng test ST app Duolingo\nDòng thứ hai',description:'Issue description',canComment:true};
@@ -183,11 +203,13 @@ it('does not fetch or expose assignment and priority without the server capabili
 it('uses the requested allowed status, preserves a failed reason, and submits the current version',async()=>{
 
  const item={id:7,key:'P-7',title:'Issue',type:'BUG',ticketState:'NEW',version:4,canComment:true,allowedTransitions:[{state:'IN_PROGRESS',columnId:'progress',label:'Đang xử lý'},{state:'CLOSED',closureReason:'PROCESSED',columnId:'processed',label:'Đã xử lý'}]};
- const api={...ticketDefaults(),get:vi.fn().mockResolvedValue(item),comments:vi.fn().mockResolvedValue([]),action:vi.fn().mockRejectedValueOnce(new Error('Phiên bản đã thay đổi')).mockResolvedValue({...item,ticketState:'CLOSED',closureReason:'PROCESSED',version:5})};
+ const api={...ticketDefaults(),get:vi.fn().mockResolvedValueOnce(item).mockResolvedValue({...item,title:'Changed by teammate',version:5}),comments:vi.fn().mockResolvedValue([]),action:vi.fn().mockRejectedValueOnce(new Error('Phiên bản đã thay đổi')).mockResolvedValue({...item,ticketState:'CLOSED',closureReason:'PROCESSED',version:6})};
  const changed=vi.fn();render(<FeatureIssueDetail projectId={1} id={7} api={api} initialStatus="processed" onChanged={changed}/>);
  expect(await screen.findByLabelText('Trạng thái mới')).toHaveValue('CLOSED');expect(screen.getByLabelText('Lý do đóng')).toHaveValue('PROCESSED');expect(screen.queryByRole('option',{name:'Fixed'})).not.toBeInTheDocument();
  fireEvent.change(screen.getByLabelText('Ghi chú Issue'),{target:{value:'Đã kiểm tra lại bên ngoài'}});fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));expect(api.action).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));
  expect(await screen.findByRole('alert')).toHaveTextContent('Phiên bản đã thay đổi');expect(screen.getByLabelText('Ghi chú Issue')).toHaveValue('Đã kiểm tra lại bên ngoài');
  expect(api.action).toHaveBeenLastCalledWith(1,7,expect.objectContaining({state:'CLOSED',closureReason:'PROCESSED',body:'Đã kiểm tra lại bên ngoài',expectedVersion:4}),expect.anything());
- fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));await waitFor(()=>expect(changed).toHaveBeenCalledWith(expect.objectContaining({version:5})));
+ expect(screen.getByLabelText('Lý do đóng')).toHaveValue('PROCESSED');expect(api.get).toHaveBeenCalledOnce();expect(api.action).toHaveBeenCalledOnce();
+ fireEvent.click(screen.getByRole('button',{name:'Tải lại Issue'}));await screen.findByText('P-7 · Changed by teammate');expect(screen.getByLabelText('Ghi chú Issue')).toHaveValue('Đã kiểm tra lại bên ngoài');expect(screen.getByLabelText('Lý do đóng')).toHaveValue('PROCESSED');expect(api.action).toHaveBeenCalledOnce();
+ fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));await waitFor(()=>expect(changed).toHaveBeenCalledWith(expect.objectContaining({version:6})));expect(api.action).toHaveBeenLastCalledWith(1,7,expect.objectContaining({state:'CLOSED',closureReason:'PROCESSED',body:'Đã kiểm tra lại bên ngoài',expectedVersion:5}),expect.anything());
 });
