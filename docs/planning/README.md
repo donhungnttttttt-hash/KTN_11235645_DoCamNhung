@@ -1,4 +1,8 @@
+Bàn giao local 14/11/2026: người dùng yêu cầu commit/push lên `system-design`; đã đồng bộ `c745215`, giữ các thay đổi local và giải quyết conflict tài liệu. Kiểm tra mới: 459 frontend, 17 backend, Vite build và Maven package PASS. [Phạm vi, skill và giới hạn](../reviews/2026-11-14-local-source-handover.md). Phân công ticket vẫn IN_PROGRESS; mẫu Backlog chưa triển khai. Các ghi chú chưa commit/push bên dưới là checkpoint lịch sử.
+
 Java Problems 14/11/2026: đã xử lý đúng 79 cảnh báo; JDT 388 source về 0 error/0 warning, Language Server xác nhận 11 file sạch, 51 offline + 108 native test PASS và Maven verify/package đạt. [Báo cáo, skill và giới hạn kiểm chứng](../reviews/2026-11-14-java-problems.md). Người dùng yêu cầu sửa trước rồi commit/push `system-design`; không migration/restart main.
+
+Thiết lập local 04/11/2026: theo yêu cầu chạy backend phải tự thiết lập, đã bổ sung provisioning một lần bằng mapping riêng, chỉ bật trên profile local. Máy hiện tại có 111 tài khoản, Flyway V40; `admin`/`admin2` đã đăng nhập HTTP thành công, giữ UUID/membership, restart không đặt lại mật khẩu. 17 kiểm tra và package PASS; chưa full native regression/coverage/browser. [Báo cáo và cấu hình](../reviews/2026-11-04-local-admin-startup.md). Chưa commit/push thay đổi này.
 
 Bàn giao Arena 04/11/2026: người dùng yêu cầu commit và push phần thay đổi đã review lên `system-design`. Đối chiếu 97 file với snapshot review: source sản phẩm không đổi; remote chưa đi trước tại bước kiểm tra. Yêu cầu này không bao gồm merge/deploy hoặc nâng main. Git và thông báo bàn giao ghi kết quả thực thi; các ghi chú chưa commit/push dưới đây là checkpoint trước yêu cầu này.
 

@@ -1,6 +1,65 @@
 {
   "schemaVersion": 1,
   "updatedAt": "2026-11-14",
+  "localSourceHandover20261114": {
+    "request": "Commit va push code tu may nay",
+    "branch": "system-design",
+    "remoteBase": "c745215",
+    "report": "docs/reviews/2026-11-14-local-source-handover.md",
+    "verification": "459 frontend tests / 54 files; 17 backend offline tests; Vite build and Maven package PASS; JSON and diff check PASS",
+    "commitAuthorized": true,
+    "pushAuthorized": true,
+    "remaining": "Ticket assignment permission decision and Backlog-based detail design remain pending; no migration, runtime restart, browser retest or coverage measurement in this handover"
+  },
+  "ticketDirectAssignment20261104": {
+    "status": "IN_PROGRESS",
+    "request": "Phân công trong chi tiết từng ticket bằng Người phụ trách, không dùng màn Trách nhiệm Ticket riêng",
+    "implemented": "Removed responsibility setup button/modal from Kanban, list and error management. Existing per-ticket assignment field is now labeled Người phụ trách.",
+    "verification": "RED: 3 new UI tests failed before button removal. GREEN: 149 tests across 18 work-item/WorkBoardPage suites PASS; Vite build PASS with existing chunk-size warning; diff check PASS.",
+    "pendingDecision": "Await user choice: only ADMIN/project PM may reassign, or also ticket creator and current assignee. Do not infer broader permission changes from the UI correction.",
+    "remaining": "After decision, remove project-duty prerequisites consistently from recipient options, creation, QA conversion, assignment and reopen rules; update backend/frontend tests and business/API documentation. Current backend duty checks remain unchanged.",
+    "limitations": "No backend permissions changed or main database writes performed for this task. No live browser verification or coverage measurement.",
+    "commitPush": false
+  },
+  "kanbanFilterLayout20261104": {
+    "status": "DONE",
+    "request": "Bỏ Loại/Cột Ticket ở Kanban, giữ ở danh sách; đổi Tìm Issue thành Tìm ticket và mở rộng Feature",
+    "result": "Kanban chỉ có Feature, Tìm ticket, Tải lại; Feature rộng gấp đôi ô tìm trên desktop. Danh sách/Quản lý lỗi giữ hai bộ lọc. Chuyển sang Kanban bỏ type/column và về trang đầu, giữ Feature/từ khóa; link Kanban bỏ type ẩn, vẫn hỗ trợ chọn cột trên board.",
+    "verification": "RED: 2 new tests failed before implementation. GREEN: 29 tests in FeatureIssuesPage and WorkBoardPage PASS; Vite build PASS with existing chunk-size warning; diff check PASS. Chrome static fixture measured Feature/search ratio ~2, same row and no page overflow.",
+    "limitations": "Browser preview used actual CSS with sample markup, not an authenticated live session; coverage not measured.",
+    "skills": ["frontend-ui-engineering", "tdd-workflow", "verification-before-completion"],
+    "commitPush": false
+  },
+  "reportLivePreviewLayout20261104": {
+    "status": "DONE",
+    "request": "Soạn Markdown và xem trước song song để sửa là nhìn thấy kết quả ngay",
+    "result": "Hai cột soạn/xem trước cùng chiều cao trên desktop, cuộn độc lập; lưu/tải ở dưới cả hai. Giữ preview theo editor.markdown hiện có, không sửa API hay cơ chế lưu. Màn hẹp <=640px xếp dọc.",
+    "files": ["Frontend/src/app/features/reports/ManagementAnalysisPage.jsx", "Frontend/src/app/features/reports/management-analysis.css"],
+    "verification": "83 existing reporting tests across 8 files PASS; Vite build PASS with existing chunk-size warning; git diff --check PASS. Chrome fixture measured side-by-side, equal top/height, independent overflow and no page overflow.",
+    "limitations": "Chrome verification used actual CSS and representative markup in Backend/target/report-layout-preview, not an authenticated live application session. Coverage not measured.",
+    "skills": ["frontend-ui-engineering", "verification-before-completion"],
+    "commitPush": false
+  },
+  "projectProgressLabel20261104": {
+    "status": "DONE",
+    "request": "Đưa tỷ lệ tiến độ lên trên hoặc trong thanh để dễ nhận diện",
+    "result": "Phần trăm nằm giữa toàn bộ thanh, chữ đậm màu tối; bỏ dòng tỷ lệ riêng. Giữ nguyên dữ liệu và cách tính, kể cả nhãn chưa có phạm vi áp dụng.",
+    "files": ["Frontend/src/app/features/admin/AdminDashboard.jsx", "Frontend/src/app/features/admin/admin.css"],
+    "verification": "18 existing dashboard tests PASS; Vite build PASS with existing chunk-size warning; git diff --check PASS. Viewed desktop Chrome preview using actual CSS and sample markup for 0/40/95/100 percent and null.",
+    "limitations": "Preview is a static layout fixture, not the authenticated application. No mobile application verification or coverage measurement.",
+    "skills": ["frontend-ui-engineering", "verification-before-completion"],
+    "commitPush": false
+  },
+  "localAdminStartup20261104": {
+    "status": "DONE",
+    "request": "Chạy backend phải tự thiết lập tài khoản trên máy local",
+    "scope": "Explicit local-only one-time startup provisioning; preserve account UUIDs and subsequent password/profile changes",
+    "report": "docs/reviews/2026-11-04-local-admin-startup.md",
+    "verification": "17 focused tests and Maven package PASS; live startup plus HTTP login for admin/admin2; restart UP with password hashes/versions unchanged",
+    "database": "111 users; two registered administrators; one receipt; membership and Flyway history preserved",
+    "limitations": "No full backend/native isolated regression, restore rehearsal, coverage measurement or browser verification",
+    "commitPush": false
+  },
   "arenaSourceHandover20261104": {
     "request": "commit va push di",
     "branch": "system-design",
