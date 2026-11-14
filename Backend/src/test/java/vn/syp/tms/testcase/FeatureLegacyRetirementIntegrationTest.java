@@ -67,7 +67,7 @@ class FeatureLegacyRetirementIntegrationTest extends FeatureIntegrationTest {
     private Map<String,List<String>> projectRows(){
         var snapshot=new TreeMap<String,List<String>>();
         for(String table:db.queryForList("SELECT table_name FROM information_schema.columns WHERE table_schema=DATABASE() AND column_name='project_id' ORDER BY table_name",String.class)){
-            assertThat(table).matches("[a-z0-9_]+");var rows=db.queryForList("SELECT * FROM `"+table+"` WHERE project_id=?",p).stream().map(Map::toString).sorted().toList();snapshot.put(table,rows);
+            assertThat(table).matches("[a-z0-9_]+");var rows=db.queryForList("SELECT * FROM `"+table+"` WHERE project_id=?",p).stream().map(row->row.toString()).sorted().toList();snapshot.put(table,rows);
         }
         return snapshot;
     }

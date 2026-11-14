@@ -23,7 +23,7 @@ class NativeCurrentProjectLifecycleConcurrencyTest {
     @Autowired DeviceInventoryService inventory;
     TransactionTemplate tx;String admin,pm;long project,member,cycle;
     @BeforeEach void fixture() {
-        tx=new TransactionTemplate(manager);tx.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
+        tx=new TransactionTemplate(Objects.requireNonNull(manager));tx.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
         tx.executeWithoutResult(s->{
             var existing=jdbc.queryForList("SELECT user_id FROM system_admin_registry WHERE slot=1",String.class);
             if(existing.isEmpty()){admin=user("ADMIN");jdbc.update("INSERT INTO system_admin_registry(slot,user_id) VALUES(1,?)",admin);}else admin=existing.getFirst();
@@ -78,7 +78,7 @@ class NativeCurrentProjectLifecycleConcurrencyTest {
         unchanged();assertThat(count("project_audit")).isZero();
         assertThat(lifecycle.decide(admin,project,command,true)).containsEntry("archived",true);assertThat(count("project_lifecycle_decisions")).isEqualTo(1);
     }
-    long count(String table){return jdbc.queryForObject("SELECT COUNT(*) FROM "+table+" WHERE project_id=?",Long.class,project);}
+    long count(String table){return Objects.requireNonNull(jdbc.queryForObject("SELECT COUNT(*) FROM "+table+" WHERE project_id=?",Long.class,project));}
     void unchanged(){assertThat(jdbc.queryForObject("SELECT archived_at FROM projects WHERE id=?",Object.class,project)).isNull();assertThat(count("project_lifecycle_decisions")).isZero();}
     void race(Runnable first,Runnable second,String code,boolean identity)throws Exception {
         var locked=new CountDownLatch(1);var snapshot=new CountDownLatch(1);

@@ -39,8 +39,8 @@ class ManagementReportIntegrationTest {
     List<Map<String,Object>> retainedDrafts;
     @BeforeEach void setup()throws Exception {
         registeredAdmins=db.queryForList("SELECT slot,user_id FROM system_admin_registry ORDER BY slot");assertThat(registeredAdmins).hasSize(2);
-        admin=users.findById(String.valueOf(registeredAdmins.getFirst().get("user_id"))).orElseThrow();
-        var creator=users.findById(String.valueOf(registeredAdmins.getLast().get("user_id"))).orElseThrow();
+        admin=users.findById((String)Objects.requireNonNull(registeredAdmins.getFirst().get("user_id"))).orElseThrow();
+        var creator=users.findById((String)Objects.requireNonNull(registeredAdmins.getLast().get("user_id"))).orElseThrow();
         String tag=UUID.randomUUID().toString().substring(0,8);pm=user("pm"+tag,"PM");tester=user("tester"+tag,"USER");dev=user("dev"+tag,"USER");outside=user("outside"+tag,"PM");
         p=projects.create(creator.getId(),new ProjectDtos.CreateProject("MR"+tag,"Report test","Actual project description","Asia/Ho_Chi_Minh")).id();
         for(var entry:Map.of(pm,"PM",tester,"USER",dev,"USER").entrySet())projects.addOrUpdateMember(p,creator.getId(),entry.getKey().getId(),new ProjectDtos.SetMember(entry.getValue()));
@@ -143,7 +143,7 @@ class ManagementReportIntegrationTest {
         assertThat(expired.created()).isTrue();assertThat(active.created()).isTrue();
         // Exercise the real global TTL job only inside a rollback transaction: retained
         // fixtures from other suites must never be physically purged by this test.
-        new org.springframework.transaction.support.TransactionTemplate(transactions).executeWithoutResult(transaction->{
+        new org.springframework.transaction.support.TransactionTemplate(Objects.requireNonNull(transactions)).executeWithoutResult(transaction->{
             transaction.setRollbackOnly();
             assertThat(db.update("UPDATE ai_generated_drafts SET created_at=UTC_TIMESTAMP(6)-INTERVAL 8 DAY,expires_at=UTC_TIMESTAMP(6)-INTERVAL 1 DAY WHERE project_id=? AND created_by=? AND id=?",p,pm.getId(),expired.id())).isEqualTo(1);
             assertThat(drafts.purgeExpired()).isGreaterThanOrEqualTo(1);

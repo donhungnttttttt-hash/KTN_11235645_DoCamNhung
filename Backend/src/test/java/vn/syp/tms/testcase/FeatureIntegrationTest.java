@@ -35,8 +35,8 @@ class FeatureIntegrationTest {
     @Autowired org.springframework.transaction.PlatformTransactionManager transactions;
     IdentityUser admin,pm,a,b,dev,outside;long p,am,bm;
     List<Map<String,Object>> registeredAdmins;
-    @BeforeEach void setup(){String tag=UUID.randomUUID().toString().substring(0,8);registeredAdmins=db.queryForList("SELECT slot,user_id FROM system_admin_registry ORDER BY slot");assertThat(registeredAdmins).hasSize(2);admin=users.findById(String.valueOf(registeredAdmins.getFirst().get("user_id"))).orElseThrow();pm=user("pm"+tag,"PM");a=user("a"+tag,"USER");b=user("b"+tag,"USER");dev=user("dev"+tag,"USER");outside=user("outside"+tag,"PM");
-        var creator=users.findById(String.valueOf(registeredAdmins.getLast().get("user_id"))).orElseThrow();p=projects.create(creator.getId(),new ProjectDtos.CreateProject("FR"+tag,"Feature thử","","Asia/Ho_Chi_Minh")).id();
+    @BeforeEach void setup(){String tag=UUID.randomUUID().toString().substring(0,8);registeredAdmins=db.queryForList("SELECT slot,user_id FROM system_admin_registry ORDER BY slot");assertThat(registeredAdmins).hasSize(2);admin=users.findById((String)Objects.requireNonNull(registeredAdmins.getFirst().get("user_id"))).orElseThrow();pm=user("pm"+tag,"PM");a=user("a"+tag,"USER");b=user("b"+tag,"USER");dev=user("dev"+tag,"USER");outside=user("outside"+tag,"PM");
+        var creator=users.findById((String)Objects.requireNonNull(registeredAdmins.getLast().get("user_id"))).orElseThrow();p=projects.create(creator.getId(),new ProjectDtos.CreateProject("FR"+tag,"Feature thử","","Asia/Ho_Chi_Minh")).id();
         for(var entry:Map.of(pm,"PM",a,"USER",b,"USER",dev,"USER").entrySet())projects.addOrUpdateMember(p,admin.getId(),entry.getKey().getId(),new ProjectDtos.SetMember(entry.getValue()));
         am=member(a);bm=member(b);
     }
@@ -98,7 +98,7 @@ class FeatureIntegrationTest {
         var connections=ConcurrentHashMap.<Long>newKeySet();var ready=new CountDownLatch(2);var start=new CountDownLatch(1);
         try(var executor=Executors.newFixedThreadPool(2)){
             var outcomes=new ArrayList<Future<Integer>>();
-            for(var user:List.of(a,b))outcomes.add(executor.submit(()->new org.springframework.transaction.support.TransactionTemplate(transactions).execute(tx->{
+            for(var user:List.of(a,b))outcomes.add(executor.submit(()->new org.springframework.transaction.support.TransactionTemplate(Objects.requireNonNull(transactions)).execute(tx->{
                 connections.add(db.queryForObject("SELECT CONNECTION_ID()",Long.class));ready.countDown();
                 try{assertThat(start.await(5,TimeUnit.SECONDS)).isTrue();int code=assign(d,user,0,List.of(scope(user==a?am:bm,List.of(row)))).getResponse().getStatus();if(code>=400)tx.setRollbackOnly();return code;}
                 catch(Exception error){throw new IllegalStateException(error);}
@@ -145,8 +145,8 @@ class FeatureIntegrationTest {
     }
     @Test void previewErrorsNeverCommitAndCommitRetryCreatesNoDuplicateRowsOrHistory()throws Exception{
         long f=feature("Import retry"),d=imported(f,internal());
-        var before=read(d);long cases=db.queryForObject("SELECT COUNT(*) FROM test_cases WHERE project_id=?",Long.class,p);
-        long audit=db.queryForObject("SELECT COUNT(*) FROM project_audit WHERE project_id=?",Long.class,p);
+        var before=read(d);long cases=Objects.requireNonNull(db.queryForObject("SELECT COUNT(*) FROM test_cases WHERE project_id=?",Long.class,p));
+        long audit=Objects.requireNonNull(db.queryForObject("SELECT COUNT(*) FROM project_audit WHERE project_id=?",Long.class,p));
         for(int retry=0;retry<2;retry++)mvc.perform(post(path("/features/"+f+"/import-previews/"+d+"/commit")).with(actor(pm)).with(csrf())).andExpect(status().isOk());
         assertThat(read(d)).isEqualTo(before);assertThat(db.queryForObject("SELECT COUNT(*) FROM test_cases WHERE project_id=?",Long.class,p)).isEqualTo(cases);
         assertThat(db.queryForObject("SELECT COUNT(*) FROM project_audit WHERE project_id=?",Long.class,p)).isEqualTo(audit);

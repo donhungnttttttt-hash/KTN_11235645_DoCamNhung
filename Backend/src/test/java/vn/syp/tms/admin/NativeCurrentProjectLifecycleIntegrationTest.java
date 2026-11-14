@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,24 +33,25 @@ class NativeCurrentProjectLifecycleIntegrationTest {
     @Autowired MockMvc mvc;@Autowired JdbcTemplate jdbc;@Autowired DataSource source;@Autowired WorkItemStore db;@Autowired ProjectLifecycleService lifecycle;@Autowired ObjectMapper json;
     CurrentLifecycleFixture f;String admin,admin2;
     @BeforeEach void fixture()throws Exception {
-        var c=DataSourceUtils.getConnection(source);try{f=CurrentLifecycleFixture.seed(c,false);}finally{DataSourceUtils.releaseConnection(c,source);}
+        var c=DataSourceUtils.getConnection(Objects.requireNonNull(source));try{f=CurrentLifecycleFixture.seed(c,false);}finally{DataSourceUtils.releaseConnection(c,source);}
         admin=registered(1);admin2=registered(2);
         jdbc.update("UPDATE device_allocations SET returned_at=UTC_TIMESTAMP(6),returned_by=?,returned_condition='AVAILABLE' WHERE id=?",admin,f.allocation);
     }
     String registered(int slot){var found=jdbc.queryForList("SELECT user_id FROM system_admin_registry WHERE slot=?",String.class,slot);if(!found.isEmpty())return found.getFirst();String id=UUID.randomUUID().toString();jdbc.update("INSERT INTO identity_users(id,username,display_name,password_hash,role_code,created_at) VALUES(?,?,'AR06 Admin','not-login','ADMIN',UTC_TIMESTAMP(6))",id,"ar06."+id);jdbc.update("INSERT INTO system_admin_registry(slot,user_id) VALUES(?,?)",slot,id);return id;}
-    RequestPostProcessor actor(String id,String role){return authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(id,0L),null,List.of(new SimpleGrantedAuthority("ROLE_"+role))));}
-    String endpoint(){return "/api/v1/admin/projects/"+f.project;}
+    @NonNull RequestPostProcessor actor(String id,String role){return Objects.requireNonNull(authentication(new UsernamePasswordAuthenticationToken(new SessionPrincipal(id,0L),null,List.of(new SimpleGrantedAuthority("ROLE_"+role)))));}
+    @NonNull String encode(Object value)throws com.fasterxml.jackson.core.JsonProcessingException{return Objects.requireNonNull(json.writeValueAsString(value));}
+    @NonNull String endpoint(){return "/api/v1/admin/projects/"+f.project;}
     ProjectLifecycleService.Command command(long version,String key){return new ProjectLifecycleService.Command(version," Accepted delivery ",key);}
     ProjectLifecycleService.Command exception(long version,String key){return new ProjectLifecycleService.Command(version,"Accepted legacy history",key,new ProjectLifecycleService.LegacyException(true,(String)lifecycle.readiness(admin,f.project).get("legacyExceptionFingerprint")));}
     void activeCycle(){jdbc.update("UPDATE test_cycles SET status_code='ACTIVE',activated_at=UTC_TIMESTAMP(6),activated_by=? WHERE id=?",f.pmMember,f.cycle);}
     void error(Runnable action,String code){assertThatThrownBy(action::run).isInstanceOfSatisfying(BusinessException.class,e->assertThat(e.code()).isEqualTo(code));}
-    long count(String table){return jdbc.queryForObject("SELECT COUNT(*) FROM "+table+" WHERE project_id=?",Long.class,f.project);}
+    long count(String table){return Objects.requireNonNull(jdbc.queryForObject("SELECT COUNT(*) FROM "+table+" WHERE project_id=?",Long.class,f.project));}
     @Test void archivesOnlyAcknowledgedLegacyBlockersWithoutChangingChildren()throws Exception {
         activeCycle();long retest=retest();var before=children();var ready=lifecycle.readiness(admin,f.project);
         assertThat(ready).containsEntry("canArchive",false).containsEntry("canArchiveWithLegacyException",true);
         error(()->lifecycle.decide(admin,f.project,command(0,"ordinary-blocked"),true),"ARCHIVE_BLOCKED");
         long audit=count("project_audit");var accepted=exception(0,"legacy-accepted");var result=lifecycle.decide(admin,f.project,accepted,true);
-        mvc.perform(post(endpoint()+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(json.writeValueAsString(accepted))).andExpect(status().isOk()).andExpect(jsonPath("$.archived").value(true)).andExpect(jsonPath("$.latestDecision.legacyException.policyVersion").value(1));
+        mvc.perform(post(endpoint()+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(encode(accepted))).andExpect(status().isOk()).andExpect(jsonPath("$.archived").value(true)).andExpect(jsonPath("$.latestDecision.legacyException.policyVersion").value(1));
         assertThat(result).containsEntry("archived",true);assertThat(children()).isEqualTo(before);assertThat(count("project_audit")).isEqualTo(audit+1);assertThat(count("project_lifecycle_decisions")).isEqualTo(1);
         var history=lifecycle.history(admin,f.project,0,20).items().getFirst();assertThat(history).containsEntry("reason","Accepted legacy history");assertThat(history.get("legacyException")).isInstanceOf(Map.class);assertThat(history).doesNotContainKeys("requestKey","payload_hash");
         mvc.perform(get(endpoint()+"/lifecycle-decisions").with(actor(admin,"ADMIN"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(1)).andExpect(jsonPath("$.items[0].legacyException.fingerprint").value(accepted.legacyException().snapshotFingerprint()));
@@ -59,11 +61,11 @@ class NativeCurrentProjectLifecycleIntegrationTest {
     Map<String,Object> children(){return Map.of("cycles",jdbc.queryForList("SELECT * FROM test_cycles WHERE project_id=?",f.project),"runs",jdbc.queryForList("SELECT * FROM run_items WHERE project_id=?",f.project),"retests",jdbc.queryForList("SELECT * FROM retest_requests WHERE project_id=?",f.project),"source",HexFormat.of().formatHex(jdbc.queryForObject("SELECT source_workbook FROM import_batches WHERE id=?",byte[].class,f.document)));}
     @Test void archivedProjectRetainsUserExportsAndRejectsAdminPatch()throws Exception {
         String originalName=jdbc.queryForObject("SELECT name FROM projects WHERE id=?",String.class,f.project);
-        mvc.perform(post(endpoint()+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(json.writeValueAsString(command(0,"archive-export-boundary"))))
+        mvc.perform(post(endpoint()+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(encode(command(0,"archive-export-boundary"))))
             .andExpect(status().isOk()).andExpect(jsonPath("$.archived").value(true)).andExpect(jsonPath("$.version").value(1));
         String export="/api/v1/projects/"+f.project+"/test-documents/"+f.document+"/export";
         mvc.perform(get(export).with(actor(f.tester,"USER"))).andExpect(status().isOk());
-        mvc.perform(get(export).param("original","true").with(actor(f.tester,"USER"))).andExpect(status().isOk()).andExpect(content().bytes(f.source));
+        mvc.perform(get(export).param("original","true").with(actor(f.tester,"USER"))).andExpect(status().isOk()).andExpect(content().bytes(Objects.requireNonNull(f.source)));
         mvc.perform(patch(endpoint()).with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content("{\"name\":\"Changed\",\"expectedVersion\":1}"))
             .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("ARCHIVED"));
         assertThat(jdbc.queryForObject("SELECT name FROM projects WHERE id=?",String.class,f.project)).isEqualTo(originalName);
@@ -94,14 +96,14 @@ class NativeCurrentProjectLifecycleIntegrationTest {
     @Test void ordinaryLifecycleValidatesRoleCsrfVersionAndReason()throws Exception {
         mvc.perform(get(endpoint()+"/archive-readiness")).andExpect(status().isUnauthorized());
         for(String id:List.of(f.pm,f.tester))mvc.perform(get(endpoint()+"/archive-readiness").with(actor(id,id.equals(f.pm)?"PM":"USER"))).andExpect(status().isForbidden());
-        mvc.perform(post(endpoint()+"/archive").with(actor(admin,"ADMIN")).contentType("application/json").content(json.writeValueAsString(command(0,"csrf-missing")))).andExpect(status().isForbidden());
+        mvc.perform(post(endpoint()+"/archive").with(actor(admin,"ADMIN")).contentType("application/json").content(encode(command(0,"csrf-missing")))).andExpect(status().isForbidden());
         error(()->lifecycle.decide(admin,f.project,command(1,"version-stale"),true),"VERSION_CONFLICT");
-        mvc.perform(post(endpoint()+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(json.writeValueAsString(new ProjectLifecycleService.Command(0L," ","reason-blank")))).andExpect(status().isUnprocessableEntity());
+        mvc.perform(post(endpoint()+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(encode(new ProjectLifecycleService.Command(0L," ","reason-blank")))).andExpect(status().isUnprocessableEntity());
         assertThat(lifecycle.decide(admin,f.project,command(0,"ordinary-archive"),true)).containsEntry("archived",true);
-        mvc.perform(post(endpoint()+"/reopen").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(json.writeValueAsString(command(1,"ordinary-reopen")))).andExpect(status().isOk()).andExpect(jsonPath("$.archived").value(false)).andExpect(jsonPath("$.latestDecision.legacyException").doesNotExist());
+        mvc.perform(post(endpoint()+"/reopen").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(encode(command(1,"ordinary-reopen")))).andExpect(status().isOk()).andExpect(jsonPath("$.archived").value(false)).andExpect(jsonPath("$.latestDecision.legacyException").doesNotExist());
     }
     @Test void everyHardBlockerStillBlocksEvenWithValidFingerprint()throws Exception {
-        activeCycle();long work;var c=DataSourceUtils.getConnection(source);try{work=f.work(c,"TASK",77);}finally{DataSourceUtils.releaseConnection(c,source);}
+        activeCycle();long work;var c=DataSourceUtils.getConnection(Objects.requireNonNull(source));try{work=f.work(c,"TASK",77);}finally{DataSourceUtils.releaseConnection(c,source);}
         var command=exception(0,"hard-blocker-key");error(()->lifecycle.decide(admin,f.project,command,true),"ARCHIVE_BLOCKED");
         jdbc.update("UPDATE work_items SET status_code='closed' WHERE id=?",work);
         jdbc.update("UPDATE device_allocations SET returned_at=NULL,returned_by=NULL,returned_condition=NULL WHERE id=?",f.allocation);
@@ -115,12 +117,12 @@ class NativeCurrentProjectLifecycleIntegrationTest {
     @Test void controllerRejectsInvalidExceptionAndReopenException()throws Exception {
         activeCycle();var input=exception(0,"invalid-exception");
         for(var value:List.of(Map.of("acknowledged",false,"snapshotFingerprint","a".repeat(64)),Map.of("acknowledged",true),Map.of("acknowledged",true,"snapshotFingerprint","A".repeat(64))))
-            mvc.perform(post(endpoint()+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(json.writeValueAsString(Map.of("expectedVersion",0,"reason","Accepted","requestKey","invalid-exception","legacyException",value)))).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("INVALID_COMMAND"));
-        mvc.perform(post(endpoint()+"/reopen").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(json.writeValueAsString(input))).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("INVALID_COMMAND"));
+            mvc.perform(post(endpoint()+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(encode(Map.of("expectedVersion",0,"reason","Accepted","requestKey","invalid-exception","legacyException",value)))).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("INVALID_COMMAND"));
+        mvc.perform(post(endpoint()+"/reopen").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(encode(input))).andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.code").value("INVALID_COMMAND"));
     }
     @Test void allBlockerTypesAreCountedAndRemovalRecomputesEligibility()throws Exception {
-        long retest=retest(),bug=jdbc.queryForObject("SELECT work_item_id FROM retest_requests WHERE id=?",Long.class,retest);
-        long session,work;var c=DataSourceUtils.getConnection(source);try{long run=f.run(c);long group=f.group(c,run);session=f.session(c,group,"PAUSED");work=f.work(c,"TASK",88);}finally{DataSourceUtils.releaseConnection(c,source);}
+        long retest=retest(),bug=Objects.requireNonNull(jdbc.queryForObject("SELECT work_item_id FROM retest_requests WHERE id=?",Long.class,retest));
+        long session,work;var c=DataSourceUtils.getConnection(Objects.requireNonNull(source));try{long run=f.run(c);long group=f.group(c,run);session=f.session(c,group,"PAUSED");work=f.work(c,"TASK",88);}finally{DataSourceUtils.releaseConnection(c,source);}
         jdbc.update("UPDATE device_allocations SET returned_at=NULL,returned_by=NULL,returned_condition=NULL WHERE id=?",f.allocation);
         long binding=db.insert("INSERT INTO redmine_bindings(project_id,work_item_id,correlation_marker,instance_hash,configuration_json,created_by,created_at) VALUES(?,?,?,REPEAT('b',64),'{}',?,UTC_TIMESTAMP(6))",f.project,bug,UUID.randomUUID().toString(),f.pmMember);
         long outbox=db.insert("INSERT INTO redmine_outbox(project_id,work_item_id,binding_id,operation,status,source_version,payload_json,payload_checksum,request_key,request_checksum,reason,created_by,dispatch_by,created_at,updated_at,next_attempt_at) VALUES(?,?,?,'PUBLISH','RUNNING',0,'{}',REPEAT('b',64),'ar06-publication',REPEAT('b',64),'Publish',?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",f.project,bug,binding,f.pmMember,f.pmMember);
@@ -136,43 +138,43 @@ class NativeCurrentProjectLifecycleIntegrationTest {
     }
     long feature(){return db.insert("INSERT INTO testing_features(project_id,name,created_by,updated_by,created_at,updated_at) VALUES(?,'U26 Feature',?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",f.project,admin,admin);}
     long ticket(long feature,boolean document)throws Exception {
-        long id;var c=DataSourceUtils.getConnection(source);try{id=f.work(c,"BUG",101);}finally{DataSourceUtils.releaseConnection(c,source);}
+        long id;var c=DataSourceUtils.getConnection(Objects.requireNonNull(source));try{id=f.work(c,"BUG",101);}finally{DataSourceUtils.releaseConnection(c,source);}
         if(document)jdbc.update("UPDATE import_batches SET feature_id=? WHERE id=?",feature,f.document);
         db.update("INSERT INTO bug_details(project_id,work_item_id,policy_version,steps,expected_result,actual_result,standalone_reason,context_snapshot) VALUES(?,?,'INTERNAL_V1','Steps','Expected','Actual','U26','{}')",f.project,id);
         jdbc.update("INSERT INTO work_item_feature_context(project_id,work_item_id,feature_id,document_id,monkey,created_by_user_id,ticket_state,verifier_user_id) VALUES(?,?,?,?,?,?, 'NEW',?)",f.project,id,feature,document?f.document:null,!document,admin,admin);
         return id;
     }
-    String issue(long id){return "/api/v1/projects/"+f.project+"/issues/"+id;}
+    @NonNull String issue(long id){return "/api/v1/projects/"+f.project+"/issues/"+id;}
     void stillHardBlocked(){assertThat(lifecycle.readiness(admin,f.project)).containsEntry("canArchive",false).containsEntry("canArchiveWithLegacyException",false);error(()->lifecycle.decide(admin,f.project,command(0,"u26-still-blocked"),true),"ARCHIVE_BLOCKED");}
     @Test void softDeletedOpenMonkeyRemainsHardBlockerAndHasNoMutationRecovery()throws Exception {
         long feature=feature(),id=ticket(feature,false);
         mvc.perform(delete(issue(id)).param("expectedVersion","0").with(actor(admin,"ADMIN")).with(csrf())).andExpect(status().isNoContent());
         mvc.perform(get(issue(id)).with(actor(admin,"ADMIN"))).andExpect(status().isNotFound());
         mvc.perform(get("/api/v1/projects/"+f.project+"/issues").with(actor(admin,"ADMIN"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
-        mvc.perform(post(issue(id)+"/actions").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(json.writeValueAsString(Map.of("state","CLOSED","closureReason","FIXED","body","Resolve hidden ticket","expectedVersion",1,"requestKey",UUID.randomUUID())))).andExpect(status().isNotFound());
+        mvc.perform(post(issue(id)+"/actions").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(encode(Map.of("state","CLOSED","closureReason","FIXED","body","Resolve hidden ticket","expectedVersion",1,"requestKey",UUID.randomUUID())))).andExpect(status().isNotFound());
         mvc.perform(get(issue(id)+"/history").with(actor(admin,"ADMIN"))).andExpect(status().isOk());stillHardBlocked();
         System.out.println("AR06_U26 soft-deleted project="+f.project+" ticket="+id+" feature="+feature+" board=0 detail/action=404 history=200 blocker=OPEN_WORK_ITEMS; fixture rollback");
     }
     @Test void archivedFeatureCanRestoreButHiddenFileHasNoRestoreEndpoint()throws Exception {
         long feature=feature(),id=ticket(feature,true);String featurePath="/api/v1/projects/"+f.project+"/features/"+feature;
-        mvc.perform(post(featurePath+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(json.writeValueAsString(Map.of("expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
+        mvc.perform(post(featurePath+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(encode(Map.of("expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
         blockedTicketAction(id);stillHardBlocked();
-        mvc.perform(post(featurePath+"/restore").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(json.writeValueAsString(Map.of("expectedVersion",1,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
+        mvc.perform(post(featurePath+"/restore").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(encode(Map.of("expectedVersion",1,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
         mvc.perform(get("/api/v1/projects/"+f.project+"/issues").with(actor(admin,"ADMIN"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(1));
-        mvc.perform(post(featurePath+"/documents/"+f.document+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(json.writeValueAsString(Map.of("expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
+        mvc.perform(post(featurePath+"/documents/"+f.document+"/archive").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(encode(Map.of("expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
         mvc.perform(get("/api/v1/projects/"+f.project+"/issues").with(actor(admin,"ADMIN"))).andExpect(status().isOk()).andExpect(jsonPath("$.totalItems").value(0));
         blockedTicketAction(id);stillHardBlocked();
         System.out.println("AR06_U26 archived feature restored successfully; hidden-file project="+f.project+" ticket="+id+" feature="+feature+" document="+f.document+" board=0 action=409 ARCHIVED blocker=OPEN_WORK_ITEMS; fixture rollback");
     }
     void blockedTicketAction(long id)throws Exception {
-        mvc.perform(post(issue(id)+"/actions").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(json.writeValueAsString(Map.of("state","CLOSED","closureReason","FIXED","body","Resolve hidden ticket","expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("ARCHIVED"));
+        mvc.perform(post(issue(id)+"/actions").with(actor(admin,"ADMIN")).with(csrf()).contentType("application/json").content(encode(Map.of("state","CLOSED","closureReason","FIXED","body","Resolve hidden ticket","expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("ARCHIVED"));
     }
     @Test void processedTicketAwaitingVerificationRemainsHardBlocker()throws Exception {
         long id=ticket(feature(),false);jdbc.update("UPDATE work_items SET status_code='resolved' WHERE id=?",id);jdbc.update("UPDATE work_item_feature_context SET ticket_state='CLOSED',closure_reason='PROCESSED' WHERE work_item_id=?",id);stillHardBlocked();
         jdbc.update("UPDATE work_item_feature_context SET closure_reason='FIXED' WHERE work_item_id=?",id);jdbc.update("UPDATE work_items SET status_code='closed' WHERE id=?",id);assertThat(lifecycle.readiness(admin,f.project)).containsEntry("canArchive",true);
     }
     long retest()throws Exception {
-        long bug;var c=DataSourceUtils.getConnection(source);try{bug=f.work(c,"BUG",91);}finally{DataSourceUtils.releaseConnection(c,source);}
+        long bug;var c=DataSourceUtils.getConnection(Objects.requireNonNull(source));try{bug=f.work(c,"BUG",91);}finally{DataSourceUtils.releaseConnection(c,source);}
         jdbc.update("UPDATE work_items SET status_code='closed' WHERE id=?",bug);
         db.update("INSERT INTO bug_details(project_id,work_item_id,policy_version,steps,expected_result,actual_result,build_id,environment_id,device_id,standalone_reason,context_snapshot) VALUES(?,?,'INTERNAL_V1','Steps','Expected','Actual',?,?,?,'Fixture','{}')",f.project,bug,f.build,f.environment,f.device);
         long coverage=db.insert("INSERT INTO bug_coverage_revisions(project_id,work_item_id,revision_no,round_no,build_id,reason,created_by,created_at) VALUES(?,?,1,1,?,'Verify',?,UTC_TIMESTAMP(6))",f.project,bug,f.build,f.pmMember);

@@ -59,8 +59,8 @@ class NativeProjectNotesIntegrationTest {
         String tag=UUID.randomUUID().toString().substring(0,8);
         registeredAdmins=db.queryForList("SELECT slot,user_id FROM system_admin_registry ORDER BY slot");
         assertThat(registeredAdmins).as("prepared target must contain two registered Admins").hasSize(2);
-        admin=users.findById(String.valueOf(registeredAdmins.getFirst().get("user_id"))).orElseThrow();
-        creator=users.findById(String.valueOf(registeredAdmins.getLast().get("user_id"))).orElseThrow();
+        admin=users.findById((String)Objects.requireNonNull(registeredAdmins.getFirst().get("user_id"))).orElseThrow();
+        creator=users.findById((String)Objects.requireNonNull(registeredAdmins.getLast().get("user_id"))).orElseThrow();
         pm=user("pm"+tag,"PM");tester=user("tester"+tag,"USER");
         dev=user("dev"+tag,"USER");outsidePm=user("outside"+tag,"PM");
         project=projects.create(creator.getId(),new ProjectDtos.CreateProject("NT"+tag,"Notes native","Fixture-owned notes project","Asia/Ho_Chi_Minh")).id();

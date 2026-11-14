@@ -8,6 +8,7 @@ import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.syp.tms.project.ProjectAudit;
+import vn.syp.tms.shared.web.BusinessException;
 import vn.syp.tms.workitem.WorkItemStore;
 
 /** Archive is a reversible, audited read-only boundary. It never completes or deletes child work. */
@@ -78,7 +79,7 @@ public class ProjectLifecycleService {
         else blockers.add(Map.of("code",code,"label",label,"count",count,"exceptionEligible",Set.of("UNFINISHED_CYCLES","OPEN_RETESTS").contains(code)));
     }
     static void validateCommand(Command input,boolean archive) {
-        if(input==null||text(input.reason()).isEmpty()||text(input.reason()).length()>2000||input.expectedVersion()==null||input.expectedVersion()<0||input.requestKey()==null||!input.requestKey().matches("[A-Za-z0-9_-]{8,100}"))fail(422,"INVALID_COMMAND","Lý do, phiên bản và mã yêu cầu không hợp lệ.");
+        if(input==null||text(input.reason()).isEmpty()||text(input.reason()).length()>2000||input.expectedVersion()==null||input.expectedVersion()<0||input.requestKey()==null||!input.requestKey().matches("[A-Za-z0-9_-]{8,100}"))throw new BusinessException(422,"INVALID_COMMAND","Lý do, phiên bản và mã yêu cầu không hợp lệ.");
         var exception=input.legacyException();
         if(exception!=null&&(!archive||!Boolean.TRUE.equals(exception.acknowledged())||exception.snapshotFingerprint()==null||!exception.snapshotFingerprint().matches("[0-9a-f]{64}")))fail(422,"INVALID_COMMAND","Xác nhận ngoại lệ lưu trữ không hợp lệ.");
     }

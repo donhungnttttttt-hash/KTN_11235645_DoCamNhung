@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-04",
+  "updatedAt": "2026-11-14",
   "arenaSourceHandover20261104": {
     "request": "commit va push di",
     "branch": "system-design",
@@ -2454,5 +2454,49 @@
       "review": "Independent Standards + Spec; session fix reviewed again",
       "commitOrPush": false
     }
+  },
+  "javaProblems20261114": {
+    "status": "DONE",
+    "scope": "79 Java Problems: explicit null contracts; same application validation and test assertions",
+    "report": "docs/reviews/2026-11-14-java-problems.md",
+    "baseline": "abaf9d8",
+    "skills": [
+      "systematic-debugging",
+      "verification-loop",
+      "verification-before-completion"
+    ],
+    "verification": {
+      "javaSources": 388,
+      "beforeWarnings": 79,
+      "javaErrors": 0,
+      "javaWarnings": 0,
+      "languageServer": "11 changed files: explicit empty diagnostics on first open and reopen; isolated JDT LS, not direct IDE panel observation",
+      "offline": {
+        "tests": 51,
+        "suites": 5,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "native": {
+        "tests": 108,
+        "suites": 9,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "build": "Maven verify/package PASS in isolated copies with Java21",
+      "sourceCorrespondence": "435 backend manifest entries and 11 LSP files match",
+      "preservation": "94 tables and Admin registry unchanged; raw whole-table FAIL retained for 18 operational login-bucket row hashes expired/updated by real HTTP login",
+      "coverage": "Selected JaCoCo reports only; whole-backend coverage not assessed",
+      "browser": "NOT_RUN; frontend unchanged"
+    },
+    "handover": {
+      "commitAuthorized": true,
+      "pushAuthorized": true,
+      "branch": "system-design",
+      "result": "Git history and final response record completed commit/push"
+    },
+    "mainDatabaseMigrationOrRestart": false
   }
 }

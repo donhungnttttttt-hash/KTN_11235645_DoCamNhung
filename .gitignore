@@ -75,3 +75,6 @@ Backend/.idea/
 
 # Arena isolated builds, runtime receipts, fixtures and private local configuration.
 /var/arena-followup/
+
+# Java diagnostic evidence, copied builds and language-server workspaces stay local.
+/var/java-problems-20261114/

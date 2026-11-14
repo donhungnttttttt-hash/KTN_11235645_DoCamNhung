@@ -48,7 +48,7 @@ class NativeHandbookRevisionIntegrationTest {
         assertThat(response.statusCode()).isEqualTo(200);return body(response);
     }
     Map<String,Object> revision(long expected,String text){return Map.of("contentHtml",text,"visibility","INTERNAL","expectedCurrentRevisionId",expected);}
-    int revisionCount(long id){return jdbc.queryForObject("SELECT COUNT(*) FROM resource_revisions WHERE project_id=? AND resource_id=?",Integer.class,project,id);}
+    int revisionCount(long id){return Objects.requireNonNull(jdbc.queryForObject("SELECT COUNT(*) FROM resource_revisions WHERE project_id=? AND resource_id=?",Integer.class,project,id));}
     Client login(IdentityUser user)throws Exception{var c=new Client();assertThat(c.write("/auth/login",Map.of("username",user.getUsername(),"password",PASSWORD)).statusCode()).isEqualTo(200);return c;}
 
     @Test void twoEditorsPreserveWinningRevisionAndLosingDraft()throws Exception{
@@ -92,7 +92,7 @@ class NativeHandbookRevisionIntegrationTest {
         assertThat(caller.write(base(),Map.of("code","DENIED","name","Denied","resourceType","GUIDE","contentHtml","Denied")).statusCode()).isEqualTo(403);
         assertThat(caller.write(detail+"/revisions",revision(first,"Denied")).statusCode()).isEqualTo(403);
         assertThat(manager.get(detail).statusCode()).isEqualTo(200);
-        long version=jdbc.queryForObject("SELECT lock_version FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,project,pm.getId());
+        long version=Objects.requireNonNull(jdbc.queryForObject("SELECT lock_version FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,project,pm.getId()));
         projects.removeMember(project,admin,pm.getId(),version);
         assertThat(manager.write(detail+"/revisions",revision(first,"Revoked draft")).statusCode()).isEqualTo(404);
         assertThat(manager.get(detail).statusCode()).isEqualTo(404);assertThat(revisionCount(id)).isEqualTo(1);

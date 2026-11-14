@@ -1,3 +1,5 @@
+Java Problems 14/11/2026: đã xử lý đúng 79 cảnh báo; JDT 388 source về 0 error/0 warning, Language Server xác nhận 11 file sạch, 51 offline + 108 native test PASS và Maven verify/package đạt. [Báo cáo, skill và giới hạn kiểm chứng](../reviews/2026-11-14-java-problems.md). Người dùng yêu cầu sửa trước rồi commit/push `system-design`; không migration/restart main.
+
 Bàn giao Arena 04/11/2026: người dùng yêu cầu commit và push phần thay đổi đã review lên `system-design`. Đối chiếu 97 file với snapshot review: source sản phẩm không đổi; remote chưa đi trước tại bước kiểm tra. Yêu cầu này không bao gồm merge/deploy hoặc nâng main. Git và thông báo bàn giao ghi kết quả thực thi; các ghi chú chưa commit/push dưới đây là checkpoint trước yêu cầu này.
 
 Arena03/11: triển khai AR-00–12 và bằng chứng kỹ thuật đã được ghi nhận; review toàn diff đã chấp thuận, không có Critical/Important. [Báo cáo kết quả, giới hạn và phần chưa nghiệm thu](../reviews/2026-11-03-arena-final.md). USER/Khách, TicketV39, archiveV40 và khôi phụcMonkey/file đã kiểm trên môi trường riêng; main chưa nâng, chưa commit/push hoặc kýUAT. Các mục dưới là checkpoint lịch sử.

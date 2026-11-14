@@ -177,7 +177,7 @@ class QaEvidenceTest {
     @Test void missingHistoricalBlobReturns503WithoutMetadataDeletionOrSuccess() throws Exception {
         var error=assertThrows(BusinessException.class,()->service.download(1,"actor",70,id));
         assertEquals(503,error.status());assertEquals("STORAGE_UNAVAILABLE",error.code());
-        verify(work).get(1,"actor",70);verify(db,never()).update(anyString(),any(Object[].class));
+        verify(work).get(1,"actor",70);verify(db,never()).update(Objects.requireNonNull(anyString()),any(Object[].class));
         verifyNoInteractions(audit,qa);assertTrue(files().isEmpty());
     }
     @Test void qaCapableReadTransactionsRemainCompatibleWithTypedLocks() throws Exception {

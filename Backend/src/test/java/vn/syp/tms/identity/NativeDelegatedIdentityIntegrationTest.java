@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.*;
@@ -49,24 +50,24 @@ class NativeDelegatedIdentityIntegrationTest {
     }
     @AfterEach void registryPreserved(){if(registryBefore!=null)assertThat(jdbc.queryForList("SELECT * FROM system_admin_registry ORDER BY slot")).isEqualTo(registryBefore);}
     IdentityUser account(String suffix,String role){return users.saveAndFlush(new IdentityUser(tag+"."+suffix,suffix,hash,role));}
-    JsonNode adminWrite(String method,String path,Object data,int expected)throws Exception{
+    JsonNode adminWrite(@NonNull String method,String path,Object data,int expected)throws Exception{
         var a=identity.current(admin);var auth=new UsernamePasswordAuthenticationToken(new SessionPrincipal(admin,a.getVersion()),null,identity.authorities(a));
-        var result=mvc.perform(request(org.springframework.http.HttpMethod.valueOf(method),"/api/v1"+path).with(authentication(auth)).with(csrf()).contentType("application/json").content(json.writeValueAsBytes(data))).andReturn().getResponse();
+        var result=mvc.perform(request(org.springframework.http.HttpMethod.valueOf(method),"/api/v1"+path).with(Objects.requireNonNull(authentication(auth))).with(csrf()).contentType("application/json").content(vn.syp.tms.support.MockMvcContracts.jsonBytes(json,data))).andReturn().getResponse();
         assertThat(result.getStatus()).as(method+" "+path).isEqualTo(expected);return json.readTree(result.getContentAsString());
     }
     JsonNode adminGet(String path,int expected)throws Exception{
         var a=identity.current(admin);var auth=new UsernamePasswordAuthenticationToken(new SessionPrincipal(admin,a.getVersion()),null,identity.authorities(a));
-        var result=mvc.perform(get("/api/v1"+path).with(authentication(auth))).andReturn().getResponse();
+        var result=mvc.perform(get("/api/v1"+path).with(Objects.requireNonNull(authentication(auth)))).andReturn().getResponse();
         assertThat(result.getStatus()).isEqualTo(expected);return json.readTree(result.getContentAsString());
     }
     Map<String,Object> input(String username){return new LinkedHashMap<>(Map.of("username",username,"displayName","AR01 owned account","password",PASSWORD,"isProjectAdmin",false,"isGuest",false));}
-    long audit(String id,String event){return jdbc.queryForObject("SELECT COUNT(*) FROM identity_audit WHERE subject_id=? AND event_code=?",Long.class,id,event);}
+    long audit(String id,String event){return Objects.requireNonNull(jdbc.queryForObject("SELECT COUNT(*) FROM identity_audit WHERE subject_id=? AND event_code=?",Long.class,id,event));}
     long project(String suffix){return projects.create(admin,new ProjectDtos.CreateProject("A"+UUID.randomUUID().toString().substring(0,8),tag+suffix,"","UTC")).id();}
 
     @Test void committedGrantCreateRevokeTimelineNormalizesAndRejectsWithoutExtraAudit()throws Exception{
         var pm=account("pm","PM");var old=loggedIn(pm);var grant=adminWrite("PATCH","/users/"+pm.getId(),Map.of("canCreateUsers",true,"expectedVersion",0),200);
         assertThat(old.get("/me").statusCode()).isEqualTo(401);
-        var caller=loggedIn(pm);String name=tag+".CREATED";long before=users.count();long beforeCreatedAudit=jdbc.queryForObject("SELECT COUNT(*) FROM identity_audit WHERE event_code='USER_CREATED'",Long.class);
+        var caller=loggedIn(pm);String name=tag+".CREATED";long before=users.count();long beforeCreatedAudit=Objects.requireNonNull(jdbc.queryForObject("SELECT COUNT(*) FROM identity_audit WHERE event_code='USER_CREATED'",Long.class));
         for(String flag:List.of("isProjectAdmin","isGuest")){var denied=input(tag+flag);denied.put(flag,true);assertThat(caller.write("POST","/users",denied).statusCode()).isEqualTo(403);}
         for(String legacy:List.of("ADMIN","PM","DEV","TESTER","USER")){var denied=input(tag+legacy);denied.put("role",legacy);assertThat(caller.write("POST","/users",denied).statusCode()).isEqualTo(422);}
         assertThat(caller.send("POST","/users",input(name),null).statusCode()).isEqualTo(403);
@@ -78,7 +79,7 @@ class NativeDelegatedIdentityIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM project_memberships WHERE user_id=?",Long.class,id)).isZero();
         // PATCH returns only after its transaction commits; the create request starts after this read-back.
         adminWrite("PATCH","/users/"+pm.getId(),Map.of("canCreateUsers",false,"expectedVersion",grant.path("version").asLong()),200);
-        assertThat(users.findById(pm.getId()).orElseThrow().isCanCreateUsers()).isFalse();
+        assertThat(users.findById(Objects.requireNonNull(pm.getId())).orElseThrow().isCanCreateUsers()).isFalse();
         assertThat(caller.write("POST","/users",input(tag+".old-cookie")).statusCode()).isEqualTo(401);
         var denied=loggedIn(pm);assertThat(body(denied.get("/me")).path("permissions").toString()).doesNotContain("users:create");
         assertThat(denied.write("POST","/users",input(tag+".after-revoke")).statusCode()).isEqualTo(403);
@@ -114,7 +115,7 @@ class NativeDelegatedIdentityIntegrationTest {
     @Test void concurrentMembershipReplayCreatesOneRowAndOneAudit()throws Exception{
         long p=project("concurrent");var pm=account("pm","PM");var target=account("target","USER");projects.addOrUpdateMember(p,admin,pm.getId(),new ProjectDtos.SetMember("PM"));
         var a=loggedIn(pm);var b=loggedIn(pm);var csrfA=a.csrf();var csrfB=b.csrf();String path="/projects/"+p+"/members/"+target.getId();
-        long before=jdbc.queryForObject("SELECT COUNT(*) FROM project_audit WHERE project_id=?",Long.class,p);
+        long before=Objects.requireNonNull(jdbc.queryForObject("SELECT COUNT(*) FROM project_audit WHERE project_id=?",Long.class,p));
         try(var executor=Executors.newFixedThreadPool(2)){var gate=new CountDownLatch(1);var fa=executor.submit(()->{gate.await();return a.send("PUT",path,Map.of("projectRole","USER"),csrfA);});var fb=executor.submit(()->{gate.await();return b.send("PUT",path,Map.of("projectRole","USER"),csrfB);});gate.countDown();assertThat(List.of(fa.get(30,TimeUnit.SECONDS).statusCode(),fb.get(30,TimeUnit.SECONDS).statusCode())).containsExactlyInAnyOrder(200,422);}
         assertThat(a.write("PUT",path,Map.of("projectRole","USER","expectedVersion",0)).statusCode()).isEqualTo(200);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,p,target.getId())).isEqualTo(1);
