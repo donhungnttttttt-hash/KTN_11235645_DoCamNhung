@@ -6,6 +6,10 @@ Cập nhật hướng dẫn ngày 25/10/2026; các bằng chứng cài đặt ng
 
 **Máy phát triển đã có `tms` và `.env.mysql.local`: không chạy lại initializer/import.** Quan sát lúc `2026-10-05T20:49:35Z` ghi nhận V16 và V17/V18 mới ở source là [bằng chứng lịch sử](file-work-qa-verification.md), không phải trạng thái hiện tại. Tương tự, V11/56 bảng bên dưới là mốc thiết lập ngày 03/10, không phải yêu cầu hạ database về V11. Khi mở lại dự án, dùng bước 4 sau khi đối chiếu lịch sử/profile và backup phù hợp. Bước 1–3 dành cho máy/schema chưa khởi tạo.
 
+## Thiết lập Admin tổng khi chạy backend local — 04/11/2026
+
+`mvn spring-boot:run` tự chạy các migration Flyway chưa áp dụng. Với database đã có tài khoản cũ nhưng chưa có hai slot Admin tổng, có thể bật thiết lập một lần bằng mapping UUID/tên cũ và mật khẩu trong file riêng. Xem [cấu hình, giới hạn và bằng chứng](../reviews/2026-11-04-local-admin-startup.md). Chức năng này chỉ chạy khi profile `local` và `TMS_ADMIN_PROVISION_ON_STARTUP=true`; không tự đổi tài khoản trên máy khác chỉ vì pull code. Những lần khởi động sau giữ mật khẩu/hồ sơ người dùng đã thay đổi.
+
 ## Bằng chứng cấu hình máy phát triển ngày 03/10/2026
 
 | Thành phần | Đã kiểm tra tại mốc lịch sử |

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
-/** Only invoked by offline provisioning and explicitly configured fresh bootstrap. */
+/** Invoked by offline provisioning, explicit local startup setup, and fresh bootstrap. */
 @Service
 public class SystemAdminProvisioner {
     public record Mapping(int slot,String sourceId,String expectedUsername,String username,String displayName) {}
@@ -20,6 +20,21 @@ public class SystemAdminProvisioner {
     private final IdentityAudit audit;
     private final TransactionTemplate tx;
     public SystemAdminProvisioner(JdbcTemplate db,PasswordEncoder passwords,IdentityAudit audit,PlatformTransactionManager manager){this.db=db;this.passwords=passwords;this.audit=audit;this.tx=new TransactionTemplate(Objects.requireNonNull(manager));}
+    /** A receipt makes future starts a no-op, including after legitimate password/profile changes. */
+    public boolean initializeOnce(ProvisionRequest request) {
+        return Boolean.TRUE.equals(tx.execute(status -> {
+            validate(request);
+            lock(true);
+            if (db.queryForObject("SELECT COUNT(*) FROM system_admin_provision_receipts WHERE operation_id=?",
+                    Long.class, request.operationId()) != 0) return false;
+            if (db.queryForObject("SELECT COUNT(*) FROM system_admin_registry", Long.class) != 0)
+                throw invalid("System administrators are already configured; startup cannot replace them.");
+            // The outer transaction keeps the application lock across both existing operations.
+            var preview = preflight(request);
+            apply(request, preview.fingerprint());
+            return true;
+        }));
+    }
     public ProvisionPreview preflight(ProvisionRequest request){
         return Objects.requireNonNull(tx.execute(status->{lock(false);return inspect(request);}));
     }
