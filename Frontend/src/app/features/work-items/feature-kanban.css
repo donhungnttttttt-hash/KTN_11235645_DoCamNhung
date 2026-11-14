@@ -36,6 +36,10 @@
   background: var(--color-surface, #fff);
 }
 .feature-issues-page > .feature-issue-filters label { gap: 8px; }
+.feature-issues-page > .feature-issue-filters.is-kanban {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+}
 .feature-kanban { min-width: 0; max-width: 100%; }
 .feature-kanban-hint {
   margin: 0 0 16px;
@@ -188,6 +192,7 @@
 }
 .feature-issues-page > .td-pagination { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--color-border-light); }
 @media (max-width: 600px) {
+  .feature-issues-page > .feature-issue-filters.is-kanban { grid-template-columns: minmax(0, 1fr); }
   .feature-issues-page > .feature-issue-filters { padding: 12px; gap: 12px; }
   .feature-issues-page > .feature-issue-filters label { flex-basis: 100%; }
   .feature-kanban-columns { gap: 12px; height: 24rem; }

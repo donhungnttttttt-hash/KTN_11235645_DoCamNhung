@@ -26,7 +26,7 @@ it('shows both Bug and QA, and keeps separate Kanban and list views',async()=>{
 it('filters Bug/QA by Feature and sends paging to the server',async()=>{
  render(<WorkBoardPage activeRoute="/board/list" navigate={vi.fn()}/>);await screen.findByText('Lỗi đăng nhập');
  fireEvent.change(screen.getByLabelText('Feature'),{target:{value:'8'}});fireEvent.change(screen.getByLabelText('Loại'),{target:{value:'QA'}});
- fireEvent.change(screen.getByLabelText('Tìm Issue'),{target:{value:'NHUNG cam'}});
+ fireEvent.change(screen.getByLabelText('Tìm ticket'),{target:{value:'NHUNG cam'}});
  await waitFor(()=>expect(featureIssuesApi.list.mock.lastCall[1]).toMatchObject({featureId:'8',type:'QA',keyword:'NHUNG cam',page:0}));
  await waitFor(()=>expect(screen.getByRole('button',{name:'Tiếp',exact:true})).toBeEnabled());
  fireEvent.click(screen.getByRole('button',{name:'Tiếp',exact:true}));await waitFor(()=>expect(featureIssuesApi.list.mock.lastCall[1].page).toBe(1));

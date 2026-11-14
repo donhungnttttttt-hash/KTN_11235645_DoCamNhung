@@ -166,8 +166,20 @@ function ManagementWorkspace({project,api}){
         {writable&&<div className="management-ai-preview"><p>Nguồn AI: {providerLabels[selectedProvider]||'chưa chọn'} · {previewPending?.model||providers?.selection?.model||'chưa chọn model'}. Cấu hình nguồn trong chat AI.</p><button type="button" className="cat-btn" disabled={previewBusy||busy||aiUnavailable} aria-describedby={aiUnavailable?'management-ai-unavailable':undefined} onClick={preview}>{previewBusy?'Đang tạo gợi ý…':previewPending?'Kiểm tra gợi ý AI':'Tạo gợi ý AI'}</button>{aiUnavailable&&<p id="management-ai-unavailable" role="status">Nguồn AI chưa sẵn sàng. {providers?.loading?'Đang tải cấu hình AI.':providers?.error||aiError(providers?.provider?.reason||'AI_NOT_CONFIGURED',selectedProvider)} Mở chat AI → Cấu hình AI để kiểm tra. Bạn vẫn có thể soạn và lưu báo cáo thủ công.</p>}{previewError&&<p role="alert">{previewError}</p>}{previewPending&&!previewBusy&&<p role="status">Yêu cầu chưa kết thúc. Kiểm tra lại sẽ dùng cùng mã yêu cầu và nguồn AI.</p>}</div>}
         {previewNotice&&<p role="status" aria-label="Kết quả tạo gợi ý AI">{previewNotice}</p>}
         {proposal!==null&&<section className="management-ai-proposal"><h3>Bản gợi ý AI chưa lưu</h3><SafeMarkdown markdown={proposal}/><button type="button" className="cat-btn" disabled={locked} onClick={()=>{changeEditor({...editorCurrent.current,markdown:proposal});setProposal(null);setPreviewNotice('Đã đưa gợi ý vào bản soạn, chưa lưu. Kiểm tra và chỉnh sửa trước khi lưu báo cáo.');}}>Đưa vào bản soạn</button></section>}
-        <form onSubmit={save}><fieldset disabled={busy||!writable}><label>Tiêu đề báo cáo<input required maxLength={200} value={editor.title} onChange={event=>changeEditor({...editor,title:event.target.value})}/></label><label>Nội dung Markdown<textarea required rows={14} value={editor.markdown} onChange={event=>changeEditor({...editor,markdown:event.target.value})}/></label></fieldset><div className="management-actions">{writable&&<button className="cat-btn cat-btn-mint" disabled={locked||restoreBlocked||!editor.title.trim()||!editor.markdown.trim()}>{operation==='Đang lưu báo cáo…'?'Đang lưu…':'Lưu báo cáo'}</button>}{saved&&<button type="button" className="cat-btn" disabled={busy} onClick={download}>Tải bản đã lưu</button>}</div></form>
-        {saved&&dirty&&<p>Bạn có thay đổi chưa lưu. File tải xuống là bản đã lưu trên máy chủ.</p>}<section className="management-markdown-preview" aria-label="Xem trước bản soạn"><h3>Xem trước bản soạn</h3><SafeMarkdown markdown={editor.markdown}/></section>
+        <form onSubmit={save}>
+          <fieldset disabled={busy||!writable}>
+            <label>Tiêu đề báo cáo<input required maxLength={200} value={editor.title} onChange={event=>changeEditor({...editor,title:event.target.value})}/></label>
+            <div className="management-draft-columns">
+              <label className="management-draft-input">Nội dung Markdown<textarea required rows={14} value={editor.markdown} onChange={event=>changeEditor({...editor,markdown:event.target.value})}/></label>
+              <section className="management-markdown-preview management-draft-preview" aria-label="Xem trước bản soạn">
+                <h3>Xem trước bản soạn</h3>
+                <div className="management-draft-preview-scroll" tabIndex={0} role="region" aria-label="Nội dung xem trước"><SafeMarkdown markdown={editor.markdown}/></div>
+              </section>
+            </div>
+          </fieldset>
+          <div className="management-actions">{writable&&<button className="cat-btn cat-btn-mint" disabled={locked||restoreBlocked||!editor.title.trim()||!editor.markdown.trim()}>{operation==='Đang lưu báo cáo…'?'Đang lưu…':'Lưu báo cáo'}</button>}{saved&&<button type="button" className="cat-btn" disabled={busy} onClick={download}>Tải bản đã lưu</button>}</div>
+        </form>
+        {saved&&dirty&&<p>Bạn có thay đổi chưa lưu. File tải xuống là bản đã lưu trên máy chủ.</p>}
       </section></div>
     </section>
   </section>;

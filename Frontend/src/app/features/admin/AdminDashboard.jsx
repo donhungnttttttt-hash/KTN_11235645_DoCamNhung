@@ -23,7 +23,7 @@ export function AdminDashboard({projectId,api=adminApi}) {
     <div className="admin-chart-grid">
       <section className="admin-card"><h2>Tiến độ theo dự án</h2><p>Hiển thị {data.byProject.length}/{data.totalProjects} dự án; KPI tính trên toàn phạm vi.</p>
         {data.byProject.length === 0 && <p>Chưa có dự án.</p>}
-        {data.byProject.map(p=><div className="admin-progress" key={p.id}><a href={`#/admin/projects/${p.id}${scope}`}>{p.name}</a><div className="admin-bar-track"><span style={{width:`${p.metrics.executionPercent ?? 0}%`}}/></div><small>{percent(p.metrics.executionPercent)}</small></div>)}
+        {data.byProject.map(p=><div className="admin-progress" key={p.id}><a href={`#/admin/projects/${p.id}${scope}`}>{p.name}</a><div className="admin-bar-track admin-project-progress"><span aria-hidden="true" style={{width:`${p.metrics.executionPercent ?? 0}%`}}/><strong className="admin-project-progress-label">{percent(p.metrics.executionPercent)}</strong></div></div>)}
       </section>
       <section className="admin-card"><h2>Status test case</h2><p>NA và P đều tính là đã test; NA vẫn thuộc tổng số case.</p>
         <div className="admin-result-chart" aria-label="Phân bố kết quả thực thi">{[['OK','ok'],['NG','ng'],['P','pending'],['Chưa chạy','notRun'],['NA','na']].map(([label,key])=><div key={key}><span>{label}: {data.metrics[key]}</span><div className="admin-bar-track"><span className={`result-${key}`} style={{width:`${data.metrics.total ? data.metrics[key]/data.metrics.total*100 : 0}%`}}/></div></div>)}</div>

@@ -4,6 +4,36 @@ import {it,expect,vi} from 'vitest';
 import {FeatureIssuesPage} from './FeatureIssuesPage';
 import userEvent from '@testing-library/user-event';
 
+it.each(['/board','/board/list','/issues'])('does not expose separate ticket responsibility setup on %s',async activeRoute=>{
+ const api={list:vi.fn().mockResolvedValue({items:[],totalItems:0,totalPages:0}),board:vi.fn().mockResolvedValue({columns:[],totalItems:0})},featureApi={list:vi.fn().mockResolvedValue({items:[],totalPages:0})};
+ render(<FeatureIssuesPage projectId={1} activeRoute={activeRoute} api={api} featureApi={featureApi}/>);
+ await waitFor(()=>expect(api.list).toHaveBeenCalled());
+ expect(screen.queryByRole('button',{name:'Trách nhiệm Ticket'})).not.toBeInTheDocument();
+});
+
+it('keeps list filters but removes them when switching to Kanban without hidden type or column restrictions',async()=>{
+ const navigate=vi.fn(),api={list:vi.fn().mockResolvedValue({items:[],totalItems:0,totalPages:0}),board:vi.fn().mockResolvedValue({columns:[],totalItems:0})},featureApi={list:vi.fn().mockResolvedValue({items:[{id:2,name:'Feature A'}],totalPages:1})};
+ const view=render(<FeatureIssuesPage projectId={1} activeRoute="/board/list?featureId=2&keyword=login&type=QA&column=verify" api={api} featureApi={featureApi} navigate={navigate}/>);
+ await screen.findByRole('option',{name:'Feature A'});
+ expect(screen.getByLabelText('Loại')).toHaveValue('QA');expect(screen.getByLabelText('Cột Ticket')).toHaveValue('verify');
+ fireEvent.click(screen.getByRole('button',{name:'Kanban'}));
+ const route=navigate.mock.lastCall[0],query=new URLSearchParams(route.split('?')[1]);
+ expect(query.get('type')).toBeNull();expect(query.get('column')).toBeNull();expect(query.get('featureId')).toBe('2');expect(query.get('keyword')).toBe('login');
+ view.rerender(<FeatureIssuesPage projectId={1} activeRoute={route} api={api} featureApi={featureApi} navigate={navigate}/>);
+ expect(screen.queryByLabelText('Loại')).not.toBeInTheDocument();expect(screen.queryByLabelText('Cột Ticket')).not.toBeInTheDocument();
+ expect(screen.getByLabelText('Tìm ticket')).toHaveValue('login');
+ await waitFor(()=>expect(api.list.mock.lastCall[1]).toMatchObject({type:'',column:'',featureId:'2',keyword:'login',page:0}));
+});
+
+it('ignores a hidden type filter in a direct Kanban link while retaining visible column selection',async()=>{
+ const api={list:vi.fn().mockResolvedValue({items:[],totalItems:0,totalPages:0}),board:vi.fn().mockResolvedValue({columns:[],totalItems:0})},featureApi={list:vi.fn().mockResolvedValue({items:[],totalPages:0})};
+ render(<FeatureIssuesPage projectId={1} activeRoute="/board?type=QA&column=verify" api={api} featureApi={featureApi}/>);
+ await waitFor(()=>expect(api.list).toHaveBeenCalled());
+ expect(api.list.mock.lastCall[1]).toMatchObject({type:'',column:'verify'});expect(api.board.mock.lastCall[1].type).toBe('');
+ expect(screen.queryByLabelText('Loại')).not.toBeInTheDocument();expect(screen.queryByLabelText('Cột Ticket')).not.toBeInTheDocument();
+ expect(screen.getByRole('button',{name:'Xem tất cả cột'})).toBeInTheDocument();
+});
+
 it('offers a deleted Monkey list and restores with version while recovering the last page',async()=>{
  let restored=false;const api={board:vi.fn().mockResolvedValue({columns:[],totalItems:0}),list:vi.fn().mockImplementation(async(p,filter)=>({items:filter.deleted&&!restored?[{id:7,key:'A-7',type:'BUG',title:'Deleted Monkey',monkey:true,version:4,canRestore:true}]:[],totalItems:restored?0:21,totalPages:restored?0:2})),restore:vi.fn().mockImplementation(async()=>{restored=true;})},featureApi={list:async()=>({items:[],totalPages:0})};
  render(<FeatureIssuesPage projectId={1} activeRoute="/issues?deleted=true&page=1&keyword=Monkey" api={api} featureApi={featureApi}/>);
@@ -62,12 +92,12 @@ it('restores server filters when browser navigation changes the linked list scop
  await waitFor(()=>expect(screen.getByLabelText('Feature')).toHaveValue('1'));
  view.rerender(<FeatureIssuesPage projectId={1} activeRoute="/board/list?featureId=2&keyword=cam&column=new" api={api} featureApi={featureApi}/>);
  await waitFor(()=>expect(api.list.mock.lastCall[1]).toMatchObject({featureId:'2',keyword:'cam',column:'new'}));
- expect(screen.getByLabelText('Feature')).toHaveValue('2');expect(screen.getByLabelText('Tìm Issue')).toHaveValue('cam');
+ expect(screen.getByLabelText('Feature')).toHaveValue('2');expect(screen.getByLabelText('Tìm ticket')).toHaveValue('cam');
 });
 it('keeps project and changed filters in reloadable URLs and issue links',async()=>{
  const previous=window.location.href,navigate=vi.fn(),api={board:vi.fn().mockResolvedValue({columns:[{id:'spec',count:0},{id:'new',count:1},{id:'progress',count:1},{id:'verify',count:0},{id:'processed',count:0},{id:'fixed',count:0},{id:'cannot_reproduce',count:0},{id:'wont_fix',count:0},{id:'unsupported',count:0}],legacyCount:0,totalItems:99}),options:vi.fn().mockResolvedValue({assignees:[]}),list:vi.fn().mockResolvedValue({items:[{id:7,key:'A-7',type:'BUG',title:'Lỗi đăng nhập',status:'open',boardColumn:'new'}],totalItems:1,totalPages:1})},featureApi={list:vi.fn().mockResolvedValue({items:[],totalPages:0})};
  try{window.history.replaceState(null,'','#/board/list?projectId=42&workspace=1');render(<FeatureIssuesPage projectId={42} activeRoute="/board/list?projectId=42&workspace=1" api={api} featureApi={featureApi} navigate={navigate}/>);
- await screen.findByText('Lỗi đăng nhập');fireEvent.change(screen.getByLabelText('Tìm Issue'),{target:{value:'đăng nhập'}});
+ await screen.findByText('Lỗi đăng nhập');fireEvent.change(screen.getByLabelText('Tìm ticket'),{target:{value:'đăng nhập'}});
  const query=new URLSearchParams(window.location.hash.split('?')[1]);expect(query.get('projectId')).toBe('42');expect(query.get('keyword')).toBe('đăng nhập');expect(query.get('workspace')).toBe('1');
  fireEvent.click(await screen.findByRole('button',{name:'A-7'}));expect(navigate).toHaveBeenCalledWith(expect.stringMatching(/^\/board\/issue\/7\?/));expect(new URLSearchParams(navigate.mock.lastCall[0].split('?')[1]).get('projectId')).toBe('42');
  }finally{window.history.replaceState(null,'',previous);}

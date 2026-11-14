@@ -87,9 +87,9 @@ it('keeps the edit draft and blocks a write until a failed assignment directory 
  const api={...ticketDefaults(),get:vi.fn().mockResolvedValue(item),comments:vi.fn().mockResolvedValue([]),action:vi.fn().mockResolvedValue({...item,assigneeMembershipId:11,version:3})};
  api.responsibilities.mockRejectedValueOnce(new Error('Chưa tải người nhận'));
  render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await screen.findByText('Chưa tải người nhận');
- fireEvent.change(screen.getByLabelText('Ghi chú Issue'),{target:{value:'Draft comment'}});expect(screen.getByLabelText('Người phụ trách Issue')).toBeDisabled();expect(api.action).not.toHaveBeenCalled();
+ fireEvent.change(screen.getByLabelText('Ghi chú Issue'),{target:{value:'Draft comment'}});expect(screen.getByLabelText('Người phụ trách')).toBeDisabled();expect(api.action).not.toHaveBeenCalled();
  fireEvent.click(screen.getByRole('button',{name:'Tải lại người phụ trách'}));await screen.findByRole('option',{name:'Eligible User'});expect(screen.getByLabelText('Ghi chú Issue')).toHaveValue('Draft comment');
- fireEvent.change(screen.getByLabelText('Người phụ trách Issue'),{target:{value:'11'}});fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));expect(api.action).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));
+ fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'11'}});fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));expect(api.action).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));
  await waitFor(()=>expect(api.action).toHaveBeenCalledWith(1,7,expect.objectContaining({assigneeMembershipId:11,body:'Draft comment',expectedVersion:2}),expect.anything()));
 });
 
@@ -197,7 +197,7 @@ it('does not fetch or expose assignment and priority without the server capabili
  render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);
  fireEvent.click(await screen.findByRole('button',{name:'Sửa nội dung Issue'}));
  expect(screen.getByLabelText('Tiêu đề Issue')).toHaveValue('Own monkey');
- expect(screen.queryByLabelText('Người phụ trách Issue')).not.toBeInTheDocument();expect(screen.queryByLabelText('Mức ưu tiên')).not.toBeInTheDocument();expect(api.responsibilities).not.toHaveBeenCalled();
+ expect(screen.queryByLabelText('Người phụ trách')).not.toBeInTheDocument();expect(screen.queryByLabelText('Mức ưu tiên')).not.toBeInTheDocument();expect(api.responsibilities).not.toHaveBeenCalled();
 });
 
 it('uses the requested allowed status, preserves a failed reason, and submits the current version',async()=>{

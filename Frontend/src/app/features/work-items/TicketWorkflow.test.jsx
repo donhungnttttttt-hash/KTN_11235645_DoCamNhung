@@ -13,22 +13,22 @@ const apiFor=(item=ticket)=>({get:vi.fn().mockResolvedValue(item),comments:vi.fn
 it.each([[null,'USER'],[99,'USER'],[null,'PM']])('manager explicitly repairs coordinator %s through the same eligible %s assignee with confirmation',async (coordinatorMembershipId,projectRole)=>{
  const item={...ticket,type:'BUG',canConvertToBug:false,assigneeMembershipId:12,coordinatorMembershipId};const api=apiFor(item);api.action.mockResolvedValue({...item,coordinatorMembershipId:12,version:3});
  api.responsibilities.mockResolvedValue({...members,members:members.members.map(member=>member.membershipId===12?{...member,projectRole,duties:projectRole==='PM'?[]:member.duties}:member)});
- render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(within(screen.getByLabelText('Người phụ trách Issue')).getByRole('option',{name:'Coordinator'})).toBeInTheDocument());
- expect(screen.getByRole('button',{name:'Gửi cập nhật'})).toBeDisabled();fireEvent.change(screen.getByLabelText('Người phụ trách Issue'),{target:{value:'12'}});
+ render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(within(screen.getByLabelText('Người phụ trách')).getByRole('option',{name:'Coordinator'})).toBeInTheDocument());
+ expect(screen.getByRole('button',{name:'Gửi cập nhật'})).toBeDisabled();fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'12'}});
  expect(screen.getByText(/Điều phối Bug sẽ được cập nhật thành: Coordinator/)).toBeInTheDocument();expect(screen.getByRole('button',{name:'Gửi cập nhật'})).toBeEnabled();fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));expect(api.action).not.toHaveBeenCalled();
  expect(screen.getByRole('region',{name:'Xác nhận cập nhật Ticket'})).toHaveTextContent('Điều phối Bug sẽ được cập nhật thành: Coordinator');fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));await waitFor(()=>expect(api.action).toHaveBeenCalledOnce());expect(api.action.mock.lastCall[2]).toMatchObject({assigneeMembershipId:12,expectedVersion:2});expect(api.action.mock.lastCall[2]).not.toHaveProperty('body');expect(screen.getByRole('button',{name:'Gửi cập nhật'})).toBeDisabled();
 });
 it('same-assignee selection of a worker without coordinator eligibility cannot repair a missing coordinator',async()=>{
- const api=apiFor({...ticket,type:'BUG',canConvertToBug:false,assigneeMembershipId:12,coordinatorMembershipId:null});api.responsibilities.mockResolvedValue({...members,members:[{membershipId:12,userId:'u2',displayName:'Worker',projectRole:'USER',duties:[]}]});render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(within(screen.getByLabelText('Người phụ trách Issue')).getByRole('option',{name:'Worker'})).toBeInTheDocument());fireEvent.change(screen.getByLabelText('Người phụ trách Issue'),{target:{value:'12'}});expect(screen.getByRole('button',{name:'Gửi cập nhật'})).toBeDisabled();expect(screen.queryByText(/Điều phối Bug sẽ được cập nhật/)).not.toBeInTheDocument();
+ const api=apiFor({...ticket,type:'BUG',canConvertToBug:false,assigneeMembershipId:12,coordinatorMembershipId:null});api.responsibilities.mockResolvedValue({...members,members:[{membershipId:12,userId:'u2',displayName:'Worker',projectRole:'USER',duties:[]}]});render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(within(screen.getByLabelText('Người phụ trách')).getByRole('option',{name:'Worker'})).toBeInTheDocument());fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'12'}});expect(screen.getByRole('button',{name:'Gửi cập nhật'})).toBeDisabled();expect(screen.queryByText(/Điều phối Bug sẽ được cập nhật/)).not.toBeInTheDocument();
 });
 it.each([true,false])('same-assignee comment preserves coordinator unless manager explicitly selects repair (manager=%s)',async canManage=>{
  const item={...ticket,type:'BUG',canConvertToBug:false,assigneeMembershipId:12,coordinatorMembershipId:null};const api=apiFor(item);api.responsibilities.mockResolvedValue({...members,canManage});
- render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(within(screen.getByLabelText('Người phụ trách Issue')).getByRole('option',{name:'Coordinator'})).toBeInTheDocument());
- if(!canManage){fireEvent.change(screen.getByLabelText('Người phụ trách Issue'),{target:{value:'12'}});expect(screen.queryByText(/Điều phối Bug sẽ được cập nhật/)).not.toBeInTheDocument();expect(screen.queryByLabelText('Người xác nhận lại')).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Gửi cập nhật'})).toBeDisabled();}
+ render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(within(screen.getByLabelText('Người phụ trách')).getByRole('option',{name:'Coordinator'})).toBeInTheDocument());
+ if(!canManage){fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'12'}});expect(screen.queryByText(/Điều phối Bug sẽ được cập nhật/)).not.toBeInTheDocument();expect(screen.queryByLabelText('Người xác nhận lại')).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Gửi cập nhật'})).toBeDisabled();}
  fireEvent.change(screen.getByLabelText('Ghi chú Issue'),{target:{value:'Just a comment'}});fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));await waitFor(()=>expect(api.action).toHaveBeenCalledOnce());expect(api.action.mock.lastCall[2]).not.toHaveProperty('assigneeMembershipId');
 });
 it('selecting the current coordinator and assignee is still no change',async()=>{
- const api=apiFor({...ticket,type:'BUG',canConvertToBug:false,assigneeMembershipId:12,coordinatorMembershipId:12});render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(within(screen.getByLabelText('Người phụ trách Issue')).getByRole('option',{name:'Coordinator'})).toBeInTheDocument());fireEvent.change(screen.getByLabelText('Người phụ trách Issue'),{target:{value:'12'}});expect(screen.getByRole('button',{name:'Gửi cập nhật'})).toBeDisabled();expect(screen.queryByText(/Điều phối Bug sẽ được cập nhật/)).not.toBeInTheDocument();
+ const api=apiFor({...ticket,type:'BUG',canConvertToBug:false,assigneeMembershipId:12,coordinatorMembershipId:12});render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(within(screen.getByLabelText('Người phụ trách')).getByRole('option',{name:'Coordinator'})).toBeInTheDocument());fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'12'}});expect(screen.getByRole('button',{name:'Gửi cập nhật'})).toBeDisabled();expect(screen.queryByText(/Điều phối Bug sẽ được cập nhật/)).not.toBeInTheDocument();
 });
 
 it('renders API ticket key and live Feature context without spreading the reserved React key',async()=>{
@@ -90,7 +90,7 @@ it('chooses a CLOSED reason from server transitions and confirms same-ID QA conv
  fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));
  expect(api.action).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Hủy xác nhận'}));
  fireEvent.click(screen.getByLabelText('Chuyển QA thành Bug'));
- fireEvent.change(await screen.findByLabelText('Người phụ trách Issue'),{target:{value:'12'}});
+ fireEvent.change(await screen.findByLabelText('Người phụ trách'),{target:{value:'12'}});
  fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));
  expect(screen.getByText(/Giữ nguyên mã/)).toBeInTheDocument();expect(screen.getByRole('button',{name:'Hủy xác nhận'})).toHaveFocus();
  fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));
@@ -140,7 +140,7 @@ it('converts a QA assigned to the same dual-duty coordinator with an explicit un
  const item={...ticket,assigneeMembershipId:11};const api=apiFor(item);
  api.responsibilities.mockResolvedValue({canManage:false,members:[{membershipId:11,userId:'u1',displayName:'Dual duty',projectRole:'USER',duties:['SPEC_REVIEWER','BUG_COORDINATOR'],version:0}]});
  render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);fireEvent.click(await screen.findByLabelText('Chuyển QA thành Bug'));
- await screen.findByRole('option',{name:'Dual duty'});fireEvent.change(screen.getByLabelText('Người phụ trách Issue'),{target:{value:'11'}});fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));
+ await screen.findByRole('option',{name:'Dual duty'});fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'11'}});fireEvent.click(screen.getByRole('button',{name:'Gửi cập nhật'}));fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));
  await waitFor(()=>expect(api.action).toHaveBeenCalledWith(1,7,expect.objectContaining({convertToBug:true,assigneeMembershipId:11,expectedVersion:2}),expect.anything()));
  expect(api.action.mock.lastCall[2]).not.toHaveProperty('state');
 });
@@ -148,7 +148,7 @@ it('converts a QA assigned to the same dual-duty coordinator with an explicit un
 it('allows coordinator content editing and assignment while excluding manager-only priority from controls and PUT',async()=>{
  const item={...ticket,type:'BUG',canConvertToBug:false,canEdit:true,priority:'MEDIUM',steps:'Steps',expectedResult:'Expected',actualResult:'Actual'};const api=apiFor(item);api.responsibilities.mockResolvedValue({...members,canManage:false});api.update=vi.fn().mockResolvedValue({...item,title:'Coordinator edit',version:3});
  render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await screen.findByRole('option',{name:'Coordinator'});fireEvent.click(screen.getByRole('button',{name:'Sửa nội dung Issue'}));
- expect(screen.queryByLabelText('Mức ưu tiên')).not.toBeInTheDocument();expect(screen.getByLabelText('Người phụ trách Issue')).toBeEnabled();fireEvent.change(screen.getByLabelText('Tiêu đề Issue'),{target:{value:'Coordinator edit'}});fireEvent.click(screen.getByRole('button',{name:'Lưu nội dung Issue'}));
+ expect(screen.queryByLabelText('Mức ưu tiên')).not.toBeInTheDocument();expect(screen.getByLabelText('Người phụ trách')).toBeEnabled();fireEvent.change(screen.getByLabelText('Tiêu đề Issue'),{target:{value:'Coordinator edit'}});fireEvent.click(screen.getByRole('button',{name:'Lưu nội dung Issue'}));
  await waitFor(()=>expect(api.update).toHaveBeenCalledOnce());expect(api.update.mock.lastCall[2]).toMatchObject({title:'Coordinator edit',expectedVersion:2});expect(api.update.mock.lastCall[2]).not.toHaveProperty('priority');
 });
 
