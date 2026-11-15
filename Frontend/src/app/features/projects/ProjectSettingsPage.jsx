@@ -51,14 +51,13 @@ function General({project,refresh,canEdit}) {
     } catch(failure) {setError(failure.message);} finally {setBusy(false);}
   }
   return <form className="settings-form" onSubmit={save}>
-    {error && <p role="alert" className="text-danger">{error} <button type="button" className="cat-btn" disabled={busy} onClick={()=>{setMessage('');setReload(x=>x+1);}}>Tải lại thông tin</button></p>}
+    {error && <p role="alert" className="text-danger">{error} <button type="button" className="cat-btn" disabled={busy} onClick={()=>{setMessage('');setReload(x=>x+1);}}>Thử lại thông tin</button></p>}
     {message && <p role="status">{message}</p>}
     {!form ? !error && <p>Đang tải thông tin dự án…</p> : <>
       <label className="form-group">Mã dự án<input value={project.code} disabled /></label>
       <fieldset disabled={!canEdit || busy}>
         <label className="form-group">Tên dự án<input required maxLength={100} value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label>
         <label className="form-group">Mô tả<textarea maxLength={500} rows={4} value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/></label>
-        <label className="form-group">Múi giờ<input required maxLength={50} value={form.timezone} onChange={e=>setForm({...form,timezone:e.target.value})}/></label>
       </fieldset>
       {canEdit && <button className="cat-btn primary" disabled={busy}>{busy?'Đang lưu…':'Lưu thay đổi'}</button>}
     </>}

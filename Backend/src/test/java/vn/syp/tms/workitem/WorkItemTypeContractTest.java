@@ -17,7 +17,7 @@ class WorkItemTypeContractTest {
         }
     }
     private WorkItemDtos.Create command(String type) {
-        return new WorkItemDtos.Create(type,"Issue","Description","MEDIUM",null,null,null,
+        return new WorkItemDtos.Create(type,"Ticket","Description","MEDIUM",null,null,null,
             "Steps","Expected","Actual",null,null,null,null,null,null,"type-contract-key");
     }
 }

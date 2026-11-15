@@ -16,6 +16,10 @@ public class FeatureController {
     private final FeatureService service;
     public FeatureController(FeatureService service){this.service=service;}
     private String actor(Authentication auth){return ((SessionPrincipal)auth.getPrincipal()).id();}
+    @GetMapping("/features/{id}/test-environments") public java.util.List<Map<String,Object>> environments(Authentication auth,@PathVariable long projectId,@PathVariable long id){return service.testEnvironments(projectId,actor(auth),id);}
+    @PostMapping("/features/{id}/test-environments") public ResponseEntity<Map<String,Object>> environment(Authentication auth,@PathVariable long projectId,@PathVariable long id,@Valid @RequestBody FeatureDtos.CreateTestVersion input){return ResponseEntity.status(201).body(service.createTestEnvironment(projectId,actor(auth),id,input));}
+    @DeleteMapping("/features/{id}/test-environments/{environmentId}") public ResponseEntity<Void> deleteEnvironment(Authentication auth,@PathVariable long projectId,@PathVariable long id,@PathVariable long environmentId){service.deleteTestEnvironment(projectId,actor(auth),id,environmentId);return ResponseEntity.noContent().build();}
+    @PutMapping("/test-documents/{id}/rows/{rowId}/execution-context") public Map<String,Object> context(Authentication auth,@PathVariable long projectId,@PathVariable long id,@PathVariable long rowId,@Valid @RequestBody FeatureDtos.ExecutionContext input){return service.updateContext(projectId,actor(auth),id,rowId,input);}
     @GetMapping("/features")
     public Map<String,Object> list(Authentication auth,@PathVariable long projectId,
             @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size,
@@ -41,4 +45,7 @@ public class FeatureController {
     @GetMapping("/test-documents/{id}/assignments") public Map<String,Object> assignments(Authentication auth,@PathVariable long projectId,@PathVariable long id){return service.assignments(projectId,actor(auth),id);}
     @PutMapping("/test-documents/{id}/assignments") public Map<String,Object> assignments(Authentication auth,@PathVariable long projectId,@PathVariable long id,@Valid @RequestBody FeatureDtos.Assignments input){return service.assign(projectId,actor(auth),id,input);}
     @GetMapping("/test-documents/{id}/assignment-history") public Map<String,Object> history(Authentication auth,@PathVariable long projectId,@PathVariable long id,@RequestParam(defaultValue="0") long before){return service.history(projectId,actor(auth),id,before);}
+    @PutMapping("/test-documents/{id}/self-assignment") public Map<String,Object> claim(Authentication auth,@PathVariable long projectId,@PathVariable long id,@Valid @RequestBody FeatureDtos.SelfAssignment input){return service.claim(projectId,actor(auth),id,input);}
+    @GetMapping("/test-documents/{id}/owners") public Map<String,Object> owners(Authentication auth,@PathVariable long projectId,@PathVariable long id){return service.owners(projectId,actor(auth),id);}
+    @PutMapping("/test-documents/{id}/owners") public Map<String,Object> owners(Authentication auth,@PathVariable long projectId,@PathVariable long id,@Valid @RequestBody FeatureDtos.Owners input){return service.setOwners(projectId,actor(auth),id,input);}
 }

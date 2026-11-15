@@ -11,5 +11,5 @@ it('does not show stale authorized content while the next project is loading or 
  state.value={...state.value,loading:true};view.rerender(<ProjectOverview/>);expect(screen.queryByRole('heading',{name:'Tài liệu làm việc'})).toBeNull();
  state.value={currentProject:null,error:'Dự án không còn truy cập được',refreshProjects:state.retry};view.rerender(<ProjectOverview/>);
  expect(screen.getByRole('alert')).toHaveTextContent(state.value.error);expect(screen.queryByRole('heading',{name:'Tài liệu làm việc'})).toBeNull();
- fireEvent.click(screen.getByRole('button',{name:'Tải lại dự án'}));expect(state.retry).toHaveBeenCalledOnce();
+ fireEvent.click(screen.getByRole('button',{name:'Thử lại dự án'}));expect(state.retry).toHaveBeenCalledOnce();
 });

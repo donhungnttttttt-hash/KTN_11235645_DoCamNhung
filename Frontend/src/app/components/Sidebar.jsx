@@ -13,7 +13,7 @@ const navigation = [
     { label: 'Bảng trạng thái', route: '/board', icon: Columns3 },
     { label: 'Quản lý kiểm thử', route: '/board/testing', icon: FlaskConical },
   ] },
-  { label: 'Quản lý lỗi', route: '/issues', icon: Bug, id: 'issues' },
+  { label: 'Thêm lỗi', route: '/issues', icon: Bug, id: 'issues' },
   { label: 'Tổng hợp & Phân tích', route: '/analysis', icon: ChartNoAxesCombined, id: 'analysis' },
   { label: 'Thông tin chung', route: '/settings', icon: Settings, id: 'settings', children: [
     { label: 'Thông tin dự án', route: '/settings', icon: SlidersHorizontal },

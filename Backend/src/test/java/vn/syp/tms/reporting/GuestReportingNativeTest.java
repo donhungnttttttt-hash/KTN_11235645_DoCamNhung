@@ -14,18 +14,14 @@ class GuestReportingNativeTest extends UnifiedTestingFixtures {
     @BeforeEach void prepare()throws Exception{
         testingFixture();guest=account("GUEST");guestMember=projects.addOrUpdateMember(p,admin.getId(),guest.getId(),new ProjectDtos.SetMember("GUEST")).membershipId();
         report=((Number)reports.create(p,admin.getId(),new ManagementReportDtos.Create(null,"Saved report","# Safe report")).get("id")).longValue();
+        reports.publish(p,admin.getId(),report,0L);
     }
-    @Test void guestReadsOnlyMemberReportsAndDocumentedFields()throws Exception{
-        var reader=loggedIn(guest);var projectsResponse=reader.get("/reporting-projects");assertThat(projectsResponse.statusCode()).isEqualTo(200);
-        assertThat(body(projectsResponse).path("totalElements").asInt()).isEqualTo(1);
-        var response=reader.get("/projects/"+p+"/management-reports/summary");assertThat(response.statusCode()).isEqualTo(200);
-        var summary=body(response);assertThat(summary.has("features")).isFalse();assertThat(summary.has("feature")).isFalse();
-        assertThat(summary.path("project").has("description")).isFalse();assertThat(summary.path("metrics").path("total").asInt()).isEqualTo(2);
-        var saved=reader.get("/projects/"+p+"/management-reports/"+report);assertThat(saved.statusCode()).isEqualTo(200);
-        assertThat(body(saved).path("markdown").asText()).isEqualTo("# Safe report");assertThat(body(saved).has("featureId")).isFalse();
-        assertThat(reader.get("/projects/"+p+"/management-reports/"+report+"/download").statusCode()).isEqualTo(200);
-        long other=projects.create(admin.getId(),new ProjectDtos.CreateProject("OTHER"+UUID.randomUUID().toString().substring(0,6),"Other","","UTC")).id();
-        assertThat(reader.get("/projects/"+other+"/management-reports/"+report).statusCode()).isIn(403,404);
+    @Test void guestCannotReadSavedReportsButManagersKeepThem()throws Exception{
+        var reader=loggedIn(guest);assertThat(reader.get("/reporting-projects").statusCode()).isEqualTo(200);
+        String path="/projects/"+p+"/management-reports";
+        for(String suffix:List.of("","/summary","/"+report,"/"+report+"/download"))assertThat(reader.get(path+suffix).statusCode()).as(suffix).isEqualTo(403);
+        assertThat(loggedIn(admin).get(path+"/"+report).statusCode()).isEqualTo(200);
+        assertThat(loggedIn(admin).get(path+"/"+report+"/download").statusCode()).isEqualTo(200);
     }
     @Test void guestCannotReadWorkspaceOrAiOrMutateEvenWithCsrf()throws Exception{
         var reader=loggedIn(guest);String prefix="/projects/"+p;
@@ -37,11 +33,34 @@ class GuestReportingNativeTest extends UnifiedTestingFixtures {
         assertThat(reports.get(p,admin.getId(),report).get("title")).isEqualTo("Saved report");
     }
     @Test void membershipRemovalAndAccountLockRevokeReadsImmediately()throws Exception{
-        var reader=loggedIn(guest);String path="/projects/"+p+"/management-reports/summary";
+        var reader=loggedIn(guest);String path="/projects/"+p+"/management-reports/dashboard";
         assertThat(reader.get(path).statusCode()).isEqualTo(200);
         jdbc.update("UPDATE project_memberships SET active=FALSE WHERE id=?",guestMember);
         assertThat(reader.get(path).statusCode()).isIn(403,404);
         assertThat(body(reader.get("/reporting-projects")).path("items")).isEmpty();
         guest.setEnabled(false);users.saveAndFlush(Objects.requireNonNull(guest));assertThat(reader.get(path).statusCode()).isEqualTo(401);
+    }
+    @Test void dashboardIsScopedAndDoesNotDisclosePersonalOrContractData()throws Exception{
+        var reader=loggedIn(guest);String path="/projects/"+p+"/management-reports/dashboard";
+        var response=reader.get(path);assertThat(response.statusCode()).isEqualTo(200);
+        var data=body(response);assertThat(data.path("metrics").path("total").asInt()).isEqualTo(2);
+        assertThat(data.path("simulation").path("baseRate").asInt()).isEqualTo(500);
+        assertThat(data.path("simulation").path("managerWeight").asInt()).isEqualTo(5);
+        assertThat(data.toString()).doesNotContain("password","salary","email","phone","contract");
+        jdbc.update("UPDATE project_memberships SET active=FALSE WHERE id=?",guestMember);
+        assertThat(reader.get(path).statusCode()).isIn(403,404);
+    }
+    @Test void guestCannotReadPublishedOrDraftReports()throws Exception{
+        var reader=loggedIn(guest);
+        long draft=((Number)reports.create(p,admin.getId(),new ManagementReportDtos.Create(null,"Draft","Private draft")).get("id")).longValue();
+        String path="/projects/"+p+"/management-reports/"+draft;
+        assertThat(reader.get(path).statusCode()).isEqualTo(403);
+        var manager=loggedIn(admin);
+        assertThat(manager.write("POST",path+"/publish",Map.of("expectedVersion",0)).statusCode()).isEqualTo(200);
+        assertThat(reader.get(path).statusCode()).isEqualTo(403);
+        reports.update(p,admin.getId(),draft,new ManagementReportDtos.Update("Changed","Unapproved change",0L));
+        assertThat(reader.get(path).statusCode()).isEqualTo(403);
+        assertThat(reader.write("POST",path+"/publish",Map.of("expectedVersion",1)).statusCode()).isEqualTo(403);
+        assertThat(manager.write("POST",path+"/publish",Map.of("expectedVersion",0)).statusCode()).isEqualTo(409);
     }
 }

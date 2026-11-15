@@ -124,11 +124,11 @@ function ExcelImportDialog({ projectId, featureId, onClose, onSuccess }) {
         {error && <p role="alert" className="excel-import-error">{error}</p>}
         {progress && <p role="status" className="excel-import-progress">{progress}</p>}
         {step === 'input' ? <div className="space-y-4">
-          <p>Chọn một hoặc nhiều file .xlsx (tối đa 20 file). Mỗi file: một sheet, tối đa 500 dòng, 64 cột và 5 MiB.</p>
+          <p>Chọn một hoặc nhiều file .xlsx (tối đa 20 file). Mỗi file: một sheet, tối đa 500 test case có dữ liệu, 64 cột và 5 MiB. Không tính dòng trống, dòng chỉ có định dạng hoặc số dòng bên trong một ô.</p>
           <details className="text-xs border rounded p-3">
             <summary>Quy tắc nhận diện cột và ô gộp</summary>
-            <p>Tự nhận diện theo tên cột, không phụ thuộc thứ tự. Cần ID, Đối tượng test, Các bước test và Kết quả mong đợi. Chấp nhận “Điều kiện tiền đề / Điều kiện tiên quyết”, “Mục xác nhận / Hạng mục xác nhận” và khoảng trắng trong tiêu đề. Giữ tên file, thứ tự và cột bổ sung. Ô Đối tượng test trống kế thừa dòng trước để tạo case; dữ liệu nguồn vẫn giữ trống. Kết quả Excel chỉ để tham khảo. Mẫu TestCases nội bộ cũ vẫn được hỗ trợ.</p>
-            <p>Cho phép ô gộp ngang ở cột trình bày sang cột trống. Ô gộp trong ID, nội dung test case hoặc qua nhiều dòng cần tách trước.</p>
+            <p>Tự nhận diện theo tên cột, không phụ thuộc thứ tự. Cần tiêu đề ID, Đối tượng test, Các bước test và Kết quả mong đợi. Chấp nhận “Điều kiện tiền đề / Điều kiện tiên quyết”, “Mục xác nhận / Hạng mục xác nhận” và khoảng trắng trong tiêu đề. {featureId?'Chỉ nhập 9 cột: ID, No, Đối tượng test, Điều kiện tiên quyết, Các bước test, Quan điểm test, Hạng mục xác nhận, Kết quả mong đợi, Ghi chú thiết kế. Các cột khác được bỏ qua; vẫn giữ file Excel gốc để tải lại. Ô nội dung trống được giữ nguyên; mỗi case cần ID riêng. Version test, Status, Ticket và Người test do web quản lý.':'Giữ tên file, thứ tự và cột bổ sung. Kết quả Excel chỉ để tham khảo.'} Ô Đối tượng test trống kế thừa dòng trước để tạo case; dữ liệu nguồn vẫn giữ trống. Mẫu TestCases nội bộ cũ vẫn được hỗ trợ.</p>
+            <p>Cho phép ô gộp ngang ở cột trình bày sang cột trống. Ô gộp trong ID, nội dung test case hoặc qua nhiều dòng cần tách trước.{featureId&&' Ô gộp nằm hoàn toàn ngoài 9 cột được bỏ qua.'}</p>
           </details>
           <button className="cat-btn" disabled={loading} onClick={downloadTemplate}>Tải mẫu Excel theo tiêu đề</button>
           <label className="block font-medium">Chọn tệp Excel

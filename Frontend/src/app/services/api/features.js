@@ -6,6 +6,10 @@ async function write(path,body,method='POST') {
   return apiRequest(path,{method,headers:{[csrf.headerName]:csrf.token},...(body?{body:JSON.stringify(body)}:{})});
 }
 export const featuresApi={
+  testEnvironments:(p,f)=>apiRequest(`${base(p)}/features/${f}/test-environments`),
+  createTestEnvironment:(p,f,input)=>write(`${base(p)}/features/${f}/test-environments`,input),
+  deleteTestEnvironment:(p,f,id)=>write(`${base(p)}/features/${f}/test-environments/${id}`,null,'DELETE'),
+  updateExecutionContext:(p,d,row,input)=>write(`${base(p)}/test-documents/${d}/rows/${row}/execution-context`,input,'PUT'),
   testVersions:(p,f)=>apiRequest(`${base(p)}/features/${f}/test-versions`),
   createTestVersion:(p,f,input)=>write(`${base(p)}/features/${f}/test-versions`,input),
   deleteTestVersion:(p,f,id)=>write(`${base(p)}/features/${f}/test-versions/${id}`,null,'DELETE'),
@@ -22,5 +26,8 @@ export const featuresApi={
   commit:(p,f,id)=>write(`${base(p)}/features/${f}/import-previews/${id}/commit`),
   assignments:(p,d)=>apiRequest(`${base(p)}/test-documents/${d}/assignments`),
   assign:(p,d,input)=>write(`${base(p)}/test-documents/${d}/assignments`,input,'PUT'),
+  claim:(p,d,input)=>write(`${base(p)}/test-documents/${d}/self-assignment`,input,'PUT'),
+  owners:(p,d)=>apiRequest(`${base(p)}/test-documents/${d}/owners`),
+  setOwners:(p,d,input)=>write(`${base(p)}/test-documents/${d}/owners`,input,'PUT'),
   history:(p,d,before=0)=>apiRequest(`${base(p)}/test-documents/${d}/assignment-history?before=${before}`),
 };

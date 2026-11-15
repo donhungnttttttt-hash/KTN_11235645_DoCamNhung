@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import {beforeEach,expect,it,vi} from 'vitest';
 import {act,fireEvent,render,screen,waitFor} from '@testing-library/react';
@@ -46,7 +47,7 @@ it('removes only after success and recovers an empty final page',async()=>{
 });
 it('retries list failures and explains an empty list',async()=>{
  api.list.mockRejectedValueOnce(new Error('Không tải được Note')).mockResolvedValue({items:[],page:0,size:20,totalItems:0,totalPages:0});mount();
- await screen.findByRole('alert');fireEvent.click(screen.getByRole('button',{name:'Tải lại Note'}));await screen.findByText('Chưa có Note trong dự án.');
+ await screen.findByRole('alert');refreshEvent.focus(window);await screen.findByText('Chưa có Note trong dự án.');
 });
 it('ignores old project reads and pending saves after switching project',async()=>{
  let read,save;api.list.mockReturnValueOnce(new Promise(resolve=>{read=resolve;})).mockResolvedValue({items:[],page:0,size:20,totalItems:0,totalPages:0});
@@ -113,5 +114,5 @@ it.each(['save','reload'])('does not take focus moved during Note %s or on ordin
  const submit=screen.getByRole('button',{name:'Lưu Note'});submit.focus();fireEvent.click(submit);
  const other=screen.getByLabelText('Công việc khác');if(phase==='save')other.focus();await act(async()=>finish({}));await screen.findByText('Đã lưu Note.');
  if(phase==='reload')other.focus();await act(async()=>reload({items:[note],totalItems:1,totalPages:1}));expect(other).toHaveFocus();
- fireEvent.click(screen.getByRole('button',{name:'Tải lại Note'}));await waitFor(()=>expect(api.list).toHaveBeenCalledTimes(3));expect(other).toHaveFocus();
+ refreshEvent.focus(window);await waitFor(()=>expect(api.list).toHaveBeenCalledTimes(3));expect(other).toHaveFocus();
 });

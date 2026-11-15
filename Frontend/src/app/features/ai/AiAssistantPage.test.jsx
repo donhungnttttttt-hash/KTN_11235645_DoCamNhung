@@ -23,7 +23,7 @@ it('keeps persisted provider and actual model on mixed saved results across sele
  expect(screen.getByText('API của hệ thống · api-actual')).toBeInTheDocument();
  fireEvent.change(screen.getByLabelText('Nguồn AI'),{target:{value:'CHATGPT'}});
  expect(screen.getAllByText('Ollama local · qwen-actual')).toHaveLength(2);
- fireEvent.click(screen.getByRole('button',{name:'Cập nhật danh sách'}));
+ fireEvent.focus(window);
  await waitFor(()=>expect(api.list).toHaveBeenCalledTimes(2));
  fireEvent.click(screen.getByRole('button',{name:'Mở bản nháp Legacy'}));
  await screen.findByRole('heading',{name:'Legacy'});
@@ -60,7 +60,7 @@ it('keeps a pending paid request when refreshing draft metadata',async()=>{
  api.generate.mockRejectedValueOnce(Object.assign(new Error('Chậm'),{code:'TIMEOUT'}));
  render(<AiWorkspace projectId={1} api={api}/>);fireEvent.click(await screen.findByRole('button',{name:'Phân tích'}));
  await screen.findByRole('button',{name:'Kiểm tra lại yêu cầu'});
- fireEvent.click(screen.getByRole('button',{name:'Cập nhật danh sách'}));
+ fireEvent.focus(window);
  await waitFor(()=>expect(api.list).toHaveBeenCalledTimes(2));
  fireEvent.click(screen.getByRole('button',{name:'Kiểm tra lại yêu cầu'}));
  await screen.findByRole('heading',{name:'Báo cáo của tôi'});
@@ -87,7 +87,7 @@ it('retries the failed source request from the error recovery button',async()=>{
  render(<AiWorkspace projectId={1} api={api}/>);await screen.findByRole('button',{name:'Phân tích'});
  fireEvent.change(screen.getByLabelText('Tác vụ AI'),{target:{value:'TESTER_BUG_DRAFT'}});
  await screen.findByText('Không tải được nguồn');
- fireEvent.click(screen.getByRole('button',{name:'Tải lại danh sách'}));
+ fireEvent.click(screen.getByRole('button',{name:"Thử lại danh sách"}));
  expect(await screen.findByRole('option',{name:'Bug sau khi thử lại'})).toBeInTheDocument();
  expect(api.targets).toHaveBeenCalledTimes(2);
 });

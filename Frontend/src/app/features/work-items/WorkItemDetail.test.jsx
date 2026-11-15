@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -92,11 +93,11 @@ it('announces an information save immediately and confirms it at the save contro
 it('shows manual detail refresh progress while retaining the loaded ticket',async()=>{
  render(<WorkItemDetail {...props}/>);await screen.findByText('DEMO-7');
  const pending=deferred();workItemsApi.get.mockReturnValueOnce(pending.promise);
- fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
- expect(screen.getByRole('button',{name:'Đang tải chi tiết…'})).toBeDisabled();
+ refreshEvent.focus(window);
+ expect(screen.getByRole('button',{name:'Đăng bình luận'})).toBeDisabled();
  expect(screen.getByText('Màn hình trắng',{selector:'h2'})).toBeVisible();
  await act(async()=>pending.resolve(item));
- expect(screen.getByRole('button',{name:'Tải lại chi tiết'})).toBeEnabled();
+ expect(screen.queryByRole('button',{name:"Tải lại chi tiết"})).toBeNull();
 });
 it('blocks comment and evidence actions during an uncertain detail read and restores the retained draft after recovery',async()=>{
  workItemsApi.attachments.mockResolvedValue([{id:'evidence-1',name:'Ảnh kết quả.png',size:1024,uploadedBy:8}]);
@@ -106,7 +107,7 @@ it('blocks comment and evidence actions during an uncertain detail read and rest
  fireEvent.change(screen.getByLabelText('Chọn chứng cứ'),{target:{files:[selectedFile]}});
  await screen.findByRole('button',{name:'Gỡ Ảnh kết quả.png'});
  let rejectRead;workItemsApi.get.mockReturnValueOnce(new Promise((_resolve,reject)=>{rejectRead=reject;}));
- fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
+ refreshEvent.focus(window);
  expect(screen.getByRole('button',{name:'Đăng bình luận'})).toBeDisabled();
  expect(screen.getByRole('button',{name:'Tải chứng cứ lên'})).toBeDisabled();
  expect(screen.getByRole('button',{name:'Gỡ Ảnh kết quả.png'})).toBeDisabled();
@@ -115,7 +116,7 @@ it('blocks comment and evidence actions during an uncertain detail read and rest
  expect(screen.getByRole('button',{name:'Đăng bình luận'})).toBeDisabled();
  expect(screen.getByRole('button',{name:'Tải chứng cứ lên'})).toBeDisabled();
  expect(screen.getByLabelText('Nội dung bình luận')).toHaveValue('Giữ nội dung đang soạn');
- fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
+ refreshEvent.focus(window);
  await waitFor(()=>expect(screen.getByRole('button',{name:'Đăng bình luận'})).toBeEnabled());
  expect(screen.getByLabelText('Nội dung bình luận')).toHaveValue('Giữ nội dung đang soạn');
  expect(screen.getByRole('button',{name:'Tải chứng cứ lên'})).toBeEnabled();
@@ -128,12 +129,12 @@ it('blocks retained PM edit and reference forms until the authoritative ticket r
  fireEvent.click(screen.getByText('Tham chiếu tracker và nội dung làm rõ'));
  fireEvent.change(screen.getByLabelText('Mã bên ngoài'),{target:{value:'456'}});
  workItemsApi.get.mockRejectedValueOnce(Object.assign(new Error('Chưa xác nhận được công việc hiện hành'),{status:403}));
- fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
+ refreshEvent.focus(window);
  await screen.findByText('Chưa xác nhận được công việc hiện hành');
  for(const name of ['Lưu thông tin','Lưu tham chiếu','Lưu nội dung làm rõ'])expect(screen.getByRole('button',{name})).toBeDisabled();
  expect(screen.getByLabelText('Sửa tiêu đề')).toHaveValue('Tiêu đề chưa lưu');
  expect(screen.getByLabelText('Mã bên ngoài')).toHaveValue('456');
- fireEvent.click(screen.getByRole('button',{name:'Tải lại chi tiết'}));
+ refreshEvent.focus(window);
  await waitFor(()=>expect(screen.getByRole('button',{name:'Lưu thông tin'})).toBeEnabled());
  expect(screen.getByLabelText('Sửa tiêu đề')).toHaveValue('Tiêu đề chưa lưu');
  expect(screen.getByLabelText('Mã bên ngoài')).toHaveValue('456');

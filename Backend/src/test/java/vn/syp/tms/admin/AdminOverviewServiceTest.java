@@ -9,6 +9,18 @@ import vn.syp.tms.shared.web.BusinessException;
 import vn.syp.tms.workitem.WorkItemStore;
 
 class AdminOverviewServiceTest {
+    @Test void overviewReturnsEveryProjectIncludingTheEleventhAndKeepsArchiveCountSeparate() {
+        var db=mock(WorkItemStore.class);var identity=mock(IdentityService.class);var service=new AdminOverviewService(db,identity);
+        when(identity.current("actor")).thenReturn(new IdentityUser("admin","Admin","SECRET","ADMIN"));
+        when(db.rows(java.util.Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{
+            String sql=call.getArgument(0);if(!sql.contains("COALESCE(m.members"))return List.of();
+            var rows=new ArrayList<Map<String,Object>>();for(int i=1;i<=12;i++)rows.add(project(i,1,0,0,0,0));
+            rows.getLast().put("archivedAt",java.time.Instant.now());return rows;
+        });
+        var result=service.overview("actor",null);
+        assertThat(result.byProject()).hasSize(12);assertThat(result.activeProjects()).isEqualTo(11);assertThat(result.totalProjects()).isEqualTo(12);
+        assertThat(result.byProject().get(10).get("id")).isEqualTo(11L);
+    }
     @Test void currentKpisUseActiveFeatureRowsAndIssueContextsInsteadOfExecutionHistory() {
         var db=mock(WorkItemStore.class);var identity=mock(IdentityService.class);var service=new AdminOverviewService(db,identity);
         when(identity.current("actor")).thenReturn(new IdentityUser("admin","Admin","SECRET","ADMIN"));

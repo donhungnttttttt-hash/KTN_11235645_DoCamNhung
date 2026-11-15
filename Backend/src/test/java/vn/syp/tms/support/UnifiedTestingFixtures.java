@@ -17,7 +17,7 @@ public abstract class UnifiedTestingFixtures extends UnifiedAccessFixtures {
     protected IdentityUser worker;
     protected void testingFixture()throws Exception {
         p=projects.create(admin.getId(),new ProjectDtos.CreateProject("UT"+UUID.randomUUID().toString().substring(0,8),"Testing project","","UTC")).id();
-        f=((Number)features.create(p,admin.getId(),new FeatureDtos.Create("Feature","Current server","Current description",UUID.randomUUID())).get("id")).longValue();
+        f=((Number)features.create(p,admin.getId(),new FeatureDtos.Create("Đợt kiểm thử","Current server","Current description",UUID.randomUUID())).get("id")).longValue();
         worker=account("USER");member=projects.addOrUpdateMember(p,admin.getId(),worker.getId(),new ProjectDtos.SetMember("USER")).membershipId();
         byte[] bytes;try(var book=new XSSFWorkbook();var out=new ByteArrayOutputStream()){
             var sheet=book.createSheet("TestCases");var header=sheet.createRow(0);

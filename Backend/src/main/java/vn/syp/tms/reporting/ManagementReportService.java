@@ -16,10 +16,11 @@ public class ManagementReportService {
     private final ProjectService projects;
     private final IdentityService identity;
     private final ProjectAudit audit;
+    @org.springframework.beans.factory.annotation.Autowired private GuestDashboardService dashboards;
     public ManagementReportService(WorkItemStore db,ProjectService projects,IdentityService identity,ProjectAudit audit) {
         this.db=db;this.projects=projects;this.identity=identity;this.audit=audit;
     }
-    private static final String SELECT="SELECT id,project_id AS projectId,feature_id AS featureId,title,markdown,lock_version AS version,created_at AS createdAt,updated_at AS updatedAt FROM project_management_reports";
+    private static final String SELECT="SELECT id,project_id AS projectId,feature_id AS featureId,title,markdown,lock_version AS version,created_at AS createdAt,updated_at AS updatedAt,published_at AS publishedAt,published_version AS publishedVersion FROM project_management_reports";
     private void authorize(long p,String actor,boolean write) {
         if(write){projects.lockWritableProject(p,actor);return;}
         projects.requireReportingAccess(p,actor);
@@ -41,15 +42,29 @@ public class ManagementReportService {
         result.put("issues",db.rows("SELECT w.item_type AS type,w.status_code AS status,x.ticket_state AS ticketState,x.closure_reason AS closureReason,COUNT(*) AS total FROM work_items w JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id JOIN testing_features f ON f.project_id=x.project_id AND f.id=x.feature_id LEFT JOIN import_batches document ON document.project_id=x.project_id AND document.id=x.document_id WHERE w.project_id=? AND x.deleted_at IS NULL AND f.archived_at IS NULL AND (document.id IS NULL OR document.archived_at IS NULL) AND w.item_type IN ('BUG','QA')"+(feature==null?"":" AND x.feature_id=?")+" GROUP BY w.item_type,w.status_code,x.ticket_state,x.closure_reason",feature==null?new Object[]{p}:new Object[]{p,feature}));
         result.put("asOf",java.time.Instant.now());result.put("timeZone","Asia/Ho_Chi_Minh");return result;
     }
-    public Map<String,Object> previewContext(long p,String actor,Long feature) {authorize(p,actor,true);return summary(p,actor,feature);}
+    public Map<String,Object> previewContext(long p,String actor,Long feature) {
+        authorize(p,actor,true);var result=summary(p,actor,feature);
+        if(dashboards!=null){var data=dashboards.get(p,actor);var customer=new LinkedHashMap<String,Object>();
+            for(String key:List.of("simulation","health","tickets"))customer.put(key,data.get(key));
+            customer.put("scope","Toàn dự án; không phân bổ chi phí theo Đợt kiểm thử.");
+            result.put("customerAssessment",customer);
+        }
+        return result;
+    }
     @Transactional(readOnly=true)
-    public Map<String,Object> get(long p,String actor,long id) {authorize(p,actor,false);var result=db.row(SELECT+" WHERE project_id=? AND id=?",p,id);return "GUEST".equals(identity.current(actor).getRole())?GuestReportView.report(result):result;}
+    public Map<String,Object> get(long p,String actor,long id) {
+        authorize(p,actor,false);
+        if("GUEST".equals(identity.current(actor).getRole()))return GuestReportView.report(db.row("SELECT id,published_title AS title,published_markdown AS markdown,created_at AS createdAt,published_at AS updatedAt FROM project_management_reports WHERE project_id=? AND id=? AND published_at IS NOT NULL",p,id));
+        return db.row(SELECT+" WHERE project_id=? AND id=?",p,id);
+    }
     @Transactional(readOnly=true)
     public Map<String,Object> list(long p,String actor,int page,int size) {
         authorize(p,actor,false);if(page<0||size<1||size>100)WorkItemStore.fail(422,"INVALID_PAGE","Phân trang không hợp lệ.");
-        long total=db.count("SELECT COUNT(*) FROM project_management_reports WHERE project_id=?",p);
-        var items=db.rows("SELECT id,project_id AS projectId,feature_id AS featureId,title,lock_version AS version,created_at AS createdAt,updated_at AS updatedAt FROM project_management_reports WHERE project_id=? ORDER BY updated_at DESC,id DESC LIMIT ? OFFSET ?",p,size,(long)page*size);
-        if("GUEST".equals(identity.current(actor).getRole()))items=items.stream().map(GuestReportView::report).toList();
+        boolean guest="GUEST".equals(identity.current(actor).getRole());String filter=guest?" AND published_at IS NOT NULL":"";
+        long total=db.count("SELECT COUNT(*) FROM project_management_reports WHERE project_id=?"+filter,p);
+        String columns=guest?"id,published_title AS title,created_at AS createdAt,published_at AS updatedAt":"id,project_id AS projectId,feature_id AS featureId,title,lock_version AS version,created_at AS createdAt,updated_at AS updatedAt,published_at AS publishedAt,published_version AS publishedVersion";
+        var items=db.rows("SELECT "+columns+" FROM project_management_reports WHERE project_id=?"+filter+" ORDER BY "+(guest?"published_at":"updated_at")+" DESC,id DESC LIMIT ? OFFSET ?",p,size,(long)page*size);
+        if(guest)items=items.stream().map(GuestReportView::report).toList();
         return Map.of("items",items,"totalItems",total,"page",page,"size",size,"totalPages",(total+size-1)/size);
     }
     @Transactional(readOnly=true)
@@ -74,5 +89,10 @@ public class ManagementReportService {
             WorkItemStore.fail(409,"VERSION_CONFLICT","Báo cáo đã thay đổi. Tải lại để đối chiếu; bản đang sửa được giữ nguyên.");
         audit.record(p,actor,"MANAGEMENT_REPORT",id,"UPDATE");
         return get(p,actor,id);
+    }
+    public Map<String,Object> publish(long p,String actor,long id,Long expectedVersion) {
+        authorize(p,actor,true);var current=db.row(SELECT+" WHERE project_id=? AND id=? FOR UPDATE",p,id);WorkItemStore.version(current,expectedVersion);
+        db.update("UPDATE project_management_reports SET published_title=title,published_markdown=markdown,published_at=UTC_TIMESTAMP(6),published_version=lock_version WHERE project_id=? AND id=?",p,id);
+        audit.record(p,actor,"MANAGEMENT_REPORT",id,"PUBLISH");return get(p,actor,id);
     }
 }

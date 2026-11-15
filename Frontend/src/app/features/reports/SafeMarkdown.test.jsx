@@ -2,6 +2,18 @@ import React from 'react';
 import {expect,it} from 'vitest';
 import {render,screen} from '@testing-library/react';
 import {SafeMarkdown} from './SafeMarkdown';
+it('renders customer report emphasis tables and blockquotes without remote image requests',()=>{
+ const view=render(<SafeMarkdown markdown={'## Tiến độ\n\n**370 case** và *cần theo dõi*\n\n| Mục | Số |\n| --- | --- |\n| OK | 20 |\n\n> Nhận xét\n\n![tracking](https://example.com/pixel)'}/>);
+ expect(view.container.querySelector('strong')).toHaveTextContent('370 case');
+ expect(view.container.querySelector('em')).toHaveTextContent('cần theo dõi');
+ expect(screen.getByRole('table')).toHaveTextContent('OK');
+ expect(view.container.querySelector('blockquote')).toHaveTextContent('Nhận xét');
+ expect(view.container.querySelector('img')).toBeNull();
+});
+it('does not load reference, collapsed or shortcut images',()=>{
+ const view=render(<SafeMarkdown markdown={'![tracking][pixel]\n\n![pixel][]\n\n![pixel]\n\n[pixel]: https://example.com/pixel'}/>);
+ expect(view.container.querySelector('img')).toBeNull();
+});
 it('renders headings lists code and safe links without interpreting HTML or unsafe protocols',()=>{
  const text='# Báo cáo\n\n- OK\n- NG\n\n1. Kiểm tra\n2. Đối chiếu\n\n[Tra cứu](https://example.com/docs) [Xấu](javascript:alert(1))\n\n<img src=x onerror=alert(1)>\n\n```html\n<script>literal</script>\n```';
  const view=render(<SafeMarkdown markdown={text}/>);expect(screen.getByRole('heading',{name:'Báo cáo'})).toBeVisible();expect(screen.getAllByRole('listitem')).toHaveLength(4);expect(screen.getByRole('link',{name:'Tra cứu'})).toHaveAttribute('href','https://example.com/docs');expect(screen.queryByRole('link',{name:'Xấu'})).toBeNull();expect(view.container.querySelector('img,script')).toBeNull();expect(view.container.querySelector('pre code')).toHaveTextContent('<script>literal</script>');

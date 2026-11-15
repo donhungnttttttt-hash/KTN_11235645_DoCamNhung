@@ -24,7 +24,7 @@ it('timeoutKeepsUserMessageAndAllowsExplicitRetryWithoutAutomaticProviderRetry',
 it('retries a failed initial project and history read without losing a typed draft or sending',async()=>{
  api.chatList.mockRejectedValueOnce(Object.assign(new Error('offline'),{code:'NETWORK_ERROR'})).mockResolvedValueOnce({items:[],nextBefore:null});
  mount();await open();fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Nháp khi mất mạng'}});
- const retry=await screen.findByRole('button',{name:'Tải lại dự án và lịch sử'});
+ const retry=await screen.findByRole('button',{name:"Thử lại dự án và lịch sử"});
  expect(screen.getByRole('button',{name:'Gửi tin nhắn'})).toBeDisabled();fireEvent.click(retry);
  await waitFor(()=>expect(api.chatList).toHaveBeenCalledTimes(2));await waitFor(()=>expect(screen.getByRole('button',{name:'Gửi tin nhắn'})).toBeEnabled());
  expect(screen.getByLabelText('Tin nhắn AI')).toHaveValue('Nháp khi mất mạng');expect(api.chatSend).not.toHaveBeenCalled();
@@ -39,9 +39,9 @@ it('clears a transient reopen error when the same conversation is later revalida
  mount();await open();fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Xin chào'}});fireEvent.click(screen.getByRole('button',{name:'Gửi tin nhắn'}));await screen.findByText('Trả lời');
  api.chatGet.mockRejectedValueOnce(Object.assign(new Error('offline'),{code:'NETWORK_ERROR'}))
   .mockResolvedValueOnce({thread,turns:[{id:2,text:'Xin chào',state:'READY',content:{text:'Trả lời',sources:[]}}],nextBefore:null});
- fireEvent.click(screen.getByRole('button',{name:'Thu nhỏ chat'}));fireEvent.click(screen.getByRole('button',{name:'Mở chat AI'}));await screen.findByRole('button',{name:'Tải lại hội thoại'});
+ fireEvent.click(screen.getByRole('button',{name:'Thu nhỏ chat'}));fireEvent.click(screen.getByRole('button',{name:'Mở chat AI'}));await screen.findByRole('button',{name:"Thử lại hội thoại"});
  fireEvent.click(screen.getByRole('button',{name:'Thu nhỏ chat'}));fireEvent.click(screen.getByRole('button',{name:'Mở chat AI'}));
- await waitFor(()=>expect(screen.queryByRole('button',{name:'Tải lại hội thoại'})).toBeNull());expect(screen.queryByRole('alert')).toBeNull();
+ await waitFor(()=>expect(screen.queryByRole('button',{name:"Thử lại hội thoại"})).toBeNull());expect(screen.queryByRole('alert')).toBeNull();
 });
 it('keeps the visible reading position when prepending older messages',async()=>{
  api.chatList.mockResolvedValue({items:[thread],nextBefore:null});
@@ -61,25 +61,25 @@ it('keeps cached messages and the draft after a transient reopen failure and ret
  api.chatGet.mockRejectedValueOnce(Object.assign(new Error('offline'),{code:'NETWORK_ERROR'}))
   .mockResolvedValueOnce({thread,turns:[{id:2,text:'Xin chào',state:'READY',content:{text:'Trả lời',sources:[]}}],nextBefore:null});
  fireEvent.click(screen.getByRole('button',{name:'Thu nhỏ chat'}));fireEvent.click(screen.getByRole('button',{name:'Mở chat AI'}));
- const retry=await screen.findByRole('button',{name:'Tải lại hội thoại'});
+ const retry=await screen.findByRole('button',{name:"Thử lại hội thoại"});
  expect(screen.getByText('Trả lời')).toBeVisible();expect(screen.getByLabelText('Tin nhắn AI')).toHaveValue('Nháp tiếp theo');expect(screen.getByRole('button',{name:'Gửi tin nhắn'})).toBeDisabled();
  fireEvent.click(retry);await waitFor(()=>expect(screen.getByRole('button',{name:'Gửi tin nhắn'})).toBeEnabled());
- expect(screen.queryByRole('button',{name:'Tải lại hội thoại'})).toBeNull();expect(api.chatSend).toHaveBeenCalledTimes(1);
+ expect(screen.queryByRole('button',{name:"Thử lại hội thoại"})).toBeNull();expect(api.chatSend).toHaveBeenCalledTimes(1);
 });
 it.each([401,403,404])('clears cached messages when reopening returns %s rather than offering a transient retry',async status=>{
  mount();await open();fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Xin chào'}});fireEvent.click(screen.getByRole('button',{name:'Gửi tin nhắn'}));await screen.findByText('Trả lời');
  api.chatGet.mockRejectedValueOnce(Object.assign(new Error('denied'),{status}));
  fireEvent.click(screen.getByRole('button',{name:'Thu nhỏ chat'}));fireEvent.click(screen.getByRole('button',{name:'Mở chat AI'}));
- await screen.findByRole('alert');expect(screen.queryByText('Trả lời')).toBeNull();expect(screen.queryByRole('button',{name:'Tải lại hội thoại'})).toBeNull();expect(screen.getByRole('button',{name:'Gửi tin nhắn'})).toBeDisabled();
+ await screen.findByRole('alert');expect(screen.queryByText('Trả lời')).toBeNull();expect(screen.queryByRole('button',{name:"Thử lại hội thoại"})).toBeNull();expect(screen.getByRole('button',{name:'Gửi tin nhắn'})).toBeDisabled();
 });
 it('does not render a numeric false archive flag as loose text when selecting an active project',async()=>{
  identity.user={id:1,roles:['ADMIN']};
  api.chatProjects=vi.fn().mockResolvedValue([{id:156,code:'ACTIVE',name:'Dự án hiện hành',archived:0}]);
- api.chatFeatures=vi.fn().mockResolvedValue([{id:187,name:'Feature hiện hành',archived:0}]);
+ api.chatFeatures=vi.fn().mockResolvedValue([{id:187,name:'Đợt kiểm thử hiện hành',archived:0}]);
  render(<AiProviderProvider api={api}><AiChat api={api}/></AiProviderProvider>);await open();
  fireEvent.click(screen.getByRole('button',{name:'Phạm vi chat'}));
  fireEvent.change(await screen.findByLabelText('Phạm vi chat'),{target:{value:'156'}});
- await screen.findByRole('option',{name:'Feature hiện hành'});
+ await screen.findByRole('option',{name:'Đợt kiểm thử hiện hành'});
  const expectNoLooseArchiveZero=()=>{
   const scroll=screen.getByRole('log',{name:'Tin nhắn hội thoại'}).parentElement;
   expect([...scroll.childNodes].filter(node=>node.nodeType===Node.TEXT_NODE&&node.textContent.trim()==='0')).toHaveLength(0);
@@ -90,24 +90,24 @@ it('does not render a numeric false archive flag as loose text when selecting an
  fireEvent.click(screen.getByRole('button',{name:'Phạm vi chat'}));expectNoLooseArchiveZero();
  fireEvent.click(screen.getByRole('button',{name:'Cấu hình AI',exact:true}));expectNoLooseArchiveZero();
 });
-it('FR09 loads AI-authorized projects by default and offers Feature scope with whole-project default',async()=>{
+it('FR09 loads AI-authorized projects by default and offers Đợt kiểm thử scope with whole-project default',async()=>{
  identity.user={id:1,roles:['PM']};api.chatProjects=vi.fn().mockResolvedValue([{id:9,code:'A',name:'Dự án ngoài membership',myRole:null}]);api.chatFeatures=vi.fn().mockResolvedValue([{id:42,name:'Đợt Flutter',archived:false}]);api.chatCreate.mockImplementation(async body=>({id:1,...body}));
  render(<AiProviderProvider api={api}><AiChat api={api}/></AiProviderProvider>);await open();fireEvent.click(screen.getByRole('button',{name:'Phạm vi chat'}));
- fireEvent.change(await screen.findByLabelText('Phạm vi chat'),{target:{value:'9'}});await screen.findByRole('option',{name:'Đợt Flutter'});expect(screen.getByLabelText('Feature cho chat')).toHaveValue('');
+ fireEvent.change(await screen.findByLabelText('Phạm vi chat'),{target:{value:'9'}});await screen.findByRole('option',{name:'Đợt Flutter'});expect(screen.getByLabelText('Đợt kiểm thử cho chat')).toHaveValue('');
  fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Dự án này'}});fireEvent.keyDown(screen.getByLabelText('Tin nhắn AI'),{key:'Enter'});await screen.findByText('Trả lời');
  expect(api.chatProjects).toHaveBeenCalled();expect(api.chatFeatures).toHaveBeenCalledWith(9,expect.anything());expect(api.chatCreate).toHaveBeenCalledWith(expect.objectContaining({projectId:9,purpose:'PROJECT_CHAT',targetId:null}),expect.anything());
 });
-it('FR09 creates a Feature-targeted conversation and preserves a custom draft through scope changes',async()=>{
- api.chatFeatures=vi.fn().mockResolvedValue([{id:42,name:'Feature A'},{id:43,name:'Feature B'}]);api.chatCreate.mockImplementation(async body=>({id:1,...body}));
- render(<AiProviderProvider api={api}><AiChat api={api} projectApi={{list:async()=>[{id:1,name:'Dự án A'}]}}/></AiProviderProvider>);await open();fireEvent.click(screen.getByRole('button',{name:'Phạm vi chat'}));fireEvent.change(await screen.findByLabelText('Phạm vi chat'),{target:{value:'1'}});await screen.findByRole('option',{name:'Feature A'});
- fireEvent.change(screen.getByLabelText('Feature cho chat'),{target:{value:'42'}});fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Giải thích case này'}});fireEvent.keyDown(screen.getByLabelText('Tin nhắn AI'),{key:'Enter'});await screen.findByText('Trả lời');
- expect(api.chatCreate).toHaveBeenCalledWith(expect.objectContaining({projectId:1,targetId:42}),expect.anything());expect(screen.getByText('Dự án A · Feature A')).toBeVisible();
- fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Nháp còn giữ'}});fireEvent.click(screen.getByRole('button',{name:'Phạm vi chat'}));fireEvent.change(screen.getByLabelText('Feature cho chat'),{target:{value:'43'}});expect(screen.getByLabelText('Tin nhắn AI')).toHaveValue('Nháp còn giữ');fireEvent.keyDown(screen.getByLabelText('Tin nhắn AI'),{key:'Enter'});await waitFor(()=>expect(api.chatCreate).toHaveBeenCalledTimes(2));expect(api.chatCreate).toHaveBeenLastCalledWith(expect.objectContaining({targetId:43}),expect.anything());
+it('FR09 creates a Đợt kiểm thử-targeted conversation and preserves a custom draft through scope changes',async()=>{
+ api.chatFeatures=vi.fn().mockResolvedValue([{id:42,name:'Đợt kiểm thử A'},{id:43,name:'Đợt kiểm thử B'}]);api.chatCreate.mockImplementation(async body=>({id:1,...body}));
+ render(<AiProviderProvider api={api}><AiChat api={api} projectApi={{list:async()=>[{id:1,name:'Dự án A'}]}}/></AiProviderProvider>);await open();fireEvent.click(screen.getByRole('button',{name:'Phạm vi chat'}));fireEvent.change(await screen.findByLabelText('Phạm vi chat'),{target:{value:'1'}});await screen.findByRole('option',{name:'Đợt kiểm thử A'});
+ fireEvent.change(screen.getByLabelText('Đợt kiểm thử cho chat'),{target:{value:'42'}});fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Giải thích case này'}});fireEvent.keyDown(screen.getByLabelText('Tin nhắn AI'),{key:'Enter'});await screen.findByText('Trả lời');
+ expect(api.chatCreate).toHaveBeenCalledWith(expect.objectContaining({projectId:1,targetId:42}),expect.anything());expect(screen.getByText('Dự án A · Đợt kiểm thử A')).toBeVisible();
+ fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Nháp còn giữ'}});fireEvent.click(screen.getByRole('button',{name:'Phạm vi chat'}));fireEvent.change(screen.getByLabelText('Đợt kiểm thử cho chat'),{target:{value:'43'}});expect(screen.getByLabelText('Tin nhắn AI')).toHaveValue('Nháp còn giữ');fireEvent.keyDown(screen.getByLabelText('Tin nhắn AI'),{key:'Enter'});await waitFor(()=>expect(api.chatCreate).toHaveBeenCalledTimes(2));expect(api.chatCreate).toHaveBeenLastCalledWith(expect.objectContaining({targetId:43}),expect.anything());
 });
-it('FR09 discards a late Feature list from the previous project and does not reuse its target',async()=>{
- const old=deferred();api.chatFeatures=vi.fn().mockImplementation(project=>project===1?old.promise:Promise.resolve([{id:99,name:'Feature dự án B'}]));api.chatCreate.mockImplementation(async body=>({id:1,...body}));
+it('FR09 discards a late Đợt kiểm thử list from the previous project and does not reuse its target',async()=>{
+ const old=deferred();api.chatFeatures=vi.fn().mockImplementation(project=>project===1?old.promise:Promise.resolve([{id:99,name:'Đợt kiểm thử dự án B'}]));api.chatCreate.mockImplementation(async body=>({id:1,...body}));
  render(<AiProviderProvider api={api}><AiChat api={api} projectApi={{list:async()=>[{id:1,name:'A'},{id:2,name:'B'}]}}/></AiProviderProvider>);await open();fireEvent.click(screen.getByRole('button',{name:'Phạm vi chat'}));fireEvent.change(await screen.findByLabelText('Phạm vi chat'),{target:{value:'1'}});await waitFor(()=>expect(api.chatFeatures).toHaveBeenCalledWith(1,expect.anything()));
- fireEvent.change(screen.getByLabelText('Phạm vi chat'),{target:{value:'2'}});await screen.findByRole('option',{name:'Feature dự án B'});await act(async()=>old.resolve([{id:42,name:'Feature riêng A'}]));expect(screen.queryByRole('option',{name:'Feature riêng A'})).toBeNull();expect(screen.getByLabelText('Feature cho chat')).toHaveValue('');
+ fireEvent.change(screen.getByLabelText('Phạm vi chat'),{target:{value:'2'}});await screen.findByRole('option',{name:'Đợt kiểm thử dự án B'});await act(async()=>old.resolve([{id:42,name:'Đợt kiểm thử riêng A'}]));expect(screen.queryByRole('option',{name:'Đợt kiểm thử riêng A'})).toBeNull();expect(screen.getByLabelText('Đợt kiểm thử cho chat')).toHaveValue('');
  fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Hỏi B'}});fireEvent.keyDown(screen.getByLabelText('Tin nhắn AI'),{key:'Enter'});await screen.findByText('Trả lời');expect(api.chatCreate).toHaveBeenCalledWith(expect.objectContaining({projectId:2,targetId:null}),expect.anything());
 });
 it.each(['TESTER','DEV'])('FR09 %s presets ask only personal file progress rather than management totals',async role=>{
@@ -117,10 +117,10 @@ it.each(['TESTER','DEV'])('FR09 %s presets ask only personal file progress rathe
 it.each(['PM','ADMIN'])('FR09 %s keeps the management progress preset',async role=>{
  identity.user={id:1,roles:[role]};mount();await open();fireEvent.click(screen.getByRole('button',{name:'Tiến độ kiểm thử',exact:true}));await waitFor(()=>expect(api.chatSend).toHaveBeenCalled());expect(api.chatSend.mock.calls[0][1].text).toMatch(/^Tổng hợp tiến độ kiểm thử/);
 });
-it('FR09 retries Feature catalog failure without downgrading a selected target',async()=>{
+it('FR09 retries Đợt kiểm thử catalog failure without downgrading a selected target',async()=>{
  api.chatFeatures=vi.fn().mockRejectedValueOnce(Object.assign(new Error('unavailable'),{code:'NETWORK_ERROR'})).mockResolvedValue([{id:42,name:'Đợt A'}]);
  render(<AiProviderProvider api={api}><AiChat api={api} projectApi={{list:async()=>[{id:1,name:'A'}]}}/></AiProviderProvider>);await open();fireEvent.click(screen.getByRole('button',{name:'Phạm vi chat'}));fireEvent.change(await screen.findByLabelText('Phạm vi chat'),{target:{value:'1'}});
- fireEvent.click(await screen.findByRole('button',{name:'Tải lại Feature cho chat'}));await screen.findByRole('option',{name:'Đợt A'});expect(screen.getByLabelText('Feature cho chat')).toBeEnabled();
+ fireEvent.click(await screen.findByRole('button',{name:"Thử lại Đợt kiểm thử cho chat"}));await screen.findByRole('option',{name:'Đợt A'});expect(screen.getByLabelText('Đợt kiểm thử cho chat')).toBeEnabled();
 });
 it('FR09 disables provider changes while a saved message is generating',async()=>{
  api.chatCreate.mockResolvedValue({...thread,purpose:'MY_PROJECTS'});api.chatSend.mockResolvedValue({id:2,text:'Hỏi',state:'GENERATING'});mount();await open();fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Hỏi'}});fireEvent.click(screen.getByRole('button',{name:'Gửi tin nhắn'}));await screen.findByRole('button',{name:'Kiểm tra yêu cầu chat'});fireEvent.click(screen.getByRole('button',{name:'Cấu hình AI',exact:true}));expect(screen.getByLabelText('Nguồn AI')).toBeDisabled();expect(screen.getByLabelText('Model AI')).toBeDisabled();
@@ -132,10 +132,10 @@ it('FR09 applies provider model changes only to a future conversation',async()=>
  fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Tiếp hội thoại cũ'}});fireEvent.click(screen.getByRole('button',{name:'Gửi tin nhắn'}));await waitFor(()=>expect(api.chatSend).toHaveBeenCalledTimes(2));expect(api.chatCreate).toHaveBeenCalledOnce();
  await waitFor(()=>expect(screen.getByRole('button',{name:'Mới'})).toBeEnabled());fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Nháp mới'}});fireEvent.click(screen.getByRole('button',{name:'Mới'}));expect(screen.getByLabelText('Tin nhắn AI')).toHaveValue('Nháp mới');fireEvent.click(screen.getByRole('button',{name:'Gửi tin nhắn'}));await waitFor(()=>expect(api.chatCreate).toHaveBeenCalledTimes(2));expect(api.chatCreate).toHaveBeenLastCalledWith(expect.objectContaining({model:'m2'}),expect.anything());
 });
-it('FR09 restores pinned project and Feature from history without losing the draft',async()=>{
- const saved={...thread,projectId:1,targetId:42,purpose:'PROJECT_CHAT'};api.chatList.mockResolvedValue({items:[saved],nextBefore:null});api.chatGet.mockResolvedValue({thread:saved,turns:[],nextBefore:null});api.chatFeatures=vi.fn().mockResolvedValue([{id:42,name:'Feature lịch sử'}]);
- render(<AiProviderProvider api={api}><AiChat api={api} projectApi={{list:async()=>[{id:1,name:'Dự án A'}]}}/></AiProviderProvider>);await open();fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Nháp của tôi'}});fireEvent.click(screen.getByRole('button',{name:'Lịch sử'}));fireEvent.click(await screen.findByRole('button',{name:/#1.*API/}));await screen.findByText('Dự án A · Feature lịch sử');fireEvent.click(screen.getByRole('button',{name:'Phạm vi chat'}));
- expect(screen.getByLabelText('Phạm vi chat')).toHaveValue('1');expect(screen.getByLabelText('Feature cho chat')).toHaveValue('42');expect(screen.getByLabelText('Tin nhắn AI')).toHaveValue('Nháp của tôi');expect(api.chatCreate).not.toHaveBeenCalled();
+it('FR09 restores pinned project and Đợt kiểm thử from history without losing the draft',async()=>{
+ const saved={...thread,projectId:1,targetId:42,purpose:'PROJECT_CHAT'};api.chatList.mockResolvedValue({items:[saved],nextBefore:null});api.chatGet.mockResolvedValue({thread:saved,turns:[],nextBefore:null});api.chatFeatures=vi.fn().mockResolvedValue([{id:42,name:'Đợt kiểm thử lịch sử'}]);
+ render(<AiProviderProvider api={api}><AiChat api={api} projectApi={{list:async()=>[{id:1,name:'Dự án A'}]}}/></AiProviderProvider>);await open();fireEvent.change(screen.getByLabelText('Tin nhắn AI'),{target:{value:'Nháp của tôi'}});fireEvent.click(screen.getByRole('button',{name:'Lịch sử'}));fireEvent.click(await screen.findByRole('button',{name:/#1.*API/}));await screen.findByText('Dự án A · Đợt kiểm thử lịch sử');fireEvent.click(screen.getByRole('button',{name:'Phạm vi chat'}));
+ expect(screen.getByLabelText('Phạm vi chat')).toHaveValue('1');expect(screen.getByLabelText('Đợt kiểm thử cho chat')).toHaveValue('42');expect(screen.getByLabelText('Tin nhắn AI')).toHaveValue('Nháp của tôi');expect(api.chatCreate).not.toHaveBeenCalled();
 });
 it('FR09 opens connection recovery in chat without old AI menu links',async()=>{
  api.providers.mockResolvedValue({providers:[{code:'OPENAI_API',available:false,models:[]}]});mount();await open();fireEvent.click(await screen.findByRole('button',{name:'Mở cấu hình AI'}));expect(screen.getByLabelText('Nguồn AI')).toBeVisible();expect(document.querySelector('a[href="#/ai"],a[href="#/admin/ai"]')).toBeNull();

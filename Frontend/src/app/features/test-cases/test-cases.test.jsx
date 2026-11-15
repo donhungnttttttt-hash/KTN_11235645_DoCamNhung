@@ -142,6 +142,7 @@ describe('Project-scoped test case library',()=> {
     const user=userEvent.setup(),onUpdated=vi.fn();
     render(<CaseDetailModal projectId={1} caseId={1} onClose={vi.fn()} onUpdated={onUpdated}/>);
     await user.click(await screen.findByRole('button',{name:'Thêm phiên bản'}));
+    for(const input of screen.getAllByRole('textbox'))expect(input).not.toHaveAttribute('maxlength');
     await user.clear(screen.getByLabelText('Tiêu đề kiểm thử (VI) *'));
     await user.type(screen.getByLabelText('Tiêu đề kiểm thử (VI) *'),'Bản đã lưu');
     await user.click(screen.getByRole('button',{name:'Lưu phiên bản'}));

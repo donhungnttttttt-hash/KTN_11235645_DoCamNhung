@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { qaApi } from '../../services/api/qa';
 import { Button } from '../work-items/components';
@@ -106,9 +107,9 @@ export function QaForm({ projectId, catalogs = {}, canCreateQa = false, context 
     <QaField label="Tiêu đề QA" name="title" prefix={prefix} error={fields.title}><input value={form.title} maxLength={300} onChange={e => change('title', e.target.value)} disabled={busy || !!accepted} /></QaField>
     <QaField label="Câu hỏi" name="question" prefix={prefix} error={fields.question}><textarea rows={5} value={form.question} maxLength={20000} onChange={e => change('question', e.target.value)} disabled={busy || !!accepted} /></QaField>
     <div className="wi-fields three">
-      <QaField label="Độ ưu tiên" name="priority" prefix={prefix}><select value={form.priority} onChange={e => change('priority', e.target.value)} disabled={busy || !!accepted}><option value="HIGH">Cao</option><option value="MEDIUM">Trung bình</option><option value="LOW">Thấp</option></select></QaField>
-      {['categoryId', 'milestoneId'].map((key, index) => <QaField key={key} label={index ? 'Mốc tiến độ' : 'Phân loại'} name={key} prefix={prefix} error={fields[key]}><select value={form[key]} onChange={e => change(key, e.target.value)} disabled={busy || !!accepted}><option value="">Chưa chọn</option>{(catalogs[index ? 'milestones' : 'categories'] || []).filter(c => c.active !== false && !c.archived).map(c => <option value={c.id} key={c.id}>{c.name}</option>)}</select></QaField>)}
+      <QaField label="Độ ưu tiên" name="priority" prefix={prefix}><UnifiedSelect value={form.priority} onChange={e => change('priority', e.target.value)} disabled={busy || !!accepted}><option value="HIGH">Cao</option><option value="MEDIUM">Trung bình</option><option value="LOW">Thấp</option></UnifiedSelect></QaField>
+      {['categoryId', 'milestoneId'].map((key, index) => <QaField key={key} label={index ? 'Mốc tiến độ' : 'Phân loại'} name={key} prefix={prefix} error={fields[key]}><UnifiedSelect value={form[key]} onChange={e => change(key, e.target.value)} disabled={busy || !!accepted}><option value="">Chưa chọn</option>{(catalogs[index ? 'milestones' : 'categories'] || []).filter(c => c.active !== false && !c.archived).map(c => <option value={c.id} key={c.id}>{c.name}</option>)}</UnifiedSelect></QaField>)}
     </div>
-    <div className="wi-actions"><Button primary type="submit" disabled={busy || !allowed || (conflict && !accepted)}>{busy ? 'Đang gửi…' : accepted ? 'Tải lại QA đã tạo' : 'Tạo QA'}</Button><Button disabled={busy} onClick={newDraft}>Tạo bản nháp mới</Button></div>
+    <div className="wi-actions"><Button primary type="submit" disabled={busy || !allowed || (conflict && !accepted)}>{busy ? 'Đang gửi…' : accepted ? 'Kiểm tra QA đã tạo' : 'Tạo QA'}</Button><Button disabled={busy} onClick={newDraft}>Tạo bản nháp mới</Button></div>
   </form>;
 }

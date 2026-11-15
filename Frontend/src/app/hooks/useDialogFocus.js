@@ -45,6 +45,10 @@ export function useDialogFocus(onClose, busy = false, ready = true, returnFocusR
       const topmost = openDialogs.findLast(item => item.dialog.isConnected
         && !item.dialog.closest('[hidden], [inert]'));
       if (topmost !== entry) return;
+      const picker = event.target?.closest?.('[data-picker-owner]');
+      const pickerOwner = picker && document.getElementById(picker.dataset.pickerOwner);
+      // Portalled selectors handle Escape/Tab locally before their parent modal.
+      if (pickerOwner && dialog.contains(pickerOwner) && ['Escape','Tab'].includes(event.key)) return;
       // An embedded search picker owns Escape without registering a modal trap.
       // Let it close first so its parent editor and draft remain mounted.
       const localDialog = event.target?.closest?.('[role="dialog"]');

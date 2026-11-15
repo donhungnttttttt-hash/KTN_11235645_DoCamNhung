@@ -1,3 +1,5 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import {ImportedDocuments} from './ImportedDocuments';
 import {CaseRangePicker} from './CaseRangePicker';
 import {TableScroll} from '../../components/TableScroll';
@@ -36,6 +38,7 @@ export function FileWorkPage({navigate,documentId}) {
   return <FileList key={currentProject.id} project={currentProject} navigate={navigate} documentId={documentId}/>;
 }
 function FileList({project,navigate,documentId}) {
+ useRefreshOnReturn(()=>{refresh(v=>v+1);});
   const [reload,refresh]=useState(0),[keyword,setKeyword]=useState(''),[state,setState]=useState(''),[pagination,setPagination]=useState({documentId,page:0}),[mine,setMine]=useState(null),[create,setCreate]=useState(false);
   const [assignee,setAssignee]=useState(null),[cycle,setCycle]=useState(null),[build,setBuild]=useState(null),[cyclePage,setCyclePage]=useState(0);
   const page=pagination.documentId===documentId?pagination.page:0;
@@ -50,11 +53,11 @@ function FileList({project,navigate,documentId}) {
   const cycles=useResource(()=>canFilter?executionApi.cycles(project.id,cyclePage):null,[project.id,canFilter,cyclePage,reload]);
   const builds=useResource(()=>canFilter?projectsApi.listCatalog(project.id,'builds'):[],[project.id,canFilter,reload]);
   const list=useResource(options=>meta.data ? fileWorkApi.list(project.id,{page,size:20,keyword,state,mine:effectiveMine,documentId,assigneeMembershipId:canFilter && !effectiveMine?assignee?.id:undefined,cycleId:canFilter?cycle?.id:undefined,buildId:canFilter?build?.id:undefined},options) : null,[project.id,page,keyword,state,effectiveMine,meta.data,documentId,assignee,cycle,build,canFilter]);
-  return <div className="fw-page"><header className="fw-heading"><div><h2>Công việc theo file · {project.name}</h2><p>Theo dõi file được giao, người thực hiện, thiết bị và kết quả theo build.</p></div>{meta.data?.canCreate && <button onClick={()=>setCreate(v=>!v)}>Giao file</button>}<button onClick={()=>refresh(v=>v+1)}>Làm mới</button></header>
+  return <div className="fw-page"><header className="fw-heading"><div><h2>Công việc theo file · {project.name}</h2><p>Theo dõi file được giao, người thực hiện, thiết bị và kết quả theo build.</p></div>{meta.data?.canCreate && <button onClick={()=>setCreate(v=>!v)}>Giao file</button>}</header>
     <WorkError error={meta.error || list.error} retry={()=>refresh(v=>v+1)}/>
     <WorkError error={members.error || cycles.error || builds.error} retry={()=>refresh(v=>v+1)}/>
     {meta.data?.canCreate && <FilePreparation project={project} navigate={navigate} reload={reload}/>}
-    <div className="fw-actions fw-filter-controls"><Field label="Tìm tên file"><input ref={searchRef} maxLength={255} value={keyword} onChange={e=>{setKeyword(e.target.value);setPage(0);}}/></Field><Field label="Trạng thái"><select value={state} onChange={e=>{setState(e.target.value);setPage(0);}}><option value="">Tất cả</option>{['READY','DOING','PAUSED','COMPLETED','CANCELLED'].map(s=><option key={s} value={s}>{fileStateLabels[s]}</option>)}</select></Field>{meta.data?.canViewMine && <label><input type="checkbox" checked={effectiveMine} onChange={e=>{setMine(e.target.checked);setPage(0);}}/>Được giao cho tôi</label>}
+    <div className="fw-actions fw-filter-controls"><Field label="Tìm tên file"><input ref={searchRef} maxLength={255} value={keyword} onChange={e=>{setKeyword(e.target.value);setPage(0);}}/></Field><Field label="Trạng thái"><UnifiedSelect value={state} onChange={e=>{setState(e.target.value);setPage(0);}}><option value="">Tất cả</option>{['READY','DOING','PAUSED','COMPLETED','CANCELLED'].map(s=><option key={s} value={s}>{fileStateLabels[s]}</option>)}</UnifiedSelect></Field>{meta.data?.canViewMine && <label><input type="checkbox" checked={effectiveMine} onChange={e=>{setMine(e.target.checked);setPage(0);}}/>Được giao cho tôi</label>}
     {canFilter && <>
       <MonitorSelect label="Tester theo dõi" selected={assignee} options={(members.data || []).filter(m=>m.projectRole==='TESTER').map(m=>({id:m.membershipId,label:m.displayName}))} onChange={value=>{setAssignee(value);setPage(0);}} disabled={effectiveMine}/>
       <div><MonitorSelect label="Đợt theo dõi" selected={cycle} options={(cycles.data?.items || []).map(c=>({id:c.id,label:c.name}))} onChange={value=>{setCycle(value);setPage(0);}}/>{cycles.data?.totalPages>1&&<Pager data={cycles.data} onChange={setCyclePage} label="đợt lọc" compact/>}</div>
@@ -71,7 +74,7 @@ function FileList({project,navigate,documentId}) {
 }
 function MonitorSelect({label,selected,options,onChange,disabled=false}) {
   const choices=selected && !options.some(o=>o.id===selected.id)?[selected,...options]:options;
-  return <Field label={label}><select value={selected?.id || ''} disabled={disabled} onChange={e=>onChange(choices.find(o=>String(o.id)===e.target.value) || null)}><option value="">Tất cả</option>{choices.map(o=><option key={o.id} value={o.id}>{o.label}</option>)}</select></Field>;
+  return <Field label={label}><UnifiedSelect value={selected?.id || ''} disabled={disabled} onChange={e=>onChange(choices.find(o=>String(o.id)===e.target.value) || null)}><option value="">Tất cả</option>{choices.map(o=><option key={o.id} value={o.id}>{o.label}</option>)}</UnifiedSelect></Field>;
 }
 const rateLabel=value=>value==null?'Không có mẫu số':`${value}%`;
 function MilestoneContext({group}) {
@@ -108,10 +111,10 @@ export function CreateFile({projectId,documentId,initialCycleId,authorized,navig
   }
   return <section ref={formRef} tabIndex={-1} className="fw-panel" aria-label="Giao file"><h3>Giao việc theo file và khoảng case</h3><WorkError error={error || errors} retry={pending.current?()=>submit('retry'):()=>{setApprovedIds([]);setRevisions([]);invalidate();refresh(v=>v+1);}}/><fieldset disabled={busy}><div className="fw-fields">
     <Field label="Tìm tài liệu nguồn"><input maxLength={255} value={keyword} onChange={e=>{setKeyword(e.target.value);setDocPage(0);}}/></Field>
-    <Field label="Tài liệu đã nhập"><select value={docId} onChange={e=>{setDocId(e.target.value);setRevisions([]);setApprovedIds([]);invalidate();}}><option value="">Chọn file Excel</option>{document.data && !docs.data?.items.some(d=>String(d.id)===docId) && <option value={docId}>{document.data.document.fileName}</option>}{docs.data?.items.map(d=><option key={d.id} value={d.id}>{d.fileName}</option>)}</select></Field>
-    <Field label="Đợt bản nháp"><select disabled={!!initialCycleId} value={cycleId} onChange={e=>{setCycleId(e.target.value);setConfigId('');invalidate();}}><option value="">Chọn đợt</option>{cycle.data&&!cycles.data?.items.some(c=>String(c.id)===cycleId)&&<option value={cycleId}>{cycle.data.name}</option>}{cycles.data?.items.filter(c=>c.statusCode==='DRAFT').map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></Field>
-    <Field label="Cấu hình"><select value={configId} onChange={e=>{setConfigId(e.target.value);invalidate();}}><option value="">Chọn cấu hình</option>{configs.data?.map(c=><option key={c.id} value={c.id}>{c.environmentName || `Môi trường #${c.environmentId}`} · {c.deviceName || `Thiết bị #${c.deviceId}`} · {c.versionLabel || `Build #${c.defaultBuildId}`}</option>)}</select></Field>
-    <Field label="Tester nhận file"><select value={memberId} onChange={e=>{setMemberId(e.target.value);invalidate();}}><option value="">Chọn Tester</option>{testerMembers(members.data || []).map(m=><option key={m.membershipId} value={m.membershipId}>{m.displayName}</option>)}</select></Field>
+    <Field label="Tài liệu đã nhập"><UnifiedSelect value={docId} onChange={e=>{setDocId(e.target.value);setRevisions([]);setApprovedIds([]);invalidate();}}><option value="">Chọn file Excel</option>{document.data && !docs.data?.items.some(d=>String(d.id)===docId) && <option value={docId}>{document.data.document.fileName}</option>}{docs.data?.items.map(d=><option key={d.id} value={d.id}>{d.fileName}</option>)}</UnifiedSelect></Field>
+    <Field label="Đợt bản nháp"><UnifiedSelect disabled={!!initialCycleId} value={cycleId} onChange={e=>{setCycleId(e.target.value);setConfigId('');invalidate();}}><option value="">Chọn đợt</option>{cycle.data&&!cycles.data?.items.some(c=>String(c.id)===cycleId)&&<option value={cycleId}>{cycle.data.name}</option>}{cycles.data?.items.filter(c=>c.statusCode==='DRAFT').map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</UnifiedSelect></Field>
+    <Field label="Cấu hình"><UnifiedSelect value={configId} onChange={e=>{setConfigId(e.target.value);invalidate();}}><option value="">Chọn cấu hình</option>{configs.data?.map(c=><option key={c.id} value={c.id}>{c.environmentName || `Môi trường #${c.environmentId}`} · {c.deviceName || `Thiết bị #${c.deviceId}`} · {c.versionLabel || `Build #${c.defaultBuildId}`}</option>)}</UnifiedSelect></Field>
+    <Field label="Tester nhận file"><UnifiedSelect value={memberId} onChange={e=>{setMemberId(e.target.value);invalidate();}}><option value="">Chọn Tester</option>{testerMembers(members.data || []).map(m=><option key={m.membershipId} value={m.membershipId}>{m.displayName}</option>)}</UnifiedSelect></Field>
     </div><Pager data={docs.data} label="tài liệu" onChange={setDocPage}/>{!initialCycleId&&<Pager data={cycles.data} label="đợt" onChange={setCyclePage}/>}
     {effectiveDocument && <CaseRangePicker key={docId} projectId={projectId} document={effectiveDocument} selected={revisions} onChange={ids=>{setRevisions(ids);invalidate();}} onApproved={ids=>{setApprovedIds(old=>[...old,...ids]);invalidate();}} onReload={()=>{setApprovedIds([]);setRevisions([]);invalidate();refresh(v=>v+1);}} busy={busy||!authorized} onBusy={setBusy}/>}
     {!docId&&<p>Chọn tên file để giao toàn bộ hoặc một khoảng case cho Tester.</p>}{!docs.loading&&docs.data&&!docs.data.items.length&&<p>{keyword.trim()?'Không có file khớp từ khóa. Xóa từ khóa hoặc nhập file mới.':'Dự án chưa có file Excel được nhập.'} <button type="button" onClick={()=>navigate('/tests')}>Mở thư viện / nhập Excel</button></p>}

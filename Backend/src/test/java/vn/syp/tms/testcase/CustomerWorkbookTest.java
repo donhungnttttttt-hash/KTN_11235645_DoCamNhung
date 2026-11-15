@@ -66,7 +66,7 @@ class CustomerWorkbookTest {
         try(var book=new XSSFWorkbook(new ByteArrayInputStream(bytes))) {
             var header=book.getSheetAt(0).getRow(0);
             assertThat(header.getCell(2).getStringCellValue()).isEqualTo("Đối tượng test");
-            assertThat(header.getCell(3).getStringCellValue()).isEqualTo("Điều kiện tiền đề");
+            assertThat(header.getCell(3).getStringCellValue()).isEqualTo("Điều kiện tiên quyết");
         }
         assertThat(parser.parse(file(bytes)).rows().getFirst().titleVi()).isEqualTo("Đăng nhập");
     }

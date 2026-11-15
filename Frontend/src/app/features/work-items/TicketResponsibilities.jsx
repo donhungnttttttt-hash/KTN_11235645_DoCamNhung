@@ -1,8 +1,10 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import React,{useEffect,useRef,useState} from 'react';
 import {featureIssuesApi} from '../../services/api/featureIssues';
 import {useModalActivity} from './components';
 const duties=[['SPEC_REVIEWER','Xác nhận spec'],['BUG_COORDINATOR','Điều phối Bug']];
 export function TicketResponsibilities({projectId,api=featureIssuesApi}) {
+ useRefreshOnReturn(()=>{if(!busy&&!loading)setReload(v=>v+1);});
  const [data,setData]=useState(null),[drafts,setDrafts]=useState({}),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[reload,setReload]=useState(0),[error,setError]=useState(''),[notice,setNotice]=useState('');
  const lifetime=useRef(null),lock=useRef(false);
  useModalActivity(busy,Object.keys(drafts).length>0);
@@ -20,7 +22,7 @@ export function TicketResponsibilities({projectId,api=featureIssuesApi}) {
   finally{if(!signal.aborted){lock.current=false;setBusy(false);}}
  }
  const unavailable=Object.keys(drafts).filter(id=>data&&!data.members.some(member=>String(member.membershipId)===id));
- return <section className="ticket-responsibilities" aria-label="Trách nhiệm Ticket của dự án" aria-busy={loading||busy}><p>Phân công đầu mối xác nhận spec (BA/BrSE) và điều phối Bug (PM Dev). Trách nhiệm không thay đổi vai trò tài khoản hay thành viên dự án.</p><button className="cat-btn" disabled={loading||busy} onClick={()=>setReload(value=>value+1)}>Tải lại trách nhiệm</button>
+ return <section className="ticket-responsibilities" aria-label="Trách nhiệm Ticket của dự án" aria-busy={loading||busy}><p>Phân công đầu mối xác nhận spec (BA/BrSE) và điều phối Bug (PM Dev). Trách nhiệm không thay đổi vai trò tài khoản hay thành viên dự án.</p>{(error)&&<button className="cat-btn" disabled={loading||busy} onClick={()=>setReload(value=>value+1)}>Thử lại trách nhiệm</button>}
   {loading&&<p role="status">Đang tải trách nhiệm…</p>}{error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}
   {data&&!data.canManage&&<p role="status">Bạn đang xem trách nhiệm. Quyền chỉnh sửa do máy chủ quyết định.</p>}
   {data?.members.map(member=><section key={member.membershipId} className="ticket-duty-member"><h4>{member.displayName}</h4><p>{member.systemRole} · Thành viên {member.projectRole} · Version {member.version}</p>

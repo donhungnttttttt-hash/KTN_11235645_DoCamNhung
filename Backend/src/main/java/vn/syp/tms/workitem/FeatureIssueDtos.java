@@ -5,6 +5,10 @@ import java.util.UUID;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.Valid;
+import java.time.LocalDate;
+import java.math.BigDecimal;
 
 public final class FeatureIssueDtos {
     private FeatureIssueDtos() {}
@@ -28,6 +32,10 @@ public final class FeatureIssueDtos {
         @NotNull @PositiveOrZero Long expectedVersion) {}
     public record Comment(@NotBlank @Size(max=20000) String body,@NotNull @PositiveOrZero Long expectedVersion,@NotNull UUID requestKey) {}
     public record Restore(@NotNull @PositiveOrZero Long expectedVersion,@NotNull UUID requestKey) {}
+    public record Planning(LocalDate startOn,LocalDate dueOn,
+        @DecimalMin("0") @Digits(integer=8,fraction=2) BigDecimal estimatedHours,
+        @DecimalMin("0") @Digits(integer=8,fraction=2) BigDecimal actualHours,
+        @NotNull @Size(max=30) List<@NotNull @Positive Long> milestoneIds) {}
     /** Bean fields distinguish omitted optional mutations from an explicit invalid null. */
     public static final class Action {
         @Size(max=20000) public String body;
@@ -36,6 +44,10 @@ public final class FeatureIssueDtos {
         @JsonSetter(nulls=Nulls.FAIL) @Positive public Long assigneeMembershipId;
         @JsonSetter(nulls=Nulls.FAIL) public String verifierUserId;
         public Boolean convertToBug;
+        @Valid @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL) public Planning planning;
+        // Only the multipart service may set these; JSON callers cannot claim uploaded files.
+        @JsonIgnore public String attachmentDigest;
+        @JsonIgnore public int attachmentCount;
         @NotNull @PositiveOrZero public Long expectedVersion;
         @NotNull public UUID requestKey;
         public Action() {}

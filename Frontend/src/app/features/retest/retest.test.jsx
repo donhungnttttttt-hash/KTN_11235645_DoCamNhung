@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
@@ -113,7 +114,7 @@ it('queue supports mine/status filters, paging, request details and empty state'
  fireEvent.click(screen.getByRole('checkbox',{name:'Được phân công cho tôi'}));await waitFor(()=>expect(retestApi.queue).toHaveBeenLastCalledWith(1,0,false,'OPEN'));
  fireEvent.change(screen.getByLabelText('Trạng thái'),{target:{value:'CANCELLED'}});await waitFor(()=>expect(retestApi.queue).toHaveBeenLastCalledWith(1,0,false,'CANCELLED'));
  fireEvent.click(screen.getByRole('button',{name:'Tiếp'}));await waitFor(()=>expect(retestApi.queue).toHaveBeenLastCalledWith(1,1,false,'CANCELLED'));
- retestApi.queue.mockResolvedValue({items:[],page:1,totalItems:0,totalPages:0});fireEvent.click(screen.getByRole('button',{name:'Tải lại'}));await screen.findByText('Chưa có yêu cầu phù hợp bộ lọc.');
+ retestApi.queue.mockResolvedValue({items:[],page:1,totalItems:0,totalPages:0});refreshEvent.focus(window);await screen.findByText('Chưa có yêu cầu phù hợp bộ lọc.');
  expect(screen.queryByRole('navigation',{name:'Quản lý kiểm thử'})).not.toBeInTheDocument();
 });
 it('queue retries failed loading and has no requests without a selected project',async()=>{
@@ -123,7 +124,7 @@ it('queue retries failed loading and has no requests without a selected project'
 });
 it('recovers summary and request load failures without stale forms',async()=>{
  retestApi.summary.mockRejectedValueOnce(new Error('Lỗi tải phạm vi')).mockResolvedValue(summary);
- const view=render(<RetestPanel projectId={1} bug={{id:7,version:3}} canManage writable onChanged={vi.fn()}/>);await screen.findByText('Lỗi tải phạm vi');fireEvent.click(screen.getByRole('button',{name:'Tải lại retest'}));await screen.findByText('0 / 1 mục đạt');view.unmount();
+ const view=render(<RetestPanel projectId={1} bug={{id:7,version:3}} canManage writable onChanged={vi.fn()}/>);await screen.findByText('Lỗi tải phạm vi');refreshEvent.focus(window);await screen.findByText('0 / 1 mục đạt');view.unmount();
  retestApi.request.mockRejectedValueOnce(new Error('Lỗi tải yêu cầu')).mockResolvedValue({...request,canSubmit:false});
  render(<RetestResult projectId={1} requestId={11} writable onSaved={vi.fn()} onClose={vi.fn()}/>);await screen.findByText('Lỗi tải yêu cầu');fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));await screen.findByText('Chỉ người đang được phân công mới được ghi kết quả.');
 });
@@ -144,11 +145,11 @@ it('blocks stale retest management after a failed refresh and preserves the cove
   fireEvent.click(await screen.findByRole('button',{name:'Chọn toàn bộ phạm vi retest'}));
   fireEvent.change(await screen.findByLabelText('Lý do xác nhận phạm vi'),{target:{value:'Giữ phạm vi đã chọn'}});
   retestApi.summary.mockRejectedValueOnce(Object.assign(new Error('Quyền vừa bị thu hồi'),{status:403})).mockResolvedValue(summary);
-  fireEvent.click(screen.getByRole('button',{name:'Tải lại retest'}));
+  refreshEvent.focus(window);
   await screen.findByText('Quyền vừa bị thu hồi');
   expect(screen.getByLabelText('Lý do xác nhận phạm vi')).toHaveValue('Giữ phạm vi đã chọn');
   expect(screen.getByRole('button',{name:'Xác nhận phạm vi'})).toBeDisabled();
-  fireEvent.click(screen.getByRole('button',{name:'Tải lại retest'}));
+  refreshEvent.focus(window);
   await waitFor(()=>expect(screen.getByRole('button',{name:'Xác nhận phạm vi'})).toBeEnabled());
   expect(screen.getByLabelText('Lý do xác nhận phạm vi')).toHaveValue('Giữ phạm vi đã chọn');
 });
@@ -158,11 +159,11 @@ it('blocks stale retest result submission after a failed refresh and retains the
   fireEvent.change(await screen.findByLabelText('Kết quả TC-1'),{target:{value:'PASS'}});
   fireEvent.change(screen.getByLabelText('Thực tế TC-1'),{target:{value:'Đã kiểm tra lại'}});
   retestApi.request.mockRejectedValueOnce(Object.assign(new Error('Không xác nhận được quyền'),{status:403})).mockResolvedValue(request);
-  fireEvent.click(screen.getByRole('button',{name:'Tải lại yêu cầu'}));
+  refreshEvent.focus(window);
   await screen.findByText('Không xác nhận được quyền');
   expect(screen.getByLabelText('Thực tế TC-1')).toHaveValue('Đã kiểm tra lại');
   expect(screen.getByRole('button',{name:'Lưu kết quả retest'})).toBeDisabled();
-  fireEvent.click(screen.getByRole('button',{name:'Tải lại yêu cầu'}));
+  refreshEvent.focus(window);
   await waitFor(()=>expect(screen.getByRole('button',{name:'Lưu kết quả retest'})).toBeEnabled());
   expect(screen.getByLabelText('Thực tế TC-1')).toHaveValue('Đã kiểm tra lại');
 });

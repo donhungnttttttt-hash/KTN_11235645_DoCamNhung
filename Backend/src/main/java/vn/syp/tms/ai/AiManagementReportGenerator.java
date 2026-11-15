@@ -33,14 +33,15 @@ public class AiManagementReportGenerator {
             @SuppressWarnings("unchecked") var features=(List<Map<String,Object>>)bounded.get("features");
             if(input.featureId()!=null)features=features.stream().filter(feature->String.valueOf(feature.get("id")).equals(input.featureId().toString())).toList();
             bounded.put("features",features.stream().limit(20).toList());bounded.put("totalFeatures",features.size());bounded.put("featureListTruncated",features.size()>20);
-            var sources=List.of(new AiDraftService.Source("project:"+project,"Dữ liệu dự án/Feature hiện hành","/analysis?projectId="+project,null));
-            var data=json.createObjectNode().put("scope","MANAGEMENT_REPORT").put("limitations","Danh sách Feature tối đa20; totals và Status theo phạm vi đầy đủ. Không có lịch sử đã reset, kế hoạch nghiệm thu hoặc đánh giá năng lực. Không suy đoán tiến độ trễ nếu thiếu hạn.");
+            var sources=List.of(new AiDraftService.Source("project:"+project,"Dữ liệu dự án/Đợt kiểm thử hiện hành","/analysis?projectId="+project,null));
+            var data=json.createObjectNode().put("scope","MANAGEMENT_REPORT").put("limitations","Danh sách Đợt kiểm thử tối đa20; totals và Status theo phạm vi đầy đủ. Không có lịch sử đã reset, kế hoạch nghiệm thu hoặc đánh giá năng lực. Không suy đoán tiến độ trễ nếu thiếu hạn.");
             data.putArray("sources").addObject().put("ref","project:"+project).set("facts",json.valueToTree(bounded));
-            if(json.writeValueAsBytes(data).length>10000)throw new BusinessException(422,"AI_INPUT_TOO_LARGE","Phạm vi báo cáo quá lớn. Chọn một Feature để tạo bản nhận xét AI.");
+            if(json.writeValueAsBytes(data).length>10000)throw new BusinessException(422,"AI_INPUT_TOO_LARGE","Phạm vi báo cáo quá lớn. Chọn một Đợt kiểm thử để tạo bản nhận xét AI.");
             String instructions="You are a report writer, not a coding agent. No tools are available. "
                 +"Do not call functions or tools or request commands. Return your final answer as an assistant text message. "
-                +"Write a Vietnamese management report proposal using only the provided project/Feature facts. "
-                +"Keep it concise, about 150–250 Vietnamese words. Prioritize supplied totals and significant findings; summarize rather than list every Feature. "
+                +"Write a Vietnamese management report proposal using only the provided project/Đợt kiểm thử facts. "
+                +"Write about 350–500 Vietnamese words with clear Markdown headings and a compact comparison table where useful. Prioritize supplied totals and significant findings; summarize rather than list every Đợt kiểm thử. "
+                +"Include executive summary, progress/quality, personnel counts, simulated cost assessment, risks and concrete recommendations, and sources/assumptions/missing evidence. Use customerAssessment if provided: all costs, rate500, manager multiplier5, and50cases/User/day are SAMPLE assumptions, not international standards, salaries, actual expenditure, or contractual deadlines. Costs cover the whole project even if a Đợt kiểm thử is selected. Do not invent owners or due dates. State who should decide when ownership/deadlines are absent. "
                 +"Include project information, tested/total progress, all five Status values, Bug/QA, concerns, grounded observations and recommendations, and missing information. "
                 +"Tested = OK+NG+P+NA; denominator includes NA; 100% is not customer acceptance. Preserve exact source counts. "
                 +"No facts about private chats, secrets, external acceptance, deadlines or staff experience absent from the data. Label opinions and missing evidence. "

@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
@@ -53,8 +54,8 @@ it('QA detail hides generic mutators/BUG properties and retains typed draft duri
   fireEvent.click(await screen.findByRole('button', { name: 'Trả lời QA' })); fireEvent.change(screen.getByLabelText('Nội dung trả lời'), { target: { value: 'Bản nháp đang giữ' } });
   for (const text of ['Sửa thông tin và phân công', 'Tham chiếu tracker và nội dung làm rõ', 'Build đã sửa', 'Build phát sinh', 'Chuyển trạng thái']) expect(screen.queryByText(text)).not.toBeInTheDocument();
   expect(screen.queryByLabelText('Nội dung bình luận')).not.toBeInTheDocument(); expect(screen.queryByLabelText('Chọn chứng cứ')).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại chi tiết' }));
-  await waitFor(() => expect(workItemsApi.get).toHaveBeenCalledTimes(2)); expect(screen.getByLabelText('Nội dung trả lời')).toHaveValue('Bản nháp đang giữ'); expect(qaApi.get).toHaveBeenCalledOnce();
+  refreshEvent.focus(window);
+  await waitFor(() => expect(workItemsApi.get).toHaveBeenCalledTimes(2)); expect(screen.getByLabelText('Nội dung trả lời')).toHaveValue('Bản nháp đang giữ'); expect(qaApi.get).toHaveBeenCalledTimes(2);
 });
 
 
@@ -115,19 +116,20 @@ it.each([
   fireEvent.change(screen.getByLabelText('Nội dung trả lời'), { target: { value: 'Giữ nháp trả lời' } });
   fireEvent.change(screen.getByLabelText('Nội dung bình luận'), { target: { value: 'Giữ nháp bình luận' } });
   workItemsApi.attachments.mockResolvedValue([{ id: 4, name: 'chung-cu.pdf', size: 100, uploadedBy: 8 }]);
-  qaApi.get.mockResolvedValue(typedAllowed(denied)); fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA' }));
+  qaApi.get.mockResolvedValue(typedAllowed(denied)); refreshEvent.focus(window);
   await screen.findByText(/Phiên bản: 3/); expectNoSharedWrites();
   expect(screen.getByLabelText('Nội dung trả lời')).toHaveValue('Giữ nháp trả lời');
   expect(screen.getByRole('button', { name: 'Gửi câu trả lời' })).toBeDisabled();
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại chi tiết' }));
-  await waitFor(() => expect(workItemsApi.get).toHaveBeenCalledTimes(2)); expectNoSharedWrites();
-  // A lower-version allow may arrive from a stale replica; it cannot undo the observed denial.
-  qaApi.get.mockResolvedValue(typedAllowed()); fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA' }));
-  await waitFor(() => expect(qaApi.get).toHaveBeenCalledTimes(3)); expectNoSharedWrites();
-  qaApi.get.mockResolvedValue(typedAllowed({ version: 4 })); workItemsApi.get.mockResolvedValue(genericAllowed({ version: 4 }));
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại chi tiết' }));
+  refreshEvent.focus(window);
   await waitFor(() => expect(workItemsApi.get).toHaveBeenCalledTimes(3)); expectNoSharedWrites();
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA' }));
+  // A lower-version allow may arrive from a stale replica; it cannot undo the observed denial.
+  qaApi.get.mockResolvedValue(typedAllowed()); refreshEvent.focus(window);
+  await waitFor(() => expect(qaApi.get).toHaveBeenCalledTimes(4)); expectNoSharedWrites();
+  qaApi.get.mockResolvedValue(typedAllowed({ version: 4 })); workItemsApi.get.mockResolvedValue(genericAllowed({ version: 4 }));
+  const recovered=deferredRead();qaApi.get.mockReturnValueOnce(recovered.promise);
+  refreshEvent.focus(window);
+  await waitFor(() => expect(workItemsApi.get).toHaveBeenCalledTimes(5)); expectNoSharedWrites();
+  await act(async()=>recovered.resolve(typedAllowed({version:4})));
   expect(await screen.findByLabelText('Nội dung bình luận')).toHaveValue('Giữ nháp bình luận');
   expect(screen.getByLabelText('Nội dung trả lời')).toHaveValue('Giữ nháp trả lời');
   expect(qaApi.answer).not.toHaveBeenCalled();
@@ -139,16 +141,16 @@ it('typed initial/manual loading and errors fail closed, retain readable attachm
   await screen.findByRole('region', { name: 'QA chi tiết' }); expectNoSharedWrites();
   await act(async () => slow.resolve(typedAllowed())); await screen.findByLabelText('Nội dung bình luận');
   const pending = deferredRead(); qaApi.get.mockReturnValueOnce(pending.promise);
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA' })); expectNoSharedWrites();
+  refreshEvent.focus(window); expectNoSharedWrites();
   await act(async () => pending.resolve(Promise.reject(new Error('Lỗi đọc QA hiện tại'))));
   await screen.findByText('Lỗi đọc QA hiện tại'); expectNoSharedWrites(); expect(screen.getByRole('button', { name: 'da-luu.pdf' })).toBeVisible();
-  qaApi.get.mockResolvedValue(typedAllowed()); fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA' })); await screen.findByLabelText('Nội dung bình luận');
-  expect(workItemsApi.get).toHaveBeenCalledOnce(); expect(qaApi.get).toHaveBeenCalledTimes(3);
+  qaApi.get.mockResolvedValue(typedAllowed()); refreshEvent.focus(window); await screen.findByLabelText('Nội dung bình luận');
+  expect(workItemsApi.get).toHaveBeenCalledTimes(3); expect(qaApi.get).toHaveBeenCalledTimes(3);
 });
 it.each([{ id: 8 }, { projectId: 2 }, { type: 'BUG' }, { version: 1 }, { version: undefined }])('typed mismatched/older/invalid identity or version fails closed: %j', async extra => {
   await openSharedQa(); qaApi.get.mockResolvedValue(typedAllowed(extra));
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA' }));
-  await waitFor(() => expect(screen.getByRole('button', { name: 'Tải lại QA' })).toBeEnabled()); expectNoSharedWrites();
+  refreshEvent.focus(window);
+  await act(async () => {}); expectNoSharedWrites();
   expect(screen.getByText(/Quyền QA dùng chung chưa được đối chiếu/)).toBeVisible();
 });
 it.each([
@@ -156,19 +158,19 @@ it.each([
   [{ canComment: true, canUploadEvidence: false }, true, false],
 ])('each shared operation follows its own current typed flag: %j', async (capabilities, commentAllowed, uploadAllowed) => {
   await openSharedQa(); qaApi.get.mockResolvedValue(typedAllowed({ capabilities }));
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA' }));
-  await waitFor(() => expect(screen.getByRole('button', { name: 'Tải lại QA' })).toBeEnabled());
+  refreshEvent.focus(window);
+  await act(async () => {});
   expect(!!screen.queryByLabelText('Nội dung bình luận')).toBe(commentAllowed);
   expect(!!screen.queryByLabelText('Chọn chứng cứ')).toBe(uploadAllowed);
   expect(workItemsApi.comment).not.toHaveBeenCalled(); expect(workItemsApi.upload).not.toHaveBeenCalled();
 });
-it('typed true never overrules generic denial, and notifications/re-renders/shared reloads do not refetch typed detail', async () => {
+it('typed true never overrules generic denial, and return refreshes both reads but ordinary re-renders do not', async () => {
   const { rerender, props } = await openSharedQa();
   workItemsApi.get.mockResolvedValue(genericAllowed({ canComment: false, canAttach: false }));
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại chi tiết' }));
+  refreshEvent.focus(window);
   await waitFor(() => expect(workItemsApi.get).toHaveBeenCalledTimes(2)); expectNoSharedWrites();
   rerender(<WorkItemDetail {...props} onChanged={vi.fn()} />); await act(async () => {});
-  expect(qaApi.get).toHaveBeenCalledOnce(); expect(workItemsApi.get).toHaveBeenCalledTimes(2);
+  expect(qaApi.get).toHaveBeenCalledTimes(2); expect(workItemsApi.get).toHaveBeenCalledTimes(2);
 });
 it('confirmation and selected evidence survive permission notifications/shared reload without automatic mutations', async () => {
   workItemsApi.get.mockResolvedValue(genericAllowed());
@@ -181,12 +183,12 @@ it('confirmation and selected evidence survive permission notifications/shared r
   fireEvent.change(screen.getByLabelText('Chọn chứng cứ'), { target: { files: [selected] } });
   const originalForm = screen.getByRole('form', { name: 'Bản nháp Xác nhận câu trả lời' });
   qaApi.get.mockResolvedValue({ ...typedAllowed({ version: 3, capabilities: { canConfirm: false, canComment: false, canUploadEvidence: false } }) });
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA' })); await screen.findByText(/Phiên bản: 3/);
+  refreshEvent.focus(window); await screen.findByText(/Phiên bản: 3/);
   expectNoSharedWrites(); expect(screen.getByRole('button', { name: 'da-luu.pdf' })).toBeVisible();
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại chi tiết' })); await waitFor(() => expect(workItemsApi.get).toHaveBeenCalledTimes(2));
+  refreshEvent.focus(window); await waitFor(() => expect(workItemsApi.get).toHaveBeenCalledTimes(3));
   expect(screen.getByRole('form', { name: 'Bản nháp Xác nhận câu trả lời' })).toBe(originalForm);
   expect(screen.getByLabelText('Nội dung xác nhận')).toHaveValue('Giữ nháp xác nhận'); expect(screen.getByRole('button', { name: 'Gửi xác nhận' })).toBeDisabled();
-  qaApi.get.mockResolvedValue(typedAllowed({ version: 3 })); fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA' }));
+  qaApi.get.mockResolvedValue(typedAllowed({ version: 3 })); refreshEvent.focus(window);
   expect(await screen.findByRole('button', { name: 'Tải chứng cứ lên' })).toBeEnabled();
   expect(qaApi.confirm).not.toHaveBeenCalled(); expect(qaApi.answer).not.toHaveBeenCalled(); expect(workItemsApi.upload).not.toHaveBeenCalled();
   workItemsApi.upload.mockResolvedValue({ id: 5 }); fireEvent.click(screen.getByRole('button', { name: 'Tải chứng cứ lên' }));
@@ -194,8 +196,8 @@ it('confirmation and selected evidence survive permission notifications/shared r
 });
 it.each([{}, { canComment: 'true', canUploadEvidence: 1 }])('typed shared capabilities require exact booleans: %j', async capabilities => {
   await openSharedQa(); qaApi.get.mockResolvedValue(typedAllowed({ capabilities }));
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA' }));
-  await waitFor(() => expect(screen.getByRole('button', { name: 'Tải lại QA' })).toBeEnabled()); expectNoSharedWrites();
+  refreshEvent.focus(window);
+  await act(async () => {}); expectNoSharedWrites();
 });
 it('typed command recovery cannot replace canonical generic denial with allowed typed flags', async () => {
   await openSharedQa(); workItemsApi.get.mockResolvedValue(genericAllowed({ canComment: false, canAttach: false }));
@@ -209,7 +211,7 @@ it('typed command recovery cannot replace canonical generic denial with allowed 
 });
 it('late old-project typed reads cannot reopen current shared controls', async () => {
   const { rerender, props } = await openSharedQa(); const old = deferredRead(); qaApi.get.mockReturnValueOnce(old.promise);
-  fireEvent.click(screen.getByRole('button', { name: 'Tải lại QA' }));
+  refreshEvent.focus(window);
   const next = { ...qa, id: 8, projectId: 2, title: 'QA dự án mới', capabilities: { canComment: false, canUploadEvidence: false } };
   workItemsApi.get.mockResolvedValue({ ...next, canComment: true, canAttach: true }); qaApi.get.mockResolvedValue({ ...detail, item: next });
   rerender(<WorkItemDetail {...props} projectId={2} id={8} />); await screen.findByRole('heading', { name: 'QA dự án mới' });
@@ -228,8 +230,8 @@ it('same-QA failed generic reload preserves the typed draft while shared comment
   workItemsApi.get.mockResolvedValue({ ...qa, canComment: true, canAttach: true });
   render(<WorkItemDetail projectId={1} id={7} catalogs={catalogs} writable onChanged={vi.fn()} />);
   fireEvent.click(await screen.findByRole('button', { name: 'Trả lời QA' })); fireEvent.change(screen.getByLabelText('Nội dung trả lời'), { target: { value: 'Giữ khi mất kết nối' } });
-  workItemsApi.get.mockRejectedValue(new Error('Lỗi đọc chung')); fireEvent.click(screen.getByRole('button', { name: 'Tải lại chi tiết' })); await screen.findByText('Lỗi đọc chung');
-  expect(screen.getByLabelText('Nội dung trả lời')).toHaveValue('Giữ khi mất kết nối'); expect(qaApi.get).toHaveBeenCalledOnce(); expect(screen.queryByLabelText('Nội dung bình luận')).not.toBeInTheDocument();
+  workItemsApi.get.mockRejectedValue(new Error('Lỗi đọc chung')); refreshEvent.focus(window); await screen.findByText('Lỗi đọc chung');
+  expect(screen.getByLabelText('Nội dung trả lời')).toHaveValue('Giữ khi mất kết nối'); expect(qaApi.get).toHaveBeenCalledTimes(2); expect(screen.queryByLabelText('Nội dung bình luận')).not.toBeInTheDocument();
 });
 it('a late generic identity read cannot render the departed QA in the current project/item', async () => {
   let resolveOld; workItemsApi.get.mockReturnValueOnce(new Promise(resolve => { resolveOld = resolve; }));
@@ -242,40 +244,40 @@ it('a late generic identity read cannot render the departed QA in the current pr
 
 // FR11: the historical direct components above remain compatibility coverage.
 // Active QA creation now belongs to a copied Feature case, never to old run/group URLs.
-const copiedCase={featureName:'Feature copied A',fileName:'A.xlsx',caseNo:'CASE-2',caseReference:'CASE-2',revisionId:12,resultVersion:3,title:'Imported condition',steps:'Open drawing',expectedResult:'Icon visible'};
+const copiedCase={featureName:'Đợt kiểm thử copied A',fileName:'A.xlsx',caseNo:'CASE-2',caseReference:'CASE-2',revisionId:12,resultVersion:3,title:'Imported condition',steps:'Open drawing',expectedResult:'Icon visible'};
 function currentApi(){return {options:vi.fn().mockResolvedValue({assignees:[{membershipId:11,displayName:'Contact'}]}),context:vi.fn().mockResolvedValue(copiedCase),create:vi.fn().mockResolvedValue({id:77,type:'QA',key:'REAL-77'}),list:vi.fn().mockResolvedValue({items:[],totalItems:0,totalPages:0})};}
 const sourceProps={projectId:1,featureId:42,documentId:7,row:{rowId:1001,caseId:501}};
 async function fillCurrentQa(){
  await waitFor(()=>expect(screen.getByLabelText('Tiêu đề')).toHaveValue(copiedCase.title));
- fireEvent.change(screen.getByLabelText('Loại Issue'),{target:{value:'QA'}});
+ fireEvent.change(screen.getByLabelText('Loại Ticket'),{target:{value:'QA'}});
  fireEvent.change(screen.getByLabelText('Tiêu đề'),{target:{value:'Question from copied case'}});
  fireEvent.change(screen.getByLabelText('Nội dung câu hỏi'),{target:{value:'Expected rule for icon?'}});
- await screen.findByRole('option',{name:'Contact'});fireEvent.change(screen.getByLabelText('Đầu mối tiếp nhận'),{target:{value:'11'}});
+ await screen.findByRole('option',{name:'Contact'});fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'11'}});
 }
-it('current case QA sends exact Feature/document/row identity and only Bug/QA types, without old execution IDs',async()=>{
+it('current case QA sends exact Đợt kiểm thử/document/row identity and only Bug/QA types, without old execution IDs',async()=>{
  const api=currentApi(),saved=vi.fn();render(<FeatureIssueForm {...sourceProps} api={api} onSaved={saved}/>);await fillCurrentQa();
- expect(Array.from(screen.getByLabelText('Loại Issue').options).map(option=>option.value)).toEqual(['BUG','QA']);
+ expect(Array.from(screen.getByLabelText('Loại Ticket').options).map(option=>option.value)).toEqual(['BUG','QA']);
  expect(api.context).toHaveBeenCalledWith(1,42,7,1001,expect.objectContaining({signal:expect.any(AbortSignal)}));
- fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(saved).toHaveBeenCalledWith({id:77,type:'QA',key:'REAL-77'}));
+ fireEvent.click(screen.getByRole('button',{name:'Lưu Ticket'}));await waitFor(()=>expect(saved).toHaveBeenCalledWith({id:77,type:'QA',key:'REAL-77'}));
  const payload=api.create.mock.calls[0][1];expect(payload).toMatchObject({featureId:42,documentId:7,rowId:1001,type:'QA',monkey:false,title:'[A.xlsx][CASE-2] Question from copied case',description:'Expected rule for icon?',steps:copiedCase.steps,expectedResult:copiedCase.expectedResult});
  for(const key of ['groupId','runItemId','revisionId','attemptId','caseId'])expect(payload).not.toHaveProperty(key);
  expect(qaApi.create).not.toHaveBeenCalled();expect(workItemsApi.create).not.toHaveBeenCalled();
 });
 it('current QA failure keeps its draft and retries the same command identity and copied source',async()=>{
  const api=currentApi(),saved=vi.fn();api.create.mockRejectedValueOnce(new Error('Source rejected by server'));
- render(<FeatureIssueForm {...sourceProps} api={api} onSaved={saved}/>);await fillCurrentQa();fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));
+ render(<FeatureIssueForm {...sourceProps} api={api} onSaved={saved}/>);await fillCurrentQa();fireEvent.click(screen.getByRole('button',{name:'Lưu Ticket'}));
  expect(await screen.findByRole('alert')).toHaveTextContent('Source rejected by server');expect(screen.getByLabelText('Nội dung câu hỏi')).toHaveValue('Expected rule for icon?');expect(saved).not.toHaveBeenCalled();
- fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(saved).toHaveBeenCalledOnce());expect(api.create.mock.calls[1]).toEqual(api.create.mock.calls[0]);
+ fireEvent.click(screen.getByRole('button',{name:'Lưu Ticket'}));await waitFor(()=>expect(saved).toHaveBeenCalledOnce());expect(api.create.mock.calls[1]).toEqual(api.create.mock.calls[0]);
 });
 it('editing a rejected QA draft creates a new request identity while retaining source pins',async()=>{
- const api=currentApi();api.create.mockRejectedValueOnce(new Error('Retryable failure'));render(<FeatureIssueForm {...sourceProps} api={api}/>);await fillCurrentQa();fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await screen.findByRole('alert');
- const first=api.create.mock.calls[0][1];fireEvent.change(screen.getByLabelText('Nội dung câu hỏi'),{target:{value:'Revised question'}});fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(api.create).toHaveBeenCalledTimes(2));
+ const api=currentApi();api.create.mockRejectedValueOnce(new Error('Retryable failure'));render(<FeatureIssueForm {...sourceProps} api={api}/>);await fillCurrentQa();fireEvent.click(screen.getByRole('button',{name:'Lưu Ticket'}));await screen.findByRole('alert');
+ const first=api.create.mock.calls[0][1];fireEvent.change(screen.getByLabelText('Nội dung câu hỏi'),{target:{value:'Revised question'}});fireEvent.click(screen.getByRole('button',{name:'Lưu Ticket'}));await waitFor(()=>expect(api.create).toHaveBeenCalledTimes(2));
  expect(api.create.mock.calls[1][1]).toMatchObject({featureId:42,documentId:7,rowId:1001,description:'Revised question'});expect(api.create.mock.calls[1][1].requestKey).not.toBe(first.requestKey);
 });
 it('QA cannot submit while the current case context is pending or failed',async()=>{
  const api=currentApi(),pending=deferredRead();api.context.mockReturnValue(pending.promise);const view=render(<FeatureIssueForm {...sourceProps} api={api}/>);
- expect(screen.getByRole('button',{name:'Lưu Issue'})).toBeDisabled();fireEvent.submit(view.container.querySelector('form'));expect(api.create).not.toHaveBeenCalled();
- await act(async()=>pending.resolve(Promise.reject(new Error('Case context forbidden'))));expect(screen.getByRole('alert')).toHaveTextContent('Case context forbidden');expect(screen.getByRole('button',{name:'Lưu Issue'})).toBeDisabled();fireEvent.submit(view.container.querySelector('form'));expect(api.create).not.toHaveBeenCalled();
+ expect(screen.getByRole('button',{name:'Lưu Ticket'})).toBeDisabled();fireEvent.submit(view.container.querySelector('form'));expect(api.create).not.toHaveBeenCalled();
+ await act(async()=>pending.resolve(Promise.reject(new Error('Case context forbidden'))));expect(screen.getByRole('alert')).toHaveTextContent('Case context forbidden');expect(screen.getByRole('button',{name:'Lưu Ticket'})).toBeDisabled();fireEvent.submit(view.container.querySelector('form'));expect(api.create).not.toHaveBeenCalled();
 });
 it('an old copied-case response cannot prefill the newly selected project/case',async()=>{
  const api=currentApi(),pending=deferredRead();api.context.mockReturnValueOnce(pending.promise);const view=render(<FeatureIssueForm {...sourceProps} api={api}/>);const oldSignal=api.context.mock.calls[0][4].signal;
@@ -287,26 +289,26 @@ it('pending QA submits are locked and a departed project cannot accept late save
  fireEvent.submit(form);fireEvent.submit(form);expect(api.create).toHaveBeenCalledOnce();expect(screen.getByRole('button',{name:'Đang lưu…'})).toBeDisabled();expect(screen.getByLabelText('Nội dung câu hỏi')).toBeDisabled();
  view.rerender(<FeatureIssueForm {...sourceProps} projectId={2} api={api} onSaved={saved}/>);await act(async()=>pending.resolve({id:77,type:'QA'}));expect(saved).not.toHaveBeenCalled();
 });
-it('the current case Issue action creates QA then closes to the same case and refreshes only that context',async()=>{
+it('the current case Ticket action creates QA then closes to the same case and refreshes only that context',async()=>{
  const api=currentApi(),refresh=vi.fn();api.list.mockResolvedValueOnce({items:[],totalItems:0,totalPages:0}).mockResolvedValue({items:[{id:77,key:'REAL-77',title:'Question',type:'QA',status:'closed'}],totalItems:1,totalPages:1});
- render(<CaseIssueAction {...sourceProps} api={api} refresh={refresh}/>);const badge=await screen.findByRole('button',{name:'Issue (0)'});fireEvent.click(badge);await fillCurrentQa();fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));
- await waitFor(()=>expect(screen.queryByRole('dialog',{name:'Tạo Issue từ case'})).toBeNull());expect(refresh).toHaveBeenCalledOnce();expect(badge).toHaveFocus();await screen.findByRole('button',{name:'Issue (1)'});
+ render(<CaseIssueAction {...sourceProps} api={api} refresh={refresh}/>);const badge=await screen.findByRole('button',{name:'Ticket (0)'});fireEvent.click(badge);fireEvent.click(screen.getByRole('button',{name:'Tạo Ticket từ case'}));await fillCurrentQa();fireEvent.click(screen.getByRole('button',{name:'Lưu Ticket'}));
+ await waitFor(()=>expect(screen.queryByRole('dialog',{name:'Tạo Ticket từ case'})).toBeNull());expect(refresh).toHaveBeenCalledOnce();expect(badge).toHaveFocus();await screen.findByRole('button',{name:'Ticket (1)'});
  expect(api.list).toHaveBeenLastCalledWith(1,{featureId:42,documentId:7,rowId:1001,page:0,size:20},expect.anything());expect(qaApi.create).not.toHaveBeenCalled();
 });
-it('DEV case Issue preview remains readable with closed QA and no create form/action',async()=>{
+it('DEV case Ticket preview remains readable with closed QA and no create form/action',async()=>{
  const api=currentApi();api.list.mockResolvedValue({items:[{id:77,key:'REAL-77',title:'Closed QA',type:'QA',status:'closed'}],totalItems:1,totalPages:1});render(<CaseIssueAction {...sourceProps} api={api} canCreate={false}/>);
- fireEvent.click(await screen.findByRole('button',{name:'Issue (1)'}));expect(screen.getByRole('button',{name:'REAL-77 · Closed QA'})).toBeVisible();expect(screen.queryByRole('button',{name:'Tạo Issue từ case'})).toBeNull();expect(api.create).not.toHaveBeenCalled();
+ fireEvent.click(await screen.findByRole('button',{name:'Ticket (1)'}));expect(screen.getByRole('button',{name:'REAL-77 · Closed QA'})).toBeVisible();expect(screen.queryByRole('button',{name:'Tạo Ticket từ case'})).toBeNull();expect(api.create).not.toHaveBeenCalled();
  expect(api.list.mock.calls[0][1]).not.toHaveProperty('status');
 });
-it('a failed Issue badge read retries in place without creating QA',async()=>{
+it('a failed Ticket badge read retries in place without creating QA',async()=>{
  const api=currentApi();api.list.mockRejectedValueOnce(new Error('Badge temporarily unavailable')).mockResolvedValue({items:[],totalItems:0,totalPages:0});render(<CaseIssueAction {...sourceProps} api={api} canCreate={false}/>);
- const badge=await screen.findByRole('button',{name:'Issue (?)'});fireEvent.click(badge);await screen.findByRole('button',{name:'Issue (0)'});expect(api.list).toHaveBeenCalledTimes(2);expect(api.create).not.toHaveBeenCalled();expect(api.context).not.toHaveBeenCalled();
+ const badge=await screen.findByRole('button',{name:'Ticket (?)'});fireEvent.click(badge);await screen.findByRole('button',{name:'Ticket (0)'});expect(api.list).toHaveBeenCalledTimes(2);expect(api.create).not.toHaveBeenCalled();expect(api.context).not.toHaveBeenCalled();
 });
-it('Monkey creation stays Bug with its chosen Feature and no case/run source, while its title is free',async()=>{
- const api=currentApi(),saved=vi.fn();render(<FeatureIssueForm projectId={1} featureId={42} featureName='Feature copied A' monkey api={api} onSaved={saved}/>);
- const type=screen.getByLabelText('Loại Issue');expect(type).toHaveValue('BUG');expect(type).toBeDisabled();expect(Array.from(type.options).map(option=>option.value)).toEqual(['BUG','QA']);
+it('Monkey creation stays Bug with its chosen Đợt kiểm thử and no case/run source, while its title is free',async()=>{
+ const api=currentApi(),saved=vi.fn();render(<FeatureIssueForm projectId={1} featureId={42} featureName='Đợt kiểm thử copied A' monkey api={api} onSaved={saved}/>);
+ const type=screen.getByLabelText('Loại Ticket');expect(type).toHaveValue('BUG');expect(type).toBeDisabled();expect(Array.from(type.options).map(option=>option.value)).toEqual(['BUG','QA']);
  for(const [label,value]of [['Tiêu đề','Free Monkey title'],['Các bước thực hiện','Explore'],['Kết quả mong đợi','Expected'],['Kết quả thực tế','Observed'],['Tần suất tái hiện','1/1'],['Môi trường phát hiện','ST'],['Thiết bị phát hiện','Desktop']])fireEvent.change(screen.getByLabelText(label),{target:{value}});
- await screen.findByRole('option',{name:'Contact'});fireEvent.change(screen.getByLabelText('Đầu mối tiếp nhận'),{target:{value:'11'}});await waitFor(()=>expect(screen.getByRole('button',{name:'Lưu Issue'})).toBeEnabled());fireEvent.click(screen.getByRole('button',{name:'Lưu Issue'}));await waitFor(()=>expect(saved).toHaveBeenCalledOnce());expect(api.context).not.toHaveBeenCalled();expect(api.create.mock.calls[0][1]).not.toHaveProperty('documentId');expect(api.create.mock.calls[0][1]).not.toHaveProperty('rowId');expect(api.create).toHaveBeenCalledWith(1,expect.objectContaining({type:'BUG',title:'[Feature copied A][Monkey] Free Monkey title',featureId:42,monkey:true}),expect.anything());expect(workItemsApi.create).not.toHaveBeenCalled();
+ await screen.findByRole('option',{name:'Contact'});fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'11'}});await waitFor(()=>expect(screen.getByRole('button',{name:'Lưu Ticket'})).toBeEnabled());fireEvent.click(screen.getByRole('button',{name:'Lưu Ticket'}));await waitFor(()=>expect(saved).toHaveBeenCalledOnce());expect(api.context).not.toHaveBeenCalled();expect(api.create.mock.calls[0][1]).not.toHaveProperty('documentId');expect(api.create.mock.calls[0][1]).not.toHaveProperty('rowId');expect(api.create).toHaveBeenCalledWith(1,expect.objectContaining({type:'BUG',title:'[Đợt kiểm thử copied A][Monkey] Free Monkey title',featureId:42,monkey:true}),expect.anything());expect(workItemsApi.create).not.toHaveBeenCalled();
 });
 it.each([
  'create=QA&documentId=10&groupId=20&runItemId=30&revisionId=40',
@@ -316,6 +318,6 @@ it.each([
  'create=BUG&documentId=10','create=TASK',
 ])('retired contextual marker gives explicit guidance without inferring copied-case identity: %s',query=>{
  const navigate=vi.fn();render(<WorkBoardPage activeRoute={'/board/list?'+query} navigate={navigate}/>);
- expect(screen.getByRole('heading',{name:'Tạo Issue tại ngữ cảnh kiểm thử'})).toBeVisible();expect(screen.queryByRole('dialog')).toBeNull();expect(screen.queryByLabelText('Loại công việc')).toBeNull();fireEvent.click(screen.getByRole('button',{name:'Mở Quản lý kiểm thử'}));expect(navigate).toHaveBeenCalledWith('/board/testing?projectId=1');
+ expect(screen.getByRole('heading',{name:'Tạo Ticket tại ngữ cảnh kiểm thử'})).toBeVisible();expect(screen.queryByRole('dialog')).toBeNull();expect(screen.queryByLabelText('Loại công việc')).toBeNull();fireEvent.click(screen.getByRole('button',{name:'Mở Quản lý kiểm thử'}));expect(navigate).toHaveBeenCalledWith('/board/testing?projectId=1');
  expect(featureIssuesApi.list).not.toHaveBeenCalled();expect(featureIssuesApi.context).not.toHaveBeenCalled();expect(featureIssuesApi.create).not.toHaveBeenCalled();expect(qaApi.create).not.toHaveBeenCalled();expect(workItemsApi.create).not.toHaveBeenCalled();
 });

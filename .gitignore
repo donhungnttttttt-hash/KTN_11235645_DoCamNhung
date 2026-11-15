@@ -78,3 +78,21 @@ Backend/.idea/
 
 # Java diagnostic evidence, copied builds and language-server workspaces stay local.
 /var/java-problems-20261114/
+
+# Local backend diagnosis: process classpaths, probes and authenticated HTTP receipts.
+/var/backend-diagnosis-20261114/
+
+# Generated coverage for the Feature spreadsheet and Issue preview review.
+/var/testing-spreadsheet-20261114/
+/var/file-owners-20261114/
+
+# Isolated Chrome checks, screenshots, coverage and temporary editing helpers.
+/var/workspace-ui-browser/
+/var/workspace-ui-coverage/
+/var/update-workspace-tests.cjs
+/var/polish-workspace.cjs
+
+# Local dashboard runtime copies, credentials, receipts and demo source workbooks.
+/var/guest-dashboard-*
+/var/ProvisionGuestDashboard.java
+/var/nov15-demo/

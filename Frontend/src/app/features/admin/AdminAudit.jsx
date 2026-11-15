@@ -1,3 +1,4 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import {TableScroll} from '../../components/TableScroll';
 import React,{useCallback,useState} from 'react';
 import {adminApi} from '../../services/api/admin';
@@ -6,11 +7,12 @@ import {AdminUserProjectFilter} from './AdminUserProjectFilter';
 
 const labels={IDENTITY:'Tài khoản',PROJECT:'Dự án',MEMBERSHIP:'Thành viên',DEVICE_ASSET:'Máy vật lý',DEVICE_ALLOCATION:'Bàn giao máy',STATUS_REPORT:'Báo cáo PM',CREATE:'Tạo mới',UPDATE:'Cập nhật',ARCHIVE:'Lưu trữ',REOPEN:'Mở lại',ASSIGN:'Bàn giao',RETURN:'Thu hồi',SET_ROLE:'Gán vai trò',REMOVE:'Gỡ thành viên',USER_CREATED:'Tạo tài khoản',USER_UPDATED:'Cập nhật tài khoản',USER_ENABLED:'Mở khóa tài khoản',USER_DISABLED:'Khóa tài khoản',CREATE_USERS_GRANTED:'Cấp quyền tạo User thường',CREATE_USERS_REVOKED:'Thu hồi quyền tạo User thường',ADMIN_BOOTSTRAPPED:'Khởi tạo quản trị viên',LOGIN_SUCCEEDED:'Đăng nhập',LOGIN_FAILED:'Đăng nhập thất bại',LOGOUT:'Đăng xuất'};
 export function AdminAudit({api=adminApi,initialProjectId=''}) {
+ useRefreshOnReturn(()=>{state.retry();});
  const [filters,setFilters]=useState({projectId:initialProjectId,keyword:'',from:'',through:'',page:0,size:20});
  const change=(key,value)=>setFilters(old=>({...old,[key]:value,page:0}));
  const load=useCallback(signal=>api.audit(filters,{signal}),[api,filters]);
  const state=useAdminRead(`audit:${JSON.stringify(filters)}`,load);
- return <><div className="admin-page-heading"><h1>Nhật ký quản trị</h1><button onClick={state.retry}>Tải lại</button></div>
+ return <><div className="admin-page-heading"><h1>Nhật ký quản trị</h1></div>
   <div className="admin-card admin-filters"><AdminUserProjectFilter api={api} label="Dự án trong nhật ký" value={filters.projectId} onChange={v=>change('projectId',v)}/>
    <label>Tìm người / dự án / đối tượng / thao tác<input type="search" maxLength={100} value={filters.keyword} onChange={e=>change('keyword',e.target.value)}/></label>
    <label>Từ ngày<input type="date" value={filters.from} onChange={e=>change('from',e.target.value)}/></label><label>Đến hết ngày<input type="date" value={filters.through} onChange={e=>change('through',e.target.value)}/></label>

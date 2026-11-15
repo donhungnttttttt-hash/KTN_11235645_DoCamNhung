@@ -35,7 +35,7 @@ public class TicketResponsibilities {
     private Map<String,Object> expose(Map<String,Object> row){
         var duties=new ArrayList<String>();if(flag(row.remove("specReviewer")))duties.add("SPEC_REVIEWER");if(flag(row.remove("bugCoordinator")))duties.add("BUG_COORDINATOR");row.put("duties",duties);return row;
     }
-    @Transactional(readOnly=true) public Map<String,Object> list(long p,String user){var actor=authorize(p,user,false);return Map.of("canManage",actor.manager()&&!actor.archived(),"members",db.rows(MEMBERS+" ORDER BY u.display_name,m.id",p).stream().map(this::expose).toList());}
+    @Transactional(readOnly=true) public Map<String,Object> list(long p,String user){var actor=authorize(p,user,false);return Map.of("currentUserId",user,"milestones",db.rows("SELECT id,name FROM milestones WHERE project_id=? AND archived_at IS NULL ORDER BY name,id",p),"canManage",actor.manager()&&!actor.archived(),"members",db.rows(MEMBERS+" ORDER BY u.display_name,m.id",p).stream().map(this::expose).toList());}
     public Map<String,Object> update(long p,String user,long member,FeatureIssueDtos.Responsibilities input){
         var actor=authorize(p,user,true);if(!actor.manager())fail(403,"FORBIDDEN","Chỉ quản lý dự án được phân trách nhiệm.");
         if(input.duties()==null||!Set.of("SPEC_REVIEWER","BUG_COORDINATOR").containsAll(input.duties())||new HashSet<>(input.duties()).size()!=input.duties().size())fail(422,"INVALID_RESPONSIBILITY","Trách nhiệm không hợp lệ.");

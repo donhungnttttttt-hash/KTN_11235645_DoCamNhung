@@ -52,7 +52,7 @@ class FeatureIssueContextNativeTest {
         String actor=users.saveAndFlush(new IdentityUser("context.case."+tag,"Context admin","not-login","ADMIN")).getId();
         registryJdbc.update("DELETE FROM system_admin_registry");registry.register(1,actor);
         long p=projects.create(actor,new ProjectDtos.CreateProject("CXC"+tag,"Case context project","","UTC")).id();
-        long f=((Number)features.create(p,actor,new FeatureDtos.Create("Case Feature","idec-test100","Feature description",UUID.randomUUID())).get("id")).longValue();
+        long f=((Number)features.create(p,actor,new FeatureDtos.Create("Case Đợt kiểm thử","idec-test100","Đợt kiểm thử description",UUID.randomUUID())).get("id")).longValue();
         byte[] bytes;
         try(var book=new XSSFWorkbook();var output=new ByteArrayOutputStream()) {
             var sheet=book.createSheet("TestCases");var header=sheet.createRow(0);
@@ -65,11 +65,11 @@ class FeatureIssueContextNativeTest {
         long d=((Number)features.preview(p,actor,f,new MockMultipartFile("file","cases.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",bytes)).get("id")).longValue();
         features.commit(p,actor,f,d);
         long row=documents.get(p,actor,d).rows().getFirst().rowId();
-        assertThat(issues.context(p,actor,f,d,row)).containsEntry("featureName","Case Feature")
-                .containsEntry("featureEnvironment","idec-test100").containsEntry("featureDescription","Feature description")
+        assertThat(issues.context(p,actor,f,d,row)).containsEntry("featureName","Case Đợt kiểm thử")
+                .containsEntry("featureEnvironment","idec-test100").containsEntry("featureDescription","Đợt kiểm thử description")
                 .containsEntry("title","Case title").containsEntry("steps","Case steps").containsEntry("expectedResult","Case expected");
-        features.update(p,actor,f,new FeatureDtos.Update("Renamed Feature","new-server","New description",0L));
-        assertThat(issues.context(p,actor,f,d,row)).containsEntry("featureName","Renamed Feature")
+        features.update(p,actor,f,new FeatureDtos.Update("Renamed Đợt kiểm thử","new-server","New description",0L));
+        assertThat(issues.context(p,actor,f,d,row)).containsEntry("featureName","Renamed Đợt kiểm thử")
                 .containsEntry("featureEnvironment","new-server").containsEntry("featureDescription","New description");
     }
 
@@ -80,20 +80,20 @@ class FeatureIssueContextNativeTest {
         String actor=admin.getId();
         registryJdbc.update("DELETE FROM system_admin_registry");registry.register(1,actor);
         long p=projects.create(actor,new ProjectDtos.CreateProject("CTX"+tag,"Context project","","UTC")).id();
-        var feature=features.create(p,actor,new FeatureDtos.Create("Original Feature","idec-test100","Original description",UUID.randomUUID()));
+        var feature=features.create(p,actor,new FeatureDtos.Create("Original Đợt kiểm thử","idec-test100","Original description",UUID.randomUUID()));
         long f=((Number)feature.get("id")).longValue();
         long contact=java.util.Objects.requireNonNull(registryJdbc.queryForObject("SELECT id FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,p,actor));
-        var issue=issues.create(p,actor,new FeatureIssueDtos.Create(type,f,null,null,type.equals("BUG"),"Issue","Issue description","Steps","Expected","Actual",UUID.randomUUID(),"","Always","Test","Desktop",contact,null,null,null,null,null));
+        var issue=issues.create(p,actor,new FeatureIssueDtos.Create(type,f,null,null,type.equals("BUG"),"Ticket","Ticket description","Steps","Expected","Actual",UUID.randomUUID(),"","Always","Test","Desktop",contact,null,null,null,null,null));
         long id=((Number)issue.get("id")).longValue();
         assertThat(issue).containsEntry("featureEnvironment","idec-test100").containsEntry("featureDescription","Original description");
         var history=issues.history(p,actor,id);
-        features.update(p,actor,f,new FeatureDtos.Update("Updated Feature","staging-200","New description\nSecond line",0L));
+        features.update(p,actor,f,new FeatureDtos.Update("Updated Đợt kiểm thử","staging-200","New description\nSecond line",0L));
         var current=issues.get(p,actor,id);
-        assertThat(current).containsEntry("featureName","Updated Feature").containsEntry("featureEnvironment","staging-200")
-                .containsEntry("featureDescription","New description\nSecond line").containsEntry("description","Issue description")
+        assertThat(current).containsEntry("featureName","Updated Đợt kiểm thử").containsEntry("featureEnvironment","staging-200")
+                .containsEntry("featureDescription","New description\nSecond line").containsEntry("description","Ticket description")
                 .containsEntry("version",issue.get("version")).containsEntry("updatedAt",issue.get("updatedAt"));
         assertThat(issues.history(p,actor,id)).isEqualTo(history);
-        features.update(p,actor,f,new FeatureDtos.Update("Updated Feature","","",1L));
+        features.update(p,actor,f,new FeatureDtos.Update("Updated Đợt kiểm thử","","",1L));
         assertThat(issues.get(p,actor,id)).containsEntry("featureEnvironment","").containsEntry("featureDescription","");
         long other=projects.create(actor,new ProjectDtos.CreateProject("CXB"+tag,"Other project","","UTC")).id();
         assertThatThrownBy(()->issues.get(other,actor,id)).isInstanceOf(vn.syp.tms.shared.web.BusinessException.class);

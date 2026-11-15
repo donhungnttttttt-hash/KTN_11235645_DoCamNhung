@@ -39,7 +39,7 @@ export function AppRouter({ activeRoute, navigate }) {
     else content = <TestingFeaturesPage key={project.id} projectId={project.id} onOpenFeature={id=>navigate(scoped(`/board/testing/features/${id}`))}/>;
     return info.testingDocumentId ? content : boardArea(content);
   }
-  if(path==='/tests'||path.startsWith('/tests/')) return retired('Luồng kiểm thử đã thay đổi','Quản lý kiểm thử hiện được tổ chức theo Feature và tài liệu. Chọn Feature trong dự án để tiếp tục; mã đợt kiểm thử cũ không được chuyển thành mã Feature.',testingPath,'Mở Quản lý kiểm thử');
+  if(path==='/tests'||path.startsWith('/tests/')) return retired('Luồng kiểm thử đã thay đổi','Quản lý kiểm thử hiện được tổ chức theo Đợt kiểm thử và tài liệu. Chọn Đợt kiểm thử trong dự án để tiếp tục; mã đợt kiểm thử cũ không được chuyển thành mã Đợt kiểm thử.',testingPath,'Mở Quản lý kiểm thử');
   if(path==='/dashboard') return <DashboardPage activeRoute={activeRoute} navigate={navigate}/>;
   if(path.startsWith('/dashboard/')) return retired('Tổng quan dự án đã thay đổi','Thông tin dự án nằm tại Tổng quan. Tiến độ kiểm thử dành cho PM và ADMIN nằm tại Tổng hợp & Phân tích.','/dashboard','Mở Tổng quan dự án');
   if(path==='/board'||path==='/board/list'||/^\/board\/issue\/[1-9]\d*$/.test(path)) return boardArea(<WorkBoardPage activeRoute={activeRoute} navigate={navigate}/>);

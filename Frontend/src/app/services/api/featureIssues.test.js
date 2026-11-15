@@ -1,7 +1,7 @@
 import {beforeEach,expect,it,vi} from 'vitest';
 import {apiRequest} from './client';
 import {featureIssuesApi} from './featureIssues';
-vi.mock('./client',()=>({apiRequest:vi.fn()}));
+vi.mock('./client',()=>{const request=vi.fn();return {apiRequest:request,createApiClient:()=>request};});
 beforeEach(()=>{vi.resetAllMocks();apiRequest.mockImplementation(async path=>path==='/auth/csrf'?{headerName:'X-CSRF',token:'test-csrf'}:{version:3});});
 it('serializes canonical board columns and scoped contacts, responsibilities and notifications to actual routes',async()=>{
  await featureIssuesApi.board(42,{type:'QA',keyword:'A & B',column:''});
@@ -25,4 +25,10 @@ it('requests initial combinations for a chosen contact without leaking query fie
 });
 it('uses deleted-only scope and CSRF versioned explicit Monkey restore',async()=>{
  await featureIssuesApi.list(42,{deleted:true,page:2});expect(apiRequest.mock.lastCall[0]).toBe('/projects/42/issues?deleted=true&page=2');const input={expectedVersion:7,requestKey:'a44f1485-82ed-40d4-b719-42f3f28ea72b'};await featureIssuesApi.restore(42,8,input);expect(apiRequest.mock.lastCall).toEqual(['/projects/42/issues/8/restore',{method:'POST',headers:{'X-CSRF':'test-csrf'},body:JSON.stringify(input)}]);
+});
+it('uploads binary files and JSON action with CSRF, leaving multipart boundary to the browser',async()=>{
+ const file=new File(['log'],'trace.log',{type:'text/plain'}),command={body:'Evidence',expectedVersion:2,requestKey:'key'};
+ await featureIssuesApi.actionWithFiles(42,7,command,[file]);
+ const [path,options]=apiRequest.mock.lastCall;expect(path).toBe('/projects/42/issues/7/actions-with-files');expect(options.headers).toEqual({'X-CSRF':'test-csrf'});expect(options.body).toBeInstanceOf(FormData);expect(options.body.get('action').type).toBe('application/json');expect(options.body.getAll('files')[0].name).toBe('trace.log');
+ await featureIssuesApi.attachment(42,7,'file-id');expect(apiRequest.mock.lastCall).toEqual(['/projects/42/issues/7/attachments/file-id',{responseType:'blob'}]);
 });

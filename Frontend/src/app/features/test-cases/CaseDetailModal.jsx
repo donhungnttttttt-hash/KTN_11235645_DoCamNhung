@@ -323,7 +323,6 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
                   ['stepsJp','Các bước gốc'], ['expectedJp','Kết quả mong đợi gốc'], ['sourceReference','Tham chiếu nguồn'],
                 ].map(([field,label]) => <label key={field} className="block text-xs text-slate-600">{label}
                   <textarea rows={field === 'titleJp' || field === 'sourceReference' ? 1 : 3}
-                    maxLength={field === 'titleJp' || field === 'sourceReference' ? 255 : 8000}
                     value={newRev[field]} onChange={e=>setNewRev({...newRev,[field]:e.target.value})}
                     className="w-full px-3 py-2 mt-1 border border-slate-300 rounded" />
                 </label>)}

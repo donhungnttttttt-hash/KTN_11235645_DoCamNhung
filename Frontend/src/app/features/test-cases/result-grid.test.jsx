@@ -72,7 +72,7 @@ it('shows save failures, restores saved state and requires reload before export 
   expect(await screen.findByRole('alert')).toHaveTextContent('Xung đột phiên bản');
   expect(button).toHaveTextContent('Unexecuted');expect(button).toBeDisabled();
   expect(screen.getByRole('button',{name:'Xuất Excel'})).toBeDisabled();
-  await user.click(screen.getByRole('button',{name:'Tải lại kết quả đã lưu'}));
+  await user.click(screen.getByRole('button',{name:"Thử lại kết quả đã lưu"}));
   await waitFor(()=>expect(button).toBeEnabled());expect(screen.queryByRole('alert')).toBeNull();
 });
 it('keeps history as a separate explicit action',async()=>{

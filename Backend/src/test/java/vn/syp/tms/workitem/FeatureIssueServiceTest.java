@@ -13,7 +13,7 @@ class FeatureIssueServiceTest {
  final WorkItemStore db=mock(WorkItemStore.class);
  final IdentityService identity=mock(IdentityService.class);
  final FeatureIssueService service=new FeatureIssueService(db,identity,mock(ProjectAudit.class),mock(TestDocumentService.class),new com.fasterxml.jackson.databind.ObjectMapper());
- FeatureIssueDtos.Create input(String type,Long document,Long row,boolean monkey){return new FeatureIssueDtos.Create(type,3L,document,row,monkey,"Issue","Question","Steps","Expected","Actual",UUID.randomUUID());}
+ FeatureIssueDtos.Create input(String type,Long document,Long row,boolean monkey){return new FeatureIssueDtos.Create(type,3L,document,row,monkey,"Ticket","Question","Steps","Expected","Actual",UUID.randomUUID());}
  @Test void rejectsRemovedTypesAndMonkeyQaBeforeWriting(){
   for(String type:List.of("TASK","REQUEST","IMPROVEMENT"))assertEquals("INVALID_ISSUE",assertThrows(BusinessException.class,()->service.create(1,"person",input(type,null,null,false))).code());
   assertEquals("INVALID_ISSUE",assertThrows(BusinessException.class,()->service.create(1,"person",input("QA",null,null,true))).code());

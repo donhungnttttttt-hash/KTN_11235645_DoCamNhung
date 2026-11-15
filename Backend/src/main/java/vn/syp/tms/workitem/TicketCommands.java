@@ -12,7 +12,7 @@ final class TicketCommands {
     Map<String,Object> execute(long p,String user,long id,FeatureIssueDtos.Action input){
         FeatureIssueService.bounded(input.body(),20000,false);if(input.requestKey()==null)fail(422,"INVALID_ISSUE","Thiếu mã yêu cầu.");
         var actor=issues.authorize(p,user,true);var old=issues.item(p,id,true);issues.activeContext(p,old);
-        String checksum=db.checksum(input);
+        String checksum=input.attachmentDigest==null?db.checksum(input):db.checksum(List.of(input,input.attachmentDigest));
         var prior=db.rows("SELECT actor_user_id AS actor,request_checksum AS checksum FROM ticket_commands WHERE project_id=? AND work_item_id=? AND request_key=?",p,id,input.requestKey().toString());
         if(!prior.isEmpty()){
             if(!user.equals(prior.getFirst().get("actor"))||!checksum.equals(prior.getFirst().get("checksum")))fail(409,"IDEMPOTENCY_CONFLICT","Mã yêu cầu đã được dùng cho nội dung hoặc người khác.");
@@ -55,16 +55,20 @@ final class TicketCommands {
                 state=next;reason=nextReason;changed=true;
             }
         }
-        if(!changed&&text(input.body()).isEmpty())fail(422,"NO_CHANGE","Nhập bình luận hoặc chọn một thay đổi thực sự.");
+        if(input.planning!=null){
+            if(!actor.manager()&&!user.equals(old.get("createdByUserId")))fail(403,"FORBIDDEN","Chỉ quản lý hoặc người tạo được sửa kế hoạch Ticket.");
+            changed=TicketPlanning.apply(db,p,id,old,input.planning)||changed;
+        }
+        if(!changed&&text(input.body()).isEmpty()&&input.attachmentCount==0)fail(422,"NO_CHANGE","Nhập bình luận hoặc chọn một thay đổi thực sự.");
         if(convert){
             db.update("UPDATE qa_details SET item_type=NULL WHERE project_id=? AND work_item_id=?",p,id);
         }
         String status=state==null?(String)old.get("status"):TicketWorkflow.mirror(TicketWorkflow.combination(type,state,reason));
         int updated=db.update("UPDATE work_items SET item_type=?,status_code=?,assignee_membership_id=?,lock_version=lock_version+1,updated_by=?,updated_at=UTC_TIMESTAMP(6) WHERE project_id=? AND id=? AND lock_version=?",type,status,assigned,actor.membership(),p,id,input.expectedVersion());
         if(updated!=1)fail(409,"VERSION_CONFLICT","Ticket đã thay đổi. Tải lại để đối chiếu; giữ bản nháp.");
-        if(convert)db.update("INSERT INTO bug_details(project_id,work_item_id,policy_version,steps,expected_result,actual_result,test_case_id,revision_id,standalone_reason,context_snapshot,converted_from_qa) SELECT project_id,work_item_id,'INTERNAL_V1',COALESCE(JSON_UNQUOTE(JSON_EXTRACT(context_snapshot,'$.steps')),''),COALESCE(JSON_UNQUOTE(JSON_EXTRACT(context_snapshot,'$.expectedResult')),''),COALESCE(JSON_UNQUOTE(JSON_EXTRACT(context_snapshot,'$.actualResult')),''),test_case_id,revision_id,'Issue phát hiện trong Feature',context_snapshot,TRUE FROM qa_details WHERE project_id=? AND work_item_id=?",p,id);
+        if(convert)db.update("INSERT INTO bug_details(project_id,work_item_id,policy_version,steps,expected_result,actual_result,test_case_id,revision_id,standalone_reason,context_snapshot,converted_from_qa) SELECT project_id,work_item_id,'INTERNAL_V1',COALESCE(JSON_UNQUOTE(JSON_EXTRACT(context_snapshot,'$.steps')),''),COALESCE(JSON_UNQUOTE(JSON_EXTRACT(context_snapshot,'$.expectedResult')),''),COALESCE(JSON_UNQUOTE(JSON_EXTRACT(context_snapshot,'$.actualResult')),''),test_case_id,revision_id,'Ticket phát hiện trong Đợt kiểm thử',context_snapshot,TRUE FROM qa_details WHERE project_id=? AND work_item_id=?",p,id);
         db.update("UPDATE work_item_feature_context SET ticket_state=?,closure_reason=?,coordinator_membership_id=?,verifier_user_id=? WHERE project_id=? AND work_item_id=?",state,reason,coordinator,verifier,p,id);
-        var result=issues.detail(p,actor,id);var after=issues.snapshot(result);if(!text(input.body()).isEmpty())after.put("body",text(input.body()));
+        var result=issues.detail(p,actor,id);var after=issues.snapshot(result);if(!text(input.body()).isEmpty()||input.attachmentCount>0)after.put("body",text(input.body()));
         String event=convert?"CONVERT_TO_BUG":changed?"TICKET_ACTION":"COMMENT";
         long history=issues.record(p,id,user,event,issues.snapshot(old),after);
         db.update("INSERT INTO ticket_commands(project_id,work_item_id,request_key,actor_user_id,request_checksum,history_id,created_at) VALUES(?,?,?,?,?,?,UTC_TIMESTAMP(6))",p,id,input.requestKey().toString(),user,checksum,history);

@@ -15,7 +15,7 @@ public class FeatureIssueLegacyWrites implements WebMvcConfigurer,HandlerInterce
     @Override public void addInterceptors(@NonNull InterceptorRegistry registry){registry.addInterceptor(this).addPathPatterns("/api/v1/projects/*/work-items/**","/api/v1/projects/*/qa/**");}
     @Override public boolean preHandle(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull Object handler){
         if(!java.util.Set.of("GET","HEAD","OPTIONS").contains(request.getMethod()))
-            throw new BusinessException(410,"USE_FEATURE_ISSUES","Luồng cũ đã ngừng ghi. Mở Issue trong Feature để tiếp tục.");
+            throw new BusinessException(410,"USE_FEATURE_ISSUES","Luồng cũ đã ngừng ghi. Mở Ticket trong Đợt kiểm thử để tiếp tục.");
         return true;
     }
 }

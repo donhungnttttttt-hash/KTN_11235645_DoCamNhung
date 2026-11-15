@@ -19,8 +19,8 @@ export const memberProjectPrompts=[
  {id:'bugs',label:'Bug cần xử lý',text:'Những Bug/QA nào đang được giao cho tôi cần ưu tiên xử lý? Dựa vào trạng thái và độ ưu tiên đã ghi, không suy đoán hạn chưa có.'},
 ];
 export const memberSingleProjectPrompts=[
- {id:'projects',label:'Phần việc trong dự án',text:'Trong dự án đang chọn, tôi được giao những file, case và issue nào? Nêu phần việc và thông tin còn thiếu trong phạm vi tôi được xem.'},
- {id:'progress',label:'Tiến độ file của tôi',text:'Trong dự án và Feature đang chọn, tiến độ các file và phạm vi case tôi được giao thế nào? Nêu Status còn lại và dữ liệu chưa có.'},
- {id:'my-work',label:'Giải thích case',text:'Giải thích các bước và kết quả mong muốn của case trong phần việc tôi được giao ở dự án và Feature đang chọn. Nếu thiếu mã case, hãy hỏi tôi mã cần xem.'},
- {id:'bugs',label:'Issue được giao',text:'Trong dự án và Feature đang chọn, Bug/QA nào được giao cho tôi và cần làm gì tiếp theo theo dữ liệu hiện có? Nêu thông tin còn thiếu, không suy đoán hạn.'},
+ {id:'projects',label:'Phần việc trong dự án',text:'Trong dự án đang chọn, tôi được giao những file, case và ticket nào? Nêu phần việc và thông tin còn thiếu trong phạm vi tôi được xem.'},
+ {id:'progress',label:'Tiến độ file của tôi',text:'Trong dự án và Đợt kiểm thử đang chọn, tiến độ các file và phạm vi case tôi được giao thế nào? Nêu Status còn lại và dữ liệu chưa có.'},
+ {id:'my-work',label:'Giải thích case',text:'Giải thích các bước và kết quả mong muốn của case trong phần việc tôi được giao ở dự án và Đợt kiểm thử đang chọn. Nếu thiếu mã case, hãy hỏi tôi mã cần xem.'},
+ {id:'bugs',label:'Ticket được giao',text:'Trong dự án và Đợt kiểm thử đang chọn, Bug/QA nào được giao cho tôi và cần làm gì tiếp theo theo dữ liệu hiện có? Nêu thông tin còn thiếu, không suy đoán hạn.'},
 ];

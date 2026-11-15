@@ -15,9 +15,9 @@ it('creates project with selected physical machine and clears recipient after me
  render(<AdminProjectForm api={api} onSaved={()=>{}}/>);
  fireEvent.change(screen.getByLabelText('Mã dự án'),{target:{value:'AA'}});fireEvent.change(screen.getByLabelText('Tên dự án'),{target:{value:'Alpha'}});
  fireEvent.click(await screen.findByLabelText('Chọn Manager'));fireEvent.click(screen.getByLabelText('Chọn Developer'));fireEvent.click(await screen.findByLabelText('IP-08 · iPad'));
- fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'pm'}});
- fireEvent.click(screen.getByLabelText('Chọn Manager'));expect(screen.getByLabelText('Người nhận chung')).toHaveValue('');fireEvent.click(screen.getByLabelText('Chọn Manager'));
- fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'pm'}});fireEvent.click(screen.getByRole('button',{name:'Tạo dự án'}));
+
+ fireEvent.click(screen.getByLabelText('Chọn Manager'));expect(screen.getByText('Chọn hoặc bổ sung PM đang hoạt động trước khi bàn giao máy.')).toBeVisible();fireEvent.click(screen.getByLabelText('Chọn Manager'));
+ fireEvent.click(screen.getByRole('button',{name:'Tạo dự án'}));
  await screen.findByText('Máy đã được giao');expect(screen.getByLabelText('Tên dự án')).toHaveValue('Alpha');
  expect(api.createProject).toHaveBeenCalledWith(expect.objectContaining({devices:[{assetId:8,recipientUserId:'pm',expectedVersion:2,expectedReturnOn:null,handoverNote:''}]}));
 });
@@ -40,22 +40,22 @@ it('adds multiple machines directly to a fixed project, retaining only failed ha
  render(<ProjectDeviceAssignDialog projectId="2" api={api} onChanged={changed} onClose={closed}/>);
  fireEvent.click(await screen.findByLabelText('IP-08 · iPad'));fireEvent.click(screen.getByLabelText('IP-09 · iPad'));
  expect(screen.queryByRole('option',{name:'Locked · locked'})).toBeNull();
- fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'t'}});fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'t'}});
- fireEvent.change(screen.getByLabelText('Ghi chú bàn giao IP-09'),{target:{value:'Giữ ghi chú'}});
+
+
  fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));
  expect(await screen.findByRole('alert')).toHaveTextContent('IP-09: Máy đã được giao');
  expect(changed).toHaveBeenCalledWith(1);expect(closed).not.toHaveBeenCalled();
- expect(screen.queryByLabelText('Người nhận IP-08')).toBeNull();expect(screen.getByLabelText('Ghi chú bàn giao IP-09')).toHaveValue('Giữ ghi chú');
+ expect(screen.queryByLabelText('Người nhận IP-08')).toBeNull();expect(screen.queryByLabelText('Ghi chú bàn giao IP-09')).toBeNull();
  fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));await waitFor(()=>expect(closed).toHaveBeenCalledTimes(1));
  expect(api.assignDevice.mock.calls.map(([body])=>body.assetId)).toEqual([8,9,9]);
- expect(api.assignDevice).toHaveBeenLastCalledWith({projectId:2,assetId:9,recipientUserId:'t',expectedVersion:5,expectedReturnOn:null,handoverNote:'Giữ ghi chú'});
+ expect(api.assignDevice).toHaveBeenLastCalledWith({projectId:2,assetId:9,recipientUserId:'t',expectedVersion:5,expectedReturnOn:null,handoverNote:''});
  expect(api.assets).toHaveBeenCalledWith({status:'AVAILABLE',keyword:'',page:0,size:20},expect.anything());
 });
 it('refreshes project allocations after handover and blocks new allocations in archived projects',async()=>{
  const api={allocations:vi.fn().mockResolvedValue(page([])),assets:vi.fn().mockResolvedValue(page([asset])),members:vi.fn().mockResolvedValue([{userId:'t',username:'tester',displayName:'Tester',projectRole:'PM',active:true}]),assignDevice:vi.fn().mockResolvedValue({})};
  const view=render(<ProjectDevices projectId={2} api={api} admin/>);
  fireEvent.click(await screen.findByRole('button',{name:'Bổ sung máy'}));fireEvent.click(await screen.findByLabelText('IP-08 · iPad'));
- fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'t'}});fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));
+ fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));
  await waitFor(()=>expect(screen.queryByRole('dialog')).toBeNull());await waitFor(()=>expect(api.allocations).toHaveBeenCalledTimes(2));
  expect(screen.getByRole('status')).toHaveTextContent('Đã bàn giao 1 máy');
  expect(screen.getByText(/PM tự phân phối nội bộ bên ngoài phần mềm/)).toBeInTheDocument();

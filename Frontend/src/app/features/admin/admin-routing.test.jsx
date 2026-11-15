@@ -99,15 +99,14 @@ describe('admin route boundary',()=>{
   mocks.role=role;window.history.replaceState(null,'','#/admin/projects');render(<RoleApp/>);
   expect(screen.getByRole('heading',{name:'Không có quyền truy cập'})).toBeInTheDocument();expect(mocks.projectProvider).not.toHaveBeenCalled();
  });
- test('project filter lives in Projects tab and global navigation starts at all projects',async()=>{
+ test('project list removes scope picker and ignores old scope query',async()=>{
   mocks.projects.mockResolvedValue({items:[{id:2,code:'P2',name:'Second',metrics:empty.metrics}],totalElements:1});mocks.overview.mockResolvedValue(empty);
   render(<AdminApp route="/admin/projects?projectId=2"/>);
   await waitFor(()=>expect(screen.getByRole('link',{name:'Dự án'})).toHaveAttribute('href','#/admin/projects'));
-  expect(screen.getByLabelText('Phạm vi dự án').closest('header')).toBeNull();
-  await userEvent.setup().click(screen.getByRole('button',{name:'Phạm vi dự án'}));
-  expect(screen.getByRole('combobox',{name:'Tìm dự án theo tên hoặc mã'})).toBeInTheDocument();
-  await userEvent.setup().click(await screen.findByRole('option',{name:'Tất cả dự án'}));
-  expect(window.location.hash).toBe('#/admin/projects');
+  expect(screen.queryByLabelText('Phạm vi dự án')).not.toBeInTheDocument();
+  expect(screen.getByLabelText('Từ ngày')).toBeInTheDocument();
+  await waitFor(()=>expect(mocks.projects).toHaveBeenLastCalledWith(expect.objectContaining({sort:'newest'}),expect.anything()));
+  expect(mocks.projects.mock.calls.at(-1)[0]).not.toHaveProperty('projectId');
  });
  test('explicit project workspace keeps existing project providers',()=>{
   window.history.replaceState(null,'','#/dashboard?workspace=1');render(<RoleApp/>);

@@ -1,0 +1,81 @@
+/* Feature workbook: reference-led spreadsheet layout, scoped away from forms and lists. */
+.testing-document.testing-spreadsheet {
+  --sheet-border: #dce3e5;
+  padding: 0;
+  background: #fff;
+  font-size: 12px;
+}
+.testing-spreadsheet.testing-document > .td-sheet-title {
+  flex-wrap: nowrap;
+  gap: 12px;
+  padding: 8px 16px;
+  min-height: 44px;
+  background: #00382b;
+  color: #fff;
+}
+.testing-spreadsheet.testing-document > .td-sheet-title h2 { min-width: 0; font-size: 14px; font-weight: 650; line-height: 1.5; }
+.testing-spreadsheet .td-sheet-title .testing-back { min-height: 32px; padding: 4px 10px; border: 1px solid #378678; border-radius: 3px; background: transparent; color: #fff; font-size: 12px; white-space: nowrap; }
+.testing-spreadsheet .td-sheet-title .testing-back:hover { background: #145448; }
+.testing-spreadsheet .testing-feature-tag { flex: none; padding: 3px 8px; border: 1px solid #378678; border-radius: 3px; color: #b5eee3; font-size: 11px; }
+.testing-spreadsheet.testing-document > .td-sheet-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 8px 16px; overflow: visible; border: 0; border-bottom: 1px solid var(--sheet-border); border-radius: 0; background: #fafafa; }
+.testing-spreadsheet.testing-document .testing-progress { flex: 1 0 100%; flex-wrap: wrap; gap: 12px; padding: 0 0 8px; border: 0; border-bottom: 1px solid var(--sheet-border); }
+.testing-spreadsheet.testing-document .testing-progress > .test-progress { flex: 0 1 200px; min-width: 120px; }
+.testing-spreadsheet .test-progress { font-size: 11px; }
+.testing-spreadsheet.testing-document .testing-execution-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 12px; margin-left: auto; }
+.testing-spreadsheet.testing-document .testing-execution-context { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.testing-spreadsheet.testing-document .testing-execution-context label { display: flex; flex-direction: row; align-items: center; gap: 6px; font-size: 12px; }
+.testing-spreadsheet.testing-document .testing-execution-context select { width: 160px; }
+.testing-spreadsheet.testing-document .testing-execution-context input { width: 136px; }
+.testing-spreadsheet.testing-document .testing-progress-actions { margin: 0; flex-wrap: wrap; }
+.testing-spreadsheet.testing-document .td-sheet-toolbar .cat-btn,
+.testing-spreadsheet.testing-document .td-sheet-toolbar input,
+.testing-spreadsheet.testing-document .td-sheet-toolbar select { min-height: 32px; height: 32px; padding: 4px 8px; border-radius: 3px; font-size: 12px; line-height: 1.5; }
+.testing-spreadsheet.testing-document .td-sheet-toolbar .td-filter-row { flex: 1 1 auto; flex-wrap: wrap; gap: 8px 12px; }
+.testing-spreadsheet.testing-document .testing-file-actions { flex-wrap: wrap; }
+.testing-spreadsheet.testing-document .td-toolbar-pagination { flex: 0 1 auto; flex-wrap: wrap; gap: 8px; margin-left: auto; font-size: 12px; }
+.testing-spreadsheet.testing-document > .td-source-note { padding: 6px 16px; font-size: 11px; line-height: 1.5; background: #f5faf8; }
+.testing-spreadsheet.testing-document > [role="status"] { padding-inline: 16px; font-size: 12px; }
+.testing-spreadsheet.testing-document .td-grid-scroll { border-color: var(--sheet-border); scrollbar-width: thin; scrollbar-color: #b9c2c2 #f2f4f4; }
+.testing-spreadsheet.testing-document .td-case-grid { min-width: 100%; table-layout: fixed; font-size: 12px; }
+.testing-spreadsheet.testing-document .td-case-grid th,
+.testing-spreadsheet.testing-document .td-case-grid td { min-width: 0; max-width: none; padding: 8px; border-color: var(--sheet-border); line-height: 1.65; overflow-wrap: anywhere; }
+.testing-spreadsheet.testing-document .td-case-grid thead th { padding: 8px 12px 8px 8px; background: #f7f8f8; height: 36px; color: #344b52; font-weight: 600; }
+.testing-spreadsheet .testing-column-label { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.testing-spreadsheet .testing-column-resize { position: absolute; inset: 0 0 0 auto; width: 7px; cursor: col-resize; touch-action: none; z-index: 1; }
+.testing-spreadsheet .testing-column-resize:hover,
+.testing-spreadsheet .testing-column-resize:focus-visible { background: #20b7a666; outline: 1px solid #0f766e; outline-offset: -1px; }
+.testing-spreadsheet.testing-document .td-case-grid .td-sticky-id { left: auto; box-shadow: none; }
+.testing-spreadsheet.testing-document .td-case-grid tbody .td-sticky-id { position: static; padding: 8px 4px; min-width: 0; max-width: none; font-weight: 600; }
+.testing-spreadsheet.testing-document .td-case-id { color: #183d48; font-weight: 600; text-decoration: none; }
+.testing-spreadsheet.testing-document .testing-testers > span { display: block; }
+.testing-spreadsheet.testing-document .td-case-grid tbody tr:nth-child(even) > * { background: #fafcfc; }
+.testing-spreadsheet.testing-document .td-case-grid tbody tr:hover > * { background: #f2f9f7; }
+.testing-spreadsheet.testing-document .td-case-grid td:focus-within { outline: 2px solid #20b7a6; outline-offset: -2px; background: #f1fbf8; }
+.testing-spreadsheet.testing-document .testing-case-text,
+.testing-spreadsheet.testing-document .td-cell-text { font-size: 12px; line-height: 1.65; }
+.testing-spreadsheet.testing-document .testing-case-text { padding: 0; }
+.testing-spreadsheet.testing-document .testing-case-version { display: grid; gap: 8px; }
+.testing-spreadsheet.testing-document .testing-case-version select { min-height: 32px; width: 100%; padding: 4px 6px; border-radius: 3px; font-size: 12px; }
+.testing-spreadsheet .testing-case-version > span,
+.testing-spreadsheet .testing-case-version details { font-size: 11px; color: var(--color-text-sub); }
+.testing-spreadsheet.testing-document .td-case-grid .td-result-cell,
+.testing-spreadsheet.testing-document .td-case-grid .testing-issue-cell { min-width: 0; vertical-align: top; text-align: center; white-space: normal; }
+.testing-spreadsheet.testing-document .testing-result-actions { --status-control-size: 72px; display: grid; grid-template-columns: var(--status-control-size); grid-auto-rows: max-content; width: var(--status-control-size); max-width: none; height: max-content; min-height: 0; gap: 6px; align-items: start; align-content: start; justify-content: start; white-space: normal; }
+.testing-spreadsheet.testing-document .testing-result-actions .td-result { flex: none; box-sizing: border-box; width: var(--status-control-size); height: var(--status-control-size); min-width: var(--status-control-size); min-height: var(--status-control-size); max-width: var(--status-control-size); padding: 2px; border: 1px solid transparent; border-radius: 2px; background: var(--testing-result-accent); color: #16352f; font-size: 10px; overflow-wrap: normal; white-space: nowrap; }
+.testing-spreadsheet.testing-document .testing-result-actions .td-result:disabled { opacity: 1; border-style: solid; }
+.testing-spreadsheet.testing-document .testing-result-actions .td-result::before { content: none; }
+.testing-spreadsheet.testing-document .testing-result-actions .td-result-history { box-sizing: border-box; justify-content: center; width: var(--status-control-size); min-width: var(--status-control-size); min-height: 24px; margin: 0; padding: 3px 2px; border: 0; border-radius: 0; background: #b5c5c2; color: #173d36; font-size: 10px; white-space: nowrap; }
+.testing-spreadsheet.testing-document .testing-issue-cell .case-issue-button { min-height: 32px; padding: 4px 8px; max-width: 100%; border-radius: 3px; font-size: 12px; white-space: nowrap; }
+@media (max-width: 760px) {
+  .testing-spreadsheet.testing-document > .td-sheet-title { flex-wrap: wrap; padding: 8px 12px; gap: 8px; }
+  .testing-spreadsheet.testing-document > .td-sheet-title h2 { flex-basis: 100%; font-size: 13px; }
+  .testing-spreadsheet.testing-document > .td-sheet-toolbar { padding: 8px 12px; }
+  .testing-spreadsheet.testing-document .testing-execution-actions { margin-left: 0; justify-content: flex-start; }
+  .testing-spreadsheet.testing-document .td-toolbar-pagination { margin-left: 0; }
+}
+@media (pointer: coarse) {
+  .testing-spreadsheet.testing-document .td-sheet-toolbar .cat-btn,
+  .testing-spreadsheet.testing-document .td-sheet-toolbar input,
+  .testing-spreadsheet.testing-document .td-sheet-toolbar select,
+  .testing-spreadsheet.testing-document .testing-issue-cell .case-issue-button { min-height: 44px; height: auto; }
+}

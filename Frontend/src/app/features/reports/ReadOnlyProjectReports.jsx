@@ -1,3 +1,5 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
+import {useGuestLanguage} from '../../i18n/GuestLanguage';
 import React,{useEffect,useRef,useState} from 'react';
 import {managementReportsApi} from '../../services/api/managementReports';
 import {SafeMarkdown} from './SafeMarkdown';
@@ -8,6 +10,8 @@ export function ReadOnlyProjectReports({projectId,api=managementReportsApi}) {
  return <Reports key={projectId} projectId={projectId} api={api}/>;
 }
 function Reports({projectId,api}) {
+ useRefreshOnReturn(()=>{setRevision(v=>v+1);});
+ const {t,language}=useGuestLanguage();
  const [page,setPage]=useState(0),[revision,setRevision]=useState(0);
  const [data,setData]=useState(null),[saved,setSaved]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  const lifetime=useRef(null),request=useRef(0);
@@ -33,14 +37,14 @@ function Reports({projectId,api}) {
   finally{if(!signal.aborted&&generation===request.current)setBusy(false);}
  }
  return <section className="management-analysis">
-  <div className="management-heading"><h2>Báo cáo dự án</h2><button className="cat-btn" onClick={()=>setRevision(value=>value+1)}>Tải lại</button></div>
-  {error&&<p role="alert">{error}</p>}{!data&&!error&&<p role="status">Đang tải báo cáo…</p>}
+  <div className="management-heading"><h2>{t("Báo cáo dự án")}</h2></div>
+  {error&&<p role="alert">{t(error)}</p>}{!data&&!error&&<p role="status">{t("Đang tải báo cáo…")}</p>}
   {data&&<><section className="management-summary"><ProgressSummary metrics={data.summary.metrics} asOf={data.summary.asOf}/></section>
-  <section className="management-report-workspace"><h2>Báo cáo đã lưu</h2>
-  {!data.reports.items.length&&<p>Chưa có báo cáo đã lưu.</p>}
-  <ul>{data.reports.items.map(item=><li key={item.id}><button className="cat-btn" disabled={busy} aria-label={`Mở báo cáo ${item.title}`} onClick={()=>open(item.id)}>{item.title}</button></li>)}</ul>
-  <div className="admin-pagination"><button disabled={!page||busy} onClick={()=>setPage(page-1)}>Trang trước</button><span>Trang {page+1} / {Math.max(1,data.reports.totalPages||1)}</span><button disabled={page+1>=(data.reports.totalPages||1)||busy} onClick={()=>setPage(page+1)}>Trang sau</button></div>
-  {busy&&<p role="status">Đang tải nội dung…</p>}{saved&&<article><div className="management-heading"><h3>{saved.title}</h3><button className="cat-btn" disabled={busy} onClick={download}>Tải báo cáo</button></div><SafeMarkdown markdown={saved.markdown}/></article>}
+  <section className="management-report-workspace"><h2>{t("Báo cáo đã lưu")}</h2>
+  {!data.reports.items.length&&<p>{t("Chưa có báo cáo đã lưu.")}</p>}
+  <ul>{data.reports.items.map(item=><li key={item.id}><button className="cat-btn" disabled={busy} aria-label={t("Mở báo cáo {0}",{0:(item.title)})} onClick={()=>open(item.id)}>{item.title}</button></li>)}</ul>
+  <div className="admin-pagination"><button disabled={!page||busy} onClick={()=>setPage(page-1)}>{t("Trang trước")}</button><span>{t('Trang')} {page+1} / {Math.max(1,data.reports.totalPages||1)}</span><button disabled={page+1>=(data.reports.totalPages||1)||busy} onClick={()=>setPage(page+1)}>{t('Trang sau')}</button></div>
+  {busy&&<p role="status">{t("Đang tải nội dung…")}</p>}{saved&&<article><div className="management-heading"><h3>{saved.title}</h3><button className="cat-btn" disabled={busy} onClick={download}>{t("Tải báo cáo")}</button></div>{language==='ja'&&<p className="gd-original-note">{t('Báo cáo giữ nguyên ngôn ngữ khi được công bố.')}</p>}<SafeMarkdown markdown={saved.markdown}/></article>}
   </section></>}
  </section>;
 }

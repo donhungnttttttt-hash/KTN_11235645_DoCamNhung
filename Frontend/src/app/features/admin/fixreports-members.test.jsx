@@ -22,7 +22,7 @@ it('keeps project exclusion through paging and filters and refreshes after membe
  const props={projectId:7,existingUserIds:['existing'],value:[],onChange:vi.fn(),api};
  const view=render(<MemberPicker {...props}/>);
  await screen.findByText('Trang 1 / 2 · 21 người');
- fireEvent.click(screen.getByRole('button',{name:'Người sau'}));
+ fireEvent.click(screen.getByRole('button',{name:'Trang sau'}));
  await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({excludeProjectId:7,page:1}),expect.anything()));
  fireEvent.change(screen.getByLabelText('Lọc trạng thái dự án'),{target:{value:'assigned'}});
  await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({excludeProjectId:7,hasProject:true,page:0}),expect.anything()));
@@ -37,7 +37,7 @@ it('includes candidates assigned to other projects and keeps server totals when 
  await screen.findByText('Cẩm Nhung');
  expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({unassignedOnly:false,enabled:true,page:0,size:20}),expect.anything());
  expect(screen.getByText(/41 người/)).toBeInTheDocument();
- fireEvent.click(screen.getByRole('button',{name:'Người sau'}));
+ fireEvent.click(screen.getByRole('button',{name:'Trang sau'}));
  await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({page:1,unassignedOnly:false}),expect.anything()));
  fireEvent.change(screen.getByLabelText('Tìm tài khoản đang hoạt động'),{target:{value:'NHUNG cam'}});
  await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({page:0,keyword:'NHUNG cam',unassignedOnly:false}),expect.anything()));
@@ -48,7 +48,7 @@ it('filters project membership on the server and shows project names',async()=>{
  const api={users:vi.fn().mockResolvedValue({items:[person],totalElements:41})};
  render(<MemberPicker value={[]} onChange={vi.fn()} api={api}/>);
  await screen.findByText(/Dự án Alpha/);
- fireEvent.click(screen.getByRole('button',{name:'Người sau'}));
+ fireEvent.click(screen.getByRole('button',{name:'Trang sau'}));
  await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({page:1}),expect.anything()));
  fireEvent.change(screen.getByLabelText('Lọc trạng thái dự án'),{target:{value:'assigned'}});
  await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({hasProject:true,page:0}),expect.anything()));

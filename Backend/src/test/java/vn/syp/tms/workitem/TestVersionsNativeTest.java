@@ -40,7 +40,7 @@ class TestVersionsNativeTest {
   String tag=UUID.randomUUID().toString().substring(0,8);admin=users.saveAndFlush(new IdentityUser("versions."+tag,"Versions admin","not-login","ADMIN"));
   registryJdbc.update("DELETE FROM system_admin_registry");registry.register(1,admin.getId());
   p=projects.create(admin.getId(),new ProjectDtos.CreateProject("VER"+tag,"Version test","","UTC")).id();
-  f=((Number)features.create(p,admin.getId(),new FeatureDtos.Create("Feature","server","",UUID.randomUUID())).get("id")).longValue();
+  f=((Number)features.create(p,admin.getId(),new FeatureDtos.Create("Đợt kiểm thử","server","",UUID.randomUUID())).get("id")).longValue();
   byte[] bytes;try(var book=new XSSFWorkbook();var out=new ByteArrayOutputStream()) {
    var sheet=book.createSheet("TestCases");var header=sheet.createRow(0);
    for(int c=0;c<11;c++)header.createCell(c).setCellValue(TestCaseWorkbook.HEADERS.get(c));
@@ -66,10 +66,13 @@ class TestVersionsNativeTest {
   assertThat(features.updateResult(p,admin.getId(),d,row,input).testVersionName()).isEqualTo("Keep history");
   mvc.perform(get(path("/test-documents/"+d)).with(actor(admin))).andExpect(status().isOk()).andExpect(jsonPath("$.rows[0].testVersionName").value("Keep history"));
   assertThat(documents.resultHistory(p,admin.getId(),d,row,0).getFirst().testVersionName()).isEqualTo("Keep history");
-  mvc.perform(put(path("/test-documents/"+d+"/rows/"+row+"/result")).with(actor(admin)).with(csrf()).contentType("application/json").content(encode(Map.of("status","OK","expectedVersion",1,"requestKey",UUID.randomUUID(),"testVersionId",v,"executedOn","2026-10-25")))).andExpect(status().isUnprocessableEntity());
+  // An existing case retains its historical selection; a different case cannot choose a deleted version.
+  mvc.perform(put(path("/test-documents/"+d+"/rows/"+row+"/result")).with(actor(admin)).with(csrf()).contentType("application/json").content(encode(Map.of("status","OK","expectedVersion",1,"requestKey",UUID.randomUUID(),"testVersionId",v,"executedOn","2026-10-25")))).andExpect(status().isOk()).andExpect(jsonPath("$.testVersionName").value("Keep history"));
+  long otherRow=Objects.requireNonNull(documents.get(p,admin.getId(),d).rows().get(1).rowId());
+  mvc.perform(put(path("/test-documents/"+d+"/rows/"+otherRow+"/result")).with(actor(admin)).with(csrf()).contentType("application/json").content(encode(Map.of("status","OK","expectedVersion",0,"requestKey",UUID.randomUUID(),"testVersionId",v,"executedOn","2026-10-25")))).andExpect(status().isUnprocessableEntity());
   try(var book=new XSSFWorkbook(new java.io.ByteArrayInputStream(documents.export(p,admin.getId(),d,false).bytes()))) {
    var sheet=book.getSheetAt(0);var headers=new ArrayList<String>();sheet.getRow(0).forEach(cell->headers.add(cell.getStringCellValue()));
-   assertThat(sheet.getRow(1).getCell(headers.indexOf("Version test")).getStringCellValue()).isEqualTo("Keep history");
+   assertThat(sheet.getRow(1).getCell(headers.indexOf("MT & Ver")).getStringCellValue()).contains("Keep history","Ngày thực hiện: 2026-10-25");
   }
   assertThat(version("Keep history")).isNotEqualTo(v);
  }
@@ -97,8 +100,8 @@ class TestVersionsNativeTest {
   mvc.perform(get(path("/test-documents/"+d+"/rows/"+row+"/result-history")).with(actor(admin))).andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(2)).andExpect(jsonPath("$[1].testVersionName").value("iPad 1.0 (133)")).andExpect(jsonPath("$[1].executedOn").value("2026-10-24"));
   try(var book=new XSSFWorkbook(new java.io.ByteArrayInputStream(documents.export(p,admin.getId(),d,false).bytes()))) {
    var sheet=book.getSheetAt(0);var headers=new ArrayList<String>();sheet.getRow(0).forEach(cell->headers.add(cell.getStringCellValue()));
-   assertThat(headers).contains("Version test","Ngày thực hiện");
-   assertThat(sheet.getRow(1).getCell(headers.indexOf("Version test")).getStringCellValue()).isEqualTo("iPad 1.1 (134)");
+   assertThat(headers).hasSize(13).contains("MT & Ver","Status","Ticket","Người test").doesNotContain("Ngày thực hiện");
+   assertThat(sheet.getRow(1).getCell(headers.indexOf("MT & Ver")).getStringCellValue()).contains("iPad 1.1 (134)","Ngày thực hiện: 2026-10-25");
   }
  }
  @Test void onlyManagersCreateAndVersionCannotCrossFeature()throws Exception {

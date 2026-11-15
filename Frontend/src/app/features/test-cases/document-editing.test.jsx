@@ -133,7 +133,7 @@ it('recovers failed choices and links missing configuration directly to the sele
  executionApi.cycles.mockRejectedValueOnce(new Error('Không tải được lựa chọn'));executionApi.configurations.mockResolvedValue([]);
  const navigate=vi.fn(),user=userEvent.setup();render(<DocumentSecondTestDialog projectId={1} documentId={2} row={row} onClose={vi.fn()} onSaved={vi.fn()} navigate={navigate}/>);
  expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được lựa chọn');expect(screen.getByRole('button',{name:'Lưu phân công'})).toBeDisabled();
- await user.click(screen.getByRole('button',{name:'Tải lại lựa chọn'}));await screen.findByRole('option',{name:'R2 · Kiểm thử lại'});await user.selectOptions(screen.getByLabelText('Đợt kiểm thử'),'10');
+ await user.click(screen.getByRole('button',{name:"Thử lại lựa chọn"}));await screen.findByRole('option',{name:'R2 · Kiểm thử lại'});await user.selectOptions(screen.getByLabelText('Đợt kiểm thử'),'10');
  expect(await screen.findByText(/Đợt này chưa có cấu hình/)).toBeVisible();await user.click(screen.getByRole('button',{name:'Mở đợt kiểm thử'}));expect(navigate).toHaveBeenCalledWith('/tests/cycles/10');
 });
 it('uses the current closed-cycle state and offers its reopen screen without allowing a write',async()=>{
@@ -147,7 +147,7 @@ it('retries a context error and preserves the assignment draft after a failed sa
  executionApi.cycle.mockRejectedValueOnce(new Error('Không tải được đợt'));testCasesApi.assignSecondTest.mockRejectedValueOnce(new Error('Phân công đã thay đổi'));
  const onSaved=vi.fn(),onClose=vi.fn(),user=userEvent.setup();render(<DocumentSecondTestDialog projectId={1} documentId={2} row={row} onClose={onClose} onSaved={onSaved} navigate={vi.fn()}/>);
  await screen.findByRole('option',{name:'R2 · Kiểm thử lại'});await user.selectOptions(screen.getByLabelText('Đợt kiểm thử'),'10');expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được đợt');
- expect(screen.getByRole('button',{name:'Lưu phân công'})).toBeDisabled();await user.click(screen.getByRole('button',{name:'Tải lại lựa chọn'}));
+ expect(screen.getByRole('button',{name:'Lưu phân công'})).toBeDisabled();await user.click(screen.getByRole('button',{name:"Thử lại lựa chọn"}));
  await screen.findByRole('option',{name:'QA / iPad · 2'});await user.selectOptions(screen.getByLabelText('Cấu hình chạy'),'11');await user.selectOptions(screen.getByLabelText('Người test lần 2'),'12');await user.type(screen.getByLabelText('Ghi chú 2'),'Giữ ghi chú');
  await user.click(screen.getByRole('button',{name:'Lưu phân công'}));expect(await screen.findByRole('alert')).toHaveTextContent('Phân công đã thay đổi');expect(screen.getByLabelText('Ghi chú 2')).toHaveValue('Giữ ghi chú');expect(onClose).not.toHaveBeenCalled();
  await user.click(screen.getByRole('button',{name:'Lưu phân công'}));await waitFor(()=>expect(onSaved).toHaveBeenCalledOnce());expect(onClose).toHaveBeenCalledOnce();

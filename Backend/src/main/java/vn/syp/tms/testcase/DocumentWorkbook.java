@@ -40,7 +40,7 @@ final class DocumentWorkbook {
                 for (int c = 0; c < data.cells().size(); c++) {
                     var cell = row.getCell(c); String value = data.cells().get(c);
                     if (source != null && cell == null && value.isEmpty()) continue;
-                    if (cell != null && CustomerWorkbook.value(cell, data.rowNumber()).equals(value)) continue;
+                    if (cell != null && cell.getCellType()!=CellType.FORMULA && cell.getCellType()!=CellType.ERROR && CustomerWorkbook.value(cell, data.rowNumber()).equals(value)) continue;
                     if (cell == null) cell = row.createCell(c);
                     cell.removeHyperlink();
                     replaceText(cell,value); // A leading '=' remains a string, never a formula.

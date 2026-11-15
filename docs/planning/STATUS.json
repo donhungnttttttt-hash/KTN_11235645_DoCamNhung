@@ -1,6 +1,150 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-14",
+  "updatedAt": "2026-11-15",
+  "caseEnvironmentVersion20261114": {
+    "status": "IN_REVIEW",
+    "stage": "Approved implementation applied locally; V42 and authenticated HTTP smoke pass; live Chrome geometry acceptance unavailable",
+    "spec": "docs/superpowers/specs/2026-11-14-case-environment-version-design.md",
+    "plan": "docs/superpowers/plans/2026-11-14-case-environment-version.md",
+    "report": "docs/reviews/2026-11-14-case-environment-version.md",
+    "approvedIntent": "Environment/version are case metadata. Changing them preserves Status, progress, execution date and initial tester. Icons and delete confirmation; management beneath Feature heading; search/add above options; MT & Ver with two selectors.",
+    "verification": {
+      "frontendTests": 1397,
+      "frontendFiles": 152,
+      "frontendBuild": "PASS",
+      "native": "52/52 PASS: FeatureIntegrationTest 33 + NativeFeatureIssueIntegrationTest 19; Maven verify/package, isolated native schema",
+      "workbookResultUnitTests": 44,
+      "java": {
+        "sources": 395,
+        "errors": 0,
+        "existingWarnings": 7,
+        "warningFile": "SystemAdminStartupTest.java"
+      },
+      "frontendCoverage": {
+        "statements": 87.9,
+        "branches": 80.14,
+        "functions": 86.51,
+        "lines": 94.59,
+        "scope": "Seven named components in report"
+      },
+      "migration": "Fresh V42 and V41 upgrade fixtures PASS on isolated native schemas",
+      "diffCheck": "PASS"
+    },
+    "runtime": {
+      "flyway": 42,
+      "backendHealth": "UP",
+      "proxyHealth": "UP",
+      "authenticatedReadSmoke": "Login, me, projects, Feature, environment/version catalogues and document list all HTTP 200",
+      "businessCountsAndStatuses": "Unchanged before/after migration",
+      "backup": "var/mysql-native/backups/2026-11-14T14-31-34-057Z-tms.sql"
+    },
+    "skills": [
+      "brainstorming",
+      "writing-plans",
+      "executing-plans",
+      "test-driven-development",
+      "verification-before-completion"
+    ],
+    "remaining": "Chrome host unavailable: actual 72px square/72px history/6px gap, 100%/125% zoom and dropdown positioning during scrolling must still be visually accepted. No test business writes to main.",
+    "commitPush": false
+  },
+  "featureExportThirteenColumns20261114": {
+    "status": "IN_REVIEW",
+    "report": "docs/reviews/2026-11-14-feature-export-thirteen-columns.md",
+    "implemented": "Feature export writes exactly nine current content fields plus Version test/Status/Issue/initial tester; ignores legacy source execution columns; execution date retained inside Version cell; original download unchanged",
+    "verification": "38 workbook unit tests and 28 native Feature tests PASS; supplied export reproduced as 55 rows / 13 columns / 20 OK / 35 Unexecuted; Maven verify/package PASS; export writer JaCoCo lines 96.67%, branches 90%; JDT 0 errors / 7 unrelated warnings",
+    "runtime": "Verified artifact running locally, PID 26152; proxy health UP; V41 unchanged; no business-data writes or migration",
+    "remaining": "Browser export/download visual acceptance and authenticated main smoke not claimed; user should export again to replace the previously downloaded file",
+    "commitPush": false
+  },
+  "featureImportSelectedCells20261114": {
+    "status": "IN_REVIEW",
+    "report": "docs/reviews/2026-11-14-feature-import-selected-cells.md",
+    "implemented": "Read nine selected Excel fields before row validation; ignore extra-column metadata/formulas/merges; preserve empty content and original workbook; web owns Version/Status/Issue/first tester; square Status and history share 72px width",
+    "verification": "36 workbook unit tests; 27 native integration tests including actual 122-case workbook preview/commit/read/export; 47 frontend tests; Maven/Vite build and diff check PASS",
+    "runtime": "Verified artifact running locally on 8080, V41, proxied health UP; no real workbook imported into main",
+    "remaining": "Continuation rechecked proxied health UP; Chrome browser host/native pipe still unavailable. Configured bootstrap password also returns 401 with the currently registered admin ID, so authenticated live acceptance remains unverified; no credentials changed. 7 unrelated JDT warnings remain",
+    "skills": [
+      "prompt-master",
+      "tdd-workflow",
+      "api-design",
+      "verification-before-completion"
+    ],
+    "commitPush": false
+  },
+  "fileOwnersSelfTesting20261114": {
+    "status": "IN_REVIEW",
+    "report": "docs/reviews/2026-11-14-file-owners-self-testing.md",
+    "implemented": "Session-identity self assignment; independent multi-owner file dropdown; initial tester only; members can confirm unassigned cases; filled square Status (latest correction: 72px shared with history width); Issue always right with horizontal table room",
+    "verification": "510 frontend tests / 59 files; 26 native Feature integration tests; V40-to-V41 backfill; Vite and Maven builds PASS; JDT 0 errors, 7 unrelated warnings",
+    "runtime": "Backed up main; V41 applied locally with existing counts/statuses preserved; backend health UP; frontend 5173 started",
+    "remaining": "Chrome unavailable; bootstrap-config HTTP login returned 401 even with current registered admin ID, authenticated main acceptance not claimed. Workbook correction is complete in featureImportSelectedCells20261114",
+    "commitPush": false
+  },
+  "testingNineColumns20261114": {
+    "status": "IN_REVIEW",
+    "request": "Keep nine approved Excel fields only; combine tester columns; correct ID and Status presentation first",
+    "report": "docs/reviews/2026-11-14-testing-nine-columns.md",
+    "implemented": "Fixed 13-column Feature grid; original edit coordinates retained; ignored columns excluded from grid/search/detail; Feature import projects nine fields and preserves original download; nine-column template",
+    "verification": "400 frontend tests / 41 files and 34 backend workbook tests PASS; Vite build PASS; scoped V8 coverage 87.85% statements / 84.48% branches / 81.06% functions / 93.02% lines; diff check PASS",
+    "javaDiagnostics": "392 sources: 0 errors; 7 warnings in unchanged SystemAdminStartupTest, none in task files",
+    "remaining": "Chrome visual acceptance blocked by browser access host unavailable. Backend runtime has since been updated to V41 and the corrected import artifact; see featureImportSelectedCells20261114",
+    "skills": [
+      "frontend-ui-engineering",
+      "tdd-workflow",
+      "verification-before-completion"
+    ],
+    "commitPush": false
+  },
+  "testingSpreadsheet20261114": {
+    "status": "IN_REVIEW",
+    "request": "Apply the selected spreadsheet design and give Issue its own column with hover/click preview beside the button",
+    "report": "docs/reviews/2026-11-14-testing-spreadsheet.md",
+    "implemented": "Compact scoped spreadsheet styling, content-specific resizable columns, separate Issue column; latest correction keeps preview on the right by scrolling the table to make room, with explicit create action",
+    "verification": "398/398 tests across 41 files PASS with maxWorkers=4; Vite build PASS; scoped coverage 87.35% statements / 84.48% branches / 80.15% functions / 92.56% lines; diff check PASS",
+    "remaining": "Live Chrome visual/responsive/hover acceptance: browser access host unavailable on both createBrowserTab and listBrowsers; no claim of pixel parity",
+    "skills": [
+      "frontend-ui-engineering",
+      "tdd-workflow",
+      "verification-before-completion"
+    ],
+    "commitPush": false
+  },
+  "backendAdmin50020261114": {
+    "status": "DONE",
+    "request": "Diagnose backend error on Admin project list",
+    "cause": "JDT-generated controller bytecode lacked method parameter names, causing Spring MVC request binding to return HTTP 500",
+    "fix": "Enable methodParameters=generate in shared and project JDT preferences; repair missing session dependency mocks in AdminSecurityTest",
+    "report": "docs/reviews/2026-11-14-backend-admin-500.md",
+    "verification": "43 controllers / 524 inferred parameters / 0 missing metadata; 15 tests in 4 suites and Maven package PASS; authenticated direct 8080 and frontend-proxied 5173 Admin projects/overview HTTP 200 with 11 projects; readiness UP",
+    "runtime": "Backend PID changed externally from 30100 to 13108 during verification; guarded restart aborted before stopping anything; new process verified healthy",
+    "limitations": "No full-suite, browser or coverage verification; no migration or business-data changes; diagnostic login/logout produced ordinary session/audit writes",
+    "skills": [
+      "systematic-debugging",
+      "verification-before-completion"
+    ],
+    "commitPush": false
+  },
+  "frontendDesignReference20261114": {
+    "status": "DONE",
+    "scope": "Reference inspection and documentation only; UI implementation NOT_STARTED",
+    "sourceBranch": "feature/Fontend-design",
+    "sourceCommit": "bd7e482fef262e4361862e3d8f5d9853004cba3e",
+    "targetBranch": "system-design",
+    "targetCheckpoint": "daab8feabd851d1002eded24ae13303efbbca710",
+    "report": "docs/design/2026-11-14-frontend-design-reference.md",
+    "screens": [
+      "Spreadsheet test case runner",
+      "Chi tiết công việc"
+    ],
+    "skills": [
+      "frontend-ui-engineering"
+    ],
+    "evidence": "Read pinned reference source, compared user screenshots and mapped current TestingDocumentPage / FeatureIssueDetail components; layout, spacing, typography, colors and preservation constraints documented",
+    "remaining": "Apply reference in a subsequent implementation task while retaining live Feature/Ticket APIs, permissions, version/date behavior and silver Unexecuted color",
+    "limitations": "Documentation only; no new browser verification, build, behavior tests or coverage measurement",
+    "commitPush": false
+  },
   "localSourceHandover20261114": {
     "request": "Commit va push code tu may nay",
     "branch": "system-design",
@@ -27,27 +171,43 @@
     "result": "Kanban chỉ có Feature, Tìm ticket, Tải lại; Feature rộng gấp đôi ô tìm trên desktop. Danh sách/Quản lý lỗi giữ hai bộ lọc. Chuyển sang Kanban bỏ type/column và về trang đầu, giữ Feature/từ khóa; link Kanban bỏ type ẩn, vẫn hỗ trợ chọn cột trên board.",
     "verification": "RED: 2 new tests failed before implementation. GREEN: 29 tests in FeatureIssuesPage and WorkBoardPage PASS; Vite build PASS with existing chunk-size warning; diff check PASS. Chrome static fixture measured Feature/search ratio ~2, same row and no page overflow.",
     "limitations": "Browser preview used actual CSS with sample markup, not an authenticated live session; coverage not measured.",
-    "skills": ["frontend-ui-engineering", "tdd-workflow", "verification-before-completion"],
+    "skills": [
+      "frontend-ui-engineering",
+      "tdd-workflow",
+      "verification-before-completion"
+    ],
     "commitPush": false
   },
   "reportLivePreviewLayout20261104": {
     "status": "DONE",
     "request": "Soạn Markdown và xem trước song song để sửa là nhìn thấy kết quả ngay",
     "result": "Hai cột soạn/xem trước cùng chiều cao trên desktop, cuộn độc lập; lưu/tải ở dưới cả hai. Giữ preview theo editor.markdown hiện có, không sửa API hay cơ chế lưu. Màn hẹp <=640px xếp dọc.",
-    "files": ["Frontend/src/app/features/reports/ManagementAnalysisPage.jsx", "Frontend/src/app/features/reports/management-analysis.css"],
+    "files": [
+      "Frontend/src/app/features/reports/ManagementAnalysisPage.jsx",
+      "Frontend/src/app/features/reports/management-analysis.css"
+    ],
     "verification": "83 existing reporting tests across 8 files PASS; Vite build PASS with existing chunk-size warning; git diff --check PASS. Chrome fixture measured side-by-side, equal top/height, independent overflow and no page overflow.",
     "limitations": "Chrome verification used actual CSS and representative markup in Backend/target/report-layout-preview, not an authenticated live application session. Coverage not measured.",
-    "skills": ["frontend-ui-engineering", "verification-before-completion"],
+    "skills": [
+      "frontend-ui-engineering",
+      "verification-before-completion"
+    ],
     "commitPush": false
   },
   "projectProgressLabel20261104": {
     "status": "DONE",
     "request": "Đưa tỷ lệ tiến độ lên trên hoặc trong thanh để dễ nhận diện",
     "result": "Phần trăm nằm giữa toàn bộ thanh, chữ đậm màu tối; bỏ dòng tỷ lệ riêng. Giữ nguyên dữ liệu và cách tính, kể cả nhãn chưa có phạm vi áp dụng.",
-    "files": ["Frontend/src/app/features/admin/AdminDashboard.jsx", "Frontend/src/app/features/admin/admin.css"],
+    "files": [
+      "Frontend/src/app/features/admin/AdminDashboard.jsx",
+      "Frontend/src/app/features/admin/admin.css"
+    ],
     "verification": "18 existing dashboard tests PASS; Vite build PASS with existing chunk-size warning; git diff --check PASS. Viewed desktop Chrome preview using actual CSS and sample markup for 0/40/95/100 percent and null.",
     "limitations": "Preview is a static layout fixture, not the authenticated application. No mobile application verification or coverage measurement.",
-    "skills": ["frontend-ui-engineering", "verification-before-completion"],
+    "skills": [
+      "frontend-ui-engineering",
+      "verification-before-completion"
+    ],
     "commitPush": false
   },
   "localAdminStartup20261104": {
@@ -2557,5 +2717,391 @@
       "result": "Git history and final response record completed commit/push"
     },
     "mainDatabaseMigrationOrRestart": false
+  },
+  "environmentIssueFollowup20261115": {
+    "status": "IN_REVIEW",
+    "report": "docs/reviews/2026-11-15-environment-issue-followup.md",
+    "scope": "Empty environment catalogue and automatic Issue environment prefilling/refresh, preserving manual evidence",
+    "findings": "Current authenticated API returns 200 with [] and null case environment; screenshot 404 is not reproducible now. Initial backend/frontend listeners were absent, then started independently during investigation. No assumed historical root cause.",
+    "implementation": "Refresh untouched environment from current case context; retain manually edited environment and all other draft fields; explain missing case environment. Regression for empty catalogue and retry preserves actual HTTP failures.",
+    "verification": {
+      "frontendTests": 1399,
+      "frontendFiles": 152,
+      "focusedTests": 16,
+      "build": "PASS",
+      "diffCheck": "PASS",
+      "http": "Authenticated Feature/catalogue/document/context reads 200; Vite serves updated form",
+      "coverage": "Not remeasured",
+      "browser": "Chrome native pipe unavailable"
+    },
+    "runtime": "Current workspace frontend and backend running; no schema or business-data changes",
+    "commitPush": false,
+    "remaining": "Live Chrome UI verification; historical 404 requires reproduction if it recurs"
+  },
+  "excelActualRowsLongCells20261115": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-11-15-excel-actual-rows-long-cells.md",
+    "scope": "Count actual imported test cases, ignore formatted blank rows and excluded columns, remove arbitrary content-cell limits",
+    "actualWorkbook": {
+      "cases": 89,
+      "physicalLastRow": 643,
+      "selectedFields": 9,
+      "originalPreserved": true,
+      "previewCommitReadExport": true
+    },
+    "verification": {
+      "unitTests": 48,
+      "nativeTests": 34,
+      "nativeSkipped": 0,
+      "frontendTests": 1399,
+      "frontendFiles": 152,
+      "finalRevisionTests": 21,
+      "build": "PASS",
+      "freshMigration": "V43 PASS",
+      "upgradeMigration": "V42 -> V43 preserved data; 40000-character Unicode roundtrip; replay=0",
+      "diagnostics": "395 Java sources, 0 errors; 7 pre-existing warnings in SystemAdminStartupTest; no new warnings",
+      "coverage": "Not remeasured",
+      "browser": "Chrome native pipe unavailable; no live visual acceptance claim"
+    },
+    "runtime": {
+      "version": "43",
+      "backup": "var/mysql-native/backups/2026-11-15T04-59-45-998Z-tms.sql",
+      "preservation": "Counts/status distribution and revision/cell/history content fingerprints unchanged",
+      "artifactReceipt": "var/file-owners-20261114/book-final2/receipt.json",
+      "http": "PASS: health UP, authenticated document/list reads through 5173 -> 8080; no business writes",
+      "artifactSha256": "19492c2c3b2802e33481093b282afafeadb5df3f71a1f50aefceb1b17d268559"
+    },
+    "commitPush": false
+  },
+  "guestDashboard20261115": {
+    "status": "IN_REVIEW",
+    "discovery": "docs/design/2026-11-15-guest-dashboard-discovery.md",
+    "confirmed": [
+      "Latest: do not expose contract data; assess effort/cost against daily cumulative test targets",
+      "Example norms: 500 per person-day and 50 cases/day; currency not specified; interpret productivity per person-day in proposed design",
+      "Automatic red bold AI suggestions below charts and in-app project-admin notifications",
+      "Official reports retain approval; Markdown rendering required"
+    ],
+    "scope": "Guest project portal: progress, quality, cost, staff, health, approved AI recommendations and rendered reports",
+    "implementationStarted": true,
+    "next": "Manual Chrome visual/responsive acceptance when browser connection is available; no additional product decision pending.",
+    "commitPush": false,
+    "proposal": "docs/design/2026-11-15-guest-effort-cost-proposal.md",
+    "costModel": {
+      "basis": "Simulated cost using daily project member headcount",
+      "confirmedWeights": {
+        "USER": 1,
+        "manager": 5
+      },
+      "managerMapping": "PM and active ADMIN members within the project, each user counted once",
+      "guestWeight": 0,
+      "assumptions": "Full-time equivalent membership for simulation only; no actual salary/contract exposure; currency unspecified",
+      "history": "Daily member snapshots; no retroactive repricing when membership changes",
+      "productivity": "Cost weight 5 does not multiply test productivity by 5"
+    },
+    "spec": "docs/superpowers/specs/2026-11-15-guest-dashboard-design.md",
+    "plan": "docs/superpowers/plans/2026-11-15-guest-dashboard.md",
+    "latestUiDecision": "Menu Đánh Giá Chi Phí; remove Minh bạch từ dữ liệu sidebar block",
+    "progress": "Implemented and running locally on V44; latest UI correction applied. Automated and live HTTP checks pass; Chrome visual acceptance unavailable.",
+    "implementationComplete": true,
+    "report": "docs/reviews/2026-11-15-guest-dashboard-acceptance.md",
+    "verification": {
+      "frontend": "154 files / 1406 tests PASS; production build PASS (existing large-chunk warning)",
+      "backend": "42 tests PASS, isolated native MySQL; includes HTTP notification authorization regression",
+      "migration": "Fresh V44 and V43-to-V44 upgrade PASS, repeat no-op, existing published report preserved",
+      "review": "Independent review: 0 critical / 3 important; all fixed with regression coverage. Live acceptance found/fixed notification route.",
+      "coverage": "No new coverage percentage measured",
+      "browser": "Not verified: Chrome native connection unavailable"
+    },
+    "runtime": {
+      "version": "44",
+      "artifact": "var/guest-dashboard-final/artifact.json",
+      "sha256": "6b482c0081223f5fe7714451acb923b7f6906e9e24503b24eef7589144ace21d",
+      "backup": "var/mysql-native/backups/2026-11-15T05-53-37-768Z-tms.sql",
+      "migrationBackup": "var/mysql-native/backups/2026-11-15T05-49-49-934Z-tms.sql",
+      "http": "PASS through 5173 -> 8080: dashboard for shared project and authenticated health-notifications endpoint; Guest HTTP permissions verified in native test schema",
+      "receipt": "var/guest-dashboard-release/live-read.json",
+      "preservation": "Counts, case statuses and revision/cell/history fingerprints unchanged before/after V43 -> V44 and final restart"
+    }
+  },
+  "projectSampleData20261115": {
+    "status": "DONE",
+    "projectId": 13,
+    "projectCode": "T11-15",
+    "projectName": "Test tháng 11 ngày 15",
+    "report": "docs/reviews/2026-11-15-project-demo-data.md",
+    "scope": "User-authorized sample data in existing project; no product code or migration changes",
+    "features": 4,
+    "documents": 4,
+    "cases": 481,
+    "tested": 338,
+    "resultCounts": {
+      "OK": 279,
+      "NG": 29,
+      "P": 21,
+      "NA": 9,
+      "UNEXECUTED": 143
+    },
+    "tickets": 39,
+    "guestUsername": "demo.nov15.guest",
+    "publishedReportId": 2,
+    "verification": "481 selected-cell comparisons; four download hashes; source files preserved; Ticket columns, context, comments and Guest membership access verified over HTTP",
+    "sourceCorrection": "Only copied workbook 黒板作成 A165 was repaired to ID 164 from No 164; original unchanged",
+    "backup": "var/mysql-native/backups/2026-11-15T05-59-24-844Z-tms.sql",
+    "commitPush": false
+  },
+  "workspacePresentation20261115": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-11-15-project-workspace-presentation.md",
+    "scope": "Project information sections, compact independently paginated Kanban, expandable Issue comment composer, dedicated issue creation page",
+    "verification": {
+      "frontendTests": 1414,
+      "frontendFiles": 155,
+      "finalFocusedTests": 47,
+      "build": "PASS",
+      "diffCheck": "PASS",
+      "chrome": "Isolated installed Chrome desktop 1600x1000 and mobile 390x844; no post-login API or JS errors",
+      "coverage": {
+        "scope": "9 changed frontend files",
+        "lines": 93.19,
+        "statements": 88.36,
+        "functions": 78.45,
+        "branches": 86.77
+      }
+    },
+    "runtime": "Frontend live on 5173; backend V44 unchanged",
+    "limitations": [
+      "Reference layout adapted to supported Ticket fields, not pixel-identical certification",
+      "Browser validation read-only; create payloads verified with mocked APIs",
+      "No global draft persistence across internal navigation"
+    ],
+    "commitPush": false
+  },
+  "guestOverviewCharts20261115": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-11-15-guest-overview-charts.md",
+    "scope": "Six overview-only charts, sparse/zero/missing history handling, viewport shell with independent main scroll and persistent navigation",
+    "verification": {
+      "tests": 1425,
+      "files": 156,
+      "focusedTests": 17,
+      "build": "PASS",
+      "diffCheck": "PASS",
+      "coverage": {
+        "scope": "GuestCharts, GuestOverview, GuestDashboard",
+        "statements": 93.54,
+        "branches": 83.52,
+        "functions": 87.95,
+        "lines": 95.45
+      },
+      "chrome": "1600x1000,1900x1000,390x844; six overview charts; no JS/API errors; menu coordinates unchanged during content scroll; window.scrollY=0"
+    },
+    "backend": "V44 unchanged; no database changes or synthetic history",
+    "commitPush": false
+  },
+  "ticketCommentFiles20261115": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-11-15-ticket-comment-files-planning.md",
+    "scope": "Remove Kanban add button; transactional comment attachments and image preview; persisted planning fields and self assignment",
+    "verification": {
+      "nativeTests": 25,
+      "frontendTests": 1431,
+      "frontendFiles": 157,
+      "focusedAfterPreviewRefinement": 13,
+      "build": "PASS",
+      "diffCheck": "PASS",
+      "chrome": "1600x1000 and 390x844; decoded preview image; no API/JS errors; no horizontal overflow",
+      "coverage": "Not measured for this change"
+    },
+    "runtime": "Local backend 8080 V45; frontend 5173; existing data counts/statuses/content fingerprints unchanged",
+    "commitPush": false
+  },
+  "guestLanguage20261115": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-11-15-guest-japanese-vietnamese.md",
+    "scope": "Guest UI Japanese/Vietnamese; always Japanese on fresh mount/reload; retain language across tabs/projects",
+    "verification": {
+      "frontendTests": 1434,
+      "frontendFiles": 158,
+      "additionalReportTests": 4,
+      "build": "PASS",
+      "chrome": "1600x1000 and 390x844; all six tabs, language switch/reset, report/profile; no JS errors or horizontal overflow; fixed menu",
+      "coverage": "Not measured for this change"
+    },
+    "limits": "Superseded: guestBilingualAdvice20261115 removes report access and adds bilingual AI advice. Project/person names remain original.",
+    "runtime": "Frontend 5173; backend V45 and database unchanged",
+    "commitPush": false
+  },
+  "guestBilingualAdvice20261115": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-11-15-guest-ai-bilingual-no-reports.md",
+    "scope": "Remove customer reports including API access; paired Japanese/Vietnamese AI advice on same facts with instant language switching",
+    "verification": {
+      "backendTests": 19,
+      "backendSkipped": 0,
+      "frontendTests": 1437,
+      "frontendFiles": 159,
+      "focusedAfterStaleFixtureUpdate": 9,
+      "build": "PASS",
+      "diffCheck": "PASS",
+      "liveAI": "Real bilingual response for T11-15 verified in Chrome; ja -> vi -> ja; no JS errors",
+      "access": "Guest report list/summary/detail/download all403; dashboard200; manager still allowed",
+      "coverage": "Not measured for this change"
+    },
+    "runtime": "Local backend8080 upgraded without schema change (V45), healthUP; frontend5173",
+    "commitPush": false
+  },
+  "adminOverview20261115": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-11-15-admin-overview-charts-tablet.md",
+    "scope": "All active projects; remove progress KPI/refresh; status donut; membership project label; four inventory stacks; explicit Tablet type",
+    "verification": {
+      "backendTests": 12,
+      "backendSkipped": 0,
+      "frontendTests": 1439,
+      "frontendFiles": 160,
+      "build": "PASS",
+      "migration": "Fresh V46 and V45 -> V46 PASS; replay no-op; previous device types preserved",
+      "chrome": "11/11 active projects; four inventory rows; hover/click/focus/Escape; desktop/mobile; no JS errors or mobile horizontal overflow",
+      "diffCheck": "PASS",
+      "coverage": "Not measured for this change"
+    },
+    "runtime": "Local backend8080 V46 healthUP; all124device rows unchanged; frontend5173",
+    "commitPush": false,
+    "removedPanels": {
+      "status": "DONE",
+      "panels": [
+        "Cần chú ý (overview)",
+        "Bug đã xử lý, chờ xác minh (project detail)"
+      ],
+      "verification": "229 tests / 29 admin files; build PASS; real Chrome both pages PASS",
+      "data": "No deletion or backend change"
+    },
+    "timezoneField": {
+      "status": "DONE",
+      "scope": "Remove timezone input from project create/edit/settings; preserve existing timezone; default new projects to Asia/Ho_Chi_Minh",
+      "verification": "54 relevant tests PASS; production build PASS",
+      "backendChanged": false
+    }
+  },
+  "projectMemberDeviceSelection20261115": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-11-15-project-member-device-selection.md",
+    "scope": "Exclude system admins from member candidates/counts; one PM automatic device recipient; two or more PMs common recipient selection; remove per-device handover forms",
+    "verification": {
+      "frontendTests": 1442,
+      "frontendFiles": 161,
+      "focusedFinalTests": 6,
+      "backendTests": 6,
+      "build": "PASS",
+      "diffCheck": "PASS",
+      "chrome": "117 eligible candidates; 2 system admins excluded; one/two PM transitions and no per-device forms; no JS errors",
+      "coverage": "Not measured separately"
+    },
+    "runtime": "Local backend8080 updated; healthUP; V46 unchanged; frontend5173",
+    "commitPush": false
+  },
+  "accountActionIcons20261115": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-11-15-project-member-device-selection.md",
+    "scope": "Icon-only account table actions with tooltips and accessible names",
+    "verification": "41 existing tests PASS; build PASS; real Chrome 34x34 icons and edit dialog PASS",
+    "commitPush": false
+  },
+  "adminProjectListFilters20261115": {
+    "status": "DONE",
+    "report": "docs/reviews/2026-11-15-admin-project-list-filters.md",
+    "implemented": "Remove project scope on list; newest/oldest and Vietnam creation-date range alongside search; refined table with creation date, progress and status badges; backend filter before pagination/count",
+    "verification": {
+      "frontendTests": 233,
+      "frontendFiles": 30,
+      "backendTests": 14,
+      "build": "PASS",
+      "chrome": "PASS desktop 1440/mobile 390, 12 projects, 1 matching 2026-11-15, no console errors",
+      "coverage": "Not measured"
+    },
+    "runtime": "projects-runtime artifact on local 8080; V46 unchanged; no business-data writes",
+    "commitPush": false
+  },
+  "paginationLabels20261115": {
+    "status": "DONE",
+    "implemented": "MemberPicker, InitialDevicePicker and ProjectDevices use Trang trước / Trang sau consistently",
+    "verification": "26 existing pagination/management/dialog tests PASS; labels only, no behavior change",
+    "commitPush": false
+  },
+  "ticketLabelsRemoveReload20261115": {
+    "status": "DONE",
+    "implemented": [
+      "Issue UI labels standardized as Ticket, including workbook export and backend messages",
+      "Routine reload buttons removed; read-only refresh on window return retains drafts; error retries remain"
+    ],
+    "verification": {
+      "frontend": "1444/1444 tests PASS, 162 files",
+      "backend": "8 executed PASS; 53 conditional integration tests skipped",
+      "build": "PASS; existing chunk size warning",
+      "coverage": "Not measured",
+      "runtime": "Local backend updated; health UP; V46 unchanged",
+      "chrome": "PASS: admin devices/users/projects, 39 Ticket list, detail draft retained on window return, case Ticket column and create form; no JS errors or main data writes"
+    },
+    "evidence": "docs/reviews/2026-11-15-ticket-labels-remove-reload.md",
+    "commitPush": false
+  },
+  "testCycleTerminology20261115": {
+    "status": "DONE",
+    "implemented": "Feature user-facing labels standardized as Đợt kiểm thử; Japanese テストサイクル; internal identifiers and historical user content preserved",
+    "verification": {
+      "frontend": "1444 tests PASS, 162 files",
+      "backend": "17 executed PASS, no skips",
+      "build": "PASS; existing chunk size warning",
+      "chrome": "PASS filter, list, create dialog and files; no JS errors or project-data writes",
+      "coverage": "Not measured",
+      "runtime": "Local backend health UP; V46 unchanged"
+    },
+    "evidence": "docs/reviews/2026-11-15-test-cycle-labels.md",
+    "commitPush": false
+  },
+  "ticketStatusFilterLabel20261115": {
+    "status": "DONE",
+    "implemented": "Rename Cột Ticket to Trạng thái and Tất cả cột to Tất cả trạng thái; filtering behavior unchanged",
+    "verification": "21 FeatureIssuesPage tests PASS",
+    "commitPush": false
+  },
+  "ticketCommentLayoutVideo20261115": {
+    "status": "DONE",
+    "implemented": [
+      "Compact comment composer with centered actor avatar, no verifier/milestone/hour controls; preserve stored planning data; direct allowed closure-reason selection and 40 px controls aligned with attachment toolbar; status defaults to actual ticket state (57 focused tests/build/Chrome PASS)",
+      "MP4 preview for drafts and saved comments; removed inline processed/coordinator/help notices to prevent composer layout shifts; status control/popup show Kanban color dots (179 tests/build/Chrome PASS)",
+      "Expanded drawer constrained to content beside sidebar and below header",
+      "Reference three-row properties layout, signed-in account avatar, 296 px desktop composer and Đăng action",
+      "Ticket Chỉnh sửa edits title/content/testing metadata in place, with header Save/Cancel; removes duplicate edit form; retains validation, permission checks and failed/conflicting drafts",
+      "Merged testing/source properties into the content card as always-visible Ghi chú bổ sung; two-column label/value rows with separators, assignee initials, responsive single-column layout and retained inline editing",
+      "Final supplementary scope: testing cycle name/environment/description, discovery version/date/object, case/file references, frequency, discovery environment/device only. Removed ticket management rows and priority editing from content PUT; 171 tests/build/Chrome PASS",
+      "Unified creation fields for page and case modal; one initial-state dropdown beside ticket type; frequency/environment/device/discovery version in a 2x2 grid, no separate source card; assignee labelled Người phụ trách. Monkey data remains manual and case version read-only.",
+      "User removed the entire deleted Monkey screen: removed restore entry button, visibility selector and listing restore UI; old /issues?deleted=true opens creation, board links ignore deleted flag. 168 work-items tests/build/Chrome PASS."
+    ],
+    "verification": {
+      "tests": "171 work-items tests PASS after shared creation fields, initial-state placement and metadata/assignee labels; coverage not measured",
+      "build": "PASS; existing chunk-size warning",
+      "chrome": "Supplementary notes in same content card, visible two-column layout, metadata edit/cancel and 390 px mobile width PASS; prior inline title/content/form association, compact composer/avatar/MP4/menu checks PASS; no project writes; creation page shared fields, single top state selector, 2x2 metadata, assignee label, manual Monkey draft/cancel and mobile width PASS. Case prefill/payload covered by component tests.",
+      "coverage": "Not measured"
+    },
+    "referenceLimitation": "Read supplied Figma Make HTML and nested Backlog reference.html; saved CSS missing and preview asset returns 401. Applied reference structure and screenshots with clear borders; no pixel-perfect claim. Additional 51 focused tests and build PASS.",
+    "evidence": "docs/reviews/2026-11-15-ticket-comment-layout-video.md",
+    "commitPush": false
+  },
+  "delivery20261115": {
+    "status": "VERIFIED",
+    "branch": "system-design",
+    "authorization": "User requested commit and push on 15/11/2026",
+    "scope": "Current frontend/backend changes, Flyway V41–V46 and development evidence",
+    "verification": {
+      "frontendTests": 1454,
+      "backendUnitTests": 52,
+      "frontendBuild": "PASS with existing chunk-size warning",
+      "gitDiffCheck": "PASS",
+      "coverage": "Not measured for this delivery",
+      "nativeIntegration": "Not rerun during publication; earlier evidence remains in individual reviews"
+    },
+    "excluded": "Local credentials, runtime copies, generated receipts and source workbooks in var; no database data export"
   }
 }

@@ -36,6 +36,12 @@ public class FeatureService {
         this.db=db;this.projects=projects;this.identity=identity;this.json=json;this.workbook=workbook;this.documents=documents;
     }
     public record Actor(boolean manager,Long membershipId) {}
+    public Map<String,Object> updateContext(long p,String actor,long d,long row,FeatureDtos.ExecutionContext input){
+        writer(p,actor,false);var doc=lockDocument(p,d);
+        var rows=db.queryForList("SELECT r.id,c.archived_at FROM import_rows r JOIN test_cases c ON c.project_id=r.project_id AND c.id=r.target_case_id WHERE r.project_id=? AND r.batch_id=? AND r.id=? FOR UPDATE",p,d,row);
+        if(rows.isEmpty())throw missing();if(rows.getFirst().get("archived_at")!=null)fail(409,"ARCHIVED","Case đã lưu trữ.");
+        return new CaseExecutionContextService(db,json).update(p,actor,num(doc,"featureId"),d,row,input);
+    }
     private Actor writer(long p,String actor,boolean manager) {
         var user=identity.lockCurrent(actor);
         var state=db.queryForList("SELECT archived_at FROM projects WHERE id=? FOR UPDATE",p);
@@ -55,7 +61,7 @@ public class FeatureService {
         var rows=db.queryForList("SELECT id,project_id AS projectId,name,environment,description,archived_at AS archivedAt,lock_version AS version,created_at AS createdAt,updated_at AS updatedAt FROM testing_features WHERE project_id=? AND id=?"+(lock?" FOR UPDATE":""),p,f);
         if(rows.isEmpty())throw missing();return rows.getFirst();
     }
-    private void active(Map<String,Object> value) {if(value.get("archivedAt")!=null)fail(409,"ARCHIVED","Feature hoặc file đã lưu trữ.");}
+    private void active(Map<String,Object> value) {if(value.get("archivedAt")!=null)fail(409,"ARCHIVED","Đợt kiểm thử hoặc file đã lưu trữ.");}
     private void version(Map<String,Object> value,long expected) {if(num(value,"version")!=expected)fail(409,"VERSION_CONFLICT","Dữ liệu đã thay đổi. Tải lại trước khi lưu.");}
     public boolean owns(long p,long d) {
         return Objects.requireNonNull(db.queryForObject("SELECT COUNT(*) FROM import_batches WHERE project_id=? AND id=? AND feature_id IS NOT NULL",Long.class,p,d))>0;
@@ -98,10 +104,35 @@ public class FeatureService {
         String name=input.name().trim();
         if(name.isEmpty()||name.length()>255)fail(422,"INVALID_TEST_VERSION","Tên version test phải có từ 1 đến 255 ký tự.");
         if(!db.queryForList("SELECT id FROM feature_test_versions WHERE project_id=? AND feature_id=? AND name=? AND deleted_at IS NULL",p,f,name).isEmpty())
-            fail(409,"TEST_VERSION_EXISTS","Version test này đã có trong Feature.");
+            fail(409,"TEST_VERSION_EXISTS","Version test này đã có trong Đợt kiểm thử.");
         long id=insert("INSERT INTO feature_test_versions(project_id,feature_id,name,created_by,created_at) VALUES(?,?,?,?,UTC_TIMESTAMP(6))",p,f,name,actor);
         var result=db.queryForMap("SELECT id,name,created_at AS createdAt FROM feature_test_versions WHERE id=?",id);
         remember(p,f,null,actor,key,"TEST_VERSION_CREATE",payload,result);return result;
+    }
+    @Transactional(readOnly=true)
+    public List<Map<String,Object>> testEnvironments(long p,String actor,long f) {
+        projects.requireReadAccess(p,actor);feature(p,f,false);
+        return db.queryForList("SELECT id,name,created_at AS createdAt FROM feature_test_environments WHERE project_id=? AND feature_id=? AND deleted_at IS NULL ORDER BY created_at DESC,id DESC",p,f);
+    }
+    public void deleteTestEnvironment(long p,String actor,long f,long id) {
+        writer(p,actor,true);active(feature(p,f,true));
+        var rows=db.queryForList("SELECT deleted_at FROM feature_test_environments WHERE project_id=? AND feature_id=? AND id=? FOR UPDATE",p,f,id);
+        if(rows.isEmpty())throw missing();
+        if(rows.getFirst().get("deleted_at")!=null)return;
+        db.update("UPDATE feature_test_environments SET deleted_at=UTC_TIMESTAMP(6),deleted_by=? WHERE project_id=? AND feature_id=? AND id=?",actor,p,f,id);
+        db.update("INSERT INTO project_audit(project_id,actor_id,entity_type,entity_id,action,occurred_at) VALUES(?,?,'FEATURE_TEST_ENVIRONMENT',?,'DELETE',UTC_TIMESTAMP(6))",p,actor,id);
+    }
+    public Map<String,Object> createTestEnvironment(long p,String actor,long f,FeatureDtos.CreateTestVersion input) {
+        writer(p,actor,true);active(feature(p,f,true));
+        String payload=encode(List.of(f,input)),key=input.requestKey().toString();
+        var replay=replay(p,actor,key,"TEST_ENVIRONMENT_CREATE",payload);if(replay!=null)return replay;
+        String name=input.name().trim();
+        if(name.isEmpty()||name.length()>255)fail(422,"INVALID_TEST_ENVIRONMENT","Tên môi trường phải có từ 1 đến 255 ký tự.");
+        if(!db.queryForList("SELECT id FROM feature_test_environments WHERE project_id=? AND feature_id=? AND name=? AND deleted_at IS NULL",p,f,name).isEmpty())
+            fail(409,"TEST_ENVIRONMENT_EXISTS","Môi trường này đã có trong Đợt kiểm thử.");
+        long id=insert("INSERT INTO feature_test_environments(project_id,feature_id,name,created_by,created_at) VALUES(?,?,?,?,UTC_TIMESTAMP(6))",p,f,name,actor);
+        var result=db.queryForMap("SELECT id,name,created_at AS createdAt FROM feature_test_environments WHERE id=?",id);
+        remember(p,f,null,actor,key,"TEST_ENVIRONMENT_CREATE",payload,result);return result;
     }
     @Transactional(readOnly=true)
     public Map<String,Object> list(long p,String actor,int page,int size,String keyword,boolean archived) {
@@ -118,7 +149,7 @@ public class FeatureService {
             case "", "created-desc" -> "created_at DESC,id DESC";
             case "created-asc" -> "created_at ASC,id ASC";
             case "name-asc" -> "name ASC,id ASC";
-            default -> throw new BusinessException(422,"INVALID_FILTER","Cách sắp xếp Feature không hợp lệ.");
+            default -> throw new BusinessException(422,"INVALID_FILTER","Cách sắp xếp Đợt kiểm thử không hợp lệ.");
         };
         String where=" WHERE project_id=? AND archived_at IS "+(archived?"NOT NULL":"NULL");
         List<Object> args=new ArrayList<>(List.of(p));
@@ -174,14 +205,14 @@ public class FeatureService {
         projects.requireReadAccess(p,actor);var parent=feature(p,f,false);validatePage(page,size,keyword);
         boolean projectActive=Boolean.TRUE.equals(db.queryForObject("SELECT archived_at IS NULL FROM projects WHERE id=?",Boolean.class,p));
         boolean manager=projects.isGlobalAdmin(actor)||isProjectPm(p,actor);
-        String blocked=!projectActive?"Khôi phục dự án tại Quản lý dự án trước.":parent.get("archivedAt")!=null?"Khôi phục Feature tại Danh sách Feature trước.":!manager?"Chỉ PM dự án hoặc Admin được khôi phục file.":"";
+        String blocked=!projectActive?"Khôi phục dự án tại Quản lý dự án trước.":parent.get("archivedAt")!=null?"Khôi phục Đợt kiểm thử tại Danh sách Đợt kiểm thử trước.":!manager?"Chỉ PM dự án hoặc Admin được khôi phục file.":"";
         String where=" WHERE project_id=? AND feature_id=? AND status='COMMITTED' AND archived_at IS "+(archived?"NOT NULL":"NULL");
         List<Object> args=new ArrayList<>(List.of(p,f));
         var search=MultiWordSearch.sql(keyword,"file_name");where+=search.sql();args.addAll(search.args());
         long total=Objects.requireNonNull(db.queryForObject("SELECT COUNT(*) FROM import_batches"+where,Long.class,args.toArray()));
         args.add(size);args.add((long)page*size);
         var items=db.queryForList("SELECT id,feature_id AS featureId,file_name AS fileName,sheet_name AS sheetName,mapping_version AS format,lock_version AS version,archived_at AS archivedAt,created_at AS createdAt,committed_at AS updatedAt,(source_workbook IS NOT NULL) AS hasSourceFile FROM import_batches"+where+" ORDER BY id DESC LIMIT ? OFFSET ?",args.toArray());
-        for(var item:items){long id=num(item,"id");item.putAll(metrics(p,f,id));item.put("canRestore",archived&&blocked.isEmpty());item.put("restoreBlockedReason",archived?blocked:"");item.put("assignees",db.queryForList("SELECT DISTINCT a.assignee_membership_id AS membershipId,u.display_name AS name FROM test_document_assignments a JOIN project_memberships m ON m.project_id=a.project_id AND m.id=a.assignee_membership_id JOIN identity_users u ON u.id=m.user_id WHERE a.project_id=? AND a.document_id=?",p,id));}
+        for(var item:items){long id=num(item,"id");item.putAll(metrics(p,f,id));item.put("canRestore",archived&&blocked.isEmpty());item.put("restoreBlockedReason",archived?blocked:"");item.put("assignees",ownerRows(p,id));}
         return page(items,total,page,size);
     }
     @Transactional(readOnly=true)
@@ -197,13 +228,15 @@ public class FeatureService {
         boolean projectActive=Objects.requireNonNull(db.queryForObject("SELECT archived_at IS NULL FROM projects WHERE id=?",Boolean.class,p));
         boolean writable=projectActive&&summary.get("archivedAt")==null&&feature(p,f,false).get("archivedAt")==null;
         @SuppressWarnings("unchecked") var rows=(List<Map<String,Object>>)detail.get("rows");
-        for(var row:rows){var a=byRow.get(((Number)row.get("rowId")).longValue());if(a!=null)row.putAll(a);row.put("canUpdateResult",writable&&(manager||(self!=null&&a!=null&&Objects.equals(self,a.get("assigneeMembershipId"))&&eligible(p,self))));}
+        boolean canTest=writable&&(manager||(self!=null&&eligible(p,self)));
+        for(var row:rows){var a=byRow.get(((Number)row.get("rowId")).longValue());if(a!=null)row.putAll(a);row.put("canUpdateResult",canTest&&!Boolean.TRUE.equals(row.get("archived")));}
+        detail.put("selfUserId",actor);
         detail.put("secondTests",List.of());detail.put("assignments",assignments);detail.put("canManage",manager&&writable);detail.put("canAssign",writable&&(manager||(self!=null&&eligible(p,self))));detail.put("canCreateIssue",writable&&(manager||(self!=null&&eligible(p,self))));detail.put("selfMembershipId",self);
         summary.put("canCreateIssue",detail.get("canCreateIssue"));
-        detail.put("testVersions",testVersions(p,actor,f));
+        detail.put("testVersions",testVersions(p,actor,f));detail.put("testEnvironments",testEnvironments(p,actor,f));
         var executions=new HashMap<Long,Map<String,Object>>();
-        for(var value:db.queryForList("SELECT e.row_id AS rowId,e.test_version_id AS testVersionId,v.name AS testVersionName,e.executed_on AS executedOn FROM test_document_result_executions e JOIN import_rows ir ON ir.project_id=e.project_id AND ir.id=e.row_id AND ir.result_version=e.result_version JOIN feature_test_versions v ON v.id=e.test_version_id WHERE e.project_id=? AND e.document_id=?",p,d))executions.put(num(value,"rowId"),value);
-        for(var value:rows){var execution=executions.get(num(value,"rowId"));if(execution!=null)value.putAll(execution);}
+        for(var value:db.queryForList("SELECT e.row_id AS rowId,e.test_version_id AS testVersionId,v.name AS testVersionName,e.executed_on AS executedOn FROM test_document_result_executions e JOIN import_rows ir ON ir.project_id=e.project_id AND ir.id=e.row_id AND ir.result_version=e.result_version LEFT JOIN feature_test_versions v ON v.id=e.test_version_id WHERE e.project_id=? AND e.document_id=?",p,d))executions.put(num(value,"rowId"),value);
+        var contexts=new CaseExecutionContextService(db,json).document(p,d);for(var value:rows){var execution=executions.get(num(value,"rowId"));if(execution!=null)value.putAll(execution);value.putAll(contexts.get(num(value,"rowId")));}
         return detail;
     }
     public Map<String,Object> hideDocument(long p,String actor,long f,long d,FeatureDtos.Version input) {
@@ -227,12 +260,12 @@ public class FeatureService {
         return result;
     }
     public Map<String,Object> preview(long p,String actor,long f,MultipartFile file) {
-        writer(p,actor,true);active(feature(p,f,true));var parsed=workbook.parse(file);
+        writer(p,actor,true);active(feature(p,f,true));var parsed=workbook.parseFeature(file);
         for(var row:parsed.rows())if(row.caseNo()==null||row.caseNo().isBlank()||row.caseNo().length()>64)
             fail(422,"INVALID_WORKBOOK","ID nguồn bắt buộc, tối đa 64 ký tự. Không rút gọn ID khi nhập file.");
         Set<String> ids=new HashSet<>();for(var row:parsed.rows()){
-            if(!ids.add(row.caseNo().toUpperCase(Locale.ROOT))||row.titleVi().isBlank()||row.titleVi().length()>255||row.stepsVi().isBlank()||row.expectedVi().isBlank()||row.titleJp().length()>255||row.sourceReference().length()>255)
-                fail(422,"IMPORT_HAS_ERRORS","Kiểm tra ID và nội dung case bắt buộc trong file.");
+            if(!ids.add(row.caseNo().toUpperCase(Locale.ROOT)))
+                fail(422,"IMPORT_HAS_ERRORS","Dòng "+row.rowNumber()+": ID nguồn bị trùng trong file.");
         }
         long d=insert("INSERT INTO import_batches(project_id,feature_id,file_name,file_checksum,status,mapping_version,total_rows,valid_rows,error_rows,staged_expires_at,imported_by,created_at,sheet_name,source_workbook) VALUES(?,?,?,?,'PREVIEW',?,?,?,0,DATE_ADD(UTC_TIMESTAMP(6),INTERVAL 24 HOUR),?,UTC_TIMESTAMP(6),?,?)",p,f,parsed.fileName(),parsed.checksum(),parsed.format(),parsed.rows().size(),parsed.rows().size(),actor,parsed.sheetName(),parsed.sourceBytes());
         for(var row:parsed.rows())db.update("INSERT INTO import_rows(project_id,batch_id,source_row_number,source_case_key,suite_code,raw_data_json,is_valid,created_at) VALUES(?,?,?,?,?,?,TRUE,UTC_TIMESTAMP(6))",p,d,row.rowNumber(),row.caseNo(),"XLSX-"+d,encode(row));
@@ -249,8 +282,9 @@ public class FeatureService {
         writer(p,actor,true);active(feature(p,f,true));var doc=lockDocument(p,d);if(num(doc,"featureId")!=f)throw missing();
         var preview=getPreview(p,actor,f,d);if("COMMITTED".equals(preview.get("status")))return documentSummary(p,actor,f,d);
         if(!"PREVIEW".equals(preview.get("status")))fail(410,"EXPIRED","Bản xem trước đã hết hạn.");
-        long suite=insert("INSERT INTO test_suites(project_id,code,name,description,sort_order,created_at,updated_at) VALUES(?,?,?,'Feature-owned workbook',0,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",p,"XLSX-"+d,shorten(String.valueOf(preview.get("fileName")),100));
-        for(var row:db.queryForList("SELECT id,source_row_number,raw_data_json FROM import_rows WHERE project_id=? AND batch_id=? ORDER BY id FOR UPDATE",p,d)){
+        long suite=insert("INSERT INTO test_suites(project_id,code,name,description,sort_order,created_at,updated_at) VALUES(?,?,?,'Đợt kiểm thử-owned workbook',0,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",p,"XLSX-"+d,shorten(String.valueOf(preview.get("fileName")),100));
+        // Walk the existing source-order index; sorting whole JSON payloads can exhaust MySQL's sort buffer.
+        for(var row:db.queryForList("SELECT id,source_row_number,raw_data_json FROM import_rows FORCE INDEX (uq_ir_batch_row) WHERE project_id=? AND batch_id=? ORDER BY source_row_number FOR UPDATE",p,d)){
             TestCaseDtos.ImportRowInput input=decode(String.valueOf(row.get("raw_data_json")),TestCaseDtos.ImportRowInput.class);long rowId=num(row,"id");
             long c=insert("INSERT INTO test_cases(project_id,case_no,suite_id,owning_document_id,created_at,updated_at) VALUES(?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",p,"XLSX-"+d+"-"+num(row,"source_row_number"),suite,d);
             long revision=insert("INSERT INTO test_case_revisions(project_id,test_case_id,revision_no,title_vi,preconditions_vi,steps_vi,expected_vi,title_jp,preconditions_jp,steps_jp,expected_jp,source_reference,created_by_user_id,created_at) VALUES(?,?,1,?,?,?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6))",p,c,input.titleVi(),input.preconditionsVi(),input.stepsVi(),input.expectedVi(),input.titleJp(),input.preconditionsJp(),input.stepsJp(),input.expectedJp(),input.sourceReference(),actor);
@@ -264,6 +298,53 @@ public class FeatureService {
     private Map<String,Object> documentSummary(long p,String actor,long f,long d) {
         @SuppressWarnings("unchecked") var result=(Map<String,Object>)detail(p,actor,d).get("document");return result;
     }
+    private List<Map<String,Object>> ownerRows(long p,long d) {
+        return db.queryForList("SELECT o.membership_id AS membershipId,u.display_name AS name FROM test_document_owners o JOIN project_memberships m ON m.project_id=o.project_id AND m.id=o.membership_id JOIN identity_users u ON u.id=m.user_id WHERE o.project_id=? AND o.document_id=? ORDER BY u.display_name,o.membership_id",p,d);
+    }
+    @Transactional(readOnly=true)
+    public Map<String,Object> owners(long p,String actor,long d) {
+        projects.requireReadAccess(p,actor);
+        var docs=db.queryForList("SELECT lock_version AS version FROM import_batches WHERE project_id=? AND id=? AND feature_id IS NOT NULL AND status='COMMITTED'",p,d);
+        if(docs.isEmpty())throw missing();
+        return Map.of("version",docs.getFirst().get("version"),"items",ownerRows(p,d));
+    }
+    public Map<String,Object> setOwners(long p,String actor,long d,FeatureDtos.Owners input) {
+        writer(p,actor,true);var doc=lockDocument(p,d);
+        String key=input.requestKey().toString(),payload=encode(List.of(d,input));
+        var replay=replay(p,actor,key,"DOCUMENT_OWNERS",payload);if(replay!=null)return replay;
+        version(doc,input.expectedVersion());
+        var selected=new LinkedHashSet<>(input.membershipIds());
+        if(selected.size()!=input.membershipIds().size())fail(422,"INVALID_MEMBERS","Danh sách thành viên bị trùng.");
+        for(Long member:selected)if(!Objects.equals(1L,db.queryForObject("SELECT COUNT(*) FROM project_memberships m JOIN identity_users u ON u.id=m.user_id WHERE m.project_id=? AND m.id=? AND m.active=TRUE AND u.enabled=TRUE",Long.class,p,member)))
+            fail(422,"INVALID_MEMBERS","Chọn thành viên đang hoạt động trong dự án.");
+        db.update("DELETE FROM test_document_owners WHERE project_id=? AND document_id=?",p,d);
+        for(Long member:selected)db.update("INSERT INTO test_document_owners(project_id,document_id,membership_id) VALUES(?,?,?)",p,d,member);
+        db.update("UPDATE import_batches SET lock_version=lock_version+1 WHERE project_id=? AND id=?",p,d);
+        db.update("INSERT INTO project_audit(project_id,actor_id,entity_type,entity_id,action,occurred_at) VALUES(?,?,'TEST_DOCUMENT',?,'OWNERS_CHANGED',UTC_TIMESTAMP(6))",p,actor,d);
+        var result=owners(p,actor,d);remember(p,num(doc,"featureId"),d,actor,key,"DOCUMENT_OWNERS",payload,result);return result;
+    }
+    public Map<String,Object> claim(long p,String actor,long d,FeatureDtos.SelfAssignment input) {
+        writer(p,actor,false);var doc=lockDocument(p,d);
+        String key=input.requestKey().toString(),payload=encode(List.of(d,input));
+        var replay=replay(p,actor,key,"SELF_ASSIGNMENT",payload);if(replay!=null)return replay;
+        version(doc,input.expectedVersion());
+        var current=db.queryForList("SELECT row_id,assignee_user_id,assignee_membership_id FROM test_document_assignments WHERE project_id=? AND document_id=? ORDER BY row_id FOR UPDATE",p,d);
+        var selected=new HashSet<>(input.rowIds());
+        var known=new HashSet<Long>();for(var row:current)known.add(num(row,"row_id"));
+        if(selected.size()!=input.rowIds().size()||!known.containsAll(selected))fail(422,"INVALID_SCOPE","Phạm vi case không hợp lệ hoặc không thuộc file.");
+        for(var row:current)if(selected.contains(num(row,"row_id"))&&row.get("assignee_user_id")!=null&&!actor.equals(row.get("assignee_user_id")))
+            fail(409,"ASSIGNMENT_CONFLICT","Phạm vi đã có người nhận. Bạn vẫn có thể cập nhật Status để xác nhận.");
+        Long self=membership(p,actor);
+        for(var row:current){
+            long rowId=num(row,"row_id");Object previous=row.get("assignee_user_id");
+            String next=selected.contains(rowId)?actor:actor.equals(previous)?null:(String)previous;
+            if(Objects.equals(previous,next))continue;
+            db.update("UPDATE test_document_assignments SET assignee_user_id=?,assignee_membership_id=?,first_tester_membership_id=CASE WHEN first_tester_user_id IS NULL THEN COALESCE(first_tester_membership_id,?) ELSE first_tester_membership_id END,first_tester_user_id=COALESCE(first_tester_user_id,?) WHERE project_id=? AND row_id=?",next,next==null?null:self,next==null?null:self,next,p,rowId);
+            db.update("INSERT INTO test_document_assignment_changes(project_id,document_id,row_id,previous_membership_id,new_membership_id,previous_user_id,new_user_id,actor_id,changed_at,document_version,request_key) VALUES(?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6),?,?)",p,d,rowId,row.get("assignee_membership_id"),next==null?null:self,previous,next,actor,input.expectedVersion()+1,key);
+        }
+        db.update("UPDATE import_batches SET lock_version=lock_version+1 WHERE project_id=? AND id=?",p,d);
+        var result=assignments(p,actor,d);remember(p,num(doc,"featureId"),d,actor,key,"SELF_ASSIGNMENT",payload,result);return result;
+    }
     @Transactional(readOnly=true)
     public Map<String,Object> assignments(long p,String actor,long d) {
         projects.requireReadAccess(p,actor);var docs=db.queryForList("SELECT id,feature_id AS featureId,lock_version AS version FROM import_batches WHERE project_id=? AND id=? AND feature_id IS NOT NULL AND status='COMMITTED'",p,d);if(docs.isEmpty())throw missing();
@@ -272,35 +353,39 @@ public class FeatureService {
     public Map<String,Object> assign(long p,String actor,long d,FeatureDtos.Assignments input) {
         Actor caller=writer(p,actor,false);var doc=lockDocument(p,d);if(!"COMMITTED".equals(doc.get("status")))throw missing();
         String payload=encode(List.of(d,input)),key=input.requestKey().toString();var replay=replay(p,actor,key,"ASSIGNMENTS",payload);if(replay!=null)return replay;
-        version(doc,input.expectedVersion());var current=new LinkedHashMap<Long,Long>();
-        for(var row:db.queryForList("SELECT row_id,assignee_membership_id FROM test_document_assignments WHERE project_id=? AND document_id=? ORDER BY row_id FOR UPDATE",p,d))current.put(num(row,"row_id"),(Long)row.get("assignee_membership_id"));
+        version(doc,input.expectedVersion());var current=new LinkedHashMap<Long,Long>();var currentUsers=new HashMap<Long,String>();
+        for(var row:db.queryForList("SELECT row_id,assignee_membership_id,assignee_user_id FROM test_document_assignments WHERE project_id=? AND document_id=? ORDER BY row_id FOR UPDATE",p,d)){current.put(num(row,"row_id"),(Long)row.get("assignee_membership_id"));currentUsers.put(num(row,"row_id"),(String)row.get("assignee_user_id"));}
         for(var scope:input.changes())if(!eligible(p,scope.assigneeMembershipId()))fail(422,"USER_REQUIRED","Chọn User thường đang hoạt động trong dự án.");
+        if(!caller.manager())for(var scope:input.changes())for(Long rowId:scope.rowIds())if(currentUsers.get(rowId)!=null&&!actor.equals(currentUsers.get(rowId)))
+            fail(409,"ASSIGNMENT_CONFLICT","Phạm vi đã có người nhận. Bạn vẫn có thể cập nhật Status để xác nhận.");
         var next=AssignmentPlan.apply(current,input.changes().stream().map(s->new AssignmentPlan.Change(s.assigneeMembershipId(),s.rowIds())).toList(),caller.membershipId(),caller.manager());
         for(var entry:next.entrySet())if(!Objects.equals(current.get(entry.getKey()),entry.getValue())){
-            db.update("UPDATE test_document_assignments SET latest_tester_membership_id=CASE WHEN first_tester_membership_id IS NOT NULL AND ? IS NOT NULL THEN ? ELSE latest_tester_membership_id END,first_tester_membership_id=COALESCE(first_tester_membership_id,?),assignee_membership_id=? WHERE project_id=? AND row_id=?",entry.getValue(),entry.getValue(),entry.getValue(),entry.getValue(),p,entry.getKey());
-            db.update("INSERT INTO test_document_assignment_changes(project_id,document_id,row_id,previous_membership_id,new_membership_id,actor_id,changed_at,document_version,request_key) VALUES(?,?,?,?,?,?,UTC_TIMESTAMP(6),?,?)",p,d,entry.getKey(),current.get(entry.getKey()),entry.getValue(),actor,input.expectedVersion()+1,key);
+            db.update("UPDATE test_document_assignments SET latest_tester_membership_id=CASE WHEN first_tester_membership_id IS NOT NULL AND ? IS NOT NULL THEN ? ELSE latest_tester_membership_id END,first_tester_membership_id=CASE WHEN first_tester_user_id IS NULL THEN COALESCE(first_tester_membership_id,?) ELSE first_tester_membership_id END,assignee_membership_id=?,assignee_user_id=(SELECT user_id FROM project_memberships WHERE project_id=? AND id=?),first_tester_user_id=COALESCE(first_tester_user_id,(SELECT user_id FROM project_memberships WHERE project_id=? AND id=?)) WHERE project_id=? AND row_id=?",entry.getValue(),entry.getValue(),entry.getValue(),entry.getValue(),p,entry.getValue(),p,entry.getValue(),p,entry.getKey());
+            db.update("INSERT INTO test_document_assignment_changes(project_id,document_id,row_id,previous_membership_id,new_membership_id,previous_user_id,new_user_id,actor_id,changed_at,document_version,request_key) VALUES(?,?,?,?,?,?,(SELECT user_id FROM project_memberships WHERE project_id=? AND id=?),?,UTC_TIMESTAMP(6),?,?)",p,d,entry.getKey(),current.get(entry.getKey()),entry.getValue(),currentUsers.get(entry.getKey()),p,entry.getValue(),actor,input.expectedVersion()+1,key);
         }
         db.update("UPDATE import_batches SET lock_version=lock_version+1 WHERE project_id=? AND id=?",p,d);
         var result=assignments(p,actor,d);remember(p,num(doc,"featureId"),d,actor,key,"ASSIGNMENTS",payload,result);return result;
     }
     public TestDocumentDtos.Result updateResult(long p,String actor,long d,long row,TestDocumentDtos.UpdateResult input) {
-        Actor caller=writer(p,actor,false);var document=lockDocument(p,d);
+        writer(p,actor,false);var document=lockDocument(p,d);
         var rows=db.queryForList("SELECT assignee_membership_id FROM test_document_assignments WHERE project_id=? AND document_id=? AND row_id=? FOR UPDATE",p,d,row);
         if(rows.isEmpty())throw missing();
-        if(!caller.manager()&&!Objects.equals(caller.membershipId(),rows.getFirst().get("assignee_membership_id")))fail(403,"FORBIDDEN","Case này không thuộc phạm vi bạn phụ trách.");
         if(!Set.of("UNEXECUTED","OK","NG","P","NA").contains(input.status()))fail(422,"INVALID_STATUS","Status không hợp lệ.");
-        if(input.testVersionId()==null&&!testVersions(p,actor,num(document,"featureId")).isEmpty())
+        if(input.testVersionId()==null&&new CaseExecutionContextService(db,json).read(p,row).get("testVersionId")==null&&!testVersions(p,actor,num(document,"featureId")).isEmpty())
             fail(422,"TEST_VERSION_REQUIRED","Chọn version test và ngày thực hiện trước khi ghi kết quả.");
-        return documents.updateResult(p,actor,d,row,input);
+        var saved=documents.updateResult(p,actor,d,row,input);
+        db.update("UPDATE test_document_assignments SET first_tester_user_id=COALESCE(first_tester_user_id,?) WHERE project_id=? AND document_id=? AND row_id=?",actor,p,d,row);
+        String first=db.queryForObject("SELECT u.display_name FROM test_document_assignments a JOIN identity_users u ON u.id=a.first_tester_user_id WHERE a.project_id=? AND a.row_id=?",String.class,p,row);
+        return new TestDocumentDtos.Result(saved.rowId(),saved.status(),saved.version(),saved.updatedAt(),saved.updatedBy(),saved.testVersionId(),saved.testVersionName(),saved.executedOn(),first,saved.environmentId(),saved.environmentName(),saved.contextVersion());
     }
     @Transactional(readOnly=true)
     public Map<String,Object> history(long p,String actor,long d,long before) {
         assignments(p,actor,d);if(before<0)fail(422,"INVALID_REQUEST","Mốc lịch sử không hợp lệ.");
-        var items=db.queryForList("SELECT h.id,h.row_id AS rowId,h.previous_membership_id AS previousMembershipId,h.new_membership_id AS newMembershipId,u.display_name AS actor,h.changed_at AS changedAt,h.document_version AS documentVersion FROM test_document_assignment_changes h JOIN identity_users u ON u.id=h.actor_id WHERE h.project_id=? AND h.document_id=? AND (?=0 OR h.id<?) ORDER BY h.id DESC LIMIT 51",p,d,before,before);
+        var items=db.queryForList("SELECT h.id,h.row_id AS rowId,h.previous_membership_id AS previousMembershipId,h.new_membership_id AS newMembershipId,pu.display_name AS previousName,nu.display_name AS newName,u.display_name AS actor,h.changed_at AS changedAt,h.document_version AS documentVersion FROM test_document_assignment_changes h JOIN identity_users u ON u.id=h.actor_id LEFT JOIN identity_users pu ON pu.id=h.previous_user_id LEFT JOIN identity_users nu ON nu.id=h.new_user_id WHERE h.project_id=? AND h.document_id=? AND (?=0 OR h.id<?) ORDER BY h.id DESC LIMIT 51",p,d,before,before);
         boolean more=items.size()>50;if(more)items=new ArrayList<>(items.subList(0,50));var result=new LinkedHashMap<String,Object>();result.put("items",items);result.put("nextBefore",more?items.getLast().get("id"):null);return result;
     }
     private List<Map<String,Object>> assignmentRows(long p,long d) {
-        return db.queryForList("SELECT a.row_id AS rowId,a.assignee_membership_id AS assigneeMembershipId,u.display_name AS assigneeName,f.display_name AS firstTesterName,l.display_name AS latestTesterName FROM test_document_assignments a LEFT JOIN project_memberships m ON m.project_id=a.project_id AND m.id=a.assignee_membership_id LEFT JOIN identity_users u ON u.id=m.user_id LEFT JOIN project_memberships fm ON fm.project_id=a.project_id AND fm.id=a.first_tester_membership_id LEFT JOIN identity_users f ON f.id=fm.user_id LEFT JOIN project_memberships lm ON lm.project_id=a.project_id AND lm.id=a.latest_tester_membership_id LEFT JOIN identity_users l ON l.id=lm.user_id WHERE a.project_id=? AND a.document_id=? ORDER BY a.row_id",p,d);
+        return db.queryForList("SELECT a.row_id AS rowId,a.assignee_membership_id AS assigneeMembershipId,a.assignee_user_id AS assigneeUserId,u.display_name AS assigneeName,f.display_name AS firstTesterName,l.display_name AS latestTesterName FROM test_document_assignments a LEFT JOIN identity_users u ON u.id=a.assignee_user_id LEFT JOIN identity_users f ON f.id=a.first_tester_user_id LEFT JOIN project_memberships lm ON lm.project_id=a.project_id AND lm.id=a.latest_tester_membership_id LEFT JOIN identity_users l ON l.id=lm.user_id WHERE a.project_id=? AND a.document_id=? ORDER BY a.row_id",p,d);
     }
     private Map<String,Object> metrics(long p,long f,Long d) {
         List<Object> args=new ArrayList<>(List.of(p,f));String filter=d==null?" AND b.archived_at IS NULL":" AND b.id=?";if(d!=null)args.add(d);
@@ -327,6 +412,6 @@ public class FeatureService {
     private static String shorten(String value,int max){return value.length()>max?value.substring(0,max):value;}
     public static long num(Map<String,Object> value,String key){return ((Number)value.get(key)).longValue();}
     private static boolean truth(Object value){return Boolean.TRUE.equals(value)||value instanceof Number n&&n.intValue()!=0;}
-    private static BusinessException missing(){return new BusinessException(404,"NOT_FOUND","Không tìm thấy dữ liệu trong dự án/Feature này.");}
+    private static BusinessException missing(){return new BusinessException(404,"NOT_FOUND","Không tìm thấy dữ liệu trong dự án/Đợt kiểm thử này.");}
     private static void fail(int status,String code,String message){throw new BusinessException(status,code,message);}
 }

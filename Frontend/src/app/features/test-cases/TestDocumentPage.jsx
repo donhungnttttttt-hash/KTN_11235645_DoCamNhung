@@ -1,7 +1,9 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import { isProjectObserver, isProjectDeveloper, canManageProjectWork } from '../projects/projectAccess';
 import {matchesSearch} from '../../utils/multiWordSearch';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, Download, FileSpreadsheet, Search, ClipboardList, RefreshCw, Table2, Highlighter, ChevronLeft, ChevronRight, List } from 'lucide-react';
+import { ArrowLeft, Download, FileSpreadsheet, Search, ClipboardList, Table2, Highlighter, ChevronLeft, ChevronRight, List } from 'lucide-react';
 import { useProject } from '../projects/ProjectProvider';
 import { useAuth } from '../auth/AuthProvider';
 import { testCasesApi } from '../../services/api/testCases';
@@ -50,6 +52,7 @@ export function TestDocumentPage({ documentId, navigate }) {
 }
 
 function DocumentGrid({ project, documentId, navigate }) {
+ useRefreshOnReturn(()=>{if(!loading&&results.pending===0)load();});
   const {hasRole}=useAuth();
   const dev=isProjectDeveloper(project,hasRole);
   const readOnly=dev || isProjectObserver(project, hasRole);
@@ -147,7 +150,7 @@ function DocumentGrid({ project, documentId, navigate }) {
     const field=customer ? Object.keys(columns).find(key=>columns[key]===index) : ['','','titleVi','preconditionsVi','stepsVi','expectedVi','titleJp','preconditionsJp','stepsJp','expectedJp','sourceReference'][index];
     const canonical=['titleVi','preconditionsVi','stepsVi','expectedVi','titleJp','preconditionsJp','stepsJp','expectedJp','sourceReference'].includes(field);
     setEditing({row,index,value:row.cells[index] || '',version:data.cellVersions?.[row.rowId]?.[index] || 0,
-      label:headers[index] || 'Cột '+String.fromCharCode(65+index),canonical,maxLength:['titleVi','titleJp','sourceReference'].includes(field)?255:8000});
+      label:headers[index] || 'Cột '+String.fromCharCode(65+index),canonical});
   }
   return <div className={`td-page td-document ${highlight?'td-highlight':''}`}>
     <div className="td-sheet-title">
@@ -164,16 +167,16 @@ function DocumentGrid({ project, documentId, navigate }) {
       </div>
       <label className="td-search"><Search size={15}/><input type="search" aria-label="Tìm trong tài liệu" placeholder="Tìm ID, nội dung..." value={search} onChange={e => {setSearch(e.target.value);setPage(0);}}/></label>
       <div className="td-actions">
-        {customer && resultColumn!=null && <select aria-label="Lọc kết quả" value={resultFilter} onChange={e=>{setResultFilter(e.target.value);setPage(0);}}><option value="">Tất cả kết quả</option>{resultOptions.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select>}
+        {customer && resultColumn!=null && <UnifiedSelect aria-label="Lọc kết quả" value={resultFilter} onChange={e=>{setResultFilter(e.target.value);setPage(0);}}><option value="">Tất cả kết quả</option>{resultOptions.map(([key,label])=><option key={key} value={key}>{label}</option>)}</UnifiedSelect>}
         <button className="cat-btn" onClick={clearFilters}>Xóa bộ lọc</button>
         <button className="cat-btn cat-btn-mint" aria-describedby="td-export-scope" disabled={downloading || loading || results.pending>0 || !!results.error} onClick={() => download(false)}><Download size={14}/> Xuất Excel</button>
         {doc.hasSourceFile && <button className="cat-btn" aria-describedby="td-original-scope" disabled={downloading || loading} onClick={() => download(true)}>Tải file gốc</button>}
         <button className="cat-btn" onClick={() => navigate('/tests/cycles')}><ClipboardList size={14}/> Đợt kiểm thử</button>
-        <button className="cat-btn" aria-label="Làm mới bảng case" disabled={loading || results.pending>0} onClick={load}><RefreshCw size={14}/></button>
+
       </div>
     <div className="td-toolbar-pagination" aria-label="Điều khiển bảng">
       <div className="td-actions"><button className="cat-btn" aria-label="Trang trước" disabled={currentPage===0} onClick={()=>setPage(currentPage-1)}><ChevronLeft size={16}/></button><span>Trang {currentPage+1} / {totalPages}</span><button className="cat-btn" aria-label="Trang sau" disabled={currentPage+1>=totalPages} onClick={()=>setPage(currentPage+1)}><ChevronRight size={16}/></button>
-        <label>Hiển thị: <select aria-label="Số dòng mỗi trang" value={pageSize} onChange={e=>{setPageSize(Number(e.target.value));setPage(0);}}>{[20,50,100].map(size=><option key={size}>{size}</option>)}</select></label>
+        <label>Hiển thị: <UnifiedSelect aria-label="Số dòng mỗi trang" value={pageSize} onChange={e=>{setPageSize(Number(e.target.value));setPage(0);}}>{[20,50,100].map(size=><option key={size}>{size}</option>)}</UnifiedSelect></label>
         <label className="td-font-control">Cỡ chữ: <input type="range" aria-label="Cỡ chữ bảng" min="11" max="18" value={fontSize} onChange={e=>setFontSize(Number(e.target.value))}/><span>{fontSize}</span></label>
       </div>
       <span>{rows.length ? currentPage*pageSize+1 : 0}–{Math.min((currentPage+1)*pageSize,rows.length)} / {rows.length} dòng</span>
@@ -182,7 +185,7 @@ function DocumentGrid({ project, documentId, navigate }) {
     <p className="td-export-help"><span id="td-export-scope">Xuất Excel lấy toàn bộ tài liệu đã lưu, kể cả các dòng bị ẩn bởi bộ lọc hoặc phân trang.</span>{doc.hasSourceFile&&<> <span id="td-original-scope">File gốc giữ nguyên bản đã nhập.</span></>}{customer&&<> Kết quả thực thi theo đợt/build được xuất riêng tại Công việc theo file.</>}</p>
     {showSummary && <section className="td-sheet-summary" aria-label="Tổng quan tài liệu"><strong>{doc.totalRows} dòng · {doc.caseCount} test case</strong><span>Cập nhật: {documentDate(lastSaved?.updatedAt || doc.updatedAt,project.timezone)} · {lastSaved?.updatedBy || doc.updatedBy}</span>{customer && <div><strong>Kết quả tài liệu:</strong>{resultOptions.map(([key,label])=><span key={key}>{label}: <b>{displayRows.filter(row=>resultKey(row.cells[resultColumn])===key).length}</b></span>)}</div>}</section>}
     {downloadError && <div role="alert" className="td-error">{downloadError}</div>}
-    {results.error && <div role="alert" className="td-error">{results.error} <button className="cat-btn" disabled={results.pending>0} onClick={load}>Tải lại kết quả đã lưu</button></div>}
+    {results.error && <div role="alert" className="td-error">{results.error} {(results.error)&&<button className="cat-btn" disabled={results.pending>0} onClick={load}>Thử lại kết quả đã lưu</button>}</div>}
     <div role="status" className="td-source-note">{results.pending ? 'Đang lưu kết quả…' : results.error ? 'Chưa xác nhận được kết quả. Hãy tải lại bảng.' : lastSaved ? `Đã lưu · ${lastSaved.updatedBy} · ${documentDate(lastSaved.updatedAt,project.timezone)}` : ''}</div>
     {downloading && <p role="status" className="td-muted">Đang chuẩn bị file Excel...</p>}
     <DocumentExecutionControls execution={execution} project={project} navigate={navigate} onSaved={load}/>

@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import {render,screen,fireEvent,waitFor} from '@testing-library/react';
 import {it,expect,vi} from 'vitest';
@@ -8,7 +9,7 @@ it('saves both duties without changing roles, retains a conflict draft and expli
  render(<TicketResponsibilities projectId={1} api={api}/>);
  fireEvent.click(await screen.findByLabelText('Lan · Xác nhận spec'));fireEvent.click(screen.getByLabelText('Lan · Điều phối Bug'));fireEvent.click(screen.getByRole('button',{name:'Lưu trách nhiệm Lan'}));
  expect(await screen.findByText(/Version conflict/)).toBeInTheDocument();expect(screen.getByLabelText('Lan · Điều phối Bug')).toBeChecked();
- fireEvent.click(screen.getByRole('button',{name:'Tải lại trách nhiệm'}));await waitFor(()=>expect(api.responsibilities).toHaveBeenCalledTimes(2));
+ refreshEvent.focus(window);await waitFor(()=>expect(api.responsibilities).toHaveBeenCalledTimes(2));
  fireEvent.click(screen.getByRole('button',{name:'Lưu trách nhiệm Lan'}));await waitFor(()=>expect(api.updateResponsibilities).toHaveBeenLastCalledWith(1,11,{duties:['SPEC_REVIEWER','BUG_COORDINATOR'],expectedVersion:3},expect.anything()));
  expect(await screen.findByText('Đã lưu trách nhiệm Lan.')).toBeInTheDocument();expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
 });

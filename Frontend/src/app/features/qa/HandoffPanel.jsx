@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React, { useEffect, useRef, useState } from 'react';
 import { qaApi } from '../../services/api/qa';
 import { Button } from '../work-items/components';
@@ -24,7 +25,7 @@ export function HandoffPanel({ projectId, navigate }) {
   function filter(key, value) { setQuery({ ...currentQuery, [key]: value, page: key === 'page' ? value : 0 }); }
   return <section className="wi-section" aria-label="Hàng chờ bàn giao">
     <h3>Hàng chờ bàn giao BUG</h3><p className="wi-note">Dữ liệu vòng kiểm thử hiện tại từ máy chủ. PM mở chi tiết để chuẩn bị kiểm thử lại hoặc đối chiếu điều kiện kết thúc.</p>
-    <div className="wi-fields"><label className="wi-field"><span>Trạng thái bàn giao</span><select value={currentQuery.state} onChange={e => filter('state', e.target.value)}><option value="">Tất cả</option>{Object.entries(states).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label className="wi-field"><span>Tìm BUG bàn giao</span><input value={currentQuery.keyword} maxLength={255} onChange={e => filter('keyword', e.target.value)} /></label></div>
+    <div className="wi-fields"><label className="wi-field"><span>Trạng thái bàn giao</span><UnifiedSelect value={currentQuery.state} onChange={e => filter('state', e.target.value)}><option value="">Tất cả</option>{Object.entries(states).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</UnifiedSelect></label><label className="wi-field"><span>Tìm BUG bàn giao</span><input value={currentQuery.keyword} maxLength={255} onChange={e => filter('keyword', e.target.value)} /></label></div>
     {current.loading && <p role="status">Đang tải hàng chờ…</p>}
     {current.error && <div className="wi-error" role="alert"><p>{current.error}</p>{current.status === 403 && <p>Hàng chờ dành cho PM dự án hiện tại.</p>}<Button onClick={() => setRetry(v => v + 1)}>Thử lại</Button></div>}
     {current.data && <>
@@ -40,7 +41,7 @@ export function HandoffPanel({ projectId, navigate }) {
           {row.state === 'VERIFYING' && <p>PM đối chiếu yêu cầu, kết quả và điều kiện kết thúc hiện hành.</p>}
         </article>;
       })}
-      <div className="wi-actions"><Button disabled={!currentQuery.page} onClick={() => filter('page', currentQuery.page - 1)}>Bàn giao trước</Button><span>Trang {current.data.page + 1}/{Math.max(1, current.data.totalPages)} · {current.data.totalItems} BUG</span><Button disabled={currentQuery.page + 1 >= current.data.totalPages} onClick={() => filter('page', currentQuery.page + 1)}>Bàn giao tiếp</Button><Button onClick={() => setRetry(v => v + 1)}>Tải lại hàng chờ</Button></div>
+      <div className="wi-actions"><Button disabled={!currentQuery.page} onClick={() => filter('page', currentQuery.page - 1)}>Bàn giao trước</Button><span>Trang {current.data.page + 1}/{Math.max(1, current.data.totalPages)} · {current.data.totalItems} BUG</span><Button disabled={currentQuery.page + 1 >= current.data.totalPages} onClick={() => filter('page', currentQuery.page + 1)}>Bàn giao tiếp</Button></div>
     </>}
   </section>;
 }

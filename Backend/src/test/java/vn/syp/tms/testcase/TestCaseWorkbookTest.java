@@ -26,9 +26,13 @@ class TestCaseWorkbookTest {
     }
     @Test void rejectsWrongHeaderAndTooManyRows() throws Exception {
         byte[] badHeader=mutate(b->b.getSheetAt(0).getRow(0).getCell(0).setCellValue("unknown"));
-        byte[] tooMany=mutate(b->b.getSheetAt(0).createRow(501).createCell(0).setCellValue("TOO-MANY"));
+        byte[] tooMany=mutate(b->{for(int i=2;i<=501;i++)b.getSheetAt(0).createRow(i).createCell(0).setCellValue("TC-"+i);});
         assertThatThrownBy(()->parser.parse(file(badHeader))).isInstanceOf(BusinessException.class).hasMessageContaining("cột");
         assertThatThrownBy(()->parser.parse(file(tooMany))).isInstanceOf(BusinessException.class).hasMessageContaining("500");
+    }
+    @Test void countsActualInternalCasesRatherThanTheLastFormattedRow() throws Exception {
+        byte[] bytes=mutate(b->{b.getSheetAt(0).createRow(642).createCell(0).setCellValue("");b.getSheetAt(0).createRow(800).createCell(0).setCellValue("TC-SPARSE");});
+        assertThat(parser.parse(file(bytes)).rows()).hasSize(2);
     }
     @Test void rejectsRenamedTextOversizedAndUnsupportedFiles() {
         assertThatThrownBy(()->parser.parse(file("not a workbook".getBytes()))).isInstanceOf(BusinessException.class);

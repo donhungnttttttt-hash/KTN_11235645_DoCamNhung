@@ -1,3 +1,4 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import {TableScroll} from '../../components/TableScroll';
 import { canManageProjectWork, isProjectDeveloper } from '../projects/projectAccess';
 import React, { useEffect, useRef, useState } from 'react';
@@ -19,6 +20,7 @@ export function ExecutionRunnerPage(props) {
   return <Runner key={`${currentProject?.id}/${props.cycleId}`} {...props} project={currentProject} />;
 }
 function Runner({ project, cycleId, navigate }) {
+ useRefreshOnReturn(()=>{refresh();});
   const { hasRole, user } = useAuth();
   const dev = isProjectDeveloper(project,hasRole);
   const manager = canManageProjectWork(project, hasRole);
@@ -63,7 +65,7 @@ function Runner({ project, cycleId, navigate }) {
       <DecisionHistory key={`cycle-history-${reload}`} projectId={project.id} id={cycleId} timeZone={project.timezone} />
       {confirmStart && <section className="ex-panel" role="alertdialog" aria-label="Xác nhận bắt đầu đợt"><p>Khóa {data.cycle.runCount} lượt kiểm thử theo phiên bản case đã chọn và cho phép người được phân công ghi kết quả?</p><div className="ex-checks"><button className="cat-btn cat-btn-mint" disabled={busy} onClick={start}>Xác nhận bắt đầu</button><button className="cat-btn" disabled={busy} onClick={() => setConfirmStart(false)}>Hủy</button></div></section>}
       {manager && data.cycle.statusCode === 'DRAFT' && <ScopeSetup projectId={project.id} cycle={data.cycle} configs={data.configs} catalogs={data.catalogs} members={data.members} onSaved={refresh} navigate={navigate} refreshKey={reload} />}
-      <div className="ex-checks"><label><input type="checkbox" checked={mine} onChange={e => { setMine(e.target.checked); setPage(0); }} />Được giao cho tôi</label><label><input type="checkbox" checked={pendingBug} onChange={e => { setPendingBug(e.target.checked); setPage(0); }} />NG chờ liên kết bug</label><button className="cat-btn" onClick={refresh}>Tải lại</button></div>
+      <div className="ex-checks"><label><input type="checkbox" checked={mine} onChange={e => { setMine(e.target.checked); setPage(0); }} />Được giao cho tôi</label><label><input type="checkbox" checked={pendingBug} onChange={e => { setPendingBug(e.target.checked); setPage(0); }} />NG chờ liên kết bug</label></div>
       {runs && <><TableScroll label="Lượt kiểm thử" className="ex-table-wrap"><table className="ex-table"><thead><tr><th>Mã case</th><th>Nội dung kiểm thử</th><th>Cấu hình chạy</th><th>Người thực hiện</th><th>Kết quả mới nhất</th><th>Thao tác</th></tr></thead><tbody>
         {runs.items.map(r => <tr key={r.id}><td><button className="ex-link" onClick={() => openRun(r)}>{r.caseNo}</button><small>Phiên bản {r.revisionNo}</small></td><td>{r.titleVi}</td><td>{r.environmentName}<small>{r.deviceName}</small></td><td>{r.assigneeName}</td><td><Result value={r.resultCode} />{r.excluded && <small title={r.scopeReason}>NA · Ngoài phạm vi</small>}{!!r.pendingBugLink && <small>Chờ liên kết bug</small>}</td><td><div className="ui-actions ex-row-actions"><button className="cat-btn" disabled={r.fileWorkGroupId != null && !positiveId(r.fileWorkGroupId)} onClick={() => openRun(r)}>{r.fileWorkGroupId != null ? 'Công việc theo file' : !dev && data.cycle.statusCode === 'ACTIVE' && !r.excluded && (hasRole?.('ADMIN') || r.assigneeUserId === user?.id) ? 'Ghi kết quả' : 'Chi tiết / lịch sử'}</button>{manager && data.cycle.statusCode !== 'CLOSED' && (r.fileWorkGroupId != null ? <button className="cat-btn" disabled={!positiveId(r.fileWorkGroupId)} onClick={() => openRun(r)}>Giao lại file</button> : <button className="cat-btn" onClick={() => setAssignment(r)}>Phân công</button>)}{projectPm && data.cycle.statusCode === 'ACTIVE' && <button className="cat-btn" onClick={() => setDecision({ run: r })}>{r.excluded ? 'Khôi phục phạm vi' : 'Đánh dấu NA'}</button>}</div></td></tr>)}
         {!runs.items.length && <tr><td colSpan={6}>Chưa có lượt kiểm thử phù hợp.</td></tr>}

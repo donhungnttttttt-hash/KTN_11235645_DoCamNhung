@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import { beforeEach, afterEach, describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
@@ -71,7 +72,7 @@ describe('customer-facing file workflow', () => {
  });
  it('keeps the last case readable but blocks writes when refreshed authority fails',async()=>{
    render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);await screen.findByRole('button',{name:'OK · TC-01'});
-   fileWorkApi.detail.mockRejectedValue(new Error('Không tải được quyền hiện hành'));fireEvent.click(screen.getByRole('button',{name:'Làm mới'}));
+   fileWorkApi.detail.mockRejectedValue(new Error('Không tải được quyền hiện hành'));refreshEvent.focus(window);
    await screen.findByText('Không tải được quyền hiện hành');expect(screen.getByText('Pinned title')).toBeInTheDocument();
    expect(screen.getByRole('button',{name:'OK · TC-01'})).toBeDisabled();expect(screen.queryByRole('button',{name:'Tạo QA · TC-01'})).toBeNull();
    expect(fileWorkApi.record).not.toHaveBeenCalled();
@@ -118,7 +119,7 @@ describe('customer-facing file workflow', () => {
    fireEvent.click(screen.getByRole('button',{name:'OK · TC-02'}));
    await waitFor(()=>expect(fileWorkApi.execution).toHaveBeenCalledTimes(2));
    expect(await screen.findByLabelText('Chọn case')).toHaveValue('11');
-   fireEvent.click(screen.getByRole('button',{name:'Làm mới'}));
+   refreshEvent.focus(window);
    await waitFor(()=>expect(fileWorkApi.execution).toHaveBeenCalledTimes(3));
    expect(await screen.findByLabelText('Chọn case')).toHaveValue('11');
    expect(screen.queryByRole('region',{name:'Case thực thi chính thức'})).toBeNull();
@@ -172,7 +173,7 @@ describe('final review file monitoring', () => {
    await waitFor(()=>expect(fileWorkApi.list).toHaveBeenLastCalledWith(1,expect.objectContaining({mine:false,assigneeMembershipId:21,page:0}),expect.anything()));
    fireEvent.click(screen.getByLabelText('Được giao cho tôi'));
    await waitFor(()=>expect(fileWorkApi.list).toHaveBeenLastCalledWith(1,expect.objectContaining({mine:true,assigneeMembershipId:undefined,page:0}),expect.anything()));
-   fileWorkApi.metadata.mockResolvedValue({canReadAll:false,canViewMine:true});fireEvent.click(screen.getByRole('button',{name:'Làm mới'}));
+   fileWorkApi.metadata.mockResolvedValue({canReadAll:false,canViewMine:true});refreshEvent.focus(window);
    await waitFor(()=>expect(screen.queryByLabelText('Tester theo dõi')).toBeNull());expect(screen.queryByRole('button',{name:'Giao file'})).toBeNull();
  });
  it('clears filters on project replacement and ignores delayed prior project catalogs and rows',async()=>{
@@ -302,7 +303,7 @@ describe('review fixes: independent BUG authority and immutable draft session co
  });
  it('removes already-open BUG linking when current authority is revoked and keeps raw source locked',async()=>{
    detail(group,session,{...row,resultCode:'NG',latestAttemptId:32});render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);
-   fireEvent.click(await screen.findByRole('button',{name:'Gắn BUG · TC-01'}));await screen.findByText('Liên kết NG với bug đã có');workItemsApi.metadata.mockResolvedValue({canCreate:false});fireEvent.click(screen.getByRole('button',{name:'Làm mới'}));await waitFor(()=>expect(screen.queryByText('Liên kết NG với bug đã có')).toBeNull());expect(workItemsApi.link).not.toHaveBeenCalled();
+   fireEvent.click(await screen.findByRole('button',{name:'Gắn BUG · TC-01'}));await screen.findByText('Liên kết NG với bug đã có');workItemsApi.metadata.mockResolvedValue({canCreate:false});refreshEvent.focus(window);await waitFor(()=>expect(screen.queryByText('Liên kết NG với bug đã có')).toBeNull());expect(workItemsApi.link).not.toHaveBeenCalled();
  });
  it('hides BUG mutations until both current authorities load and for raw source',async()=>{
    let resolve;workItemsApi.metadata.mockImplementation(()=>new Promise(r=>{resolve=r;}));detail(group,session,{...row,resultCode:'NG',latestAttemptId:32});render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);await screen.findByText('Pinned title');expect(screen.queryByRole('button',{name:'Tạo BUG · TC-01'})).toBeNull();resolve({canCreate:true});await screen.findByRole('button',{name:'Tạo BUG · TC-01'});fireEvent.click(screen.getByLabelText('Xem dữ liệu Excel gốc (chỉ đọc)'));expect(screen.queryByRole('button',{name:'Tạo BUG · TC-01'})).toBeNull();expect(screen.queryByRole('button',{name:'Gắn BUG · TC-01'})).toBeNull();
@@ -313,13 +314,13 @@ describe('review fixes: independent BUG authority and immutable draft session co
  it.each(['NG','P'])('retains an open %s draft with original pins and blocks writes after replacement until explicit reconfirmation',async result=>{
    render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);fireEvent.click(await screen.findByRole('button',{name:`${result} · TC-01`}));fireEvent.change(screen.getByLabelText(result==='NG'?'Kết quả thực tế':'Lý do kết quả'),{target:{value:'Observed on IPAD-01 / build 6'}});
    const replacement={...session,id:19,version:1,buildId:13,allocationId:23,assetId:24,assetCode:'IPAD-NEW'};
-   const nextGroup={...group,currentSessionId:19,version:10,selectedBuildId:13};detail(nextGroup,replacement,row);fileWorkApi.execution.mockResolvedValue({group:nextGroup,buildId:13,headers:['Title','Extra'],rows:[row]});fireEvent.click(screen.getByRole('button',{name:'Làm mới'}));await screen.findByRole('button',{name:'Xác nhận dùng phiên hiện hành cho bản nháp'});
+   const nextGroup={...group,currentSessionId:19,version:10,selectedBuildId:13};detail(nextGroup,replacement,row);fileWorkApi.execution.mockResolvedValue({group:nextGroup,buildId:13,headers:['Title','Extra'],rows:[row]});refreshEvent.focus(window);await screen.findByRole('button',{name:'Xác nhận dùng phiên hiện hành cho bản nháp'});
    expect(screen.getByLabelText(result==='NG'?'Kết quả thực tế':'Lý do kết quả').value).toBe('Observed on IPAD-01 / build 6');expect(screen.getByRole('button',{name:'Lưu kết quả'})).toBeDisabled();expect(screen.getByText('Bản nháp: phiên #9 · máy IPAD-01 · build pin #6')).toBeTruthy();fireEvent.click(screen.getByRole('button',{name:'Lưu kết quả'}));expect(fileWorkApi.record).not.toHaveBeenCalled();
    fireEvent.click(screen.getByRole('button',{name:'Xác nhận dùng phiên hiện hành cho bản nháp'}));expect(fileWorkApi.record).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Lưu kết quả'}));await waitFor(()=>expect(fileWorkApi.record).toHaveBeenCalledWith(1,3,10,expect.objectContaining({sessionId:19,expectedSessionVersion:1,buildId:13,resultCode:result})));
  });
  it('blocks an exact retry against a replaced session and resets the old request only after explicit context confirmation',async()=>{
    fileWorkApi.record.mockRejectedValueOnce(new Error('Network failed')).mockResolvedValue({id:90});render(<FileWorkDetail groupId={3} navigate={vi.fn()}/>);fireEvent.click(await screen.findByRole('button',{name:'NG · TC-01'}));fireEvent.change(screen.getByLabelText('Kết quả thực tế'),{target:{value:'Original crash'}});fireEvent.click(screen.getByRole('button',{name:'Lưu kết quả'}));await screen.findByText('Network failed');const oldBody=fileWorkApi.record.mock.calls[0][3];
-   detail({...group,currentSessionId:19},{...session,id:19,allocationId:23,assetId:24,assetCode:'IPAD-NEW'},row);fireEvent.click(screen.getByRole('button',{name:'Làm mới'}));await screen.findByRole('button',{name:'Xác nhận dùng phiên hiện hành cho bản nháp'});expect(screen.getByRole('button',{name:'Thử lại nguyên lệnh'})).toBeDisabled();fireEvent.click(screen.getByRole('button',{name:'Thử lại nguyên lệnh'}));expect(fileWorkApi.record).toHaveBeenCalledTimes(1);
+   detail({...group,currentSessionId:19},{...session,id:19,allocationId:23,assetId:24,assetCode:'IPAD-NEW'},row);refreshEvent.focus(window);await screen.findByRole('button',{name:'Xác nhận dùng phiên hiện hành cho bản nháp'});expect(screen.getByRole('button',{name:'Thử lại nguyên lệnh'})).toBeDisabled();fireEvent.click(screen.getByRole('button',{name:'Thử lại nguyên lệnh'}));expect(fileWorkApi.record).toHaveBeenCalledTimes(1);
    fireEvent.click(screen.getByRole('button',{name:'Xác nhận dùng phiên hiện hành cho bản nháp'}));fireEvent.click(screen.getByRole('button',{name:'Lưu kết quả'}));await waitFor(()=>expect(fileWorkApi.record).toHaveBeenCalledTimes(2));expect(fileWorkApi.record.mock.calls[1][3].sessionId).toBe(19);expect(fileWorkApi.record.mock.calls[1][3].requestKey).not.toBe(oldBody.requestKey);
  });
  it('permits an explicit fresh command after version refresh within the same pinned session',async()=>{
@@ -371,7 +372,7 @@ describe('current contextual QA authority',()=>{
    resolve(kind==='work'?{canCreate:false,canCreateQa:true}:{archived:false});
    await screen.findByRole('button',{name:'Tạo QA · TC-01'});
    workItemsApi.metadata.mockImplementationOnce(()=>new Promise(r=>{resolve=r;}));
-   fireEvent.click(screen.getByRole('button',{name:'Làm mới'}));
+   refreshEvent.focus(window);
    expect(screen.queryByRole('button',{name:'Tạo QA · TC-01'})).toBeNull();
    resolve({canCreate:true,canCreateQa:false});await screen.findByText('Pinned title');
    expect(screen.queryByRole('button',{name:'Tạo QA · TC-01'})).toBeNull();
@@ -397,7 +398,7 @@ describe('PM pinned scope preview/create',()=>{
  it('shows excluded revisions, paginates source search and creates only a successful unchanged preview',async()=>{setupPm();const navigate=vi.fn();render(<FileWorkPage navigate={navigate}/>);await selectScope();expect(screen.getByLabelText('Chọn TC-02 revision 14')).toBeEnabled();expect(screen.getByLabelText('Chọn TC-03 revision 15').disabled).toBe(true);expect(screen.getByRole('button',{name:'Tạo nhóm file'}).disabled).toBe(true);fireEvent.click(screen.getByRole('button',{name:'Trang sau tài liệu'}));await waitFor(()=>expect(testCasesApi.listDocuments).toHaveBeenLastCalledWith(1,{page:1,keyword:''}));fireEvent.click(screen.getByRole('button',{name:'Kiểm tra trước khi giao'}));await screen.findByText(/Phạm vi hợp lệ/);fireEvent.click(screen.getByRole('button',{name:'Tạo nhóm file'}));await waitFor(()=>expect(fileWorkApi.create).toHaveBeenCalledWith(1,expect.objectContaining({documentId:4,cycleId:5,configurationId:7,revisionIds:[12],assigneeMembershipId:21,expectedCycleVersion:2,requestKey:expect.any(String)})));expect(navigate).toHaveBeenCalledWith('/tests/file-work/3');});
  it('invalidates preview when selected pins change and displays server conflicts',async()=>{setupPm();render(<FileWorkPage navigate={vi.fn()}/>);await selectScope();fireEvent.click(screen.getByRole('button',{name:'Kiểm tra trước khi giao'}));await screen.findByText(/Phạm vi hợp lệ/);fireEvent.click(screen.getByLabelText('Chọn TC-01 revision 12'));expect(screen.getByRole('button',{name:'Tạo nhóm file'}).disabled).toBe(true);fireEvent.click(screen.getByLabelText('Chọn TC-01 revision 12'));fileWorkApi.preview.mockResolvedValue({valid:false,selectedCount:1,errors:[{code:'DUPLICATE_SCOPE',message:'Run already exists'}]});fireEvent.click(screen.getByRole('button',{name:'Kiểm tra trước khi giao'}));await screen.findByText('DUPLICATE_SCOPE: Run already exists');expect(screen.getByRole('button',{name:'Tạo nhóm file'}).disabled).toBe(true);expect(fileWorkApi.create).not.toHaveBeenCalled();});
  it('retries failed create with an identical stable request key/body',async()=>{setupPm();fileWorkApi.create.mockRejectedValueOnce(new Error('Connection lost')).mockResolvedValue({group});render(<FileWorkPage navigate={vi.fn()}/>);await selectScope();fireEvent.click(screen.getByRole('button',{name:'Kiểm tra trước khi giao'}));await screen.findByText(/Phạm vi hợp lệ/);fireEvent.click(screen.getByRole('button',{name:'Tạo nhóm file'}));await screen.findByText('Connection lost');expect(screen.getByLabelText('Chọn TC-01 revision 12').checked).toBe(true);fireEvent.click(screen.getByRole('button',{name:'Thử lại nguyên lệnh tạo'}));await waitFor(()=>expect(fileWorkApi.create).toHaveBeenCalledTimes(2));expect(fileWorkApi.create.mock.calls[1]).toEqual(fileWorkApi.create.mock.calls[0]);});
- it('retains the PM draft but locks writes when a refreshed metadata read fails',async()=>{setupPm();render(<FileWorkPage navigate={vi.fn()}/>);await selectScope();fileWorkApi.metadata.mockRejectedValue(new Error('Metadata unavailable'));fireEvent.click(screen.getByRole('button',{name:'Làm mới'}));await screen.findByText('Metadata unavailable');expect(screen.getByLabelText('Chọn TC-01 revision 12').checked).toBe(true);expect(screen.getByRole('button',{name:'Kiểm tra trước khi giao'}).disabled).toBe(true);expect(fileWorkApi.preview).not.toHaveBeenCalled();});
+ it('retains the PM draft but locks writes when a refreshed metadata read fails',async()=>{setupPm();render(<FileWorkPage navigate={vi.fn()}/>);await selectScope();fileWorkApi.metadata.mockRejectedValue(new Error('Metadata unavailable'));refreshEvent.focus(window);await screen.findByText('Metadata unavailable');expect(screen.getByLabelText('Chọn TC-01 revision 12').checked).toBe(true);expect(screen.getByRole('button',{name:'Kiểm tra trước khi giao'}).disabled).toBe(true);expect(fileWorkApi.preview).not.toHaveBeenCalled();});
  it('saves direct OK in React StrictMode with exactly one request',async()=>{render(<React.StrictMode><FileWorkDetail groupId={3} navigate={vi.fn()}/></React.StrictMode>);fireEvent.click(await screen.findByRole('button',{name:'OK · TC-01'}));await waitFor(()=>expect(fileWorkApi.record).toHaveBeenCalledTimes(1));await waitFor(()=>expect(screen.queryByRole('button',{name:'Lưu kết quả'})).toBeNull());});
 });
 describe('file API and download boundary',()=>{

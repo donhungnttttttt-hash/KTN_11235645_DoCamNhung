@@ -7,6 +7,8 @@ async function write(path,method,body,options={},preview=false){
   return (preview?previewRequest:apiRequest)(path,{...options,method,headers:{[csrf.headerName]:csrf.token},body:JSON.stringify(body)});
 }
 export const managementReportsApi={
+  dashboard:(projectId,options)=>apiRequest(`${base(projectId)}/dashboard`,options),
+  publish:(projectId,id,body,options)=>write(`${base(projectId)}/${encodeURIComponent(id)}/publish`,'POST',body,options),
   summary:(projectId,{featureId}={},options)=>apiRequest(`${base(projectId)}/summary${featureId!=null&&featureId!==''?`?featureId=${encodeURIComponent(featureId)}`:''}`,options),
   list:(projectId,{page=0,size=20}={},options)=>apiRequest(`${base(projectId)}?${new URLSearchParams({page,size})}`,options),
   get:(projectId,id,options)=>apiRequest(`${base(projectId)}/${encodeURIComponent(id)}`,options),

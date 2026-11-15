@@ -19,6 +19,7 @@ public class ManagementReportController {
     @GetMapping("/{id}") public Object get(Authentication auth,@PathVariable long projectId,@PathVariable long id) {return reports.get(projectId,actor(auth),id);}
     @PostMapping public ResponseEntity<Map<String,Object>> create(Authentication auth,@PathVariable long projectId,@Valid @RequestBody ManagementReportDtos.Create input) {return ResponseEntity.status(201).body(reports.create(projectId,actor(auth),input));}
     @PutMapping("/{id}") public Object update(Authentication auth,@PathVariable long projectId,@PathVariable long id,@Valid @RequestBody ManagementReportDtos.Update input) {return reports.update(projectId,actor(auth),id,input);}
+    @PostMapping("/{id}/publish") public Object publish(Authentication auth,@PathVariable long projectId,@PathVariable long id,@Valid @RequestBody ManagementReportDtos.Publish input) {return reports.publish(projectId,actor(auth),id,input.expectedVersion());}
     @GetMapping("/{id}/download") public ResponseEntity<byte[]> download(Authentication auth,@PathVariable long projectId,@PathVariable long id) {
         var report=reports.get(projectId,actor(auth),id);
         return ResponseEntity.ok().contentType(new MediaType("text","markdown",Objects.requireNonNull(StandardCharsets.UTF_8))).cacheControl(CacheControl.noStore().cachePrivate()).header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"bao-cao-"+id+".md\"").body(report.get("markdown").toString().getBytes(StandardCharsets.UTF_8));

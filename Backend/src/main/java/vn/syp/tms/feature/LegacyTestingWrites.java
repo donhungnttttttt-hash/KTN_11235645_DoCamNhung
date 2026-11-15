@@ -37,7 +37,7 @@ public class LegacyTestingWrites implements WebMvcConfigurer,HandlerInterceptor 
         var authentication=SecurityContextHolder.getContext().getAuthentication();
         if(authentication==null||!(authentication.getPrincipal() instanceof SessionPrincipal principal))throw new BusinessException(401,"UNAUTHENTICATED","Cần đăng nhập.");
         projects.requireReadAccess(project,principal.id());
-        throw new BusinessException(410,type.equals("ImportController")?"FEATURE_REQUIRED":"LEGACY_WORKFLOW_RETIRED","Luồng kiểm thử cũ chỉ giữ lịch sử. Dùng Feature và file độc lập tại /board/testing.");
+        throw new BusinessException(410,type.equals("ImportController")?"FEATURE_REQUIRED":"LEGACY_WORKFLOW_RETIRED","Luồng kiểm thử cũ chỉ giữ lịch sử. Dùng Đợt kiểm thử và file độc lập tại /board/testing.");
     }
     private static long pathId(String tail,String prefix){String value=tail.substring(prefix.length()).split("/",2)[0];try{return Long.parseLong(value);}catch(NumberFormatException invalid){return 0;}}
 }

@@ -72,20 +72,25 @@ public class AdminProjectService {
     }
     @Transactional(readOnly=true)
     public AdminDtos.Page<Map<String,Object>> users(String actor,Long projectId,String keyword,String role,Boolean enabled,boolean unassignedOnly,Boolean hasProject,Long excludeProjectId,int page,int size) {
+        return users(actor,projectId,keyword,role,enabled,unassignedOnly,hasProject,excludeProjectId,page,size,false);
+    }
+    @Transactional(readOnly=true)
+    public AdminDtos.Page<Map<String,Object>> users(String actor,Long projectId,String keyword,String role,Boolean enabled,boolean unassignedOnly,Boolean hasProject,Long excludeProjectId,int page,int size,boolean excludeSystemAdmins) {
         admin(actor);
-        return queryUsers(projectId,keyword,role,enabled,unassignedOnly,hasProject,excludeProjectId,page,size,false);
+        return queryUsers(projectId,keyword,role,enabled,unassignedOnly,hasProject,excludeProjectId,page,size,false,excludeSystemAdmins);
     }
     @Transactional(readOnly=true)
     public AdminDtos.Page<Map<String,Object>> memberCandidates(String actor,long projectId,String keyword,String role,Boolean hasProject,int page,int size) {
         projects.requireMemberCandidateAccess(projectId,actor);
         boolean pmOnly=!"ADMIN".equals(identity.current(actor).getRole());
         if(pmOnly && role!=null && !"USER".equals(role))fail(403,"FORBIDDEN","Admin dự án chỉ được thêm User thường.");
-        return queryUsers(null,keyword,role,true,false,hasProject,projectId,page,size,pmOnly);
+        return queryUsers(null,keyword,role,true,false,hasProject,projectId,page,size,pmOnly,true);
     }
-    private AdminDtos.Page<Map<String,Object>> queryUsers(Long projectId,String keyword,String role,Boolean enabled,boolean unassignedOnly,Boolean hasProject,Long excludeProjectId,int page,int size,boolean pmOnly) {
+    private AdminDtos.Page<Map<String,Object>> queryUsers(Long projectId,String keyword,String role,Boolean enabled,boolean unassignedOnly,Boolean hasProject,Long excludeProjectId,int page,int size,boolean pmOnly,boolean excludeSystemAdmins) {
         if(excludeProjectId!=null && excludeProjectId<=0)fail(422,"INVALID_FILTER","Dự án cần loại thành viên không hợp lệ.");
         if(page<0 || size<1 || size>100 || text(keyword).length()>100 || role!=null && !List.of("ADMIN","PM","USER","GUEST").contains(role))fail(422,"INVALID_FILTER","Bộ lọc không hợp lệ.");
         var args=new ArrayList<Object>();String where=" WHERE 1=1";
+        if(excludeSystemAdmins)where+=" AND u.role_code<>'ADMIN'";
         if(pmOnly)where+=" AND u.role_code='USER'";
         if(unassignedOnly)where+=" AND NOT EXISTS(SELECT 1 FROM project_memberships unassigned WHERE unassigned.user_id=u.id AND unassigned.active=TRUE)";
         if(hasProject!=null)where+=" AND "+(hasProject?"":"NOT ")+"EXISTS(SELECT 1 FROM project_memberships assigned WHERE assigned.user_id=u.id AND assigned.active=TRUE)";

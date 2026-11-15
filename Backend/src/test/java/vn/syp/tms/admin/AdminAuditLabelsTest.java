@@ -12,7 +12,7 @@ class AdminAuditLabelsTest {
     @Test void newFlowObjectsAndActionsAreReadableWithoutInventingLegacyWorkItemTypes(){
         assertThat(AdminAuditLabels.label("MANAGEMENT_REPORT")).isEqualTo("Báo cáo quản trị");
         assertThat(AdminAuditLabels.label("PROJECT_NOTE")).isEqualTo("Note dự án");
-        assertThat(AdminAuditLabels.label("WORK_ITEM")).isEqualTo("Issue");
+        assertThat(AdminAuditLabels.label("WORK_ITEM")).isEqualTo("Ticket");
         assertThat(AdminAuditLabels.label("STATUS")).isEqualTo("Đổi trạng thái");
         assertThat(AdminAuditLabels.label("COMMENT")).isEqualTo("Thêm ghi chú");
         assertThat(AdminAuditLabels.label("RESULT_UNEXECUTED_UNKNOWN")).isEqualTo("RESULT_UNEXECUTED_UNKNOWN");
@@ -34,7 +34,7 @@ class AdminAuditLabelsTest {
         var countSql=new AtomicReference<String>();var countArgs=new AtomicReference<List<Object>>();
         when(db.count(Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{
             String sql=call.getArgument(0);countSql.set(sql);countArgs.set(Arrays.asList((Object[])call.getRawArguments()[1]));
-            assertThat(sql).contains("_utf8mb4'Báo cáo quản trị'","_utf8mb4'Note dự án'","_utf8mb4'Issue'","_utf8mb4'Status: Unexecuted → OK'").doesNotContain("metadata","request_id","password_hash");
+            assertThat(sql).contains("_utf8mb4'Báo cáo quản trị'","_utf8mb4'Note dự án'","_utf8mb4'Ticket'","_utf8mb4'Status: Unexecuted → OK'").doesNotContain("metadata","request_id","password_hash");
             return 1L;
         });
         when(db.rows(Objects.requireNonNull(anyString()),any(Object[].class))).thenAnswer(call->{

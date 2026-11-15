@@ -103,3 +103,32 @@ test('list errors offer retry instead of claiming an empty list; outside click c
  fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));await screen.findByText('Chưa có version');
  fireEvent.pointerDown(document.body);expect(screen.queryByRole('region')).not.toBeInTheDocument();
 });
+test('search/add is above the filtered options and arrow follows open state',async()=>{
+ const api={testVersions:vi.fn().mockResolvedValue([{id:1,name:'iPad'},{id:2,name:'Android'}])};
+ render(<FeatureTestVersions projectId={1} featureId={2} canManage api={api}/>);
+ const trigger=screen.getByRole('button',{name:'Thêm version test'});fireEvent.click(trigger);
+ const option=await screen.findByRole('button',{name:'iPad',exact:true}),input=screen.getByLabelText('Tên version test');
+ expect(input.compareDocumentPosition(option)&Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+ fireEvent.change(input,{target:{value:'ipad'}});expect(screen.queryByRole('button',{name:'Android',exact:true})).not.toBeInTheDocument();
+ expect(trigger).toHaveAttribute('aria-expanded','true');
+});
+test('environment search explains no matches and adds the new environment without changing case results',async()=>{
+ const api={testEnvironments:vi.fn().mockResolvedValue([{id:1,name:'QA'}]),createTestEnvironment:vi.fn().mockResolvedValue({id:2,name:'Staging'})};
+ render(<FeatureTestVersions projectId={1} featureId={2} canManage environment api={api}/>);
+ fireEvent.click(screen.getByRole('button',{name:'Thêm môi trường'}));await screen.findByRole('button',{name:'QA',exact:true});
+ fireEvent.change(screen.getByLabelText('Tên môi trường'),{target:{value:'Staging'}});
+ expect(screen.getByText('Không tìm thấy môi trường phù hợp.')).toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'Thêm',exact:true}));
+ expect(await screen.findByRole('button',{name:'Staging'})).toHaveAttribute('aria-expanded','false');
+ expect(api.createTestEnvironment).toHaveBeenCalledWith(1,2,expect.objectContaining({name:'Staging'}));
+});
+test('an empty environment catalogue shows the empty label, while a failed request can retry without hiding the error',async()=>{
+ const api={testEnvironments:vi.fn().mockRejectedValueOnce(new Error('Không tìm thấy tài nguyên.')).mockResolvedValue([])};
+ render(<FeatureTestVersions projectId={1} featureId={2} canManage environment api={api}/>);
+ fireEvent.click(screen.getByRole('button',{name:'Thêm môi trường'}));
+ expect(await screen.findByRole('alert')).toHaveTextContent('Không tìm thấy tài nguyên.');
+ expect(screen.queryByText('Chưa có môi trường')).not.toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'Thử lại'}));
+ expect(await screen.findByText('Chưa có môi trường')).toBeInTheDocument();
+ expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+});

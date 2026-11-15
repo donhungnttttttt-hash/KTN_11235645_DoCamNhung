@@ -2,7 +2,7 @@ import {afterEach,expect,it,vi} from 'vitest';
 import {managementReportsApi as api} from './managementReports';
 const json=body=>new Response(JSON.stringify(body),{headers:{'content-type':'application/json'}});
 afterEach(()=>{vi.unstubAllGlobals();vi.useRealTimers();});
-it('reads project/optional Feature summaries and saved reports with server pagination',async()=>{
+it('reads project/optional Đợt kiểm thử summaries and saved reports with server pagination',async()=>{
  const fetch=vi.fn().mockImplementation(async()=>json({items:[]}));vi.stubGlobal('fetch',fetch);const options={signal:new AbortController().signal};
  await api.summary(1,{},options);await api.summary(1,{featureId:42},options);await api.summary(1,{featureId:0},options);await api.list(1,{page:2,size:20},options);await api.get(1,7,options);
  expect(fetch.mock.calls.map(call=>call[0])).toEqual(['/api/v1/projects/1/management-reports/summary','/api/v1/projects/1/management-reports/summary?featureId=42','/api/v1/projects/1/management-reports/summary?featureId=0','/api/v1/projects/1/management-reports?page=2&size=20','/api/v1/projects/1/management-reports/7']);expect(fetch.mock.calls.every(call=>call[1].credentials==='same-origin')).toBe(true);

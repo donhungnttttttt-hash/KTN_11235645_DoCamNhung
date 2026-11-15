@@ -23,7 +23,7 @@ export function UserPasswordResetDialog({account,self=false,api=adminApi,onSaved
   <form className="admin-card admin-form" onSubmit={save} onInvalid={()=>setError({message:'Kiểm tra các trường mật khẩu trước khi lưu.'})}>
    <p><strong>{account.displayName}</strong> · @{account.username}</p>
    <p>{self?'Bạn sẽ cần đăng nhập lại bằng mật khẩu mới sau khi lưu.':'Các phiên đăng nhập của người dùng sẽ kết thúc sau khi lưu. Người dùng cần đăng nhập bằng mật khẩu mới.'}</p>
-   {error&&<div ref={feedback} tabIndex={-1} role="alert"><p>{error.message}</p>{conflict&&<><p>Tài khoản đã thay đổi. Tải lại trước khi đặt mật khẩu mới.</p><button type="button" onClick={close}>Đóng và tải lại</button></>}</div>}
+   {error&&<div ref={feedback} tabIndex={-1} role="alert"><p>{error.message}</p>{conflict&&<><p>Tài khoản đã thay đổi. Tải lại trước khi đặt mật khẩu mới.</p><button type="button" onClick={close}>Đóng và cập nhật</button></>}</div>}
    <fieldset disabled={busy}>
     <div className="admin-field-help"><label>Mật khẩu mới<input type="password" autoComplete="new-password" required minLength={12} maxLength={128} aria-describedby={`${id}-password`} value={password} onChange={event=>setPassword(event.target.value)}/></label><small id={`${id}-password`}>Từ 12 đến 128 ký tự. Có thể dán hoặc dùng trình quản lý mật khẩu.</small></div>
     <label>Nhập lại mật khẩu mới<input type="password" autoComplete="new-password" required minLength={12} maxLength={128} value={confirmationPassword} onChange={event=>setConfirmationPassword(event.target.value)}/></label>

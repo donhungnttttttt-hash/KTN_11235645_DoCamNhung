@@ -1,3 +1,5 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React,{useEffect,useRef,useState} from 'react';
 import {useProject} from '../projects/ProjectProvider';
 import {useAuth} from '../auth/AuthProvider';
@@ -18,7 +20,7 @@ const displayPercent=value=>Math.round(percent(value)*100)/100;
 const issueStatusLabel=issue=>issue.ticketState?ticketLabel(issue):issueStatuses.find(status=>status.id===String(issue.status).toLowerCase())?.label||issue.status;
 const providerLabels={OPENAI_API:'API của hệ thống',CHATGPT:'ChatGPT cá nhân',OLLAMA:'Ollama local'};
 const reportAiError=(code,provider)=>code==='AI_INPUT_TOO_LARGE'
-  ?'Phạm vi báo cáo quá lớn. Chọn một Feature trong Phạm vi Feature rồi tạo lại gợi ý. Bản đang soạn được giữ nguyên.'
+  ?'Phạm vi báo cáo quá lớn. Chọn một Đợt kiểm thử trong Phạm vi Đợt kiểm thử rồi tạo lại gợi ý. Bản đang soạn được giữ nguyên.'
   :code==='AI_INVALID_RESPONSE'
   ?'AI chưa trả về nội dung báo cáo hợp lệ. Bản đang soạn được giữ nguyên; bạn có thể thử tạo lại hoặc tự nhập nội dung rồi lưu báo cáo.'
   :aiError(code,provider);
@@ -43,6 +45,8 @@ function DraftWorkspaceGate({project,api}){
 }
 
 function ManagementWorkspace({project,api}){
+ useRefreshOnReturn(()=>{if(authenticated&&!busy){setSummaryRevision(v=>v+1);setListRevision(v=>v+1);}});
+
   const providers=useAiProviders();const writable=!project.archived;
   const drafts=useReportDrafts();
   const auth=useAuth(),authenticated=drafts?drafts.active:!auth?.status||auth.status==='authenticated';
@@ -146,19 +150,20 @@ function ManagementWorkspace({project,api}){
     finally{if(!signal.aborted){previewLock.current=false;setPreviewBusy(false);}}
   }
   function download(){if(!saved||busy)return;perform(async signal=>{const response=await api.download(project.id,saved.id,{signal});const blob=await response.blob();if(signal.aborted)return;const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`bao-cao-${saved.id}.md`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);setNotice('Đã tải bản báo cáo đã lưu.');},'Đang tải bản báo cáo đã lưu…');}
+  function publish(){if(!saved||dirty||busy||!writable||restoreBlocked)return;perform(async signal=>{const value=await api.publish(project.id,saved.id,{expectedVersion:saved.version},{signal});if(signal.aborted)return;setSaved(value);setNotice('Đã công bố bản đã duyệt cho Khách.');setListRevision(x=>x+1);},'Đang công bố báo cáo…');}
   if(accessDenied==='forbidden')return <section className="page-container"><h1>Không có quyền truy cập</h1><p>Quyền xem Tổng hợp & Phân tích không còn khả dụng. Chọn lại dự án hoặc tải lại quyền truy cập.</p></section>;
   if(accessDenied==='auth')return <section className="page-container"><h1>Cần xác nhận lại quyền truy cập</h1><p>Bản đang soạn vẫn được giữ. Sau khi đăng nhập lại cùng tài khoản, hệ thống kiểm tra quyền xem báo cáo trước khi mở lại.</p>{reauthBusy&&<p role="status">Đang kiểm tra lại quyền xem báo cáo…</p>}{reauthError&&<><p role="alert">{reauthError}</p><button type="button" className="cat-btn" disabled={!authenticated||reauthBusy} onClick={()=>setReauthRetry(value=>value+1)}>Kiểm tra lại quyền báo cáo</button></>}</section>;
   return <section className="page-container management-analysis">
-    <header className="management-heading"><div><h1>Tổng hợp & Phân tích</h1><p>{project.name}</p></div><button type="button" className="cat-btn" onClick={()=>setSummaryRevision(value=>value+1)}>Tải lại số liệu</button></header>
+    <header className="management-heading"><div><h1>Tổng hợp & Phân tích</h1><p>{project.name}</p></div></header>
     {!writable&&<p className="management-mode-notice" role="status" aria-label="Chế độ báo cáo">Dự án đã lưu trữ. Bạn có thể xem và tải bản báo cáo đã lưu.</p>}
-    <label className="management-scope">Phạm vi Feature<select className="cat-select" value={featureId} disabled={locked} onChange={event=>chooseFeature(event.target.value)}><option value="">Toàn bộ dự án</option>{featureId&&!catalog.some(feature=>String(feature.id)===featureId)&&<option value={featureId}>Feature #{featureId}</option>}{catalog.map(feature=><option key={feature.id} value={feature.id}>{feature.name}</option>)}</select></label>
+    <label className="management-scope">Phạm vi Đợt kiểm thử<UnifiedSelect className="cat-select" value={featureId} disabled={locked} onChange={event=>chooseFeature(event.target.value)}><option value="">Toàn bộ dự án</option>{featureId&&!catalog.some(feature=>String(feature.id)===featureId)&&<option value={featureId}>Đợt kiểm thử #{featureId}</option>}{catalog.map(feature=><option key={feature.id} value={feature.id}>{feature.name}</option>)}</UnifiedSelect></label>
     {summaryError&&<p role="alert">{summaryError}</p>}{!summary&&!summaryError&&<p role="status">Đang tải phân tích…</p>}{summary&&<ManagementSummary data={summary}/>}
     <section className="management-report-workspace"><div className="management-heading"><h2>Báo cáo Markdown</h2>{writable&&<button type="button" className="cat-btn" disabled={locked} onClick={()=>{if(permitDiscard())resetEditor();}}>Báo cáo mới</button>}</div>
       {error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}{busy&&<p role="status" aria-label="Thao tác báo cáo">{operation}</p>}
-      <div className="management-report-columns"><section className="management-report-list" aria-label="Báo cáo đã lưu"><h3>Báo cáo đã lưu của dự án</h3>{listError&&<p role="alert">{listError} <button type="button" className="cat-btn" onClick={()=>setListRevision(value=>value+1)}>Tải lại báo cáo</button></p>}{!reports&&!listError&&<p role="status">Đang tải báo cáo…</p>}
-        {reports&&<>{!reports.items.length&&<p>Chưa có báo cáo đã lưu.</p>}<ul>{reports.items.map(item=><li key={item.id}><button type="button" className="cat-btn" disabled={locked} aria-current={saved?.id===item.id?'page':undefined} aria-label={`Mở báo cáo ${item.title}`} onClick={()=>openReport(item.id)}>{item.title}</button><small>{item.featureId?`Feature #${item.featureId}`:'Toàn bộ dự án'} · {time(item.updatedAt)}</small></li>)}</ul><nav className="management-pager" aria-label="Phân trang báo cáo"><button type="button" className="cat-btn" disabled={!page||locked} onClick={()=>setPage(value=>value-1)}>Báo cáo trước</button><span>{page+1}/{Math.max(1,reports.totalPages)}</span><button type="button" className="cat-btn" disabled={page+1>=reports.totalPages||locked} onClick={()=>setPage(value=>value+1)}>Báo cáo sau</button></nav></>}
+      <div className="management-report-columns"><section className="management-report-list" aria-label="Báo cáo đã lưu"><h3>Báo cáo đã lưu của dự án</h3>{listError&&<p role="alert">{listError} {(listError)&&<button type="button" className="cat-btn" onClick={()=>setListRevision(value=>value+1)}>Thử lại báo cáo</button>}</p>}{!reports&&!listError&&<p role="status">Đang tải báo cáo…</p>}
+        {reports&&<>{!reports.items.length&&<p>Chưa có báo cáo đã lưu.</p>}<ul>{reports.items.map(item=><li key={item.id}><button type="button" className="cat-btn" disabled={locked} aria-current={saved?.id===item.id?'page':undefined} aria-label={`Mở báo cáo ${item.title}`} onClick={()=>openReport(item.id)}>{item.title}</button><small>{item.featureId?`Đợt kiểm thử #${item.featureId}`:'Toàn bộ dự án'} · {time(item.updatedAt)}</small></li>)}</ul><nav className="management-pager" aria-label="Phân trang báo cáo"><button type="button" className="cat-btn" disabled={!page||locked} onClick={()=>setPage(value=>value-1)}>Báo cáo trước</button><span>{page+1}/{Math.max(1,reports.totalPages)}</span><button type="button" className="cat-btn" disabled={page+1>=reports.totalPages||locked} onClick={()=>setPage(value=>value+1)}>Báo cáo sau</button></nav></>}
       </section>
-      <section className="management-report-editor" aria-label="Soạn báo cáo"><h3>{saved?`Báo cáo #${saved.id} · v${saved.version}`:'Bản soạn mới'}</h3><p>Báo cáo là văn bản. Chỉnh sửa không thay đổi Status case hoặc số liệu issue.</p>
+      <section className="management-report-editor" aria-label="Soạn báo cáo"><h3>{saved?`Báo cáo #${saved.id} · v${saved.version}`:'Bản soạn mới'}</h3><p>Báo cáo là văn bản. Chỉnh sửa không thay đổi Status case hoặc số liệu ticket.</p>
         {restoreNotice&&dirty&&<p className="management-mode-notice">Đã khôi phục bản sửa trong phiên đăng nhập này. Chưa lưu lên máy chủ.</p>}
         {restoringSaved&&restoreRead.loading&&<p role="status">Đang đối chiếu phiên bản báo cáo đã lưu…</p>}
         {restoringSaved&&restoreRead.conflict&&<p role="alert">Bản đã lưu đã thay đổi. Bản sửa của bạn vẫn được giữ. Mở lại báo cáo trong danh sách để xem bản mới; hãy sao chép phần cần giữ trước khi bỏ bản sửa.</p>}
@@ -179,6 +184,7 @@ function ManagementWorkspace({project,api}){
           </fieldset>
           <div className="management-actions">{writable&&<button className="cat-btn cat-btn-mint" disabled={locked||restoreBlocked||!editor.title.trim()||!editor.markdown.trim()}>{operation==='Đang lưu báo cáo…'?'Đang lưu…':'Lưu báo cáo'}</button>}{saved&&<button type="button" className="cat-btn" disabled={busy} onClick={download}>Tải bản đã lưu</button>}</div>
         </form>
+        {saved&&<div className="management-publication"><p>{saved.publishedAt?`Khách đang xem bản v${saved.publishedVersion} đã công bố lúc ${time(saved.publishedAt)}.`:'Bản nháp nội bộ. Khách chưa xem được báo cáo này.'}</p>{writable&&<button type="button" className="cat-btn" disabled={locked||dirty||restoreBlocked||saved.publishedVersion===saved.version} onClick={publish}>Duyệt & công bố cho Khách</button>}<p>Lưu bản sửa không tự thay đổi báo cáo khách đang xem. Kiểm tra nội dung rồi công bố bản đã duyệt.</p></div>}
         {saved&&dirty&&<p>Bạn có thay đổi chưa lưu. File tải xuống là bản đã lưu trên máy chủ.</p>}
       </section></div>
     </section>
@@ -187,7 +193,7 @@ function ManagementWorkspace({project,api}){
 
 function ManagementSummary({data}){
   return <section className="management-summary"><p className="management-summary-scope">Phạm vi số liệu: {data.feature?.name||'Toàn bộ dự án'}</p><ProgressSummary metrics={data.metrics} asOf={data.asOf}/>
-    <h3>Đối chiếu tiến độ toàn dự án</h3><p>Bảng so sánh các Feature đang sử dụng của toàn dự án.</p><TableScroll label="Tiến độ theo Feature"><table className="management-feature-table"><thead><tr><th>Feature</th><th>Môi trường</th><th>Đã test / Tổng case</th><th>Tiến độ</th></tr></thead><tbody>{data.features.map(feature=><tr key={feature.id}><td>{feature.name}</td><td>{feature.environment||'—'}</td><td>{feature.testedCaseCount} / {feature.caseCount}</td><td><div className="management-feature-progress" role="progressbar" aria-label={`Tiến độ ${feature.name}`} aria-valuenow={percent(feature.progressPercent)} aria-valuemin={0} aria-valuemax={100}><span style={{width:`${percent(feature.progressPercent)}%`}}/></div>{feature.caseCount?`${displayPercent(feature.progressPercent)}%`:'Chưa có case'}</td></tr>)}{!data.features.length&&<tr><td colSpan={4}>Chưa có Feature.</td></tr>}</tbody></table></TableScroll>
+    <h3>Đối chiếu tiến độ toàn dự án</h3><p>Bảng so sánh các Đợt kiểm thử đang sử dụng của toàn dự án.</p><TableScroll label="Tiến độ theo Đợt kiểm thử"><table className="management-feature-table"><thead><tr><th>Đợt kiểm thử</th><th>Môi trường</th><th>Đã test / Tổng case</th><th>Tiến độ</th></tr></thead><tbody>{data.features.map(feature=><tr key={feature.id}><td>{feature.name}</td><td>{feature.environment||'—'}</td><td>{feature.testedCaseCount} / {feature.caseCount}</td><td><div className="management-feature-progress" role="progressbar" aria-label={`Tiến độ ${feature.name}`} aria-valuenow={percent(feature.progressPercent)} aria-valuemin={0} aria-valuemax={100}><span style={{width:`${percent(feature.progressPercent)}%`}}/></div>{feature.caseCount?`${displayPercent(feature.progressPercent)}%`:'Chưa có case'}</td></tr>)}{!data.features.length&&<tr><td colSpan={4}>Chưa có Đợt kiểm thử.</td></tr>}</tbody></table></TableScroll>
     <h3>Bug/QA trong phạm vi</h3><TableScroll label="Số lượng Bug và QA"><table><thead><tr><th>Loại</th><th>Trạng thái</th><th>Số lượng</th></tr></thead><tbody>{data.issues.map((issue,index)=><tr key={`${issue.type}/${issue.status}/${index}`}><td>{issue.type==='BUG'?'Bug':issue.type}</td><td>{issueStatusLabel(issue)}</td><td>{issue.total}</td></tr>)}{!data.issues.length&&<tr><td colSpan={3}>Chưa có Bug/QA.</td></tr>}</tbody></table></TableScroll>
   </section>;
 }

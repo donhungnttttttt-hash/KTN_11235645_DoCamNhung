@@ -5,30 +5,27 @@ import {ProjectDeviceAssignDialog} from './ProjectDeviceAssignDialog';
 
 const assets=Array.from({length:20},(_,i)=>({id:i+1,assetCode:`IP-${i+1}`,model:'iPad',version:0}));
 const members=[{userId:'tester',username:'tester',displayName:'Tester A',projectRole:'PM',active:true,enabled:true}];
-function fixture(assignDevice=vi.fn().mockResolvedValue({})){
- const api={members:vi.fn().mockResolvedValue(members),assets:vi.fn().mockResolvedValue({items:assets,totalElements:20}),assignDevice};
+function fixture(assignDevice=vi.fn().mockResolvedValue({}),recipients=members){
+ const api={members:vi.fn().mockResolvedValue(recipients),assets:vi.fn().mockResolvedValue({items:assets,totalElements:20}),assignDevice};
  const changed=vi.fn(),close=vi.fn();
  render(<ProjectDeviceAssignDialog projectId={2} api={api} onChanged={changed} onClose={close}/>);
  return {api,changed,close};
 }
 async function selectAll(){fireEvent.click(await screen.findByLabelText('Chọn tất cả đang hiển thị · Máy sẵn sàng'));}
 
-it('explains missing recipients and directs the user to the required field instead of a silent disabled handover',async()=>{
- const {api}=fixture();await screen.findByText('IP-1 · iPad');await selectAll();
+it('explains missing recipient selection with multiple eligible PMs',async()=>{
+ const {api}=fixture(undefined,[...members,{...members[0],userId:'pm2',displayName:'Second PM'}]);await screen.findByText('IP-1 · iPad');await selectAll();
  const submit=screen.getByRole('button',{name:'Bàn giao máy đã chọn'});
  expect(submit).toBeEnabled();fireEvent.click(submit);
  expect(await screen.findByRole('alert')).toHaveTextContent('Chọn một PM');
  expect(api.assignDevice).not.toHaveBeenCalled();
- fireEvent.click(screen.getByRole('button',{name:'Chọn PM nhận máy'}));
- expect(screen.getByLabelText('Người nhận chung')).toHaveFocus();
+ expect(screen.getByLabelText('Người nhận chung')).toBeVisible();
 });
 
-it('hands over twenty selected assets after explicitly applying one recipient, with immediate progress',async()=>{
+it('automatically hands over twenty selected assets to the only PM, with immediate progress',async()=>{
  let finish;const assign=vi.fn().mockReturnValueOnce(new Promise(resolve=>{finish=resolve;})).mockResolvedValue({});
  const {changed,close}=fixture(assign);await screen.findByText('IP-1 · iPad');await selectAll();
- fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'tester'}});
-
- expect(screen.getByLabelText('Người nhận chung')).toHaveValue('tester');
+ expect(screen.queryByLabelText('Người nhận chung')).toBeNull();
  fireEvent.click(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}));
  expect(screen.getByRole('button',{name:'Đang bàn giao…'})).toBeDisabled();
  expect(screen.getByRole('status')).toHaveTextContent('Đang bàn giao');
@@ -38,7 +35,7 @@ it('hands over twenty selected assets after explicitly applying one recipient, w
 });
 
 it('validates the complete batch before writing when the common PM was cleared',async()=>{
- const {api}=fixture();fireEvent.click(await screen.findByLabelText('IP-1 · iPad'));fireEvent.click(screen.getByLabelText('IP-2 · iPad'));
+ const {api}=fixture(undefined,[...members,{...members[0],userId:'pm2',displayName:'Second PM'}]);fireEvent.click(await screen.findByLabelText('IP-1 · iPad'));fireEvent.click(screen.getByLabelText('IP-2 · iPad'));
  fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:'tester'}});
  fireEvent.change(screen.getByLabelText('Người nhận chung'),{target:{value:''}});fireEvent.submit(screen.getByRole('button',{name:'Bàn giao máy đã chọn'}).closest('form'));
  expect(await screen.findByRole('alert')).toHaveTextContent('Chọn một PM');

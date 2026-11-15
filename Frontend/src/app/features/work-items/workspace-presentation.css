@@ -1,0 +1,264 @@
+.cat-container.feature-issues-page,.cat-container.issue-create-page {max-width:none;width:100%;padding:24px 28px;}
+.feature-issues-page .ui-page-title,.issue-create-page .ui-page-title {color:#116d64;font-size:25px;font-weight:700;}
+.feature-issues-page .ticket-legacy-summary {margin-block:12px;font-size:12px;}
+.feature-kanban-hint {font-size:12px;margin-bottom:10px;color:#64748b;}
+.feature-issues-page .feature-kanban-columns {gap:18px;height:clamp(26rem,calc(100dvh - 24rem),54rem);}
+.feature-issues-page .feature-kanban-column {flex-basis:300px;width:300px;border:0;border-radius:6px;box-shadow:0 1px 4px #102b2210;}
+.feature-issues-page .feature-kanban-column-header {padding:14px 16px;min-height:54px;border:0;gap:8px;}
+.feature-kanban-column-header h2 {flex:initial;font-weight:700;color:#253c39;}
+.feature-kanban-count {background:#e7e9e9;font-weight:700;padding:1px 10px;min-width:34px;}
+.feature-kanban-status-dot {width:13px;height:13px;}
+.kanban-icon {border:0;background:none;cursor:pointer;font-size:22px;color:#64706f;line-height:1;min-width:28px;min-height:30px;}
+.kanban-icon:first-of-type {margin-left:auto;}
+.feature-issues-page .feature-kanban-cards {padding:0 14px 16px;gap:12px;}
+.feature-issues-page .feature-kanban-card {position:relative;gap:8px;padding:12px;border-radius:3px;box-shadow:none;border-color:#cbd3d2;}
+.feature-kanban-card-meta {padding-right:24px;}
+.feature-issues-page .feature-kanban-title {font-size:14px;font-weight:400;color:#263f3a;line-height:1.65;}
+.feature-kanban-key {font-size:13px;min-height:24px;}
+.feature-kanban-type {border-radius:999px;padding:2px 10px;line-height:1.4;font-size:12px;}
+.feature-kanban-type.is-bug {background:#fae5da;color:#a53e16;}
+.feature-kanban-type.is-qa {background:#eee6ff;color:#633bb4;}
+.feature-kanban-feature {font-size:11px;color:#6c7e7b;}
+.feature-issues-page .feature-kanban-assignee {border:0;padding-top:2px;display:flex;align-items:center;gap:7px;font-size:12px;}
+.ticket-person-avatar {display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#268c9c;color:white;font-size:13px;font-weight:600;}
+.kanban-card-menu {position:absolute;right:10px;top:10px;max-width:calc(100% - 20px);z-index:1;}
+.kanban-card-menu summary {cursor:pointer;list-style:none;text-align:right;color:#6c7977;font-size:20px;line-height:24px;}
+.kanban-card-menu[open] {padding:6px;background:#fff;box-shadow:0 4px 18px #15332e28;border:1px solid #d6dfdd;border-radius:5px;width:245px;z-index:3;}
+.kanban-card-menu .unified-select {margin-top:8px;}
+.ticket-column-note {font-size:11px;padding:0 14px 10px;margin:0;}
+.ticket-detail-heading {display:flex!important;flex-wrap:wrap;gap:14px!important;align-items:center!important;margin-bottom:22px;}
+.ticket-detail-badges {display:flex;gap:10px;align-items:center;width:100%;color:#177d72;}
+.ticket-detail-heading h3 {font-size:23px!important;font-weight:700!important;line-height:1.55!important;color:#243c37;flex:1 1 55%;margin:0!important;overflow-wrap:anywhere;}
+.ticket-detail-status {padding:4px 13px;border-radius:20px;font-size:12px;border:1px solid var(--ticket-status-color);color:#263b37;background:color-mix(in srgb,var(--ticket-status-color) 15%,white);}
+.feature-issue-detail {background:#f5f7f6;padding:20px!important;min-height:100%;}
+.ticket-detail-content {background:#fff;padding:26px 32px;border:1px solid #ccd8d4;border-radius:7px;}
+.ticket-detail-author {display:flex;align-items:center;gap:12px;margin-bottom:30px;}
+.ticket-detail-author .ticket-person-avatar {width:44px;height:44px;font-size:21px;background:#4d85e4;}
+.ticket-detail-author p {margin:3px 0 0;color:#7c8985;font-size:12px;}
+.ticket-content-section {margin-block:26px 34px;}
+.ticket-content-section h4 {font-size:19px!important;font-weight:650!important;color:#1a7469;border-bottom:1px solid #83b9ac;padding-bottom:12px;margin-bottom:16px!important;}
+.ticket-content-section .wi-pre {max-width:none;line-height:1.85;font-size:14px;color:#2d413b;}
+.issue-create-context summary {cursor:pointer;color:#167c70;font-weight:600;padding:6px 0;}
+.ticket-supplementary-notes{margin-bottom:0}
+.ticket-supplementary-notes .ticket-notes-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px;margin:0}
+.ticket-note-row{display:grid;grid-template-columns:minmax(100px,32%) minmax(0,1fr);gap:16px;align-items:center;padding:16px 12px;min-height:65px;border-bottom:1px solid #c6cfcc}
+.ticket-notes-fields:first-of-type>.ticket-note-row:nth-child(-n+2){border-top:1px solid #c6cfcc}
+.ticket-supplementary-notes>section .ticket-note-row:nth-child(-n+2){border-top:0}
+.ticket-note-row.is-wide{grid-column:1/-1;grid-template-columns:calc((100% - 40px) * .16) minmax(0,1fr)}
+.ticket-note-row dt{color:#7a8380;font-weight:400;line-height:1.6}
+.ticket-note-row dd{margin:0;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere;color:#263b35;line-height:1.7}
+.ticket-note-row a,.ticket-note-value{color:#148878;text-decoration:none}
+.ticket-note-row a:hover{text-decoration:underline}
+.ticket-note-person{display:flex;align-items:center;gap:10px}
+.ticket-note-row dd>input{box-sizing:border-box;width:100%;min-width:0;padding:10px;border:1px solid #9bb2b1;border-radius:5px;background:#fff;color:inherit}
+@media(max-width:760px){
+ .ticket-supplementary-notes .ticket-notes-fields{grid-template-columns:minmax(0,1fr);column-gap:0}
+ .ticket-note-row,.ticket-note-row.is-wide{grid-template-columns:minmax(95px,34%) minmax(0,1fr);gap:12px;padding:12px 0}
+ .ticket-notes-fields:first-of-type>.ticket-note-row:nth-child(2){border-top:0}
+}
+.feature-issue-detail>.ticket-action {position:sticky;bottom:-20px;z-index:5;padding:16px;background:#fff;border:1px solid #d5dfda;box-shadow:0 -6px 24px #163c3010;border-radius:6px;margin-top:26px;}
+.ticket-action.is-expanded {max-height:65dvh;overflow-y:auto;overscroll-behavior:contain;}
+.ticket-action .ticket-composer-grid {display:grid;grid-template-columns:minmax(0,1.7fr) minmax(320px,1fr);gap:20px;align-items:stretch;}
+.ticket-action.is-collapsed .ticket-composer-grid {grid-template-columns:minmax(0,1fr) auto;align-items:center;}
+.ticket-comment-input {margin:0!important;}
+.ticket-comment-label {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+.ticket-comment-input textarea {width:100%;padding:14px;border:1px solid #aebfb9;border-radius:5px;font-size:14px;min-height:48px;resize:vertical;}
+.ticket-expand-action {border:0;border-left:1px solid #ccd8d2;background:white;cursor:pointer;color:#256f62;padding:12px 20px;font:inherit;}
+.feature-issue-detail .ticket-action-options {border:0!important;padding:0!important;margin:0!important;display:grid;gap:12px;grid-template-columns:minmax(0,1fr);align-content:start;}
+.ticket-action-options>.wi-field {margin:0;}
+.ticket-option-state {grid-column:1/-1;order:0;}
+.ticket-action-options>.ticket-checkbox {grid-column:1/-1;order:1;min-height:24px;margin:0;}
+.ticket-option-assignee {order:2;}
+
+
+.ticket-action-options>.ticket-planning-fields {grid-column:1/-1;order:5;}
+.ticket-action-options>.wi-note {grid-column:1/-1;order:6;}
+.ticket-action-options legend {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);}
+.ticket-composer-actions {display:flex;justify-content:center;gap:12px;margin-top:16px;}
+.ticket-composer-actions .cat-btn {min-width:112px;}
+.ticket-editor {min-width:0;}
+.ticket-action.is-expanded .ticket-editor {display:flex;flex-direction:column;min-height:260px;}
+.ticket-action.is-expanded .ticket-comment-input {display:flex;flex:1;}
+.ticket-action.is-expanded .ticket-comment-input textarea {flex:1;min-height:220px;padding:14px;line-height:1.7;border-radius:6px 6px 0 0;box-sizing:border-box;}
+.ticket-action.is-expanded .ticket-editor>.ticket-comment-preview {flex:1;min-height:260px;}
+.ticket-action .ticket-field-heading {display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;min-height:18px;margin-bottom:6px;}
+.ticket-action .ticket-field-heading label {margin:0;}
+.ticket-action .ticket-self-assign {margin:0;min-height:18px!important;text-decoration:none;white-space:nowrap;font-size:inherit;}
+.ticket-action .ticket-self-assign:hover {text-decoration:underline;}
+.ticket-action .wi-field {gap:8px;}
+.ticket-action-options>.ticket-assignee-field {grid-column:1/-1;order:2;}
+.ticket-action-options>.ticket-option-closure {grid-column:1/-1;order:5;}
+.ticket-action form>.wi-note {margin:12px 0 0;font-size:12px;line-height:1.6;}
+.ticket-planning-fields .ticket-plan-hours {display:contents;}
+.ticket-planning-fields.is-composer {margin:0;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px;align-items:start;}
+.ticket-planning-fields.is-composer>.ticket-assignee-field {grid-column:1;grid-row:1;}
+.ticket-planning-fields.is-composer>.ticket-plan-start {grid-column:2;grid-row:1;}
+.ticket-planning-fields.is-composer>.ticket-plan-start,.ticket-planning-fields.is-composer>.ticket-plan-due {padding-top:0;}
+.ticket-planning-fields.is-composer>.ticket-plan-milestones {grid-column:1;grid-row:2;min-width:0;}
+.ticket-planning-fields.is-composer>.ticket-plan-due {grid-column:2;grid-row:2;}
+.ticket-planning-fields.is-composer>.ticket-option-closure {grid-column:1;grid-row:2;}
+.ticket-planning-fields.is-composer>.ticket-plan-hours {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;grid-column:2;grid-row:3;}
+.ticket-planning-fields.is-composer .wi-field {display:grid;gap:8px;}
+.ticket-planning-fields.is-composer .ticket-milestones {align-self:end;}
+@media(max-width:1050px) {
+ .ticket-action.is-expanded .ticket-composer-grid {grid-template-columns:minmax(0,1fr);gap:24px;}
+ .ticket-action.is-expanded .ticket-comment-input textarea {min-height:200px;}
+ .ticket-action.is-expanded .ticket-editor {min-height:220px;}
+}
+@media(max-width:480px) {
+ .ticket-planning-fields.is-composer {display:flex;flex-direction:column;gap:18px;}
+ .ticket-planning-fields.is-composer>* {width:100%;}
+ .ticket-action .ticket-editor-toolbar small {width:100%;margin:0;}
+}
+.ticket-editor-toolbar {display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:8px 10px;background:#f4f7f6;border:1px solid #aebfb9;border-top:0;border-radius:0 0 6px 6px;}
+.ticket-editor-toolbar button,.ticket-attach-button {display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;color:#42645e;min-height:32px;padding:4px 7px;cursor:pointer;}
+.ticket-editor-toolbar small {margin-left:auto;color:#687c78;font-size:11px;}
+.ticket-attach-button {position:relative;overflow:hidden;}
+.ticket-attach-button input {position:absolute;inset:0;opacity:0;width:100%;cursor:pointer;}
+.ticket-attach-button:focus-within {outline:2px solid #008a7c;outline-offset:2px;}
+.ticket-planning-fields {display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:12px;}
+.ticket-planning-fields .wi-field {margin:0;min-width:0;}
+.ticket-planning-fields input:not([type=checkbox]) {width:100%;min-width:0;box-sizing:border-box;}
+.ticket-plan-milestones {grid-column:1/-1;}
+.ticket-milestones {grid-column:1/-1;border:1px solid #c8d5d1;border-radius:5px;padding:10px 12px;}
+.ticket-milestones summary {cursor:pointer;color:#365b53;}
+.ticket-milestones label {display:flex;align-items:center;gap:8px;padding:6px 0;}
+.ticket-milestones input[type=checkbox] {width:16px;height:16px;}
+.ticket-self-assign {display:block;margin:0 0 0 auto;min-height:24px!important;padding:0!important;border:0;background:transparent;color:#00897c;text-decoration:underline;cursor:pointer;font-size:12px;}
+.ticket-files {display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;}
+.ticket-files figure {margin:0;padding:9px;border:1px solid #d9e4e0;border-radius:6px;max-width:260px;background:#fff;}
+.ticket-files figcaption {display:flex;gap:8px;align-items:center;overflow-wrap:anywhere;font-size:12px;}
+.ticket-files figcaption button {border:0;background:transparent;font-size:20px;cursor:pointer;}
+.ticket-files img {display:block;width:auto;max-width:240px;max-height:180px;object-fit:contain;margin-bottom:8px;}
+.ticket-files .ticket-video-preview {display:block;width:100%;max-width:100%;height:180px;object-fit:contain;background:#172723;border-radius:4px;margin-bottom:10px;}
+.ticket-image-button {border:0;padding:0;background:transparent;cursor:zoom-in;}
+.ticket-image-view {position:fixed;inset:0;z-index:1600;background:#122824ed;color:white;border:0;width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;margin:0;box-sizing:border-box;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:16px;}
+.ticket-image-view[open] {display:flex;}
+.ticket-image-view img {max-width:90vw;max-height:80dvh;width:auto;height:auto;object-fit:contain;}
+.ticket-image-view button {background:#fff;border:0;border-radius:5px;padding:10px 22px;cursor:pointer;}
+.ticket-schedule-summary {display:flex;flex-wrap:wrap;gap:12px 26px;border-top:1px solid #d9e4e0;padding-top:12px;color:#45665f;}
+.ticket-comment-preview,.issue-create-preview {padding:18px;border:1px solid #d4dfd9;border-radius:6px;background:#fafcfb;margin-block:16px;}
+.ticket-editor>.ticket-comment-preview {margin:0;min-height:270px;max-height:48dvh;overflow:auto;}
+.ticket-action .ticket-composer-actions {position:sticky;bottom:-16px;background:white;padding:12px 0;border-top:1px solid #e1e9e5;z-index:2;}
+.ticket-action .ticket-milestones summary {min-height:20px;padding:0;}
+.issue-create-heading {display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:24px;}
+.issue-create-heading p {color:#71857c;margin-top:8px;}
+.issue-create-eyebrow {display:flex;align-items:center;gap:6px;color:#418d7b;font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:8px;}
+.issue-create-heading .cat-btn {display:flex;align-items:center;gap:6px;}
+.issue-create-source {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px;background:white;padding:20px;border:1px solid #dde6e2;border-radius:6px;}
+.issue-create-empty {text-align:center;padding:70px 24px;color:#6b8077;background:#fff;margin-top:20px;border:1px dashed #c5d8cf;border-radius:6px;}
+.issue-create-empty svg {margin:0 auto 18px;color:#208c76;}
+.issue-create-empty h2 {font-size:20px;margin-bottom:10px;color:#286354;}
+.issue-create-empty p {max-width:650px;margin:auto;line-height:1.8;}
+.issue-create-form {background:white;margin-top:20px;padding:24px 28px;border:1px solid #d4dfd9;border-radius:6px;}
+.issue-create-form>fieldset {border:0;padding:0;}
+.issue-create-submit {justify-content:flex-end;border-top:1px solid #dbe4df;padding-top:20px;}
+.issue-create-footer {display:flex;gap:12px;justify-content:flex-end;margin-top:22px;}
+.issue-create-form>.cat-btn {justify-self:start;width:auto;}
+.issue-create-form .issue-create-submit {position:sticky;bottom:0;z-index:2;background:#fff;padding-block:16px;box-shadow:0 -5px 15px #163c3008;}
+.cat-container.feature-issues-page {position:relative;}
+.cat-container.feature-issues-page>.td-heading-row {margin-bottom:12px;padding-right:230px;}
+.cat-container.feature-issues-page>.feature-issue-filters {margin-block:12px 18px;padding:0;border:0;background:transparent;}
+.cat-container.feature-issues-page>.feature-issue-view-switch {position:absolute;right:28px;top:24px;margin:0;}
+.project-brief>section {background:white;border:1px solid #dce5e1;border-radius:7px;padding:22px;margin-bottom:20px;}
+.project-brief>section> :is(h2,h3):first-child {color:#147e70;border-bottom:1px solid #c8ded7;padding-bottom:12px;margin-bottom:20px;}
+.project-brief :is(h3,h4) {font-weight:600;color:#315d54;margin:20px 0 8px;}
+.project-brief table {font-size:12px;min-width:650px;}
+.project-brief-pending {padding:10px 14px;border-left:3px solid #d9a545;background:#fff9e9;color:#796029;font-size:12px;}
+@media(max-width:760px){
+ .cat-container.feature-issues-page,.cat-container.issue-create-page {padding:16px;}
+ .issue-create-heading {flex-direction:column;align-items:flex-start;}
+ .issue-create-source,.ticket-action .ticket-composer-grid {grid-template-columns:1fr;}
+ .ticket-action.is-collapsed .ticket-composer-grid {grid-template-columns:1fr;gap:8px;}
+ .ticket-detail-content,.issue-create-form {padding:16px;}
+ .feature-issue-detail {padding:12px!important;}
+ .feature-issue-detail>.ticket-action {bottom:-12px;padding:12px;}
+ .ticket-detail-heading h3 {font-size:19px!important;}
+ .project-brief>section {padding:14px;}
+ .feature-kanban-column {flex-basis:280px;width:280px;}
+ .ticket-composer-actions .cat-btn {min-width:0;}
+ .cat-container.feature-issues-page>.feature-issue-view-switch {position:static;margin-bottom:12px;}
+ .cat-container.feature-issues-page>.td-heading-row {padding-right:0;}
+}
+
+/* Compact update controls; keep the writing area larger than individual fields. */
+.feature-issue-detail .ticket-action-options {font-size:12px;line-height:1.5;}
+.feature-issue-detail .ticket-action-options .wi-field input:not([type=checkbox]),
+.feature-issue-detail .ticket-action-options .wi-field select {min-height:34px;height:34px;padding:6px 9px;font-size:12px;}
+.ticket-action-options .ticket-milestones {padding:7px 10px;font-size:12px;}
+.ticket-action-options .ticket-field-heading {gap:6px;}
+.ticket-action .ticket-planning-fields.is-composer .wi-field {gap:6px;}
+.ticket-action .ticket-composer-actions {margin-top:12px;padding:10px 0;}
+.ticket-action .ticket-composer-actions .cat-btn {min-height:36px;padding:8px 16px;}
+
+/* Reference composer: continuous editor frame and clearly bounded controls. */
+.feature-issue-detail>.ticket-action {border-color:#aeb8b4;box-shadow:0 -3px 12px #163c3008;}
+.ticket-action.is-expanded .ticket-editor {border:1px solid #9ca9a4;border-radius:5px;background:#fff;}
+.ticket-action.is-expanded .ticket-comment-input textarea {border:0;border-radius:5px 5px 0 0;outline-offset:-2px;}
+.ticket-action.is-expanded .ticket-editor-toolbar {border:0;border-top:1px solid #aeb8b4;border-radius:0 0 5px 5px;background:#f5f6f5;padding:6px 8px;}
+.ticket-action.is-expanded .ticket-editor>.ticket-comment-preview {border:0;border-radius:5px;min-height:220px;}
+.ticket-action.is-expanded .ticket-editor>.ticket-files {padding:10px;margin:0;border-top:1px solid #d5ddda;}
+.ticket-action.is-expanded .ticket-editor>.ticket-files:empty {display:none;}
+.feature-issue-detail .ticket-action-options .wi-field :is(input:not([type=checkbox]),select),
+.ticket-action-options .ticket-milestones {border:1px solid #9ca9a4;border-radius:4px;background-color:#fff;color:#263f39;box-shadow:none;}
+.ticket-action-options .wi-field :is(input,select):focus-visible,
+.ticket-action-options .ticket-milestones:focus-within {outline:2px solid #168b7b;outline-offset:1px;}
+.ticket-action-options .wi-field :is(input,select):disabled {background-color:#f3f5f4;color:#788680;border-color:#c4cdc9;}
+.ticket-action .ticket-plan-milestones .ticket-milestones {margin:0;min-height:34px;box-sizing:border-box;}
+.ticket-action .ticket-plan-milestones .ticket-field-heading small {font-size:11px;color:#167c70;}
+.ticket-action .ticket-milestones summary {display:flex;align-items:center;justify-content:space-between;gap:8px;list-style:none;min-height:18px;}
+.ticket-action .ticket-milestones summary::-webkit-details-marker {display:none;}
+.ticket-action .ticket-milestones summary::after {content:'';width:6px;height:6px;border-right:2px solid #5f7d73;border-bottom:2px solid #5f7d73;transform:rotate(45deg);margin-right:3px;flex-shrink:0;}
+.ticket-action .ticket-milestones[open] summary::after {transform:rotate(225deg);}
+.ticket-action .ticket-milestones[open] summary {padding-bottom:8px;border-bottom:1px solid #d5ddda;margin-bottom:4px;}
+.ticket-action .ticket-composer-actions .cat-btn {border:1px solid #9ca9a4;border-radius:4px;}
+.ticket-action .ticket-composer-actions .cat-btn-mint {border-color:#168576;}
+.ticket-status-select {position:relative;display:block;min-width:0;}
+.ticket-selected-status-dot {position:absolute;left:12px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:1;}
+.feature-issue-detail .ticket-action-options .ticket-status-select select {width:100%;padding-left:30px!important;}
+
+/* Compact reference layout: actor avatar, editor, then three paired property rows. */
+.feature-issue-detail>.ticket-action {padding:10px 12px;}
+.feature-issue-detail .ticket-action form {gap:0;}
+.ticket-action .ticket-composer-grid {grid-template-columns:minmax(0,1.7fr) minmax(330px,1fr);gap:16px;align-items:stretch;}
+.ticket-editor-column {display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;min-width:0;align-items:end;}
+.ticket-composer-avatar {display:inline-flex;align-items:center;justify-content:center;align-self:center;width:28px;height:28px;margin:0;transform:translateY(-16px);border:1px solid #b2c6bf;border-radius:50%;overflow:hidden;background:#e4f2ed;color:#16786c;font-size:11px;font-weight:600;}
+.ticket-composer-avatar img {width:100%;height:100%;object-fit:cover;}
+.ticket-action.is-collapsed .ticket-composer-avatar,.ticket-editor-column:has(.ticket-comment-preview) .ticket-composer-avatar {transform:none;}
+.ticket-action.is-expanded .ticket-editor {min-height:196px;}
+.ticket-action.is-expanded .ticket-comment-input textarea {min-height:164px;height:164px;padding:10px 12px;font-size:12px;line-height:1.6;}
+.ticket-action.is-expanded .ticket-editor>.ticket-comment-preview {min-height:164px;padding:10px 12px;}
+.ticket-action.is-expanded .ticket-editor-toolbar {min-height:30px;padding:2px 6px;gap:3px;}
+.ticket-action .ticket-editor-toolbar button,.ticket-action .ticket-attach-button {min-height:24px;padding:2px 5px;font-size:11px;}
+.ticket-action .ticket-editor-toolbar small {font-size:10px;}
+.feature-issue-detail .ticket-action-options {position:relative;gap:8px;font-size:12px;align-content:space-between;}
+.ticket-action .ticket-action-options>.ticket-checkbox {position:absolute;right:0;top:0;display:flex;align-items:center;gap:6px;min-height:16px;margin:0;padding:0;font-size:11px;line-height:16px;}
+.ticket-action-options>.ticket-checkbox input {width:14px;height:14px;margin:0;min-height:0;}
+.ticket-action-options .wi-field,.ticket-action .ticket-planning-fields.is-composer .wi-field {gap:3px;line-height:16px;}
+.ticket-action .ticket-field-heading {min-height:16px;line-height:16px;margin-bottom:3px;gap:5px;flex-wrap:nowrap;}
+.ticket-action .ticket-field-heading label {font-size:12px;}
+.ticket-action .ticket-self-assign {font-size:11px;min-height:16px!important;line-height:16px;}
+.ticket-action .ticket-planning-fields.is-composer {gap:12px;}
+.feature-issue-detail .ticket-action-options .wi-field :is(input:not([type=checkbox]),select) {height:40px;min-height:40px;padding:7px 9px;font-size:12px;}
+.ticket-action .ticket-plan-milestones .ticket-milestones {min-height:28px;padding:4px 8px;}
+.ticket-action .ticket-plan-milestones .ticket-milestones summary {min-height:18px;}
+.ticket-action .ticket-planning-fields.is-composer>.ticket-plan-hours {column-gap:6px;row-gap:3px;}
+.ticket-hours-heading {grid-column:1/-1;line-height:16px;min-height:16px;}
+.ticket-action form>.wi-note {margin:6px 0;font-size:10px;line-height:1.4;}
+.ticket-action .ticket-composer-actions {margin-top:6px;padding:7px 0 0;bottom:-10px;gap:10px;}
+.ticket-action .ticket-composer-actions .cat-btn {min-height:28px;height:28px;min-width:88px;padding:3px 14px;font-size:12px;}
+@media(max-width:760px){
+ .ticket-action.is-expanded .ticket-composer-grid {grid-template-columns:minmax(0,1fr);gap:12px;}
+ .ticket-action.is-expanded .ticket-editor {min-height:170px;}
+ .ticket-action.is-expanded .ticket-comment-input textarea {min-height:138px;height:138px;}
+ .ticket-action .ticket-planning-fields.is-composer {display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);}
+ .ticket-action .ticket-field-heading {flex-wrap:wrap;}
+ .ticket-action .ticket-editor-toolbar small {display:none;}
+}
+.feature-issue-detail .ticket-inline-form{display:none}
+.ticket-inline-title{flex:1 1 480px;min-width:0}
+.ticket-inline-title input{width:100%;font-size:20px;font-weight:600}
+.ticket-content-section>textarea,.ticket-content-section>input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #9bb2b1;border-radius:5px;background:#fff;color:inherit;line-height:1.6}
+.ticket-content-section>textarea{resize:vertical;min-height:104px}
+.ticket-inline-priority{max-width:320px}
+.ticket-edit-comparison{padding:12px;border:1px solid #d4dfdf;border-radius:5px}

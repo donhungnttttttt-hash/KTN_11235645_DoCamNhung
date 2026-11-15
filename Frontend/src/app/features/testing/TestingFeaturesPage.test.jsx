@@ -8,22 +8,22 @@ vi.mock('../auth/AuthProvider',()=>({useAuth:()=>({hasRole:role=>role==='ADMIN'}
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>({currentProject:{id:1,name:'Dự án thử',projectRole:'PM'}})}));
 afterEach(()=>vi.unstubAllEnvs());
 beforeEach(()=>{vi.resetAllMocks();featuresApi.list.mockResolvedValue({items:[{id:21,name:'Kiểm thử tháng10',environment:'Server riêng',description:'Đợt kiểm thử',createdAt:'2026-10-18T17:30:00Z',version:0,caseCount:5,testedCaseCount:3}],totalItems:1,totalPages:1});});
-test('opens the chosen test round from project Features',async()=>{
+test('opens the chosen test round from project Đợt kiểm thử',async()=>{
   const open=vi.fn();render(<TestingFeaturesPage projectId={1} onOpenFeature={open}/>);
   fireEvent.click(await screen.findByRole('button',{name:'Kiểm thử tháng10'}));
   expect(open).toHaveBeenCalledWith(21);
 });
-test('keeps Feature fields when saving fails',async()=>{
+test('keeps Đợt kiểm thử fields when saving fails',async()=>{
   featuresApi.create.mockRejectedValue(new Error('Mạng chưa ổn định'));
   render(<TestingFeaturesPage projectId={1} onOpenFeature={()=>{}}/>);
-  fireEvent.click(screen.getByRole('button',{name:'Tạo Feature'}));
-  fireEvent.change(screen.getByLabelText('Tên Feature'),{target:{value:'Đợt đang nhập'}});
+  fireEvent.click(screen.getByRole('button',{name:'Tạo Đợt kiểm thử'}));
+  fireEvent.change(screen.getByLabelText('Tên Đợt kiểm thử'),{target:{value:'Đợt đang nhập'}});
   fireEvent.change(screen.getByLabelText('Môi trường / server'),{target:{value:'Server tự do'}});
-  fireEvent.click(screen.getByRole('button',{name:'Lưu Feature'}));
+  fireEvent.click(screen.getByRole('button',{name:'Lưu Đợt kiểm thử'}));
   expect(await screen.findByRole('alert')).toHaveTextContent('Mạng chưa ổn định');
-  expect(screen.getByLabelText('Tên Feature')).toHaveValue('Đợt đang nhập');expect(screen.getByLabelText('Môi trường / server')).toHaveValue('Server tự do');
+  expect(screen.getByLabelText('Tên Đợt kiểm thử')).toHaveValue('Đợt đang nhập');expect(screen.getByLabelText('Môi trường / server')).toHaveValue('Server tự do');
 });
-test('shows measurable Feature progress without marking a nearly finished scope complete',async()=>{
+test('shows measurable Đợt kiểm thử progress without marking a nearly finished scope complete',async()=>{
  featuresApi.list.mockResolvedValue({items:[{id:21,name:'Gần hoàn tất',version:0,caseCount:200,testedCaseCount:199}],totalItems:1,totalPages:1});
  render(<TestingFeaturesPage projectId={1} onOpenFeature={()=>{}}/>);
  const progress=await screen.findByRole('progressbar',{name:'Tiến độ Gần hoàn tất'});
@@ -33,29 +33,29 @@ test('shows measurable Feature progress without marking a nearly finished scope 
 });
 
 test('applies combined server filters from page zero and clears them together',async()=>{
- const original={id:21,name:'Feature ban đầu',version:0,caseCount:5,testedCaseCount:3};
+ const original={id:21,name:'Đợt kiểm thử ban đầu',version:0,caseCount:5,testedCaseCount:3};
  featuresApi.list.mockImplementation(async(p,filters)=>filters.createdFrom
-  ? {items:[{...original,id:99,name:'Feature ngày đã chọn'}],totalItems:1,totalPages:1}
+  ? {items:[{...original,id:99,name:'Đợt kiểm thử ngày đã chọn'}],totalItems:1,totalPages:1}
   : {items:[original],totalItems:41,totalPages:3});
  render(<TestingFeaturesPage projectId={1} onOpenFeature={()=>{}}/>);
- await screen.findByRole('button',{name:'Feature ban đầu'});
+ await screen.findByRole('button',{name:'Đợt kiểm thử ban đầu'});
  fireEvent.click(screen.getByRole('button',{name:'Trang sau'}));
  await screen.findByText('Trang 2/3');
  const calls=featuresApi.list.mock.calls.length;
- fireEvent.change(screen.getByLabelText('Tìm Feature'),{target:{value:'Server thử'}});
+ fireEvent.change(screen.getByLabelText('Tìm Đợt kiểm thử'),{target:{value:'Server thử'}});
  fireEvent.change(screen.getByLabelText('Tạo từ ngày'),{target:{value:'2026-10-01'}});
  fireEvent.change(screen.getByLabelText('Đến hết ngày'),{target:{value:'2026-10-19'}});
  fireEvent.change(screen.getByLabelText('Sắp xếp'),{target:{value:'name-asc'}});
  fireEvent.click(screen.getByLabelText('Đã lưu trữ'));
  expect(featuresApi.list).toHaveBeenCalledTimes(calls);
  fireEvent.click(screen.getByRole('button',{name:'Áp dụng'}));
- expect(await screen.findByRole('button',{name:'Feature ngày đã chọn'})).toBeVisible();
+ expect(await screen.findByRole('button',{name:'Đợt kiểm thử ngày đã chọn'})).toBeVisible();
  expect(featuresApi.list).toHaveBeenLastCalledWith(1,{page:0,keyword:'Server thử',archived:true,createdFrom:'2026-10-01',createdTo:'2026-10-19',sort:'name-asc'});
  expect(screen.getByText('Trang 1/1')).toBeVisible();
  expect(screen.getByRole('button',{name:'Khôi phục'})).toBeVisible();
  fireEvent.click(screen.getByRole('button',{name:'Xóa bộ lọc'}));
- expect(await screen.findByRole('button',{name:'Feature ban đầu'})).toBeVisible();
- expect(screen.getByLabelText('Tìm Feature')).toHaveValue('');
+ expect(await screen.findByRole('button',{name:'Đợt kiểm thử ban đầu'})).toBeVisible();
+ expect(screen.getByLabelText('Tìm Đợt kiểm thử')).toHaveValue('');
  expect(screen.getByLabelText('Tạo từ ngày')).toHaveValue('');
  expect(screen.getByLabelText('Đến hết ngày')).toHaveValue('');
  expect(screen.getByLabelText('Đã lưu trữ')).not.toBeChecked();
@@ -90,9 +90,9 @@ test('treats the actual timezone-less UTC backend timestamp as UTC',async()=>{
 test('keeps pagination locked while archiving and reloads the same applied page',async()=>{
  let finishArchive;
  featuresApi.archive.mockImplementation(()=>new Promise(resolve=>{finishArchive=resolve;}));
- featuresApi.list.mockResolvedValue({items:[{id:21,name:'Feature đang lưu trữ',version:0,caseCount:0,testedCaseCount:0}],totalItems:60,totalPages:3});
+ featuresApi.list.mockResolvedValue({items:[{id:21,name:'Đợt kiểm thử đang lưu trữ',version:0,caseCount:0,testedCaseCount:0}],totalItems:60,totalPages:3});
  render(<TestingFeaturesPage projectId={1} onOpenFeature={()=>{}}/>);
- await screen.findByRole('button',{name:'Feature đang lưu trữ'});
+ await screen.findByRole('button',{name:'Đợt kiểm thử đang lưu trữ'});
  fireEvent.click(screen.getByRole('button',{name:'Trang sau'}));
  await screen.findByText('Trang 2/3');
  fireEvent.click(screen.getByRole('button',{name:'Lưu trữ'}));

@@ -12,6 +12,7 @@ export const ticketColumns = [
 ];
 const stateColumns={SPEC_CONFIRM:'spec',NEW:'new',IN_PROGRESS:'progress',WAITING_CONFIRM:'verify'};
 const reasonColumns={PROCESSED:'processed',FIXED:'fixed',CANNOT_REPRODUCE:'cannot_reproduce',WONT_FIX:'wont_fix',UNSUPPORTED:'unsupported'};
+export const ticketStateColor=(state,reason)=>ticketColumns.find(column=>column.id===(state==='CLOSED'?reasonColumns[reason]:stateColumns[state]))?.color||'#94a3b8';
 export const ticketStateLabel=state=>state==='CLOSED'?'Đóng':ticketColumns.find(column=>column.id===stateColumns[state])?.label||'Trạng thái chưa xác định';
 export const ticketTransitionLabel=transition=>ticketColumns.find(column=>column.id===(transition.columnId||transition.boardColumn||(transition.state==='CLOSED'?reasonColumns[transition.closureReason]:stateColumns[transition.state])))?.label||ticketStateLabel(transition.state);
 export const ticketClosureLabel=reason=>({PROCESSED:'Đã xử lý',FIXED:'Đã sửa',CANNOT_REPRODUCE:'Không thể tái hiện',WONT_FIX:'Không xử lý',UNSUPPORTED:'Không được hỗ trợ'}[reason]||'Chưa xác định');
@@ -34,7 +35,7 @@ export function boundedTicketTitlePrefix(context) {
   return `[${front}…${back}]`;
  }).join('');
 }
-export const ticketContentFields=[['title','Tiêu đề Issue'],['description','Mô tả Issue'],['preconditions','Điều kiện tiên quyết'],['steps','Các bước thực hiện'],['expectedResult','Kết quả mong đợi'],['actualResult','Kết quả thực tế'],['frequency','Tần suất tái hiện'],['environment','Môi trường phát hiện'],['device','Thiết bị phát hiện']];
+export const ticketContentFields=[['title','Tiêu đề Ticket'],['description','Mô tả Ticket'],['preconditions','Điều kiện tiên quyết'],['steps','Các bước thực hiện'],['expectedResult','Kết quả mong đợi'],['actualResult','Kết quả thực tế'],['frequency','Tần suất tái hiện'],['environment','Môi trường phát hiện'],['device','Thiết bị phát hiện']];
 export const chronological=items=>[...items].sort((a,b)=>String(a.createdAt||'').localeCompare(String(b.createdAt||''))||Number(a.id)-Number(b.id));
 export function ticketAction(item,{body='',transition,assignee='',verifier='',convert=false,repairCoordinator=false}) {
  const payload={expectedVersion:item.version};

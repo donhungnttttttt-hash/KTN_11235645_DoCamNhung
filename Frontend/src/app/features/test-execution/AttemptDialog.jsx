@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React, { useEffect, useRef, useState } from 'react';
 import { executionApi } from '../../services/api/execution';
 import { ErrorNotice, Field, Select, Result, Pager, formatTime } from './components';
@@ -54,7 +55,7 @@ export function AttemptDialog({ projectId, run: initial, builds, active, current
         <h4>Kết quả lần chạy mới</h4>
         <p className="ex-help">Kiểm tra build và kết quả trước khi ghi. Lần lưu mới được thêm vào lịch sử.</p>
         <fieldset disabled={busy} className="space-y-3">
-        <div className="ex-fields"><Field label="Kết quả"><select className="cat-select" required value={form.resultCode} onChange={e => update('resultCode', e.target.value)}><option value="">Chọn kết quả lần chạy</option><option value="OK">OK · Đạt</option><option value="NG">NG · Không đạt</option><option value="P">P · Tạm hoãn</option></select></Field>
+        <div className="ex-fields"><Field label="Kết quả"><UnifiedSelect className="cat-select" required value={form.resultCode} onChange={e => update('resultCode', e.target.value)}><option value="">Chọn kết quả lần chạy</option><option value="OK">OK · Đạt</option><option value="NG">NG · Không đạt</option><option value="P">P · Tạm hoãn</option></UnifiedSelect></Field>
           <Select label="Build thực tế" items={builds} value={form.buildId} describe={x => `${x.platform} ${x.versionLabel} (${x.buildNumber || '—'})`} onChange={v => update('buildId', v)} /></div>
         <Field label="Kết quả thực tế"><textarea required={form.resultCode === 'NG'} maxLength={8000} value={form.actualResult} onChange={e => update('actualResult', e.target.value)} /></Field>
         {form.resultCode === 'NG' && <p className="ex-field-hint">Bắt buộc mô tả kết quả thực tế khi không đạt (NG).</p>}

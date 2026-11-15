@@ -235,3 +235,7 @@
 @media(pointer:coarse){
  .testing-execution-context select,.testing-execution-context input{min-height:44px}
 }
+.testing-catalogues{display:flex;flex-wrap:wrap;gap:12px 24px;margin:0 0 20px}.testing-catalogues>div{display:flex;align-items:center;gap:8px}.testing-catalogues .testing-version-dropdown{left:0;right:auto;max-width:calc(100vw - 40px)}
+.testing-page .testing-icon-action{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;min-height:34px;padding:6px;flex:none}.testing-owner-names{display:inline-block;margin-right:8px;vertical-align:middle;max-width:240px;overflow-wrap:anywhere}
+.testing-version-dropdown .testing-version-add{margin:0 0 10px;padding:0 0 10px;border-top:0;border-bottom:1px solid var(--color-border,#dce3e5)}
+.testing-case-version .ui-select-trigger{width:100%;font-size:12px}.testing-execution-context .ui-select-trigger{width:160px;font-size:12px}

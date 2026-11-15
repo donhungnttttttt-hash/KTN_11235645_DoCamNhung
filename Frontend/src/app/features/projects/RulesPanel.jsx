@@ -21,8 +21,8 @@ export function RulesPanel({projectId,canEdit}) {
   return <section>
     <h2>Quy tắc nội bộ của luồng cũ</h2>
     {notice && <p role="status">{notice}</p>}{busy && <p role="status">Đang lưu quy tắc…</p>}
-    <p className="settings-hint">Các phiên bản này lưu cấu hình của luồng báo lỗi cũ. Bug/QA trong Feature hiện tại không áp dụng bộ quy tắc này.</p>
-    {error && <p role="alert" className="text-danger">{error} <button className="cat-btn" disabled={busy} onClick={()=>setReload(x=>x+1)}>Tải lại quy tắc</button></p>}
+    <p className="settings-hint">Các phiên bản này lưu cấu hình của luồng báo lỗi cũ. Bug/QA trong Đợt kiểm thử hiện tại không áp dụng bộ quy tắc này.</p>
+    {error && <p role="alert" className="text-danger">{error} <button className="cat-btn" disabled={busy} onClick={()=>setReload(x=>x+1)}>Thử lại quy tắc</button></p>}
     {!rules ? !error && <p>Đang tải quy tắc…</p> : !rule ? <>
       <p>Chưa có bộ quy tắc nội bộ.</p>{canEdit && <button className="cat-btn primary" disabled={busy} onClick={()=>mutate(()=>projectsApi.createRuleset(projectId,{code:'INTERNAL_DEMO',name:'Quy tắc báo lỗi nội bộ DEMO'}),'Đã tạo bộ quy tắc nội bộ.')}>Tạo bộ quy tắc nội bộ</button>}
     </> : <>
@@ -31,11 +31,11 @@ export function RulesPanel({projectId,canEdit}) {
         <h3>Thêm phiên bản cấu hình cũ</h3><fieldset disabled={busy}>
           <label className="form-group">Nguồn quy tắc<input required maxLength={500} value={source} onChange={e=>setSource(e.target.value)}/></label>
           <label className="form-group">Tiền tố tiêu đề (tùy chọn)<input maxLength={60} value={prefix} onChange={e=>setPrefix(e.target.value)}/></label>
-          <p>Các trường dưới đây thuộc cấu trúc quy tắc cũ, không phải điều kiện để tạo Bug/QA trong Feature. Các trường: tiêu đề, bước tái hiện, kết quả mong đợi/thực tế, bản build, môi trường, thiết bị.</p>
+          <p>Các trường dưới đây thuộc cấu trúc quy tắc cũ, không phải điều kiện để tạo Bug/QA trong Đợt kiểm thử. Các trường: tiêu đề, bước tái hiện, kết quả mong đợi/thực tế, bản build, môi trường, thiết bị.</p>
         </fieldset><button className="cat-btn primary" disabled={busy}>Lưu bản nháp</button>
       </form>}
       <h3>Lịch sử phiên bản</h3>{!versions.length && <p>Chưa có phiên bản.</p>}
-      {versions.map(version=><RuleVersion key={version.id} version={version} active={rule.activeVersion?.id===version.id} busy={busy} canEdit={canEdit} onPublish={()=>{if(window.confirm(`Công bố phiên bản ${version.versionNo} trong cấu hình cũ? Thao tác này không thay đổi quy tắc của Bug/QA trong Feature hiện tại.`))mutate(()=>projectsApi.publishRule(projectId,rule.id,version.id,rule.activeVersion?.id || 0),`Đã công bố phiên bản ${version.versionNo} trong cấu hình cũ.`);}}/>)}
+      {versions.map(version=><RuleVersion key={version.id} version={version} active={rule.activeVersion?.id===version.id} busy={busy} canEdit={canEdit} onPublish={()=>{if(window.confirm(`Công bố phiên bản ${version.versionNo} trong cấu hình cũ? Thao tác này không thay đổi quy tắc của Bug/QA trong Đợt kiểm thử hiện tại.`))mutate(()=>projectsApi.publishRule(projectId,rule.id,version.id,rule.activeVersion?.id || 0),`Đã công bố phiên bản ${version.versionNo} trong cấu hình cũ.`);}}/>)}
     </>}
   </section>;
 }

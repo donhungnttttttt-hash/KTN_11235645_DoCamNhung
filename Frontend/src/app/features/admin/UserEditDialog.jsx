@@ -27,7 +27,7 @@ export function UserEditDialog({account,self=false,api=adminApi,onSaved,onCancel
   <form className="admin-card admin-form" onSubmit={save} onInvalid={()=>setError({message:'Kiểm tra các trường bắt buộc và hướng dẫn bên dưới trước khi lưu.'})}>
    <p>Vai trò hệ thống: <strong>{roleLabels[account.role]||account.role}</strong></p>
    <p id={`${id}-session`}>{self?'Bạn sẽ cần đăng nhập lại sau khi lưu thay đổi thông tin của mình.':'Người dùng sẽ cần đăng nhập lại sau khi thông tin được thay đổi.'}</p>
-   {error&&<div ref={feedback} tabIndex={-1} role="alert"><p>{error.message}</p>{conflict&&<><p>Tài khoản đã được cập nhật ở nơi khác. Đóng bản nháp và tải lại trước khi sửa tiếp.</p><button type="button" onClick={close}>Đóng và tải lại</button></>}</div>}
+   {error&&<div ref={feedback} tabIndex={-1} role="alert"><p>{error.message}</p>{conflict&&<><p>Tài khoản đã được cập nhật ở nơi khác. Đóng bản nháp và tải lại trước khi sửa tiếp.</p><button type="button" onClick={close}>Đóng và cập nhật</button></>}</div>}
    <fieldset disabled={busy}>
     <div className="admin-field-help"><label>ID đăng nhập<input autoComplete="off" autoCapitalize="none" spellCheck="false" required maxLength={64} pattern="[A-Za-z0-9][A-Za-z0-9._\-]{2,63}" aria-describedby={`${id}-username ${id}-session`} value={username} onChange={event=>setUsername(event.target.value)}/></label><small id={`${id}-username`}>3–64 ký tự: chữ không dấu, số, dấu chấm, gạch dưới hoặc gạch ngang; bắt đầu bằng chữ hoặc số. Tên được lưu bằng chữ thường.</small></div>
     <label>Tên<input required maxLength={100} value={displayName} onChange={event=>setDisplayName(event.target.value)}/></label>

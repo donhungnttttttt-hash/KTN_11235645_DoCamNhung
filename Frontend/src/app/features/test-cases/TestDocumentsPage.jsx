@@ -1,7 +1,8 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import {TableScroll} from '../../components/TableScroll';
 import { canImportTestCases } from '../projects/projectAccess';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FileSpreadsheet, Upload, ListChecks, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { FileSpreadsheet, Upload, ListChecks, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useProject } from '../projects/ProjectProvider';
 import { useAuth } from '../auth/AuthProvider';
 import { testCasesApi } from '../../services/api/testCases';
@@ -20,6 +21,7 @@ export function TestDocumentsPage({ navigate }) {
 }
 
 function DocumentLibrary({ project, navigate }) {
+ useRefreshOnReturn(()=>{if(!loading)load();});
   const { hasRole } = useAuth();
   const canImport = canImportTestCases(project, hasRole);
   const [keyword, setKeyword] = useState('');
@@ -53,7 +55,7 @@ function DocumentLibrary({ project, navigate }) {
         <button className="cat-btn" onClick={() => navigate('/tests/file-work')}>Công việc theo file</button>
         {canImport && <button className="cat-btn cat-btn-mint" onClick={() => setShowImport(true)}><Upload size={14} /> Nhập Excel</button>}
         <button className="cat-btn" onClick={() => navigate('/tests/cases')}><ListChecks size={14} /> Tất cả test case</button>
-        <button className="cat-btn" aria-label="Làm mới tài liệu" disabled={loading} onClick={load}><RefreshCw size={14}/></button>
+
       </div>
     </div>
     <div className="td-filter-row">

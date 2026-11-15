@@ -14,15 +14,20 @@ final class CustomerWorkbook {
     private CustomerWorkbook() {}
 
     static final int MAX_COLUMNS = 64;
+    static final Set<String> FEATURE_FIELDS=Set.of("sourceId","sourceNo","titleVi","preconditionsVi","stepsVi","viewpoint","confirmation","expectedVi","designNote");
     private static String normalize(String text) {
         return Normalizer.normalize(text, Normalizer.Form.NFKD).replaceAll("\\p{M}", "")
                 .toLowerCase(Locale.ROOT).replace('đ','d').replaceAll("[^\\p{L}\\p{N}]", "");
     }
     static Map<String,Integer> columns(List<String> headers) {
+        return columns(headers,false);
+    }
+    static Map<String,Integer> columns(List<String> headers,boolean featureOnly) {
         Map<String,Integer> columns=new LinkedHashMap<>();
         for(int i=0;i<headers.size();i++) {
             String key=switch(normalize(headers.get(i))) {
                 case "id" -> "sourceId";
+                case "no" -> "sourceNo";
                 case "doituongtest" -> "titleVi";
                 case "dieukientienquyet", "dieukientiende" -> "preconditionsVi";
                 case "cacbuoctest" -> "stepsVi";
@@ -37,7 +42,7 @@ final class CustomerWorkbook {
                 case "nguoitestlaigannhat" -> "latestTester";
                 default -> "";
             };
-            if(!key.isEmpty() && columns.putIfAbsent(key,i)!=null)
+            if(!key.isEmpty() && (!featureOnly||FEATURE_FIELDS.contains(key)) && columns.putIfAbsent(key,i)!=null)
                 throw invalid("Tiêu đề cột trùng nghĩa: " + headers.get(i) + ". Chỉ giữ một cột cho mỗi trường.");
         }
         for(String key:List.of("sourceId","titleVi","stepsVi","expectedVi")) {
@@ -49,11 +54,15 @@ final class CustomerWorkbook {
         return Map.copyOf(columns);
     }
     static List<String> headers(Sheet sheet) {
+        return headers(sheet,false);
+    }
+    static List<String> headers(Sheet sheet,boolean featureOnly) {
         var header=sheet.getRow(0);
         if(header==null) throw invalid("Thiếu hàng tiêu đề cột trong sheet.");
         int width=14; // Retain the original M/N slots for legacy document compatibility.
         for(Row row:sheet) for(Cell cell:row) {
-            String text=value(cell,row.getRowNum()+1);
+            // Ignored columns determine source coordinates, never imported values.
+            String text=featureOnly?(cell.getCellType()==CellType.BLANK||cell.getCellType()==CellType.STRING&&cell.getStringCellValue().isBlank()?"":"present"):value(cell,row.getRowNum()+1);
             checkLink(cell);
             if(!text.isBlank()) width=Math.max(width,cell.getColumnIndex()+1);
         }
@@ -79,17 +88,21 @@ final class CustomerWorkbook {
     }
 
     static List<TestCaseDtos.ImportRowInput> read(Sheet sheet) {
-        var headers=headers(sheet);
-        var columns=columns(headers);
-        validatePresentationMerges(sheet,headers,columns);
+        return read(sheet,false);
+    }
+    static List<TestCaseDtos.ImportRowInput> read(Sheet sheet,boolean featureOnly) {
+        var headers=headers(sheet,featureOnly);
+        var columns=columns(headers,featureOnly);
+        validatePresentationMerges(sheet,headers,columns,featureOnly);
         List<TestCaseDtos.ImportRowInput> rows = new ArrayList<>();
         Set<String> ids = new HashSet<>();
         String previousTitle="";
         for (Row row : sheet) {
             if (row.getRowNum() == 0) continue;
             String[] cells = new String[headers.size()];
-            for (int col = 0; col < cells.length; col++) cells[col] = value(row.getCell(col), row.getRowNum()+1);
+            for (int col = 0; col < cells.length; col++) cells[col] = !featureOnly||columns.containsValue(col)?value(row.getCell(col), row.getRowNum()+1):"";
             if (Arrays.stream(cells).allMatch(cell -> cell.isBlank())) continue;
+            if(rows.size()>=TestCaseWorkbook.MAX_ROWS)throw invalid("Tệp vượt quá 500 test case có dữ liệu; không tính dòng trống hoặc số dòng trong một ô.");
             var source=List.of(cells);
             String id = cell(source,columns,"sourceId").trim();
             if (id.isEmpty() || id.length() > 64) throw invalid("Dòng " + (row.getRowNum()+1) + ": ID nguồn bắt buộc, tối đa 64 ký tự.");
@@ -106,10 +119,11 @@ final class CustomerWorkbook {
     }
 
     // Only presentation cells that cannot change case identity/revision content may span blank columns.
-    private static void validatePresentationMerges(Sheet sheet,List<String> headers,Map<String,Integer> columns) {
+    private static void validatePresentationMerges(Sheet sheet,List<String> headers,Map<String,Integer> columns,boolean featureOnly) {
         var caseColumns=java.util.stream.Stream.of("sourceId","titleVi","preconditionsVi","stepsVi","expectedVi","sourceReference")
                 .map(columns::get).filter(Objects::nonNull).toList();
         for(var range:sheet.getMergedRegions()) {
+            if(featureOnly&&columns.values().stream().noneMatch(c->c>=range.getFirstColumn()&&c<=range.getLastColumn()))continue;
             boolean safe=range.getFirstRow()>0 && range.getFirstRow()==range.getLastRow()
                     && range.getLastColumn()<headers.size()
                     && caseColumns.stream().noneMatch(c->c>=range.getFirstColumn() && c<=range.getLastColumn());
@@ -131,7 +145,6 @@ final class CustomerWorkbook {
             case BOOLEAN -> Boolean.toString(cell.getBooleanCellValue());
             default -> throw invalid("Dòng " + row + ": không hỗ trợ công thức hoặc ô lỗi.");
         };
-        if (value.length() > 8000) throw invalid("Dòng " + row + ": mỗi ô tối đa 8.000 ký tự.");
         return value;
     }
 

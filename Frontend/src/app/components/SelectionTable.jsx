@@ -1,3 +1,4 @@
+import {UnifiedSelect} from './UnifiedSelect';
 import React,{useEffect,useId,useRef,useState} from 'react';
 import {matchesSearch} from '../utils/multiWordSearch';
 import './selection-table.css';
@@ -21,7 +22,7 @@ export function SelectionTable({label,rows,selected,onChange,searchable=true,loa
   <div className="ui-selection-filters">
    {filters}
    {searchable&&<label className="ui-field ui-filter-search">Tìm<input ref={searchRef} type="search" aria-label={`Tìm trong ${label}`} placeholder={pageScope?'Tìm trên trang…':'Tìm theo tên…'} value={query} onChange={e=>setQuery(e.target.value)}/></label>}
-   <label className="ui-field ui-filter-view">Hiển thị<select ref={viewRef} aria-label={`Hiển thị · ${label}`} value={view} onChange={e=>setView(e.target.value)}><option value="">Tất cả</option><option value="selected">{pageScope?'Đã chọn trên trang':'Đã chọn'}</option><option value="unselected">{pageScope?'Chưa chọn trên trang':'Chưa chọn'}</option></select></label>
+   <label className="ui-field ui-filter-view">Hiển thị<UnifiedSelect ref={viewRef} aria-label={`Hiển thị · ${label}`} value={view} onChange={e=>setView(e.target.value)}><option value="">Tất cả</option><option value="selected">{pageScope?'Đã chọn trên trang':'Đã chọn'}</option><option value="unselected">{pageScope?'Chưa chọn trên trang':'Chưa chọn'}</option></UnifiedSelect></label>
    {filtered&&<button type="button" className="cat-btn ui-selection-reset" aria-label={`Xóa bộ lọc trong bảng · ${label}`} onClick={clearFilters}>Xóa bộ lọc trong bảng</button>}
   </div>
   <div className="ui-selection-summary"><label className="ui-selection-all"><input ref={allRef} type="checkbox" aria-label={`Chọn tất cả đang hiển thị · ${label}`} checked={all} disabled={loading||!eligible.length} onChange={e=>toggleAll(e.target.checked)}/><span>Chọn tất cả {pageScope?'trên trang':'đang hiển thị'} ({eligible.length})</span></label><span className="ui-selection-counts" aria-live="polite" aria-atomic="true"><span>{selected.length} mục đã chọn</span>{hiddenSelected>0&&<span>{hiddenSelected} mục ngoài phần đang hiển thị</span>}</span></div>

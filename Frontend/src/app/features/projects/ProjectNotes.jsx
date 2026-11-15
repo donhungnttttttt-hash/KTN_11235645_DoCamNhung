@@ -1,3 +1,4 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import React,{useEffect,useRef,useState} from 'react';
 import {Pencil} from 'lucide-react';
 import {notesApi} from '../../services/api/notes';
@@ -11,6 +12,7 @@ export function ProjectNotes({projectId,canEdit=false,api=notesApi}) {
 }
 
 function Notes({projectId,canEdit,api}) {
+ useRefreshOnReturn(()=>{if(!busy&&!loading)setRevision(v=>v+1);});
   const [page,setPage]=useState(0),[revision,setRevision]=useState(0),[data,setData]=useState(null);
   const [loading,setLoading]=useState(true),[listError,setListError]=useState(''),[actionError,setActionError]=useState(''),[completedRead,setCompletedRead]=useState(null);
   const [editor,setEditor]=useState(null),[removing,setRemoving]=useState(null),[busy,setBusy]=useState(false),[notice,setNotice]=useState('');
@@ -64,7 +66,7 @@ function Notes({projectId,canEdit,api}) {
   }
   return <section className="project-notes" aria-label="Note chung của dự án">
     <div className="project-notes-toolbar"><p>Ghi chú chung để các thành viên cùng theo dõi.</p>
-      <div className="project-notes-actions"><button type="button" className="cat-btn" disabled={loading||busy} onClick={()=>setRevision(value=>value+1)}>Tải lại Note</button>
+      <div className="project-notes-actions">
         {canEdit&&<button ref={addButton} type="button" className="cat-btn primary" disabled={loading||busy||!!editor||!!listError} onClick={()=>openEditor(null)}>Thêm Note</button>}</div>
     </div>
     {notice&&<p role="status">{notice}</p>}

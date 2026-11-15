@@ -26,6 +26,8 @@ class AdminSecurityTest {
     @Autowired MockMvc mvc;
     @MockitoBean IdentityService identity;
     @MockitoBean WorkItemStore db;
+    @MockitoBean org.springframework.transaction.PlatformTransactionManager transactionManager;
+    @MockitoBean CurrentSessionIdentity sessionIdentity;
     @Test void anonymousIs401AndPmTesterCannotAccessEvenDelegatedPm() throws Exception {
         mvc.perform(get("/api/v1/admin/overview")).andExpect(status().isUnauthorized());
         for(String role:List.of("PM","TESTER")) {

@@ -15,7 +15,7 @@ public class ReportingController {
     private void retired(long projectId,String actor) {
         // Old URLs must neither expose management data to workers nor keep the run model active.
         reports.requireReadManagement(projectId,actor);
-        throw new BusinessException(410,"USE_FEATURE_REPORTS","Báo cáo theo lượt chạy cũ đã ngừng sử dụng. Mở Tổng hợp & Phân tích để xem dữ liệu Feature và báo cáo đã lưu.");
+        throw new BusinessException(410,"USE_FEATURE_REPORTS","Báo cáo theo lượt chạy cũ đã ngừng sử dụng. Mở Tổng hợp & Phân tích để xem dữ liệu Đợt kiểm thử và báo cáo đã lưu.");
     }
     @GetMapping("/summary")
     public Object summary(Authentication a,@PathVariable long projectId,@RequestParam(required=false) Long cycleId,@RequestParam(required=false) Long buildId,@RequestParam(defaultValue="0") int page) {

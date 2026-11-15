@@ -1,3 +1,4 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import {TableScroll} from '../../components/TableScroll';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { redmineApi } from '../../services/api/redmine';
@@ -28,6 +29,7 @@ export function RedminePanel(props) {
   </details>;
 }
 function RedmineContent({ projectId, bug, writable }) {
+ useRefreshOnReturn(()=>{if(!busy&&!loading)load();});
   const [data, setData] = useState(null), [error, setError] = useState(''), [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true), [loadFailed, setLoadFailed] = useState(false), [notice, setNotice] = useState('');
   const [reason, setReason] = useState(''), [reviewed, setReviewed] = useState(false), [stale, setStale] = useState(false);
@@ -73,7 +75,7 @@ function RedmineContent({ projectId, bug, writable }) {
   const publish = !latest || ['DELIVERED', 'FAILED', 'SUPERSEDED'].includes(latest.status) || (conflict && binding?.externalIssueId && binding?.observedFingerprint);
   const disabled = busy || loading || loadFailed || stale || !reason.trim() || pending(latest?.status);
   return <div className="rm-content">
-    <div className="wi-actions">{data && <strong className={`rm-status rm-${latest?.status || 'EMPTY'}`}>{latest ? labels[latest.status] : 'Chưa công bố'}</strong>}<Button disabled={busy || loading} onClick={load}>Tải lại Redmine</Button></div>
+    <div className="wi-actions">{data && <strong className={`rm-status rm-${latest?.status || 'EMPTY'}`}>{latest ? labels[latest.status] : 'Chưa công bố'}</strong>}{(stale||loadFailed)&&<Button disabled={busy || loading} onClick={load}>Thử lại Redmine</Button>}</div>
     {(loading || busy || notice) && <p role="status">{loading ? 'Đang tải liên kết Redmine…' : busy ? 'Đang gửi yêu cầu Redmine…' : notice}</p>}
     {error && <p role="alert" className="ex-error">{error}</p>}
     {stale && <p className="wi-note">Tải lại Redmine để đối chiếu bản hiện hành; lý do đã nhập được giữ lại.</p>}

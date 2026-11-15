@@ -134,7 +134,7 @@ class FeatureAiIntegrationTest extends FeatureIntegrationTest {
     }
 
     @Test void archivedDocumentIssuesAreExcludedConsistentlyFromManagementAndWorkerFacts()throws Exception{
-        long f=feature("Issue active scope"),active=imported(f,internal()),hidden=imported(f,internal());
+        long f=feature("Ticket active scope"),active=imported(f,internal()),hidden=imported(f,internal());
         for(int n=0;n<3;n++){
             String title=n==0?"Active readable issue":n==1?"ARCHIVED_DOCUMENT_ISSUE":"Monkey without document";String key="AF-"+UUID.randomUUID();
             db.update("INSERT INTO work_items(project_id,item_no,item_key,item_type,title,description,assignee_membership_id,created_by,updated_by,created_at,updated_at,request_key,request_checksum) VALUES(?,?,?,'BUG',?,'Fixture',?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),?,REPEAT('b',64))",p,n+1,key,title,am,member(pm),member(pm),UUID.randomUUID().toString());
@@ -145,7 +145,7 @@ class FeatureAiIntegrationTest extends FeatureIntegrationTest {
         var official=body(mvc.perform(get(path("/issues?featureId="+f)).with(actor(a))).andExpect(status().isOk()).andReturn());assertThat(official.path("totalItems").asInt()).isEqualTo(2);
         var checked=new org.assertj.core.api.SoftAssertions();
         for(var reader:List.of(pm,a,dev)){
-            login(reader);var scope=portfolio.currentProject(reader.getId(),p,f);var value=facts(portfolio.prepareProject(reader.getId(),p,f,scope.reference(),UUID.randomUUID().toString(),"Issue hiện hành"));
+            login(reader);var scope=portfolio.currentProject(reader.getId(),p,f);var value=facts(portfolio.prepareProject(reader.getId(),p,f,scope.reference(),UUID.randomUUID().toString(),"Ticket hiện hành"));
             checked.assertThat(value.path("issueSample").toString()).contains("Active readable issue","Monkey without document").doesNotContain("ARCHIVED_DOCUMENT_ISSUE");
             checked.assertThat(value.path("myWorkSample").toString()).doesNotContain("ARCHIVED_DOCUMENT_ISSUE");
             if(reader==pm){long total=0;for(var group:value.path("workByStatus"))total+=group.path("total").asLong();checked.assertThat(total).isEqualTo(2);}

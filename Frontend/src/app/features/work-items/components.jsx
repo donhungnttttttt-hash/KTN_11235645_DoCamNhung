@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from 'react-dom';
 import './work-item-modal.css';
@@ -120,7 +121,7 @@ export function FieldSelect({
     <label className={`d-field ${className}`}>
       {label && <span>{label}</span>}
       <span className="d-select-wrap">
-        <select
+        <UnifiedSelect
           aria-label={label}
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
@@ -135,7 +136,7 @@ export function FieldSelect({
               {typeof o === "string" ? o : o.label}
             </option>
           ))}
-        </select>
+        </UnifiedSelect>
         <ChevronDown size={16} />
       </span>
     </label>
@@ -203,6 +204,7 @@ export function Modal({
   onClose,
   wide = false,
   drawer = false,
+  defaultExpanded = false,
   busy = false,
 }) {
   const visible=useContext(DialogVisibilityContext);
@@ -210,8 +212,22 @@ export function Modal({
   const blocked=busy||activity.busy;
   function requestClose(){if(blocked)return;if(activity.dirty)setDiscard(true);else onClose();}
   const ref = useDialogFocus(requestClose, blocked, visible);
-  const [expanded,setExpanded]=useState(false);
-  return createPortal(<div className="wi-modal-host" hidden={!visible} inert={!visible?'':undefined}>
+  const [expanded,setExpanded]=useState(defaultExpanded);
+  const [drawerBounds,setDrawerBounds]=useState({left:0,top:0});
+  useEffect(()=>{
+    if(!drawer||!visible)return;
+    const sidebar=document.querySelector('.app-sidebar'),header=document.querySelector('.app-header');
+    const update=()=>{
+      const bounds=sidebar?.getBoundingClientRect(),headerBounds=header?.getBoundingClientRect();
+      const shown=sidebar&&getComputedStyle(sidebar).visibility!=='hidden'&&bounds.right>0&&bounds.left>=0;
+      setDrawerBounds({left:shown?Math.min(bounds.right,window.innerWidth):0,top:headerBounds?.bottom||0});
+    };
+    update();const observer=typeof ResizeObserver==='undefined'?null:new ResizeObserver(update);
+    if(sidebar)observer?.observe(sidebar);if(header)observer?.observe(header);
+    window.addEventListener('resize',update);
+    return()=>{observer?.disconnect();window.removeEventListener('resize',update);};
+  },[drawer,visible]);
+  return createPortal(<div className="wi-modal-host" style={drawer?{'--wi-drawer-left':`${drawerBounds.left}px`,'--wi-drawer-top':`${drawerBounds.top}px`}:undefined} hidden={!visible} inert={!visible?'':undefined}>
     <div
       className={`d-modal-backdrop ${drawer ? "wb-drawer-backdrop" : ""}`}
       onClick={blocked ? undefined : requestClose}

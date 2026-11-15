@@ -46,10 +46,12 @@ class UnifiedAccessJourneyNativeTest extends UnifiedTestingFixtures {
   var pm=users.findByUsername(username).orElseThrow();var session=loggedIn(pm);
   assertThat(session.get("/admin/users").statusCode()).isEqualTo(403);assertThat(registry.contains(pm.getId())).isFalse();
  }
- @Test void guestReadsOnlyAssignedSavedReports()throws Exception{
+ @Test void guestReadsAssignedDashboardButNotSavedReports()throws Exception{
   var guest=account("GUEST");projects.addOrUpdateMember(p,admin.getId(),guest.getId(),new ProjectDtos.SetMember("GUEST"));
   long report=((Number)reports.create(p,admin.getId(),new ManagementReportDtos.Create(null,"Journey report","# Published report")).get("id")).longValue();
-  var caller=loggedIn(guest);assertThat(caller.get("/projects/"+p+"/management-reports/"+report).statusCode()).isEqualTo(200);
+  reports.publish(p,admin.getId(),report,0L);
+  var caller=loggedIn(guest);assertThat(caller.get("/projects/"+p+"/management-reports/"+report).statusCode()).isEqualTo(403);
+  assertThat(caller.get("/projects/"+p+"/management-reports/dashboard").statusCode()).isEqualTo(200);
   assertThat(caller.get("/projects/"+p+"/test-documents/"+d).statusCode()).isEqualTo(403);
   jdbc.update("UPDATE project_memberships SET active=FALSE,lock_version=lock_version+1 WHERE project_id=? AND user_id=?",p,guest.getId());
   assertThat(caller.get("/projects/"+p+"/management-reports/"+report).statusCode()).isIn(403,404);

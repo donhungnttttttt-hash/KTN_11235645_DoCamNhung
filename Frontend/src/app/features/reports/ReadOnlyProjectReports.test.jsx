@@ -1,9 +1,22 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import {it,expect,vi} from 'vitest';
 import {render,screen,fireEvent,act} from '@testing-library/react';
 import {ReadOnlyProjectReports} from './ReadOnlyProjectReports';
+import {GuestLanguageProvider,GuestLanguagePicker} from '../../i18n/GuestLanguage';
 const summary={metrics:{total:2,tested:1,ok:1,notRun:1,executionPercent:50},asOf:'2026-11-02T00:00:00Z'};
 const mockApi=()=>({summary:vi.fn().mockResolvedValue(summary),list:vi.fn().mockResolvedValue({items:[{id:4,title:'Báo cáo tháng'}],totalPages:1}),get:vi.fn().mockResolvedValue({id:4,title:'Báo cáo tháng',markdown:'Nội dung đã lưu'}),create:vi.fn(),preview:vi.fn(),update:vi.fn()});
+it('localizes report controls while retaining published content and the open report',async()=>{
+ const api=mockApi();render(<GuestLanguageProvider><GuestLanguagePicker/><ReadOnlyProjectReports projectId={1} api={api}/></GuestLanguageProvider>);
+ fireEvent.click(await screen.findByRole('button',{name:'レポート「Báo cáo tháng」を開く'}));
+ expect(await screen.findByText('Nội dung đã lưu')).toBeVisible();
+ expect(screen.getByText('レポート本文は公開時の言語で表示されます。')).toBeVisible();
+ expect(screen.getByRole('button',{name:'レポートをダウンロード'})).toBeVisible();
+ fireEvent.change(screen.getByLabelText('言語 / Ngôn ngữ'),{target:{value:'vi'}});
+ expect(screen.getByText('Nội dung đã lưu')).toBeVisible();
+ expect(screen.getByRole('button',{name:'Tải báo cáo'})).toBeVisible();
+ expect(api.get).toHaveBeenCalledTimes(1);expect(api.summary).toHaveBeenCalledTimes(1);
+});
 it('shows aggregate progress and saved Markdown without editor or AI calls',async()=>{
  const api=mockApi();render(<ReadOnlyProjectReports projectId={1} api={api}/>);
  expect(await screen.findByText('1 / 2 case đã test · 50%')).toBeVisible();
@@ -21,5 +34,5 @@ it('clears saved content when membership is revoked and offers a read-only retry
  const api=mockApi();render(<ReadOnlyProjectReports projectId={1} api={api}/>);
  fireEvent.click(await screen.findByRole('button',{name:'Mở báo cáo Báo cáo tháng'}));await screen.findByText('Nội dung đã lưu');
  api.summary.mockRejectedValue(Object.assign(new Error('Không còn quyền xem'),{status:403}));
- fireEvent.click(screen.getByRole('button',{name:'Tải lại'}));await screen.findByRole('alert');expect(screen.queryByText('Nội dung đã lưu')).toBeNull();
+ refreshEvent.focus(window);await screen.findByRole('alert');expect(screen.queryByText('Nội dung đã lưu')).toBeNull();
 });

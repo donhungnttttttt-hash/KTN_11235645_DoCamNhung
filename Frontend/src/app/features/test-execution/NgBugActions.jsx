@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React, { useEffect, useState } from 'react';
 import { workItemsApi } from '../../services/api/workItems';
 import { Modal, Button } from '../work-items/components';
@@ -26,7 +27,7 @@ export function ExistingBugLink({ projectId, attemptId, onClose, onSaved }) {
     <p className="wi-note">Một bug có thể được theo dõi qua nhiều lần kiểm thử. Liên kết không thay đổi kết quả NG.</p>
     <WorkError error={error} retry={()=>{setConflict(false);setRevision(v=>v+1);}}/>
     <WorkField label="Tìm bug đã có"><input value={keyword} maxLength={200} disabled={busy} onChange={e=>setKeyword(e.target.value)}/></WorkField>
-    <WorkField label="Bug cần liên kết"><select value={selected} required disabled={busy||!rows} onChange={e=>setSelected(e.target.value)}><option value="">Chọn bug</option>{rows?.items.map(item=><option key={item.id} value={item.id}>{item.key} · {item.title}</option>)}</select></WorkField>
+    <WorkField label="Bug cần liên kết"><UnifiedSelect value={selected} required disabled={busy||!rows} onChange={e=>setSelected(e.target.value)}><option value="">Chọn bug</option>{rows?.items.map(item=><option key={item.id} value={item.id}>{item.key} · {item.title}</option>)}</UnifiedSelect></WorkField>
     {rows&&<p className="wi-note">{rows.items.length}/{rows.totalItems} bug. Nhập từ khóa để thu hẹp kết quả.</p>}
     <Button primary type="submit" disabled={busy||!selected||conflict}>Liên kết bug</Button>
   </form></Modal>;

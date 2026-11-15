@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React,{useCallback,useEffect,useState} from 'react';
 import {useAdminRead,ReadState} from './shared';
 import {AdminProjectDropdown} from './AdminProjectDropdown';
@@ -30,11 +31,11 @@ export function AdminUserProjectFilter({api,value,onChange,label="Dự án của
   {searchable?<AdminProjectDropdown label={label} emptyLabel={emptyLabel} value={value} selectedLabel={selectedLabel}
    onChange={choose} search={search} onSearch={setSearch} state={state} pendingSearch={search.trim()!==keyword} pages={pages}
    onReset={()=>{setSearch('');setKeyword('');setPage(0);}}/>:
-  <label className="ui-field">{label}<select value={value} onChange={event=>choose(event.target.value)} title={value?selectedLabel:emptyLabel}>
+  <label className="ui-field">{label}<UnifiedSelect value={value} onChange={event=>choose(event.target.value)} title={value?selectedLabel:emptyLabel}>
    <option value="">{emptyLabel}</option>
    {value&&!listed&&<option value={value}>{selectedLabel}</option>}
    {state.data?.items.map(p=><option key={p.id} value={p.id}>{p.code} · {p.name}</option>)}
-  </select></label>}
+  </UnifiedSelect></label>}
   {!searchable&&<><ReadState {...state}/>{pages}</>}
  </div>;
 }

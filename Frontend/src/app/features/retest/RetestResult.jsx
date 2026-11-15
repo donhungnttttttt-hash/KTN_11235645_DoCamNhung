@@ -1,3 +1,4 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { retestApi } from '../../services/api/retest';
 import { workItemsApi } from '../../services/api/workItems';
@@ -7,6 +8,7 @@ import { useRetestAction, RetestError, requestLabels, scopeLabel, verdictLabels 
 import './retest.css';
 
 export function RetestResult({ projectId, requestId, writable, onSaved, onClose }) {
+ useRefreshOnReturn(()=>{if(!action.busy)action.reconcile(load);});
   const [data, setData] = useState(null), [files, setFiles] = useState([]), [draft, setDraft] = useState({}), [loadError, setLoadError] = useState(''), [readUncertain,setReadUncertain]=useState(false);
   const action = useRetestAction(), key = useRef(crypto.randomUUID()), generation = useRef(0);
   const load = useCallback(async () => {
@@ -29,7 +31,7 @@ export function RetestResult({ projectId, requestId, writable, onSaved, onClose 
   }
   let context = {}; try { context = typeof data?.contextSnapshot === 'string' ? JSON.parse(data.contextSnapshot) : data?.contextSnapshot || {}; } catch { /* Use server labels for older records. */ }
   return <section className="rt-result ex-panel" aria-label="Chi tiết kiểm thử lại">
-    <div className="rt-heading"><h3>Yêu cầu kiểm thử lại {data && `· ${data.bugKey}`}</h3><Button disabled={action.busy} onClick={()=>action.reconcile(load)}>Tải lại yêu cầu</Button><Button disabled={action.busy} onClick={onClose}>Đóng yêu cầu</Button></div>
+    <div className="rt-heading"><h3>Yêu cầu kiểm thử lại {data && `· ${data.bugKey}`}</h3>{(readUncertain)&&<Button disabled={action.busy} onClick={()=>action.reconcile(load)}>Thử lại yêu cầu</Button>}<Button disabled={action.busy} onClick={onClose}>Đóng yêu cầu</Button></div>
     {loadError && <p className="ex-error" role="alert">{loadError} <Button onClick={() => action.perform(load)}>Thử lại</Button></p>}
     {!data && !loadError && <p>Đang tải yêu cầu…</p>}
     <RetestError action={action} reload={load} />

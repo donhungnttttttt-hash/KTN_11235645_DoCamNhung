@@ -2,7 +2,7 @@ import {it,expect,vi,afterEach} from 'vitest';
 import {aiApi} from './ai';
 const response=body=>new Response(JSON.stringify(body),{headers:{'content-type':'application/json'}});
 afterEach(()=>{vi.unstubAllGlobals();vi.useRealTimers();});
-it('reads AI-authorized project and Feature catalogs through scoped same-origin endpoints',async()=>{
+it('reads AI-authorized project and Đợt kiểm thử catalogs through scoped same-origin endpoints',async()=>{
  const fetch=vi.fn().mockImplementation(async()=>response([]));vi.stubGlobal('fetch',fetch);const abort=new AbortController();
  await aiApi.chatProjects({signal:abort.signal});await aiApi.chatFeatures('project / one',{signal:abort.signal});
  expect(fetch.mock.calls.map(call=>call[0])).toEqual(['/api/v1/ai/projects','/api/v1/ai/projects/project%20%2F%20one/features']);

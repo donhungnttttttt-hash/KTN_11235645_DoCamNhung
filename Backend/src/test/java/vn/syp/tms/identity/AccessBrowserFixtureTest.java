@@ -22,9 +22,9 @@ class AccessBrowserFixtureTest extends UnifiedTestingFixtures {
   long contact=projects.addOrUpdateMember(p,admin.getId(),pm.getId(),new ProjectDtos.SetMember("PM")).membershipId();
   projects.addOrUpdateMember(p,admin.getId(),guest.getId(),new ProjectDtos.SetMember("GUEST"));
   reports.create(p,admin.getId(),new ManagementReportDtos.Create(null,"Báo cáo kiểm tra giao diện","# Tiến độ thử nghiệm\n\nĐây là dữ liệu riêng để kiểm tra quyền Khách."));
-  var issue=issues.create(p,admin.getId(),new FeatureIssueDtos.Create("BUG",f,d,row,false,"Issue kiểm tra User hợp nhất","Dữ liệu riêng","Thực hiện kiểm thử","Kết quả đúng","Cần sửa",UUID.randomUUID(),"","Luôn xảy ra","Test","Desktop",contact,null,null,null,null,null));
+  var issue=issues.create(p,admin.getId(),new FeatureIssueDtos.Create("BUG",f,d,row,false,"Ticket kiểm tra User hợp nhất","Dữ liệu riêng","Thực hiện kiểm thử","Kết quả đúng","Cần sửa",UUID.randomUUID(),"","Luôn xảy ra","Test","Desktop",contact,null,null,null,null,null));
   long issueId=((Number)issue.get("id")).longValue();
-  issues.update(p,admin.getId(),issueId,new FeatureIssueDtos.Update("Issue kiểm tra User hợp nhất","Dữ liệu riêng","Thực hiện kiểm thử","Kết quả đúng","Cần sửa",member,"MEDIUM","Giao User",0L));
+  issues.update(p,admin.getId(),issueId,new FeatureIssueDtos.Update("Ticket kiểm tra User hợp nhất","Dữ liệu riêng","Thực hiện kiểm thử","Kết quả đúng","Cần sửa",member,"MEDIUM","Giao User",0L));
   var output=Map.of("admin",admin.getUsername(),"user",worker.getUsername(),"pm",pm.getUsername(),"guest",guest.getUsername(),"password",PASSWORD,"project",p,"feature",f,"document",d,"row",row,"issue",issueId);
   Files.writeString(Path.of(Objects.requireNonNull(System.getenv("TMS_UNIFIED_BROWSER_MANIFEST"))),json.writeValueAsString(output));
  }

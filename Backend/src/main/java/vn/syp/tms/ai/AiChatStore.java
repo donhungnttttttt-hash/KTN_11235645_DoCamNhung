@@ -53,7 +53,7 @@ public class AiChatStore {
         var caller=access.authorize(thread.projectId(),actor,write);
         var purpose=AiPurpose.parse(thread.purpose());
         if(purpose==AiPurpose.PM_ASSIGNMENT_SUGGESTION&&thread.sourceReference().startsWith("file:")) {
-            if(write)fail(410,"AI_LEGACY_SCOPE","Nguồn phân công cũ chỉ đọc lịch sử. Tạo hội thoại mới với file trong Feature.");
+            if(write)fail(410,"AI_LEGACY_SCOPE","Nguồn phân công cũ chỉ đọc lịch sử. Tạo hội thoại mới với file trong Đợt kiểm thử.");
             db.row("SELECT id FROM file_work_groups WHERE project_id=? AND id=? FOR SHARE",thread.projectId(),thread.targetId());
             access.require(caller,purpose);return;
         }
@@ -70,7 +70,7 @@ public class AiChatStore {
             if(project!=null||target!=null)fail(422,"AI_INVALID_TARGET","Phạm vi các dự án của tôi không nhận project hoặc target từ client.");
             source=portfolio.current(actor).reference();
         } else if(AiPortfolioContext.PROJECT_PURPOSE.equals(purpose)) {
-            if(project==null||project<1)throw new BusinessException(422,"AI_INVALID_TARGET","Chat dự án cần một dự án hợp lệ; nguồn tùy chọn là Feature của dự án.");
+            if(project==null||project<1)throw new BusinessException(422,"AI_INVALID_TARGET","Chat dự án cần một dự án hợp lệ; nguồn tùy chọn là Đợt kiểm thử của dự án.");
             source=portfolio.currentProject(actor,project,target).reference();
         } else if(project==null) {
             if(purpose!=null||target!=null)fail(422,"AI_INVALID_TARGET","General chat has no project target.");

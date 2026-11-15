@@ -1,0 +1,22 @@
+import React,{forwardRef,useRef,useState,useEffect,useLayoutEffect,useId} from 'react';
+import {createPortal} from 'react-dom';
+import './searchable-select.css';
+
+// Keep native form values, labels, validation and change events for existing screens.
+// Only the popup presentation is shared; multi-selects retain their native list behaviour.
+export const UnifiedSelect=forwardRef(function UnifiedSelect({children,className='',optionColors,onMouseDown,onKeyDown,onChange,onClick,...props},forwarded){
+ const control=useRef(null),popup=useRef(null),id=useId();
+ const [open,setOpen]=useState(false),[search,setSearch]=useState(''),[position,setPosition]=useState({}),[options,setOptions]=useState([]);
+ const close=()=>{setOpen(false);control.current?.focus();};
+ function show(){if(control.current?.matches(':disabled')||props.multiple)return;setOptions([...control.current.options].map(o=>({value:o.value,label:o.label,disabled:o.disabled||o.parentElement?.disabled,selected:o.selected})));setSearch('');setOpen(v=>!v);control.current.focus();}
+ useLayoutEffect(()=>{if(!open)return;function place(){const r=control.current.getBoundingClientRect(),width=Math.min(Math.max(220,r.width),window.innerWidth-16),below=window.innerHeight-r.bottom-12,above=r.top-12,flip=below<180&&above>below;setPosition({width,left:Math.max(8,Math.min(r.left,window.innerWidth-width-8)),maxHeight:Math.max(100,Math.min(330,flip?above:below)),...(flip?{bottom:window.innerHeight-r.top+4}:{top:r.bottom+4})});}place();window.addEventListener('resize',place);window.addEventListener('scroll',place,true);return()=>{window.removeEventListener('resize',place);window.removeEventListener('scroll',place,true);};},[open]);
+ useEffect(()=>{if(!open)return;popup.current?.querySelector('input')?.focus();function outside(e){if(!popup.current?.contains(e.target)&&e.target!==control.current)setOpen(false);}document.addEventListener('pointerdown',outside);return()=>document.removeEventListener('pointerdown',outside);},[open]);
+ useEffect(()=>{if(props.disabled)setOpen(false);},[props.disabled]);
+ const label=props['aria-label']||control.current?.labels?.[0]?.textContent?.trim()||'Lựa chọn';
+ function choose(value){control.current.value=value;control.current.dispatchEvent(new Event('change',{bubbles:true}));close();}
+ function keys(e){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close();}else if(e.key==='Tab'){e.preventDefault();close();}else if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){const items=[...popup.current.querySelectorAll('button:not(:disabled)')];if(!items.length)return;e.preventDefault();let index=items.indexOf(document.activeElement);index=e.key==='Home'?0:e.key==='End'?items.length-1:(index+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;items[index].focus();}}
+ return <><select {...props} id={props.id||id+'control'} ref={node=>{control.current=node;if(typeof forwarded==='function')forwarded(node);else if(forwarded)forwarded.current=node;}} className={`${className} ui-unified-select`} data-open={open} aria-expanded={props.multiple?undefined:open} aria-controls={open?id:undefined} onChange={e=>{setOpen(false);onChange?.(e);}} onMouseDown={e=>{onMouseDown?.(e);if(!e.defaultPrevented&&!props.multiple){e.preventDefault();show();}}} onClick={e=>{onClick?.(e);if(!props.multiple&&!e.defaultPrevented){e.preventDefault();if(e.detail===0)show();}}} onKeyDown={e=>{onKeyDown?.(e);if(!e.defaultPrevented&&!props.multiple&&['ArrowDown','ArrowUp','Enter',' '].includes(e.key)){e.preventDefault();show();}}}>{children}</select>
+ {open&&createPortal(<section id={id} data-picker-owner={props.id||id+'control'} ref={popup} role="dialog" aria-label={`Chọn ${label}`} className="ui-select-popup" style={position} onKeyDown={keys}>
+ <input type="search" aria-label={`Tìm ${label}`} placeholder="Tìm kiếm…" value={search} onChange={e=>setSearch(e.target.value)}/><div className="ui-unified-options">{options.filter(o=>o.label.toLocaleLowerCase().includes(search.toLocaleLowerCase())).map((o,i)=><button key={`${o.value}-${i}`} type="button" aria-pressed={o.selected} disabled={o.disabled} onClick={()=>choose(o.value)}>{optionColors?.[o.value]&&<span className="ui-select-color-dot" aria-hidden="true" style={{backgroundColor:optionColors[o.value]}}/>}{o.label||'—'}</button>)}{!options.some(o=>o.label.toLocaleLowerCase().includes(search.toLocaleLowerCase()))&&<p>Không có kết quả phù hợp.</p>}</div>
+ </section>,document.body)}</>;
+});

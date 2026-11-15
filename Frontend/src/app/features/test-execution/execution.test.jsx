@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, render, screen, waitFor, within } from '@testing-library/react';
@@ -101,12 +102,12 @@ describe('runner assignment', () => {
     render(<ExecutionRunnerPage cycleId={5} navigate={vi.fn()} />);
     await screen.findByRole('button', { name: 'Chốt đợt kiểm thử' });
     for (let index=0;index<5;index++) {
-      await userEvent.click(screen.getByRole('button', { name: 'Tải lại', exact: true }));
+      await refreshEvent.focus(window);
       await waitFor(()=>expect(screen.queryByRole('status')).not.toBeInTheDocument());
       expect(screen.getAllByRole('button', { name: 'Lịch sử chốt / mở đợt' })).toHaveLength(1);
     }
     executionApi.cycle.mockResolvedValue({ id:5,name:'Đợt đã chốt',statusCode:'CLOSED',runCount:2 });
-    await userEvent.click(screen.getByRole('button', { name: 'Tải lại', exact: true }));
+    await refreshEvent.focus(window);
     await screen.findByRole('button', { name:'Mở lại đợt' });
     expect(screen.getAllByRole('button', { name: 'Lịch sử chốt / mở đợt' })).toHaveLength(1);
     expect(screen.queryByRole('button', { name:'Đánh dấu NA' })).not.toBeInTheDocument();

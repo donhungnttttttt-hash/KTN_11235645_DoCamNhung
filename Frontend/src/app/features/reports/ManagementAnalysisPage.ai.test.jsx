@@ -82,8 +82,8 @@ it.each(['response','http'])('explains how to reduce the report scope when input
  if(mode==='response')api.preview.mockResolvedValue({state:'FAILED',failureCode:'AI_INPUT_TOO_LARGE'});
  else api.preview.mockRejectedValue(Object.assign(new Error('Chưa tạo được đề xuất AI. Bản đang sửa được giữ nguyên.'),{status:422,code:'AI_INPUT_TOO_LARGE'}));
  await mount();fireEvent.change(input(),{target:{value:'Bản nháp thủ công'}});generate();
- expect(await screen.findByRole('alert')).toHaveTextContent(/chọn.*Feature/i);
- expect(input()).toHaveValue('Bản nháp thủ công');expect(screen.getByLabelText('Phạm vi Feature')).toBeEnabled();
+ expect(await screen.findByRole('alert')).toHaveTextContent(/chọn.*Đợt kiểm thử/i);
+ expect(input()).toHaveValue('Bản nháp thủ công');expect(screen.getByLabelText('Phạm vi Đợt kiểm thử')).toBeEnabled();
  expect(api.create).not.toHaveBeenCalled();
 });
 

@@ -1,3 +1,5 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import {TableScroll} from '../../components/TableScroll';
 import React, { useEffect, useRef, useState } from 'react';
 import { useProject } from '../projects/ProjectProvider';
@@ -15,6 +17,7 @@ export function ReportsPage({ mode = 'overview' }) {
   return <Report key={`${currentProject?.id}/${mode}`} project={currentProject} mode={mode} />;
 }
 function Report({ project, mode }) {
+ useRefreshOnReturn(()=>{refresh();});
   const [cycleId, setCycle] = useState(''), [buildId, setBuild] = useState(''), [page, setPage] = useState(0);
   const [cyclePage, setCyclePage] = useState(0), [cycles, setCycles] = useState(null), [builds, setBuilds] = useState([]);
   const [data, setData] = useState(null), [error, setError] = useState(''), [filterError, setFilterError] = useState('');
@@ -49,10 +52,10 @@ function Report({ project, mode }) {
   const title = { overview: 'Tổng quan kiểm thử', progress: 'Quản lý tiến độ', quality: 'Tổng hợp & Phân tích' }[mode];
   if (!project) return <div className="cat-container py-3">Chọn dự án để xem báo cáo.</div>;
   return <div className="cat-container ex-page rp-page py-3">
-    <header className="ex-heading"><div><h2>{title}</h2><p className="ex-help">{project.name} · Số liệu thực thi và chất lượng nội bộ</p></div><div className="ex-checks"><button className="cat-btn" onClick={refresh}>Làm mới</button><button className="cat-btn cat-btn-mint" disabled={!data || exporting} onClick={download}>{exporting ? 'Đang xuất…' : 'Xuất Excel'}</button></div></header>
-    <section className="rp-filters"><Field label="Đợt kiểm thử"><select className="cat-select" value={cycleId} onChange={e => { setCycle(e.target.value); setPage(0); }}><option value="">Tất cả đợt đã bắt đầu</option>{cycles?.items.filter(c => c.statusCode !== 'DRAFT').map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></Field>
+    <header className="ex-heading"><div><h2>{title}</h2><p className="ex-help">{project.name} · Số liệu thực thi và chất lượng nội bộ</p></div><div className="ex-checks"><button className="cat-btn cat-btn-mint" disabled={!data || exporting} onClick={download}>{exporting ? 'Đang xuất…' : 'Xuất Excel'}</button></div></header>
+    <section className="rp-filters"><Field label="Đợt kiểm thử"><UnifiedSelect className="cat-select" value={cycleId} onChange={e => { setCycle(e.target.value); setPage(0); }}><option value="">Tất cả đợt đã bắt đầu</option>{cycles?.items.filter(c => c.statusCode !== 'DRAFT').map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</UnifiedSelect></Field>
       {cycles?.totalPages > 1 && <div className="ex-checks"><button className="cat-btn" disabled={!cyclePage} onClick={() => { setCyclePage(x => x - 1); setCycle(''); setPage(0); }}>Đợt trước</button><button className="cat-btn" disabled={cyclePage + 1 >= cycles.totalPages} onClick={() => { setCyclePage(x => x + 1); setCycle(''); setPage(0); }}>Đợt tiếp</button></div>}
-      <Field label="Build thực thi"><select className="cat-select" value={buildId} onChange={e => { setBuild(e.target.value); setPage(0); }}><option value="">Mới nhất trên mọi build</option>{builds.map(b => <option key={b.id} value={b.id}>{b.versionLabel} ({b.buildNumber || '—'})</option>)}</select></Field>
+      <Field label="Build thực thi"><UnifiedSelect className="cat-select" value={buildId} onChange={e => { setBuild(e.target.value); setPage(0); }}><option value="">Mới nhất trên mọi build</option>{builds.map(b => <option key={b.id} value={b.id}>{b.versionLabel} ({b.buildNumber || '—'})</option>)}</UnifiedSelect></Field>
     </section>
     {mode==='progress'&&<ProjectStatusReports projectId={project.id}/>}
     <ErrorNotice error={filterError} retry={refresh} /><ErrorNotice error={error} retry={refresh} /><ErrorNotice error={exportError} />

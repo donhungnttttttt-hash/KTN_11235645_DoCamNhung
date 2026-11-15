@@ -1,3 +1,4 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { workItemsApi } from '../../services/api/workItems';
 import { Button, StatusBadge, TypeBadge } from './components';
@@ -11,6 +12,7 @@ import { QaPanel } from '../qa/QaPanel';
 
 const time = value => value ? new Date(value).toLocaleString('vi-VN') : '—';
 export function WorkItemDetail({ projectId, id, catalogs, canTriage, writable, membershipId, onChanged }) {
+ useRefreshOnReturn(()=>{if(!loading)load();});
   const [record, setItem] = useState(null), [loadedScope, setLoadedScope] = useState(null), [loading, setLoading] = useState(true), [comments, setComments] = useState([]), [history, setHistory] = useState([]), [error, setError] = useState('');
   const [body, setBody] = useState(''), [busy, setBusy] = useState(false), [target, setTarget] = useState(''), [move, setMove] = useState(false);
   const [qaRead, setQaRead] = useState(null);
@@ -80,7 +82,7 @@ export function WorkItemDetail({ projectId, id, catalogs, canTriage, writable, m
     changed();
   };
   return <div className="wi-detail"><WorkError error={error} retry={load}/>
-    <div className="wi-actions"><TypeBadge type={typeLabels[item.type]}/><strong className="d-issue-key">{item.key}</strong>{isQa?<span className="d-status-badge">{item.statusLabel||catalogs.statusesByType?.QA?.find(s=>s.id===item.status)?.label||item.status}</span>:<StatusBadge id={item.status}/>}<Button disabled={loading} onClick={load}>{loading?'Đang tải chi tiết…':'Tải lại chi tiết'}</Button></div>
+    <div className="wi-actions"><TypeBadge type={typeLabels[item.type]}/><strong className="d-issue-key">{item.key}</strong>{isQa?<span className="d-status-badge">{item.statusLabel||catalogs.statusesByType?.QA?.find(s=>s.id===item.status)?.label||item.status}</span>:<StatusBadge id={item.status}/>}{(error)&&<Button disabled={loading} onClick={load}>{loading?'Đang tải chi tiết…':'Thử lại chi tiết'}</Button>}</div>
     <h2>{item.title}</h2>
     <fieldset className="wi-detail-content" disabled={loading || !!error}>
     {isQa?<QaPanel projectId={projectId} id={id} catalogs={catalogs} onChanged={qaChanged} onReadState={qaReadState}/>:<div className="wi-detail-body"><section>

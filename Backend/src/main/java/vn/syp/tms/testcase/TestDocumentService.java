@@ -1,5 +1,6 @@
 package vn.syp.tms.testcase;
 
+import vn.syp.tms.feature.CaseExecutionContextService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.sql.ResultSet;
@@ -72,20 +73,33 @@ public class TestDocumentService {
         if(values.isEmpty()) throw notFound();
         var previous=values.getFirst();
         if(previous.archived()) throw new BusinessException(409,"ARCHIVED","Test case đã được lưu trữ.");
-        if((input.testVersionId()==null)!=(input.executedOn()==null))throw new BusinessException(422,"INVALID_EXECUTION_CONTEXT","Chọn đủ version test và ngày thực hiện.");
+        if(input.testVersionId()!=null&&input.executedOn()==null)throw new BusinessException(422,"INVALID_EXECUTION_CONTEXT","Chọn đủ version test và ngày thực hiện.");
         if(input.testVersionId()!=null&&(previous.featureId()==null||jdbc.queryForList("SELECT id FROM feature_test_versions WHERE project_id=? AND feature_id=? AND id=?",projectId,previous.featureId(),input.testVersionId()).isEmpty()))
-            throw new BusinessException(422,"INVALID_TEST_VERSION","Version test không thuộc Feature của case.");
+            throw new BusinessException(422,"INVALID_TEST_VERSION","Version test không thuộc Đợt kiểm thử của case.");
         if(Objects.equals(previous.requestKey(),input.requestKey()) && Objects.equals(previous.actor(),actor)
                 && previous.status().equals(input.status()) && previous.version()==input.expectedVersion()+1) {
+            var snapshots=jdbc.queryForList("SELECT test_version_id,environment_id,executed_on FROM test_document_result_executions WHERE project_id=? AND row_id=? AND result_version=?",projectId,rowId,previous.version());
+            var snapshot=snapshots.isEmpty()?Map.<String,Object>of():snapshots.getFirst();
+            if((input.testVersionId()!=null&&!Objects.equals(snapshot.get("test_version_id"),input.testVersionId()))
+                    ||(input.environmentId()!=null&&!Objects.equals(snapshot.get("environment_id"),input.environmentId()))
+                    ||(input.executedOn()!=null&&!input.executedOn().toString().equals(Objects.toString(snapshot.get("executed_on"),""))))
+                throw new BusinessException(409,"DOCUMENT_RESULT_CONFLICT","Yêu cầu đã được lưu với thông tin khác.");
             var saved=result(projectId,rowId);
-            if(!Objects.equals(saved.testVersionId(),input.testVersionId())||!Objects.equals(saved.executedOn(),input.executedOn()))
-                throw new BusinessException(409,"DOCUMENT_RESULT_CONFLICT","Yêu cầu đã được lưu với version hoặc ngày khác.");
             return saved;
         }
         if(previous.version()!=input.expectedVersion()) throw new BusinessException(409,"DOCUMENT_RESULT_CONFLICT","Kết quả đã được người khác cập nhật. Hãy tải lại bảng trước khi sửa tiếp.");
-        // Replays above remain valid after deletion; new writes must use an active version.
-        if(input.testVersionId()!=null&&jdbc.queryForList("SELECT id FROM feature_test_versions WHERE project_id=? AND feature_id=? AND id=? AND deleted_at IS NULL FOR SHARE",projectId,previous.featureId(),input.testVersionId()).isEmpty())
-            throw new BusinessException(422,"TEST_VERSION_DELETED","Version test đã bị xóa. Hãy tải lại và chọn version khác.");
+        var contexts=new CaseExecutionContextService(jdbc,json);
+        Long effectiveVersion=input.testVersionId(),effectiveEnvironment=input.environmentId();
+        var date=input.executedOn();
+        if(previous.featureId()!=null){
+            contexts.lock(projectId,previous.featureId(),id,rowId);var current=contexts.read(projectId,rowId);contexts.check(current,input.expectedContextVersion());
+            contexts.validateSelection(projectId,previous.featureId(),"version",effectiveVersion,current.get("testVersionId"));
+            contexts.validateSelection(projectId,previous.featureId(),"environment",effectiveEnvironment,current.get("environmentId"));
+            if(effectiveVersion==null)effectiveVersion=(Long)current.get("testVersionId");
+            if(effectiveEnvironment==null)effectiveEnvironment=(Long)current.get("environmentId");
+            if(!Objects.equals(effectiveVersion,current.get("testVersionId"))||!Objects.equals(effectiveEnvironment,current.get("environmentId")))contexts.save(projectId,rowId,effectiveEnvironment,effectiveVersion);
+            if(date==null&&(effectiveVersion!=null||effectiveEnvironment!=null))date=java.time.LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh"));
+        }
         jdbc.update("""
             UPDATE import_rows SET result_status=?,result_version=result_version+1,result_updated_at=UTC_TIMESTAMP(6),
                 result_updated_by=?,result_request_key=? WHERE project_id=? AND batch_id=? AND id=?
@@ -93,14 +107,24 @@ public class TestDocumentService {
         var auditKey=new org.springframework.jdbc.support.GeneratedKeyHolder();
         jdbc.update(connection->{var statement=connection.prepareStatement("INSERT INTO project_audit (project_id,actor_id,entity_type,entity_id,action,occurred_at) VALUES (?,?,'TEST_DOCUMENT_ROW',?,?,UTC_TIMESTAMP(6))",java.sql.Statement.RETURN_GENERATED_KEYS);
             statement.setLong(1,projectId);statement.setString(2,actor);statement.setLong(3,rowId);statement.setString(4,"RESULT_"+previous.status()+"_"+input.status());return statement;},auditKey);
-        if(input.testVersionId()!=null)jdbc.update("INSERT INTO test_document_result_executions(project_id,feature_id,document_id,row_id,result_version,test_version_id,executed_on,audit_id) VALUES(?,?,?,?,?,?,?,?)",
-                projectId,previous.featureId(),id,rowId,previous.version()+1,input.testVersionId(),input.executedOn(),Objects.requireNonNull(auditKey.getKey()).longValue());
+        if(previous.featureId()!=null&&date!=null)jdbc.update("INSERT INTO test_document_result_executions(project_id,feature_id,document_id,row_id,result_version,test_version_id,executed_on,audit_id,environment_id) VALUES(?,?,?,?,?,?,?,?,?)",
+                projectId,previous.featureId(),id,rowId,previous.version()+1,effectiveVersion,date,Objects.requireNonNull(auditKey.getKey()).longValue(),effectiveEnvironment);
         return result(projectId,rowId);
     }
     private record ResultState(String status,long version,String requestKey,String actor,boolean archived,Long featureId) {}
     private TestDocumentDtos.Result result(Long projectId,Long rowId) {
-        return jdbc.query("SELECT ir.id,ir.result_status,ir.result_version,ir.result_updated_at,u.display_name,e.test_version_id,v.name,e.executed_on FROM import_rows ir LEFT JOIN identity_users u ON u.id=ir.result_updated_by LEFT JOIN test_document_result_executions e ON e.project_id=ir.project_id AND e.row_id=ir.id AND e.result_version=ir.result_version LEFT JOIN feature_test_versions v ON v.id=e.test_version_id WHERE ir.project_id=? AND ir.id=?",
-                (rs,n)->new TestDocumentDtos.Result(rs.getLong(1),rs.getString(2),rs.getLong(3),rs.getTimestamp(4).toInstant(),rs.getString(5),(Long)rs.getObject(6),rs.getString(7),rs.getDate(8)==null?null:rs.getDate(8).toLocalDate()),projectId,rowId).getFirst();
+        return jdbc.query("""
+            SELECT ir.id,ir.result_status,ir.result_version,ir.result_updated_at,u.display_name,
+                IF(c.row_id IS NULL,e.test_version_id,c.test_version_id),v.name,e.executed_on,
+                IF(c.row_id IS NULL,e.environment_id,c.environment_id),env.name,c.context_version
+            FROM import_rows ir LEFT JOIN identity_users u ON u.id=ir.result_updated_by
+            LEFT JOIN test_document_result_executions e ON e.project_id=ir.project_id AND e.row_id=ir.id AND e.result_version=ir.result_version
+            LEFT JOIN test_document_case_contexts c ON c.project_id=ir.project_id AND c.row_id=ir.id
+            LEFT JOIN feature_test_versions v ON v.id=IF(c.row_id IS NULL,e.test_version_id,c.test_version_id)
+            LEFT JOIN feature_test_environments env ON env.id=IF(c.row_id IS NULL,e.environment_id,c.environment_id)
+            WHERE ir.project_id=? AND ir.id=?
+            """,
+                (rs,n)->new TestDocumentDtos.Result(rs.getLong(1),rs.getString(2),rs.getLong(3),rs.getTimestamp(4).toInstant(),rs.getString(5),(Long)rs.getObject(6),rs.getString(7),rs.getDate(8)==null?null:rs.getDate(8).toLocalDate(),null,(Long)rs.getObject(9),rs.getString(10),(Long)rs.getObject(11)),projectId,rowId).getFirst();
     }
     public List<TestDocumentDtos.Change> resultHistory(Long projectId,String actor,Long id,Long rowId,long before) {
         projects.requireReadAccess(projectId,actor);
@@ -108,11 +132,11 @@ public class TestDocumentService {
         Long count=jdbc.queryForObject("SELECT COUNT(*) FROM import_rows ir JOIN import_batches b ON b.project_id=ir.project_id AND b.id=ir.batch_id WHERE ir.project_id=? AND ir.batch_id=? AND ir.id=? AND b.status='COMMITTED' AND ir.target_case_id IS NOT NULL",Long.class,projectId,id,rowId);
         if(count==null || count==0) throw notFound();
         return jdbc.query("""
-            SELECT a.id,a.action,a.occurred_at,u.display_name,v.name,e.executed_on FROM project_audit a JOIN identity_users u ON u.id=a.actor_id
-            LEFT JOIN test_document_result_executions e ON e.audit_id=a.id LEFT JOIN feature_test_versions v ON v.id=e.test_version_id
+            SELECT a.id,a.action,a.occurred_at,u.display_name,v.name,e.executed_on,env.name,h.before_json,h.response_json FROM project_audit a JOIN identity_users u ON u.id=a.actor_id
+            LEFT JOIN test_document_result_executions e ON e.audit_id=a.id LEFT JOIN feature_test_versions v ON v.id=e.test_version_id LEFT JOIN feature_test_environments env ON env.id=e.environment_id LEFT JOIN test_document_context_changes h ON h.audit_id=a.id
             WHERE a.project_id=? AND a.entity_type='TEST_DOCUMENT_ROW' AND a.entity_id=? AND (?=0 OR a.id<?)
             ORDER BY a.id DESC LIMIT 50
-            """,(rs,n)->{var parts=rs.getString(2).split("_",3);return new TestDocumentDtos.Change(rs.getLong(1),parts[1],parts[2],rs.getTimestamp(3).toInstant(),rs.getString(4),rs.getString(5),rs.getDate(6)==null?null:rs.getDate(6).toLocalDate());},projectId,rowId,before,before);
+            """,(rs,n)->{boolean context="CASE_CONTEXT_UPDATED".equals(rs.getString(2));var parts=rs.getString(2).split("_",3);var reader=new CaseExecutionContextService(jdbc,json);return new TestDocumentDtos.Change(rs.getLong(1),context?null:parts[1],context?null:parts[2],rs.getTimestamp(3).toInstant(),rs.getString(4),rs.getString(5),rs.getDate(6)==null?null:rs.getDate(6).toLocalDate(),rs.getString(7),context?"CONTEXT":"STATUS",context?reader.decode(rs.getString(8)):null,context?reader.decode(rs.getString(9)):null);},projectId,rowId,before,before);
     }
     private BusinessException notFound() { return new BusinessException(404,"NOT_FOUND","Không tìm thấy dòng test trong tài liệu."); }
 
@@ -126,7 +150,7 @@ public class TestDocumentService {
         }
         var detail=detail(summary,source);
         if(Boolean.TRUE.equals(jdbc.queryForObject("SELECT feature_id IS NOT NULL FROM import_batches WHERE project_id=? AND id=?",Boolean.class,projectId,id)))
-            return featureExport(summary,detail,source);
+            return featureExport(summary,detail);
         List<String> exportHeaders=new ArrayList<>(detail.headers());
         if(!detail.secondTests().isEmpty())exportHeaders.addAll(List.of("Người test lần 2","Ghi chú 2","Đợt test lần 2","Kết quả lần 2"));
         byte[] result=DocumentWorkbook.export(source,summary.sheetName(),exportHeaders,detail.rows().stream().map(row->{
@@ -140,32 +164,25 @@ public class TestDocumentService {
         return new TestDocumentDtos.Download(summary.fileName(),result);
     }
 
-    private TestDocumentDtos.Download featureExport(TestDocumentDtos.Summary summary,TestDocumentDtos.Detail detail,byte[] source) {
+    private TestDocumentDtos.Download featureExport(TestDocumentDtos.Summary summary,TestDocumentDtos.Detail detail) {
         var executions=new HashMap<Long,Map<String,Object>>();
-        for(var e:jdbc.queryForList("SELECT e.row_id,v.name,e.executed_on FROM test_document_result_executions e JOIN import_rows ir ON ir.project_id=e.project_id AND ir.id=e.row_id AND ir.result_version=e.result_version JOIN feature_test_versions v ON v.id=e.test_version_id WHERE e.project_id=? AND e.document_id=?",summary.projectId(),summary.id()))executions.put(((Number)e.get("row_id")).longValue(),e);
-        var names=new HashMap<Long,Map<String,Object>>();
-        for(var assignment:jdbc.queryForList("SELECT a.row_id,f.display_name AS first_name,l.display_name AS latest_name FROM test_document_assignments a LEFT JOIN project_memberships fm ON fm.project_id=a.project_id AND fm.id=a.first_tester_membership_id LEFT JOIN identity_users f ON f.id=fm.user_id LEFT JOIN project_memberships lm ON lm.project_id=a.project_id AND lm.id=a.latest_tester_membership_id LEFT JOIN identity_users l ON l.id=lm.user_id WHERE a.project_id=? AND a.document_id=?",summary.projectId(),summary.id()))
-            names.put(((Number)assignment.get("row_id")).longValue(),assignment);
-        var headers=new ArrayList<>(detail.headers());
-        Integer status=detail.columns().get("result"),tester=detail.columns().get("tester"),latestColumn=detail.columns().get("latestTester");
-        if(status==null)headers.add("Status");else headers.set(status,"Status");
-        if(tester==null)headers.add("Người test đầu tiên");else headers.set(tester,"Người test đầu tiên");
-        if(latestColumn==null)headers.add("Người test lại gần nhất");else headers.set(latestColumn,"Người test lại gần nhất");
-        Integer executionNote=detail.columns().get("executionNote");
-        if(executionNote==null)headers.add("Version test");else {headers.set(executionNote,"Version test");headers.add("Ghi chú thực thi (cũ)");}
-        headers.add("Ngày thực hiện");
+        for(var e:jdbc.queryForList("SELECT ir.id AS row_id,v.name,env.name AS environment_name,e.executed_on FROM import_rows ir LEFT JOIN test_document_case_contexts c ON c.project_id=ir.project_id AND c.row_id=ir.id LEFT JOIN feature_test_versions v ON v.id=c.test_version_id LEFT JOIN feature_test_environments env ON env.id=c.environment_id LEFT JOIN test_document_result_executions e ON e.project_id=ir.project_id AND e.row_id=ir.id AND e.result_version=ir.result_version WHERE ir.project_id=? AND ir.batch_id=?",summary.projectId(),summary.id()))executions.put(((Number)e.get("row_id")).longValue(),e);
+        var names=new HashMap<Long,String>();
+        for(var assignment:jdbc.queryForList("SELECT a.row_id,f.display_name AS first_name FROM test_document_assignments a LEFT JOIN identity_users f ON f.id=a.first_tester_user_id WHERE a.project_id=? AND a.document_id=?",summary.projectId(),summary.id()))
+            names.put(((Number)assignment.get("row_id")).longValue(),Objects.toString(assignment.get("first_name"),""));
+        var issues=new HashMap<Long,List<String>>();
+        for(var issue:jdbc.queryForList("SELECT x.row_id,w.item_key,w.title FROM work_item_feature_context x JOIN work_items w ON w.project_id=x.project_id AND w.id=x.work_item_id JOIN testing_features f ON f.project_id=x.project_id AND f.id=x.feature_id JOIN import_batches d ON d.project_id=x.project_id AND d.id=x.document_id WHERE x.project_id=? AND x.document_id=? AND x.row_id IS NOT NULL AND x.deleted_at IS NULL AND f.archived_at IS NULL AND d.archived_at IS NULL AND w.item_type IN ('BUG','QA') ORDER BY w.id",summary.projectId(),summary.id()))
+            issues.computeIfAbsent(((Number)issue.get("row_id")).longValue(),key->new ArrayList<>()).add(issue.get("item_key")+" · "+issue.get("title"));
         var rows=detail.rows().stream().map(row->{
-            var cells=new ArrayList<>(row.cells());var assignment=names.getOrDefault(row.rowId(),Map.of());
-            if(status==null)cells.add(resultLabel(row.resultStatus()));else cells.set(status,resultLabel(row.resultStatus()));
-            String first=Objects.toString(assignment.get("first_name"),""),latest=Objects.toString(assignment.get("latest_name"),"");
-            if(tester==null)cells.add(first);else cells.set(tester,first);
-            if(latestColumn==null)cells.add(latest);else cells.set(latestColumn,latest);
-            var execution=executions.getOrDefault(row.rowId(),Map.of());String versionName=Objects.toString(execution.get("name"),"");
-            if(executionNote==null)cells.add(versionName);else {String oldNote=cells.get(executionNote);cells.set(executionNote,versionName);cells.add(oldNote);}
-            cells.add(Objects.toString(execution.get("executed_on"),""));
-            return new DocumentWorkbook.RowCells(row.rowNumber(),cells);
+            var cells=FeatureWorkbookExport.content(detail,row);
+            var execution=executions.getOrDefault(row.rowId(),Map.of());String version=Objects.toString(execution.get("name"),""),date=Objects.toString(execution.get("executed_on"),"");
+            var metadata=new ArrayList<String>();String environment=Objects.toString(execution.get("environment_name"),"");if(!environment.isEmpty())metadata.add("Môi trường: "+environment);if(!version.isEmpty())metadata.add("Version: "+version);if(!date.isEmpty())metadata.add("Ngày thực hiện: "+date);cells.add(String.join("\n",metadata));
+            cells.add(resultLabel(row.resultStatus()));
+            var linked=issues.getOrDefault(row.rowId(),List.of());cells.add("Ticket ("+linked.size()+")"+(linked.isEmpty()?"":"\n"+String.join("\n",linked)));
+            cells.add(names.getOrDefault(row.rowId(),""));
+            return cells;
         }).toList();
-        return new TestDocumentDtos.Download(summary.fileName(),DocumentWorkbook.export(source,summary.sheetName(),headers,rows));
+        return new TestDocumentDtos.Download(summary.fileName(),FeatureWorkbookExport.write(summary.sheetName(),rows));
     }
 
     private TestDocumentDtos.Summary summary(Long projectId,Long id) {
@@ -184,15 +201,19 @@ public class TestDocumentService {
         Map<Long,Map<String,Long>> counts=new HashMap<>();
         Map<Long,Map<String,Long>> results=new HashMap<>();
         Map<Long,java.time.Instant> updated=new HashMap<>();
+        Map<Long,Long> updatedRows=new HashMap<>();
         Map<Long,String> actors=new HashMap<>();
         List<Object> args=new ArrayList<>(); args.add(projectId); items.forEach(s->args.add(s.id()));
         String placeholders=String.join(",",Collections.nCopies(items.size(),"?"));
-        jdbc.query("SELECT ir.batch_id,ir.raw_data_json,ir.result_status,ir.result_updated_at,u.display_name FROM import_rows ir LEFT JOIN identity_users u ON u.id=ir.result_updated_by WHERE ir.project_id=? AND ir.target_case_id IS NOT NULL AND ir.batch_id IN ("+placeholders+") ORDER BY ir.id",(org.springframework.jdbc.core.RowCallbackHandler)rs->{
+        // Aggregate without sorting large JSON values; use the row ID to break timestamp ties explicitly.
+        jdbc.query("SELECT ir.id,ir.batch_id,ir.raw_data_json,ir.result_status,ir.result_updated_at,u.display_name FROM import_rows ir LEFT JOIN identity_users u ON u.id=ir.result_updated_by WHERE ir.project_id=? AND ir.target_case_id IS NOT NULL AND ir.batch_id IN ("+placeholders+")",(org.springframework.jdbc.core.RowCallbackHandler)rs->{
             long batch=rs.getLong("batch_id");
             results.computeIfAbsent(batch,key->new LinkedHashMap<>()).merge(rs.getString("result_status"),1L,(current,increment)->current+increment);
             var at=rs.getTimestamp("result_updated_at");
-            if(at!=null && (updated.get(batch)==null || !at.toInstant().isBefore(updated.get(batch)))) {
+            if(at!=null && (updated.get(batch)==null || at.toInstant().isAfter(updated.get(batch))
+                    || at.toInstant().equals(updated.get(batch)) && rs.getLong("id")>updatedRows.getOrDefault(batch,0L))) {
                 updated.put(batch,at.toInstant());actors.put(batch,rs.getString("display_name"));
+                updatedRows.put(batch,rs.getLong("id"));
             }
             var data=readRow(rs.getString("raw_data_json"));
             if(data.sourceCells()!=null) {
@@ -224,8 +245,9 @@ public class TestDocumentService {
     private TestDocumentDtos.Detail detail(TestDocumentDtos.Summary summary) { return detail(summary,source(summary.projectId(),summary.id())); }
     private TestDocumentDtos.Detail detail(TestDocumentDtos.Summary summary,byte[] source) {
         boolean customer=TestCaseWorkbook.CUSTOMER.equals(summary.format());
-        List<String> headers=headers(source,summary.sheetName(),customer);
-        var columns=customer?CustomerWorkbook.columns(headers):Map.of("sourceId",0);
+        boolean feature=Boolean.TRUE.equals(jdbc.queryForObject("SELECT feature_id IS NOT NULL FROM import_batches WHERE project_id=? AND id=?",Boolean.class,summary.projectId(),summary.id()));
+        List<String> headers=headers(source,summary.sheetName(),customer,feature);
+        var columns=customer?CustomerWorkbook.columns(headers,feature):Map.of("sourceId",0);
         Map<Long,Map<Integer,String>> edits=new HashMap<>();
         Map<Long,Map<Integer,Long>> versions=new HashMap<>();
         jdbc.query("SELECT e.row_id,e.column_index,e.cell_value,e.lock_version FROM test_document_cell_edits e JOIN import_rows ir ON ir.project_id=e.project_id AND ir.id=e.row_id WHERE ir.project_id=? AND ir.batch_id=?",(org.springframework.jdbc.core.RowCallbackHandler)rs->{
@@ -240,7 +262,7 @@ public class TestDocumentService {
             FROM import_rows ir JOIN test_cases c ON c.project_id=ir.project_id AND c.id=ir.target_case_id
             JOIN test_case_revisions r ON r.project_id=c.project_id AND r.id=c.current_revision_id
             LEFT JOIN identity_users u ON u.id=ir.result_updated_by
-            WHERE ir.project_id=? AND ir.batch_id=? ORDER BY ir.source_row_number,ir.id
+            WHERE ir.project_id=? AND ir.batch_id=?
             """,(rs,n)->{
             var input=readRow(rs.getString("raw_data_json"));
             List<String> original=customer ? input.sourceCells() : internalCells(input);
@@ -264,6 +286,8 @@ public class TestDocumentService {
                     rs.getTimestamp("approved_at")!=null,rs.getTimestamp("archived_at")!=null,List.copyOf(cells),List.copyOf(original),
                     rs.getLong("row_id"),rs.getString("result_status"),rs.getLong("result_version"),updatedAt==null?null:updatedAt.toInstant(),rs.getString("result_updated_by"));
         },summary.projectId(),summary.id());
+        // Source row numbers are unique per workbook. Sort the returned references instead of SQL text payloads.
+        rows.sort(Comparator.comparingInt(row->Objects.requireNonNull(row).rowNumber()));
         var secondTests=jdbc.queryForList("""
             SELECT t.row_id AS rowId,t.run_item_id AS runItemId,t.note,t.lock_version AS version,
                 r.lock_version AS runVersion,r.cycle_id AS cycleId,r.configuration_id AS configurationId,
@@ -286,12 +310,12 @@ public class TestDocumentService {
         var values=jdbc.query("SELECT source_workbook FROM import_batches WHERE project_id=? AND id=? AND status='COMMITTED'",(rs,n)->rs.getBytes(1),projectId,id);
         return values.isEmpty()?null:values.getFirst();
     }
-    private List<String> headers(byte[] source,String sheetName,boolean customer) {
+    private List<String> headers(byte[] source,String sheetName,boolean customer,boolean feature) {
         if(source==null) return customer?CustomerWorkbook.HEADERS:TestCaseWorkbook.HEADERS;
         try(var book=new XSSFWorkbook(new ByteArrayInputStream(source))) {
             var sheet=book.getSheet(sheetName); if(sheet==null || sheet.getRow(0)==null) throw corrupt();
             if(customer) {
-                return CustomerWorkbook.headers(sheet);
+                return CustomerWorkbook.headers(sheet,feature);
             }
             List<String> result=new ArrayList<>();
             for(int c=0;c<(customer?14:11);c++) result.add(CustomerWorkbook.value(sheet.getRow(0).getCell(c),1));

@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React, { useEffect, useRef, useState } from 'react';
 import { projectsApi } from '../../services/api/projects';
 import { formatTime } from '../test-execution/components';
@@ -71,7 +72,7 @@ function HandbookEditor({projectId,item,canEdit,onSaved,onClose,formRef}) {
     {!canEdit && <p role="alert">Bạn không còn quyền sửa. Bản nháp được giữ để tham khảo.</p>}
     <fieldset disabled={busy}>
       {!item && <div className="settings-fields"><label className="form-group">Mã tài liệu<input autoFocus required maxLength={32} value={form.code} onChange={e=>setForm({...form,code:e.target.value})}/></label><label className="form-group">Tên tài liệu<input required maxLength={100} value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label>
-      <label className="form-group">Loại tài liệu<select value={form.resourceType} onChange={e=>setForm({...form,resourceType:e.target.value})}><option value="GUIDE">Hướng dẫn</option><option value="SPEC_REFERENCE">Nguồn đặc tả</option><option value="TEST_ACCOUNT_REFERENCE">Nơi cấp tài khoản kiểm thử</option></select></label></div>}
+      <label className="form-group">Loại tài liệu<UnifiedSelect value={form.resourceType} onChange={e=>setForm({...form,resourceType:e.target.value})}><option value="GUIDE">Hướng dẫn</option><option value="SPEC_REFERENCE">Nguồn đặc tả</option><option value="TEST_ACCOUNT_REFERENCE">Nơi cấp tài khoản kiểm thử</option></UnifiedSelect></label></div>}
       <label className="form-group">Nội dung<textarea autoFocus={!!item} required rows={9} maxLength={10000} value={form.contentHtml} onChange={e=>setForm({...form,contentHtml:e.target.value})}/></label>
     </fieldset>
     <div className="settings-actions"><button className="cat-btn primary" disabled={busy||!writable}>Lưu tài liệu</button>{item && <button type="button" className="cat-btn" disabled={busy} onClick={readCurrent}>Tải phiên bản hiện tại để đối chiếu</button>}<button type="button" className="cat-btn" disabled={busy} onClick={onClose}>Hủy</button></div>

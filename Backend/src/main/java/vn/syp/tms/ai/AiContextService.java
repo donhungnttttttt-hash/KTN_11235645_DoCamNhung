@@ -165,7 +165,7 @@ public class AiContextService {
             case TESTER_WORK_REPORT -> "Chỉ phân công hiện hành và thay đổi Status do người yêu cầu thực sự ghi; tối đa 5 case cá nhân. Thay đổi Status không phải số lần thực thi thực tế.";
             case DEV_TICKET_REVIEW -> "Tối đa 3 ticket cùng dự án có một từ khóa trong tiêu đề; không tìm Internet. Kết quả tìm chỉ là gợi ý, không chứng minh cùng nguyên nhân.";
             case TESTER_BUG_DRAFT -> "Không có ảnh/video đính kèm trong ngữ cảnh; không được bịa bước tái hiện, expected, actual hoặc bằng chứng.";
-            default -> "Kết quả từ Status hiện tại của case trong Feature/file chưa lưu trữ; P/NA tính đã test và NA giữ trong tổng số case. Không suy nhanh/chậm hoặc nghiệm thu chỉ từ phần trăm.";
+            default -> "Kết quả từ Status hiện tại của case trong Đợt kiểm thử/file chưa lưu trữ; P/NA tính đã test và NA giữ trong tổng số case. Không suy nhanh/chậm hoặc nghiệm thu chỉ từ phần trăm.";
         };
     }
     private static String instructions(AiPurpose purpose) {

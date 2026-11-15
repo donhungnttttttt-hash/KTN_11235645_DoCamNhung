@@ -38,7 +38,7 @@ public class AiChatService {
         var thread=store.thread(actor,threadId);
         var prior=store.findRequest(actor,threadId,key,text);if(prior!=null)return prior;
         if("PM_ASSIGNMENT_SUGGESTION".equals(thread.purpose())&&thread.sourceReference()!=null&&thread.sourceReference().startsWith("file:"))
-            fail(410,"AI_LEGACY_SCOPE","Hội thoại file cũ chỉ đọc lịch sử. Tạo hội thoại mới với file trong Feature.");
+            fail(410,"AI_LEGACY_SCOPE","Hội thoại file cũ chỉ đọc lịch sử. Tạo hội thoại mới với file trong Đợt kiểm thử.");
         AiDraftService.Task snapshot=AiPortfolioContext.PURPOSE.equals(thread.purpose())?
                 portfolio.prepare(actor,thread.sourceReference(),key,text):AiPortfolioContext.PROJECT_PURPOSE.equals(thread.purpose())?
                 portfolio.prepareProject(actor,thread.projectId(),thread.targetId(),thread.sourceReference(),key,text):thread.projectId()==null?null:

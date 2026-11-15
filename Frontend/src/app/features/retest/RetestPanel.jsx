@@ -1,3 +1,4 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { retestApi } from '../../services/api/retest';
 import { workItemsApi } from '../../services/api/workItems';
@@ -9,6 +10,7 @@ import { CoverageTable, useRetestAction, RetestError, scopeLabel, requestLabels 
 import './retest.css';
 
 export function RetestPanel({ projectId, bug, canManage, writable, onChanged }) {
+ useRefreshOnReturn(()=>{if(!action.busy)action.perform(load);});
   const [data,setData]=useState(null),[files,setFiles]=useState([]),[error,setError]=useState(''),[editor,setEditor]=useState(false),[active,setActive]=useState(null),[readUncertain,setReadUncertain]=useState(false);
   const action=useRetestAction(),generation=useRef(0);
   const load=useCallback(async()=>{const current=++generation.current;
@@ -21,7 +23,7 @@ export function RetestPanel({ projectId, bug, canManage, writable, onChanged }) 
   async function changed(){await load();await onChanged();}
   function save(kind,body){if(readUncertain || action.busy || action.conflict)return;action.perform(()=>retestApi[kind](projectId,bug.id,{...body,expectedVersion:data.bugVersion}),async()=>{setEditor(false);await changed();});}
   const terminal=['closed','unreproducible','wontfix'].includes(data?.status),manage=canManage&&writable,mutationBlocked=action.busy||action.conflict||readUncertain;
-  return <section className="wi-section rt-panel"><div className="rt-heading"><h3>Kiểm thử lại & đóng lỗi</h3><Button disabled={action.busy} onClick={()=>action.perform(load)}>Tải lại retest</Button></div>
+  return <section className="wi-section rt-panel"><div className="rt-heading"><h3>Kiểm thử lại & đóng lỗi</h3>{(readUncertain)&&<Button disabled={action.busy} onClick={()=>action.perform(load)}>Thử lại retest</Button>}</div>
     <p className="wi-note">TMS quản lý trạng thái nội bộ. Xác minh riêng bug không đổi kết quả NG của toàn bộ case.</p>
     {error&&<p role="alert" className="ex-error">{error}</p>}<RetestError action={action} reload={load}/>
     {readUncertain&&data&&<p role="status">Chưa xác nhận được quyền và trạng thái hiện hành. Tải lại retest trước khi lưu.</p>}

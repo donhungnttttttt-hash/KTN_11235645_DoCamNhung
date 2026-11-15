@@ -1,0 +1,16 @@
+.admin-status-summary{display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:12px 0 24px}
+.admin-status-donut{width:142px;height:142px;border-radius:50%;display:grid;place-items:center;flex:none}
+.admin-status-donut>div{width:104px;height:104px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px}
+.admin-status-donut strong{font-size:24px;color:#174b50}.admin-status-donut span{font-size:12px;color:#698082}
+.admin-status-summary p{margin:6px 0;font-size:13px;color:#698082}.admin-result-chart{display:grid;gap:12px}
+.admin-inventory-stacks{display:grid;gap:6px;margin-top:18px}.admin-inventory-stack-row{position:relative;min-width:0}
+.admin-main .admin-inventory-stack-button{width:100%;display:grid;grid-template-columns:76px minmax(0,1fr) 35px;align-items:center;gap:12px;border:0;border-radius:8px;background:transparent;padding:16px 0;color:inherit;text-align:left}
+.admin-main .admin-inventory-stack-button:hover{background:#f1f8f7}.admin-inventory-type{font-weight:600}
+.admin-inventory-stack{height:26px;background:#e8eeee;display:flex;border-radius:6px;overflow:hidden}.admin-inventory-stack>span{display:flex;align-items:center;justify-content:center;font-size:11px;color:#122e37;min-width:0;overflow:hidden}
+.admin-inventory-stack-button>strong{text-align:right}.admin-inventory-stack-button:focus-visible{outline:2px solid #00887b;outline-offset:3px}
+.admin-inventory-tooltip{position:absolute;z-index:30;right:0;top:calc(100% - 5px);width:min(290px,100%);padding:16px;background:#fff;border:1px solid #d7e4e3;border-radius:12px;box-shadow:0 10px 30px #153c3b26;font-size:13px;pointer-events:none}
+.admin-inventory-tooltip dl{margin:12px 0 0;display:grid;gap:10px}.admin-inventory-tooltip dl>div{display:flex;align-items:center;justify-content:space-between;gap:12px}.admin-inventory-tooltip dt{display:flex;align-items:center;gap:8px}.admin-inventory-tooltip dd{margin:0;font-weight:600;white-space:nowrap}.admin-inventory-tooltip dd span{font-weight:400;color:#6d8085}
+.admin-inventory-tooltip i,.admin-inventory-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;flex:none}
+.admin-inventory-legend{display:flex;flex-wrap:wrap;gap:12px 18px;margin:24px 0 16px;font-size:12px;color:#516b71}.admin-inventory-legend>span{display:inline-flex;align-items:center;gap:6px}
+.admin-inventory-other{font-size:12px;color:#697e83}
+@media(max-width:480px){.admin-main .admin-inventory-stack-button{grid-template-columns:64px minmax(0,1fr) 26px;gap:8px}.admin-status-summary{gap:16px}.admin-status-donut{width:124px;height:124px}.admin-status-donut>div{width:92px;height:92px}}

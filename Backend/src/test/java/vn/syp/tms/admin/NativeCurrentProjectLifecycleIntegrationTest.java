@@ -136,7 +136,7 @@ class NativeCurrentProjectLifecycleIntegrationTest {
         jdbc.update("UPDATE redmine_outbox SET status='RUNNING' WHERE id=?",outbox);error(()->lifecycle.decide(admin,f.project,command,true),"ARCHIVE_BLOCKED");
         jdbc.update("UPDATE redmine_outbox SET status='FAILED' WHERE id=?",outbox);var ready=lifecycle.decide(admin,f.project,command,true);assertThat((List<?>)ready.get("warnings")).hasSize(1);
     }
-    long feature(){return db.insert("INSERT INTO testing_features(project_id,name,created_by,updated_by,created_at,updated_at) VALUES(?,'U26 Feature',?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",f.project,admin,admin);}
+    long feature(){return db.insert("INSERT INTO testing_features(project_id,name,created_by,updated_by,created_at,updated_at) VALUES(?,'U26 Đợt kiểm thử',?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",f.project,admin,admin);}
     long ticket(long feature,boolean document)throws Exception {
         long id;var c=DataSourceUtils.getConnection(Objects.requireNonNull(source));try{id=f.work(c,"BUG",101);}finally{DataSourceUtils.releaseConnection(c,source);}
         if(document)jdbc.update("UPDATE import_batches SET feature_id=? WHERE id=?",feature,f.document);

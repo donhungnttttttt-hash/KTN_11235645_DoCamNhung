@@ -1,3 +1,5 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import { isProjectObserver, isProjectDeveloper } from '../projects/projectAccess';
 import React, { useEffect, useMemo, useState } from 'react';
 import { executionApi } from '../../services/api/execution';
@@ -82,20 +84,21 @@ function FileWorkContextDialog({ execution:e, navigate, disabled }) {
 }
 
 export function DocumentExecutionControls({ execution:e, project, navigate, disabled=false, onSaved }){
+  useRefreshOnReturn(()=>{if(!disabled)e.refresh();});
   const {user,hasRole}=useAuth();
   const dev=isProjectDeveloper(project,hasRole);
   const readOnly=dev || isProjectObserver(project, hasRole);
   const picker=Boolean(e.requested && (!e.selected || !e.context));
   const grouped=e.selected?.fileWorkGroupId != null && !e.requested?.historyOnly;
   const controls=<fieldset disabled={disabled} className="td-execution-controls" aria-label="Ngữ cảnh ghi kết quả">
-      <label>Đợt kiểm thử <select aria-label="Đợt ghi kết quả" value={e.choice.cycleId} onChange={event=>e.choose(event.target.value)}>
+      <label>Đợt kiểm thử <UnifiedSelect aria-label="Đợt ghi kết quả" value={e.choice.cycleId} onChange={event=>e.choose(event.target.value)}>
         <option value="">Chọn đợt kiểm thử</option>
         {e.choice.cycleId && !e.cycles?.items.some(c=>String(c.id)===String(e.choice.cycleId)) && <option value={e.choice.cycleId}>{e.context?.cycle.name || `Đợt #${e.choice.cycleId}`}</option>}
         {e.cycles?.items.map(c=><option key={c.id} value={c.id}>{c.name} · {c.statusCode}</option>)}
-      </select></label>
+      </UnifiedSelect></label>
       {e.cycles?.totalPages>1 && <><button className="cat-btn" disabled={!e.cyclePage} onClick={()=>e.setCyclePage(v=>v-1)}>Đợt trước</button><button className="cat-btn" disabled={e.cyclePage+1>=e.cycles.totalPages} onClick={()=>e.setCyclePage(v=>v+1)}>Đợt tiếp</button></>}
-      {e.context && <label>Cấu hình <select aria-label="Cấu hình ghi kết quả" value={e.configurationId} onChange={event=>e.setConfiguration(event.target.value)}><option value="">Chọn cấu hình</option>{e.context.configs.map(c=><option key={c.id} value={c.id}>{c.environmentName} / {c.deviceName} · {c.versionLabel} ({c.buildNumber || '—'})</option>)}</select></label>}
-      <button className="cat-btn" onClick={e.refresh}>Tải lại kết quả</button><button className="cat-btn" onClick={()=>navigate(e.choice.cycleId?`/tests/cycles/${e.choice.cycleId}`:'/tests/cycles')}>{readOnly ? 'Xem đợt kiểm thử' : 'Thiết lập đợt / phân công'}</button>
+      {e.context && <label>Cấu hình <UnifiedSelect aria-label="Cấu hình ghi kết quả" value={e.configurationId} onChange={event=>e.setConfiguration(event.target.value)}><option value="">Chọn cấu hình</option>{e.context.configs.map(c=><option key={c.id} value={c.id}>{c.environmentName} / {c.deviceName} · {c.versionLabel} ({c.buildNumber || '—'})</option>)}</UnifiedSelect></label>}
+      <button className="cat-btn" onClick={()=>navigate(e.choice.cycleId?`/tests/cycles/${e.choice.cycleId}`:'/tests/cycles')}>{readOnly ? 'Xem đợt kiểm thử' : 'Thiết lập đợt / phân công'}</button>
       {e.loading && <span role="status">Đang tải kết quả…</span>}
       {!picker && e.pending && !e.choice.cycleId && <p role="status">Chọn đợt và cấu hình để ghi kết quả cho case {e.pending.sourceId}. File Excel gốc được giữ nguyên.</p>}
       {e.notice && <p role="status">{e.notice}</p>}{e.error && <div className="td-error" role="alert">{e.error}</div>}

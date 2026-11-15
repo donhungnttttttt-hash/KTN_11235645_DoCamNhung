@@ -46,12 +46,12 @@ public class AiAccess {
         require(caller,purpose);
         if(purpose==AiPurpose.PM_ASSIGNMENT_SUGGESTION){
             if(source!=null&&source.startsWith("file:")){
-                if(write)fail(410,"AI_LEGACY_SCOPE","Nguồn file cũ chỉ đọc lịch sử. Chọn file thuộc Feature cho yêu cầu mới.");
+                if(write)fail(410,"AI_LEGACY_SCOPE","Nguồn file cũ chỉ đọc lịch sử. Chọn file thuộc Đợt kiểm thử cho yêu cầu mới.");
                 return;
             }
-            if(source==null||!source.matches("document:[1-9][0-9]{0,17}"))throw new vn.syp.tms.shared.web.BusinessException(422,"AI_INVALID_TARGET","Chọn file thuộc Feature.");
+            if(source==null||!source.matches("document:[1-9][0-9]{0,17}"))throw new vn.syp.tms.shared.web.BusinessException(422,"AI_INVALID_TARGET","Chọn file thuộc Đợt kiểm thử.");
             var document=db.row("SELECT b.id,b.archived_at AS documentArchivedAt,f.archived_at AS featureArchivedAt FROM import_batches b JOIN testing_features f ON f.project_id=b.project_id AND f.id=b.feature_id WHERE b.project_id=? AND b.id=? AND b.status='COMMITTED'",p,Long.parseLong(source.substring(9)));
-            if(write&&(document.get("documentArchivedAt")!=null||document.get("featureArchivedAt")!=null))fail(409,"ARCHIVED","File/Feature đã lưu trữ; chỉ đọc lịch sử.");
+            if(write&&(document.get("documentArchivedAt")!=null||document.get("featureArchivedAt")!=null))fail(409,"ARCHIVED","File/Đợt kiểm thử đã lưu trữ; chỉ đọc lịch sử.");
             return;
         }
         if("ADMIN".equals(caller.role()))return;

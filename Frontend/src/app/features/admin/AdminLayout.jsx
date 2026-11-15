@@ -69,7 +69,7 @@ export function AdminLayout({path,projectId,navigate,children,api=adminApi}) {
     {drawerOpen&&<button type="button" className="admin-navigation-backdrop" aria-label="Đóng nền menu quản trị" tabIndex={-1} onClick={()=>setMobileOpen(false)}/>}
     <main ref={mainRef} id="admin-main" className="admin-main" aria-label="Nội dung quản trị" tabIndex={-1} inert={drawerOpen?'':undefined}>
       {logoutError && <p role="alert">{logoutError}</p>}
-      {projectsPage && <section className="admin-project-filter" aria-label="Lọc dự án">
+      {projectsPage && currentPath!=='/admin/projects' && <section className="admin-project-filter" aria-label="Lọc dự án">
         <AdminUserProjectFilter key={currentPath==='/admin/projects'?'list':'detail'} api={api} label="Phạm vi dự án" value={projectId || ''} onChange={id=>navigate(currentPath,id)}/>
       </section>}
       {children}

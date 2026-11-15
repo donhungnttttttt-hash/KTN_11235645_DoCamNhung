@@ -66,6 +66,9 @@ public class SecurityConfig {
                 var principal=org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
                 return principal!=null&&principal.getAuthorities().stream().anyMatch(a->"ROLE_GUEST".equals(a.getAuthority()));
             }).access(new GuestRequestAuthorization());
+            // Recipient and current project membership are checked by the service.
+            auth.requestMatchers(HttpMethod.GET,"/api/v1/me/project-health-notifications").authenticated();
+            auth.requestMatchers(HttpMethod.PUT,"/api/v1/me/project-health-notifications/*/read").authenticated();
             auth.requestMatchers(HttpMethod.GET,"/api/v1/reporting-projects").authenticated();
             auth.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
             auth.requestMatchers(HttpMethod.GET, "/api/v1/users").hasRole("ADMIN");

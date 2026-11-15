@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { act, createEvent, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
@@ -72,10 +73,10 @@ describe('current QA read notifications', () => {
     const replacement = vi.fn(); view.rerender(<QaPanel {...props} onReadState={replacement} />); await act(async () => {});
     expect(apiRequest.mock.calls.filter(([path]) => path === '/projects/1/qa/9')).toHaveLength(1);
     expect(replacement).not.toHaveBeenCalled();
-    apiRequest.mockRejectedValueOnce(networkError()); click('Tải lại QA'); await screen.findByText('Mất kết nối');
+    apiRequest.mockRejectedValueOnce(networkError()); refreshEvent.focus(window); await screen.findByText('Mất kết nối');
     expect(replacement).toHaveBeenCalledTimes(2);
     expect(replacement.mock.lastCall[0]).toMatchObject({ projectId: 1, id: 9, loading: false, error: 'Mất kết nối', detail: null });
-    readTransport(detail()); click('Tải lại QA'); await waitFor(() => expect(replacement).toHaveBeenCalledTimes(4));
+    readTransport(detail()); refreshEvent.focus(window); await waitFor(() => expect(replacement).toHaveBeenCalledTimes(4));
     expect(onChanged).not.toHaveBeenCalled();
   });
   it('only reports current scope reads and rejects mismatched response identity', async () => {
@@ -85,7 +86,7 @@ describe('current QA read notifications', () => {
     view.rerender(<QaPanel projectId={2} id={10} onReadState={onReadState} />); await screen.findByText('QA hiện tại');
     const count = onReadState.mock.calls.length;
     await act(async () => old.resolve(detail({ canComment: true }))); expect(onReadState).toHaveBeenCalledTimes(count);
-    apiRequest.mockResolvedValueOnce(detail()); click('Tải lại QA'); await screen.findByText('Chi tiết QA không khớp ngữ cảnh hiện tại.');
+    apiRequest.mockResolvedValueOnce(detail()); refreshEvent.focus(window); await screen.findByText('Chi tiết QA không khớp ngữ cảnh hiện tại.');
     expect(onReadState.mock.lastCall[0]).toMatchObject({ projectId: 2, id: 10, loading: false, detail: null, error: 'Chi tiết QA không khớp ngữ cảnh hiện tại.' });
   });
   it('history paging/retry never emits current detail read notifications', async () => {
@@ -100,8 +101,8 @@ describe('current QA read notifications', () => {
       return detail();
     });
     const onReadState = vi.fn(); render(<QaPanel projectId={1} id={9} onReadState={onReadState} />);
-    await screen.findByRole('button', { name: 'Tải lại lịch sử câu trả lời' }); expect(onReadState).toHaveBeenCalledTimes(2);
-    historyFails = false; click('Tải lại lịch sử câu trả lời'); await screen.findByText('Trang lịch sử 0');
+    await screen.findByRole('button', { name: "Thử lại lịch sử câu trả lời" }); expect(onReadState).toHaveBeenCalledTimes(2);
+    historyFails = false; click("Thử lại lịch sử câu trả lời"); await screen.findByText('Trang lịch sử 0');
     click('Lịch sử câu trả lời tiếp'); await screen.findByText('Trang lịch sử 1'); expect(onReadState).toHaveBeenCalledTimes(2);
     expect(apiRequest.mock.calls.filter(([path]) => path === '/projects/1/qa/9')).toHaveLength(1);
   });
@@ -117,7 +118,7 @@ describe('current QA read notifications', () => {
     const onReadState = vi.fn(), onChanged = vi.fn(); render(<QaPanel projectId={1} id={9} onReadState={onReadState} onChanged={onChanged} />);
     await screen.findByRole('button', { name: 'Trả lời QA' }); click('Trả lời QA'); fill('Nội dung trả lời', 'Một lệnh'); click('Gửi câu trả lời'); await screen.findByText('Mất kết nối');
     expect(onReadState.mock.lastCall[0]).toMatchObject({ loading: false, error: 'Mất kết nối', detail: null }); expect(onChanged).not.toHaveBeenCalled();
-    fails = false; click('Tải lại QA'); await waitFor(() => expect(onChanged).toHaveBeenCalledOnce());
+    fails = false; refreshEvent.focus(window); await waitFor(() => expect(onChanged).toHaveBeenCalledOnce());
     expect(onReadState.mock.lastCall[0]).toMatchObject({ loading: false, error: '', detail: { item: { capabilities: { canComment: false, canUploadEvidence: false } } } });
     expect(posts()).toHaveLength(1); expect(onChanged).toHaveBeenCalledWith(onReadState.mock.lastCall[0].detail);
   });
@@ -151,7 +152,7 @@ describe('QA create', () => {
     fill('Tiêu đề QA', 'Đã tạo'); fill('Câu hỏi', 'Giữ câu hỏi'); click('Tạo QA'); await screen.findByText('Mất kết nối');
     expect(posts()).toHaveLength(1); expect(onCreated).not.toHaveBeenCalled();
     view.rerender(<QaForm projectId={1} canCreateQa={false} context={{ documentId: 4 }} onCreated={onCreated} />);
-    expect(screen.getByRole('button', { name: 'Tải lại QA đã tạo' })).toBeEnabled(); click('Tải lại QA đã tạo');
+    expect(screen.getByRole('button', { name: "Kiểm tra QA đã tạo" })).toBeEnabled(); click("Kiểm tra QA đã tạo");
     fireEvent.submit(screen.getByRole('form', { name: 'Tạo QA' })); await waitFor(() => expect(reads).toBe(2));
     await act(async () => read.resolve(fresh));
     await waitFor(() => expect(onCreated).toHaveBeenCalledExactlyOnceWith(fresh));
@@ -159,7 +160,7 @@ describe('QA create', () => {
     expect(apiRequest.mock.calls.filter(([path]) => path === '/projects/1/qa/9')).toHaveLength(2);
     expect(apiRequest.mock.calls.filter(([path]) => path === '/auth/csrf')).toHaveLength(1);
     view.rerender(<QaForm projectId={2} canCreateQa={false} context={{ documentId: 4 }} onCreated={onCreated} />);
-    expect(screen.getByRole('button', { name: 'Tải lại QA đã tạo' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: "Kiểm tra QA đã tạo" })).toBeDisabled();
     view.rerender(<QaForm projectId={1} canCreateQa={false} context={{ documentId: 4 }} onCreated={onCreated} />);
     click('Tạo bản nháp mới'); expect(screen.getByRole('button', { name: 'Tạo QA' })).toBeDisabled();
     fireEvent.submit(screen.getByRole('form', { name: 'Tạo QA' })); expect(posts()).toHaveLength(1);
@@ -226,7 +227,7 @@ describe('QA create', () => {
     });
     render(<QaForm projectId={1} canCreateQa onCreated={onCreated} />); fill('Tiêu đề QA', 'Hỏi'); fill('Câu hỏi', 'Nguồn độc lập'); click('Tạo QA');
     await screen.findByText('Mất kết nối'); expect(onCreated).not.toHaveBeenCalled(); expect(screen.getByLabelText('Câu hỏi')).toBeDisabled();
-    fail = false; click('Tải lại QA đã tạo'); await waitFor(() => expect(onCreated).toHaveBeenCalledWith(fresh)); expect(posts()).toHaveLength(1);
+    fail = false; click("Kiểm tra QA đã tạo"); await waitFor(() => expect(onCreated).toHaveBeenCalledWith(fresh)); expect(posts()).toHaveLength(1);
   });
   it('explicit new draft changes project/context and resets request key after a changed draft', async () => {
     apiRequest.mockImplementation(async path => path === '/auth/csrf' ? { headerName: 'X-CSRF', token: 'test' } : Promise.reject(networkError()));
@@ -278,7 +279,7 @@ describe('QA actions and histories', () => {
     render(<QaPanel projectId={1} id={9} />); await screen.findByRole('button', { name: 'Xác nhận câu trả lời' });
     click('Xác nhận câu trả lời'); fill('Nội dung xác nhận', 'Nháp xác nhận cũ'); click('Gửi xác nhận'); await screen.findByText('Dữ liệu thay đổi');
     current = { ...detail({ canConfirm: true }, { version: 4 }), currentAnswer: { ...answer, id: 12, answerVersion: 2, body: 'Câu trả lời thay thế' } };
-    click('Tải lại QA'); await screen.findByText('Câu trả lời thay thế');
+    refreshEvent.focus(window); await screen.findByText('Câu trả lời thay thế');
     expect(screen.getByLabelText('Nội dung xác nhận')).toHaveValue('Nháp xác nhận cũ');
     expect(screen.getByRole('button', { name: 'Gửi xác nhận' })).toBeDisabled(); expect(posts()).toHaveLength(1);
     click('Đã đối chiếu dữ liệu hiện tại'); click('Gửi xác nhận'); await waitFor(() => expect(posts()).toHaveLength(2));
@@ -292,7 +293,7 @@ describe('QA actions and histories', () => {
     click('Xác nhận câu trả lời'); fill('Nội dung xác nhận', 'Giữ nháp'); click('Gửi xác nhận'); await screen.findByText('Dữ liệu thay đổi');
     expect(screen.queryByRole('button', { name: 'Đã đối chiếu dữ liệu hiện tại' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Gửi xác nhận' })).toBeDisabled();
-    click('Tải lại QA'); await screen.findByRole('button', { name: 'Đã đối chiếu dữ liệu hiện tại' });
+    refreshEvent.focus(window); await screen.findByRole('button', { name: 'Đã đối chiếu dữ liệu hiện tại' });
   });
   it('blocks confirmation after reassignment generation even if a stale cap says true', async () => {
     let current = detail({ canConfirm: true }); readTransport(current);
@@ -300,7 +301,7 @@ describe('QA actions and histories', () => {
     render(<QaPanel projectId={1} id={9} />); await screen.findByRole('button', { name: 'Xác nhận câu trả lời' });
     click('Xác nhận câu trả lời'); fill('Nội dung xác nhận', 'Giữ nguyên');
     current = { ...detail({ canConfirm: true }, { generation: 1, version: 4, assigneeMembershipId: 22 }), currentAnswer: { ...answer, generation: 1, id: 12, answerVersion: 2 } };
-    click('Tải lại QA'); await screen.findByText(/Vòng QA: 1/);
+    refreshEvent.focus(window); await screen.findByText(/Vòng QA: 1/);
     expect(screen.getByRole('button', { name: 'Gửi xác nhận' })).toBeDisabled();
     expect(screen.queryByRole('button', { name: 'Đã đối chiếu dữ liệu hiện tại' })).not.toBeInTheDocument(); expect(posts()).toHaveLength(0);
   });
@@ -316,7 +317,7 @@ describe('QA actions and histories', () => {
     const slow = deferred(); readTransport();
     const view = render(<QaPanel projectId={1} id={9} />); await screen.findByText('Câu hỏi gốc');
     apiRequest.mockImplementation(path => path.includes('?') ? Promise.resolve(page([])) : path.endsWith('/9') ? slow.promise : Promise.resolve(detail({}, { id: 10, title: 'QA mới', question: 'Câu hỏi mới' })));
-    click('Tải lại QA'); view.rerender(<QaPanel projectId={1} id={10} />); await screen.findByText('Câu hỏi mới');
+    refreshEvent.focus(window); view.rerender(<QaPanel projectId={1} id={10} />); await screen.findByText('Câu hỏi mới');
     await act(async () => slow.resolve(detail({ canConfirm: true }, { title: 'Cũ tới trễ' })));
     expect(screen.queryByText('Cũ tới trễ')).not.toBeInTheDocument();
   });
@@ -342,7 +343,7 @@ describe('QA actions and histories', () => {
     const onChanged = vi.fn(); render(<QaPanel projectId={1} id={9} onChanged={onChanged} />); await screen.findByRole('button', { name: 'Trả lời QA' });
     click('Trả lời QA'); fill('Nội dung trả lời', 'Trả lời'); click('Gửi câu trả lời'); await screen.findByText('Mất kết nối');
     expect(screen.getByRole('button', { name: 'Gửi câu trả lời' })).toBeDisabled(); expect(onChanged).not.toHaveBeenCalled();
-    readFail = false; click('Tải lại QA'); await waitFor(() => expect(onChanged).toHaveBeenCalled()); expect(posts()).toHaveLength(1);
+    readFail = false; refreshEvent.focus(window); await waitFor(() => expect(onChanged).toHaveBeenCalled()); expect(posts()).toHaveLength(1);
   });
   it('busy suppresses duplicate submit and changed body obtains a new key after network error', async () => {
     let first = true; const slow = deferred(); readTransport(detail({ canAnswer: true }));
@@ -393,19 +394,19 @@ describe('QA actions and histories', () => {
       if (path.includes('/confirmations?')) return page([{ id: 66, answerId: 11, answerVersion: 1, generation: 0, body: 'Xác nhận cũ', confirmerName: 'Tester' }]);
       return detail();
     });
-    render(<QaPanel projectId={1} id={9} />); await screen.findByRole('button', { name: 'Tải lại lịch sử câu trả lời' }); fail = false; click('Tải lại lịch sử câu trả lời');
+    render(<QaPanel projectId={1} id={9} />); await screen.findByRole('button', { name: "Thử lại lịch sử câu trả lời" }); fail = false; click("Thử lại lịch sử câu trả lời");
     await screen.findByText('Lịch sử trang 0'); click('Lịch sử câu trả lời tiếp'); await screen.findByText('Lịch sử trang 1');
     expect(screen.getByText('Xác nhận cũ')).toBeInTheDocument(); expect(screen.queryByText('Lịch sử trang 0')).not.toBeInTheDocument();
   });
   it.each([401, 403, 404])('shows initial %s denial with explicit read retry and no actions', async status => {
     apiRequest.mockRejectedValueOnce(Object.assign(new Error(`Lỗi ${status}`), { status }));
     render(<QaPanel projectId={1} id={9} />); await screen.findByText(`Lỗi ${status}`);
-    expect(screen.queryByRole('button', { name: 'Trả lời QA' })).not.toBeInTheDocument(); readTransport(detail()); click('Tải lại QA'); await screen.findByText('Câu hỏi gốc');
+    expect(screen.queryByRole('button', { name: 'Trả lời QA' })).not.toBeInTheDocument(); readTransport(detail()); refreshEvent.focus(window); await screen.findByText('Câu hỏi gốc');
   });
   it('keeps an old draft disabled when refreshed capabilities remove confirmation permission', async () => {
     let current = detail({ canConfirm: true }); apiRequest.mockImplementation(async path => path.includes('?') ? page([]) : current);
     render(<QaPanel projectId={1} id={9} />); await screen.findByRole('button', { name: 'Xác nhận câu trả lời' }); click('Xác nhận câu trả lời'); fill('Nội dung xác nhận', 'Giữ nháp');
-    current = detail({}, { version: 4 }); click('Tải lại QA'); await screen.findByText(/Phiên bản: 4/);
+    current = detail({}, { version: 4 }); refreshEvent.focus(window); await screen.findByText(/Phiên bản: 4/);
     expect(screen.getByLabelText('Nội dung xác nhận')).toHaveValue('Giữ nháp'); expect(screen.getByRole('button', { name: 'Gửi xác nhận' })).toBeDisabled(); expect(posts()).toHaveLength(0);
   });
   it('closed QA renders shared readable content and only current reopen control', async () => {

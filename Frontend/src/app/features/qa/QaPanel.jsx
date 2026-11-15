@@ -1,3 +1,5 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { qaApi } from '../../services/api/qa';
 import { Button } from '../work-items/components';
@@ -52,7 +54,7 @@ function QaHistory({ projectId, id, kind, revision }) {
   const title = kind === 'answers' ? 'Lịch sử câu trả lời' : 'Lịch sử xác nhận';
   return <section className="wi-section" aria-label={title}><h3>{title}</h3>
     {current.loading && <p role="status">Đang tải lịch sử…</p>}
-    {current.error && <div role="alert" className="wi-error">{current.error}<Button onClick={() => setRetry(v => v + 1)}>Tải lại {title.toLowerCase()}</Button></div>}
+    {current.error && <div role="alert" className="wi-error">{current.error}{(current.error||draft?.accepted)&&<Button onClick={() => setRetry(v => v + 1)}>Thử lại {title.toLowerCase()}</Button>}</div>}
     {current.data && <>{!current.data.items.length && <p>Chưa có bản ghi.</p>}{current.data.items.map(row => kind === 'answers' ? <AnswerView key={row.id} answer={row} /> : <ConfirmationView key={row.id} confirmation={row} />)}
       <div className="wi-actions"><Button disabled={!page || current.loading} onClick={() => setPage(p => p - 1)}>{title} trước</Button><span>Trang {current.data.page + 1}/{Math.max(1, current.data.totalPages)} · {current.data.totalItems} bản ghi</span><Button disabled={page + 1 >= current.data.totalPages || current.loading} onClick={() => setPage(p => p + 1)}>{title} tiếp</Button></div>
     </>}
@@ -64,6 +66,7 @@ function QaHistory({ projectId, id, kind, revision }) {
 // onChanged remains command/replay + successful fresh GET only. Callback changes
 // are ref-backed and do not restart reads or reset the mounted draft.
 export function QaPanel({ projectId, id, catalogs = {}, onChanged, onReadState }) {
+ useRefreshOnReturn(()=>{if(!busy&&!current.loading)refresh(!!draft?.accepted&&targetMatches);});
   const prefix = `${useId()}-command-`;
   const scope = `${projectId}/${id}`, currentScope = useRef(scope); currentScope.current = scope;
   const [state, setState] = useState({ scope, detail: null, loading: true, error: '' });
@@ -148,7 +151,7 @@ export function QaPanel({ projectId, id, catalogs = {}, onChanged, onReadState }
   }
   const eligible = (catalogs.members || []).filter(m => m.active === true && m.projectRole === 'DEV' && m.systemRole === 'DEV' && m.enabled !== false && positiveId(m.membershipId) != null && positiveId(m.membershipId) !== undefined);
   return <section className="wi-section" aria-label="QA chi tiết">
-    <div className="wi-actions"><h3>QA</h3><Button disabled={busy || current.loading} onClick={() => refresh(!!draft?.accepted && targetMatches)}>Tải lại QA</Button></div>
+    <div className="wi-actions"><h3>QA</h3>{(current.error||draft?.accepted)&&<Button disabled={busy || current.loading} onClick={() => refresh(!!draft?.accepted && targetMatches)}>Thử lại QA</Button>}</div>
     {current.loading && <p role="status">Đang tải QA…</p>}
     {current.error && <div className="wi-error" role="alert">{current.error}</div>}
     {item && <>
@@ -165,7 +168,7 @@ export function QaPanel({ projectId, id, catalogs = {}, onChanged, onReadState }
       <QaErrorSummary error={error} fields={fields} prefix={prefix} />
       {(!targetMatches || !versionMatches || conflict) && <p role="status">Dữ liệu đã thay đổi. Bản nháp cũ được giữ; tải lại và đối chiếu trước khi gửi.</p>}
       {draft.accepted && <p role="status">Lệnh đã được chấp nhận. Tải lại QA để lấy dữ liệu hiện tại; không gửi lại lệnh.</p>}
-      {draft.action === 'assign' && <><QaField label="Dev phụ trách" name="assigneeMembershipId" prefix={prefix} error={fields.assigneeMembershipId}><select value={draft.assigneeMembershipId} onChange={e => change('assigneeMembershipId', e.target.value)} disabled={busy || draft.accepted}><option value="">Chưa chọn</option>{eligible.map(m => <option key={m.membershipId} value={m.membershipId}>{m.displayName}</option>)}</select></QaField><p>Máy chủ kiểm tra lại tài khoản đang bật và quyền Dev tại thời điểm phân công.</p></>}
+      {draft.action === 'assign' && <><QaField label="Dev phụ trách" name="assigneeMembershipId" prefix={prefix} error={fields.assigneeMembershipId}><UnifiedSelect value={draft.assigneeMembershipId} onChange={e => change('assigneeMembershipId', e.target.value)} disabled={busy || draft.accepted}><option value="">Chưa chọn</option>{eligible.map(m => <option key={m.membershipId} value={m.membershipId}>{m.displayName}</option>)}</UnifiedSelect></QaField><p>Máy chủ kiểm tra lại tài khoản đang bật và quyền Dev tại thời điểm phân công.</p></>}
       <QaField label={active.reason ? 'Lý do' : active.field} name={active.reason ? 'reason' : 'body'} prefix={prefix} error={fields[active.reason ? 'reason' : 'body']}><textarea rows={4} maxLength={active.reason ? 1000 : 20000} value={active.reason ? draft.reason : draft.body} onChange={e => change(active.reason ? 'reason' : 'body', e.target.value)} disabled={busy || draft.accepted} /></QaField>
       {draft.action === 'answer' && <QaField label="Tham chiếu căn cứ" name="basisReference" prefix={prefix} error={fields.basisReference}><input maxLength={1000} value={draft.basisReference} onChange={e => change('basisReference', e.target.value)} disabled={busy || draft.accepted} /></QaField>}
       {draft.action === 'closeException' && <p>PM kết thúc ngoại lệ với lý do riêng. Thao tác này không tạo xác nhận Tester.</p>}

@@ -22,7 +22,34 @@ public class TestCaseWorkbook {
     public record Parsed(String fileName, String checksum, List<TestCaseDtos.ImportRowInput> rows,
             String format, String sheetName, byte[] sourceBytes) {}
 
+    public Parsed parseFeature(MultipartFile file) {
+        var parsed = parse(file,true);
+        var allowed = CustomerWorkbook.FEATURE_FIELDS;
+        var rows = parsed.rows().stream().map(row -> {
+            List<String> cells = null;
+            Map<String, Integer> columns = null;
+            if (row.sourceCells() != null && row.sourceColumns() != null) {
+                columns = new LinkedHashMap<>();
+                for (var entry : row.sourceColumns().entrySet())
+                    if (allowed.contains(entry.getKey())) columns.put(entry.getKey(), entry.getValue());
+                // Keep original coordinates for cell edits and legacy document readers.
+                // Unselected values remain only in the original downloadable workbook.
+                cells = new ArrayList<>(Collections.nCopies(row.sourceCells().size(), ""));
+                for (int index : columns.values()) cells.set(index, row.sourceCells().get(index));
+                cells = List.copyOf(cells);
+                columns = Map.copyOf(columns);
+            }
+            return new TestCaseDtos.ImportRowInput(row.rowNumber(), row.caseNo(), row.suiteCode(),
+                    row.titleVi(), row.preconditionsVi(), row.stepsVi(), row.expectedVi(),
+                    "", "", "", "", "", cells, columns);
+        }).toList();
+        return new Parsed(parsed.fileName(), parsed.checksum(), rows, parsed.format(), parsed.sheetName(), parsed.sourceBytes());
+    }
+
     public Parsed parse(MultipartFile file) {
+        return parse(file,false);
+    }
+    private Parsed parse(MultipartFile file,boolean featureOnly) {
         String name = Optional.ofNullable(file.getOriginalFilename()).orElse("").replace('\\', '/');
         name = name.substring(name.lastIndexOf('/') + 1);
         if (!name.toLowerCase(Locale.ROOT).endsWith(".xlsx") || name.length() > 255 || name.chars().anyMatch(Character::isISOControl) || file.isEmpty() || file.getSize() > MAX_BYTES)
@@ -35,11 +62,10 @@ public class TestCaseWorkbook {
                 if (book.getNumberOfSheets() != 1) throw invalid("Chọn workbook có một sheet dữ liệu theo mẫu đã hỗ trợ.");
                 Sheet sheet = book.getSheetAt(0);
                 for (Row row : sheet) for (Cell cell : row) CustomerWorkbook.checkLink(cell);
-                if (sheet.getLastRowNum() > MAX_ROWS) throw invalid("Tệp vượt quá 500 dòng dữ liệu.");
                 Row header = sheet.getRow(0);
                 if (!"TestCases".equals(sheet.getSheetName()) || header == null ||
                         header.getCell(0) == null || !"caseNo".equals(text(header.getCell(0), 1))) {
-                    var rows = CustomerWorkbook.read(sheet);
+                    var rows = CustomerWorkbook.read(sheet,featureOnly);
                     return new Parsed(name, sha256(bytes), rows, CUSTOMER, sheet.getSheetName(), bytes);
                 }
                 if (sheet.getNumMergedRegions() != 0) throw invalid("Mẫu TestCases nội bộ không hỗ trợ gộp ô: " + sheet.getMergedRegion(0).formatAsString() + ".");
@@ -55,15 +81,15 @@ public class TestCaseWorkbook {
                     if (!HEADERS.get(col).equals(text(header.getCell(col),1))) throw invalid("Tên hoặc thứ tự cột không khớp file mẫu.");
                 }
                 List<TestCaseDtos.ImportRowInput> rows = new ArrayList<>();
-                for (int i=1; i<=sheet.getLastRowNum(); i++) {
-                    Row row=sheet.getRow(i);
-                    if (row==null) continue;
+                for (Row row:sheet) {
+                    int i=row.getRowNum();if(i==0)continue;
                     if (row.getLastCellNum()>columnCount) throw invalid("Dòng " + (i+1) + " có cột ngoài mẫu.");
                     // Validate untrusted metadata cells without importing execution or assignment responsibility.
                     if(ownExport)for(int col=HEADERS.size();col<columnCount;col++)text(row.getCell(col),i+1);
                     String[] v=new String[HEADERS.size()];
                     for (int c=0;c<v.length;c++) v[c]=text(row.getCell(c),i+1);
                     if (Arrays.stream(v).allMatch(value -> value.isBlank())) continue;
+                    if(rows.size()>=MAX_ROWS)throw invalid("Tệp vượt quá 500 test case có dữ liệu; không tính dòng trống hoặc số dòng trong một ô.");
                     rows.add(new TestCaseDtos.ImportRowInput(i+1,v[0].trim(),v[1].trim(),v[2],v[3],v[4],v[5],v[6],v[7],v[8],v[9],v[10]));
                 }
                 if (rows.isEmpty()) throw invalid("Tệp không có dòng test case.");
@@ -95,7 +121,6 @@ public class TestCaseWorkbook {
         if (cell==null || cell.getCellType()==CellType.BLANK) return "";
         if (cell.getCellType()!=CellType.STRING) throw invalid("Dòng " + row + ": dùng ô văn bản, không dùng số hoặc công thức.");
         String value=cell.getStringCellValue();
-        if (value.length()>8000) throw invalid("Dòng " + row + ": mỗi ô tối đa 8.000 ký tự.");
         return value;
     }
 
@@ -117,10 +142,10 @@ public class TestCaseWorkbook {
     }
 
     public byte[] customerTemplate() {
-        var headers=List.of("ID","No","Đối tượng test","Điều kiện tiền đề","Các bước test","Quan điểm test",
-                "Mục xác nhận","Kết quả mong đợi","Ghi chú thiết kế","iPad*","Ghi chú thực thi&","ID redmine","Người test");
+        var headers=List.of("ID","No","Đối tượng test","Điều kiện tiên quyết","Các bước test","Quan điểm test",
+                "Hạng mục xác nhận","Kết quả mong đợi","Ghi chú thiết kế");
         var example=List.of("1","1","Đăng nhập","Có tài khoản nội bộ","1. Mở ứng dụng\n2. Đăng nhập bằng tài khoản hợp lệ",
-                "Chức năng","Mở màn tổng quan","Hiển thị màn tổng quan","","","","","");
+                "Chức năng","Mở màn tổng quan","Hiển thị màn tổng quan","");
         return DocumentWorkbook.export(null,"タブレット",headers,List.of(new DocumentWorkbook.RowCells(2,example)));
     }
     /** Shared by additive recovery migration; identical padding/trailing-cell rules to normal import. */

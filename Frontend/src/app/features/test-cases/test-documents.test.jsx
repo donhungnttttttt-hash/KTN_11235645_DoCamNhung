@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -105,7 +106,7 @@ describe('Test document library',()=>{
     await user.click(await screen.findByRole('button',{name:'Trang trước'}));
     await user.type(screen.getByRole('searchbox',{name:'Tìm tài liệu'}),'spec');
     await waitFor(()=>expect(testCasesApi.listDocuments).toHaveBeenLastCalledWith(1,{page:0,keyword:'spec'}));
-    await user.click(screen.getByRole('button',{name:'Làm mới tài liệu'}));
+    await refreshEvent.focus(window);
     await user.click(screen.getByRole('button',{name:'Nhập Excel'}));
     expect(screen.getByRole('dialog')).toBeVisible();
     await user.click(screen.getByRole('button',{name:'Hủy'}));
@@ -214,7 +215,7 @@ describe('Workbook case grid',()=>{
     testCasesApi.exportDocument.mockRejectedValueOnce(new Error('Không tải được file'));
     await user.click(screen.getByRole('button',{name:'Xuất Excel'}));
     expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được file');
-    await user.click(screen.getByRole('button',{name:'Làm mới bảng case'}));
+    await refreshEvent.focus(window);
     await user.click(screen.getByRole('button',{name:'Đợt kiểm thử'}));expect(navigate).toHaveBeenLastCalledWith('/tests/cycles');
     await user.click(screen.getByRole('button',{name:'Danh sách tài liệu'}));expect(navigate).toHaveBeenLastCalledWith('/tests');
   });

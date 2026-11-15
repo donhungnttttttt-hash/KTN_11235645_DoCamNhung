@@ -1,5 +1,7 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React,{useEffect,useRef,useState} from 'react';
-import {Sparkles,FileText,RefreshCw,Copy,Save,ArrowRight} from 'lucide-react';
+import {Sparkles,FileText,Copy,Save,ArrowRight} from 'lucide-react';
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import {aiApi} from '../../services/api/ai';
 import {adminApi} from '../../services/api/admin';
 import {useProject} from '../projects/ProjectProvider';
@@ -55,6 +57,7 @@ export function AiWorkspace({projectId,projectName,api=aiApi}) {
  return <Workspace key={`${auth?.user?.id||''}:${projectId}`} projectId={projectId} projectName={projectName} api={api} edits={edits}/>;
 }
 function Workspace({projectId,projectName,api,edits}) {
+ useRefreshOnReturn(()=>{if(!busy&&!loading)setRevision(v=>v+1);});
  const providers=useAiProviders();
  const [metadata,setMetadata]=useState(null),[history,setHistory]=useState([]),[purpose,setPurpose]=useState('');
  const [targets,setTargets]=useState(null),[target,setTarget]=useState(''),[search,setSearch]=useState(''),[query,setQuery]=useState('');
@@ -113,8 +116,8 @@ function Workspace({projectId,projectName,api,edits}) {
  const canGenerate=(providers?providers.ready:metadata?.enabled)&&!metadata?.archived&&selected&&!targetLoading&&(selected.target==='NONE'||target)&&!busy&&!loading&&!pending;
  return <section className="ai-page">
   <header className="ai-heading"><div><div className="ai-eyebrow"><Sparkles size={17} aria-hidden="true"/>TRỢ LÝ CÔNG VIỆC</div><h1>Trợ lý AI {metadata&&<span>{roleNames[metadata.role]||metadata.role}</span>}</h1><p>{projectName||'Theo dự án đã chọn'} · Bản nháp để bạn kiểm tra và sử dụng.</p></div>
-   <button type="button" className="ai-button" disabled={busy||loading} onClick={()=>setRevision(v=>v+1)}><RefreshCw size={16} aria-hidden="true"/>Cập nhật danh sách</button></header>
-  {error&&<div className="ai-error" role="alert">{error} <button className="ai-button" disabled={busy} onClick={()=>setRevision(v=>v+1)}>Tải lại danh sách</button></div>}
+   </header>
+  {error&&<div className="ai-error" role="alert">{error} <button className="ai-button" disabled={busy} onClick={()=>setRevision(v=>v+1)}>Thử lại danh sách</button></div>}
   {loading&&<p role="status">Đang tải trợ lý AI…</p>}
   {metadata&&<>
    {!metadata.enabled&&!providers&&<p className="ai-notice">AI chưa được bật cho hệ thống. Bạn vẫn có thể xem và chỉnh sửa các bản nháp đã lưu.</p>}
@@ -122,12 +125,12 @@ function Workspace({projectId,projectName,api,edits}) {
    <div className="ai-layout"><div className="ai-main">
     <section className="ai-card"><h2>Bạn cần hỗ trợ việc gì?</h2>
      <AiSourceSelector disabled={busy||!!pending}/>
-     <label className="ai-field">Tác vụ AI<select value={purpose} disabled={busy||!!pending} onChange={e=>{setPurpose(e.target.value);setQuery('');setSearch('');}}>{metadata.purposes.map(p=><option key={p.code} value={p.code}>{p.label}</option>)}</select></label>
+     <label className="ai-field">Tác vụ AI<UnifiedSelect value={purpose} disabled={busy||!!pending} onChange={e=>{setPurpose(e.target.value);setQuery('');setSearch('');}}>{metadata.purposes.map(p=><option key={p.code} value={p.code}>{p.label}</option>)}</UnifiedSelect></label>
      <p className="ai-description">{descriptions[purpose]}</p>
      {selected?.target!=='NONE'&&selected&&<div className="ai-target">
-      {targetError&&<div className="ai-error" role="alert">{targetError} <button className="ai-button" disabled={busy||!!pending||targetLoading} onClick={()=>retryTargets(value=>value+1)}>Tải lại danh sách</button></div>}
+      {targetError&&<div className="ai-error" role="alert">{targetError} <button className="ai-button" disabled={busy||!!pending||targetLoading} onClick={()=>retryTargets(value=>value+1)}>Thử lại danh sách</button></div>}
       <div className="ai-search"><label className="ai-field">Tìm file hoặc ticket<input value={search} maxLength={80} disabled={busy||!!pending} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'){e.preventDefault();searchTargets();}}}/></label><button className="ai-button" disabled={busy||!!pending||targetLoading} onClick={searchTargets}>{targetLoading?'Đang tìm…':'Tìm'}</button></div>
-      <label className="ai-field">File hoặc ticket<select value={target} disabled={busy||targetLoading||!!pending} onChange={e=>setTarget(e.target.value)}><option value="">Chọn một mục</option>{targets?.items.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
+      <label className="ai-field">File hoặc ticket<UnifiedSelect value={target} disabled={busy||targetLoading||!!pending} onChange={e=>setTarget(e.target.value)}><option value="">Chọn một mục</option>{targets?.items.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}</UnifiedSelect></label>
       {target&&<p className="ai-selected">{targets?.items.find(t=>String(t.id)===target)?.label}</p>}
       {targetLoading&&<p role="status">Đang tải các mục được phép…</p>}
       {targets&&!targets.items.length&&<p>Chưa có file hoặc ticket phù hợp. Kiểm tra phân công hoặc đổi từ khóa tìm kiếm.</p>}

@@ -54,7 +54,7 @@ it('keeps stale drafts but requires closing and reloading before another save',a
  await edit();change('Tên','Draft');fireEvent.click(screen.getByRole('button',{name:'Lưu thông tin'}));
  await screen.findByRole('alert');expect(screen.getByLabelText('Tên')).toHaveValue('Draft');
  expect(screen.getByRole('button',{name:'Lưu thông tin'})).toBeDisabled();
- fireEvent.click(screen.getByRole('button',{name:'Đóng và tải lại'}));
+ fireEvent.click(screen.getByRole('button',{name:'Đóng và cập nhật'}));
  expect(screen.getByRole('dialog',{name:'Bỏ nội dung chưa lưu?'})).toBeVisible();
  fireEvent.click(screen.getByRole('button',{name:'Bỏ bản nháp'}));
  await waitFor(()=>expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
@@ -123,6 +123,6 @@ it('requires account reload after a stale reset and does not retain the attempte
  await reset();change('Mật khẩu mới','example-long-password');change('Nhập lại mật khẩu mới','example-long-password');
  fireEvent.click(screen.getByRole('button',{name:'Lưu mật khẩu mới'}));await screen.findByRole('alert');
  expect(screen.getByLabelText('Mật khẩu mới')).toHaveValue('');expect(screen.getByRole('button',{name:'Lưu mật khẩu mới'})).toBeDisabled();
- fireEvent.click(screen.getByRole('button',{name:'Đóng và tải lại'}));
+ fireEvent.click(screen.getByRole('button',{name:'Đóng và cập nhật'}));
  await waitFor(()=>expect(screen.queryByRole('dialog')).not.toBeInTheDocument());expect(api.users).toHaveBeenCalledTimes(2);
 });

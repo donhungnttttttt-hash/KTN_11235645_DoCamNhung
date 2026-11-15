@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React,{useEffect,useRef,useState} from 'react';
 import {useDialogFocus} from '../../hooks/useDialogFocus';
 import {testCasesApi} from '../../services/api/testCases';
@@ -66,7 +67,7 @@ export function DocumentSecondTestDialog({projectId,documentId,row:initialRow,as
       {!assignment&&!row.approved&&<div className="td-approval-step">
         {approved?<p role="status">Đã duyệt phiên bản này.</p>:<><p>Case đang là bản nháp. Admin hoặc PM cần duyệt phiên bản này trước khi lưu phân công.</p><button type="button" className="cat-btn" disabled={busy || conflict || blocked || !authorized} onClick={approve}>{approving?'Đang duyệt…':'Duyệt phiên bản này'}</button></>}
       </div>}
-      {error&&<div role="alert" className="td-error">{error} {!conflict&&<button type="button" className="cat-btn" disabled={busy} onClick={()=>setRetry(x=>x+1)}>Tải lại lựa chọn</button>}</div>}
+      {error&&<div role="alert" className="td-error">{error} {!conflict&&<button type="button" className="cat-btn" disabled={busy} onClick={()=>setRetry(x=>x+1)}>Thử lại lựa chọn</button>}</div>}
       {(!authorized || blocked)&&<p role="alert">Không còn quyền lưu trong ngữ cảnh này. Bản nháp được giữ để bạn đối chiếu trước khi đóng.</p>}
       {conflict&&<button type="button" className="cat-btn" disabled={busy || blocked || !authorized} onClick={reload}>Tải bản hiện hành, giữ bản nháp</button>}
       {refreshed&&<p role="status">{assignment?`Đang được giao: ${assignment.assigneeName} · ${assignment.cycleName} · ${assignment.resultCode==='NOT_RUN'?'Chưa chạy':assignment.resultCode}.`:'Hiện chưa có phân công test lần 2.'} Phiên bản case #{row.revisionId}. Đối chiếu với bản nháp rồi bấm Lưu phân công.</p>}
@@ -75,12 +76,12 @@ export function DocumentSecondTestDialog({projectId,documentId,row:initialRow,as
       {!contextLoading&&cycle&&!configs.length&&<p className="td-history-note">Đợt này chưa có cấu hình. Mở Đợt kiểm thử để thêm môi trường, thiết bị và build.</p>}
       {!loading&&optionsReady&&!members.length&&<p className="td-history-note">Chưa có Tester đang hoạt động trong dự án. Admin cần thêm Tester vào thành viên dự án trước khi phân công.</p>}
       <fieldset disabled={busy || loading || locked}>
-        <label className="td-edit-field">Đợt kiểm thử<select required value={cycleId} disabled={!!assignment} onChange={e=>{setCycleId(e.target.value);setConfigurationId('');}}>
+        <label className="td-edit-field">Đợt kiểm thử<UnifiedSelect required value={cycleId} disabled={!!assignment} onChange={e=>{setCycleId(e.target.value);setConfigurationId('');}}>
           <option value="">Chọn đợt nháp</option>{assignment?<option value={assignment.cycleId}>{assignment.cycleName}</option>:cycles?.items.filter(c=>c.statusCode==='DRAFT').map(c=><option key={c.id} value={c.id}>{c.code} · {c.name}</option>)}
-        </select></label>
+        </UnifiedSelect></label>
         {!assignment&&cycles?.totalPages>1&&<div className="td-actions"><button type="button" className="cat-btn" disabled={!page} onClick={()=>changePage(page-1)}>Đợt trước</button><span>Trang {page+1}/{cycles.totalPages}</span><button type="button" className="cat-btn" disabled={page+1>=cycles.totalPages} onClick={()=>changePage(page+1)}>Đợt sau</button></div>}
-        <label className="td-edit-field">Cấu hình chạy<select required value={configurationId} disabled={!!assignment || contextLoading} onChange={e=>setConfigurationId(e.target.value)}><option value="">Chọn cấu hình</option>{configs.map(c=><option key={c.id} value={c.id}>{c.environmentName} / {c.deviceName} · {c.versionLabel}</option>)}</select></label>
-        <label className="td-edit-field">Người test lần 2<select required value={assignee} onChange={e=>setAssignee(e.target.value)}><option value="">Chọn Tester</option>{members.map(m=><option key={m.membershipId} value={m.membershipId}>{m.displayName}</option>)}</select></label>
+        <label className="td-edit-field">Cấu hình chạy<UnifiedSelect required value={configurationId} disabled={!!assignment || contextLoading} onChange={e=>setConfigurationId(e.target.value)}><option value="">Chọn cấu hình</option>{configs.map(c=><option key={c.id} value={c.id}>{c.environmentName} / {c.deviceName} · {c.versionLabel}</option>)}</UnifiedSelect></label>
+        <label className="td-edit-field">Người test lần 2<UnifiedSelect required value={assignee} onChange={e=>setAssignee(e.target.value)}><option value="">Chọn Tester</option>{members.map(m=><option key={m.membershipId} value={m.membershipId}>{m.displayName}</option>)}</UnifiedSelect></label>
         <label className="td-edit-field">Ghi chú 2<textarea rows={3} maxLength={2000} value={note} onChange={e=>setNote(e.target.value)}/></label>
         <button className="cat-btn cat-btn-mint" disabled={!ready}>{busy&&!approving?'Đang lưu…':'Lưu phân công'}</button>
       </fieldset>

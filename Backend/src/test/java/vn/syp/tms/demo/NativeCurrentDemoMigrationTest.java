@@ -276,7 +276,7 @@ class NativeCurrentDemoMigrationTest {
                 var formatter = new DataFormatter(java.util.Locale.ROOT);
                 int statusColumn = -1;
                 for (var cell : sheet.getRow(0)) if ("Status".equals(cell.getStringCellValue())) statusColumn = cell.getColumnIndex();
-                assertThat(statusColumn).as("Feature export contains status column").isGreaterThanOrEqualTo(0);
+                assertThat(statusColumn).as("Đợt kiểm thử export contains status column").isGreaterThanOrEqualTo(0);
                 for (var row : detail.rows()) {
                     String expected = "UNEXECUTED".equals(row.resultStatus()) ? "Unexecuted" : row.resultStatus();
                     var exportedRow = sheet.getRow(row.rowNumber() - 1);

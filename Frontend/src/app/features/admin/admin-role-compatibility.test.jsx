@@ -18,8 +18,9 @@ const people=[
 it('keeps roles read-only while creating a project and submits each account role',async()=>{
  const api={users:vi.fn().mockResolvedValue({items:people,totalElements:3}),createProject:vi.fn().mockResolvedValue({id:1})};
  render(<AdminProjectForm api={api} onSaved={vi.fn()}/>);
- for(const person of people)fireEvent.click(await screen.findByLabelText(`Chọn ${person.displayName}`));
- for(const person of people){
+ for(const person of people.filter(p=>p.role!=='ADMIN'))fireEvent.click(await screen.findByLabelText(`Chọn ${person.displayName}`));
+ expect(screen.queryByLabelText('Chọn System admin')).toBeNull();
+ for(const person of people.filter(p=>p.role!=='ADMIN')){
   const row=screen.getByLabelText(`Chọn ${person.displayName}`).closest('tr');
   expect(within(row).queryByRole('combobox')).not.toBeInTheDocument();
   expect(within(row).getByText(person.role==='ADMIN'?'Admin tổng · Làm PM':roleLabels[person.role],{selector:'strong'})).toBeVisible();
@@ -31,7 +32,7 @@ it('keeps roles read-only while creating a project and submits each account role
  fireEvent.change(screen.getByLabelText('Tên dự án'),{target:{value:'Alpha'}});
  fireEvent.click(screen.getByRole('button',{name:'Tạo dự án'}));
  await waitFor(()=>expect(api.createProject).toHaveBeenCalledWith(expect.objectContaining({members:[
-  {userId:'pm',projectRole:'PM'},{userId:'tester',projectRole:'USER'},{userId:'dev',projectRole:'USER'},{userId:'admin',projectRole:'PM'},
+  {userId:'pm',projectRole:'PM'},{userId:'tester',projectRole:'USER'},{userId:'dev',projectRole:'USER'},
  ]})));
 });
 

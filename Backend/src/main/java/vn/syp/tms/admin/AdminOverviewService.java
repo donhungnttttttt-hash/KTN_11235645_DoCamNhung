@@ -27,7 +27,7 @@ public class AdminOverviewService {
     private String filter(Long id) {return id==null?"":" AND p.id=?";}
     private Object[] args(Long id) {return id==null?new Object[0]:new Object[]{id};}
     private static final String PROJECTS="""
-        SELECT p.id,p.code,p.name,p.description,p.timezone,p.archived_at AS archivedAt,p.lock_version AS version,
+        SELECT p.id,p.code,p.name,p.description,p.timezone,p.created_at AS createdAt,p.archived_at AS archivedAt,p.lock_version AS version,
         COALESCE(m.members,0) AS activeMembers,COALESCE(m.pmCount,0) AS activePmCount,m.pmNames,
         COALESCE(r.total,0) AS total,COALESCE(r.na,0) AS na,COALESCE(r.ok,0) AS ok,COALESCE(r.ng,0) AS ng,COALESCE(r.pending,0) AS pending,
         (SELECT COUNT(*) FROM device_allocations l WHERE l.project_id=p.id AND l.returned_at IS NULL) AS heldDevices,
@@ -62,14 +62,25 @@ public class AdminOverviewService {
         return row;
     }
     public AdminDtos.Page<Map<String,Object>> projects(String actor,Long projectId,String keyword,int page,int size) {
+        return projects(actor,projectId,keyword,page,size,"id",null,null);
+    }
+    public AdminDtos.Page<Map<String,Object>> projects(String actor,Long projectId,String keyword,int page,int size,String sort,LocalDate createdFrom,LocalDate createdTo) {
         authorize(actor);
         if(page<0 || size<1 || size>100 || keyword!=null && keyword.length()>100) fail(422,"VALIDATION_ERROR","Bộ lọc hoặc phân trang không hợp lệ.");
         scope(projectId);
         var search=MultiWordSearch.sql(keyword,"p.code","p.name");
         var params=new ArrayList<Object>(Arrays.asList(args(projectId)));params.addAll(search.args());
-        long count=db.count("SELECT COUNT(*) FROM projects p WHERE 1=1"+filter(projectId)+search.sql(),params.toArray());
+        if(sort==null || !Set.of("id","newest","oldest").contains(sort) || createdFrom!=null && createdTo!=null && createdFrom.isAfter(createdTo))
+            fail(422,"VALIDATION_ERROR","Thứ tự hoặc khoảng ngày tạo không hợp lệ.");
+        String where=filter(projectId)+search.sql();
+        // The admin date controls use Vietnam calendar days; stored timestamps are UTC.
+        var zone=ZoneId.of("Asia/Ho_Chi_Minh");
+        if(createdFrom!=null){where+=" AND p.created_at>=?";params.add(java.sql.Timestamp.from(createdFrom.atStartOfDay(zone).toInstant()));}
+        if(createdTo!=null){where+=" AND p.created_at<?";params.add(java.sql.Timestamp.from(createdTo.plusDays(1).atStartOfDay(zone).toInstant()));}
+        String order="newest".equals(sort)?"p.created_at DESC,p.id DESC":"oldest".equals(sort)?"p.created_at ASC,p.id ASC":"p.id";
+        long count=db.count("SELECT COUNT(*) FROM projects p WHERE 1=1"+where,params.toArray());
         params.add(size);params.add((long)page*size);
-        var rows=db.rows(PROJECTS+filter(projectId)+search.sql()+" ORDER BY p.id LIMIT ? OFFSET ?",params.toArray());
+        var rows=db.rows(PROJECTS+where+" ORDER BY "+order+" LIMIT ? OFFSET ?",params.toArray());
         rows.forEach(this::enrich);
         addDeadlineCounts(rows,milestones(projectId,Instant.now()));
         return new AdminDtos.Page<>(rows,page,size,count);
@@ -106,7 +117,7 @@ public class AdminOverviewService {
         attention.put("overdueReturnCount",inventory.get("overdueReturnCount"));
         return new AdminDtos.Overview(asOf,"feature-cases-v1",projectId,projects.size(),projects.stream().filter(p->p.get("archivedAt")==null).count(),totalUsers,enabledUsers,
             projects.stream().mapToLong(p->number(p,"openBugs")).sum(),projects.stream().mapToLong(p->number(p,"awaitingVerification")).sum(),metrics,roles,
-            projects.stream().limit(10).toList(),attention,inventory);
+            projects,attention,inventory);
     }
     private Map<String,Object> inventory(Long projectId,Instant asOf) {
         String where=projectId==null?"":" WHERE l.project_id=?";

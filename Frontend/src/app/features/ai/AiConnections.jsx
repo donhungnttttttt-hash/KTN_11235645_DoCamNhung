@@ -1,5 +1,7 @@
+import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React,{createContext,useContext,useEffect,useRef,useState} from 'react';
-import {Link2,RefreshCw} from 'lucide-react';
+import {Link2} from 'lucide-react';
 import {useAuth} from '../auth/AuthProvider';
 import {aiApi} from '../../services/api/ai';
 import {aiError} from './aiErrors';
@@ -20,6 +22,7 @@ export function AiProviderProvider({children,api=aiApi}){
  return <OwnerProviders key={auth?.user?.id??'anonymous'} api={api} active={!auth||auth.status==='authenticated'}>{children}</OwnerProviders>;
 }
 function OwnerProviders({children,api,active}){
+ useRefreshOnReturn(()=>{if(active&&!busy&&!loading)refresh();});
  const [providers,setProviders]=useState([]),[selection,setSelection]=useState({provider:'OPENAI_API',model:''});
  const [preferences,setPreferences]=useState({}),[catalogs,setCatalogs]=useState({}),[revision,setRevision]=useState(0);
  const [loading,setLoading]=useState(true),[error,setError]=useState(''),[busy,setBusy]=useState(false),[notice,setNotice]=useState('');
@@ -85,8 +88,8 @@ export function AiSourceSelector({disabled=false,connectionsOnly=false}){
  const actionBlocked=disabled||store.loading||store.busy||!!store.attempt;
  const blocked=actionBlocked||!!store.probeRequest;
  return <section className="ai-connection" aria-label="Nguồn và kết nối AI">
-  <div className="ai-source-fields"><label className="ai-field">Nguồn AI<select value={selection.provider} disabled={blocked} onChange={e=>store.chooseProvider(e.target.value)}>{Object.entries(labels).map(([code,label])=><option key={code} value={code}>{label}</option>)}</select></label>
-   <label className="ai-field">Model AI<select value={selection.model} disabled={blocked||!models.length} onChange={e=>store.setModel(e.target.value)}><option value="">Chọn model</option>{selection.model&&!models.some(m=>m.id===selection.model)&&<option value={selection.model}>{selection.model} · chưa sẵn sàng</option>}{models.map(m=><option key={m.id} value={m.id}>{m.label}</option>)}</select></label></div>
+  <div className="ai-source-fields"><label className="ai-field">Nguồn AI<UnifiedSelect value={selection.provider} disabled={blocked} onChange={e=>store.chooseProvider(e.target.value)}>{Object.entries(labels).map(([code,label])=><option key={code} value={code}>{label}</option>)}</UnifiedSelect></label>
+   <label className="ai-field">Model AI<UnifiedSelect value={selection.model} disabled={blocked||!models.length} onChange={e=>store.setModel(e.target.value)}><option value="">Chọn model</option>{selection.model&&!models.some(m=>m.id===selection.model)&&<option value={selection.model}>{selection.model} · chưa sẵn sàng</option>}{models.map(m=><option key={m.id} value={m.id}>{m.label}</option>)}</UnifiedSelect></label></div>
   <p className="ai-caption">{descriptions[selection.provider]}</p>
   {store.loading?<p role="status">Đang tải nguồn AI…</p>:<p className="ai-provider-status">{store.ready?(selection.provider==='OPENAI_API'?'Đã cấu hình API · chưa xác nhận live':'Sẵn sàng cho model đã chọn'):connection?.state==='MISSING_PERMISSION'?'Đã xác nhận danh tính · chưa cấp quyền dùng gói ChatGPT':connection?.state==='RECONNECT_REQUIRED'?'Cần kết nối lại ChatGPT':connection&&['UNVERIFIED','VERIFIED'].includes(connection.state)?'Đã cấp quyền · Chưa kiểm chứng model này':selection.provider==='OLLAMA'&&provider?.enabled?'Chưa xác nhận Ollama và model cài sẵn.':aiError(provider?.reason||'AI_NOT_CONFIGURED',selection.provider)}</p>}
   {store.catalog?.error&&<p role="alert" className="ai-error">{store.catalog.error}</p>}
@@ -95,7 +98,7 @@ export function AiSourceSelector({disabled=false,connectionsOnly=false}){
    {connection?.accountLabel&&<p>Danh tính: {connection.accountLabel} · {connection.planPermission?'Đã cấp quyền gói':'Chưa cấp quyền gói'}</p>}
    {connection?.verifiedModel&&<p className="ai-caption">Đã kiểm chứng: {connection.verifiedModel} · phiên bản {connection.version}</p>}
    {connection?.failureCode&&<p className="ai-notice">{aiError(connection.failureCode,'CHATGPT')}</p>}
-   <div className="ai-actions"><button className="ai-button" disabled={blocked||store.loading} onClick={store.refresh}><RefreshCw size={16} aria-hidden="true"/>Tải lại nguồn AI</button>
+   <div className="ai-actions">
     {selection.provider==='CHATGPT'&&provider?.enabled&&<>
      {connection?.state==='MISSING_PERMISSION'?<button className="ai-button" disabled={blocked} onClick={()=>store.authorize(true,false)}>Cấp quyền dùng gói ChatGPT</button>:<button className="ai-button" disabled={blocked} onClick={()=>store.authorize(false,false)}>{connection&&connection.state!=='DISCONNECTED'?'Kết nối lại ChatGPT':'Kết nối ChatGPT'}</button>}
      {connection&&['UNVERIFIED','VERIFIED'].includes(connection.state)&&connection.planPermission&&<button className="ai-button" disabled={actionBlocked||!selection.model||!store.catalog?.ready} onClick={store.probe}>{store.probeRequest?'Kiểm tra lại kết nối':'Kiểm tra kết nối model'} (có dùng hạn mức)</button>}

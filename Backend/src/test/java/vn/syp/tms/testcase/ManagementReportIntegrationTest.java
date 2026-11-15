@@ -44,7 +44,7 @@ class ManagementReportIntegrationTest {
         String tag=UUID.randomUUID().toString().substring(0,8);pm=user("pm"+tag,"PM");tester=user("tester"+tag,"USER");dev=user("dev"+tag,"USER");outside=user("outside"+tag,"PM");
         p=projects.create(creator.getId(),new ProjectDtos.CreateProject("MR"+tag,"Report test","Actual project description","Asia/Ho_Chi_Minh")).id();
         for(var entry:Map.of(pm,"PM",tester,"USER",dev,"USER").entrySet())projects.addOrUpdateMember(p,creator.getId(),entry.getKey().getId(),new ProjectDtos.SetMember(entry.getValue()));
-        f=body(mvc.perform(post(path("/features")).with(actor(pm)).with(csrf()).contentType("application/json").content(encode(Map.of("name","Report Feature","environment","free URL","description","","requestKey",UUID.randomUUID())))).andExpect(status().isCreated()).andReturn()).get("id").asLong();
+        f=body(mvc.perform(post(path("/features")).with(actor(pm)).with(csrf()).contentType("application/json").content(encode(Map.of("name","Report Đợt kiểm thử","environment","free URL","description","","requestKey",UUID.randomUUID())))).andExpect(status().isCreated()).andReturn()).get("id").asLong();
         retainedDrafts=otherDrafts();
     }
     @AfterEach void registryWasPreserved(){assertThat(db.queryForList("SELECT slot,user_id FROM system_admin_registry ORDER BY slot")).isEqualTo(registeredAdmins);}
@@ -76,7 +76,7 @@ class ManagementReportIntegrationTest {
         mvc.perform(post(path("/features/"+feature+"/import-previews/"+d+"/commit")).with(actor(pm)).with(csrf())).andExpect(status().isOk());return d;
     }
     @Test void featureFilterKeepsFullSelectorCatalogAndCanonicalTicketTotals()throws Exception {
-        long second=body(mvc.perform(post(path("/features")).with(actor(pm)).with(csrf()).contentType("application/json").content(encode(Map.of("name","Feature B","environment","synthetic","description","","requestKey",UUID.randomUUID())))).andExpect(status().isCreated()).andReturn()).path("id").asLong();
+        long second=body(mvc.perform(post(path("/features")).with(actor(pm)).with(csrf()).contentType("application/json").content(encode(Map.of("name","Đợt kiểm thử B","environment","synthetic","description","","requestKey",UUID.randomUUID())))).andExpect(status().isCreated()).andReturn()).path("id").asLong();
         long d=document(f);document(second);
         var rows=body(mvc.perform(get(path("/test-documents/"+d)).with(actor(pm))).andExpect(status().isOk()).andReturn()).path("rows");
         for(int i=0;i<3;i++)mvc.perform(put(path("/test-documents/"+d+"/rows/"+rows.get(i).path("rowId").asLong()+"/result")).with(actor(admin)).with(csrf()).contentType("application/json").content(encode(Map.of("status",List.of("OK","P","NA").get(i),"expectedVersion",0,"requestKey",UUID.randomUUID())))).andExpect(status().isOk());
@@ -86,7 +86,7 @@ class ManagementReportIntegrationTest {
         }
         var filtered=body(mvc.perform(get(path("/management-reports/summary")).param("featureId",""+f).with(actor(pm))).andExpect(status().isOk()).andReturn());
         assertThat(filtered.at("/metrics/total").asInt()).isEqualTo(5);assertThat(filtered.at("/metrics/tested").asInt()).isEqualTo(3);assertThat(filtered.at("/metrics/executionPercent").asDouble()).isEqualTo(60);
-        assertThat(filtered.path("features").findValuesAsText("name")).containsExactlyInAnyOrder("Report Feature","Feature B");
+        assertThat(filtered.path("features").findValuesAsText("name")).containsExactlyInAnyOrder("Report Đợt kiểm thử","Đợt kiểm thử B");
         long scoped=0,fixed=0,processed=0;for(var group:filtered.path("issues")){long count=group.path("total").asLong();scoped+=count;if("FIXED".equals(group.path("closureReason").asText()))fixed+=count;if("PROCESSED".equals(group.path("closureReason").asText()))processed+=count;}
         assertThat(scoped).isEqualTo(8);assertThat(fixed).isEqualTo(3);assertThat(processed).isEqualTo(3);
         var all=body(mvc.perform(get(path("/management-reports/summary")).with(actor(pm))).andExpect(status().isOk()).andReturn());assertThat(all.at("/metrics/total").asInt()).isEqualTo(10);assertThat(all.at("/metrics/executionPercent").asDouble()).isEqualTo(30);

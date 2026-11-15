@@ -6,7 +6,7 @@ import java.time.LocalDate;
 public final class DeviceInventoryDtos {
  private DeviceInventoryDtos() {}
  public record Asset(@NotBlank @Size(max=64) String assetCode,
-   @NotBlank @Pattern(regexp="IPAD|IPHONE|ANDROID|OTHER") String type,
+   @NotBlank @Pattern(regexp="IPAD|IPHONE|ANDROID|TABLET|OTHER") String type,
    @NotBlank @Size(max=100) String model,@Size(max=100) String serial,
    @Size(max=50) String osName,@Size(max=50) String osVersion,
    @NotBlank @Pattern(regexp="AVAILABLE|MAINTENANCE|RETIRED") String conditionCode,

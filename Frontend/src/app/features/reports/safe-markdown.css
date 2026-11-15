@@ -1,0 +1,9 @@
+.safe-markdown{font-size:15px;line-height:1.75;color:#233d47;overflow-wrap:anywhere;max-width:100%}
+.safe-markdown :is(h1,h2,h3,h4,h5,h6){font-weight:700;line-height:1.35;margin:1.6em 0 .65em;color:#183b3a}
+.safe-markdown h1{font-size:1.9em}.safe-markdown h2{font-size:1.4em;border-bottom:1px solid #dbe5e7;padding-bottom:.45em}.safe-markdown h3{font-size:1.15em}
+.safe-markdown p{white-space:normal;margin:.8em 0}.safe-markdown strong{font-weight:700}.safe-markdown em{font-style:italic}
+.safe-markdown :is(ul,ol){padding-left:1.6em;margin:.7em 0}.safe-markdown ul{list-style:disc}.safe-markdown ol{list-style:decimal}
+.safe-markdown blockquote{border-left:4px solid #16a394;background:#eff8f6;padding:.5em 1em;margin:1em 0;color:#486361}
+.safe-markdown pre{background:#f3f6f8;border:1px solid #dce5e7;padding:16px;overflow:auto;border-radius:8px;white-space:pre}
+.safe-markdown code{font-family:monospace;background:#eef3f4;border-radius:3px;padding:.12em .3em}.safe-markdown pre code{padding:0;background:none}
+.safe-markdown a{color:#007f77;text-decoration:underline}.markdown-table-scroll{overflow:auto}.safe-markdown table{border-collapse:collapse;width:100%;margin:1em 0}.safe-markdown :is(th,td){border:1px solid #dbe5e7;padding:9px 12px;text-align:left}.safe-markdown th{background:#eff6f5;font-weight:600}

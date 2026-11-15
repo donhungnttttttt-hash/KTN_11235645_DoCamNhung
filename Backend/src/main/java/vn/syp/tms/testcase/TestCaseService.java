@@ -342,10 +342,9 @@ public class TestCaseService {
                 var suite=suiteRepository.findByProjectIdAndCode(projectId,input.suiteCode()).filter(x->x.getArchivedAt()==null);
                 if (suite.isEmpty()) problems.add("Mã nhóm không tồn tại hoặc đã lưu trữ.");
             }
-            if (input.titleVi().isBlank() || input.titleVi().length()>255) problems.add("Tiêu đề tiếng Việt bắt buộc, tối đa 255 ký tự.");
+            if (input.titleVi().isBlank()) problems.add("Tiêu đề tiếng Việt bắt buộc.");
             if (input.stepsVi().isBlank()) problems.add("Thiếu các bước thực hiện tiếng Việt.");
             if (input.expectedVi().isBlank()) problems.add("Thiếu kết quả mong đợi tiếng Việt.");
-            if (input.titleJp().length()>255 || input.sourceReference().length()>255) problems.add("Tiêu đề gốc/tham chiếu tối đa 255 ký tự.");
             var row=new TestCaseEntities.ImportRow();
             row.setProjectId(projectId); row.setBatchId(batch.getId()); row.setRowNumber(input.rowNumber());
             row.setSourceCaseKey(abbreviate(input.caseNo(),64)); row.setSuiteCode(customer ? "XLSX-"+batch.getId() : abbreviate(input.suiteCode(),32));

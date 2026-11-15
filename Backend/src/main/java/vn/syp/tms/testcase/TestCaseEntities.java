@@ -139,31 +139,31 @@ public class TestCaseEntities {
         @Column(name = "revision_no", nullable = false)
         private int revisionNo;
 
-        @Column(name = "title_vi", nullable = false)
+        @Column(name = "title_vi", nullable = false, columnDefinition = "LONGTEXT")
         private String titleVi;
 
-        @Column(name = "preconditions_vi", columnDefinition = "TEXT")
+        @Column(name = "preconditions_vi", columnDefinition = "LONGTEXT")
         private String preconditionsVi;
 
-        @Column(name = "steps_vi", nullable = false, columnDefinition = "TEXT")
+        @Column(name = "steps_vi", nullable = false, columnDefinition = "LONGTEXT")
         private String stepsVi;
 
-        @Column(name = "expected_vi", nullable = false, columnDefinition = "TEXT")
+        @Column(name = "expected_vi", nullable = false, columnDefinition = "LONGTEXT")
         private String expectedVi;
 
-        @Column(name = "title_jp")
+        @Column(name = "title_jp", columnDefinition = "LONGTEXT")
         private String titleJp;
 
-        @Column(name = "preconditions_jp", columnDefinition = "TEXT")
+        @Column(name = "preconditions_jp", columnDefinition = "LONGTEXT")
         private String preconditionsJp;
 
-        @Column(name = "steps_jp", columnDefinition = "TEXT")
+        @Column(name = "steps_jp", columnDefinition = "LONGTEXT")
         private String stepsJp;
 
-        @Column(name = "expected_jp", columnDefinition = "TEXT")
+        @Column(name = "expected_jp", columnDefinition = "LONGTEXT")
         private String expectedJp;
 
-        @Column(name = "source_reference")
+        @Column(name = "source_reference", columnDefinition = "LONGTEXT")
         private String sourceReference;
 
         @Column(name = "translator_membership_id")

@@ -1,3 +1,49 @@
+Chi tiết Ticket 15/11/2026: chỉnh sửa trực tiếp tại nội dung; gộp thông tin kiểm thử/nguồn phát hiện vào cùng khung, đổi thành **Ghi chú bổ sung**, hiển thị luôn với hai cột nhãn–giá trị và đường phân cách. Giữ bình luận gọn, avatar, xem trước MP4 và menu không bị che. Lượt cuối 171 test work-items, build và Chrome desktop/mobile PASS. [Bằng chứng và giới hạn Figma](../reviews/2026-11-15-ticket-comment-layout-video.md). Chưa commit/push.
+
+Thuật ngữ 15/11/2026: thống nhất Feature thành Đợt kiểm thử trên giao diện và thông báo; bản Nhật dùng テストサイクル. 1.444 frontend + 17 backend test, build và Chrome PASS; local V46 không đổi. [Bằng chứng](../reviews/2026-11-15-test-cycle-labels.md). Chưa commit/push.
+
+Nhãn giao diện 15/11/2026: thống nhất Ticket thay Issue, bỏ nút tải lại thường trực; giữ bản nháp và retry khi lỗi. 1.444 frontend + 8 backend test thực thi PASS, build PASS; local V46 không đổi. [Bằng chứng](../reviews/2026-11-15-ticket-labels-remove-reload.md). Chưa commit/push.
+
+Danh sách dự án Admin 15/11/2026: bỏ phạm vi dự án, làm mới giao diện; thêm Mới nhất/Cũ nhất và lọc ngày tạo Việt Nam cùng hàng tìm kiếm. 233 frontend + 14 backend test, build và Chrome desktop/mobile PASS; local V46 không đổi. [Bằng chứng](../reviews/2026-11-15-admin-project-list-filters.md). Chưa commit/push.
+
+Chọn thành viên/máy 15/11/2026: loại Admin tổng khỏi ứng viên và tổng số; 1 PM tự nhận, từ 2 PM chọn người nhận chung; bỏ khung bàn giao riêng từng máy. 1.442 frontend test, 6 backend test, build và Chrome PASS; local giữ V46. [Bằng chứng](../reviews/2026-11-15-project-member-device-selection.md). Chưa commit/push.
+
+Bổ sung Tổng quan Admin 15/11/2026: bỏ khối Cần chú ý và danh sách Bug đã xử lý, chờ xác minh ở chi tiết dự án. 229 test Admin, build và Chrome PASS; không xóa dữ liệu. [Bằng chứng](../reviews/2026-11-15-admin-overview-charts-tablet.md).
+
+Tổng quan Admin 15/11/2026: tiến độ đủ **11/11** dự án hoạt động; bỏ KPI/nút tải lại, thêm donut Status và bốn thanh kho Android/Tablet/iPhone/iPad với popup. V46 thêm Tablet, giữ nguyên 124 thiết bị. 12 backend + 1.439 frontend test, build, migration fresh/upgrade và Chrome desktop/mobile PASS. [Bằng chứng](../reviews/2026-11-15-admin-overview-charts-tablet.md). Chưa commit/push.
+
+Khách/AI 15/11/2026: bỏ mục và quyền truy cập Báo cáo; AI tạo cặp Nhật–Việt cùng số liệu, đổi ngôn ngữ hiển thị ngay. 19 backend + 1.437 frontend test, build PASS; AI thật và Chrome đã xác nhận hai ngôn ngữ. Local V45, không đổi schema. [Bằng chứng](../reviews/2026-11-15-guest-ai-bilingual-no-reports.md). Chưa commit/push.
+
+Ngôn ngữ Khách 15/11/2026: đã thêm 日本語 / Tiếng Việt, mặc định Nhật mỗi lần mở/reload; chuyển tab/dự án giữ lựa chọn. 1.434 frontend test, 4 kiểm tra báo cáo cuối, build và Chrome desktop/mobile PASS. [Bằng chứng và giới hạn](../reviews/2026-11-15-guest-japanese-vietnamese.md). Nội dung báo cáo/AI giữ nguyên văn; không đổi backend/database, chưa commit/push.
+
+Tổng quan Khách 15/11/2026: tách sáu biểu đồ xem nhanh, không lặp nội dung các tab; biểu đồ một ngày/zero/thiếu dữ liệu có hiển thị riêng, menu cố định và chỉ nội dung cuộn. 1.425 test + build PASS, Chrome desktop/mobile đã đo cuộn độc lập. [Bằng chứng](../reviews/2026-11-15-guest-overview-charts.md). Không đổi dữ liệu/V44; chưa commit/push.
+
+Giao di?n d? ?n 15/11/2026: ?? b? sung b?n nh?m th?ng tin T?ng quan, Kanban g?n/t?i ri?ng t?ng c?t, Chi ti?t Issue v?i b?nh lu?n thu g?n v? trang Th?m l?i ri?ng. 1.414 frontend test + 47 ki?m tra cu?i + build PASS; Chrome ri?ng ?? ki?m tra desktop/mobile. [B?ng ch?ng v? gi?i h?n](../reviews/2026-11-15-project-workspace-presentation.md). Backend V44 gi? nguy?n; ch?a commit/push.
+
+Dữ liệu mẫu 15/11/2026: đã tạo trong dự án **Test tháng 11 ngày 15 (T11-15 / 13)**: 4 Feature/481 case từ Excel, 338 kết quả mẫu, 39 Bug/QA đủ chín cột, phân công/môi trường/version/mốc và báo cáo đã công bố cho Khách. Đã kiểm tra nội dung, tải file và quyền Khách. Bổ sung ID 164 tại A165 trên bản sao file Tạo bảng đen; giữ nguyên file gốc. [Chi tiết và bằng chứng](../reviews/2026-11-15-project-demo-data.md). Không migration/commit/push.
+
+Dashboard Khách 15/11/2026: đã triển khai 6 mục, Đánh Giá Chi Phí theo đầu người, biểu đồ/sức khỏe/AI/thông báo và báo cáo Markdown có duyệt công bố. Bỏ khối Minh bạch từ dữ liệu. Local V44, 1.406 frontend + 42 backend test và build PASS; API hoạt động qua 5173 → 8080, dữ liệu cũ giữ nguyên. Chrome chưa kết nối nên nghiệm thu hình ảnh còn chờ; chưa commit/push. [Bằng chứng](../reviews/2026-11-15-guest-dashboard-acceptance.md).
+
+Import Excel 15/11/2026: sửa đếm 89 case thực thay vì dòng định dạng cuối 643 của file ブック機能; bỏ trần nội dung ô 255/8.000 ký tự, giữ đúng 9 cột nhập. 48 unit + 34 native + 1.399 frontend test PASS, V43 đã nâng local sau backup và giữ dữ liệu cũ. [Bằng chứng và giới hạn](../reviews/2026-11-15-excel-actual-rows-long-cells.md). Chưa commit/push.
+
+Môi trường/Issue 15/11/2026: API local hiện trả 200/[] đúng khi chưa có môi trường. Đã sửa tải lại nguồn Issue để điền môi trường mới của case nếu chưa chỉnh tay, giữ bản nháp khác; 1.399 frontend test và build PASS. [Điều tra và giới hạn](../reviews/2026-11-15-environment-issue-followup.md). Chưa tái hiện lại 404 trong ảnh; Chrome chưa kết nối, chưa commit/push.
+
+Môi trường/Version 14/11/2026: đã triển khai MT & Ver độc lập với Status, danh mục dưới tiêu đề Feature, dropdown tìm/thêm ở trên, icon và xác nhận xóa file; CSS cụm Status 72px/gap6px. Frontend 1.397 test + build PASS; backend, migration và bằng chứng tại [báo cáo](../reviews/2026-11-14-case-environment-version.md). Local V42/health UP, đăng nhập và API đọc trả 200; giữ nguyên số liệu/Status sau backup. IN_REVIEW vì Chrome chưa kết nối để đo layout thật; chưa commit/push.
+
+Xuất Excel 14/11/2026: bỏ khung 22 cột cũ, xuất đúng 9 cột nội dung + Version test/Status/Issue/Người test. File người dùng đã đối chiếu 55 case, 20 OK/35 Unexecuted; 38 unit + 28 native test PASS. Giữ ngày thực hiện trong ô Version, tải gốc nguyên byte. Backend local đã nạp artifact mới, proxy health UP, không đổi V41/dữ liệu nghiệp vụ. [Bằng chứng và giới hạn](../reviews/2026-11-14-feature-export-thirteen-columns.md). Cần bấm Xuất Excel lại; chưa commit/push, nghiệm thu Chrome còn mở.
+
+Import file thực tế 14/11/2026: đã sửa đọc đúng 9 cột trước kiểm tra nội dung, bỏ dữ liệu cột dư và giữ ô trống. File người dùng 122 case đã qua preview/commit/read/export trên MySQL cô lập; 36 unit + 27 native + 47 frontend test PASS. Status 72 × 72 px, bằng chiều rộng Lịch sử Status. Backend local đã nạp artifact cuối, V41, proxy health UP. [Nguyên nhân, bằng chứng và giới hạn](../reviews/2026-11-14-feature-import-selected-cells.md). Chưa commit/push; Chrome visual acceptance còn mở.
+
+Phân công file/case 14/11/2026: tự nhận vùng theo tài khoản đăng nhập, dropdown nhiều người phụ trách file độc lập với quyền xác nhận Status, chỉ hiển thị người test ban đầu, Status vuông và Issue luôn bên phải. 510 frontend + 26 native test PASS; V41 đã áp dụng local sau backup, health UP và giữ số lượng dữ liệu/Status tại thời điểm migration. [Bằng chứng và nghiệm thu còn thiếu](../reviews/2026-11-14-file-owners-self-testing.md). Chrome chưa kết nối; chưa commit/push. Đính chính import/Status cuối cùng ở checkpoint trên.
+
+Chốt cột bảng case 14/11/2026: chỉ 9 cột Excel đã duyệt + Version test/Status/Issue/Người test; bỏ cột dư, gộp hai cột người test, bỏ ID ghim đè và làm gọn Status. Import Feature mới chỉ lấy 9 trường, mẫu Excel đúng 9 cột, giữ file gốc. 400 frontend + 34 backend test và build PASS. [Phạm vi, bằng chứng và giới hạn](../reviews/2026-11-14-testing-nine-columns.md). IN_REVIEW do chưa kết nối Chrome; runtime đã được cập nhật trong checkpoint mới phía trên, chưa commit/push. Quyết định này thay phần cột của checkpoint dưới.
+
+Bảng case 14/11/2026: đã áp dụng bố cục spreadsheet, độ rộng cột có thể chỉnh và tách Issue thành cột riêng. Hover/click hiện danh sách cạnh phải nút; giữ version/Status/phân công hiện hành. 398 test/41 file và build PASS; coverage phạm vi sửa đã đo. [Kết quả và nghiệm thu Chrome còn thiếu](../reviews/2026-11-14-testing-spreadsheet.md). IN_REVIEW do browser access host unavailable; chưa commit/push. Ghi chú “chưa triển khai” ở checkpoint tham chiếu dưới đây mô tả lượt trước.
+
+Backend Admin 14/11/2026: sửa cấu hình JDT giữ tên tham số trong bytecode, nguyên nhân HTTP 500 ở danh sách/tổng quan Admin. 43 controller/524 tham số có metadata; 15 test và Maven package đạt; HTTP có đăng nhập qua 8080 và 5173 trả 200, đủ 11 dự án. [Nguyên nhân, bằng chứng và giới hạn](../reviews/2026-11-14-backend-admin-500.md). Không migration/đổi dữ liệu nghiệp vụ; chưa commit/push.
+
+Tham chiếu UI 14/11/2026: đã đọc hai mẫu người dùng chọn trên `feature/Fontend-design` tại `bd7e482`: bảng test case kiểu spreadsheet và Chi tiết công việc. [Ghi nhớ bố cục, source, màu/spacing và điểm áp dụng vào system-design](../design/2026-11-14-frontend-design-reference.md). Hoàn tất ghi nhận thiết kế; chưa sửa giao diện, chưa kiểm thử trình duyệt mới hoặc commit/push. Không thay trạng thái triển khai Arena/S11 hay quyết định phân công Ticket còn mở.
+
 Bàn giao local 14/11/2026: người dùng yêu cầu commit/push lên `system-design`; đã đồng bộ `c745215`, giữ các thay đổi local và giải quyết conflict tài liệu. Kiểm tra mới: 459 frontend, 17 backend, Vite build và Maven package PASS. [Phạm vi, skill và giới hạn](../reviews/2026-11-14-local-source-handover.md). Phân công ticket vẫn IN_PROGRESS; mẫu Backlog chưa triển khai. Các ghi chú chưa commit/push bên dưới là checkpoint lịch sử.
 
 Java Problems 14/11/2026: đã xử lý đúng 79 cảnh báo; JDT 388 source về 0 error/0 warning, Language Server xác nhận 11 file sạch, 51 offline + 108 native test PASS và Maven verify/package đạt. [Báo cáo, skill và giới hạn kiểm chứng](../reviews/2026-11-14-java-problems.md). Người dùng yêu cầu sửa trước rồi commit/push `system-design`; không migration/restart main.
@@ -23,6 +69,8 @@ Xóa version 25/10: icon hover/focus + xác nhận, soft delete giữ kết qu�
 Version test 25/10: [tạo version theo Feature, lưu theo case và sửa riêng bằng dropdown](../reviews/2026-10-25-feature-test-versions.md). Frontend 246 test nhóm + 12 test tập trung cuối, backend21 (7 native), build/JDT331 và Chrome điều khiển đạt; main V35 giữ dữ liệu, không seed V34. Screenshot chưa lấy được; không commit/push. Arena archive dự kiến V37.
 
 # Kế hoạch phát triển theo sprint
+
+Môi trường/Version 14/11/2026: người dùng đã đồng ý thiết kế trong hội thoại, giữ một Status hiện tại và chỉ bổ sung thông tin case. [Bản thiết kế đầy đủ](../superpowers/specs/2026-11-14-case-environment-version-design.md) chờ duyệt trước bước writing-plans; gồm icon/xác nhận xóa, dropdown, metadata độc lập, lịch sử, Issue và Excel. Chưa sửa source, migration hoặc runtime cho yêu cầu này; chưa commit/push.
 
 Bổ sung cùng ngày: form **Tạo Issue từ case** cũng hiển thị Feature hiện tại qua API context; dùng chung khối với chi tiết Issue. **91 FE + 6 backend PASS**, build/JDT sạch lỗi, Chrome xác nhận case1 thuộc Feature17/file27. Backend8080 đã cập nhật, giữ Flyway33; [bằng chứng và giới hạn](../reviews/2026-10-25-issue-current-feature.md). Không commit/push.
 
@@ -228,3 +276,5 @@ Tên Feature/file đậm hơn, hiện ngày tạo theo giờ Việt Nam; thêm l
 ### Admin, Kanban, kiểm thử và báo cáo AI — 19/10/2026
 
 Thêm Quay lại cho Admin trong sidebar dự án, biểu đồ toàn cảnh và từng dự án; khôi phục cột Kanban trắng, chỉnh khoảng cách danh sách/toolbar, căn giữa Status/Issue, bỏ tab thừa ở chi tiết file và dùng tiến độ cam/xanh. Sửa gợi ý AI tự điền khi editor rỗng chưa sửa, bảo vệ nháp và nêu rõ contract đầu ra/lỗi hạn mức. Frontend cuối **1.189/1.189 test ở 128 file**, build PASS; backend AI offline **183/183**, verify/package PASS. Chrome xác nhận điều hướng, đủ 11 dự án, bố cục và ảnh cuối. Backend8080 đã restart với cùng cấu hình, health UP; không đổi migration/dependency. **AI live chưa đạt**: Caheo trả HTTP402 `insufficient_balance` cho key/request đang cấu hình, trong khi người dùng xác nhận còn số dư/hạn mức. Giữ các thay đổi có sẵn, không commit/push/merge/deploy; S11/FR-12 vẫn IN_REVIEW. Xem [báo cáo và giới hạn kiểm chứng](../reviews/2026-10-19-admin-health-testing-ui.md).
+
+- 15/11/2026: [Bình luận Ticket: tệp/ảnh, xem trước và thuộc tính kế hoạch](../reviews/2026-11-15-ticket-comment-files-planning.md) — local V45; 25 native + 1.431 frontend test PASS.

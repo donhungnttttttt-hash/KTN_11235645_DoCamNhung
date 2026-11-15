@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import {afterEach,beforeEach,expect,it,vi} from 'vitest';
 import {act,fireEvent,render,screen,waitFor} from '@testing-library/react';
@@ -10,26 +11,33 @@ vi.mock('../ai/AiConnections',()=>({useAiProviders:()=>provider}));
 vi.mock('../projects/ProjectProvider',()=>({useProject:()=>({currentProject:null})}));
 const project={id:1,name:'Dự án A',code:'A',projectRole:'PM'};
 const metrics={total:5,tested:3,ok:1,ng:0,pending:1,na:1,notRun:2,executionPercent:60};
-const summary={project,feature:null,metrics,features:[{id:42,name:'Feature A',environment:'staging',caseCount:5,testedCaseCount:3,progressPercent:60}],issues:[{type:'BUG',status:'OPEN',total:10}],asOf:'2026-10-19T00:00:00Z',timeZone:'Asia/Ho_Chi_Minh'};
+const summary={project,feature:null,metrics,features:[{id:42,name:'Đợt kiểm thử A',environment:'staging',caseCount:5,testedCaseCount:3,progressPercent:60}],issues:[{type:'BUG',status:'OPEN',total:10}],asOf:'2026-10-19T00:00:00Z',timeZone:'Asia/Ho_Chi_Minh'};
 const saved={id:7,projectId:1,featureId:null,title:'Báo cáo A',markdown:'10 lỗi',version:3};
 let api;
 afterEach(()=>vi.unstubAllGlobals());
 beforeEach(()=>{auth.roles=['PM'];auth.id=1;auth.status='authenticated';provider.ready=true;api={summary:vi.fn().mockResolvedValue(summary),list:vi.fn().mockResolvedValue({items:[saved],totalItems:1,page:0,size:20,totalPages:1}),get:vi.fn().mockResolvedValue(saved),create:vi.fn(),update:vi.fn(),download:vi.fn(),preview:vi.fn()};});
 const mount=(props={})=>render(<ManagementAnalysisPage project={project} api={api} {...props}/>);
-it('distinguishes filtered metrics from the full-project Feature comparison without changing either scope',async()=>{
- const featureA={...summary.features[0]},featureB={...featureA,id:43,name:'Feature B'};
+it('requires an explicit publication after reviewing the saved draft',async()=>{
+ api.publish=vi.fn().mockResolvedValue({...saved,publishedAt:'2026-11-15T00:00:00Z',publishedVersion:3});
+ mount();fireEvent.click(await screen.findByRole('button',{name:'Mở báo cáo Báo cáo A'}));await screen.findByDisplayValue('10 lỗi');
+ expect(api.publish).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Duyệt & công bố cho Khách'}));
+ await waitFor(()=>expect(api.publish).toHaveBeenCalledWith(1,7,{expectedVersion:3},expect.anything()));
+ expect(await screen.findByText('Đã công bố bản đã duyệt cho Khách.')).toBeVisible();
+});
+it('distinguishes filtered metrics from the full-project Đợt kiểm thử comparison without changing either scope',async()=>{
+ const featureA={...summary.features[0]},featureB={...featureA,id:43,name:'Đợt kiểm thử B'};
  api.summary.mockResolvedValueOnce({...summary,features:[featureA,featureB]})
   .mockResolvedValueOnce({...summary,feature:featureA,metrics:{...metrics,total:2,tested:1,executionPercent:50},features:[featureA,featureB],issues:[{type:'BUG',status:'OPEN',total:2}]});
- mount();await screen.findByRole('option',{name:'Feature B'});fireEvent.change(screen.getByLabelText('Phạm vi Feature'),{target:{value:'42'}});
- expect(await screen.findByText('Phạm vi số liệu: Feature A')).toBeVisible();expect(screen.getByText('1 / 2 case đã test · 50%')).toBeVisible();
- expect(screen.getByRole('heading',{name:'Đối chiếu tiến độ toàn dự án'})).toBeVisible();expect(screen.getByRole('cell',{name:'Feature B'})).toBeVisible();expect(screen.getByRole('option',{name:'Feature B'})).toBeVisible();
+ mount();await screen.findByRole('option',{name:'Đợt kiểm thử B'});fireEvent.change(screen.getByLabelText('Phạm vi Đợt kiểm thử'),{target:{value:'42'}});
+ expect(await screen.findByText('Phạm vi số liệu: Đợt kiểm thử A')).toBeVisible();expect(screen.getByText('1 / 2 case đã test · 50%')).toBeVisible();
+ expect(screen.getByRole('heading',{name:'Đối chiếu tiến độ toàn dự án'})).toBeVisible();expect(screen.getByRole('cell',{name:'Đợt kiểm thử B'})).toBeVisible();expect(screen.getByRole('option',{name:'Đợt kiểm thử B'})).toBeVisible();
 });
-it('restores a new report and its Feature after route or project changes without browser storage',async()=>{
+it('restores a new report and its Đợt kiểm thử after route or project changes without browser storage',async()=>{
  const tree=(current=project,show=true)=><ReportDraftProvider>{show?<ManagementAnalysisPage project={current} api={api}/>:<p>Route khác</p>}</ReportDraftProvider>;
- const view=render(tree());await screen.findByText('3 / 5 case đã test · 60%');fireEvent.change(screen.getByLabelText('Phạm vi Feature'),{target:{value:'42'}});
- fireEvent.change(screen.getByLabelText('Tiêu đề báo cáo'),{target:{value:'Nháp Feature A'}});fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Nháp chưa lưu của A'}});
+ const view=render(tree());await screen.findByText('3 / 5 case đã test · 60%');fireEvent.change(screen.getByLabelText('Phạm vi Đợt kiểm thử'),{target:{value:'42'}});
+ fireEvent.change(screen.getByLabelText('Tiêu đề báo cáo'),{target:{value:'Nháp Đợt kiểm thử A'}});fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Nháp chưa lưu của A'}});
  view.rerender(tree(project,false));view.rerender(tree({...project,id:2,name:'B'}));expect(screen.getByLabelText('Nội dung Markdown')).toHaveValue('');
- view.rerender(tree());expect(screen.getByLabelText('Tiêu đề báo cáo')).toHaveValue('Nháp Feature A');expect(screen.getByLabelText('Nội dung Markdown')).toHaveValue('Nháp chưa lưu của A');expect(screen.getByLabelText('Phạm vi Feature')).toHaveValue('42');
+ view.rerender(tree());expect(screen.getByLabelText('Tiêu đề báo cáo')).toHaveValue('Nháp Đợt kiểm thử A');expect(screen.getByLabelText('Nội dung Markdown')).toHaveValue('Nháp chưa lưu của A');expect(screen.getByLabelText('Phạm vi Đợt kiểm thử')).toHaveValue('42');
  expect(api.create).not.toHaveBeenCalled();expect(api.update).not.toHaveBeenCalled();
 });
 it('revalidates a restored saved report version and preserves conflicting edits instead of overwriting them',async()=>{
@@ -86,7 +94,7 @@ it('revalidates read access after 401 and same-owner reauthentication while pres
  api.summary.mockResolvedValueOnce(summary).mockRejectedValueOnce(Object.assign(new Error('Phiên hết hạn'),{status:401})).mockResolvedValue(summary);
  const tree=()=> <ReportDraftProvider><ManagementAnalysisPage project={project} api={api}/></ReportDraftProvider>;
  const view=render(tree());await screen.findByText('3 / 5 case đã test · 60%');fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Nháp cần giữ sau 401'}});
- fireEvent.click(screen.getByRole('button',{name:'Tải lại số liệu'}));await waitFor(()=>expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull());
+ refreshEvent.focus(window);await waitFor(()=>expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull());
  auth.status='expired';view.rerender(tree());auth.status='authenticated';view.rerender(tree());
  expect(await screen.findByLabelText('Nội dung Markdown')).toHaveValue('Nháp cần giữ sau 401');expect(api.summary).toHaveBeenCalledTimes(3);
  expect(api.create).not.toHaveBeenCalled();expect(api.update).not.toHaveBeenCalled();expect(api.preview).not.toHaveBeenCalled();
@@ -95,21 +103,21 @@ it('keeps a real 403 denial after same-owner reauthentication without probing or
  api.summary.mockResolvedValueOnce(summary).mockRejectedValueOnce(Object.assign(new Error('Quyền đã bị thu hồi'),{status:403}));
  const tree=()=> <ReportDraftProvider><ManagementAnalysisPage project={project} api={api}/></ReportDraftProvider>;
  const view=render(tree());await screen.findByText('3 / 5 case đã test · 60%');fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Nháp bị chặn quyền'}});
- fireEvent.click(screen.getByRole('button',{name:'Tải lại số liệu'}));await screen.findByRole('heading',{name:'Không có quyền truy cập'});
+ refreshEvent.focus(window);await screen.findByRole('heading',{name:'Không có quyền truy cập'});
  auth.status='expired';view.rerender(tree());auth.status='authenticated';view.rerender(tree());
  expect(screen.getByRole('heading',{name:'Không có quyền truy cập'})).toBeVisible();expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull();expect(api.summary).toHaveBeenCalledTimes(2);expect(api.create).not.toHaveBeenCalled();
 });
 it('keeps denied content hidden if reauthentication read now returns 403',async()=>{
  api.summary.mockResolvedValueOnce(summary).mockRejectedValueOnce(Object.assign(new Error('Phiên hết hạn'),{status:401})).mockRejectedValueOnce(Object.assign(new Error('Không còn quyền'),{status:403}));
  const tree=()=> <ReportDraftProvider><ManagementAnalysisPage project={project} api={api}/></ReportDraftProvider>;
- const view=render(tree());await screen.findByText('3 / 5 case đã test · 60%');fireEvent.click(screen.getByRole('button',{name:'Tải lại số liệu'}));await waitFor(()=>expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull());
+ const view=render(tree());await screen.findByText('3 / 5 case đã test · 60%');refreshEvent.focus(window);await waitFor(()=>expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull());
  auth.status='expired';view.rerender(tree());auth.status='authenticated';view.rerender(tree());await waitFor(()=>expect(api.summary).toHaveBeenCalledTimes(3));
  expect(screen.getByRole('heading',{name:'Không có quyền truy cập'})).toBeVisible();expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull();expect(api.preview).not.toHaveBeenCalled();
 });
 it('offers an explicit read retry after reauthentication validation fails without losing the draft',async()=>{
  api.summary.mockResolvedValueOnce(summary).mockRejectedValueOnce(Object.assign(new Error('Phiên hết hạn'),{status:401})).mockRejectedValueOnce(new Error('Mạng chưa sẵn sàng')).mockResolvedValue(summary);
  const tree=()=> <ReportDraftProvider><ManagementAnalysisPage project={project} api={api}/></ReportDraftProvider>;
- const view=render(tree());await screen.findByText('3 / 5 case đã test · 60%');fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Nháp qua lỗi mạng'}});fireEvent.click(screen.getByRole('button',{name:'Tải lại số liệu'}));await waitFor(()=>expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull());
+ const view=render(tree());await screen.findByText('3 / 5 case đã test · 60%');fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Nháp qua lỗi mạng'}});refreshEvent.focus(window);await waitFor(()=>expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull());
  auth.status='expired';view.rerender(tree());auth.status='authenticated';view.rerender(tree());
  fireEvent.click(await screen.findByRole('button',{name:'Kiểm tra lại quyền báo cáo'}));expect(await screen.findByLabelText('Nội dung Markdown')).toHaveValue('Nháp qua lỗi mạng');expect(api.summary).toHaveBeenCalledTimes(4);expect(api.create).not.toHaveBeenCalled();
 });
@@ -122,10 +130,10 @@ it('reauthenticates a rejected save with reads only and keeps its original versi
  expect(api.update).toHaveBeenCalledTimes(1);expect(api.update).toHaveBeenCalledWith(1,7,expect.objectContaining({markdown:'8 lỗi chưa lưu',expectedVersion:3}),expect.anything());expect(api.get).toHaveBeenCalledTimes(2);expect(api.preview).not.toHaveBeenCalled();
 });
 it('does not let a successful reauthentication read clear a concurrent real 403 denial',async()=>{
- let failList,finishCheck;api.list.mockReturnValueOnce(new Promise((_resolve,reject)=>{failList=reject;}));
+ let failList,finishCheck;api.list.mockImplementation(()=>new Promise((_resolve,reject)=>{failList=reject;}));
  api.summary.mockResolvedValueOnce(summary).mockRejectedValueOnce(Object.assign(new Error('Phiên hết hạn'),{status:401})).mockReturnValueOnce(new Promise(resolve=>{finishCheck=resolve;}));
  const tree=()=> <ReportDraftProvider><ManagementAnalysisPage project={project} api={api}/></ReportDraftProvider>;
- const view=render(tree());await screen.findByText('3 / 5 case đã test · 60%');fireEvent.click(screen.getByRole('button',{name:'Tải lại số liệu'}));await waitFor(()=>expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull());
+ const view=render(tree());await screen.findByText('3 / 5 case đã test · 60%');refreshEvent.focus(window);await waitFor(()=>expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull());
  auth.status='expired';view.rerender(tree());auth.status='authenticated';view.rerender(tree());await waitFor(()=>expect(api.summary).toHaveBeenCalledTimes(3));
  await act(async()=>{failList(Object.assign(new Error('Quyền đã bị thu hồi'),{status:403}));await Promise.resolve();await Promise.resolve();finishCheck(summary);});
  expect(screen.getByRole('heading',{name:'Không có quyền truy cập'})).toBeVisible();expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull();expect(api.update).not.toHaveBeenCalled();
@@ -146,12 +154,12 @@ it('explains archived report read-only mode without enabling write actions',asyn
 });
 it('FR12 shows readable percentages while keeping the exact progress value',async()=>{
  api.summary.mockResolvedValue({...summary,features:[{...summary.features[0],caseCount:120,testedCaseCount:1,progressPercent:100/120}]});
- mount();const bar=await screen.findByRole('progressbar',{name:'Tiến độ Feature A'});
+ mount();const bar=await screen.findByRole('progressbar',{name:'Tiến độ Đợt kiểm thử A'});
  expect(screen.getByText('0.83%')).toBeVisible();
  expect(bar).toHaveAttribute('aria-valuenow',String(100/120));
  expect(screen.queryByText('0.8333333333333334%')).toBeNull();
 });
-it('FR12 displays the same Vietnamese Issue status labels as the work board',async()=>{
+it('FR12 displays the same Vietnamese Ticket status labels as the work board',async()=>{
  api.summary.mockResolvedValue({...summary,issues:[{type:'BUG',status:'progress',total:3},{type:'QA',status:'OPEN',total:1}]});
  mount();expect(await screen.findByRole('cell',{name:'Đang xử lý',exact:true})).toBeVisible();
  expect(screen.getByRole('cell',{name:'Chưa xử lý',exact:true})).toBeVisible();
@@ -176,9 +184,9 @@ it('FR12 explains why AI generation is disabled without losing the manual report
 it.each(['TESTER','DEV'])('FR10 denies %s before fetching management data',role=>{
  auth.roles=[role];mount({project:{...project,projectRole:role}});expect(screen.getByRole('heading',{name:'Không có quyền truy cập'})).toBeVisible();expect(api.summary).not.toHaveBeenCalled();expect(api.list).not.toHaveBeenCalled();
 });
-it('FR10 uses Feature Status metrics with P and NA counted and optional whole-project scope',async()=>{
+it('FR10 uses Đợt kiểm thử Status metrics with P and NA counted and optional whole-project scope',async()=>{
  mount();await screen.findByText('3 / 5 case đã test · 60%');expect(screen.getByRole('img',{name:/OK: 1.*P: 1.*NA: 1.*Unexecuted: 2/})).toBeVisible();
- fireEvent.change(screen.getByLabelText('Phạm vi Feature'),{target:{value:'42'}});await waitFor(()=>expect(api.summary).toHaveBeenLastCalledWith(1,{featureId:42},expect.anything()));expect(screen.queryByLabelText('Build thực thi')).toBeNull();
+ fireEvent.change(screen.getByLabelText('Phạm vi Đợt kiểm thử'),{target:{value:'42'}});await waitFor(()=>expect(api.summary).toHaveBeenLastCalledWith(1,{featureId:42},expect.anything()));expect(screen.queryByLabelText('Build thực thi')).toBeNull();
 });
 it('FR10 saves edited report text and downloads the saved revision while issue counts stay unchanged',async()=>{
  api.update.mockResolvedValue({...saved,markdown:'8 lỗi',version:4});api.download.mockResolvedValue(new Response('8 lỗi'));const createURL=vi.fn().mockReturnValue('blob:report');vi.stubGlobal('URL',Object.assign(URL,{createObjectURL:createURL,revokeObjectURL:vi.fn()}));vi.spyOn(HTMLAnchorElement.prototype,'click').mockImplementation(()=>{});
@@ -192,7 +200,7 @@ it('FR10 uses the same admitted AI request key while pending and never overwrite
  api.preview.mockResolvedValueOnce({state:'GENERATING',draftId:8}).mockResolvedValueOnce({state:'READY',draftId:8,markdown:'# Gợi ý AI'});mount();await screen.findByText('3 / 5 case đã test · 60%');fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Bản tôi đang sửa'}});fireEvent.click(screen.getByRole('button',{name:'Tạo gợi ý AI'}));fireEvent.click(await screen.findByRole('button',{name:'Kiểm tra gợi ý AI'}));await screen.findByRole('heading',{name:'Gợi ý AI'});
  expect(api.preview.mock.calls[0][1]).toEqual(api.preview.mock.calls[1][1]);expect(screen.getByLabelText('Nội dung Markdown')).toHaveValue('Bản tôi đang sửa');expect(api.create).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Đưa vào bản soạn'}));expect(screen.getByLabelText('Nội dung Markdown')).toHaveValue('# Gợi ý AI');
 });
-it('FR10 saves manual text with nullable Feature and no AI draft identity',async()=>{
+it('FR10 saves manual text with nullable Đợt kiểm thử and no AI draft identity',async()=>{
  api.create.mockResolvedValue({...saved,title:'Báo cáo mới',markdown:'Nội dung mới',version:0});mount();await screen.findByText('3 / 5 case đã test · 60%');fireEvent.change(screen.getByLabelText('Tiêu đề báo cáo'),{target:{value:'Báo cáo mới'}});fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Nội dung mới'}});fireEvent.click(screen.getByRole('button',{name:'Lưu báo cáo'}));await screen.findByText('Đã lưu báo cáo.');expect(api.create).toHaveBeenCalledWith(1,{featureId:null,title:'Báo cáo mới',markdown:'Nội dung mới'},expect.anything());
 });
 it('FR10 ignores stale summary and report reads after project changes',async()=>{
@@ -208,7 +216,7 @@ it('FR10 explains an absent project without fetching',()=>{
  mount({project:null});expect(screen.getByText('Chọn dự án để xem phân tích.')).toBeVisible();expect(api.summary).not.toHaveBeenCalled();
 });
 it('FR10 retries summary/list errors and paginates the saved report catalog',async()=>{
- api.summary.mockRejectedValueOnce(new Error('Số liệu chưa tải được')).mockResolvedValue({...summary,features:[],issues:[]});api.list.mockRejectedValueOnce(new Error('Báo cáo chưa tải được')).mockResolvedValue({items:[],page:0,totalItems:0,totalPages:2});mount();await screen.findAllByRole('alert');fireEvent.click(screen.getByRole('button',{name:'Tải lại số liệu'}));fireEvent.click(screen.getByRole('button',{name:'Tải lại báo cáo'}));await screen.findByText('Chưa có Feature.');await screen.findByText('Chưa có Bug/QA.');await screen.findByText('Chưa có báo cáo đã lưu.');fireEvent.click(screen.getByRole('button',{name:'Báo cáo sau'}));await waitFor(()=>expect(api.list).toHaveBeenLastCalledWith(1,{page:1,size:20},expect.anything()));fireEvent.click(await screen.findByRole('button',{name:'Báo cáo trước'}));await waitFor(()=>expect(api.list).toHaveBeenLastCalledWith(1,{page:0,size:20},expect.anything()));
+ api.summary.mockRejectedValueOnce(new Error('Số liệu chưa tải được')).mockResolvedValue({...summary,features:[],issues:[]});api.list.mockRejectedValueOnce(new Error('Báo cáo chưa tải được')).mockResolvedValue({items:[],page:0,totalItems:0,totalPages:2});mount();await screen.findAllByRole('alert');refreshEvent.focus(window);refreshEvent.focus(window);await screen.findByText('Chưa có Đợt kiểm thử.');await screen.findByText('Chưa có Bug/QA.');await screen.findByText('Chưa có báo cáo đã lưu.');fireEvent.click(screen.getByRole('button',{name:'Báo cáo sau'}));await waitFor(()=>expect(api.list).toHaveBeenLastCalledWith(1,{page:1,size:20},expect.anything()));fireEvent.click(await screen.findByRole('button',{name:'Báo cáo trước'}));await waitFor(()=>expect(api.list).toHaveBeenLastCalledWith(1,{page:0,size:20},expect.anything()));
 });
 it('FR10 preserves edits on AI failure and does not create a stored report',async()=>{
  api.preview.mockResolvedValue({state:'FAILED',failureCode:'AI_INVALID_RESPONSE'});mount();await screen.findByText('3 / 5 case đã test · 60%');fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Bản soạn giữ lại'}});fireEvent.click(screen.getByRole('button',{name:'Tạo gợi ý AI'}));await screen.findByRole('alert');expect(screen.getByLabelText('Nội dung Markdown')).toHaveValue('Bản soạn giữ lại');expect(api.create).not.toHaveBeenCalled();expect(api.update).not.toHaveBeenCalled();
@@ -216,12 +224,12 @@ it('FR10 preserves edits on AI failure and does not create a stored report',asyn
 it('FR10 retries an uncertain AI request with the same provider model and key',async()=>{
  api.preview.mockRejectedValueOnce(Object.assign(new Error('Quá thời gian chờ'),{code:'TIMEOUT'})).mockResolvedValueOnce({state:'READY',markdown:'Bản gợi ý'});mount();await screen.findByText('3 / 5 case đã test · 60%');fireEvent.click(screen.getByRole('button',{name:'Tạo gợi ý AI'}));await screen.findByRole('alert');fireEvent.click(screen.getByRole('button',{name:'Kiểm tra gợi ý AI'}));await waitFor(()=>expect(screen.getByLabelText('Nội dung Markdown')).toHaveValue('Bản gợi ý'));expect(api.preview.mock.calls[0][1]).toEqual(api.preview.mock.calls[1][1]);
 });
-it('FR10 protects unsaved edits when a Feature or saved-report switch is declined',async()=>{
- vi.spyOn(window,'confirm').mockReturnValue(false);mount();await screen.findByText('3 / 5 case đã test · 60%');fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Nháp chưa lưu'}});fireEvent.change(screen.getByLabelText('Phạm vi Feature'),{target:{value:'42'}});fireEvent.click(screen.getByRole('button',{name:'Mở báo cáo Báo cáo A'}));expect(api.get).not.toHaveBeenCalled();expect(screen.getByLabelText('Nội dung Markdown')).toHaveValue('Nháp chưa lưu');expect(screen.getByLabelText('Phạm vi Feature')).toHaveValue('');fireEvent.click(screen.getByRole('button',{name:'Báo cáo mới'}));expect(screen.getByLabelText('Nội dung Markdown')).toHaveValue('Nháp chưa lưu');
+it('FR10 protects unsaved edits when a Đợt kiểm thử or saved-report switch is declined',async()=>{
+ vi.spyOn(window,'confirm').mockReturnValue(false);mount();await screen.findByText('3 / 5 case đã test · 60%');fireEvent.change(screen.getByLabelText('Nội dung Markdown'),{target:{value:'Nháp chưa lưu'}});fireEvent.change(screen.getByLabelText('Phạm vi Đợt kiểm thử'),{target:{value:'42'}});fireEvent.click(screen.getByRole('button',{name:'Mở báo cáo Báo cáo A'}));expect(api.get).not.toHaveBeenCalled();expect(screen.getByLabelText('Nội dung Markdown')).toHaveValue('Nháp chưa lưu');expect(screen.getByLabelText('Phạm vi Đợt kiểm thử')).toHaveValue('');fireEvent.click(screen.getByRole('button',{name:'Báo cáo mới'}));expect(screen.getByLabelText('Nội dung Markdown')).toHaveValue('Nháp chưa lưu');
 });
 it('FR10 ignores saved-report and AI-preview responses after switching projects',async()=>{
  let finish;api.preview.mockReturnValue(new Promise(resolve=>{finish=resolve;}));const view=mount();await screen.findByText('3 / 5 case đã test · 60%');fireEvent.click(screen.getByRole('button',{name:'Tạo gợi ý AI'}));view.rerender(<ManagementAnalysisPage project={{...project,id:2,name:'Dự án B'}} api={api}/>);await screen.findByDisplayValue('Báo cáo Dự án B');await act(async()=>finish({state:'READY',markdown:'Gợi ý dự án A'}));expect(screen.queryByText('Gợi ý dự án A')).toBeNull();
 });
 it('FR10 hides previously loaded management data after server-side permission revocation',async()=>{
- api.summary.mockResolvedValueOnce(summary).mockRejectedValueOnce(Object.assign(new Error('Không có quyền'),{status:403}));mount();await screen.findByText('3 / 5 case đã test · 60%');fireEvent.click(screen.getByRole('button',{name:'Tải lại số liệu'}));await screen.findByRole('heading',{name:'Không có quyền truy cập'});expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull();expect(screen.queryByText('10',{selector:'td'})).toBeNull();
+ api.summary.mockResolvedValueOnce(summary).mockRejectedValueOnce(Object.assign(new Error('Không có quyền'),{status:403}));mount();await screen.findByText('3 / 5 case đã test · 60%');refreshEvent.focus(window);await screen.findByRole('heading',{name:'Không có quyền truy cập'});expect(screen.queryByLabelText('Nội dung Markdown')).toBeNull();expect(screen.queryByText('10',{selector:'td'})).toBeNull();
 });

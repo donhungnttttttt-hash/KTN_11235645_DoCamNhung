@@ -10,7 +10,7 @@ final class AdminAuditLabels {
         var labels=new LinkedHashMap<String,String>(Map.ofEntries(
         Map.entry("IDENTITY","Tài khoản"),Map.entry("PROJECT","Dự án"),Map.entry("MEMBERSHIP","Thành viên"),
         Map.entry("DEVICE_ASSET","Máy vật lý"),Map.entry("DEVICE_ALLOCATION","Bàn giao máy"),Map.entry("STATUS_REPORT","Báo cáo PM"),
-        Map.entry("FEATURE","Feature"),Map.entry("TEST_DOCUMENT_ROW","Dòng test case"),Map.entry("TEST_CASE","Test case"),
+        Map.entry("FEATURE","Đợt kiểm thử"),Map.entry("TEST_DOCUMENT_ROW","Dòng test case"),Map.entry("TEST_CASE","Test case"),
         Map.entry("CREATE","Tạo mới"),Map.entry("UPDATE","Cập nhật"),Map.entry("ARCHIVE","Lưu trữ"),Map.entry("REOPEN","Mở lại"),
         Map.entry("ASSIGN","Bàn giao"),Map.entry("RETURN","Thu hồi"),Map.entry("SET_ROLE","Gán vai trò"),Map.entry("REMOVE","Gỡ thành viên"),
         Map.entry("ADD_MEMBER","Thêm thành viên"),Map.entry("RESTORE_MEMBER","Khôi phục thành viên"),
@@ -24,7 +24,7 @@ final class AdminAuditLabels {
     ));
         labels.put("MANAGEMENT_REPORT","Báo cáo quản trị");
         labels.put("PROJECT_NOTE","Note dự án");
-        labels.put("WORK_ITEM","Issue");
+        labels.put("WORK_ITEM","Ticket");
         labels.put("STATUS","Đổi trạng thái");
         labels.put("COMMENT","Thêm ghi chú");
         // Only the five known case Status values are translated; unknown audit codes remain raw.

@@ -36,7 +36,7 @@ public class ProjectStatusReportService {
  }
  public Map<String,Object> create(String actor,long projectId,Input ignored) {
   authorize(actor,projectId,false);
-  fail(410,"USE_FEATURE_REPORTS","Dùng Tổng hợp & Phân tích để tạo báo cáo theo Feature. Báo cáo cũ chỉ giữ lịch sử.");
+  fail(410,"USE_FEATURE_REPORTS","Dùng Tổng hợp & Phân tích để tạo báo cáo theo Đợt kiểm thử. Báo cáo cũ chỉ giữ lịch sử.");
   return Map.of();
  }
  @Transactional(readOnly=true)

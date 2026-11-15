@@ -90,7 +90,7 @@ public final class FeatureFacts {
         var rows=db.rows("SELECT MAX(a.action REGEXP '_NG$') AS hasFailurePractice,MAX(a.action REGEXP '_P$') AS hasPendingPractice,MAX(a.action REGEXP '_NA$') AS hasNotApplicablePractice FROM project_audit a WHERE a.entity_type='TEST_DOCUMENT_ROW' AND a.action LIKE 'RESULT!_%' ESCAPE '!' AND NOT EXISTS(SELECT 1 FROM project_memberships m WHERE m.project_id=a.project_id AND m.user_id=? AND m.active=TRUE) HAVING COUNT(DISTINCT a.actor_id)>=5 AND COUNT(DISTINCT a.project_id)>=2",actor);
         if(rows.isEmpty())return Map.of("available",false,"limitation","Chưa đủ bằng chứng tổng hợp ẩn danh ngoài phạm vi.");
         var row=rows.getFirst();var categories=new ArrayList<String>();
-        if(flag(row.get("hasFailurePractice")))categories.add("Khi ghi NG, mô tả actual rõ và liên kết Issue.");
+        if(flag(row.get("hasFailurePractice")))categories.add("Khi ghi NG, mô tả actual rõ và liên kết Ticket.");
         if(flag(row.get("hasPendingPractice")))categories.add("Phân biệt P đang chờ với Unexecuted.");
         if(flag(row.get("hasNotApplicablePractice")))categories.add("Giữ NA trong tổng số case.");
         return Map.of("available",true,"patterns",categories,"limitation","Kinh nghiệm ẩn danh chỉ để tham khảo; không kết luận năng lực cá nhân hay tình trạng một dự án.");

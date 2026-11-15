@@ -27,7 +27,7 @@ public class AiPortfolioContext {
             + "Use the current snapshot for current facts; history may be outdated. Name projects when comparing them. "
             + "Tested means Status other than UNEXECUTED: OK, NG, P and NA. NA remains in total; 100% is not customer acceptance. "
             + "myCaseSample/myWorkSample are personal assignments; caseSample/issueSample are bounded ordinary project-readable details. "
-            + "personal contains only the current actor's assignment progress and recorded Status changes, scoped to the selected Feature when present. selectedFileProgress contains up to three explicitly named readable files; sourceFiles alone is only a ten-file metadata sample for workers. Case lookup prioritizes literal filename, source case ID or title matches within authorized scope, with at most five results. If a requested file/case cannot be identified, ask for its name/ID rather than extrapolating a sample. Each case includes at most ten recent actual resultHistory records; MIGRATED_SOURCE is older source provenance, not an execution in the copied round. Missing history is not proof nobody tested. "
+            + "personal contains only the current actor's assignment progress and recorded Status changes, scoped to the selected Đợt kiểm thử when present. selectedFileProgress contains up to three explicitly named readable files; sourceFiles alone is only a ten-file metadata sample for workers. Case lookup prioritizes literal filename, source case ID or title matches within authorized scope, with at most five results. If a requested file/case cannot be identified, ask for its name/ID rather than extrapolating a sample. Each case includes at most ten recent actual resultHistory records; MIGRATED_SOURCE is older source provenance, not an execution in the copied round. Missing history is not proof nobody tested. "
             + "ADMIN can read all projects; PM and USER require current matching active membership. Restricted users cannot obtain management reports or bulk exports. "+
             "Use actual audit actors for experience, including prior actors and resets. Recorded Status changes are not physical test execution counts or competence scores. mappedFeatures describes migration provenance, not tests performed in each clone. Never infer experience from imported tester names. Suggestions never assign or change records. "
             + "Disclose totalProjects, includedProjects and truncation when the snapshot is partial. "
@@ -159,7 +159,7 @@ public class AiPortfolioContext {
         var data=json.createObjectNode().put("scope",purpose).put("systemRole",scope.role()).put("asOf",java.time.Instant.now().toString())
                 .put("totalProjects",scope.projects().size()).put("includedProjects",Math.min(MAX_PROJECTS,scope.projects().size()))
                 .put("truncated",scope.projects().size()>MAX_PROJECTS)
-                .put("limitations","Dữ liệu Feature hiện hành; tối đa 10 file mẫu, 3 file được hỏi tên, 5 case/Issue và 10 thay đổi Status gần nhất mỗi case; 20 actor kinh nghiệm/workload chỉ cho quản lý. Tiến độ cá nhân chỉ thuộc người đang hỏi, theo Feature đã chọn; nền cùng dự án được giới hạn riêng. P/NA tính đã test, NA trong tổng. Audit nguồn cũ được đánh dấu MIGRATED_SOURCE; không suy ra số lần thực thi thực tế, lịch rảnh hay năng lực, hoặc kết luận từ dữ liệu không có trong phạm vi trả về.");
+                .put("limitations","Dữ liệu Đợt kiểm thử hiện hành; tối đa 10 file mẫu, 3 file được hỏi tên, 5 case/Ticket và 10 thay đổi Status gần nhất mỗi case; 20 actor kinh nghiệm/workload chỉ cho quản lý. Tiến độ cá nhân chỉ thuộc người đang hỏi, theo Đợt kiểm thử đã chọn; nền cùng dự án được giới hạn riêng. P/NA tính đã test, NA trong tổng. Audit nguồn cũ được đánh dấu MIGRATED_SOURCE; không suy ra số lần thực thi thực tế, lịch rảnh hay năng lực, hoặc kết luận từ dữ liệu không có trong phạm vi trả về.");
         if(targetProject!=null)data.put("targetProjectId",targetProject);
         if(targetFeature!=null)data.put("targetFeatureId",targetFeature);
         data.putObject("capabilities").put("managementReport",management).put("assignmentAdvice",management).put("businessWrites",false);
@@ -198,10 +198,10 @@ public class AiPortfolioContext {
         boolean personal=value.matches("(?s).*(?:cua toi|ca nhan|personal|my (?:assigned |own |current |detailed )*(?:work|progress|tasks)).*");
         boolean managementScope=value.matches("(?s).*(?:quan ly|management|team workload|all team members|nhu man.*tong hop.*phan tich).*" );
         boolean wholeProject=value.matches("(?s).*(?:toan.*du an|tong.*du an|project wide|whole project|all projects|entire project).*" );
-        if(bulk||analysis&&(managementScope||wholeProject&&!personal))WorkItemStore.fail(403,"AI_CAPABILITY_DENIED","Vai trò hiện tại không có quyền phân tích/báo cáo quản lý hoặc xuất hàng loạt. Bạn có thể hỏi chi tiết case/Issue/file được phép đọc và tiến độ công việc của mình.");
+        if(bulk||analysis&&(managementScope||wholeProject&&!personal))WorkItemStore.fail(403,"AI_CAPABILITY_DENIED","Vai trò hiện tại không có quyền phân tích/báo cáo quản lý hoặc xuất hàng loạt. Bạn có thể hỏi chi tiết case/Ticket/file được phép đọc và tiến độ công việc của mình.");
     }
     private void requireActiveFeature(long project,Long feature) {
         if(feature!=null&&db.row("SELECT archived_at AS archivedAt FROM testing_features WHERE project_id=? AND id=? FOR SHARE",project,feature).get("archivedAt")!=null)
-            WorkItemStore.fail(409,"ARCHIVED","Feature đã lưu trữ. Chỉ đọc hội thoại cũ.");
+            WorkItemStore.fail(409,"ARCHIVED","Đợt kiểm thử đã lưu trữ. Chỉ đọc hội thoại cũ.");
     }
 }

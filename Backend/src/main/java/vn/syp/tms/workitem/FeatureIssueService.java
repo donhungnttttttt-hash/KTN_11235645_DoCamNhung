@@ -52,6 +52,7 @@ public class FeatureIssueService {
         x.ticket_state AS ticketState,x.closure_reason AS closureReason,x.coordinator_membership_id AS coordinatorMembershipId,
         x.verifier_user_id AS verifierUserId,verifier.display_name AS verifierName,x.preconditions,x.frequency,x.environment,x.device,
         x.test_version_id AS testVersionId,x.test_version_name AS testVersionName,x.executed_on AS executedOn,
+        x.start_on AS startOn,x.due_on AS dueOn,x.estimated_hours AS estimatedHours,x.actual_hours AS actualHours,
         x.test_object AS testObject,x.case_reference AS caseReference,tw.finalized,tw.awaiting_verification AS awaitingVerification,
         tw.legacy_workflow AS legacyWorkflow,w.project_id AS projectId,COALESCE(b.converted_from_qa,FALSE) AS convertedFromQa
         """;
@@ -59,7 +60,7 @@ public class FeatureIssueService {
     Actor authorize(long p,String user,boolean write){
         if(p<1)fail(404,"NOT_FOUND","Không tìm thấy dự án.");
         String systemRole=write?identity.lockCurrent(user).getRole():identity.current(user).getRole();
-        if(!Set.of("ADMIN","PM","USER").contains(systemRole))fail(403,"FORBIDDEN","Không có quyền mở nội dung Issue.");
+        if(!Set.of("ADMIN","PM","USER").contains(systemRole))fail(403,"FORBIDDEN","Không có quyền mở nội dung Ticket.");
         var project=db.row("SELECT id,code,archived_at AS archivedAt FROM projects WHERE id=?"+(write?" FOR UPDATE":""),p);
         boolean archived=project.get("archivedAt")!=null;
         if(write&&archived)fail(409,"ARCHIVED","Dự án đã lưu trữ.");
@@ -67,12 +68,12 @@ public class FeatureIssueService {
         var rows=db.rows("SELECT id,project_role AS projectRole FROM project_memberships WHERE project_id=? AND user_id=? AND active=TRUE"+(write?" FOR UPDATE":""),p,user);
         if(rows.isEmpty())fail(404,"NOT_FOUND","Không tìm thấy dự án trong phạm vi được phép.");
         var member=rows.getFirst();String role=String.valueOf(member.get("projectRole"));
-        if(!systemRole.equals(role)||!Set.of("PM","USER").contains(role))fail(403,"FORBIDDEN","Membership không cấp quyền xử lý Issue.");
+        if(!systemRole.equals(role)||!Set.of("PM","USER").contains(role))fail(403,"FORBIDDEN","Membership không cấp quyền xử lý Ticket.");
         return new Actor(user,number(member,"id"),"PM".equals(role),"USER".equals(role),archived);
     }
     private Map<String,Object> feature(long p,long id,boolean lock,boolean active){
         var result=db.row("SELECT id,name,environment,description,archived_at AS archivedAt FROM testing_features WHERE project_id=? AND id=?"+(lock?" FOR UPDATE":""),p,id);
-        if(active&&result.get("archivedAt")!=null)fail(409,"ARCHIVED","Feature đã lưu trữ.");return result;
+        if(active&&result.get("archivedAt")!=null)fail(409,"ARCHIVED","Đợt kiểm thử đã lưu trữ.");return result;
     }
     private Map<String,Object> source(long p,String user,long f,long d,long row,boolean lock){
         var feature=feature(p,f,lock,true);
@@ -88,7 +89,7 @@ public class FeatureIssueService {
         result.put("preconditions",cell(selected.cells(),detail.columns().getOrDefault("preconditionsVi",3)));
         result.put("testObject",cell(selected.cells(),detail.columns().getOrDefault("titleVi",2)));
         result.put("caseReference",result.get("caseNo"));result.put("resultVersion",selected.resultVersion());
-        var execution=db.row("SELECT e.test_version_id AS testVersionId,v.name AS testVersionName,e.executed_on AS executedOn FROM import_rows ir LEFT JOIN test_document_result_executions e ON e.project_id=ir.project_id AND e.row_id=ir.id AND e.result_version=ir.result_version LEFT JOIN feature_test_versions v ON v.id=e.test_version_id WHERE ir.project_id=? AND ir.id=?"+(lock?" FOR UPDATE":""),p,row);
+        var execution=db.row("SELECT cc.test_version_id AS testVersionId,v.name AS testVersionName,cc.environment_id AS environmentId,env.name AS environmentName,e.executed_on AS executedOn FROM import_rows ir LEFT JOIN test_document_result_executions e ON e.project_id=ir.project_id AND e.row_id=ir.id AND e.result_version=ir.result_version LEFT JOIN test_document_case_contexts cc ON cc.project_id=ir.project_id AND cc.row_id=ir.id LEFT JOIN feature_test_versions v ON v.id=cc.test_version_id LEFT JOIN feature_test_environments env ON env.id=cc.environment_id WHERE ir.project_id=? AND ir.id=?"+(lock?" FOR UPDATE":""),p,row);
         result.putAll(execution);if(detail.columns().containsKey("actualResult"))result.put("actualResult",cell(selected.cells(),detail.columns().get("actualResult")));return result;
     }
     private static String cell(List<String> cells,int index){return index>=0&&index<cells.size()?cells.get(index):"";}
@@ -96,7 +97,7 @@ public class FeatureIssueService {
 
     @Transactional(readOnly=true) public WorkItemDtos.Page<Map<String,Object>> list(long p,String user,FeatureIssueDtos.Filter filter){
         var actor=authorize(p,user,false);
-        if(filter.page()<0||filter.page()>100000||filter.size()<1||filter.size()>100||text(filter.keyword()).length()>255)fail(422,"INVALID_FILTER","Bộ lọc hoặc phân trang Issue không hợp lệ.");
+        if(filter.page()<0||filter.page()>100000||filter.size()<1||filter.size()>100||text(filter.keyword()).length()>255)fail(422,"INVALID_FILTER","Bộ lọc hoặc phân trang Ticket không hợp lệ.");
         if(!text(filter.type()).isEmpty()&&!Set.of("BUG","QA").contains(filter.type()))fail(422,"INVALID_ISSUE_TYPE","Chỉ có Bug và QA.");
         if(!text(filter.status()).isEmpty()&&db.count("SELECT COUNT(*) FROM work_item_statuses WHERE code=?",filter.status())!=1)fail(422,"INVALID_FILTER","Trạng thái không hợp lệ.");
         var query=filtered(p,filter);String where=query.sql();var args=new ArrayList<Object>(query.args());
@@ -108,7 +109,7 @@ public class FeatureIssueService {
     private Query filtered(long p,FeatureIssueDtos.Filter filter){
         String where=" WHERE w.project_id=? AND "+(filter.deleted()?"x.deleted_at IS NOT NULL AND x.monkey=TRUE":"x.deleted_at IS NULL AND f.archived_at IS NULL AND (d.id IS NULL OR d.archived_at IS NULL)")+" AND w.item_type IN ('BUG','QA')";var args=new ArrayList<Object>(List.of(p));
         Long[] ids={filter.featureId(),filter.documentId(),filter.rowId()};String[] fields={"x.feature_id","x.document_id","x.row_id"};
-        for(int i=0;i<ids.length;i++)if(ids[i]!=null){if(ids[i]<1)fail(422,"INVALID_FILTER","Phạm vi Issue không hợp lệ.");where+=" AND "+fields[i]+"=?";args.add(ids[i]);}
+        for(int i=0;i<ids.length;i++)if(ids[i]!=null){if(ids[i]<1)fail(422,"INVALID_FILTER","Phạm vi Ticket không hợp lệ.");where+=" AND "+fields[i]+"=?";args.add(ids[i]);}
         if(!text(filter.type()).isEmpty()){where+=" AND w.item_type=?";args.add(filter.type());}
         if(!text(filter.status()).isEmpty()){where+=" AND w.status_code=?";args.add(filter.status());}
         var search=MultiWordSearch.sql(filter.keyword(),"w.item_key","w.title","w.description","f.name","d.file_name");where+=search.sql();args.addAll(search.args());
@@ -131,7 +132,8 @@ public class FeatureIssueService {
     private Map<String,Object> item(long p,long id,boolean lock,boolean includeDeleted){
         String scope=includeDeleted?"":" AND x.deleted_at IS NULL";
         if(lock)db.row("SELECT w.id,w.lock_version AS version FROM work_items w JOIN work_item_feature_context x ON x.project_id=w.project_id AND x.work_item_id=w.id WHERE w.project_id=? AND w.id=?"+scope+" FOR UPDATE",p,id);
-        return db.row(SELECT+FROM+" WHERE w.project_id=? AND w.id=?"+scope+" AND w.item_type IN ('BUG','QA')",p,id);
+        var result=db.row(SELECT+FROM+" WHERE w.project_id=? AND w.id=?"+scope+" AND w.item_type IN ('BUG','QA')",p,id);
+        result.put("milestones",TicketPlanning.milestones(db,p,id));return result;
     }
     void activeContext(long p,Map<String,Object> item){
         feature(p,number(item,"featureId"),true,true);
@@ -155,7 +157,7 @@ public class FeatureIssueService {
         boolean deleted=item.get("deletedAt")!=null;
         boolean recoveryAuthority=Boolean.TRUE.equals(item.get("monkey"))&&(actor.manager()||ownMonkey(actor,item));
         item.put("canRestore",deleted&&parentActive&&recoveryAuthority);
-        item.put("restoreBlockedReason",!deleted?"":actor.archived()?"Khôi phục dự án tại Quản lý dự án trước.":item.get("featureArchivedAt")!=null?"Khôi phục Feature tại Danh sách Feature trước.":!recoveryAuthority?"Chỉ PM/Admin hoặc người tạo Monkey được khôi phục.":"");
+        item.put("restoreBlockedReason",!deleted?"":actor.archived()?"Khôi phục dự án tại Quản lý dự án trước.":item.get("featureArchivedAt")!=null?"Khôi phục Đợt kiểm thử tại Danh sách Đợt kiểm thử trước.":!recoveryAuthority?"Chỉ PM/Admin hoặc người tạo Monkey được khôi phục.":"");
         boolean active=parentActive&&!deleted;
         item.remove("featureArchivedAt");item.remove("documentArchivedAt");
         item.put("canEdit",active&&(actor.manager()||owner(actor,item)));item.put("canDelete",active&&Boolean.TRUE.equals(item.get("monkey"))&&(actor.manager()||ownMonkey(actor,item)));
@@ -170,15 +172,15 @@ public class FeatureIssueService {
     @Transactional(readOnly=true) public Map<String,Object> get(long p,String user,long id){return detail(p,authorize(p,user,false),id);}
 
     private void validate(String type,Long f,Long d,Long row,boolean monkey,String title,String description,String steps,String expected,String actual,UUID key){
-        if((!"BUG".equals(type)&&!"QA".equals(type))||monkey&&!"BUG".equals(type)||f==null||f<1||key==null)fail(422,"INVALID_ISSUE","Issue cần Feature, loại Bug/QA và mã yêu cầu hợp lệ.");
+        if((!"BUG".equals(type)&&!"QA".equals(type))||monkey&&!"BUG".equals(type)||f==null||f<1||key==null)fail(422,"INVALID_ISSUE","Ticket cần Đợt kiểm thử, loại Bug/QA và mã yêu cầu hợp lệ.");
         if(monkey&&(d!=null||row!=null))fail(422,"INVALID_CONTEXT","Bug monkey độc lập không được gắn file hoặc case nguồn.");
         if((d==null)!=(row==null)||d!=null&&d<1||row!=null&&row<1)fail(422,"INVALID_CONTEXT","File và case phải được chọn cùng nhau.");
         bounded(title,300,true);bounded(description,20000,"QA".equals(type));bounded(steps,20000,"BUG".equals(type));bounded(expected,20000,"BUG".equals(type));bounded(actual,20000,"BUG".equals(type));
     }
-    static void bounded(String value,int max,boolean required){if(text(value).length()>max||required&&text(value).isEmpty())fail(422,"INVALID_ISSUE","Kiểm tra các trường bắt buộc và độ dài nội dung Issue.");}
+    static void bounded(String value,int max,boolean required){if(text(value).length()>max||required&&text(value).isEmpty())fail(422,"INVALID_ISSUE","Kiểm tra các trường bắt buộc và độ dài nội dung Ticket.");}
     public Map<String,Object> create(long p,String user,FeatureIssueDtos.Create input){
         validate(input.type(),input.featureId(),input.documentId(),input.rowId(),input.monkey(),input.title(),input.description(),input.steps(),input.expectedResult(),input.actualResult(),input.requestKey());
-        var actor=authorize(p,user,true);if(!actor.manager()&&!actor.worker())fail(403,"FORBIDDEN","Cần quyền tạo Issue trong dự án.");
+        var actor=authorize(p,user,true);if(!actor.manager()&&!actor.worker())fail(403,"FORBIDDEN","Cần quyền tạo Ticket trong dự án.");
         boolean bug="BUG".equals(input.type());bounded(input.preconditions(),20000,false);bounded(input.frequency(),1000,bug);bounded(input.environment(),1000,bug);bounded(input.device(),1000,bug);
         if(!input.monkey()&&!text(input.manualTestVersion()).isEmpty())fail(422,"INVALID_SOURCE","Version case do server đọc từ nguồn.");bounded(input.manualTestVersion(),255,false);
         feature(p,input.featureId(),true,true);String checksum=db.checksum(input);
@@ -200,7 +202,7 @@ public class FeatureIssueService {
         db.update("INSERT INTO work_item_feature_context(project_id,work_item_id,feature_id,document_id,row_id,monkey,created_by_user_id) VALUES(?,?,?,?,?,?,?)",p,id,input.featureId(),input.documentId(),input.rowId(),input.monkey(),user);
         db.update("UPDATE work_items SET status_code=?,assignee_membership_id=? WHERE project_id=? AND id=?",TicketWorkflow.mirror(target),input.assigneeMembershipId(),p,id);
         db.update("UPDATE work_item_feature_context SET ticket_state=?,closure_reason=?,coordinator_membership_id=?,verifier_user_id=?,preconditions=?,frequency=?,environment=?,device=?,test_version_id=?,test_version_name=?,executed_on=?,test_object=?,case_reference=? WHERE project_id=? AND work_item_id=?",state,input.closureReason(),bug?input.assigneeMembershipId():null,user,text(input.preconditions()),text(input.frequency()),text(input.environment()),text(input.device()),source.get("testVersionId"),source.isEmpty()?input.manualTestVersion():source.get("testVersionName"),source.get("executedOn"),source.get("testObject"),source.get("caseReference"),p,id);
-        if("BUG".equals(input.type()))db.update("INSERT INTO bug_details(project_id,work_item_id,policy_version,steps,expected_result,actual_result,test_case_id,revision_id,standalone_reason,context_snapshot) VALUES(?,?,'INTERNAL_V1',?,?,?,?,?,?,?)",p,id,text(input.steps()),text(input.expectedResult()),text(input.actualResult()),source.get("testCaseId"),source.get("revisionId"),source.isEmpty()?"Issue phát hiện trong Feature":"",db.encode(source));
+        if("BUG".equals(input.type()))db.update("INSERT INTO bug_details(project_id,work_item_id,policy_version,steps,expected_result,actual_result,test_case_id,revision_id,standalone_reason,context_snapshot) VALUES(?,?,'INTERNAL_V1',?,?,?,?,?,?,?)",p,id,text(input.steps()),text(input.expectedResult()),text(input.actualResult()),source.get("testCaseId"),source.get("revisionId"),source.isEmpty()?"Ticket phát hiện trong Đợt kiểm thử":"",db.encode(source));
         else {var qaSource=new LinkedHashMap<String,Object>(source);qaSource.put("steps",text(input.steps()));qaSource.put("expectedResult",text(input.expectedResult()));qaSource.put("actualResult",text(input.actualResult()));db.update("INSERT INTO qa_details(project_id,work_item_id,question,document_id,test_case_id,revision_id,context_snapshot) VALUES(?,?,?,?,?,?,?)",p,id,text(input.description()),input.documentId(),source.get("testCaseId"),source.get("revisionId"),db.encode(qaSource));}
         var result=detail(p,actor,id);record(p,id,user,"CREATE",null,snapshot(result));notifications.notify(p,id,user,List.of(recipient.get("userId").toString()),"Bạn được giao tiếp nhận Ticket.");audit.record(p,user,"WORK_ITEM",id,"CREATE");return result;
     }
@@ -217,7 +219,7 @@ public class FeatureIssueService {
         if(!Set.of("HIGH","MEDIUM","LOW").contains(priority))fail(422,"INVALID_ISSUE","Mức ưu tiên không hợp lệ.");
         bounded(input.preconditions(),20000,false);bounded(input.frequency(),1000,false);bounded(input.environment(),1000,false);bounded(input.device(),1000,false);
         if(bug&&(input.frequency()!=null&&input.frequency().isBlank()||input.environment()!=null&&input.environment().isBlank()||input.device()!=null&&input.device().isBlank()))fail(422,"INVALID_ISSUE","Bằng chứng Bug không được để trống.");
-        int changed=db.update("UPDATE work_items SET title=?,description=?,priority_code=?,assignee_membership_id=?,updated_by=?,updated_at=UTC_TIMESTAMP(6),lock_version=lock_version+1 WHERE project_id=? AND id=? AND lock_version=?",text(input.title()),text(input.description()),priority,assigned,actor.membership(),p,id,input.expectedVersion());if(changed!=1)fail(409,"VERSION_CONFLICT","Issue đã thay đổi. Tải lại để đối chiếu.");
+        int changed=db.update("UPDATE work_items SET title=?,description=?,priority_code=?,assignee_membership_id=?,updated_by=?,updated_at=UTC_TIMESTAMP(6),lock_version=lock_version+1 WHERE project_id=? AND id=? AND lock_version=?",text(input.title()),text(input.description()),priority,assigned,actor.membership(),p,id,input.expectedVersion());if(changed!=1)fail(409,"VERSION_CONFLICT","Ticket đã thay đổi. Tải lại để đối chiếu.");
         if(bug)db.update("UPDATE bug_details SET steps=?,expected_result=?,actual_result=? WHERE project_id=? AND work_item_id=?",text(input.steps()),text(input.expectedResult()),text(input.actualResult()),p,id);
         else db.update("UPDATE qa_details SET question=?,context_snapshot=JSON_SET(context_snapshot,'$.steps',?,'$.expectedResult',?,'$.actualResult',?) WHERE project_id=? AND work_item_id=?",text(input.description()),text(input.steps()),text(input.expectedResult()),text(input.actualResult()),p,id);
         db.update("UPDATE work_item_feature_context SET preconditions=COALESCE(?,preconditions),frequency=COALESCE(?,frequency),environment=COALESCE(?,environment),device=COALESCE(?,device) WHERE project_id=? AND work_item_id=?",input.preconditions(),input.frequency(),input.environment(),input.device(),p,id);
@@ -252,14 +254,14 @@ public class FeatureIssueService {
         audit.record(p,user,"WORK_ITEM",id,"RESTORE");return result;
     }
     private void bump(long p,long id,Actor actor){db.update("UPDATE work_items SET lock_version=lock_version+1,updated_by=?,updated_at=UTC_TIMESTAMP(6) WHERE project_id=? AND id=?",actor.membership(),p,id);}
-    Map<String,Object> snapshot(Map<String,Object> item){var value=new LinkedHashMap<String,Object>();for(String key:List.of("id","key","type","title","description","status","priority","assigneeMembershipId","featureId","documentId","rowId","monkey","steps","expectedResult","actualResult","version","ticketState","closureReason","coordinatorMembershipId","verifierUserId","preconditions","frequency","environment","device","testVersionId","testVersionName","executedOn","testObject","caseReference"))value.put(key,item.get(key));return value;}
+    Map<String,Object> snapshot(Map<String,Object> item){var value=new LinkedHashMap<String,Object>();for(String key:List.of("id","key","type","title","description","status","priority","assigneeMembershipId","featureId","documentId","rowId","monkey","steps","expectedResult","actualResult","version","ticketState","closureReason","coordinatorMembershipId","verifierUserId","preconditions","frequency","environment","device","testVersionId","testVersionName","executedOn","testObject","caseReference","startOn","dueOn","estimatedHours","actualHours","milestones"))value.put(key,item.get(key));return value;}
     long record(long p,long id,String user,String event,Object before,Object after){return db.insert("INSERT INTO work_item_feature_history(project_id,work_item_id,event_type,before_json,after_json,actor_user_id,created_at) VALUES(?,?,?,?,?,?,UTC_TIMESTAMP(6))",p,id,event,before==null?null:db.encode(before),db.encode(after),user);}
     private static final String HISTORY="SELECT h.id,h.event_type AS eventType,h.before_json AS beforeJson,h.after_json AS afterJson,h.actor_user_id AS actorId,u.display_name AS actorName,h.created_at AS createdAt FROM work_item_feature_history h JOIN identity_users u ON u.id=h.actor_user_id WHERE h.project_id=? AND h.work_item_id=?";
     private void historyAccess(long p,long id){db.row("SELECT work_item_id FROM work_item_feature_context WHERE project_id=? AND work_item_id=?",p,id);}
     private Map<String,Object> decode(Object value){if(value==null)return new LinkedHashMap<>();try{return json.readValue(String.valueOf(value),new TypeReference<LinkedHashMap<String,Object>>(){});}catch(Exception e){throw new IllegalStateException("Invalid saved issue history",e);}}
     private Map<String,Object> publicHistory(Map<String,Object> row){var before=decode(row.remove("beforeJson"));var after=decode(row.remove("afterJson"));after.remove("requestKey");after.remove("requestChecksum");row.put("before",before);row.put("after",after);if(after.containsKey("body"))row.put("body",after.get("body"));if(after.containsKey("reason"))row.put("reason",after.get("reason"));if(after.containsKey("version"))row.put("version",after.get("version"));return row;}
     @Transactional(readOnly=true) public List<Map<String,Object>> history(long p,String user,long id){authorize(p,user,false);historyAccess(p,id);return db.rows(HISTORY+" ORDER BY h.id",p,id).stream().map(this::publicHistory).toList();}
-    @Transactional(readOnly=true) public List<Map<String,Object>> comments(long p,String user,long id){authorize(p,user,false);historyAccess(p,id);return db.rows(HISTORY+" AND (h.event_type='COMMENT' OR JSON_EXTRACT(h.after_json,'$.body') IS NOT NULL) ORDER BY h.id",p,id).stream().map(this::publicHistory).toList();}
+    @Transactional(readOnly=true) public List<Map<String,Object>> comments(long p,String user,long id){authorize(p,user,false);historyAccess(p,id);return db.rows(HISTORY+" AND (h.event_type='COMMENT' OR JSON_EXTRACT(h.after_json,'$.body') IS NOT NULL) ORDER BY h.id",p,id).stream().map(row->{var result=publicHistory(row);result.put("attachments",TicketAttachmentService.metadata(db,p,id,number(row,"id")));return result;}).toList();}
     public Map<String,Object> comment(long p,String user,long id,FeatureIssueDtos.Comment input){
         bounded(input.body(),20000,true);action(p,user,id,new FeatureIssueDtos.Action(input.body(),null,null,null,null,false,input.expectedVersion(),input.requestKey()));
         long history=db.count("SELECT history_id FROM ticket_commands WHERE project_id=? AND work_item_id=? AND request_key=?",p,id,input.requestKey().toString());return publicHistory(db.row(HISTORY+" AND h.id=?",p,id,history));

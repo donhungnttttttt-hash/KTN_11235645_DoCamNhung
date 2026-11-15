@@ -13,8 +13,11 @@ public class AdminController {
     private String actor(Authentication auth) {return ((SessionPrincipal)auth.getPrincipal()).id();}
     @GetMapping("/overview") public AdminDtos.Overview overview(Authentication auth,@RequestParam(required=false) Long projectId) {return service.overview(actor(auth),projectId);}
     @GetMapping("/projects") public AdminDtos.Page<Map<String,Object>> projects(Authentication auth,@RequestParam(required=false) Long projectId,
-            @RequestParam(defaultValue="") String keyword,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size) {
-        return service.projects(actor(auth),projectId,keyword,page,size);
+            @RequestParam(defaultValue="") String keyword,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size,
+            @RequestParam(defaultValue="id") String sort,
+            @RequestParam(required=false) @org.springframework.format.annotation.DateTimeFormat(iso=org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate createdFrom,
+            @RequestParam(required=false) @org.springframework.format.annotation.DateTimeFormat(iso=org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate createdTo) {
+        return service.projects(actor(auth),projectId,keyword,page,size,sort,createdFrom,createdTo);
     }
     @GetMapping("/projects/{id}") public Map<String,Object> project(Authentication auth,@PathVariable long id) {return service.project(actor(auth),id);}
 }

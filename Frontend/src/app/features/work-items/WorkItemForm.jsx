@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React, { useEffect, useRef, useState } from 'react';
 import { workItemsApi } from '../../services/api/workItems';
 import { testCasesApi } from '../../services/api/testCases';
@@ -7,9 +8,9 @@ import { QaForm } from '../qa/QaForm';
 
 export function WorkField({ label, children }) { return <label className="wi-field"><span>{label}</span>{children}</label>; }
 export function WorkSelect({ label, items = [], value, onChange, required = false, disabled = false, describe = item => item.name, id = item => item.id }) {
-  return <WorkField label={label}><select value={value ?? ''} onChange={event => onChange(event.target.value)} required={required} disabled={disabled}>
+  return <WorkField label={label}><UnifiedSelect value={value ?? ''} onChange={event => onChange(event.target.value)} required={required} disabled={disabled}>
     <option value="">Chưa chọn</option>{items.map(item => <option key={id(item)} value={id(item)}>{describe(item)}</option>)}
-  </select></WorkField>;
+  </UnifiedSelect></WorkField>;
 }
 export function WorkError({ error, retry }) { return error ? <div className="wi-error" role="alert">{error}{retry && <Button onClick={retry}>Thử lại</Button>}</div> : null; }
 const empty = { type: 'BUG', title: '', description: '', steps: '', expectedResult: '', actualResult: '', buildId: '', environmentId: '', deviceId: '', revisionId: '', standaloneReason: '' };
@@ -45,10 +46,10 @@ export function NewWorkItemForm({ projectId, catalogs, canTriage = false, canCre
     finally { if (live.current) setBusy(false); }
   }
   if (attemptId && !source) return <><WorkError error={sourceError} retry={() => setRetry(v => v + 1)} />{!sourceError && <p>Đang lấy ngữ cảnh lần kiểm thử…</p>}</>;
-  const chooser = <WorkField label="Loại công việc"><select disabled={busy || !!attemptId} value={form.type} onChange={e => {
+  const chooser = <WorkField label="Loại công việc"><UnifiedSelect disabled={busy || !!attemptId} value={form.type} onChange={e => {
     if (e.target.value === 'QA' && (canCreateQa !== true || attemptId)) return;
     change('type', e.target.value);
-  }}>{Object.entries(typeLabels).filter(([code]) => code !== 'QA' || (!attemptId && (canCreateQa === true || form.type === 'QA'))).map(([code, label]) => <option key={code} value={code}>{label}</option>)}</select></WorkField>;
+  }}>{Object.entries(typeLabels).filter(([code]) => code !== 'QA' || (!attemptId && (canCreateQa === true || form.type === 'QA'))).map(([code, label]) => <option key={code} value={code}>{label}</option>)}</UnifiedSelect></WorkField>;
   // The typed form owns its own submit; a QA must never enter the generic form.
   if (form.type === 'QA' && !attemptId) return <>{chooser}<QaForm projectId={projectId} catalogs={catalogs} canCreateQa={canCreateQa} onCreated={fresh => onCreated(fresh.item)} /></>;
   return <form className="wi-form" onSubmit={submit}>

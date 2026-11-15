@@ -1,4 +1,5 @@
-import {apiRequest} from './client';
+import {apiRequest,createApiClient} from './client';
+const fileRequest=createApiClient({timeoutMs:60000});
 const base=p=>`/projects/${p}/issues`;
 const query=values=>new URLSearchParams(Object.entries(values).filter(([,v])=>v!==''&&v!=null));
 async function write(path,body,method='POST',options={}) {
@@ -10,6 +11,12 @@ export const featureIssuesApi={
  board:(p,filters={},options={})=>apiRequest(`${base(p)}/board?${query(filters)}`,options),
  options:(p,type,{assigneeMembershipId,...options}={})=>apiRequest(`${base(p)}/options?${query({type,assigneeMembershipId})}`,options),
  action:(p,id,body,options={})=>write(`${base(p)}/${id}/actions`,body,'POST',options),
+ actionWithFiles:async(p,id,body,files,options={})=>{
+  const csrf=await apiRequest('/auth/csrf',options),form=new FormData();
+  form.append('action',new Blob([JSON.stringify(body)],{type:'application/json'}));files.forEach(file=>form.append('files',file));
+  return fileRequest(`${base(p)}/${id}/actions-with-files`,{...options,method:'POST',headers:{[csrf.headerName]:csrf.token},body:form});
+ },
+ attachment:(p,id,fileId,options={})=>fileRequest(`${base(p)}/${id}/attachments/${fileId}`,{...options,responseType:'blob'}),
  responsibilities:(p,options={})=>apiRequest(`/projects/${p}/ticket-responsibilities`,options),
  updateResponsibilities:(p,membershipId,body,options={})=>write(`/projects/${p}/ticket-responsibilities/${membershipId}`,body,'PUT',options),
  notifications:(filters={},options={})=>apiRequest(`/me/ticket-notifications?${query(filters)}`,options),

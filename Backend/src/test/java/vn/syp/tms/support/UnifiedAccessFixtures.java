@@ -25,7 +25,7 @@ public abstract class UnifiedAccessFixtures {
         if(url==null||!url.matches("jdbc:mysql://(?:127\\.0\\.0\\.1|localhost):[0-9]+/tms_userstest_[a-f0-9]{12}\\?.+"))throw new IllegalStateException("Dedicated test schema required");
         r.add("TMS_DB_URL",()->url);r.add("TMS_DB_USER",()->System.getenv("TMS_TEST_USERS_USER"));r.add("TMS_DB_PASSWORD",()->System.getenv("TMS_TEST_USERS_PASSWORD"));
         r.add("TMS_MIGRATION_USER",()->System.getenv("TMS_TEST_USERS_USER"));r.add("TMS_MIGRATION_PASSWORD",()->System.getenv("TMS_TEST_USERS_PASSWORD"));
-        for(String key:List.of("TMS_BOOTSTRAP_ENABLED","TMS_REDMINE_ENABLED","TMS_CHATGPT_LOCAL_ENABLED","TMS_OLLAMA_ENABLED","TMS_OPENAI_ENABLED"))r.add(Objects.requireNonNull(key),()->"false");
+        for(String key:List.of("TMS_DASHBOARD_MONITOR_ENABLED","TMS_BOOTSTRAP_ENABLED","TMS_REDMINE_ENABLED","TMS_CHATGPT_LOCAL_ENABLED","TMS_OLLAMA_ENABLED","TMS_OPENAI_ENABLED"))r.add(Objects.requireNonNull(key),()->"false");
         for(String key:List.of("spring.session.jdbc.cleanup-cron","TMS_AI_DRAFT_CLEANUP_CRON","TMS_AI_CHAT_CLEANUP_CRON"))r.add(Objects.requireNonNull(key),()->"-");
     }
     @LocalServerPort protected int port;
@@ -63,6 +63,13 @@ public abstract class UnifiedAccessFixtures {
             return http.send(request,HttpResponse.BodyHandlers.ofString());
         }
         public HttpResponse<byte[]> bytes(String path)throws Exception{return http.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:"+port+"/api/v1"+path)).GET().build(),HttpResponse.BodyHandlers.ofByteArray());}
+        public HttpResponse<String> multipart(String path,Object input,List<org.springframework.mock.web.MockMultipartFile> files)throws Exception{
+            var csrf=body(get("/auth/csrf"));String boundary="TicketCommentBoundary";var data=new java.io.ByteArrayOutputStream();
+            data.write(("--"+boundary+"\r\nContent-Disposition: form-data; name=\"action\"\r\nContent-Type: application/json\r\n\r\n"+json.writeValueAsString(input)+"\r\n").getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            for(var file:files){data.write(("--"+boundary+"\r\nContent-Disposition: form-data; name=\"files\"; filename=\""+file.getOriginalFilename()+"\"\r\nContent-Type: "+file.getContentType()+"\r\n\r\n").getBytes(java.nio.charset.StandardCharsets.UTF_8));data.write(file.getBytes());data.write("\r\n".getBytes(java.nio.charset.StandardCharsets.UTF_8));}
+            data.write(("--"+boundary+"--\r\n").getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            return http.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:"+port+"/api/v1"+path)).header("Content-Type","multipart/form-data; boundary="+boundary).header(csrf.path("headerName").asText(),csrf.path("token").asText()).POST(HttpRequest.BodyPublishers.ofByteArray(data.toByteArray())).build(),HttpResponse.BodyHandlers.ofString());
+        }
         public HttpResponse<String> send(String method,String path,Object input,JsonNode csrf)throws Exception{
             var request=HttpRequest.newBuilder(URI.create("http://127.0.0.1:"+port+"/api/v1"+path)).timeout(Duration.ofSeconds(30)).header("Content-Type","application/json");
             if(csrf!=null)request.header(csrf.path("headerName").asText(),csrf.path("token").asText());

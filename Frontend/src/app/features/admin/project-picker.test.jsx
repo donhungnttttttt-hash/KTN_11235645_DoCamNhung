@@ -130,9 +130,9 @@ test('pending and stale searches cannot commit an old result; empty results and 
  await user.click(await screen.findByRole('option',{name:'BB · Beta'}));expect(changed).toHaveBeenCalledWith('2');
 });
 
-test('non-searchable scope retains its native selector',async()=>{
+test('local project scope uses the shared searchable selector',async()=>{
  const changed=vi.fn();render(<AdminUserProjectFilter searchable={false} api={{projects:vi.fn().mockResolvedValue(page([alpha]))}} value="" onChange={changed}/>);
  await screen.findByRole('option',{name:'AA · Alpha'});
- await userEvent.setup().selectOptions(screen.getByLabelText('Dự án của người dùng'),'1');
+ const user=userEvent.setup();await user.click(screen.getByLabelText('Dự án của người dùng'));await user.click(screen.getByRole('button',{name:'AA · Alpha'}));
  expect(changed).toHaveBeenCalledWith('1');expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });

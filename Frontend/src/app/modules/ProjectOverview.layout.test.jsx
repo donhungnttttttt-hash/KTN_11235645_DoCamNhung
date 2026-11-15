@@ -12,7 +12,7 @@ vi.mock('../services/api/projects',()=>({projectsApi:{listCatalog:api.catalog}})
 beforeEach(()=>{
  state.project={id:12,code:'SPIDER-PLUS',name:'Spider Plus'};state.loading=false;state.error='';vi.clearAllMocks();
  api.list.mockImplementation(async(p,{status,page,size})=>{
-  if(page!==0||size!==1)throw new Error('Overview reads counts, not all Issue pages');
+  if(page!==0||size!==1)throw new Error('Overview reads counts, not all Ticket pages');
   return {items:[],totalItems:status==='open'?4:status==='closed'?2:0,page,size,totalPages:0};
  });
  api.catalog.mockResolvedValue([{id:5,projectId:12,code:'R1',name:'Phát hành tháng 12',startsOn:null,dueOn:'2026-12-12',archived:false,version:0}]);
@@ -22,7 +22,7 @@ it('ARENA-D01 uses canonical Ticket columns and excludes processed and historica
  api.board.mockResolvedValue({columns:[{id:'new',count:1},{id:'processed',count:2},{id:'fixed',count:3},{id:'unsupported',count:1}],legacyCount:2,totalItems:9});
  const navigate=vi.fn();render(<ProjectOverview navigate={navigate}/>);
  expect(await screen.findByRole('button',{name:'Đóng – Đã xử lý 2'})).toBeVisible();
- expect(screen.getByText('4/9 Issue đã kết thúc · 44%')).toBeVisible();
+ expect(screen.getByText('4/9 Ticket đã kết thúc · 44%')).toBeVisible();
  expect(screen.getByRole('button',{name:'Cần đối chiếu lịch sử 2'})).toBeVisible();
  expect(screen.queryByRole('button',{name:/SYP kiểm tra lại|Sẵn sàng xử lý|Lập kế hoạch|Hoàn thành/})).toBeNull();
  fireEvent.click(screen.getByRole('button',{name:'Đóng – Đã xử lý 2'}));
@@ -36,7 +36,7 @@ it('replaces only the recent-work block while keeping the project overview and i
  expect(within(information).getByText(/Thực hiện System Test/)).toBeVisible();
  const statuses=screen.getByRole('region',{name:'Trạng thái công việc'});
  expect(await within(statuses).findByRole('button',{name:'Chưa xử lý 4'})).toBeVisible();
- expect(within(statuses).getByText(/2\/6 Issue/)).toBeVisible();
+ expect(within(statuses).getByText(/2\/6 Ticket/)).toBeVisible();
  const milestones=screen.getByRole('region',{name:'Mốc phát hành'});
  expect(await within(milestones).findByText('Phát hành tháng 12')).toBeVisible();
  expect(within(milestones).getByText(/12\/12\/2026/)).toBeVisible();
@@ -51,13 +51,13 @@ it('opens the selected status in the current project rather than depending on th
  expect(route).toBe('/board/list');expect(new URLSearchParams(query).get('projectId')).toBe('12');expect(new URLSearchParams(query).get('column')).toBe('new');
 });
 it('keeps the project information and milestones when status loading fails and retries only that read',async()=>{
- api.board.mockRejectedValueOnce(new Error('Không tải được trạng thái Issue'));
+ api.board.mockRejectedValueOnce(new Error('Không tải được trạng thái Ticket'));
  render(<ProjectOverview/>);
  const statuses=screen.getByRole('region',{name:'Trạng thái công việc'});
- expect(await within(statuses).findByRole('alert')).toHaveTextContent('Không tải được trạng thái Issue');
+ expect(await within(statuses).findByRole('alert')).toHaveTextContent('Không tải được trạng thái Ticket');
  expect(screen.getByText(/Thực hiện System Test/)).toBeVisible();
  expect(await screen.findByText('Phát hành tháng 12')).toBeVisible();
- fireEvent.click(within(statuses).getByRole('button',{name:'Tải lại trạng thái'}));
+ fireEvent.click(screen.getByRole('button',{name:'Thử lại trạng thái'}));
  expect(await within(statuses).findByRole('button',{name:'Chưa xử lý 4'})).toBeVisible();
  expect(api.catalog).toHaveBeenCalledTimes(1);
 });

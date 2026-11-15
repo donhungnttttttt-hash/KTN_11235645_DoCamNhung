@@ -28,7 +28,7 @@ class ProjectStatusReportSecurityTest {
   verifyNoInteractions(reports,audit);
  }
  @Test void retiredEndpointDefersToServiceAuthorizationBeforeInterpretingOldPayload()throws Exception {
-  when(reports.create(anyString(),eq(1L),isNull())).thenThrow(new vn.syp.tms.shared.web.BusinessException(410,"USE_FEATURE_REPORTS","Use Feature reports"));
+  when(reports.create(anyString(),eq(1L),isNull())).thenThrow(new vn.syp.tms.shared.web.BusinessException(410,"USE_FEATURE_REPORTS","Use Đợt kiểm thử reports"));
   mvc.perform(post("/api/v1/projects/1/status-reports").with(actor("PM")).with(Objects.requireNonNull(csrf())).contentType("application/json").content("{}")).andExpect(status().isGone());
   verify(reports).create(anyString(),eq(1L),isNull());
  }

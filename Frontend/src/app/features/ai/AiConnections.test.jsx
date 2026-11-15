@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import {render,screen,fireEvent,waitFor,act} from '@testing-library/react';
 import {it,expect,vi,beforeEach} from 'vitest';
@@ -36,7 +37,7 @@ it('requires reachable installed Ollama models and exact current ChatGPT catalog
  expect(providerReady({code:'OLLAMA',available:true},'m',{ready:false,items:[{id:'m'}]})).toBeFalsy();expect(providerReady({code:'OLLAMA',available:true},'m',{ready:true,items:[]})).toBeFalsy();expect(providerReady({code:'CHATGPT',available:true,connection:{state:'VERIFIED',verifiedModel:'m',planPermission:true}},'m',{ready:true,items:[]})).toBeFalsy();
 });
 it('renders markup model names as text and preserves selected unavailable model after refresh',async()=>{
- api.models.mockResolvedValue([{id:'<b>local</b>',label:'<b>local</b>'}]);render(<AiProviderProvider api={api}><AiSourceSelector connectionsOnly/></AiProviderProvider>);await waitFor(()=>expect(screen.getByLabelText('Nguồn AI')).toBeEnabled());fireEvent.change(screen.getByLabelText('Nguồn AI'),{target:{value:'OLLAMA'}});await waitFor(()=>expect(screen.getByLabelText('Model AI')).toHaveValue('<b>local</b>'));expect(document.querySelector('.ai-connection b')).toBeNull();api.models.mockRejectedValue(Object.assign(new Error('private-secret'),{code:'AI_UNAVAILABLE'}));fireEvent.click(screen.getByRole('button',{name:'Tải lại nguồn AI'}));await screen.findByRole('alert');expect(screen.getByLabelText('Nguồn AI')).toHaveValue('OLLAMA');expect(screen.getByLabelText('Model AI')).toHaveValue('<b>local</b>');expect(screen.queryByText('private-secret')).toBeNull();
+ api.models.mockResolvedValue([{id:'<b>local</b>',label:'<b>local</b>'}]);render(<AiProviderProvider api={api}><AiSourceSelector connectionsOnly/></AiProviderProvider>);await waitFor(()=>expect(screen.getByLabelText('Nguồn AI')).toBeEnabled());fireEvent.change(screen.getByLabelText('Nguồn AI'),{target:{value:'OLLAMA'}});await waitFor(()=>expect(screen.getByLabelText('Model AI')).toHaveValue('<b>local</b>'));expect(document.querySelector('.ai-connection b')).toBeNull();api.models.mockRejectedValue(Object.assign(new Error('private-secret'),{code:'AI_UNAVAILABLE'}));refreshEvent.focus(window);await screen.findByRole('alert');expect(screen.getByLabelText('Nguồn AI')).toHaveValue('OLLAMA');expect(screen.getByLabelText('Model AI')).toHaveValue('<b>local</b>');expect(screen.queryByText('private-secret')).toBeNull();
 });
 it('requires a probe for the selected ChatGPT model and keeps unavailable source selected',async()=>{
  render(<AiProviderProvider api={api}><AiWorkspace projectId={1} api={api}/></AiProviderProvider>);

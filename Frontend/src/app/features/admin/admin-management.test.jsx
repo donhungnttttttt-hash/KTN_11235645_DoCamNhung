@@ -105,8 +105,8 @@ it('preserves selected people across picker pages and restricts Dev to Dev role'
  render(<Picker/>);fireEvent.click(await screen.findByLabelText('Chọn Developer'));
  expect(screen.queryByLabelText('Vai trò Developer')).not.toBeInTheDocument();
  fireEvent.click(screen.getByLabelText('Chọn Tester'));expect(screen.queryByLabelText('Vai trò Tester')).not.toBeInTheDocument();
- fireEvent.click(screen.getByRole('button',{name:'Người sau'}));await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({page:1}),expect.anything()));
- fireEvent.click(await screen.findByRole('button',{name:'Người trước'}));await screen.findByLabelText('Chọn Developer');
+ fireEvent.click(screen.getByRole('button',{name:'Trang sau'}));await waitFor(()=>expect(api.users).toHaveBeenLastCalledWith(expect.objectContaining({page:1}),expect.anything()));
+ fireEvent.click(await screen.findByRole('button',{name:'Trang trước'}));await screen.findByLabelText('Chọn Developer');
  fireEvent.click(screen.getByLabelText('Chọn Developer'));fireEvent.click(screen.getByLabelText('Chọn Tester'));
  expect(screen.getByText(/Đã chọn 0 người/)).toBeInTheDocument();
  fireEvent.change(screen.getByLabelText('Tìm tài khoản đang hoạt động'),{target:{value:'search'}});

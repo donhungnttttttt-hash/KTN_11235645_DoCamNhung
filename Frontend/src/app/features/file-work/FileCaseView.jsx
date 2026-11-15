@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import {TableScroll} from '../../components/TableScroll';
 import React, {useState} from 'react';
 
@@ -18,7 +19,7 @@ export function FileCaseView({view,raw,renderResult,renderActions,viewState}) {
       <button type="button" aria-pressed={single} onClick={()=>setSingle(true)}>Xem từng case</button>
     </div>
     {single ? row && <section className="fw-case-card" role="region" aria-label="Case đang xem">
-      <div className="fw-case-navigation"><label className="fw-field">Chọn case<select value={row.runItemId} onChange={e=>setSelected(Number(e.target.value))}>{view.rows.map(r=><option key={r.runItemId} value={r.runItemId}>{r.caseNo} · {r.titleVi}</option>)}</select></label>
+      <div className="fw-case-navigation"><label className="fw-field">Chọn case<UnifiedSelect value={row.runItemId} onChange={e=>setSelected(Number(e.target.value))}>{view.rows.map(r=><option key={r.runItemId} value={r.runItemId}>{r.caseNo} · {r.titleVi}</option>)}</UnifiedSelect></label>
         <button type="button" disabled={!index} onClick={()=>setSelected(view.rows[index-1].runItemId)}>Case trước</button>
         <button type="button" disabled={index+1>=view.rows.length} onClick={()=>setSelected(view.rows[index+1].runItemId)}>Case tiếp</button>
       </div>

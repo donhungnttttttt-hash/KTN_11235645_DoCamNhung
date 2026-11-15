@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import { useDialogFocus } from '../../hooks/useDialogFocus';
 import React, { useEffect, useRef, useState } from 'react';
 import { X, Languages } from 'lucide-react';
@@ -84,7 +85,7 @@ export function CreateCaseDialog({ projectId, suites, onClose, onSuccess, defaul
 
               <div>
                 <label htmlFor="CreateCaseDialog-field-2" className="block text-xs font-semibold text-slate-700 mb-1">Nhóm Test Specification *</label>
-                <select id="CreateCaseDialog-field-2"
+                <UnifiedSelect id="CreateCaseDialog-field-2"
                   required
                   value={formData.suiteId}
                   onChange={e => setFormData({ ...formData, suiteId: e.target.value })}
@@ -94,7 +95,7 @@ export function CreateCaseDialog({ projectId, suites, onClose, onSuccess, defaul
                   {suites.map(s => (
                     <option key={s.id} value={s.id}>{s.code} - {s.name}</option>
                   ))}
-                </select>
+                </UnifiedSelect>
               </div>
             </div>
 

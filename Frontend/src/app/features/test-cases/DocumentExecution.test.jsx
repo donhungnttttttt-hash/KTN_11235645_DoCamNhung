@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
@@ -32,7 +33,7 @@ it('opens a focused dialog immediately when a source result has no execution con
   expect(dialog).toContainElement(document.activeElement);
   expect(dialog).toHaveTextContent('Chọn đợt và cấu hình');
   await user.keyboard('{Escape}');expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-  await user.selectOptions(screen.getByRole('combobox',{name:'Đợt ghi kết quả'}),'8');
+  await user.click(screen.getByRole('combobox',{name:'Đợt ghi kết quả'}));await user.click(screen.getByRole('button',{name:'Regression · ACTIVE'}));
   await waitFor(()=>expect(screen.getByTestId('live-result')).toHaveTextContent('NOT_RUN'));
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
@@ -100,7 +101,7 @@ it('retries failed context loading and requires explicit selection for multiple 
   executionApi.cycle.mockRejectedValueOnce(new Error('Đợt tạm thời không tải được')).mockResolvedValue({id:8,name:'Regression',statusCode:'CLOSED'});
   executionApi.configurations.mockResolvedValue([{id:2,environmentName:'QA',deviceName:'iPad'},{id:3,environmentName:'QA',deviceName:'Android'}]);
   const user=userEvent.setup();render(<Harness/>);await user.click(screen.getByRole('button',{name:'Ô iPad'}));await user.selectOptions(await screen.findByRole('combobox',{name:'Đợt ghi kết quả'}),'8');
-  expect(await screen.findByRole('alert')).toHaveTextContent('Đợt tạm thời không tải được');await user.click(screen.getByRole('button',{name:'Tải lại kết quả'}));
+  expect(await screen.findByRole('alert')).toHaveTextContent('Đợt tạm thời không tải được');await refreshEvent.focus(window);
   await user.selectOptions(await screen.findByRole('combobox',{name:'Cấu hình ghi kết quả'}),'2');await screen.findByRole('dialog');
   expect(screen.queryByRole('button',{name:'Ghi kết quả'})).not.toBeInTheDocument();
 });
@@ -117,7 +118,7 @@ it('shows revision changes from the server with previous and current values',asy
   const user=userEvent.setup(),close=vi.fn();render(<CaseHistoryDialog projectId={1} row={row} onClose={close} onExecution={vi.fn()}/>);
   expect(await screen.findByText('Tiêu đề cũ')).toBeVisible();expect(screen.getByText('Tiêu đề mới')).toBeVisible();
   expect(screen.queryByText('Giữ nguyên')).not.toBeInTheDocument();
-  await user.selectOptions(screen.getByLabelText('Phiên bản lịch sử'),'1');
+  await user.click(screen.getByLabelText('Phiên bản lịch sử'));await user.click(screen.getByRole('button',{name:'Rev 1'}));
   expect(await screen.findByText('Phiên bản đầu tiên được lưu trong hệ thống.')).toBeVisible();
   await user.keyboard('{Escape}');expect(close).toHaveBeenCalled();
 });

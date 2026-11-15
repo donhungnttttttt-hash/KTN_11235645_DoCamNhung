@@ -21,7 +21,7 @@ beforeEach(()=>{
 afterEach(()=>{cleanup();styles.remove();});
 
 const cases=[
-  ['Feature form',props=><FeatureForm projectId={1} {...props}/>,'Tên Feature'],
+  ['Đợt kiểm thử form',props=><FeatureForm projectId={1} {...props}/>,'Tên Đợt kiểm thử'],
   ['assignment form',props=><DocumentAssignments projectId={1} documentId={2} data={{document:{version:0},selfMembershipId:10,rows:[{rowId:101,assigneeMembershipId:10}]}} {...props}/>,'Phạm vi case'],
   ['reused cell editor',props=><DocumentCellEditor projectId={1} documentId={2} cell={{row:{rowId:101,sourceId:'TC1'},index:1,label:'Nội dung',value:'Current',maxLength:8000}} {...props}/>,'Nội dung'],
 ];

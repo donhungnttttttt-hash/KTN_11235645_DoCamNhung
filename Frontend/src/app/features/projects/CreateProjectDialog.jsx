@@ -50,54 +50,40 @@ export function CreateProjectDialog({ onClose }) {
           <fieldset disabled={loading} className="min-w-0">
           <div className="form-group">
             <label htmlFor="code">Mã dự án *</label>
-            <input 
-              id="code" 
-              name="code" 
-              value={formData.code} 
-              onChange={handleChange} 
-              required 
+            <input
+              id="code"
+              name="code"
+              value={formData.code}
+              onChange={handleChange}
+              required
               maxLength={32}
               placeholder="Vd: PRJ-01"
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="name">Tên dự án *</label>
-            <input 
-              id="name" 
-              name="name" 
-              value={formData.name} 
-              onChange={handleChange} 
-              required 
+            <input
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
               maxLength={100}
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="description">Mô tả</label>
-            <textarea 
-              id="description" 
-              name="description" 
-              value={formData.description} 
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
               onChange={handleChange}
               rows={3}
             />
           </div>
-          
-          <div className="form-group">
-            <label htmlFor="timezone">Múi giờ *</label>
-            <select 
-              id="timezone" 
-              name="timezone" 
-              value={formData.timezone} 
-              onChange={handleChange} 
-              required
-            >
-              <option value="Asia/Ho_Chi_Minh">Asia/Ho_Chi_Minh</option>
-              <option value="UTC">UTC</option>
-            </select>
-          </div>
-          
+
           <div className="dialog-actions">
             <button type="button" className="btn btn-secondary" onClick={onClose} disabled={loading}>
               Hủy

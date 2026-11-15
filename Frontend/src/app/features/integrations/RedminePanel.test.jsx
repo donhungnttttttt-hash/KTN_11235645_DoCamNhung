@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -50,9 +51,9 @@ it('loads a failed state again and keeps the draft through a version conflict',a
   redmineApi.state.mockRejectedValueOnce(new Error('Không có quyền xem')).mockResolvedValue(base);
   redmineApi.publish.mockRejectedValue(Object.assign(new Error('Bản ghi thay đổi'),{status:409}));
   render(<RedminePanel {...props}/>);fireEvent.click(screen.getByText('Công bố và đối chiếu Redmine'));await screen.findByText('Không có quyền xem');
-  expect(screen.queryByText('Chưa công bố')).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'Tải lại Redmine'}));await screen.findByText('Chưa công bố');
+  expect(screen.queryByText('Chưa công bố')).not.toBeInTheDocument();refreshEvent.focus(window);await screen.findByText('Chưa công bố');
   fireEvent.change(screen.getByLabelText('Lý do công bố hoặc đối chiếu'),{target:{value:'Bản nháp PM'}});fireEvent.click(screen.getByRole('button',{name:'Công bố lên Redmine'}));await screen.findByText('Bản ghi thay đổi');expect(screen.getByRole('button',{name:'Công bố lên Redmine'})).toBeDisabled();
-  fireEvent.click(screen.getByRole('button',{name:'Tải lại Redmine'}));await waitFor(()=>expect(screen.getByRole('button',{name:'Công bố lên Redmine'})).toBeEnabled());expect(screen.getByLabelText('Lý do công bố hoặc đối chiếu')).toHaveValue('Bản nháp PM');
+  refreshEvent.focus(window);await waitFor(()=>expect(screen.getByRole('button',{name:'Công bố lên Redmine'})).toBeEnabled());expect(screen.getByLabelText('Lý do công bố hoặc đối chiếu')).toHaveValue('Bản nháp PM');
 });
 it('retries a definitive failure using the delivery version and shows history',async()=>{
   redmineApi.state.mockResolvedValue({...base,deliveries:[{id:8,status:'FAILED',version:6,errorCode:'REMOTE_AUTH'}],attempts:[{id:1,attemptNo:1,outcome:'FAILED',occurredAt:'2026-09-30T02:00:00Z'}]});
@@ -69,9 +70,9 @@ it('announces refresh of an existing state and blocks publishing until refreshed
   redmineApi.state.mockResolvedValueOnce(base).mockImplementationOnce(()=>new Promise(resolve=>{resolveRefresh=resolve;}));
   render(<RedminePanel {...props}/>);await open();
   fireEvent.change(screen.getByLabelText('Lý do công bố hoặc đối chiếu'),{target:{value:'Đã kiểm tra'}});
-  fireEvent.click(screen.getByRole('button',{name:'Tải lại Redmine'}));
+  refreshEvent.focus(window);
   expect(screen.getByRole('status')).toHaveTextContent('Đang tải liên kết Redmine');
-  expect(screen.getByRole('button',{name:'Tải lại Redmine'})).toBeDisabled();
+  expect(screen.queryByRole('button',{name:"Tải lại Redmine"})).toBeNull();
   expect(screen.getByRole('button',{name:'Công bố lên Redmine'})).toBeDisabled();
   fireEvent.click(screen.getByRole('button',{name:'Công bố lên Redmine'}));
   expect(redmineApi.publish).not.toHaveBeenCalled();
@@ -83,10 +84,10 @@ it('keeps failed refresh visibly retryable without allowing stale publish author
   redmineApi.state.mockResolvedValueOnce(base).mockRejectedValueOnce(new Error('Mạng gián đoạn')).mockResolvedValue(base);
   render(<RedminePanel {...props}/>);await open();
   fireEvent.change(screen.getByLabelText('Lý do công bố hoặc đối chiếu'),{target:{value:'Bản nháp còn nguyên'}});
-  fireEvent.click(screen.getByRole('button',{name:'Tải lại Redmine'}));await screen.findByRole('alert');
+  refreshEvent.focus(window);await screen.findByRole('alert');
   expect(screen.getByRole('button',{name:'Công bố lên Redmine'})).toBeDisabled();
   expect(screen.getByLabelText('Lý do công bố hoặc đối chiếu')).toHaveValue('Bản nháp còn nguyên');
-  fireEvent.click(screen.getByRole('button',{name:'Tải lại Redmine'}));
+  refreshEvent.focus(window);
   await waitFor(()=>expect(screen.getByRole('button',{name:'Công bố lên Redmine'})).toBeEnabled());
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });

@@ -1,3 +1,4 @@
+import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React from 'react';
 export const resultLabels = { NOT_RUN: 'Chưa chạy', OK: 'OK · Đạt', NG: 'NG · Không đạt', P: 'P · Tạm hoãn' };
 export function formatTime(value, timeZone = 'UTC') {
@@ -15,6 +16,6 @@ export function Pager({ data, onChange }) {
 export function ErrorNotice({ error, retry }) { return error && <div className="ex-error" role="alert">{error} {retry && <button type="button" className="cat-btn" onClick={retry}>Thử lại</button>}</div>; }
 export function Field({ label, children }) { return <label className="ex-field"><span>{label}</span>{children}</label>; }
 export function Select({ value, onChange, items, label, describe = x => x.name, required = true }) {
-  return <Field label={label}><select className="cat-select" required={required} value={value} onChange={e => onChange(e.target.value)}>
-    <option value="">Chọn {label.toLowerCase()}</option>{items.map(x => <option key={x.id} value={x.id}>{describe(x)}</option>)}</select></Field>;
+  return <Field label={label}><UnifiedSelect className="cat-select" required={required} value={value} onChange={e => onChange(e.target.value)}>
+    <option value="">Chọn {label.toLowerCase()}</option>{items.map(x => <option key={x.id} value={x.id}>{describe(x)}</option>)}</UnifiedSelect></Field>;
 }

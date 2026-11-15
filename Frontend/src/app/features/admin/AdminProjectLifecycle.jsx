@@ -8,7 +8,7 @@ const legacyLabels={UNFINISHED_CYCLES:'Đợt kiểm thử chưa chốt',OPEN_RE
 const acknowledgement='Tôi xác nhận lưu trữ dù còn đợt kiểm thử/yêu cầu kiểm thử lại thuộc luồng cũ; dữ liệu và lịch sử được giữ nguyên.';
 const guidance={
  ACTIVE_SESSIONS:'Phiên thuộc luồng cũ cần Admin và PM đối soát; hiện không có thao tác hoàn tất phiên cũ trên giao diện. Mục này vẫn chặn lưu trữ, không được xác nhận ngoại lệ.',
- OPEN_WORK_ITEMS:'PM và USER xử lý Ticket theo trách nhiệm, gồm xác nhận và xác minh hiện hành. Ticket đã xóa hoặc nằm trong Feature/file ẩn và công việc cũ cần Admin và PM đối soát; vẫn chặn lưu trữ, không được xác nhận ngoại lệ.',
+ OPEN_WORK_ITEMS:'PM và USER xử lý Ticket theo trách nhiệm, gồm xác nhận và xác minh hiện hành. Ticket đã xóa hoặc nằm trong Đợt kiểm thử/file ẩn và công việc cũ cần Admin và PM đối soát; vẫn chặn lưu trữ, không được xác nhận ngoại lệ.',
  UNFINISHED_CYCLES:'Đợt kiểm thử thuộc luồng cũ. Admin tổng có thể xác nhận ngoại lệ khi đủ điều kiện; dữ liệu và lịch sử được giữ nguyên.',
  OPEN_RETESTS:'Yêu cầu kiểm thử lại thuộc luồng cũ. Admin tổng có thể xác nhận ngoại lệ khi đủ điều kiện; dữ liệu và lịch sử được giữ nguyên.',
  PENDING_PUBLICATIONS:'Admin và PM đối soát tác vụ Redmine đang gửi hoặc chờ thử lại. Mục này vẫn chặn lưu trữ, không được xác nhận ngoại lệ.',

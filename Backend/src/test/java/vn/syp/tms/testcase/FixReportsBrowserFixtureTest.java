@@ -82,10 +82,10 @@ class FixReportsBrowserFixtureTest {
             assertThat(db.queryForObject("SELECT COUNT(*) FROM project_memberships WHERE project_id=? AND user_id=?",Long.class,p,people.get("admin").getId())).isZero();
             checkpoint("projects");
 
-            long a=feature(p,"pm","Feature A · Phân công 1–40 / 41–60");
-            long b=feature(p,"pm","Feature B · Bản Excel độc lập");
-            long c=feature(p,"pm","Feature C · Tiến độ 3/5 = 60%");
-            long outside=feature(other,"otherPm","Feature ngoài phạm vi thành viên");
+            long a=feature(p,"pm","Đợt kiểm thử A · Phân công 1–40 / 41–60");
+            long b=feature(p,"pm","Đợt kiểm thử B · Bản Excel độc lập");
+            long c=feature(p,"pm","Đợt kiểm thử C · Tiến độ 3/5 = 60%");
+            long outside=feature(other,"otherPm","Đợt kiểm thử ngoài phạm vi thành viên");
             manifest.put("features",Map.of("a",a,"b",b,"progress",c,"other",outside));
             byte[] internal=workbook(false,60),customer=workbook(true,60);
             var documents=new LinkedHashMap<String,Object>();
@@ -104,7 +104,7 @@ class FixReportsBrowserFixtureTest {
             checkpoint("progress");
 
             long d=number(documents,"internalA");var rows=read(p,d).get("rows");
-            var linked=issue(p,a,d,rows.get(0).get("rowId").asLong(),false,"BUG","FR12 · Case Issue đã đóng");
+            var linked=issue(p,a,d,rows.get(0).get("rowId").asLong(),false,"BUG","FR12 · Case Ticket đã đóng");
             write("pm","PUT",base(p)+"/issues/"+linked.get("id").asLong()+"/status",Map.of("status","closed","reason","Fixture: xác minh bên ngoài, không đổi Status case","expectedVersion",0),200);
             var qa=issue(p,a,d,rows.get(1).get("rowId").asLong(),false,"QA","FR12 · Câu hỏi từ case");
             var monkey=issue(p,a,null,null,true,"BUG","FR12 · Monkey của Tester A");
@@ -115,7 +115,7 @@ class FixReportsBrowserFixtureTest {
             write("pm","PUT",base(p)+"/issues/"+assigned.get("id").asLong(),update,200);
             manifest.put("issues",Map.of("closedCaseBug",linked.get("id").asLong(),"caseQa",qa.get("id").asLong(),"ownMonkey",monkey.get("id").asLong(),"assignedDevMonkey",assigned.get("id").asLong()));
             var note=write("pm","POST",base(p)+"/notes",Map.of("title","FR12 · Ghi chú dự án","body","Nội dung kiểm thử riêng.\nKhông có dữ liệu hay thông tin đăng nhập thật."),201);
-            var report=write("pm","POST",base(p)+"/management-reports",Map.of("featureId",c,"title","FR12 · Báo cáo đã lưu","markdown","# Báo cáo kiểm thử cô lập\n\nFeature C có 3/5 case đã test (60%).\n\nCó thể sửa nội dung văn bản mà không ghi ngược Status hay Issue."),201);
+            var report=write("pm","POST",base(p)+"/management-reports",Map.of("featureId",c,"title","FR12 · Báo cáo đã lưu","markdown","# Báo cáo kiểm thử cô lập\n\nFeature C có 3/5 case đã test (60%).\n\nCó thể sửa nội dung văn bản mà không ghi ngược Status hay Ticket."),201);
             manifest.put("noteId",note.get("id").asLong());manifest.put("reportId",report.get("id").asLong());
 
             var rowManifest=new LinkedHashMap<String,Object>();

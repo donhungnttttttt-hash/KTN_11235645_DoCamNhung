@@ -36,7 +36,7 @@ const pageNames = {
   '/tests': 'Thư viện test case', '/tests/cases': 'Tất cả test case',
   '/tests/cycles': 'Đợt kiểm thử', '/tests/retests': 'Kiểm thử lại',
   '/tests/file-work': 'Công việc theo file',
-  '/issues': 'Quản lý lỗi', '/progress': 'Quản lý tiến độ', '/analysis': 'Tổng hợp & Phân tích',
+  '/issues': 'Thêm lỗi', '/progress': 'Quản lý tiến độ', '/analysis': 'Tổng hợp & Phân tích',
   '/settings': 'Thông tin chung', '/settings/notes': 'Note dự án', '/settings/members': 'Thành viên dự án',
   '/settings/catalogs': 'Danh mục dự án', '/settings/rules': 'Quy tắc báo lỗi', '/settings/handbook': 'Sổ tay dự án',
 };

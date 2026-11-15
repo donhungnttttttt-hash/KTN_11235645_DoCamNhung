@@ -16,18 +16,22 @@ public interface TestDocumentDtos {
     record UpdateResult(@NotNull @Pattern(regexp="UNEXECUTED|OK|P|NG|NA") String status,
             @NotNull @PositiveOrZero Long expectedVersion,
             @NotNull @Pattern(regexp="[a-fA-F0-9]{8}(-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}") String requestKey,
-            @Positive Long testVersionId,java.time.LocalDate executedOn) {
+            @Positive Long testVersionId,java.time.LocalDate executedOn,@Positive Long environmentId,@PositiveOrZero Long expectedContextVersion) {
+        public UpdateResult(String status,Long expectedVersion,String requestKey,Long testVersionId,java.time.LocalDate executedOn){this(status,expectedVersion,requestKey,testVersionId,executedOn,null,null);}
         public UpdateResult(String status,Long expectedVersion,String requestKey){this(status,expectedVersion,requestKey,null,null);}
     }
-    record Result(Long rowId,String status,long version,Instant updatedAt,String updatedBy,Long testVersionId,String testVersionName,java.time.LocalDate executedOn) {
-        public Result(Long rowId,String status,long version,Instant updatedAt,String updatedBy){this(rowId,status,version,updatedAt,updatedBy,null,null,null);}
+    record Result(Long rowId,String status,long version,Instant updatedAt,String updatedBy,Long testVersionId,String testVersionName,java.time.LocalDate executedOn,String firstTesterName,Long environmentId,String environmentName,Long contextVersion) {
+        public Result(Long rowId,String status,long version,Instant updatedAt,String updatedBy,Long testVersionId,String testVersionName,java.time.LocalDate executedOn,String firstTesterName){this(rowId,status,version,updatedAt,updatedBy,testVersionId,testVersionName,executedOn,firstTesterName,null,null,null);}
+        public Result(Long rowId,String status,long version,Instant updatedAt,String updatedBy){this(rowId,status,version,updatedAt,updatedBy,null,null,null,null);}
+        public Result(Long rowId,String status,long version,Instant updatedAt,String updatedBy,Long testVersionId,String testVersionName,java.time.LocalDate executedOn){this(rowId,status,version,updatedAt,updatedBy,testVersionId,testVersionName,executedOn,null);}
     }
-    record Change(long id,String before,String after,Instant occurredAt,String actor,String testVersionName,java.time.LocalDate executedOn) {
+    record Change(long id,String before,String after,Instant occurredAt,String actor,String testVersionName,java.time.LocalDate executedOn,String environmentName,String kind,Map<String,Object> beforeContext,Map<String,Object> afterContext) {
+        public Change(long id,String before,String after,Instant occurredAt,String actor,String testVersionName,java.time.LocalDate executedOn){this(id,before,after,occurredAt,actor,testVersionName,executedOn,null,"STATUS",null,null);}
         public Change(long id,String before,String after,Instant occurredAt,String actor){this(id,before,after,occurredAt,actor,null,null);}
     }
     record Detail(Summary document, List<String> headers, List<Row> rows, Map<String,Integer> columns,
             Map<Long,Map<Integer,Long>> cellVersions, List<Map<String,Object>> secondTests) {}
-    record EditCell(@NotNull @Size(max=8000) String value, @NotNull @PositiveOrZero Long expectedVersion,
+    record EditCell(@NotNull String value, @NotNull @PositiveOrZero Long expectedVersion,
             @NotNull @Positive Long expectedRevisionId) {}
     record RowRevision(@NotNull @Positive Long rowId,@NotNull @Positive Long expectedRevisionId) {}
     record ApproveRows(@NotEmpty @Size(max=500) List<@NotNull @jakarta.validation.Valid RowRevision> rows) {}

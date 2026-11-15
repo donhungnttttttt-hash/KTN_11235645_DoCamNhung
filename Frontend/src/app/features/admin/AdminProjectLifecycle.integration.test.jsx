@@ -1,3 +1,4 @@
+import {fireEvent as refreshEvent} from '@testing-library/react';
 import React from 'react';
 import {act,render,screen,fireEvent,waitFor,within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -107,7 +108,7 @@ test('reload refreshes management and lifecycle after another Admin archives the
  render(<AdminProjectDetail id="7" api={api}/>);
  expect(await screen.findByRole('button',{name:'Sửa dự án'})).toBeEnabled();
  await screen.findByRole('button',{name:'Kiểm tra lưu trữ'});
- archived=true;fireEvent.click(screen.getByRole('button',{name:'Tải lại',exact:true}));
+ archived=true;refreshEvent.focus(window);
  await waitFor(()=>expect(screen.getByRole('button',{name:'Sửa dự án'})).toBeDisabled());
  expect(await screen.findByRole('button',{name:'Mở lại dự án'})).toBeEnabled();
  expect(api.members).toHaveBeenCalledTimes(2);
