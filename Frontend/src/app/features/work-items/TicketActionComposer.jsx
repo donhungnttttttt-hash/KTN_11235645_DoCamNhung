@@ -1,3 +1,4 @@
+import {ConfirmationDialog} from '../../components/ConfirmationDialog';
 import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React,{useEffect,useRef,useState} from 'react';
@@ -18,7 +19,7 @@ export function TicketActionComposer({projectId,item,api,initialStatus,blocked=f
  const [expanded,setExpanded]=useState(!!initialStatus),[preview,setPreview]=useState(false);
  const [body,setBody]=useState(''),[state,setState]=useState(''),[reason,setReason]=useState(''),[assignee,setAssignee]=useState(''),[convert,setConvert]=useState(false);
  const [directory,setDirectory]=useState(null),[loading,setLoading]=useState(false),[directoryError,setDirectoryError]=useState(''),[reload,setReload]=useState(0),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[confirmation,setConfirmation]=useState(false);
- const lifetime=useRef(null),lock=useRef(false),command=useRef(null),bodyRef=useRef(body),cancel=useRef(null),submitButton=useRef(null),previousConfirmation=useRef(false),applied=useRef(null);bodyRef.current=body;
+ const lifetime=useRef(null),lock=useRef(false),command=useRef(null),bodyRef=useRef(body),cancel=useRef(null),submitButton=useRef(null),applied=useRef(null);bodyRef.current=body;
  const transitions=item.allowedTransitions||[],states=[...new Set(transitions.map(value=>value.state))],reasons=transitions.filter(value=>value.state==='CLOSED');
  const statusColors={'':ticketStateColor(item.ticketState,item.closureReason),...Object.fromEntries(states.map(value=>[value,ticketStateColor(value,reason||reasons[0]?.closureReason)]))};
  const transition=transitions.find(value=>value.state===state&&(state!=='CLOSED'||value.closureReason===reason));
@@ -33,7 +34,6 @@ export function TicketActionComposer({projectId,item,api,initialStatus,blocked=f
  const hasActionOptions=item.canEdit||transitions.length>0||item.canConvertToBug||item.canAssign||convert||directory?.canManage||state==='CLOSED';
  useEffect(()=>{const controller=new AbortController();lifetime.current=controller;return()=>controller.abort();},[projectId,item.id,api]);
  useEffect(()=>{onActivity?.({busy,dirty:hasDraft});return()=>onActivity?.({busy:false,dirty:false});},[onActivity,busy,hasDraft]);
- useEffect(()=>{if(confirmation)cancel.current?.focus();else if(previousConfirmation.current)submitButton.current?.focus();previousConfirmation.current=confirmation;},[confirmation]);
  useEffect(()=>{
   const signature=JSON.stringify([item.id,initialStatus]);if(applied.current===signature)return;applied.current=signature;
   const requested=transitions.find(value=>value.columnId===initialStatus);setState(requested?.state||'');setReason(requested?.closureReason||'');if(requested)setExpanded(true);
@@ -63,7 +63,7 @@ export function TicketActionComposer({projectId,item,api,initialStatus,blocked=f
   lock.current=true;setBusy(true);setError('');setNotice('');
   try{
    const fresh=await (files.length?api.actionWithFiles(projectId,item.id,{...payload,requestKey:command.current.key},files,{signal}):api.action(projectId,item.id,{...payload,requestKey:command.current.key},{signal}));if(signal.aborted)return;
-   if(bodyRef.current===submitted)setBody('');setFiles([]);fileGeneration.current++;setPlanning(planningOf(fresh));setState('');setReason('');setAssignee('');setConvert(false);setConfirmation(false);setNotice('Đã lưu cập nhật Ticket.');onSaved(fresh);
+   if(bodyRef.current===submitted)setBody('');setFiles([]);fileGeneration.current++;setPlanning(planningOf(Number(fresh.id)===Number(item.id)?fresh:item));setState('');setReason('');setAssignee('');setConvert(false);setConfirmation(false);setNotice('Đã lưu cập nhật Ticket.');onSaved(fresh);
   }catch(e){if(!signal.aborted){setError((e.message||'Chưa lưu được cập nhật.')+' Bản nháp được giữ lại; tải lại Ticket để đối chiếu nếu dữ liệu/quyền đã thay đổi.');setConfirmation(false);}}
   finally{if(!signal.aborted){lock.current=false;setBusy(false);}}
  }
@@ -89,7 +89,7 @@ export function TicketActionComposer({projectId,item,api,initialStatus,blocked=f
 
    {expanded&&<div className="ticket-composer-actions"><button type="button" className="cat-btn" aria-label="Thu gọn bình luận" disabled={busy||confirmation} onClick={()=>{setExpanded(false);setPreview(false);}}>Đóng</button><button type="button" className="cat-btn" aria-pressed={preview} onClick={()=>setPreview(value=>!value)}>Xem trước</button><button ref={submitButton} type="submit" className="cat-btn cat-btn-mint" disabled={busy||blocked||!hasChanges||revoked||((!!assignee||convert)&&(loading||!!directoryError))}>{busy?'Đang lưu…':'Đăng'}</button></div>}
   </form>
-  {confirmation&&<section className="feature-issue-confirm" aria-label="Xác nhận cập nhật Ticket"><p>{convert?`Giữ nguyên mã ${item.key}, nguồn, bình luận và lịch sử; chuyển QA thành Bug / Chưa xử lý.`:`Xác nhận cập nhật ${item.key}${transition?' → '+ticketTransitionLabel(transition):''}?`}</p><p>Người nhận: {assignmentMembers.find(member=>String(member.membershipId)===assignee)?.displayName||item.assignee||'Giữ nguyên'}</p>{coordinatorNotice&&<p>{coordinatorNotice}</p>}<div className="wi-actions"><button ref={cancel} className="cat-btn" disabled={busy} onClick={()=>setConfirmation(false)}>Hủy xác nhận</button><button className="cat-btn cat-btn-mint" disabled={busy||blocked} onClick={execute}>Xác nhận cập nhật</button></div></section>}
+  {confirmation&&<ConfirmationDialog title="Xác nhận cập nhật Ticket" busy={busy} onCancel={()=>setConfirmation(false)} returnFocusRef={submitButton}><p>{convert?`Đóng QA ${item.key} và tạo Bug mới ở trạng thái Chưa xử lý. Nội dung và nguồn phát hiện được sao chép; bình luận, tệp đính kèm và lịch sử gốc được giữ tại QA.`:`Xác nhận cập nhật ${item.key}${transition?' → '+ticketTransitionLabel(transition):''}?`}</p><p>Người nhận: {assignmentMembers.find(member=>String(member.membershipId)===assignee)?.displayName||item.assignee||'Giữ nguyên'}</p>{coordinatorNotice&&<p>{coordinatorNotice}</p>}<div className="wi-actions"><button type="button" data-dialog-initial-focus ref={cancel} className="cat-btn" disabled={busy} onClick={()=>setConfirmation(false)}>Hủy xác nhận</button><button className="cat-btn cat-btn-mint" disabled={busy||blocked} onClick={execute}>Xác nhận cập nhật</button></div></ConfirmationDialog>}
   {error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}
  </section>;
 }

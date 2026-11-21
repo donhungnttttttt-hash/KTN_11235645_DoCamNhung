@@ -116,9 +116,9 @@ it('keeps the returned role read-only and preserves the candidate when adding fa
   await screen.findByText('Lan: Thành viên đã thay đổi');expect(projectsApi.addMember).toHaveBeenCalledWith(1,'tester',{projectRole:'USER',expectedVersion:8});expect(screen.getByLabelText('Chọn Lan')).toBeChecked();fireEvent.click(screen.getByText('Hủy'));
 });
 it('requires confirmation before removing members, surfaces errors and retries',async()=>{
-  const confirm=vi.spyOn(window,'confirm').mockReturnValue(false);projectsApi.removeMember.mockRejectedValue(new Error('PM cuối cùng'));
-  render(<ProjectMembers projectId={1} canEdit/>);fireEvent.click(await screen.findByText('Gỡ Lan'));expect(projectsApi.removeMember).not.toHaveBeenCalled();confirm.mockReturnValue(true);fireEvent.click(screen.getByText('Gỡ Lan'));await screen.findByRole('alert');
-  expect(projectsApi.removeMember).toHaveBeenCalledWith(1,'tester',4);projectsApi.removeMember.mockResolvedValue();fireEvent.click(screen.getByText('Gỡ Lan'));await waitFor(()=>expect(projectsApi.listMembers).toHaveBeenCalledTimes(2));
+  projectsApi.removeMember.mockRejectedValue(new Error('PM cuối cùng'));
+  render(<ProjectMembers projectId={1} canEdit/>);fireEvent.click(await screen.findByText('Gỡ Lan'));expect(projectsApi.removeMember).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Hủy'}));fireEvent.click(screen.getByText('Gỡ Lan'));fireEvent.click(screen.getByRole('button',{name:'Gỡ thành viên',exact:true}));await screen.findByRole('alert');
+  expect(projectsApi.removeMember).toHaveBeenCalledWith(1,'tester',4);projectsApi.removeMember.mockResolvedValue();fireEvent.click(screen.getByText('Gỡ Lan'));fireEvent.click(screen.getByRole('button',{name:'Gỡ thành viên',exact:true}));await waitFor(()=>expect(projectsApi.listMembers).toHaveBeenCalledTimes(2));
 });
 it('retries candidate loading and retains selection when candidate lookup fails',async()=>{
   projectsApi.listMembers.mockResolvedValue([]);projectsApi.memberCandidates.mockRejectedValueOnce(new Error('Không tải được ứng viên'));
@@ -158,7 +158,7 @@ it('creates a typed policy draft with a source and the fixed minimum fields',asy
   await waitFor(()=>expect(projectsApi.createRuleVersion).toHaveBeenCalled());const payload=JSON.parse(projectsApi.createRuleVersion.mock.calls[0][2].contentJson);expect(payload).toMatchObject({schemaVersion:1,scope:'INTERNAL_DEMO',sourceReference:'ADR-006',titlePrefix:'[QA]'});expect(payload.requiredFields).toEqual(['title','steps','expectedResult','actualResult','buildId','environmentId','deviceId']);
 });
 it('confirms publication with the previously read active version and displays conflicts',async()=>{
-  vi.spyOn(window,'confirm').mockReturnValue(true);projectsApi.publishRule.mockRejectedValue(new Error('Quy tắc đã thay đổi'));render(<RulesPanel projectId={1} canEdit/>);fireEvent.click(await screen.findByText('Công bố phiên bản 1'));await screen.findByRole('alert');expect(projectsApi.publishRule).toHaveBeenCalledWith(1,1,11,0);
+  projectsApi.publishRule.mockRejectedValue(new Error('Quy tắc đã thay đổi'));render(<RulesPanel projectId={1} canEdit/>);fireEvent.click(await screen.findByText('Công bố phiên bản 1'));fireEvent.click(screen.getByRole('button',{name:'Công bố',exact:true}));await screen.findByRole('alert');expect(projectsApi.publishRule).toHaveBeenCalledWith(1,1,11,0);
 });
 it.each(['PM','ADMIN','USER','GUEST'].flatMap(role=>[false,true].map(existing=>({role,existing}))))('rulesExplainLegacyScopeForEmptyAndExistingSets: $role existing=$existing',async({role,existing})=>{
   admin=role==='ADMIN';project={...project,projectRole:role==='ADMIN'?'USER':role};
@@ -188,33 +188,33 @@ it.each(['PM','ADMIN','USER','GUEST'].flatMap(role=>[false,true].map(existing=>(
   expect(screen.queryByText(/Đang áp dụng|cho bug mới trong dự án/)).toBeNull();
 });
 it('publishingLegacyVersionDoesNotPromiseFeatureEnforcement',async()=>{
-  const confirm=vi.spyOn(window,'confirm').mockReturnValue(false);
+
   const published={...version,publishedAt:'2026-09-30T00:00:00Z',publishedBy:1};
   const draft={...version,id:12,versionNo:2};
   projectsApi.listRules.mockResolvedValue([{id:1,code:'INTERNAL_DEMO',activeVersion:published}]);
   projectsApi.listRuleVersions.mockResolvedValue([draft,published]);
   render(<RulesPanel projectId={1} canEdit/>);
   fireEvent.click(await screen.findByRole('button',{name:'Công bố phiên bản 2'}));
-  expect(confirm).toHaveBeenCalledWith('Công bố phiên bản 2 trong cấu hình cũ? Thao tác này không thay đổi quy tắc của Bug/QA trong Đợt kiểm thử hiện tại.');
+  expect(screen.getByRole('dialog',{name:'Công bố phiên bản quy tắc?'})).toHaveTextContent('Công bố phiên bản 2 trong cấu hình cũ? Thao tác này không thay đổi quy tắc của Bug/QA trong Đợt kiểm thử hiện tại.');
   expect(projectsApi.publishRule).not.toHaveBeenCalled();
-  confirm.mockReturnValue(true);
+  fireEvent.click(screen.getByRole('button',{name:'Hủy'}));
   projectsApi.publishRule.mockResolvedValue({});
   projectsApi.listRules.mockResolvedValue([{id:1,code:'INTERNAL_DEMO',activeVersion:{...draft,publishedAt:published.publishedAt}}]);
   projectsApi.listRuleVersions.mockResolvedValue([{...draft,publishedAt:published.publishedAt},published]);
-  fireEvent.click(screen.getByRole('button',{name:'Công bố phiên bản 2'}));
+  fireEvent.click(screen.getByRole('button',{name:'Công bố phiên bản 2'}));fireEvent.click(screen.getByRole('button',{name:'Công bố',exact:true}));
   await screen.findByText('Đã công bố phiên bản 2 trong cấu hình cũ.');
   expect(projectsApi.publishRule).toHaveBeenCalledWith(1,1,12,11);
   await screen.findByText('Phiên bản 2 · Bản công bố hiện tại của cấu hình cũ');
   expect(screen.getByText('Phiên bản 1 · Đã công bố')).toBeVisible();
 });
 it.each([403,409])('preserves legacy history and avoids success after publish HTTP %s',async status=>{
-  vi.spyOn(window,'confirm').mockReturnValue(true);
+
   const published={...version,publishedAt:'2026-09-30T00:00:00Z',publishedBy:1};
   projectsApi.listRules.mockResolvedValue([{id:1,code:'INTERNAL_DEMO',activeVersion:published}]);
   projectsApi.listRuleVersions.mockResolvedValue([{...version,id:12,versionNo:2},published]);
   projectsApi.publishRule.mockRejectedValue(Object.assign(new Error(`HTTP ${status}`),{status}));
   render(<RulesPanel projectId={1} canEdit/>);
-  fireEvent.click(await screen.findByRole('button',{name:'Công bố phiên bản 2'}));
+  fireEvent.click(await screen.findByRole('button',{name:'Công bố phiên bản 2'}));fireEvent.click(screen.getByRole('button',{name:'Công bố',exact:true}));
   expect(await screen.findByRole('alert')).toHaveTextContent(`HTTP ${status}`);
   expect(projectsApi.publishRule).toHaveBeenCalledWith(1,1,12,11);
   expect(screen.queryByRole('status')).toBeNull();

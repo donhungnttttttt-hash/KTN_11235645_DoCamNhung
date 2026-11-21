@@ -1,9 +1,11 @@
+import {useConfirmation} from '../../components/ConfirmationDialog';
 import React, { useEffect, useState } from 'react';
 import { projectsApi } from '../../services/api/projects';
 import { formatTime } from '../test-execution/components';
 
 const requiredFields=['title','steps','expectedResult','actualResult','buildId','environmentId','deviceId'];
 export function RulesPanel({projectId,canEdit}) {
+  const {ask,confirmation}=useConfirmation(projectId);
   const [rules,setRules]=useState(null),[versions,setVersions]=useState([]),[reload,setReload]=useState(0);
   const [error,setError]=useState(''),[busy,setBusy]=useState(false),[source,setSource]=useState('ADR-006 — Quy tắc bug nội bộ'),[prefix,setPrefix]=useState('');
   const [notice,setNotice]=useState('');
@@ -35,8 +37,9 @@ export function RulesPanel({projectId,canEdit}) {
         </fieldset><button className="cat-btn primary" disabled={busy}>Lưu bản nháp</button>
       </form>}
       <h3>Lịch sử phiên bản</h3>{!versions.length && <p>Chưa có phiên bản.</p>}
-      {versions.map(version=><RuleVersion key={version.id} version={version} active={rule.activeVersion?.id===version.id} busy={busy} canEdit={canEdit} onPublish={()=>{if(window.confirm(`Công bố phiên bản ${version.versionNo} trong cấu hình cũ? Thao tác này không thay đổi quy tắc của Bug/QA trong Đợt kiểm thử hiện tại.`))mutate(()=>projectsApi.publishRule(projectId,rule.id,version.id,rule.activeVersion?.id || 0),`Đã công bố phiên bản ${version.versionNo} trong cấu hình cũ.`);}}/>)}
+      {versions.map(version=><RuleVersion key={version.id} version={version} active={rule.activeVersion?.id===version.id} busy={busy} canEdit={canEdit} onPublish={async()=>{if(await ask({title:'Công bố phiên bản quy tắc?',message:`Công bố phiên bản ${version.versionNo} trong cấu hình cũ? Thao tác này không thay đổi quy tắc của Bug/QA trong Đợt kiểm thử hiện tại.`,confirmLabel:'Công bố'}))mutate(()=>projectsApi.publishRule(projectId,rule.id,version.id,rule.activeVersion?.id || 0),`Đã công bố phiên bản ${version.versionNo} trong cấu hình cũ.`);}}/>)}
     </>}
+    {confirmation}
   </section>;
 }
 function RuleVersion({version,active,busy,canEdit,onPublish}) {

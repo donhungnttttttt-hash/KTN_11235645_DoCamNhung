@@ -34,7 +34,7 @@ function OverviewSummary({projectId,navigate}) {
     return()=>{current=false;};
   },[projectId,milestoneRevision]);
   const total=counts.items?.reduce((sum,item)=>sum+item.count,0)||0;
-  const completed=counts.items?.filter(item=>['fixed','cannot_reproduce','wont_fix','unsupported'].includes(item.id)).reduce((sum,item)=>sum+item.count,0)||0;
+  const completed=counts.items?.filter(item=>['fixed','cannot_reproduce','wont_fix','unsupported','converted'].includes(item.id)).reduce((sum,item)=>sum+item.count,0)||0;
   return <aside className="d-home-aside">
     <section aria-labelledby="overview-status-heading">
       <h2 id="overview-status-heading">Trạng thái công việc</h2>

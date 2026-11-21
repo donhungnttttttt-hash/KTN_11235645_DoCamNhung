@@ -35,6 +35,10 @@ public class FeatureIssueService {
         LEFT JOIN project_memberships am ON am.project_id=w.project_id AND am.id=w.assignee_membership_id
         LEFT JOIN identity_users assignee ON assignee.id=am.user_id
         LEFT JOIN identity_users verifier ON verifier.id=x.verifier_user_id
+        LEFT JOIN ticket_qa_bug_links ql ON ql.project_id=w.project_id AND ql.qa_id=w.id
+        LEFT JOIN work_items linked_bug ON linked_bug.project_id=ql.project_id AND linked_bug.id=ql.bug_id
+        LEFT JOIN ticket_qa_bug_links bl ON bl.project_id=w.project_id AND bl.bug_id=w.id
+        LEFT JOIN work_items linked_qa ON linked_qa.project_id=bl.project_id AND linked_qa.id=bl.qa_id
         JOIN ticket_workflow_metrics tw ON tw.project_id=w.project_id AND tw.work_item_id=w.id
         JOIN work_item_statuses s ON s.code=w.status_code
         """;
@@ -54,7 +58,8 @@ public class FeatureIssueService {
         x.test_version_id AS testVersionId,x.test_version_name AS testVersionName,x.executed_on AS executedOn,
         x.start_on AS startOn,x.due_on AS dueOn,x.estimated_hours AS estimatedHours,x.actual_hours AS actualHours,
         x.test_object AS testObject,x.case_reference AS caseReference,tw.finalized,tw.awaiting_verification AS awaitingVerification,
-        tw.legacy_workflow AS legacyWorkflow,w.project_id AS projectId,COALESCE(b.converted_from_qa,FALSE) AS convertedFromQa
+        tw.legacy_workflow AS legacyWorkflow,w.project_id AS projectId,COALESCE(b.converted_from_qa,FALSE) AS convertedFromQa,
+        bl.qa_id AS sourceQaId,linked_qa.item_key AS sourceQaKey,ql.bug_id AS convertedBugId,linked_bug.item_key AS convertedBugKey
         """;
 
     Actor authorize(long p,String user,boolean write){

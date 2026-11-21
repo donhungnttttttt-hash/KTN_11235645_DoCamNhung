@@ -1,9 +1,9 @@
+import {ConfirmationDialog} from '../../components/ConfirmationDialog';
 import React,{useEffect,useState} from 'react';
 import {Plus,ArrowLeft,FileText} from 'lucide-react';
 import {UnifiedSelect} from '../../components/UnifiedSelect';
 import {testCasesApi} from '../../services/api/testCases';
 import {FeatureIssueForm} from './FeatureIssueForm';
-import {Modal} from './components';
 
 export function IssueCreatePage({projectId,activeRoute,navigate,api,featureApi,documentApi=testCasesApi,canCreate}) {
  const params=new URLSearchParams(activeRoute.split('?')[1]||''),workspace=params.get('workspace')==='1';
@@ -32,6 +32,6 @@ export function IssueCreatePage({projectId,activeRoute,navigate,api,featureApi,d
   {activity.dirty&&<p className="wi-note">Bản nháp thuộc nguồn đã chọn. <button className="cat-btn" disabled={activity.busy} onClick={()=>setDiscard(true)}>Soạn lại / đổi nguồn</button></p>}
   {feature&&(mode==='monkey'||row)?<FeatureIssueForm key={`${projectId}/${featureId}/${documentId}/${rowId}/${mode}/${generation}`} presentation="page" projectId={projectId} featureId={Number(featureId)} documentId={Number(documentId)} row={row} monkey={mode==='monkey'} featureName={feature.name} api={api} authorized={canCreate} onActivity={setActivity} onSaved={saved=>navigate(route(`/board/issue/${saved.id}`)+'&from=issues')} onCancel={()=>activity.dirty?setDiscard(true):reset()}/>:<div className="issue-create-empty"><FileText size={32}/><h2>Chọn nguồn để bắt đầu</h2><p>{mode==='case'?'Chọn Đợt kiểm thử, file và case. Nội dung, môi trường và version sẽ được điền từ case; bạn có thể điều chỉnh theo phát hiện thực tế.':'Chọn Đợt kiểm thử để ghi nhận lỗi phát hiện ngoài test case.'}</p></div>}
   <footer className="issue-create-footer"><button className="cat-btn" disabled={locked} onClick={()=>navigate(route('/board'))}>Mở Kanban</button></footer>
-  {discard&&<Modal title="Bỏ nội dung chưa lưu?" onClose={()=>setDiscard(false)}><p>Bỏ bản nháp hiện tại để chọn lại nguồn hoặc soạn lỗi mới?</p><div className="wi-actions"><button className="cat-btn" onClick={()=>setDiscard(false)}>Tiếp tục soạn</button><button className="cat-btn" onClick={reset}>Bỏ bản nháp</button></div></Modal>}
+  {discard&&<ConfirmationDialog title="Bỏ nội dung chưa lưu?" onCancel={()=>setDiscard(false)}><p>Bỏ bản nháp hiện tại để chọn lại nguồn hoặc soạn lỗi mới?</p><div className="wi-actions"><button className="cat-btn" data-dialog-initial-focus onClick={()=>setDiscard(false)}>Tiếp tục soạn</button><button className="cat-btn" onClick={reset}>Bỏ bản nháp</button></div></ConfirmationDialog>}
  </section>;
 }

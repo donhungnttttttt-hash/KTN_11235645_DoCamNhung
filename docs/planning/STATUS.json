@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-15",
+  "updatedAt": "2026-11-21",
   "caseEnvironmentVersion20261114": {
     "status": "IN_REVIEW",
     "stage": "Approved implementation applied locally; V42 and authenticated HTTP smoke pass; live Chrome geometry acceptance unavailable",
@@ -3103,5 +3103,32 @@
       "nativeIntegration": "Not rerun during publication; earlier evidence remains in individual reviews"
     },
     "excluded": "Local credentials, runtime copies, generated receipts and source workbooks in var; no database data export"
+  },
+  "qaCopyToBug20261121": {
+    "status": "DONE",
+    "review": "docs/reviews/2026-11-21-qa-copy-to-bug.md",
+    "behavior": "Close original QA and create a distinct linked NEW Bug; preserve original content, comments, files and history; transactional and idempotent.",
+    "backend": "33/33 tests passed on isolated MySQL; V47 local runtime UP",
+    "frontend": "170/170 work-items PASS; 71/71 timeout rechecks PASS; build and Chrome UI PASS. Full-run timeout details in review.",
+    "limitations": [
+      "Older in-place conversions are not reconstructed",
+      "NativeFeatureIssueIntegrationTest compiled but not executed in its separate runner",
+      "No new coverage measurement"
+    ],
+    "publication": "Not committed or pushed in this task"
+  },
+  "confirmationPopups20261121": {
+    "status": "DONE",
+    "review": "docs/reviews/2026-11-21-confirmation-popups.md",
+    "behavior": "Shared centered portal confirmation replaces inline confirmations and browser confirm across Ticket, notes, testing, file-work, members, catalogs, rules, report and draft flows; cancellation preserves drafts.",
+    "verification": {
+      "red": "5 regression tests failed before implementation",
+      "frontend": "747/747 tests PASS",
+      "build": "PASS; existing chunk-size warning",
+      "chrome": "Desktop/mobile, stable composer height, cancel, Escape and exactly one mocked submission PASS; no business writes",
+      "gitDiffCheck": "PASS",
+      "coverage": "Not measured"
+    },
+    "publication": "Not committed or pushed in this task"
   }
 }

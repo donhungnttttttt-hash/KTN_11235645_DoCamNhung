@@ -6,7 +6,7 @@ import {FeatureIssueForm} from './FeatureIssueForm';
 import {FeatureIssueBoard} from './FeatureIssueBoard';
 import {FeatureIssueDetail} from './FeatureIssueDetail';
 
-const labels=['Xác nhận spec','Chưa xử lý','Đang xử lý','Chờ xác nhận','Đóng – Đã xử lý','Đóng – Đã sửa','Đóng – Không thể tái hiện','Đóng – Không xử lý','QA – Đóng – Không được hỗ trợ'];
+const labels=['Xác nhận spec','Chưa xử lý','Đang xử lý','Chờ xác nhận','Đóng – Đã xử lý','Đóng – Đã sửa','Đóng – Không thể tái hiện','Đóng – Không xử lý','QA – Đóng – Không được hỗ trợ','QA – Đóng – Đã chuyển thành Bug'];
 it('uses immutable object/file/case title tokens independently of issue type and keeps the suffix editable',async()=>{
  const source={title:'Editable suffix',testObject:'Login',fileName:'cases.xlsx',caseReference:'No 8',revisionId:4,resultVersion:2};
  expect(ticketTitlePrefix({type:'QA',source})).toBe('[Login][cases.xlsx][No 8]');expect(ticketTitlePrefix({type:'BUG',source})).toBe('[Login][cases.xlsx][No 8]');
@@ -31,7 +31,7 @@ it('can report a valid long source with a meaningful suffix and recover from an 
  const payload=api.create.mock.lastCall[1];expect(payload.title.length).toBeLessThanOrEqual(300);expect(payload.title).toContain('…');expect(payload.title).toContain('.xlsx][No 123456]');expect(payload.title).toMatch(/A meaningful question about the expected result$/);expect(payload.title.isWellFormed()).toBe(true);
  expect(payload).toMatchObject({featureId:2,documentId:3,rowId:4,sourceRevisionId:4,sourceResultVersion:2,steps:'Original steps'});expect(screen.getByLabelText('Version lúc phát hiện')).toHaveValue('Discovery v1');expect(source.fileName).toHaveLength(255);expect(source.testObject).toHaveLength(255);
 });
-it('presents all nine board labels and the initial state in Vietnamese without changing IDs',async()=>{
+it('presents all board labels and the initial state in Vietnamese without changing IDs',async()=>{
  render(<><FeatureIssueBoard items={[]} onOpen={vi.fn()} onMove={vi.fn()}/><FeatureIssueForm projectId={1} featureId={2} monkey api={{options:vi.fn().mockResolvedValue({assignees:[]})}}/></>);
  const board=screen.getByRole('region',{name:'Bảng trạng thái Bug và QA'});expect(within(board).getAllByRole('heading').map(e=>e.textContent)).toEqual(labels);
  await waitFor(()=>expect(within(screen.getByLabelText('Trạng thái ban đầu')).getByRole('option',{name:'Chưa xử lý',exact:true})).toHaveValue('NEW'));
@@ -46,7 +46,7 @@ it('localizes server English transitions, close reason, help and confirmation wh
 });
 it('localizes conversion confirmation and finalized closure instead of exposing enums',async()=>{
  const ticket={id:7,key:'P-7',type:'QA',boardColumn:'spec',ticketState:'SPEC_CONFIRM',version:2,canComment:true,canConvertToBug:true,allowedTransitions:[]};const api={get:vi.fn().mockResolvedValue(ticket),comments:vi.fn().mockResolvedValue([]),responsibilities:vi.fn().mockResolvedValue({canManage:false,members:[{membershipId:1,userId:'u',displayName:'Coordinator',projectRole:'USER',duties:['BUG_COORDINATOR']}]}),action:vi.fn()};
- render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(screen.queryByText('Đang tải Ticket…')).not.toBeInTheDocument());if(screen.queryByLabelText('Ghi chú Ticket'))fireEvent.focus(screen.getByLabelText('Ghi chú Ticket'));else if(screen.queryByRole('button',{name:'Thay đổi trạng thái'}))fireEvent.click(screen.getByRole('button',{name:'Thay đổi trạng thái'}));fireEvent.click(await screen.findByLabelText('Chuyển QA thành Bug'));await screen.findByRole('option',{name:'Coordinator'});fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'1'}});fireEvent.click(screen.getByRole('button',{name:'Đăng'}));expect(screen.getByText(/chuyển QA thành Bug \/ Chưa xử lý\./)).toBeInTheDocument();
+ render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(screen.queryByText('Đang tải Ticket…')).not.toBeInTheDocument());if(screen.queryByLabelText('Ghi chú Ticket'))fireEvent.focus(screen.getByLabelText('Ghi chú Ticket'));else if(screen.queryByRole('button',{name:'Thay đổi trạng thái'}))fireEvent.click(screen.getByRole('button',{name:'Thay đổi trạng thái'}));fireEvent.click(await screen.findByLabelText('Chuyển QA thành Bug'));await screen.findByRole('option',{name:'Coordinator'});fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'1'}});fireEvent.click(screen.getByRole('button',{name:'Đăng'}));expect(screen.getByText(/Đóng QA P-7 và tạo Bug mới ở trạng thái Chưa xử lý\./)).toBeInTheDocument();
 });
 it('shows finalized reason and canonical history in Vietnamese instead of internal enum strings',async()=>{
  const ticket={id:7,key:'P-7',type:'BUG',ticketState:'CLOSED',closureReason:'FIXED',boardColumn:'fixed',finalized:true,allowedTransitions:[]};const api={get:vi.fn().mockResolvedValue(ticket),comments:vi.fn().mockResolvedValue([]),history:vi.fn().mockResolvedValue([{id:1,actorName:'Tester',eventType:'TICKET_ACTION',before:{ticketState:'NEW'},after:{ticketState:'CLOSED',closureReason:'FIXED'}}])};

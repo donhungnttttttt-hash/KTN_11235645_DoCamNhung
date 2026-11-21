@@ -1,3 +1,4 @@
+import {useConfirmation} from '../../components/ConfirmationDialog';
 import {TableScroll} from '../../components/TableScroll';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { projectsApi } from '../../services/api/projects';
@@ -5,6 +6,7 @@ import {MemberPicker} from './MemberPicker';
 
 const roles={PM:'Admin dự án',USER:'User thường',GUEST:'Khách',MEMBER:'Thành viên'};
 export function ProjectMembers({projectId,canEdit,canAdd=canEdit,onMembershipChange=()=>{}}) {
+  const {ask,confirmation}=useConfirmation(projectId);
   const [members,setMembers]=useState(null);
   const [error,setError]=useState('');
   const [reload,setReload]=useState(0);
@@ -16,7 +18,7 @@ export function ProjectMembers({projectId,canEdit,canAdd=canEdit,onMembershipCha
     return()=>{live=false;};
   },[projectId,reload]);
   async function remove(member) {
-    if(!window.confirm(`Gỡ ${member.displayName} khỏi dự án? Lịch sử kiểm thử vẫn được giữ.`))return;
+    if(busy||!await ask({title:'Gỡ thành viên?',message:`Gỡ ${member.displayName} khỏi dự án? Lịch sử kiểm thử vẫn được giữ.`,confirmLabel:'Gỡ thành viên'}))return;
     setBusy(true);setError('');
     try {await projectsApi.removeMember(projectId,member.userId,member.version);setReload(x=>x+1);await onMembershipChange();}
     catch(failure){setError(failure.message);}finally{setBusy(false);}
@@ -30,6 +32,7 @@ export function ProjectMembers({projectId,canEdit,canAdd=canEdit,onMembershipCha
       {members.map(member=><tr key={member.userId}><td><strong>{member.displayName}</strong><div>@{member.username}</div></td><td>{member.systemRole==='ADMIN'&&member.projectRole==='PM'?'Admin tổng · Làm PM':roles[member.projectRole]}</td>{canEdit && <td><div className="ui-actions"><button className="btn-icon text-danger" disabled={busy || adding} onClick={()=>remove(member)}>Gỡ {member.displayName}</button></div></td>}</tr>)}
       {!members.length && <tr><td colSpan={3}>Chưa có thành viên.</td></tr>}
     </tbody></table></TableScroll>}
+    {confirmation}
   </section>;
 }
 function MemberEditor({projectId,members,onClose,onSaved}) {

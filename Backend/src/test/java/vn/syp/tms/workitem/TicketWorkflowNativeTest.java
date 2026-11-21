@@ -12,6 +12,7 @@ import vn.syp.tms.feature.FeatureDtos;
 import vn.syp.tms.testcase.TestDocumentDtos;
 
 class TicketWorkflowNativeTest extends UnifiedTestingFixtures {
+    @org.springframework.test.context.DynamicPropertySource static void conversionStorage(org.springframework.test.context.DynamicPropertyRegistry registry){registry.add("TMS_TICKET_ATTACHMENT_ROOT",()->"./target/qa-conversion-evidence");}
     @Autowired vn.syp.tms.admin.AdminOverviewService overview;
     @Autowired vn.syp.tms.admin.ProjectLifecycleService lifecycle;
     @Autowired WorkItemStore store;
@@ -40,12 +41,83 @@ class TicketWorkflowNativeTest extends UnifiedTestingFixtures {
         var input=new LinkedHashMap<String,Object>(changes);input.put("expectedVersion",ticket.path("version").asLong());input.putIfAbsent("requestKey",UUID.randomUUID());
         var r=actor.write("POST",base+"/"+ticket.path("id").asLong()+"/actions",input);assertThat(r.statusCode()).as(r.body()).isEqualTo(200);return body(r);
     }
-    @Test void qaConversionPreservesIdentityAndDutiesDoNotGrantManagement() throws Exception {
+    @Test void qaConversionClosesOriginalAndCopiesNewBugWithoutLosingDiscussionOrSource() throws Exception {
         duties();var qa=create("QA");assertThat(qa.path("ticketState").asText()).isEqualTo("SPEC_CONFIRM");assertThat(qa.path("boardColumn").asText()).isEqualTo("spec");
         assertThat(coordinator.write("PUT","/projects/"+p+"/ticket-responsibilities/"+member,Map.of("duties",List.of("BUG_COORDINATOR"),"expectedVersion",0)).statusCode()).isEqualTo(403);
+        qa=action(tester,qa,Map.of("body","Original QA discussion","planning",Map.of("startOn","2026-11-20","dueOn","2026-11-25","estimatedHours",8,"actualHours",2,"milestoneIds",List.of())));
+        long qaId=qa.path("id").asLong();
+        var historyBefore=body(tester.get(base+"/"+qaId+"/history"));
         var bug=action(coordinator,qa,Map.of("convertToBug",true,"assigneeMembershipId",contactMember,"body","Confirmed bug"));
-        assertThat(bug.path("id")).isEqualTo(qa.path("id"));assertThat(bug.path("key")).isEqualTo(qa.path("key"));assertThat(bug.path("type").asText()).isEqualTo("BUG");assertThat(bug.path("ticketState").asText()).isEqualTo("NEW");
-        var comments=body(tester.get(base+"/"+qa.path("id")+"/comments"));assertThat(comments.size()).isEqualTo(1);assertThat(comments.get(0).path("body").asText()).isEqualTo("Confirmed bug");
+        assertThat(bug.path("id")).isNotEqualTo(qa.path("id"));assertThat(bug.path("key")).isNotEqualTo(qa.path("key"));assertThat(bug.path("type").asText()).isEqualTo("BUG");assertThat(bug.path("ticketState").asText()).isEqualTo("NEW");
+        assertThat(bug.path("sourceQaId").asLong()).isEqualTo(qaId);assertThat(bug.path("sourceQaKey")).isEqualTo(qa.path("key"));assertThat(bug.path("convertedFromQa").asBoolean()).isTrue();
+        assertThat(bug.path("assigneeMembershipId").asLong()).isEqualTo(contactMember);assertThat(bug.path("coordinatorMembershipId").asLong()).isEqualTo(contactMember);
+        for(String field:List.of("title","description","steps","expectedResult","actualResult","preconditions","frequency","environment","device","featureId","documentId","rowId","testVersionId","testVersionName","executedOn","testObject","caseReference","startOn","dueOn","estimatedHours","actualHours"))assertThat(bug.path(field)).as("Copied %s",field).isEqualTo(qa.path(field));
+        var closed=body(tester.get(base+"/"+qaId));assertThat(closed.path("type").asText()).isEqualTo("QA");assertThat(closed.path("key")).isEqualTo(qa.path("key"));assertThat(closed.path("ticketState").asText()).isEqualTo("CLOSED");assertThat(closed.path("closureReason").asText()).isEqualTo("CONVERTED_TO_BUG");assertThat(closed.path("finalized").asBoolean()).isTrue();
+        assertThat(closed.path("convertedBugId")).isEqualTo(bug.path("id"));assertThat(closed.path("convertedBugKey")).isEqualTo(bug.path("key"));assertThat(closed.path("canConvertToBug").asBoolean()).isFalse();assertThat(closed.path("allowedTransitions")).isEmpty();
+        var comments=body(tester.get(base+"/"+qaId+"/comments"));assertThat(comments.size()).isEqualTo(2);assertThat(comments.get(0).path("body").asText()).isEqualTo("Original QA discussion");assertThat(comments.get(1).path("body").asText()).isEqualTo("Confirmed bug");
+        var historyAfter=body(tester.get(base+"/"+qaId+"/history"));for(int index=0;index<historyBefore.size();index++)assertThat(historyAfter.get(index)).isEqualTo(historyBefore.get(index));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM work_items WHERE project_id=?",Long.class,p)).isEqualTo(2L);
+        assertThat(documents.get(p,worker.getId(),d).rows().getFirst().resultStatus()).isEqualTo("UNEXECUTED");
+    }
+    @Test void qaConversionRetryReturnsSameNewBugAndCannotConvertOrReopenOriginalAgain() throws Exception {
+        duties();var qa=create("QA");String url=base+"/"+qa.path("id")+"/actions";
+        var command=new LinkedHashMap<String,Object>();command.put("convertToBug",true);command.put("assigneeMembershipId",contactMember);command.put("body","Confirmed once");command.put("expectedVersion",qa.path("version").asLong());command.put("requestKey",UUID.randomUUID());
+        var first=coordinator.write("POST",url,command);assertThat(first.statusCode()).as(first.body()).isEqualTo(200);var bug=body(first);
+        var counts=new LinkedHashMap<String,Long>();for(String table:List.of("work_items","work_item_feature_history","ticket_commands","ticket_notifications","project_audit"))counts.put(table,jdbc.queryForObject("SELECT COUNT(*) FROM "+table+" WHERE project_id=?",Long.class,p));
+        var replay=coordinator.write("POST",url,command);assertThat(replay.statusCode()).as(replay.body()).isEqualTo(200);assertThat(body(replay).path("id")).isEqualTo(bug.path("id"));
+        for(var entry:counts.entrySet())assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM "+entry.getKey()+" WHERE project_id=?",Long.class,p)).as(entry.getKey()).isEqualTo(entry.getValue());
+        var closed=body(manager.get(base+"/"+qa.path("id")));assertThat(closed.path("allowedTransitions")).isEmpty();
+        command.put("requestKey",UUID.randomUUID());command.put("expectedVersion",closed.path("version").asLong());assertThat(manager.write("POST",url,command).statusCode()).isEqualTo(403);
+        assertThat(manager.write("POST",url,Map.of("state","SPEC_CONFIRM","body","Attempt reopen","expectedVersion",closed.path("version").asLong(),"requestKey",UUID.randomUUID())).statusCode()).isEqualTo(403);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM work_items WHERE project_id=?",Long.class,p)).isEqualTo(2L);
+    }
+    @Test void invalidQaConversionRecipientLeavesOriginalOpenWithoutCreatingBug() throws Exception {
+        duties();var qa=create("QA");
+        var response=coordinator.write("POST",base+"/"+qa.path("id")+"/actions",Map.of("convertToBug",true,"assigneeMembershipId",devMember,"body","Should not save","expectedVersion",qa.path("version").asLong(),"requestKey",UUID.randomUUID()));
+        assertThat(response.statusCode()).isEqualTo(422);
+        var unchanged=body(tester.get(base+"/"+qa.path("id")));assertThat(unchanged.path("type").asText()).isEqualTo("QA");assertThat(unchanged.path("ticketState").asText()).isEqualTo("SPEC_CONFIRM");assertThat(unchanged.path("version")).isEqualTo(qa.path("version"));
+        assertThat(body(tester.get(base+"/"+qa.path("id")+"/comments"))).isEmpty();assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM work_items WHERE project_id=?",Long.class,p)).isEqualTo(1L);
+    }
+    @Test void concurrentQaConversionRequestsCreateExactlyOneBug() throws Exception {
+        duties();var qa=create("QA");String url=base+"/"+qa.path("id")+"/actions";
+        try(var pool=java.util.concurrent.Executors.newFixedThreadPool(2)){
+            var one=pool.submit(()->coordinator.write("POST",url,Map.of("convertToBug",true,"assigneeMembershipId",contactMember,"expectedVersion",0,"requestKey",UUID.randomUUID())));
+            var two=pool.submit(()->manager.write("POST",url,Map.of("convertToBug",true,"assigneeMembershipId",contactMember,"expectedVersion",0,"requestKey",UUID.randomUUID())));
+            assertThat(List.of(one.get().statusCode(),two.get().statusCode())).containsExactlyInAnyOrder(200,409);
+        }
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM work_items WHERE project_id=? AND item_type='BUG'",Long.class,p)).isEqualTo(1L);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM work_items WHERE project_id=? AND item_type='QA'",Long.class,p)).isEqualTo(1L);
+        assertThat(body(tester.get(base+"/"+qa.path("id"))).path("ticketState").asText()).isEqualTo("CLOSED");
+    }
+    @Test void conversionKeepsOriginalAndNewAttachmentsOnQaWithAccessibleSourceLink() throws Exception {
+        duties();var qa=create("QA");String qaUrl=base+"/"+qa.path("id");
+        byte[] originalBytes="Original QA evidence".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        var originalFile=new org.springframework.mock.web.MockMultipartFile("files","original.log","text/plain",originalBytes);
+        var original=tester.multipart(qaUrl+"/actions-with-files",Map.of("body","Original evidence","expectedVersion",qa.path("version").asLong(),"requestKey",UUID.randomUUID()),List.of(originalFile));assertThat(original.statusCode()).as(original.body()).isEqualTo(200);qa=body(original);
+        var oldComment=body(tester.get(qaUrl+"/comments")).get(0);
+        byte[] conversionBytes="Confirmed reproduction".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        var conversionFile=new org.springframework.mock.web.MockMultipartFile("files","confirmed.log","text/plain",conversionBytes);
+        var input=Map.<String,Object>of("convertToBug",true,"assigneeMembershipId",contactMember,"body","Confirmed with evidence","expectedVersion",qa.path("version").asLong(),"requestKey",UUID.randomUUID());
+        var response=coordinator.multipart(qaUrl+"/actions-with-files",input,List.of(conversionFile));assertThat(response.statusCode()).as(response.body()).isEqualTo(200);var bug=body(response);
+        assertThat(bug.path("id")).isNotEqualTo(qa.path("id"));assertThat(bug.path("sourceQaId")).isEqualTo(qa.path("id"));
+        var replay=coordinator.multipart(qaUrl+"/actions-with-files",input,List.of(conversionFile));assertThat(replay.statusCode()).as(replay.body()).isEqualTo(200);assertThat(body(replay).path("id")).isEqualTo(bug.path("id"));
+        var comments=body(tester.get(qaUrl+"/comments"));assertThat(comments.size()).isEqualTo(2);assertThat(comments.get(0)).isEqualTo(oldComment);assertThat(comments.get(1).path("attachments").size()).isEqualTo(1);
+        String originalId=oldComment.path("attachments").get(0).path("id").asText(),conversionId=comments.get(1).path("attachments").get(0).path("id").asText();
+        var oldDownload=tester.bytes(qaUrl+"/attachments/"+originalId);assertThat(oldDownload.statusCode()).isEqualTo(200);assertThat(oldDownload.body()).isEqualTo(originalBytes);
+        var newDownload=coordinator.bytes(qaUrl+"/attachments/"+conversionId);assertThat(newDownload.statusCode()).isEqualTo(200);assertThat(newDownload.body()).isEqualTo(conversionBytes);
+        assertThat(tester.bytes(base+"/"+bug.path("id")+"/attachments/"+originalId).statusCode()).isEqualTo(404);
+    }
+    @Test void conversionNotificationFailureRollsBackNewBugAndOriginalClosure() throws Exception {
+        duties();var qa=create("QA");long qaId=qa.path("id").asLong();String recipient=dev.getId();assertThat(recipient).matches("[a-f0-9-]{36}");
+        assertThat(manager.write("PUT","/projects/"+p+"/ticket-responsibilities/"+devMember,Map.of("duties",List.of("BUG_COORDINATOR"),"expectedVersion",0)).statusCode()).isEqualTo(200);
+        var counts=new LinkedHashMap<String,Long>();for(String table:List.of("work_items","work_item_feature_history","ticket_commands","ticket_notifications","project_audit"))counts.put(table,jdbc.queryForObject("SELECT COUNT(*) FROM "+table+" WHERE project_id=?",Long.class,p));
+        jdbc.execute("ALTER TABLE ticket_notifications ADD CONSTRAINT ck_conversion_rollback CHECK(recipient_user_id<>'"+recipient+"')");
+        try {
+            var response=manager.write("POST",base+"/"+qaId+"/actions",Map.of("convertToBug",true,"assigneeMembershipId",devMember,"body","Atomic conversion","expectedVersion",qa.path("version").asLong(),"requestKey",UUID.randomUUID()));
+            assertThat(response.statusCode()).isEqualTo(503);
+            var original=body(tester.get(base+"/"+qaId));assertThat(original.path("type").asText()).isEqualTo("QA");assertThat(original.path("ticketState").asText()).isEqualTo("SPEC_CONFIRM");assertThat(original.path("version")).isEqualTo(qa.path("version"));
+            for(var entry:counts.entrySet())assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM "+entry.getKey()+" WHERE project_id=?",Long.class,p)).as(entry.getKey()).isEqualTo(entry.getValue());
+        } finally {jdbc.execute("ALTER TABLE ticket_notifications DROP CHECK ck_conversion_rollback");}
     }
     @Test void processedAwaitsTesterAndReopenClearsClosureWithoutChangingCase() throws Exception {
         duties();var bug=create("BUG");bug=action(coordinator,bug,Map.of("assigneeMembershipId",devMember));
@@ -99,7 +171,7 @@ class TicketWorkflowNativeTest extends UnifiedTestingFixtures {
     @Test void boardCountsAllRowsAndGuestAndOutsiderCannotReadTickets() throws Exception {
         duties();for(int n=0;n<3;n++)create("BUG");create("QA");
         var listing=body(tester.get(base+"?size=1&column=new"));assertThat(listing.path("totalItems").asLong()).isEqualTo(3);assertThat(listing.path("items").size()).isEqualTo(1);
-        var board=body(tester.get(base+"/board"));assertThat(board.path("columns").size()).isEqualTo(9);assertThat(board.path("totalItems").asLong()).isEqualTo(4);assertThat(board.path("columns").get(1).path("count").asLong()).isEqualTo(3);
+        var board=body(tester.get(base+"/board"));assertThat(board.path("columns").size()).isEqualTo(10);assertThat(board.path("totalItems").asLong()).isEqualTo(4);assertThat(board.path("columns").get(1).path("count").asLong()).isEqualTo(3);
         assertThat(loggedIn(account("USER")).get(base).statusCode()).isEqualTo(404);assertThat(loggedIn(account("GUEST")).get(base).statusCode()).isEqualTo(403);
     }
     @Test void snapshotUsesSavedCaseVersionAndKeepsMissingMetadataExplicit() throws Exception {
@@ -143,8 +215,9 @@ class TicketWorkflowNativeTest extends UnifiedTestingFixtures {
         var bug=action(coordinator,qa,Map.of("convertToBug",true,"assigneeMembershipId",contactMember));assertThat(bug.path("steps").asText()).isEmpty();assertThat(bug.path("actualResult").asText()).isEmpty();
         assertThat(jdbc.queryForMap("SELECT question,context_snapshot FROM qa_details WHERE project_id=? AND work_item_id=?",p,id)).isEqualTo(before);assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM qa_answers WHERE project_id=? AND work_item_id=?",Long.class,p,id)).isEqualTo(1L);
         var edit=new LinkedHashMap<String,Object>();edit.put("title","Add evidence");edit.put("description","Question");edit.put("steps","Found steps");edit.put("expectedResult","");edit.put("actualResult","");edit.put("expectedVersion",bug.path("version").asLong());
-        var saved=tester.write("PUT",base+"/"+id,edit);assertThat(saved.statusCode()).as(saved.body()).isEqualTo(200);
-        edit.put("steps","");edit.put("expectedVersion",body(saved).path("version").asLong());assertThat(tester.write("PUT",base+"/"+id,edit).statusCode()).isEqualTo(422);
+        var saved=tester.write("PUT",base+"/"+bug.path("id"),edit);assertThat(saved.statusCode()).as(saved.body()).isEqualTo(200);
+        assertThat(body(tester.get(base+"/"+id)).path("steps").asText()).isEmpty();
+        edit.put("steps","");edit.put("expectedVersion",body(saved).path("version").asLong());assertThat(tester.write("PUT",base+"/"+bug.path("id"),edit).statusCode()).isEqualTo(422);
     }
     @Test void revocationNullAssignmentAndUnrelatedCommentNeverEscalate() throws Exception {
         duties();var qa=create("QA");

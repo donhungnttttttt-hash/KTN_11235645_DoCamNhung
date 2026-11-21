@@ -137,7 +137,7 @@ describe('runner assignment', () => {
     await user.click(await screen.findByRole('button', { name: 'Bắt đầu đợt kiểm thử' }));
     expect(executionApi.activate).not.toHaveBeenCalled();
     await user.click(screen.getByRole('button', { name: 'Hủy', exact: true }));
-    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog',{name:/Xác nhận/})).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Bắt đầu đợt kiểm thử' }));
     await user.click(screen.getByRole('button', { name: 'Xác nhận bắt đầu' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Case không còn được phép chạy');

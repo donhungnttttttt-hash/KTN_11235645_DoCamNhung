@@ -1,3 +1,4 @@
+import {ConfirmationDialog} from '../../components/ConfirmationDialog';
 import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import React,{useEffect,useRef,useState} from 'react';
 import {Pencil} from 'lucide-react';
@@ -70,7 +71,7 @@ function Notes({projectId,canEdit,api}) {
         {canEdit&&<button ref={addButton} type="button" className="cat-btn primary" disabled={loading||busy||!!editor||!!listError} onClick={()=>openEditor(null)}>Thêm Note</button>}</div>
     </div>
     {notice&&<p role="status">{notice}</p>}
-    {listError&&<p role="alert">{listError}</p>}{actionError&&<p role="alert">{actionError}</p>}
+    {listError&&<p role="alert">{listError}</p>}{actionError&&!removing&&<p role="alert">{actionError}</p>}
     {canEdit&&editor&&<form ref={editorRef} className="project-notes-editor" onSubmit={save}>
       <h2>{editor.note?'Sửa Note':'Note mới'}</h2>
       <fieldset disabled={busy}><label>Tiêu đề Note<input autoFocus required maxLength={200} value={editor.title} onChange={event=>setEditor({...editor,title:event.target.value})}/></label>
@@ -91,9 +92,9 @@ function Notes({projectId,canEdit,api}) {
         <button type="button" className="cat-btn" aria-label={`Xóa Note ${note.title}`} disabled={busy||!!editor} onClick={()=>{setRemoving(note);setActionError('');setNotice('');}}>Xóa</button>
       </div>}</div>
       <p className="project-note-time">Cập nhật {savedTime(note.updatedAt)} · giờ Việt Nam</p><p className="project-note-body">{note.body}</p>
-      {canEdit&&removing?.id===note.id&&<div className="project-note-confirm" role="group" aria-label={`Xác nhận xóa Note ${note.title}`}>
-        <p>Xóa Note “{note.title}” khỏi danh sách? Nội dung vẫn được lưu trữ.</p><div className="project-notes-actions"><button type="button" className="cat-btn" disabled={busy} onClick={()=>mutate(options=>api.remove(projectId,note.id,note.version,options),'Đã xóa Note.')}>{busy?'Đang xóa…':'Xác nhận xóa Note'}</button><button type="button" className="cat-btn" disabled={busy} onClick={()=>{setRemoving(null);setActionError('');}}>Giữ Note</button></div>
-      </div>}
+      {canEdit&&removing?.id===note.id&&<ConfirmationDialog title={`Xác nhận xóa Note ${note.title}`} busy={busy} onCancel={()=>{setRemoving(null);setActionError('');}}>
+        {actionError&&<p role="alert">{actionError}</p>}<p>Xóa Note “{note.title}” khỏi danh sách? Nội dung vẫn được lưu trữ.</p><div className="project-notes-actions"><button type="button" className="cat-btn" disabled={busy} onClick={()=>mutate(options=>api.remove(projectId,note.id,note.version,options),'Đã xóa Note.')}>{busy?'Đang xóa…':'Xác nhận xóa Note'}</button><button type="button" className="cat-btn" disabled={busy} data-dialog-initial-focus onClick={()=>{setRemoving(null);setActionError('');}}>Giữ Note</button></div>
+      </ConfirmationDialog>}
     </article>)}</div>
       <nav className="project-notes-pagination" aria-label="Phân trang Note"><span>{data.totalItems} Note · Trang {page+1}/{Math.max(1,data.totalPages)}</span><div className="project-notes-actions"><button type="button" className="cat-btn" aria-label="Trang Note trước" disabled={!page||busy||!!editor} onClick={()=>setPage(value=>value-1)}>Trước</button><button type="button" className="cat-btn" aria-label="Trang Note sau" disabled={page+1>=data.totalPages||busy||!!editor} onClick={()=>setPage(value=>value+1)}>Sau</button></div></nav>
     </>}

@@ -32,6 +32,7 @@
 .ticket-detail-status {padding:4px 13px;border-radius:20px;font-size:12px;border:1px solid var(--ticket-status-color);color:#263b37;background:color-mix(in srgb,var(--ticket-status-color) 15%,white);}
 .feature-issue-detail {background:#f5f7f6;padding:20px!important;min-height:100%;}
 .ticket-detail-content {background:#fff;padding:26px 32px;border:1px solid #ccd8d4;border-radius:7px;}
+.ticket-conversion-link {padding:10px 14px;border:1px solid #c9dfd9;border-radius:6px;background:#f0f8f5;margin:0 0 16px;line-height:1.6;}
 .ticket-detail-author {display:flex;align-items:center;gap:12px;margin-bottom:30px;}
 .ticket-detail-author .ticket-person-avatar {width:44px;height:44px;font-size:21px;background:#4d85e4;}
 .ticket-detail-author p {margin:3px 0 0;color:#7c8985;font-size:12px;}

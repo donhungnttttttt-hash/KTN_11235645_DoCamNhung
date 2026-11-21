@@ -1,3 +1,4 @@
+import {ConfirmationDialog} from '../../components/ConfirmationDialog';
 import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from 'react-dom';
@@ -250,7 +251,7 @@ export function Modal({
         </header>
         <div className="d-modal-body"><ModalActivityContext.Provider value={{report:setActivity,requestClose,busy:blocked,dirty:activity.dirty}}>{children}</ModalActivityContext.Provider></div>
       </section>
-    </div>{discard&&<Modal title="Bỏ nội dung chưa lưu?" onClose={()=>setDiscard(false)}><p>Nội dung đang soạn chưa được lưu. Bạn có thể tiếp tục soạn hoặc bỏ bản nháp này.</p><div className="wi-actions"><button type="button" className="cat-btn cat-btn-mint" onClick={()=>setDiscard(false)}>Tiếp tục soạn</button><button type="button" className="cat-btn" onClick={onClose}>Bỏ bản nháp</button></div></Modal>}</div>, document.body
+    </div>{discard&&<ConfirmationDialog title="Bỏ nội dung chưa lưu?" busy={blocked} onCancel={()=>setDiscard(false)}><p>Nội dung đang soạn chưa được lưu. Bạn có thể tiếp tục soạn hoặc bỏ bản nháp này.</p><div className="wi-actions"><button type="button" className="cat-btn cat-btn-mint" data-dialog-initial-focus onClick={()=>setDiscard(false)}>Tiếp tục soạn</button><button type="button" className="cat-btn" onClick={onClose}>Bỏ bản nháp</button></div></ConfirmationDialog>}</div>, document.body
   );
 }
 export function MarkdownView({ text }) {

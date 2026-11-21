@@ -1,3 +1,4 @@
+import {ConfirmationDialog} from '../../components/ConfirmationDialog';
 import { useDialogFocus } from '../../hooks/useDialogFocus';
 import React, { useState, useEffect, useRef } from 'react';
 import { X, CheckCircle2, Clock, History, Plus, FileText, Check } from 'lucide-react';
@@ -133,7 +134,7 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
 
         <div className="tc-modal-body space-y-4">
           {readError && <div role="alert" className="p-3 bg-red-50 text-red-700 text-xs rounded border border-red-200">{readError} <button type="button" className="cat-btn ml-2" disabled={loading || submitting} onClick={loadCase}>Thử lại</button></div>}
-          {actionError && <div role="alert" className="p-3 bg-red-50 text-red-700 text-xs rounded border border-red-200">{actionError}</div>}
+          {actionError && !pendingApprovalId && <div role="alert" className="p-3 bg-red-50 text-red-700 text-xs rounded border border-red-200">{actionError}</div>}
 
           {loading ? <p role="status" className="p-4 text-center text-slate-500">Đang tải chi tiết test case...</p> : caseData && (!showAddRev ? (
             <>
@@ -179,13 +180,14 @@ function CaseDetailContent({ projectId, caseId, onClose, onUpdated }) {
               </div>
 
               {/* Revision content */}
-              {pendingApprovalId && <div role="alertdialog" aria-label="Xác nhận phê duyệt" className="p-3 border border-teal-300 rounded bg-teal-50 text-sm">
+              {pendingApprovalId && <ConfirmationDialog title="Xác nhận phê duyệt" busy={submitting} onCancel={()=>setPendingApprovalId(null)}>
+                {actionError&&<p role="alert">{actionError}</p>}
                 <p>Phê duyệt phiên bản này để có thể đưa vào đợt kiểm thử? Nội dung đã lưu được giữ nguyên.</p>
                 <div className="flex gap-2 mt-2">
                    <button disabled={submitting || !!readError} className="cat-btn cat-btn-mint" onClick={()=>handleApprove(pendingApprovalId)}>Xác nhận phê duyệt</button>
-                  <button disabled={submitting} className="cat-btn" onClick={()=>setPendingApprovalId(null)}>Hủy phê duyệt</button>
+                  <button disabled={submitting} className="cat-btn" data-dialog-initial-focus onClick={()=>setPendingApprovalId(null)}>Hủy phê duyệt</button>
                 </div>
-              </div>}
+              </ConfirmationDialog>}
               {cur ? (
                 <div className="space-y-3 bg-slate-50 p-4 rounded border border-slate-200 text-sm">
                   <div>

@@ -43,9 +43,9 @@ it('ignores data from a previous project while its request completes late',async
 });
 it('retries failed loading and only reloads after archive succeeds',async()=>{
   projectsApi.listCatalog.mockRejectedValueOnce(new Error('Mất kết nối')).mockResolvedValue([{id:4,code:'QA',name:'QA',active:true,version:2}]);
-  vi.spyOn(window,'confirm').mockReturnValue(true);projectsApi.archiveCatalog.mockResolvedValue();
+  projectsApi.archiveCatalog.mockResolvedValue();
   render(<CatalogPage/>);fireEvent.click(await screen.findByRole('button',{name:'Thử lại'}));
-  fireEvent.click(await screen.findByRole('button',{name:'Lưu trữ'}));
+  fireEvent.click(await screen.findByRole('button',{name:'Lưu trữ'}));fireEvent.click(screen.getAllByRole('button',{name:'Lưu trữ'}).at(-1));
   await waitFor(()=>expect(projectsApi.archiveCatalog).toHaveBeenCalledWith(1,'environments',4,2));
   await waitFor(()=>expect(projectsApi.listCatalog).toHaveBeenCalledTimes(3));
 });
@@ -67,9 +67,9 @@ it.each([
 });
 it('does not send a cancelled archive and reports a failed archive without claiming success',async()=>{
   projectsApi.listCatalog.mockResolvedValue([{id:4,code:'QA',name:'Môi trường QA'}]);
-  const confirm=vi.spyOn(window,'confirm').mockReturnValue(false);projectsApi.archiveCatalog.mockRejectedValue(new Error('Không có quyền'));
+  projectsApi.archiveCatalog.mockRejectedValue(new Error('Không có quyền'));
   render(<CatalogPage/>);fireEvent.click(await screen.findByRole('button',{name:'Lưu trữ'}));expect(projectsApi.archiveCatalog).not.toHaveBeenCalled();
-  confirm.mockReturnValue(true);fireEvent.click(screen.getByRole('button',{name:'Lưu trữ'}));await screen.findByRole('alert');
+  fireEvent.click(screen.getByRole('button',{name:'Hủy'}));fireEvent.click(screen.getByRole('button',{name:'Lưu trữ'}));fireEvent.click(screen.getAllByRole('button',{name:'Lưu trữ'}).at(-1));await screen.findByRole('alert');
   expect(screen.getByText('Không có quyền')).toBeVisible();expect(projectsApi.listCatalog).toHaveBeenCalledTimes(1);
 });
 it('ignores a previous catalog tab response and safely renders stored markup',async()=>{

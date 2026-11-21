@@ -1,3 +1,4 @@
+import {ConfirmationDialog} from '../../components/ConfirmationDialog';
 import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import {TableScroll} from '../../components/TableScroll';
 import { canManageProjectWork, isProjectDeveloper } from '../projects/projectAccess';
@@ -50,6 +51,7 @@ function Runner({ project, cycleId, navigate }) {
     setSelected(run);
   }
   async function start() {
+    if(busy)return;
     setBusy(true); setError('');
     try { await executionApi.activate(project.id, cycleId, data.cycle.version); if (live.current) { setConfirmStart(false); refresh(); } }
     catch (e) { if (live.current) setError(e.message); } finally { if (live.current) setBusy(false); }
@@ -57,13 +59,13 @@ function Runner({ project, cycleId, navigate }) {
   return <div className="cat-container ex-page py-3">
     <div className="ex-heading"><h2>{data?.cycle.name || 'Thực thi kiểm thử'}</h2><button className="cat-btn" onClick={() => navigate('/tests/cycles')}>Danh sách đợt</button></div>
     {!project && <p>Chọn dự án để mở đợt kiểm thử.</p>}
-    <ErrorNotice error={error} retry={refresh} />{loading && <p role="status">Đang tải đợt kiểm thử…</p>}
+    <ErrorNotice error={confirmStart?null:error} retry={refresh} />{loading && <p role="status">Đang tải đợt kiểm thử…</p>}
     {data && <>
       <div className="ex-heading"><p>{data.cycle.code} · {data.cycle.statusCode === 'CLOSED' ? 'Đã chốt · Khóa ghi kết quả' : data.cycle.statusCode === 'ACTIVE' ? 'Đang thực hiện · Phạm vi đã khóa' : 'Bản nháp'} · {data.cycle.runCount} lượt kiểm thử</p>
         {manager && data.cycle.statusCode === 'DRAFT' && <button className="cat-btn cat-btn-mint" disabled={loading || busy || !data.cycle.runCount} onClick={() => setConfirmStart(true)}>Bắt đầu đợt kiểm thử</button>}</div>
       {projectPm && data.cycle.statusCode !== 'DRAFT' && <button className="cat-btn" disabled={loading} onClick={() => setDecision({ cycle: data.cycle })}>{data.cycle.statusCode === 'CLOSED' ? 'Mở lại đợt' : 'Chốt đợt kiểm thử'}</button>}
       <DecisionHistory key={`cycle-history-${reload}`} projectId={project.id} id={cycleId} timeZone={project.timezone} />
-      {confirmStart && <section className="ex-panel" role="alertdialog" aria-label="Xác nhận bắt đầu đợt"><p>Khóa {data.cycle.runCount} lượt kiểm thử theo phiên bản case đã chọn và cho phép người được phân công ghi kết quả?</p><div className="ex-checks"><button className="cat-btn cat-btn-mint" disabled={busy} onClick={start}>Xác nhận bắt đầu</button><button className="cat-btn" disabled={busy} onClick={() => setConfirmStart(false)}>Hủy</button></div></section>}
+      {confirmStart && <ConfirmationDialog title="Xác nhận bắt đầu đợt" busy={busy} onCancel={()=>setConfirmStart(false)}>{error&&<p role="alert">{error}</p>}<p>Khóa {data.cycle.runCount} lượt kiểm thử theo phiên bản case đã chọn và cho phép người được phân công ghi kết quả?</p><div className="ex-checks"><button className="cat-btn cat-btn-mint" disabled={busy} onClick={start}>Xác nhận bắt đầu</button><button className="cat-btn" disabled={busy} data-dialog-initial-focus onClick={() => setConfirmStart(false)}>Hủy</button></div></ConfirmationDialog>}
       {manager && data.cycle.statusCode === 'DRAFT' && <ScopeSetup projectId={project.id} cycle={data.cycle} configs={data.configs} catalogs={data.catalogs} members={data.members} onSaved={refresh} navigate={navigate} refreshKey={reload} />}
       <div className="ex-checks"><label><input type="checkbox" checked={mine} onChange={e => { setMine(e.target.checked); setPage(0); }} />Được giao cho tôi</label><label><input type="checkbox" checked={pendingBug} onChange={e => { setPendingBug(e.target.checked); setPage(0); }} />NG chờ liên kết bug</label></div>
       {runs && <><TableScroll label="Lượt kiểm thử" className="ex-table-wrap"><table className="ex-table"><thead><tr><th>Mã case</th><th>Nội dung kiểm thử</th><th>Cấu hình chạy</th><th>Người thực hiện</th><th>Kết quả mới nhất</th><th>Thao tác</th></tr></thead><tbody>

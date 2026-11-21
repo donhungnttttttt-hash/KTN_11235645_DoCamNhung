@@ -1,3 +1,4 @@
+import {useConfirmation} from '../../components/ConfirmationDialog';
 import {TableScroll} from '../../components/TableScroll';
 import { canManageProjectWork } from './projectAccess';
 import React, { useState, useEffect } from "react";
@@ -24,6 +25,7 @@ export function CatalogPage() {
 
 function ProjectCatalog({ currentProject }) {
   const { hasRole } = useAuth();
+  const {ask,confirmation}=useConfirmation(currentProject.id);
   const [activeType, setActiveType] = useState(()=>{const type=new URLSearchParams(window.location.hash.split('?')[1]).get('type');return CATALOG_TYPES.some(t=>t.id===type)?type:'environments';});
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -47,7 +49,7 @@ function ProjectCatalog({ currentProject }) {
 
   const handleArchive = async (item) => {
     if(archiving!==null || editor)return;
-    if (!confirm("Bạn có chắc muốn lưu trữ mục này?")) return;
+    if (!await ask({title:'Lưu trữ danh mục?',message:`Lưu trữ ${item.name||item.code||'mục này'}?`,confirmLabel:'Lưu trữ'})) return;
     setArchiving(item.id);setError("");setNotice('');
     try {
       await projectsApi.archiveCatalog(currentProject.id, activeType, item.id, item.version);
@@ -123,6 +125,7 @@ function ProjectCatalog({ currentProject }) {
 
   return (
     <div className="page-container catalog-page">
+      {confirmation}
       <header className="page-header flex justify-between align-center">
         <h1>Quản lý Danh mục: {currentProject.name}</h1>
         {canEdit && (

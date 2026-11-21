@@ -165,7 +165,7 @@ describe('Project-scoped test case library',()=> {
     await user.click(await screen.findByRole('button',{name:'Phê duyệt bản này'}));
     expect(testCasesApi.approveRevision).not.toHaveBeenCalled();
     await user.click(screen.getByRole('button',{name:'Hủy phê duyệt'}));
-    expect(screen.queryByRole('alertdialog')).toBeNull();
+    expect(screen.queryByRole('dialog',{name:/Xác nhận/})).toBeNull();
     await user.click(screen.getByRole('button',{name:'Phê duyệt bản này'}));
     await user.click(screen.getByRole('button',{name:'Xác nhận phê duyệt'}));
     expect(await screen.findByRole('alert')).toHaveTextContent('Không kết nối');

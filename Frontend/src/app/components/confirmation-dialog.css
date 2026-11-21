@@ -1,0 +1,14 @@
+.confirmation-overlay{position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:20px;background:#102c3b66;box-sizing:border-box;overscroll-behavior:contain}
+.confirmation-dialog{width:min(460px,100%);max-height:calc(100dvh - 40px);overflow:auto;box-sizing:border-box;border:1px solid #cbdcda;border-radius:12px;background:#fff;color:#24423f;box-shadow:0 18px 60px #102c3b33;font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+.confirmation-dialog .confirmation-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0;padding:16px 20px;border-bottom:1px solid #e0e9e7;background:#f5f9f8}
+.confirmation-dialog .confirmation-heading h2{margin:0;font-size:17px;font-weight:650;line-height:1.4;color:#183e3b}
+.confirmation-dialog .confirmation-content{padding:18px 20px 20px}
+.confirmation-dialog p{margin:0 0 12px;line-height:1.6}
+.confirmation-dialog .confirmation-close{display:grid;place-items:center;flex:none;width:30px;height:30px;min-height:0;padding:0;border:0;background:transparent;color:#476b66;border-radius:6px}
+.confirmation-dialog .confirmation-content>div:last-child{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px;margin-top:20px}
+.confirmation-dialog button{min-height:36px;padding:7px 14px;border:1px solid #b6cbc7;border-radius:6px;background:#fff;color:#24423f;font:inherit;font-weight:500;cursor:pointer}
+.confirmation-dialog button:disabled{opacity:.55;cursor:not-allowed}
+.confirmation-dialog button:focus-visible{outline:2px solid #008c80;outline-offset:2px}
+.confirmation-dialog .confirmation-primary,.confirmation-dialog .cat-btn-mint,.confirmation-dialog .testing-version-confirm-delete{background:#0f7c74;border-color:#0f7c74;color:#fff}
+.confirmation-dialog [role=alert]{color:#b42332}
+@media(max-width:480px){.confirmation-overlay{padding:12px}.confirmation-dialog{max-height:calc(100dvh - 24px)}.confirmation-dialog .confirmation-heading,.confirmation-dialog .confirmation-content{padding:16px}}

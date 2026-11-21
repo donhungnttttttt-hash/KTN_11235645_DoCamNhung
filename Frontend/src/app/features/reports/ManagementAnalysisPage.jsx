@@ -1,3 +1,4 @@
+import {useConfirmation} from '../../components/ConfirmationDialog';
 import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import {UnifiedSelect} from '../../components/UnifiedSelect';
 import React,{useEffect,useRef,useState} from 'react';
@@ -50,6 +51,7 @@ function ManagementWorkspace({project,api}){
   const providers=useAiProviders();const writable=!project.archived;
   const drafts=useReportDrafts();
   const auth=useAuth(),authenticated=drafts?drafts.active:!auth?.status||auth.status==='authenticated';
+  const {ask,confirmation}=useConfirmation(`${project.id}/${authenticated}`);
   const [restored]=useState(()=>drafts?.read(project.id));
   const [restoreNotice,setRestoreNotice]=useState(!!restored);
   const initial={title:`Báo cáo ${project.name}`,markdown:''};
@@ -113,15 +115,15 @@ function ManagementWorkspace({project,api}){
   const locked=busy||previewBusy||!!previewPending;
   const selectedProvider=previewPending?.provider||providers?.selection?.provider;
   const aiUnavailable=!previewPending&&!providers?.ready;
-  function permitDiscard(){return !dirty||window.confirm('Bản sửa chưa lưu. Bỏ bản sửa để chuyển nội dung?');}
+  async function permitDiscard(){return !dirty||await ask({title:'Bỏ nội dung chưa lưu?',message:'Bản sửa chưa lưu. Bỏ bản sửa để chuyển nội dung?',cancelLabel:'Tiếp tục soạn',confirmLabel:'Bỏ bản nháp'});}
   function changeEditor(value){editorRevision.current++;editorCurrent.current=value;setEditor(value);}
   function resetEditor(value=initial,document=null){drafts?.remove(project.id,entryId);setRestoreNotice(false);setRestoringSaved(false);setRestoreRead({});setSaved(document);changeEditor({title:value.title,markdown:value.markdown});setBaseline({title:value.title,markdown:value.markdown});setProposal(null);setPreviewError('');setPreviewNotice('');setNotice('');setError('');}
-  function chooseFeature(value){if(locked||!permitDiscard())return;setFeatureId(value);resetEditor();}
+  async function chooseFeature(value){if(locked||(dirty&&!await permitDiscard()))return;setFeatureId(value);resetEditor();}
   async function perform(action,message){
     if(actionLock.current)return;actionLock.current=true;setBusy(true);setOperation(message);setError('');setNotice('');const signal=lifetime.current.signal;
     try{await action(signal);}catch(failure){if(!signal.aborted)readError(failure,setError);}finally{if(!signal.aborted){actionLock.current=false;setBusy(false);setOperation('');}}
   }
-  function openReport(id){if(locked||!permitDiscard())return;perform(async signal=>{const value=await api.get(project.id,id,{signal});if(signal.aborted)return;resetEditor(value,value);setFeatureId(value.featureId==null?'':String(value.featureId));},'Đang mở báo cáo…');}
+  async function openReport(id){if(locked||(dirty&&!await permitDiscard()))return;perform(async signal=>{const value=await api.get(project.id,id,{signal});if(signal.aborted)return;resetEditor(value,value);setFeatureId(value.featureId==null?'':String(value.featureId));},'Đang mở báo cáo…');}
   function save(event){
     event.preventDefault();if(!writable||locked||restoreBlocked||!editor.title.trim()||!editor.markdown.trim())return;
     perform(async signal=>{
@@ -154,11 +156,12 @@ function ManagementWorkspace({project,api}){
   if(accessDenied==='forbidden')return <section className="page-container"><h1>Không có quyền truy cập</h1><p>Quyền xem Tổng hợp & Phân tích không còn khả dụng. Chọn lại dự án hoặc tải lại quyền truy cập.</p></section>;
   if(accessDenied==='auth')return <section className="page-container"><h1>Cần xác nhận lại quyền truy cập</h1><p>Bản đang soạn vẫn được giữ. Sau khi đăng nhập lại cùng tài khoản, hệ thống kiểm tra quyền xem báo cáo trước khi mở lại.</p>{reauthBusy&&<p role="status">Đang kiểm tra lại quyền xem báo cáo…</p>}{reauthError&&<><p role="alert">{reauthError}</p><button type="button" className="cat-btn" disabled={!authenticated||reauthBusy} onClick={()=>setReauthRetry(value=>value+1)}>Kiểm tra lại quyền báo cáo</button></>}</section>;
   return <section className="page-container management-analysis">
+    {confirmation}
     <header className="management-heading"><div><h1>Tổng hợp & Phân tích</h1><p>{project.name}</p></div></header>
     {!writable&&<p className="management-mode-notice" role="status" aria-label="Chế độ báo cáo">Dự án đã lưu trữ. Bạn có thể xem và tải bản báo cáo đã lưu.</p>}
     <label className="management-scope">Phạm vi Đợt kiểm thử<UnifiedSelect className="cat-select" value={featureId} disabled={locked} onChange={event=>chooseFeature(event.target.value)}><option value="">Toàn bộ dự án</option>{featureId&&!catalog.some(feature=>String(feature.id)===featureId)&&<option value={featureId}>Đợt kiểm thử #{featureId}</option>}{catalog.map(feature=><option key={feature.id} value={feature.id}>{feature.name}</option>)}</UnifiedSelect></label>
     {summaryError&&<p role="alert">{summaryError}</p>}{!summary&&!summaryError&&<p role="status">Đang tải phân tích…</p>}{summary&&<ManagementSummary data={summary}/>}
-    <section className="management-report-workspace"><div className="management-heading"><h2>Báo cáo Markdown</h2>{writable&&<button type="button" className="cat-btn" disabled={locked} onClick={()=>{if(permitDiscard())resetEditor();}}>Báo cáo mới</button>}</div>
+    <section className="management-report-workspace"><div className="management-heading"><h2>Báo cáo Markdown</h2>{writable&&<button type="button" className="cat-btn" disabled={locked} onClick={async()=>{if(!dirty||await permitDiscard())resetEditor();}}>Báo cáo mới</button>}</div>
       {error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}{busy&&<p role="status" aria-label="Thao tác báo cáo">{operation}</p>}
       <div className="management-report-columns"><section className="management-report-list" aria-label="Báo cáo đã lưu"><h3>Báo cáo đã lưu của dự án</h3>{listError&&<p role="alert">{listError} {(listError)&&<button type="button" className="cat-btn" onClick={()=>setListRevision(value=>value+1)}>Thử lại báo cáo</button>}</p>}{!reports&&!listError&&<p role="status">Đang tải báo cáo…</p>}
         {reports&&<>{!reports.items.length&&<p>Chưa có báo cáo đã lưu.</p>}<ul>{reports.items.map(item=><li key={item.id}><button type="button" className="cat-btn" disabled={locked} aria-current={saved?.id===item.id?'page':undefined} aria-label={`Mở báo cáo ${item.title}`} onClick={()=>openReport(item.id)}>{item.title}</button><small>{item.featureId?`Đợt kiểm thử #${item.featureId}`:'Toàn bộ dự án'} · {time(item.updatedAt)}</small></li>)}</ul><nav className="management-pager" aria-label="Phân trang báo cáo"><button type="button" className="cat-btn" disabled={!page||locked} onClick={()=>setPage(value=>value-1)}>Báo cáo trước</button><span>{page+1}/{Math.max(1,reports.totalPages)}</span><button type="button" className="cat-btn" disabled={page+1>=reports.totalPages||locked} onClick={()=>setPage(value=>value+1)}>Báo cáo sau</button></nav></>}

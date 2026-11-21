@@ -22,7 +22,7 @@ it('keeps list filters but removes them when switching to Kanban without hidden 
  view.rerender(<FeatureIssuesPage projectId={1} activeRoute={route} api={api} featureApi={featureApi} navigate={navigate}/>);
  expect(screen.queryByLabelText('Loại')).not.toBeInTheDocument();expect(screen.queryByLabelText('Trạng thái')).not.toBeInTheDocument();
  expect(screen.getByLabelText('Tìm ticket')).toHaveValue('login');
- await waitFor(()=>expect(api.list.mock.lastCall[1]).toMatchObject({type:'',column:'unsupported',featureId:'2',keyword:'login',page:0}));
+ await waitFor(()=>expect(api.list.mock.lastCall[1]).toMatchObject({type:'',column:'converted',featureId:'2',keyword:'login',page:0}));
 });
 
 it('ignores a hidden type filter in a direct Kanban link while retaining visible column selection',async()=>{
@@ -108,7 +108,7 @@ it('keeps empty Kanban columns discoverable and lets keyboard users reach the ho
  const open=within(board).getByRole('region',{name:'Cột Chưa xử lý'});
  expect(await within(open).findByText('Chưa có Ticket')).toBeVisible();
  expect(within(open).getByLabelText('1 Ticket theo bộ lọc')).toBeVisible();
- expect(within(board).getAllByRole('region')).toHaveLength(9);
+ expect(within(board).getAllByRole('region')).toHaveLength(10);
  screen.getByLabelText('Tìm ticket').focus();for(let i=0;i<8&&document.activeElement!==board;i++)await user.tab();
  expect(board).toHaveFocus();
 });

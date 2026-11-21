@@ -1,3 +1,4 @@
+import {ConfirmationDialog} from '../../components/ConfirmationDialog';
 import {useGuestLanguage} from '../../i18n/GuestLanguage';
 import React, {useCallback,useContext,useEffect,useId,useRef,useState} from 'react';
 import {X} from 'lucide-react';
@@ -34,8 +35,8 @@ export function AdminFormDialog({title, onClose, busy, wide=false, children,conf
    </header>
    <div className="admin-form-dialog-body">{children}</div>
   </section>
- </div>{confirmation&&<AdminFormDialog title={t("Bỏ nội dung chưa lưu?")} onClose={confirmation.onContinue} busy={confirmation.busy} focusTitle={false} returnFocusRef={confirmation.returnFocusRef}>
+ </div>{confirmation&&<ConfirmationDialog closeLabel={t("Đóng")} title={t("Bỏ nội dung chưa lưu?")} onCancel={confirmation.onContinue} busy={confirmation.busy} returnFocusRef={confirmation.returnFocusRef}>
   <p>{t("Nội dung đang soạn chưa được lưu. Bạn có thể tiếp tục soạn hoặc bỏ bản nháp này.")}</p>
   <div className="admin-actions"><button type="button" className="cat-btn cat-btn-mint" data-dialog-initial-focus disabled={confirmation.busy} onClick={confirmation.onContinue}>{t("Tiếp tục soạn")}</button><button type="button" className="cat-btn" disabled={confirmation.busy} onClick={confirmation.onDiscard}>{t("Bỏ bản nháp")}</button></div>
- </AdminFormDialog>}</>;
+ </ConfirmationDialog>}</>;
 }

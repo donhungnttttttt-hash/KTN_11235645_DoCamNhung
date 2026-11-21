@@ -11,13 +11,36 @@ const members={canManage:true,members:[{membershipId:11,userId:'u1',displayName:
 const ticket={id:7,key:'P-7',title:'Question',type:'QA',ticketState:'SPEC_CONFIRM',boardColumn:'spec',version:2,canComment:true,canAssign:true,canConvertToBug:true,allowedTransitions:[{state:'CLOSED',closureReason:'UNSUPPORTED',columnId:'unsupported',label:'Không hỗ trợ'}]};
 const apiFor=(item=ticket)=>({get:vi.fn().mockResolvedValue(item),comments:vi.fn().mockResolvedValue([]),responsibilities:vi.fn().mockResolvedValue(members),options:vi.fn().mockResolvedValue(contacts),action:vi.fn().mockResolvedValue({...item,version:3})});
 
+it('keeps the original QA and its comments visible after copying a distinct Bug and links both tickets',async()=>{
+ const qa={...ticket,canEdit:true,startOn:'2026-11-15'};
+ const closed={...qa,ticketState:'CLOSED',closureReason:'CONVERTED_TO_BUG',boardColumn:'converted',convertedBugId:8,convertedBugKey:'P-8',canConvertToBug:false,allowedTransitions:[],version:3};
+ const bug={...qa,id:8,key:'P-8',type:'BUG',ticketState:'NEW',boardColumn:'new',sourceQaId:7,sourceQaKey:'P-7',canConvertToBug:false,allowedTransitions:[],version:0,startOn:'2026-11-21'};
+ const api=apiFor();api.get.mockResolvedValueOnce(qa).mockResolvedValue(closed);api.action.mockResolvedValue(bug);api.comments.mockResolvedValue([{id:1,actorName:'Reviewer',body:'Original QA discussion'}]);
+ render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);
+ fireEvent.focus(await screen.findByLabelText('Ghi chú Ticket'));fireEvent.click(screen.getByLabelText('Chuyển QA thành Bug'));
+ await screen.findByRole('option',{name:'Coordinator'});fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'12'}});
+ fireEvent.click(screen.getByRole('button',{name:'Đăng'}));fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));
+ expect(await screen.findByRole('link',{name:'Bug P-8'})).toHaveAttribute('href',expect.stringContaining('/board/issue/8?'));
+ expect(screen.getByText('P-7 · Question')).toBeInTheDocument();expect(screen.getByText('Original QA discussion')).toBeInTheDocument();
+ expect(api.comments.mock.calls.every(call=>call[1]===7)).toBe(true);
+ expect(screen.queryByLabelText('Chuyển QA thành Bug')).not.toBeInTheDocument();
+ await waitFor(()=>expect(screen.getByLabelText('Ngày bắt đầu')).toHaveValue('2026-11-15'));
+ expect(screen.getByRole('button',{name:'Đăng'})).toBeDisabled();
+});
+
+it('links a copied Bug back to its original QA history and attachments',async()=>{
+ const item={...ticket,type:'BUG',ticketState:'NEW',boardColumn:'new',sourceQaId:6,sourceQaKey:'P-6',canConvertToBug:false};
+ render(<FeatureIssueDetail projectId={1} id={7} api={apiFor(item)}/>);
+ expect(await screen.findByRole('link',{name:'QA P-6'})).toHaveAttribute('href',expect.stringContaining('/board/issue/6?'));
+});
+
 it.each([[null,'USER'],[99,'USER'],[null,'PM']])('manager explicitly repairs coordinator %s through the same eligible %s assignee with confirmation',async (coordinatorMembershipId,projectRole)=>{
  const item={...ticket,type:'BUG',canConvertToBug:false,assigneeMembershipId:12,coordinatorMembershipId};const api=apiFor(item);api.action.mockResolvedValue({...item,coordinatorMembershipId:12,version:3});
  api.responsibilities.mockResolvedValue({...members,members:members.members.map(member=>member.membershipId===12?{...member,projectRole,duties:projectRole==='PM'?[]:member.duties}:member)});
  render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(screen.queryByText('Đang tải Ticket…')).not.toBeInTheDocument());if(screen.queryByLabelText('Ghi chú Ticket'))fireEvent.focus(screen.getByLabelText('Ghi chú Ticket'));else if(screen.queryByRole('button',{name:'Thay đổi trạng thái'}))fireEvent.click(screen.getByRole('button',{name:'Thay đổi trạng thái'}));await waitFor(()=>expect(within(screen.getByLabelText('Người phụ trách')).getByRole('option',{name:'Coordinator'})).toBeInTheDocument());
  expect(screen.getByRole('button',{name:'Đăng'})).toBeDisabled();fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'12'}});
  expect(screen.queryByText(/Điều phối Bug sẽ được cập nhật thành: Coordinator/)).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Đăng'})).toBeEnabled();fireEvent.click(screen.getByRole('button',{name:'Đăng'}));expect(api.action).not.toHaveBeenCalled();
- expect(screen.getByRole('region',{name:'Xác nhận cập nhật Ticket'})).toHaveTextContent('Điều phối Bug sẽ được cập nhật thành: Coordinator');fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));await waitFor(()=>expect(api.action).toHaveBeenCalledOnce());expect(api.action.mock.lastCall[2]).toMatchObject({assigneeMembershipId:12,expectedVersion:2});expect(api.action.mock.lastCall[2]).not.toHaveProperty('body');expect(screen.getByRole('button',{name:'Đăng'})).toBeDisabled();
+ expect(screen.getByRole('dialog',{name:'Xác nhận cập nhật Ticket'})).toHaveTextContent('Điều phối Bug sẽ được cập nhật thành: Coordinator');fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));await waitFor(()=>expect(api.action).toHaveBeenCalledOnce());expect(api.action.mock.lastCall[2]).toMatchObject({assigneeMembershipId:12,expectedVersion:2});expect(api.action.mock.lastCall[2]).not.toHaveProperty('body');expect(screen.getByRole('button',{name:'Đăng'})).toBeDisabled();
 });
 it('same-assignee selection of a worker without coordinator eligibility cannot repair a missing coordinator',async()=>{
  const api=apiFor({...ticket,type:'BUG',canConvertToBug:false,assigneeMembershipId:12,coordinatorMembershipId:null});api.responsibilities.mockResolvedValue({...members,members:[{membershipId:12,userId:'u2',displayName:'Worker',projectRole:'USER',duties:[]}]});render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(screen.queryByText('Đang tải Ticket…')).not.toBeInTheDocument());if(screen.queryByLabelText('Ghi chú Ticket'))fireEvent.focus(screen.getByLabelText('Ghi chú Ticket'));else if(screen.queryByRole('button',{name:'Thay đổi trạng thái'}))fireEvent.click(screen.getByRole('button',{name:'Thay đổi trạng thái'}));await waitFor(()=>expect(within(screen.getByLabelText('Người phụ trách')).getByRole('option',{name:'Worker'})).toBeInTheDocument());fireEvent.change(screen.getByLabelText('Người phụ trách'),{target:{value:'12'}});expect(screen.getByRole('button',{name:'Đăng'})).toBeDisabled();expect(screen.queryByText(/Điều phối Bug sẽ được cập nhật/)).not.toBeInTheDocument();
@@ -84,7 +107,7 @@ it('posts an ordinary comment atomically without assignment or state and retains
  fireEvent.click(screen.getByRole('button',{name:'Đăng'}));await waitFor(()=>expect(api.action).toHaveBeenCalledTimes(2));expect(api.action.mock.calls[1][2].requestKey).toBe(payload.requestKey);
 });
 
-it('chooses a CLOSED reason from server transitions and confirms same-ID QA conversion with coordinator',async()=>{
+it('chooses a CLOSED reason and confirms closing the QA while copying a new Bug',async()=>{
  const api=apiFor();render(<FeatureIssueDetail projectId={1} id={7} api={api}/>);await waitFor(()=>expect(screen.queryByText('Đang tải Ticket…')).not.toBeInTheDocument());if(screen.queryByLabelText('Ghi chú Ticket'))fireEvent.focus(screen.getByLabelText('Ghi chú Ticket'));else if(screen.queryByRole('button',{name:'Thay đổi trạng thái'}))fireEvent.click(screen.getByRole('button',{name:'Thay đổi trạng thái'}));
  fireEvent.change(await screen.findByLabelText('Trạng thái mới'),{target:{value:'CLOSED'}});
  expect(screen.getByLabelText('Lý do đóng')).toHaveValue('UNSUPPORTED');
@@ -93,15 +116,15 @@ it('chooses a CLOSED reason from server transitions and confirms same-ID QA conv
  fireEvent.click(screen.getByLabelText('Chuyển QA thành Bug'));
  fireEvent.change(await screen.findByLabelText('Người phụ trách'),{target:{value:'12'}});
  fireEvent.click(screen.getByRole('button',{name:'Đăng'}));
- expect(screen.getByText(/Giữ nguyên mã/)).toBeInTheDocument();expect(screen.getByRole('button',{name:'Hủy xác nhận'})).toHaveFocus();
+ expect(screen.getByText(/Đóng QA P-7 và tạo Bug mới/)).toBeInTheDocument();expect(screen.getByRole('button',{name:'Hủy xác nhận'})).toHaveFocus();
  fireEvent.click(screen.getByRole('button',{name:'Xác nhận cập nhật'}));
  await waitFor(()=>expect(api.action).toHaveBeenCalledWith(1,7,expect.objectContaining({convertToBug:true,assigneeMembershipId:12}),expect.anything()));
 });
 
-it('shows nine ordered server totals even when a page has no cards and offers column loading',()=>{
+it('shows all ordered server totals including converted QA and offers column loading',()=>{
  const onColumn=vi.fn();render(<FeatureIssueBoard items={[]} columns={[{id:'new',count:35}]} onColumn={onColumn} onOpen={vi.fn()} onMove={vi.fn()}/>);
  const board=screen.getByRole('region',{name:'Bảng trạng thái Bug và QA'});
- expect(within(board).getAllByRole('region')).toHaveLength(9);
+ expect(within(board).getAllByRole('region')).toHaveLength(10);
  const column=within(board).getByRole('region',{name:'Cột Chưa xử lý'});expect(within(column).getByLabelText('35 Ticket theo bộ lọc')).toBeInTheDocument();
  expect(within(column).queryByText('Chưa có Ticket')).not.toBeInTheDocument();
  fireEvent.click(within(column).getByRole('button',{name:'Xem cột Chưa xử lý'}));expect(onColumn).toHaveBeenCalledWith('new');

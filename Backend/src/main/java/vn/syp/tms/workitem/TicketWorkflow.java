@@ -13,11 +13,12 @@ public final class TicketWorkflow {
         new Transition("IN_PROGRESS",null,"progress","Đang xử lý"),new Transition("WAITING_CONFIRM",null,"verify","Chờ xác nhận"),
         new Transition("CLOSED","PROCESSED","processed","Đóng – Đã xử lý"),new Transition("CLOSED","FIXED","fixed","Đóng – Đã sửa"),
         new Transition("CLOSED","CANNOT_REPRODUCE","cannot_reproduce","Đóng – Không thể tái hiện"),
-        new Transition("CLOSED","WONT_FIX","wont_fix","Đóng – Không xử lý"),new Transition("CLOSED","UNSUPPORTED","unsupported","QA – Đóng – Không được hỗ trợ"));
+        new Transition("CLOSED","WONT_FIX","wont_fix","Đóng – Không xử lý"),new Transition("CLOSED","UNSUPPORTED","unsupported","QA – Đóng – Không được hỗ trợ"),
+        new Transition("CLOSED","CONVERTED_TO_BUG","converted","QA – Đóng – Đã chuyển thành Bug"));
     public static Transition combination(String type,String state,String reason) {
         var result=COLUMNS.stream().filter(v->Objects.equals(v.state(),state)&&Objects.equals(v.closureReason(),reason)).findFirst().orElse(null);
         boolean qa="QA".equals(type);
-        if(result==null||!Set.of("BUG","QA").contains(type)||qa!=Set.of("spec","unsupported").contains(result.columnId()))fail(422,"INVALID_TICKET_STATE","Tổ hợp loại, trạng thái và lý do đóng không hợp lệ.");
+        if(result==null||!Set.of("BUG","QA").contains(type)||qa!=Set.of("spec","unsupported","converted").contains(result.columnId()))fail(422,"INVALID_TICKET_STATE","Tổ hợp loại, trạng thái và lý do đóng không hợp lệ.");
         return result;
     }
     public static String initial(String type){return "QA".equals(type)?"SPEC_CONFIRM":"NEW";}
@@ -29,9 +30,12 @@ public final class TicketWorkflow {
     public static boolean finalized(String state,String reason){return "CLOSED".equals(state)&&reason!=null&&!"PROCESSED".equals(reason);}
     public static String mirror(Transition value){return switch(value.columnId()){
         case "spec"->"clarify";case "new"->"open";case "progress"->"progress";case "verify"->"recheck";case "processed"->"resolved";
-        case "fixed","unsupported"->"closed";case "cannot_reproduce"->"unreproducible";case "wont_fix"->"wontfix";default->throw new IllegalArgumentException("Unknown column");};}
+        case "fixed","unsupported","converted"->"closed";case "cannot_reproduce"->"unreproducible";case "wont_fix"->"wontfix";default->throw new IllegalArgumentException("Unknown column");};}
     public static List<Transition> allowed(String type,String state,String reason,Rights rights){
+        if("CONVERTED_TO_BUG".equals(reason))return List.of();
         return COLUMNS.stream().filter(target->{
+            // Conversion is a separate atomic command, never a standalone state selection.
+            if("converted".equals(target.columnId()))return false;
             if("QA".equals(type)!=Set.of("spec","unsupported").contains(target.columnId()))return false;
             if(Objects.equals(state,target.state())&&Objects.equals(reason,target.closureReason()))return false;
             if(rights.manager())return true;

@@ -1,17 +1,14 @@
+import {ConfirmationDialog} from '../../components/ConfirmationDialog';
 import React,{useEffect,useId,useRef,useState} from 'react';
-import {createPortal} from 'react-dom';
 import {Trash2} from 'lucide-react';
-import {useDialogFocus} from '../../hooks/useDialogFocus';
 import {featuresApi} from '../../services/api/features';
 
 function DeleteVersionConfirmation({version,busy,error,onCancel,onConfirm,opener,environment=false}) {
- const title=useId(),description=useId(),ref=useDialogFocus(onCancel,busy,true,opener);
- return createPortal(<div className="testing-version-confirm-overlay"><section ref={ref} className="testing-version-confirm" role="dialog" aria-modal="true" aria-labelledby={title} aria-describedby={description} aria-busy={busy} tabIndex={-1}>
-  <h2 id={title}>{environment?'Xóa môi trường?':'Xóa version test?'}</h2>
-  <p id={description}>{environment?'Môi trường':'Version'} <strong>{version.name}</strong> sẽ được ẩn khỏi danh sách chọn. Kết quả và lịch sử kiểm thử cũ vẫn được giữ nguyên.</p>
+ return <ConfirmationDialog title={environment?'Xóa môi trường?':'Xóa version test?'} busy={busy} onCancel={onCancel} returnFocusRef={opener}>
+  <p>{environment?'Môi trường':'Version'} <strong>{version.name}</strong> sẽ được ẩn khỏi danh sách chọn. Kết quả và lịch sử kiểm thử cũ vẫn được giữ nguyên.</p>
   {error&&<p role="alert" className="td-error">{error}</p>}
   <div className="testing-version-confirm-actions"><button className="cat-btn" data-dialog-initial-focus disabled={busy} onClick={onCancel}>Hủy</button><button className="cat-btn testing-version-confirm-delete" disabled={busy} onClick={onConfirm}>{busy?'Đang xóa…':'Xóa'}</button></div>
- </section></div>,document.body);
+ </ConfirmationDialog>;
 }
 
 export function FeatureTestVersions({projectId,featureId,canManage,api=featuresApi,environment=false}) {

@@ -7,10 +7,20 @@ import vn.syp.tms.shared.web.BusinessException;
 
 class TicketWorkflowTest {
     private TicketWorkflow.Rights rights(boolean manager,boolean reviewer,boolean coordinator,boolean assigned,boolean verifier){return new TicketWorkflow.Rights(manager,reviewer,coordinator,assigned,verifier);}
-    @Test void defaultsAndNineColumnsHaveDistinctMeaning(){
+    @Test void defaultsAndColumnsHaveDistinctMeaningIncludingConvertedQa(){
         assertThat(TicketWorkflow.initial("QA")).isEqualTo("SPEC_CONFIRM");assertThat(TicketWorkflow.initial("BUG")).isEqualTo("NEW");
-        assertThat(TicketWorkflow.COLUMNS).extracting(value -> Objects.requireNonNull(Objects.requireNonNull(value).columnId())).containsExactly("spec","new","progress","verify","processed","fixed","cannot_reproduce","wont_fix","unsupported");
-        for(var c:TicketWorkflow.COLUMNS){String type=Set.of("spec","unsupported").contains(c.columnId())?"QA":"BUG";assertThat(TicketWorkflow.combination(type,c.state(),c.closureReason())).isEqualTo(c);assertThat(TicketWorkflow.mirror(c)).isNotBlank();}
+        assertThat(TicketWorkflow.COLUMNS).extracting(value -> Objects.requireNonNull(Objects.requireNonNull(value).columnId())).containsExactly("spec","new","progress","verify","processed","fixed","cannot_reproduce","wont_fix","unsupported","converted");
+        for(var c:TicketWorkflow.COLUMNS){String type=Set.of("spec","unsupported","converted").contains(c.columnId())?"QA":"BUG";assertThat(TicketWorkflow.combination(type,c.state(),c.closureReason())).isEqualTo(c);assertThat(TicketWorkflow.mirror(c)).isNotBlank();}
+    }
+    @Test void convertedQaIsFinalAndClosureCannotBeSelectedWithoutCreatingBug(){
+        var manager=rights(true,true,true,true,true);
+        var converted=TicketWorkflow.combination("QA","CLOSED","CONVERTED_TO_BUG");
+        assertThat(converted.columnId()).isEqualTo("converted");assertThat(TicketWorkflow.mirror(converted)).isEqualTo("closed");
+        assertThat(TicketWorkflow.finalized("CLOSED","CONVERTED_TO_BUG")).isTrue();assertThat(TicketWorkflow.awaiting("CLOSED","CONVERTED_TO_BUG")).isFalse();
+        assertThat(TicketWorkflow.allowed("QA","CLOSED","CONVERTED_TO_BUG",manager)).isEmpty();
+        assertThat(TicketWorkflow.allowed("QA","SPEC_CONFIRM",null,manager)).extracting(TicketWorkflow.Transition::closureReason).doesNotContain("CONVERTED_TO_BUG");
+        assertThat(TicketWorkflow.initialChoices("QA",true,true)).extracting(TicketWorkflow.Transition::closureReason).doesNotContain("CONVERTED_TO_BUG");
+        assertThatThrownBy(()->TicketWorkflow.combination("BUG","CLOSED","CONVERTED_TO_BUG")).isInstanceOf(BusinessException.class);
     }
     @Test void processedIsClosedButNotFinalized(){
         assertThat(TicketWorkflow.finalized("CLOSED","PROCESSED")).isFalse();assertThat(TicketWorkflow.awaiting("CLOSED","PROCESSED")).isTrue();

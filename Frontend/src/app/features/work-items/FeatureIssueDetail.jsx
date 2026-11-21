@@ -1,3 +1,4 @@
+import {ConfirmationDialog} from '../../components/ConfirmationDialog';
 import {useRefreshOnReturn} from '../../hooks/useRefreshOnReturn';
 import {TicketAttachments} from './TicketAttachments';
 import {SafeMarkdown} from '../reports/SafeMarkdown';
@@ -13,7 +14,7 @@ import {chronological,ticketColumns,ticketContentFields as contentFields,ticketL
 import './feature-issues.css';
 import './workspace-presentation.css';
 
-const eventLabels={CREATE:'Tạo Ticket',UPDATE:'Sửa nội dung',STATUS:'Chuyển trạng thái',COMMENT:'Thêm ghi chú',DELETE:'Xóa mềm',RESTORE:'Khôi phục',CONVERT_TO_BUG:'Chuyển QA thành Bug',TICKET_ACTION:'Cập nhật Ticket'};
+const eventLabels={CREATE:'Tạo Ticket',CREATE_FROM_QA:'Tạo Bug từ QA',UPDATE:'Sửa nội dung',STATUS:'Chuyển trạng thái',COMMENT:'Thêm ghi chú',DELETE:'Xóa mềm',RESTORE:'Khôi phục',CONVERT_TO_BUG:'Chuyển QA thành Bug',TICKET_ACTION:'Cập nhật Ticket'};
 function eventTime(value){
  if(!value)return 'Không rõ thời điểm';
  const text=String(value).replace(' ','T'),date=new Date(/(?:Z|[+-]\d{2}:\d{2})$/i.test(text)?text:text+'Z');
@@ -74,7 +75,18 @@ export function FeatureIssueDetail({projectId,id,api=featureIssuesApi,initialSta
   catch(e){if(!signal.aborted)setError(e.message);}
   finally{if(!signal.aborted){lock.current=false;setBusy(false);}}
  }
- function actionSaved(fresh){setItem(fresh);onChanged?.(fresh);reloadComments();if(historyOpen)loadHistory();}
+ async function actionSaved(fresh){
+  const signal=lifetime.current.signal;
+  if(Number(fresh.id)!==Number(id)){
+   // The response is the new Bug; this drawer still belongs to the original QA.
+   setItem(current=>({...current,ticketState:'CLOSED',closureReason:'CONVERTED_TO_BUG',boardColumn:'converted',status:'closed',finalized:true,version:current.version+1,convertedBugId:fresh.id,convertedBugKey:fresh.key,canConvertToBug:false,allowedTransitions:[]}));
+   onChanged?.(fresh);setReloading(true);
+   try{const original=await api.get(projectId,id,{signal});if(!signal.aborted)setItem(original);}
+   catch(e){if(!signal.aborted)setError(e.message);}
+   finally{if(!signal.aborted)setReloading(false);}
+  }else{setItem(fresh);onChanged?.(fresh);}
+  if(!signal.aborted){reloadComments();if(historyOpen)loadHistory();}
+ }
  if(deleted)return <p role="status">Đã xóa mềm Bug monkey. Lịch sử Ticket vẫn được giữ.</p>;
  if(error&&!item)return <div><p role="alert">{error}</p>{(error)&&<button type="button" className="cat-btn" disabled={reloading} onClick={reloadItem}>Thử lại Ticket</button>}</div>;
  if(!item)return <p role="status">Đang tải Ticket…</p>;
@@ -88,18 +100,19 @@ export function FeatureIssueDetail({projectId,id,api=featureIssuesApi,initialSta
  return <article className="feature-issue-detail" aria-busy={blocked}>
   {editing&&<form id={editFormId} className="ticket-inline-form" onSubmit={saveEdit} aria-label="Sửa nội dung Ticket"/>}
   <header className="ticket-detail-heading"><div className="ticket-detail-badges"><span className={`feature-kanban-type is-${item.type?.toLowerCase()}`}>{item.type==='BUG'?'Lỗi':'QA'}</span><strong>{item.key}</strong><span className="ticket-detail-status" style={{'--ticket-status-color':ticketColumns.find(column=>column.id===item.boardColumn)?.color||'#64748b'}}>{ticketLabel(item)}</span></div>{editing?<div className="ticket-inline-title">{editField('title','Tiêu đề Ticket')}</div>:<h3>{item.key} · {item.title}</h3>}<div className="wi-actions">{item.canEdit&&!editing&&<button ref={editButton} className="cat-btn" aria-label="Sửa nội dung Ticket" disabled={blocked} onClick={startEdit}><Pencil size={16}/> Chỉnh sửa</button>}{editing&&<><button className="cat-btn cat-btn-primary" type="submit" form={editFormId} disabled={blocked||!item.canEdit}>{busy?'Đang lưu…':'Lưu nội dung Ticket'}</button><button type="button" className="cat-btn" disabled={blocked} onClick={()=>setEditing(false)}>Hủy sửa</button></>}{(error)&&<button type="button" className="cat-btn" disabled={blocked} onClick={reloadItem}>Thử lại Ticket</button>}</div></header>
+  {(item.convertedBugId||item.sourceQaId)&&<p className="ticket-conversion-link">{item.convertedBugId?<>QA đã đóng · <a href={`#/board/issue/${item.convertedBugId}?projectId=${projectId}&workspace=1`}>Bug {item.convertedBugKey}</a></>:<>Tạo từ <a href={`#/board/issue/${item.sourceQaId}?projectId=${projectId}&workspace=1`}>QA {item.sourceQaKey}</a> · Xem trao đổi, tệp đính kèm và lịch sử gốc tại QA.</>}</p>}
   <div className="ticket-detail-content"><div className="ticket-detail-author"><span className="ticket-person-avatar" aria-hidden="true">{ticketInitials(item.creator)}</span><div><strong>{item.creator||'Chưa ghi người tạo'}</strong><p>Ngày tạo <time>{eventTime(item.createdAt)}</time></p></div></div>
   {contentFields.filter(([key])=>!['title',...metadata,'device'].includes(key)).map(([key,label])=><section className="ticket-content-section" key={key}><h4>{key==='description'?'Hiện tượng / nội dung':label}</h4>{editing?editField(key,label):<p className="wi-pre">{item[key]||'Chưa ghi'}</p>}</section>)}
   {(editing||item.preconditions)&&<section className="ticket-content-section"><h4>Điều kiện tiên quyết</h4>{editing?editField('preconditions','Điều kiện tiên quyết'):<p className="wi-pre">{item.preconditions}</p>}</section>}
   <TicketSupplementaryNotes item={item} projectId={projectId} editing={editing} editField={editField}/>
   </div>
   <div className="wi-actions">{item.canDelete&&item.monkey&&item.type==='BUG'&&!confirmDelete&&<button ref={deleteButton} className="cat-btn" disabled={blocked} onClick={()=>setConfirmDelete(true)}>Xóa Bug monkey</button>}</div>
-  {confirmDelete&&item.canDelete&&item.monkey&&item.type==='BUG'&&<section className="feature-issue-confirm" aria-label="Xác nhận xóa Bug monkey"><p>Xóa mềm {item.key}? Lịch sử Ticket vẫn được giữ.</p><div className="wi-actions"><button className="cat-btn" disabled={blocked} onClick={remove}>Xác nhận xóa mềm</button><button ref={keepButton} className="cat-btn" disabled={blocked} onClick={()=>setConfirmDelete(false)}>Giữ lại Bug monkey</button></div></section>}
+  {confirmDelete&&item.canDelete&&item.monkey&&item.type==='BUG'&&<ConfirmationDialog title="Xác nhận xóa Bug monkey" busy={busy} onCancel={()=>setConfirmDelete(false)}>{error&&<p role="alert">{error}</p>}<p>Xóa mềm {item.key}? Lịch sử Ticket vẫn được giữ.</p><div className="wi-actions"><button className="cat-btn" disabled={blocked} onClick={remove}>Xác nhận xóa mềm</button><button data-dialog-initial-focus ref={keepButton} className="cat-btn" disabled={blocked} onClick={()=>setConfirmDelete(false)}>Giữ lại Bug monkey</button></div></ConfirmationDialog>}
   {editing&&editBaseline.version!==item.version&&<details className="ticket-edit-comparison"><summary>Nội dung hiện tại trên máy chủ</summary><p>{item.key} · {item.title}</p>{contentFields.filter(([key])=>key!=='title').map(([key,label])=><p key={key}><strong>{label}: </strong>{item[key]||'Chưa ghi'}</p>)}</details>}
   <section><h4>Ghi chú</h4>{commentsLoading&&<p role="status">Đang tải ghi chú…</p>}{commentsError&&<p role="alert">{commentsError} {(commentsError)&&<button type="button" className="cat-btn" disabled={commentsLoading} onClick={()=>reloadComments()}>Thử lại ghi chú</button>}</p>}{comments.map(comment=><article className="feature-issue-event" key={comment.id}><strong>{comment.actorName}</strong><p><time>{eventTime(comment.createdAt)}</time></p><SafeMarkdown markdown={comment.body||''}/><TicketAttachments files={comment.attachments} projectId={projectId} issueId={item.id} api={api}/></article>)}</section>
   <section><h4>Lịch sử Ticket</h4><button type="button" className="cat-btn" disabled={historyLoading} onClick={()=>historyOpen?setHistoryOpen(false):loadHistory()}>{historyOpen?'Thu gọn lịch sử':'Xem lịch sử Ticket'}</button>{historyLoading&&<p role="status">Đang tải lịch sử…</p>}{historyError&&<div role="alert">{historyError}<button type="button" className="cat-btn" disabled={historyLoading} onClick={loadHistory}>Thử lại lịch sử</button></div>}
    {historyOpen&&history?.map(entry=><article className="feature-issue-event" key={entry.id}><strong>{entry.actorName}</strong> · {eventLabels[entry.eventType]||entry.eventType}<p><time>{eventTime(entry.createdAt)}</time></p>{entry.before?.ticketState&&entry.after?.ticketState&&(entry.before.ticketState!==entry.after.ticketState||entry.before.closureReason!==entry.after.closureReason)?<p>{ticketTransitionLabel({state:entry.before.ticketState,closureReason:entry.before.closureReason})} → {ticketTransitionLabel({state:entry.after.ticketState,closureReason:entry.after.closureReason})}</p>:entry.before?.status&&entry.after?.status&&entry.before.status!==entry.after.status&&<p>{statusLabel(entry.before.status)} → {statusLabel(entry.after.status)}</p>}{(entry.reason||entry.after?.reason)&&<p className="wi-pre">{entry.reason||entry.after.reason}</p>}{(entry.body||entry.after?.body)&&<p className="wi-pre">{entry.body||entry.after.body}</p>}{contentFields.some(([key])=>entry.after?.[key]!=null&&entry.before?.[key]!==entry.after[key])&&<details><summary>Nội dung thay đổi</summary>{contentFields.filter(([key])=>entry.after?.[key]!=null&&entry.before?.[key]!==entry.after[key]).map(([key,label])=><div key={key}><strong>{label}</strong>{entry.before?.[key]&&<p className="wi-pre">Trước: {entry.before[key]}</p>}<p className="wi-pre">Sau: {entry.after[key]||'(trống)'}</p></div>)}</details>}</article>)}{historyOpen&&history?.length===0&&!historyLoading&&<p>Chưa có lịch sử Ticket.</p>}
-  </section>{error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}
+  </section>{error&&!confirmDelete&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}
   <TicketActionComposer key={`${projectId}/${id}`} projectId={projectId} item={item} api={api} initialStatus={initialStatus} blocked={busy||reloading} onActivity={setActionActivity} onSaved={actionSaved}/>
  </article>;
 }
